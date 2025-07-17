@@ -21,6 +21,7 @@ import { Colors } from '../constants/colors';
 import CameraModal from '../components/CameraModal';
 import { ParsedCoffeeInfo } from '../services/OCRService';
 import OCRParser from '../utils/ocrParser';
+import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 
 const CoffeeInfoScreen = () => {
   const navigation = useNavigation();
@@ -336,6 +337,24 @@ const CoffeeInfoScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* HIG 준수 네비게이션 바 */}
+      <View style={styles.navigationBar}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        </TouchableOpacity>
+        <Text style={styles.navigationTitle}>커피 정보</Text>
+        <Text style={styles.progressIndicator}>2/6</Text>
+      </View>
+      
+      {/* 진행 상태 바 */}
+      <View style={styles.progressBar}>
+        <View style={styles.progressFill} />
+      </View>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}>
@@ -344,28 +363,15 @@ const CoffeeInfoScreen = () => {
           contentContainerStyle={{flexGrow: 1}}
           showsVerticalScrollIndicator={true}
           keyboardShouldPersistTaps="handled">
-          {/* 진행 상태 바 */}
-          <View style={styles.progressBar}>
-            <View style={styles.progressStep}>
-              <View style={[styles.progressDot, styles.activeDot]} />
-              <Text style={styles.progressText}>커피 정보</Text>
-            </View>
-            <View style={styles.progressLine} />
-            <View style={styles.progressStep}>
-              <View style={styles.progressDot} />
-              <Text style={styles.progressText}>컵 노트</Text>
-            </View>
-            <View style={styles.progressLine} />
-            <View style={styles.progressStep}>
-              <View style={styles.progressDot} />
-              <Text style={styles.progressText}>맛</Text>
-            </View>
-          </View>
 
           {/* OCR 스캔 버튼 */}
           <View style={styles.scanSection}>
-            <TouchableOpacity style={styles.scanButton} onPress={handleScanPress}>
-              <Text style={styles.scanButtonText}>📷 라벨 스캔</Text>
+            <TouchableOpacity 
+              style={[commonButtonStyles.buttonSecondary, styles.scanButton]} 
+              onPress={handleScanPress}
+              activeOpacity={0.7}
+            >
+              <Text style={[commonTextStyles.buttonText, styles.scanButtonText]}>📷 패키지 촬영하기</Text>
             </TouchableOpacity>
             <Text style={styles.scanHint}>
               커피 패키지 라벨을 스캔하여 정보를 자동으로 입력하세요
@@ -566,159 +572,136 @@ const CoffeeInfoScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: HIGColors.systemBackground,
+  },
+  navigationBar: {
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: HIGColors.systemBackground,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  backButton: {
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  backButtonText: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.blue,
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  progressIndicator: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    textAlign: 'right',
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: HIGColors.gray5,
+  },
+  progressFill: {
+    height: 4,
+    width: '33%', // 2/6 = 33%
+    backgroundColor: HIGColors.blue,
   },
   scrollView: {
     flex: 1,
   },
-  progressBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
-  progressStep: {
-    alignItems: 'center',
-  },
-  progressDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#E0E0E0',
-    marginBottom: 4,
-  },
-  activeDot: {
-    backgroundColor: '#000000',
-  },
-  progressText: {
-    fontSize: 12,
-    color: Colors.TEXT_SECONDARY,
-  },
-  progressLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#E0E0E0',
-    marginHorizontal: 10,
-    marginBottom: 20,
-  },
   form: {
-    paddingHorizontal: 20,
+    paddingHorizontal: HIGConstants.SPACING_LG,
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: HIGConstants.SPACING_LG,
   },
   label: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
-    color: '#000000',
-    marginBottom: 8,
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   required: {
-    color: Colors.ERROR_RED,
+    color: HIGColors.red,
   },
   input: {
+    minHeight: HIGConstants.MIN_TOUCH_TARGET,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#FAFAFA',
+    borderColor: HIGColors.gray4,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    fontSize: 17,
+    backgroundColor: HIGColors.systemBackground,
   },
   temperatureButtons: {
     flexDirection: 'row',
-    gap: 10,
+    gap: HIGConstants.SPACING_SM,
   },
   tempButton: {
     flex: 1,
+    minHeight: HIGConstants.MIN_TOUCH_TARGET,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    padding: 12,
+    borderColor: HIGColors.gray4,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   tempButtonActive: {
-    backgroundColor: '#000000',
-    borderColor: '#000000',
+    backgroundColor: HIGColors.blue,
+    borderColor: HIGColors.blue,
   },
   tempButtonText: {
-    fontSize: 16,
-    color: Colors.TEXT_SECONDARY,
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.label,
   },
   tempButtonTextActive: {
     color: '#FFFFFF',
   },
   bottomContainer: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-  },
-  nextButton: {
-    backgroundColor: '#000000',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  nextButtonDisabled: {
-    backgroundColor: '#CCCCCC',
-  },
-  nextButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    padding: HIGConstants.SPACING_LG,
+    borderTopWidth: 0.5,
+    borderTopColor: HIGColors.gray4,
   },
   hintText: {
     fontSize: 12,
-    color: Colors.TEXT_SECONDARY,
-    marginTop: -12,
-    marginBottom: 20,
-    paddingHorizontal: 4,
+    color: HIGColors.tertiaryLabel,
+    marginTop: HIGConstants.SPACING_XS,
+    marginBottom: HIGConstants.SPACING_LG,
+    paddingHorizontal: HIGConstants.SPACING_XS,
   },
   scanSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_MD,
     alignItems: 'center',
   },
   scanButton: {
-    backgroundColor: Colors.PRIMARY,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginBottom: 8,
-    minHeight: 44, // HIG 준수
+    width: '100%',
+    marginBottom: HIGConstants.SPACING_SM,
   },
   scanButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: HIGColors.label,
+    fontSize: 17,
     fontWeight: '600',
   },
   scanHint: {
-    fontSize: 12,
-    color: Colors.TEXT_SECONDARY,
+    fontSize: 13,
+    color: HIGColors.tertiaryLabel,
     textAlign: 'center',
-    paddingHorizontal: 20,
-  },
-  cameraSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    alignItems: 'center',
-  },
-  cameraButton: {
-    backgroundColor: Colors.PRIMARY,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  cameraButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  cameraHint: {
-    fontSize: 12,
-    color: Colors.TEXT_SECONDARY,
-    textAlign: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: HIGConstants.SPACING_LG,
   },
 });
 
