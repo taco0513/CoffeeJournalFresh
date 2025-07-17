@@ -1,0 +1,173 @@
+{
+  "common": {
+    "next": "Next",
+    "skip": "Skip",
+    "back": "Back",
+    "save": "Save",
+    "saving": "Saving...",
+    "home": "Home",
+    "newTasting": "New Tasting",
+    "complete": "Complete",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "edit": "Edit",
+    "delete": "Delete",
+    "retry": "Retry",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "home": {
+    "title": "☕ Coffee Tasting Journal",
+    "subtitle": "Track your coffee journey",
+    "startNewTasting": "➕ Start New Tasting",
+    "viewHistory": "📚 View History",
+    "statistics": "📊 Statistics",
+    "dataTest": "🧪 Data Test",
+    "footerText": "Fresh React Native project successfully running! 🎉"
+  },
+  "coffeeInfo": {
+    "title": "Coffee Information",
+    "scanLabel": "📷 Scan Label",
+    "scanHint": "Scan your coffee package label to automatically fill information",
+    "cafeName": "Cafe Name (Optional)",
+    "cafeNamePlaceholder": "e.g. Blue Bottle",
+    "roastery": "Roastery *",
+    "roasteryPlaceholder": "e.g. Stumptown",
+    "coffeeName": "Coffee Name *",
+    "coffeeNamePlaceholder": "e.g. Ethiopian Yirgacheffe G1",
+    "coffeeNameHint": "💡 Origin, variety, and process will be automatically recognized. Blends are also supported.",
+    "origin": "Origin (Optional)",
+    "originPlaceholder": "e.g. Ethiopia / Yirgacheffe",
+    "variety": "Variety (Optional)",
+    "varietyPlaceholder": "e.g. Heirloom",
+    "altitude": "Altitude (Optional)",
+    "altitudePlaceholder": "e.g. 1,800-2,000m",
+    "process": "Process (Optional)",
+    "processPlaceholder": "e.g. Washed",
+    "temperature": "Temperature",
+    "hot": "☕ Hot",
+    "ice": "🧊 Ice"
+  },
+  "roasterNotes": {
+    "title": "Roaster's Cupping Notes",
+    "subtitle": "Enter the flavor description provided by the roaster",
+    "placeholder": "e.g. Sweet chocolate and nutty flavors with...",
+    "scannedNotesTitle": "Scanned Roaster Notes:",
+    "useScanned": "Use Scanned",
+    "editManually": "Edit Manually"
+  },
+  "flavor": {
+    "level1": {
+      "title": "Flavor Selection (Level 1)",
+      "subtitle": "Select all applicable flavors"
+    },
+    "level2": {
+      "title": "Flavor Selection (Level 2)",
+      "subtitle": "Select detailed flavors"
+    },
+    "level3": {
+      "title": "Flavor Selection (Level 3)",
+      "subtitle": "Select specific flavors"
+    },
+    "level4": {
+      "title": "Flavor Selection (Level 4)",
+      "subtitle": "Select flavor characteristics (optional)"
+    }
+  },
+  "sensory": {
+    "title": "Sensory Evaluation",
+    "subtitle": "Evaluate the sensory characteristics of the coffee",
+    "body": "Body",
+    "acidity": "Acidity",
+    "sweetness": "Sweetness",
+    "finish": "Finish",
+    "mouthfeel": "Mouthfeel",
+    "completeEvaluation": "Complete Evaluation",
+    "mouthfeelOptions": {
+      "clean": "Clean",
+      "smooth": "Smooth",
+      "creamy": "Creamy",
+      "juicy": "Juicy",
+      "dry": "Dry"
+    }
+  },
+  "result": {
+    "title": "Tasting Complete!",
+    "dataLoading": "Loading data...",
+    "matchScore": "Match Score",
+    "comparison": "Comparison Analysis",
+    "comparisonLoading": "Loading data...",
+    "sameCoffee": "Same Coffee",
+    "previousTastings": "Previous Tastings",
+    "averageScore": "Average Score",
+    "popularFlavors": "Popular Flavors",
+    "sensoryAverages": "Sensory Averages",
+    "similarCoffees": "Similar Coffees",
+    "homeButton": "Home"
+  },
+  "stats": {
+    "title": "Statistics",
+    "subtitle": "Your coffee journey at a glance",
+    "totalTastings": "Total Tastings",
+    "averageScore": "Average Score",
+    "topRoasters": "Top Roasters",
+    "topCoffees": "Top Coffees",
+    "flavorProfile": "Flavor Profile",
+    "exportTitle": "Export Data",
+    "exportSubtitle": "Download in CSV or JSON format"
+  },
+  "dataTest": {
+    "title": "Data Test",
+    "statistics": "Statistics",
+    "recentTastings": "Recent Tastings",
+    "refreshData": "Refresh Data",
+    "clearAllData": "Clear All Data",
+    "noTastings": "No tastings saved yet",
+    "loading": "Loading...",
+    "deleteConfirmTitle": "Clear All Data",
+    "deleteConfirmMessage": "Are you sure you want to delete all tastings? This cannot be undone.",
+    "deleteAll": "Delete All"
+  },
+  "camera": {
+    "title": "Scan Coffee Package",
+    "instructions": "Align the coffee package label in the center of the screen",
+    "capture": "Capture",
+    "retake": "Retake",
+    "usePhoto": "Use Photo"
+  },
+  "ocr": {
+    "title": "OCR Results Verification",
+    "subtitle": "Please review and edit the recognized text",
+    "recognizedText": "Recognized Text:",
+    "useResults": "Use Results"
+  },
+  "tastingDetail": {
+    "title": "Tasting Details",
+    "coffeeInfo": "Coffee Information",
+    "flavorNotes": "Flavor Notes",
+    "sensoryEvaluation": "Sensory Evaluation",
+    "matchScore": "Match Score",
+    "createdAt": "Created At",
+    "actions": "Actions"
+  },
+  "progress": {
+    "coffeeInfo": "Coffee Info",
+    "cupNotes": "Cup Notes",
+    "flavor": "Flavor",
+    "sensory": "Sensory",
+    "result": "Result"
+  },
+  "validation": {
+    "required": "This field is required",
+    "coffeeNameRequired": "Please enter coffee name",
+    "roasteryRequired": "Please enter roastery"
+  },
+  "toast": {
+    "saveSuccess": "Save Complete",
+    "saveSuccessMessage": "Tasting has been saved",
+    "saveError": "Save Failed",
+    "deleteSuccess": "Delete Complete",
+    "deleteError": "Delete Failed"
+  }
+}

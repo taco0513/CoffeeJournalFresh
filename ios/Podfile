@@ -1,0 +1,56 @@
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
+
+platform :ios, min_ios_version_supported
+prepare_react_native_project!
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
+
+target 'CoffeeJournalFresh' do
+  config = use_native_modules!
+  
+  # react-native-config
+  pod 'react-native-config/Extension', :path => '../node_modules/react-native-config'
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  post_install do |installer|
+    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false,
+      # :ccache_enabled => true
+    )
+    
+    # Fix RCTThirdPartyComponentsProvider.mm to prevent crashes from nil NSClassFromString
+    fix_script_path = File.join(__dir__, 'fix_rct_provider.rb')
+    if File.exist?(fix_script_path)
+      puts "Running fix_rct_provider.rb..."
+      system("ruby #{fix_script_path}")
+    end
+    
+    # Also add the fix as an Xcode build phase
+    installer.pods_project.targets.each do |target|
+      if target.name == 'React-Codegen'
+        phase_name = 'Fix RCTThirdPartyComponentsProvider'
+        unless target.build_phases.any? { |phase| phase.name == phase_name }
+          phase = target.new_shell_script_build_phase(phase_name)
+          phase.shell_script = "cd \"$PODS_ROOT/../\" && ruby fix_rct_provider.rb"
+        end
+      end
+    end
+  end
+end
