@@ -30,15 +30,17 @@ const FlavorLevel4Screen = () => {
   const navigation = useNavigation();
   const { selectedFlavors, setSelectedFlavors } = useTastingStore();
   const [selectedDescriptors, setSelectedDescriptors] = useState<string[]>(
-    selectedFlavors?.map(f => f.level4).filter(Boolean) || []
+    selectedFlavors?.map(f => f.level4).filter((item): item is string => Boolean(item)) || []
   );
 
   // Group descriptors by their parent level3 item
-  const level3Categories = selectedFlavors?.map(f => f.level3).filter(Boolean) || [];
+  const level3Categories = selectedFlavors?.map(f => f.level3).filter((item): item is string => Boolean(item)) || [];
   const categorizedDescriptors = level3Categories.reduce((acc, level3Item) => {
-    const descriptors = flavorLevel4[level3Item as keyof typeof flavorLevel4] || [];
-    if (descriptors.length > 0) {
-      acc[level3Item] = descriptors;
+    if (level3Item) {
+      const descriptors = flavorLevel4[level3Item as keyof typeof flavorLevel4] || [];
+      if (descriptors.length > 0) {
+        acc[level3Item] = descriptors;
+      }
     }
     return acc;
   }, {} as Record<string, string[]>);

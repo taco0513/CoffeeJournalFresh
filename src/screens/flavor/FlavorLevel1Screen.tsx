@@ -15,16 +15,17 @@ import {
   HIGColors,
   HIGConstants,
   hitSlop,
+  commonButtonStyles,
+  commonTextStyles,
 } from '../../styles/common';
 import { NavigationButton } from '../../components/common';
-import { FONT_SIZE } from '../../constants/typography';
 
 const FlavorLevel1Screen = () => {
   const navigation = useNavigation();
   const { selectedFlavors, setSelectedFlavors } = useTastingStore();
   const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
     // Get unique level1 categories from existing selections
-    const level1Set = new Set(selectedFlavors?.map(f => f.level1).filter(Boolean) || []);
+    const level1Set = new Set(selectedFlavors?.map(f => f.level1).filter((item): item is string => Boolean(item)) || []);
     return Array.from(level1Set);
   });
 
@@ -53,6 +54,8 @@ const FlavorLevel1Screen = () => {
   };
 
   const handleNext = () => {
+    if (!isNextEnabled) return;
+    
     // Preserve existing flavor paths and update level1 selections
     const existingFlavors = selectedFlavors || [];
     const newFlavors = selectedCategories.map(category => {
@@ -74,24 +77,34 @@ const FlavorLevel1Screen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* HIG 준수 네비게이션 바 */}
+      <View style={styles.navigationBar}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        </TouchableOpacity>
+        <Text style={styles.navigationTitle}>플레이버 선택</Text>
+        <Text style={styles.progressIndicator}>4/6</Text>
+      </View>
+      
+      {/* 진행 상태 바 */}
+      <View style={styles.progressBar}>
+        <View style={styles.progressFill} />
+      </View>
+
       <ScrollView 
         style={styles.scrollContainer}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Progress Bar */}
-        <View style={styles.progressContainer}>
-          <View style={styles.progressDot} />
-          <View style={styles.progressDot} />
-          <View style={[styles.progressDot, styles.activeDot]} />
-          <View style={styles.progressDot} />
-          <View style={styles.progressDot} />
-          <View style={styles.progressDot} />
+        {/* 제목 및 설명 */}
+        <View style={styles.headerSection}>
+          <Text style={styles.title}>맛 카테고리 선택</Text>
+          <Text style={styles.subtitle}>감지된 맛 카테고리를 모두 선택하세요</Text>
         </View>
-
-        {/* Title */}
-        <Text style={styles.title}>플레이버 선택 (Level 1)</Text>
-        <Text style={styles.subtitle}>해당하는 맛을 모두 선택하세요</Text>
 
         {/* Categories Grid */}
         <View style={styles.gridContainer}>
@@ -125,28 +138,33 @@ const FlavorLevel1Screen = () => {
                   ({flavorWheelKorean.level1[category as keyof typeof flavorWheelKorean.level1]})
                 </Text>
                 {isSelected && (
-                  <Text style={{
-                    position: 'absolute',
-                    top: 5,
-                    right: 5,
-                    color: 'white',
-                    fontSize: 16,
-                    fontWeight: 'bold'
-                  }}>✓</Text>
+                  <Text style={styles.checkmark}>✓</Text>
                 )}
               </TouchableOpacity>
             );
           })}
         </View>
 
-        {/* Next Button */}
-        <NavigationButton
-          title="다음"
+        {/* 다음 버튼 */}
+        <TouchableOpacity 
+          style={[
+            commonButtonStyles.buttonPrimary, 
+            commonButtonStyles.buttonLarge, 
+            styles.nextButton,
+            !isNextEnabled && commonButtonStyles.buttonDisabled
+          ]}
           onPress={handleNext}
           disabled={!isNextEnabled}
-          variant="primary"
-          style={styles.nextButton}
-        />
+          activeOpacity={0.8}
+        >
+          <Text style={[
+            commonTextStyles.buttonTextLarge, 
+            styles.nextButtonText,
+            !isNextEnabled && commonTextStyles.buttonTextDisabled
+          ]}>
+            다음
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -155,57 +173,88 @@ const FlavorLevel1Screen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: HIGColors.systemBackground,
+  },
+  navigationBar: {
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: HIGColors.systemBackground,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  backButton: {
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  backButtonText: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.blue,
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  progressIndicator: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    textAlign: 'right',
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: HIGColors.gray5,
+  },
+  progressFill: {
+    height: 4,
+    width: '67%', // 4/6 = 67%
+    backgroundColor: HIGColors.blue,
   },
   scrollContainer: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingBottom: HIGConstants.SPACING_XL,
   },
-  progressContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+  headerSection: {
+    paddingTop: HIGConstants.SPACING_XL,
+    paddingBottom: HIGConstants.SPACING_LG,
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 40,
-    gap: HIGConstants.SPACING_SM,
-  },
-  progressDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: HIGColors.gray4,
-  },
-  activeDot: {
-    backgroundColor: HIGColors.blue,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 17,
+    fontWeight: '400',
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: HIGConstants.SPACING_XL,
   },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 40,
+    marginBottom: HIGConstants.SPACING_XL,
     gap: HIGConstants.SPACING_SM,
   },
   categoryButton: {
     minHeight: HIGConstants.MIN_TOUCH_TARGET * 1.5,
     minWidth: HIGConstants.MIN_TOUCH_TARGET * 1.5,
     backgroundColor: HIGColors.systemBackground,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: HIGColors.gray4,
     borderRadius: HIGConstants.BORDER_RADIUS,
     justifyContent: 'center',
@@ -227,7 +276,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
-    transform: [{ scale: 1.02 }],
   },
   categoryText: {
     fontSize: HIGConstants.FONT_SIZE_SMALL,
@@ -237,7 +285,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   categorySubtext: {
-    fontSize: FONT_SIZE.TINY, // HIG 최소 크기 준수
+    fontSize: 11, // HIG 최소 크기 준수
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     marginTop: 2,
@@ -246,8 +294,20 @@ const styles = StyleSheet.create({
   selectedText: {
     color: '#FFFFFF',
   },
+  checkmark: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   nextButton: {
-    marginTop: 20,
+    width: '100%',
+    marginTop: HIGConstants.SPACING_LG,
+  },
+  nextButtonText: {
+    color: '#FFFFFF',
   },
 });
 

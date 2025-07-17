@@ -30,7 +30,7 @@ const CameraModal: React.FC<CameraModalProps> = ({ visible, onClose, onTextRecog
   const [isActive, setIsActive] = useState(false);
   const cameraRef = useRef<Camera>(null);
   const devices = useCameraDevices();
-  const device = devices.back;
+  const device = devices.find(d => d.position === 'back');
 
   useEffect(() => {
     if (visible) {
@@ -58,10 +58,7 @@ const CameraModal: React.FC<CameraModalProps> = ({ visible, onClose, onTextRecog
 
     setIsProcessing(true);
     try {
-      const photo = await cameraRef.current.takePhoto({
-        quality: 90,
-        skipMetadata: true,
-      });
+      const photo = await cameraRef.current.takePhoto({});
 
       // Process the image with OCR
       const ocrService = OCRService.getInstance();

@@ -11,8 +11,7 @@ import Slider from '@react-native-community/slider';
 import { useNavigation } from '@react-navigation/native';
 import { useTastingStore } from '../stores/tastingStore';
 import { NavigationButton } from '../components/common';
-import { HIGConstants, hitSlop, HIGColors } from '../styles/common';
-import { FONT_SIZE } from '../constants/typography';
+import { HIGConstants, hitSlop, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 
 type MouthfeelType = 'Clean' | 'Creamy' | 'Juicy' | 'Silky';
 
@@ -52,14 +51,7 @@ const SensoryScreen = () => {
           {option}
         </Text>
         {isSelected && (
-          <Text style={{
-            position: 'absolute',
-            top: 5,
-            right: 5,
-            color: 'white',
-            fontSize: 16,
-            fontWeight: 'bold'
-          }}>✓</Text>
+          <Text style={styles.checkmark}>✓</Text>
         )}
       </TouchableOpacity>
     );
@@ -113,21 +105,34 @@ const SensoryScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Progress Bar */}
-        <View style={styles.progressContainer}>
-          <View style={styles.progressDot} />
-          <View style={styles.progressDot} />
-          <View style={styles.progressDot} />
-          <View style={styles.progressDot} />
-          <View style={styles.progressDot} />
-          <View style={[styles.progressDot, styles.activeDot]} />
+      {/* HIG 준수 네비게이션 바 */}
+      <View style={styles.navigationBar}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        </TouchableOpacity>
+        <Text style={styles.navigationTitle}>감각 평가</Text>
+        <Text style={styles.progressIndicator}>5/6</Text>
+      </View>
+      
+      {/* 진행 상태 바 */}
+      <View style={styles.progressBar}>
+        <View style={styles.progressFill} />
+      </View>
+
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* 제목 및 설명 */}
+        <View style={styles.headerSection}>
+          <Text style={styles.title}>감각 평가</Text>
+          <Text style={styles.subtitle}>커피의 감각적 특성을 평가해주세요</Text>
         </View>
-
-
-        {/* Title */}
-        <Text style={styles.title}>감각 평가</Text>
-        <Text style={styles.subtitle}>커피의 감각적 특성을 평가해주세요</Text>
 
         {/* Sensory Attributes */}
         {renderSlider('바디감', body, setBody, '가벼움', '무거움')}
@@ -145,13 +150,16 @@ const SensoryScreen = () => {
           </View>
         </View>
 
-        {/* Complete Button */}
-        <NavigationButton
-          title="평가 완료"
+        {/* 완료 버튼 */}
+        <TouchableOpacity 
+          style={[commonButtonStyles.buttonSuccess, commonButtonStyles.buttonLarge, styles.completeButton]}
           onPress={handleComplete}
-          variant="primary"
-          style={{ backgroundColor: '#34C759' }} // 성공 색상 유지
-        />
+          activeOpacity={0.8}
+        >
+          <Text style={[commonTextStyles.buttonTextLarge, styles.completeButtonText]}>
+            평가 완료
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -160,47 +168,84 @@ const SensoryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
+    backgroundColor: HIGColors.systemBackground,
   },
-  progressContainer: {
+  navigationBar: {
+    height: HIGConstants.MIN_TOUCH_TARGET,
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 40,
-    gap: HIGConstants.SPACING_SM,
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: HIGColors.systemBackground,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
   },
-  progressDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: HIGColors.gray4,
+  backButton: {
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
-  activeDot: {
+  backButtonText: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.blue,
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  progressIndicator: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    textAlign: 'right',
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: HIGColors.gray5,
+  },
+  progressFill: {
+    height: 4,
+    width: '83%', // 5/6 = 83%
     backgroundColor: HIGColors.blue,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingBottom: HIGConstants.SPACING_XL,
+  },
+  headerSection: {
+    paddingTop: HIGConstants.SPACING_XL,
+    paddingBottom: HIGConstants.SPACING_LG,
+    alignItems: 'center',
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 17,
+    fontWeight: '400',
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: HIGConstants.SPACING_XL,
   },
   sliderSection: {
-    marginBottom: 32,
+    marginBottom: HIGConstants.SPACING_XL,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: HIGColors.label,
-    marginBottom: 16,
+    marginBottom: HIGConstants.SPACING_MD,
   },
   sliderContainer: {
     flexDirection: 'row',
@@ -209,25 +254,7 @@ const styles = StyleSheet.create({
   slider: {
     flex: 1,
     height: HIGConstants.MIN_TOUCH_TARGET,
-    marginHorizontal: 16,
-  },
-  sliderTrack: {
-    height: HIGConstants.MIN_TOUCH_TARGET,
-    borderRadius: HIGConstants.MIN_TOUCH_TARGET / 2,
-  },
-  sliderThumb: {
-    width: HIGConstants.MIN_TOUCH_TARGET,
-    height: HIGConstants.MIN_TOUCH_TARGET,
-    borderRadius: HIGConstants.MIN_TOUCH_TARGET / 2,
-    backgroundColor: HIGColors.blue,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    marginHorizontal: HIGConstants.SPACING_MD,
   },
   sliderLabel: {
     fontSize: 14,
@@ -237,13 +264,13 @@ const styles = StyleSheet.create({
   },
   valueText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: HIGColors.blue,
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: HIGConstants.SPACING_SM,
   },
   mouthfeelSection: {
-    marginBottom: 40,
+    marginBottom: HIGConstants.SPACING_XL,
   },
   mouthfeelContainer: {
     flexDirection: 'row',
@@ -254,7 +281,7 @@ const styles = StyleSheet.create({
     width: '48%',
     minHeight: HIGConstants.MIN_TOUCH_TARGET,
     backgroundColor: HIGColors.systemBackground,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: HIGColors.gray4,
     borderRadius: HIGConstants.BORDER_RADIUS,
     paddingVertical: HIGConstants.SPACING_MD,
@@ -277,7 +304,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
-    transform: [{ scale: 1.02 }],
   },
   mouthfeelText: {
     fontSize: HIGConstants.FONT_SIZE_MEDIUM,
@@ -288,17 +314,20 @@ const styles = StyleSheet.create({
   selectedMouthfeelText: {
     color: '#FFFFFF',
   },
+  checkmark: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   completeButton: {
-    backgroundColor: '#8B4513',
-    paddingVertical: 16,
-    borderRadius: 30,
-    alignItems: 'center',
-    marginBottom: 40,
+    width: '100%',
+    marginTop: HIGConstants.SPACING_LG,
   },
   completeButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
 

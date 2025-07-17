@@ -30,15 +30,17 @@ const FlavorLevel3Screen = () => {
   const navigation = useNavigation();
   const { selectedFlavors, setSelectedFlavors } = useTastingStore();
   const [selectedLevel3, setSelectedLevel3] = useState<string[]>(
-    selectedFlavors?.map(f => f.level3).filter(Boolean) || []
+    selectedFlavors?.map(f => f.level3).filter((item): item is string => Boolean(item)) || []
   );
 
   // Group level3 options by their parent level2 category
-  const level2Categories = selectedFlavors?.map(f => f.level2).filter(Boolean) || [];
+  const level2Categories = selectedFlavors?.map(f => f.level2).filter((item): item is string => Boolean(item)) || [];
   const categorizedLevel3 = level2Categories.reduce((acc, level2Item) => {
-    const level3Options = flavorLevel3[level2Item as keyof typeof flavorLevel3] || [];
-    if (level3Options.length > 0) {
-      acc[level2Item] = level3Options;
+    if (level2Item) {
+      const level3Options = flavorLevel3[level2Item as keyof typeof flavorLevel3] || [];
+      if (level3Options.length > 0) {
+        acc[level2Item] = level3Options;
+      }
     }
     return acc;
   }, {} as Record<string, string[]>);
@@ -47,9 +49,9 @@ const FlavorLevel3Screen = () => {
   const hasLevel3Options = Object.keys(categorizedLevel3).length > 0;
 
   useEffect(() => {
-    // If no level3 options exist, skip to FlavorLevel4 screen
+    // If no level3 options exist, skip to Sensory screen
     if (!hasLevel3Options) {
-      navigation.navigate('FlavorLevel4' as never);
+      navigation.navigate('Sensory' as never);
     }
   }, [hasLevel3Options, navigation]);
 
@@ -82,11 +84,11 @@ const FlavorLevel3Screen = () => {
     });
     
     setSelectedFlavors(newFlavors);
-    navigation.navigate('FlavorLevel4' as never);
+    navigation.navigate('Sensory' as never);
   };
 
   const handleSkip = () => {
-    navigation.navigate('FlavorLevel4' as never);
+    navigation.navigate('Sensory' as never);
   };
 
   const isNextEnabled = selectedLevel3.length > 0;

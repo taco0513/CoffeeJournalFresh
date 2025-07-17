@@ -119,18 +119,18 @@ export const handleCameraPermission = async (): Promise<boolean> => {
     const visionCameraStatus = await Camera.getCameraPermissionStatus();
     console.log('[Permissions] Vision Camera permission status:', visionCameraStatus);
     
-    if (visionCameraStatus === 'granted' || visionCameraStatus === 'authorized') {
+    if (visionCameraStatus === 'granted') {
       console.log('[Permissions] ✅ Vision Camera reports permission granted, returning true');
       return true;
     }
     
     // If vision-camera says not authorized but react-native-permissions says something else
-    if (visionCameraStatus === 'not-determined' && checkResult.status !== 'granted') {
+    if (visionCameraStatus === 'not-determined') {
       console.log('[Permissions] Vision Camera says not-determined, requesting permission');
       const newStatus = await Camera.requestCameraPermission();
       console.log('[Permissions] Vision Camera request result:', newStatus);
       
-      if (newStatus === 'granted' || newStatus === 'authorized') {
+      if (newStatus === 'granted') {
         console.log('[Permissions] ✅ Vision Camera permission granted after request, returning true');
         return true;
       }

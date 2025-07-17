@@ -7,11 +7,13 @@ import {
   SafeAreaView,
   Keyboard,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTastingStore } from '../stores/tastingStore';
 import { NavigationButton } from '../components/common';
 import { Colors } from '../constants/colors';
+import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 
 const RoasterNotesScreen = () => {
   const navigation = useNavigation();
@@ -41,56 +43,72 @@ const RoasterNotesScreen = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        {/* Skip Button */}
-        <View style={styles.skipButton}>
-          <NavigationButton
-            title="건너뛰기"
+        {/* HIG 준수 네비게이션 바 */}
+        <View style={styles.navigationBar}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Text style={styles.backButtonText}>‹ 뒤로</Text>
+          </TouchableOpacity>
+          <Text style={styles.navigationTitle}>로스터 노트</Text>
+          <TouchableOpacity 
+            style={styles.skipButton}
             onPress={handleSkip}
-            variant="text"
-            fullWidth={false}
-          />
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Text style={styles.skipButtonText}>건너뛰기</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {/* 진행 상태 바 */}
+        <View style={styles.progressBar}>
+          <View style={styles.progressFill} />
         </View>
 
-        {/* Progress Bar */}
-        <View style={styles.progressContainer}>
-          <View style={styles.progressDot} />
-          <View style={[styles.progressDot, styles.activeDot]} />
-          <View style={styles.progressDot} />
-          <View style={styles.progressDot} />
-          <View style={styles.progressDot} />
-          <View style={styles.progressDot} />
-        </View>
+        {/* 메인 콘텐츠 */}
+        <View style={styles.content}>
+          {/* 제목 및 설명 */}
+          <View style={styles.headerSection}>
+            <Text style={styles.title}>로스터의 컵 노트</Text>
+            <Text style={styles.subtitle}>로스터가 제공한 맛 설명을 입력하세요</Text>
+          </View>
 
-        {/* Title */}
-        <Text style={styles.title}>로스터의 컵 노트</Text>
-
-        {/* Notes Input */}
-        <View style={styles.inputContainer}>
+          {/* OCR 알림 */}
           {scannedRoasterNotes && (
-            <Text style={styles.helperText}>
-              📷 OCR로 인식된 노트가 자동 입력되었습니다
-            </Text>
+            <View style={styles.ocrNotice}>
+              <Text style={styles.ocrNoticeText}>
+                📷 OCR로 인식된 노트가 자동 입력되었습니다
+              </Text>
+            </View>
           )}
-          <TextInput
-            style={styles.notesInput}
-            multiline
-            numberOfLines={6}
-            placeholder="로스터가 제공한 맛 설명을 입력하세요
-예: 블루베리, 다크 초콜릿, 꿀"
-            placeholderTextColor={Colors.PLACEHOLDER}
-            value={notes}
-            onChangeText={setNotes}
-            textAlignVertical="top"
-          />
-        </View>
 
-        {/* Next Button */}
-        <NavigationButton
-          title="다음"
-          onPress={handleNext}
-          variant="primary"
-          style={styles.button}
-        />
+          {/* 텍스트 입력 */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.notesInput}
+              multiline
+              numberOfLines={8}
+              placeholder="예: 블루베리, 다크 초콜릿, 꿀과 같은 단맛\n\n로스터가 제공한 맛 설명을 자유롭게 입력하세요. 이 정보는 나중에 여러분의 테이스팅 결과와 비교됩니다."
+              placeholderTextColor={HIGColors.tertiaryLabel}
+              value={notes}
+              onChangeText={setNotes}
+              textAlignVertical="top"
+            />
+          </View>
+
+          {/* 다음 버튼 */}
+          <TouchableOpacity 
+            style={[commonButtonStyles.buttonPrimary, commonButtonStyles.buttonLarge, styles.nextButton]}
+            onPress={handleNext}
+            activeOpacity={0.8}
+          >
+            <Text style={[commonTextStyles.buttonTextLarge, styles.nextButtonText]}>
+              다음
+            </Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
@@ -99,75 +117,109 @@ const RoasterNotesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
+    backgroundColor: HIGColors.systemBackground,
+  },
+  navigationBar: {
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: HIGColors.systemBackground,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  backButton: {
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  backButtonText: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.blue,
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
   },
   skipButton: {
-    position: 'absolute',
-    top: 60,
-    right: 20,
-    zIndex: 1,
-  },
-  skipText: {
-    fontSize: 16,
-    color: Colors.TEXT_SECONDARY,
-  },
-  progressContainer: {
-    flexDirection: 'row',
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    height: HIGConstants.MIN_TOUCH_TARGET,
     justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  skipButtonText: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.blue,
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: HIGColors.gray5,
+  },
+  progressFill: {
+    height: 4,
+    width: '50%', // 3/6 = 50%
+    backgroundColor: HIGColors.blue,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+  },
+  headerSection: {
+    paddingTop: HIGConstants.SPACING_XL,
+    paddingBottom: HIGConstants.SPACING_LG,
     alignItems: 'center',
-    marginTop: 60,
-    marginBottom: 40,
-    gap: 8,
-  },
-  progressDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#e0e0e0',
-  },
-  activeDot: {
-    backgroundColor: '#8B4513',
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: '700',
+    color: HIGColors.label,
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  subtitle: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+  },
+  ocrNotice: {
+    backgroundColor: HIGColors.blue,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+  },
+  ocrNoticeText: {
+    fontSize: 13,
+    fontWeight: '400',
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
   inputContainer: {
     flex: 1,
-    marginBottom: 20,
+    marginBottom: HIGConstants.SPACING_LG,
   },
   notesInput: {
     borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 16,
-    color: '#333',
+    borderColor: HIGColors.gray4,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    fontSize: 17,
+    color: HIGColors.label,
     minHeight: 200,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: HIGColors.systemBackground,
   },
-  button: {
-    backgroundColor: '#8B4513',
-    paddingVertical: 16,
-    borderRadius: 30,
-    alignItems: 'center',
-    marginBottom: 40,
+  nextButton: {
+    width: '100%',
+    marginBottom: HIGConstants.SPACING_LG,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  helperText: {
-    fontSize: 14,
-    color: Colors.PRIMARY,
-    marginBottom: 12,
-    textAlign: 'center',
-    fontWeight: '500',
+  nextButtonText: {
+    color: '#FFFFFF',
   },
 });
 

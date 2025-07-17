@@ -30,10 +30,10 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
   fullWidth = true,
 }) => {
   const getButtonStyle = (): ViewStyle => {
-    const baseStyle = [
+    const baseStyle: ViewStyle[] = [
       commonButtonStyles.buttonCommon,
       styles.navigationButton,
-      fullWidth && styles.fullWidth,
+      fullWidth ? styles.fullWidth : {},
     ];
 
     switch (variant) {
@@ -59,11 +59,11 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
       baseStyle.push(style);
     }
 
-    return baseStyle as ViewStyle;
+    return StyleSheet.flatten(baseStyle);
   };
 
   const getTextStyle = (): TextStyle => {
-    const baseTextStyle = [commonTextStyles.buttonText];
+    const baseTextStyle: TextStyle[] = [commonTextStyles.buttonText];
 
     switch (variant) {
       case 'primary':
@@ -86,7 +86,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
       baseTextStyle.push(textStyle);
     }
 
-    return baseTextStyle as TextStyle;
+    return StyleSheet.flatten(baseTextStyle);
   };
 
 
@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     color: HIGColors.blue,
     fontSize: HIGConstants.FONT_SIZE_MEDIUM,
     fontWeight: '600',
+    textAlign: 'center',
   },
 });
 

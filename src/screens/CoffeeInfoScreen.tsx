@@ -20,7 +20,7 @@ import { NavigationButton } from '../components/common';
 import { Colors } from '../constants/colors';
 import CameraModal from '../components/CameraModal';
 import { ParsedCoffeeInfo } from '../services/OCRService';
-import OCRParser from '../utils/ocrParser';
+import { parseOCRResult } from '../utils/ocrParser';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 
 const CoffeeInfoScreen = () => {
@@ -51,9 +51,10 @@ const CoffeeInfoScreen = () => {
 
   // OCR 결과 처리
   useEffect(() => {
-    const ocrText = route.params?.ocrText;
-    const scannedText = route.params?.scannedText;
-    const scannedData = route.params?.scannedData;
+    const params = route.params as any;
+    const ocrText = params?.ocrText;
+    const scannedText = params?.scannedText;
+    const scannedData = params?.scannedData;
     
     if (scannedData) {
       console.log('스캔 데이터 적용:', scannedData);
@@ -78,7 +79,7 @@ const CoffeeInfoScreen = () => {
     } else if (ocrText) {
       handleOCRResult(ocrText);
     }
-  }, [route.params?.ocrText, route.params?.scannedText, route.params?.scannedData]);
+  }, [route.params]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   // 카페 입력 변경 시 제안 목록 업데이트
   useEffect(() => {
@@ -268,9 +269,13 @@ const CoffeeInfoScreen = () => {
       }
       
       // 다음 단계로 이동 (로스터 노트 전달)
-      navigation.navigate('RoasterNotes' as never, {
-        scannedRoasterNotes: scannedRoasterNotes
-      });
+      if (scannedRoasterNotes) {
+        navigation.navigate('RoasterNotes' as never, {
+          scannedRoasterNotes: scannedRoasterNotes
+        } as never);
+      } else {
+        navigation.navigate('RoasterNotes' as never);
+      }
     }
   };
 
@@ -282,8 +287,7 @@ const CoffeeInfoScreen = () => {
 
   const handleOCRResult = (ocrText: string) => {
     try {
-      const parser = OCRParser.getInstance();
-      const parsedInfo = parser.parseCoffeeInfo(ocrText);
+      const parsedInfo = parseOCRResult([ocrText]);
       
       // Auto-fill form fields with extracted OCR data
       if (parsedInfo.coffeeName) {

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
 // SF Symbols 제거됨
 import {useTastingStore} from '../stores/tastingStore';
 import {useToastStore} from '../stores/toastStore';
@@ -7,13 +7,17 @@ import {
   commonLayoutStyles,
   hitSlop,
   HIGColors,
+  HIGConstants,
+  commonButtonStyles,
+  commonTextStyles,
 } from '../styles/common';
 import { NavigationButton } from '../components/common';
 import { Colors } from '../constants/colors';
 import { FONT_SIZE, TEXT_STYLES } from '../constants/typography';
 import RealmService from '../services/realm/RealmService';
 import tastingService from '../services/supabase/tastingService';
-import { ENABLE_SYNC } from '../../App';
+// import { ENABLE_SYNC } from '../../App';
+const ENABLE_SYNC = true; // Enable sync for now
 
 export default function ResultScreen({navigation}: any) {
   const {currentTasting, matchScoreTotal, reset, saveTasting} = useTastingStore();
@@ -226,9 +230,9 @@ export default function ResultScreen({navigation}: any) {
   // currentTasting이 없으면 에러 방지
   if (!currentTasting) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={styles.title}>데이터 로드 중...</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -244,12 +248,31 @@ export default function ResultScreen({navigation}: any) {
   });
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={[styles.headerIcon, {fontSize: 48, color: Colors.SUCCESS_GREEN}]}>✅</Text>
-        <Text style={styles.title}>테이스팅 완료!</Text>
-        <Text style={styles.score}>{matchScoreTotal || 0}% 일치</Text>
+    <SafeAreaView style={styles.container}>
+      {/* HIG 준수 네비게이션 바 */}
+      <View style={styles.navigationBar}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        </TouchableOpacity>
+        <Text style={styles.navigationTitle}>결과</Text>
+        <View style={styles.navigationRight} />
       </View>
+      
+      {/* 진행 상태 바 */}
+      <View style={styles.progressBar}>
+        <View style={styles.progressFill} />
+      </View>
+
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <Text style={[styles.headerIcon, {fontSize: 48, color: Colors.SUCCESS_GREEN}]}>✅</Text>
+          <Text style={styles.title}>테이스팅 완료!</Text>
+          <Text style={styles.score}>{matchScoreTotal || 0}% 일치</Text>
+        </View>
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
@@ -421,88 +444,177 @@ export default function ResultScreen({navigation}: any) {
         )}
       </View>
 
-      <View style={[commonLayoutStyles.buttonContainer, styles.buttonContainer]}>
-        <NavigationButton
-          title={isSaving ? '저장 중...' : '저장하기'}
-          onPress={handleSave}
-          disabled={isSaving}
-          variant="primary"
-          style={{ backgroundColor: HIGColors.green }}
-        />
-        
-        <View style={commonLayoutStyles.buttonGroup}>
-          <NavigationButton
-            title="New Tasting"
-            onPress={handleNewTasting}
-            variant="primary"
-            style={commonLayoutStyles.buttonFlex}
-            fullWidth={false}
-          />
-          <NavigationButton
-            title="Home"
-            onPress={handleGoHome}
-            variant="secondary"
-            style={commonLayoutStyles.buttonFlex}
-            fullWidth={false}
-          />
+        {/* 버튼 영역 */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={[
+              commonButtonStyles.buttonSuccess, 
+              commonButtonStyles.buttonLarge, 
+              styles.saveButton,
+              isSaving && commonButtonStyles.buttonDisabled
+            ]}
+            onPress={handleSave}
+            disabled={isSaving}
+            activeOpacity={0.8}
+          >
+            <Text style={[
+              commonTextStyles.buttonTextLarge, 
+              styles.saveButtonText,
+              isSaving && commonTextStyles.buttonTextDisabled
+            ]}>
+              {isSaving ? '저장 중...' : '저장하기'}
+            </Text>
+          </TouchableOpacity>
+          
+          <View style={styles.actionButtonGroup}>
+            <TouchableOpacity 
+              style={[commonButtonStyles.buttonPrimary, styles.actionButton]}
+              onPress={handleNewTasting}
+              activeOpacity={0.8}
+            >
+              <Text style={[commonTextStyles.buttonText, styles.actionButtonText]}>New Tasting</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[commonButtonStyles.buttonOutline, styles.actionButton]}
+              onPress={handleGoHome}
+              activeOpacity={0.8}
+            >
+              <Text style={[commonTextStyles.buttonTextOutline, styles.actionButtonText]}>Home</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: HIGColors.secondarySystemBackground,
+  },
+  navigationBar: {
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: HIGColors.systemBackground,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  backButton: {
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  backButtonText: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.blue,
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  navigationRight: {
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: HIGColors.gray5,
+  },
+  progressFill: {
+    height: 4,
+    width: '100%', // 6/6 = 100%
+    backgroundColor: HIGColors.green,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: HIGConstants.SPACING_XL,
   },
   header: {
     alignItems: 'center',
-    padding: 24,
-    backgroundColor: 'white',
-    marginBottom: 8,
+    padding: HIGConstants.SPACING_XL,
+    backgroundColor: HIGColors.systemBackground,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   headerIcon: {
-    marginBottom: 12,
+    marginBottom: HIGConstants.SPACING_MD,
   },
   title: {
-    ...TEXT_STYLES.HEADING_2,
-    marginBottom: 10,
+    fontSize: 28,
+    fontWeight: '700',
+    color: HIGColors.label,
+    textAlign: 'center',
+    marginBottom: HIGConstants.SPACING_SM,
   },
   score: {
-    fontSize: FONT_SIZE.GIANT,
-    fontWeight: 'bold',
-    color: Colors.SUCCESS_GREEN,
+    fontSize: 32,
+    fontWeight: '700',
+    color: HIGColors.green,
   },
   section: {
-    backgroundColor: 'white',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    borderRadius: 12,
+    backgroundColor: HIGColors.systemBackground,
+    padding: HIGConstants.SPACING_LG,
+    marginVertical: HIGConstants.SPACING_XS,
+    marginHorizontal: HIGConstants.SPACING_LG,
+    borderRadius: HIGConstants.BORDER_RADIUS_LARGE,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   sectionTitle: {
-    ...TEXT_STYLES.HEADING_3,
-    marginBottom: 16,
+    fontSize: 20,
+    fontWeight: '600',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_MD,
   },
   info: {
-    ...TEXT_STYLES.BODY,
-    marginBottom: 8,
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   flavorItem: {
-    ...TEXT_STYLES.BODY,
-    marginBottom: 4,
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   buttonContainer: {
-    // 공통 스타일로 대체됨 - 추가적인 커스텀 스타일만 여기에
+    padding: HIGConstants.SPACING_LG,
+    backgroundColor: HIGColors.systemBackground,
+    borderTopWidth: 0.5,
+    borderTopColor: HIGColors.gray4,
+  },
+  saveButton: {
+    width: '100%',
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+  },
+  actionButtonGroup: {
+    flexDirection: 'row',
+    gap: HIGConstants.SPACING_SM,
+  },
+  actionButton: {
+    flex: 1,
+    minHeight: HIGConstants.MIN_TOUCH_TARGET,
+  },
+  actionButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
   },
   // 비교 섹션 스타일
   sectionHeader: {
@@ -655,7 +767,7 @@ const styles = StyleSheet.create({
   emptyComparisonContainer: {
     padding: 20,
     alignItems: 'center',
-    backgroundColor: Colors.BACKGROUND,
+    backgroundColor: HIGColors.secondarySystemBackground,
     borderRadius: 8,
     marginTop: 10,
   },

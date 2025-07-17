@@ -14,10 +14,10 @@ import {
   hitSlop,
   HIGColors,
   HIGConstants,
+  commonButtonStyles,
+  commonTextStyles,
 } from '../../styles/common';
 import { NavigationButton } from '../../components/common';
-import { FONT_SIZE } from '../../constants/typography';
-import { Colors } from '../../constants/colors';
 
 interface FlavorPath {
   level1?: string;
@@ -31,15 +31,17 @@ const FlavorLevel2Screen = () => {
   const navigation = useNavigation();
   const { selectedFlavors, setSelectedFlavors } = useTastingStore();
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
-    selectedFlavors?.map(f => f.level2).filter(Boolean) || []
+    selectedFlavors?.map(f => f.level2).filter((item): item is string => Boolean(item)) || []
   );
 
   // Group subcategories by their parent category
-  const level1Categories = selectedFlavors?.map(f => f.level1).filter(Boolean) || [];
+  const level1Categories = selectedFlavors?.map(f => f.level1).filter((item): item is string => Boolean(item)) || [];
   const categorizedSubcategories = level1Categories.reduce((acc, category) => {
-    const subcategories = flavorWheel[category as keyof typeof flavorWheel] || [];
-    if (subcategories.length > 0) {
-      acc[category] = subcategories;
+    if (category) {
+      const subcategories = flavorWheel[category as keyof typeof flavorWheel] || [];
+      if (subcategories.length > 0) {
+        acc[category] = subcategories;
+      }
     }
     return acc;
   }, {} as Record<string, string[]>);
@@ -55,6 +57,8 @@ const FlavorLevel2Screen = () => {
   };
 
   const handleNext = () => {
+    if (!isNextEnabled) return;
+    
     // Level 1 선택값들과 Level 2를 결합해서 저장
     const level1Categories = selectedFlavors?.map(f => f.level1).filter(Boolean) || [];
     const newFlavors: FlavorPath[] = [];
@@ -75,42 +79,48 @@ const FlavorLevel2Screen = () => {
     });
     
     setSelectedFlavors(newFlavors);
-    navigation.navigate('FlavorLevel3' as never);
+    navigation.navigate('Sensory' as never);
   };
 
   const handleSkip = () => {
-    navigation.navigate('FlavorLevel3' as never);
+    navigation.navigate('Sensory' as never);
   };
 
   const isNextEnabled = selectedSubcategories.length > 0;
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Skip Button */}
-      <View style={styles.skipButton}>
-        <NavigationButton
-          title="건너뛰기"
+      {/* HIG 준수 네비게이션 바 */}
+      <View style={styles.navigationBar}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        </TouchableOpacity>
+        <Text style={styles.navigationTitle}>세부 맛 선택</Text>
+        <TouchableOpacity 
+          style={styles.skipButton}
           onPress={handleSkip}
-          variant="text"
-          fullWidth={false}
-        />
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={styles.skipButtonText}>건너뛰기</Text>
+        </TouchableOpacity>
+      </View>
+      
+      {/* 진행 상태 바 */}
+      <View style={styles.progressBar}>
+        <View style={styles.progressFill} />
       </View>
 
-      {/* Progress Bar */}
-      <View style={styles.progressContainer}>
-        <View style={styles.progressDot} />
-        <View style={styles.progressDot} />
-        <View style={styles.progressDot} />
-        <View style={[styles.progressDot, styles.activeDot]} />
-        <View style={styles.progressDot} />
-        <View style={styles.progressDot} />
+      {/* 제목 및 설명 */}
+      <View style={styles.headerSection}>
+        <Text style={styles.title}>세부 맛 선택</Text>
+        <Text style={styles.subtitle}>원하는 세부 맛을 선택해보세요</Text>
       </View>
 
-      {/* Title */}
-      <Text style={styles.title}>플레이버 선택 (Level 2)</Text>
-      <Text style={styles.subtitle}>세부 맛을 선택하세요</Text>
-
-      {/* Subcategories by Category */}
+      {/* 카테고리별 서브카테고리 */}
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {Object.entries(categorizedSubcategories).map(([category, subcategories]) => (
           <View key={category} style={styles.categorySection}>
@@ -137,14 +147,7 @@ const FlavorLevel2Screen = () => {
                       {subcategory}
                     </Text>
                     {isSelected && (
-                      <Text style={{
-                        position: 'absolute',
-                        top: 5,
-                        right: 5,
-                        color: 'white',
-                        fontSize: 16,
-                        fontWeight: 'bold'
-                      }}>✓</Text>
+                      <Text style={styles.checkmark}>✓</Text>
                     )}
                   </TouchableOpacity>
                 );
@@ -154,14 +157,28 @@ const FlavorLevel2Screen = () => {
         ))}
       </ScrollView>
 
-      {/* Next Button */}
-      <NavigationButton
-        title="다음"
-        onPress={handleNext}
-        disabled={!isNextEnabled}
-        variant="primary"
-        style={styles.nextButton}
-      />
+      {/* 다음 버튼 */}
+      <View style={styles.bottomContainer}>
+        <TouchableOpacity 
+          style={[
+            commonButtonStyles.buttonPrimary, 
+            commonButtonStyles.buttonLarge, 
+            styles.nextButton,
+            !isNextEnabled && commonButtonStyles.buttonDisabled
+          ]}
+          onPress={handleNext}
+          disabled={!isNextEnabled}
+          activeOpacity={0.8}
+        >
+          <Text style={[
+            commonTextStyles.buttonTextLarge, 
+            styles.nextButtonText,
+            !isNextEnabled && commonTextStyles.buttonTextDisabled
+          ]}>
+            다음
+          </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -169,75 +186,100 @@ const FlavorLevel2Screen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
+    backgroundColor: HIGColors.systemBackground,
+  },
+  navigationBar: {
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: HIGColors.systemBackground,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  backButton: {
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  backButtonText: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.blue,
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
   },
   skipButton: {
-    position: 'absolute',
-    top: 60,
-    right: 20,
-    zIndex: 1,
-  },
-  skipText: {
-    fontSize: 16,
-    color: Colors.TEXT_SECONDARY,
-  },
-  progressContainer: {
-    flexDirection: 'row',
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    height: HIGConstants.MIN_TOUCH_TARGET,
     justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  skipButtonText: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.blue,
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: HIGColors.gray5,
+  },
+  progressFill: {
+    height: 4,
+    width: '67%', // 4/6 = 67%
+    backgroundColor: HIGColors.blue,
+  },
+  headerSection: {
+    paddingTop: HIGConstants.SPACING_LG,
+    paddingBottom: HIGConstants.SPACING_LG,
+    paddingHorizontal: HIGConstants.SPACING_LG,
     alignItems: 'center',
-    marginTop: 60,
-    marginBottom: 40,
-    gap: 8,
-  },
-  progressDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#e0e0e0',
-  },
-  activeDot: {
-    backgroundColor: '#8B4513',
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: '700',
+    color: HIGColors.label,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   subtitle: {
-    fontSize: 16,
-    color: Colors.TEXT_SECONDARY,
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
     textAlign: 'center',
-    marginBottom: 30,
   },
   scrollView: {
     flex: 1,
+    paddingHorizontal: HIGConstants.SPACING_LG,
   },
   categorySection: {
-    marginBottom: 24,
+    marginBottom: HIGConstants.SPACING_XL,
   },
   sectionHeader: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#333',
-    marginBottom: 12,
-    paddingHorizontal: 4,
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_MD,
+    paddingHorizontal: HIGConstants.SPACING_XS,
   },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
-    marginHorizontal: -6,
+    marginHorizontal: -HIGConstants.SPACING_XS,
   },
   categoryButton: {
     backgroundColor: HIGColors.systemBackground,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: HIGColors.gray4,
     borderRadius: HIGConstants.BORDER_RADIUS_LARGE,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_MD,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
     margin: HIGConstants.SPACING_XS,
     minHeight: HIGConstants.MIN_TOUCH_TARGET,
     shadowColor: '#000',
@@ -255,7 +297,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
-    transform: [{ scale: 1.02 }],
   },
   categoryText: {
     fontSize: HIGConstants.FONT_SIZE_MEDIUM,
@@ -266,10 +307,24 @@ const styles = StyleSheet.create({
   selectedText: {
     color: '#FFFFFF',
   },
+  checkmark: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  bottomContainer: {
+    padding: HIGConstants.SPACING_LG,
+    borderTopWidth: 0.5,
+    borderTopColor: HIGColors.gray4,
+  },
   nextButton: {
-    marginBottom: 40,
-    marginTop: 20,
-    marginHorizontal: 20,
+    width: '100%',
+  },
+  nextButtonText: {
+    color: '#FFFFFF',
   },
 });
 

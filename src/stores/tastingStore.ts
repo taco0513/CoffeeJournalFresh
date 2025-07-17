@@ -1,19 +1,29 @@
 import {create} from 'zustand';
 import RealmService from '../services/realm/RealmService';
 
-interface FlavorPath {
+export interface FlavorPath {
   level1?: string;
   level2?: string;
   level3?: string;
   level4?: string;
 }
 
-interface SyncStatus {
+export interface SyncStatus {
   isOnline: boolean;
   isSyncing: boolean;
   lastSyncTime: Date | null;
   pendingUploads: number;
   error: string | null;
+}
+
+export interface SelectedFlavors extends FlavorPath {}
+
+export interface SensoryAttributes {
+  body: number;
+  acidity: number;
+  sweetness: number;
+  finish: number;
+  mouthfeel: string;
 }
 
 interface TastingState {
