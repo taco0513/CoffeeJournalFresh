@@ -7,9 +7,9 @@ This documentation provides comprehensive information about the Coffee Tasting J
 
 ### 📋 Core Documentation
 - **[01-OVERVIEW.md](./01-OVERVIEW.md)** - Project overview and key concepts
-- **[02-USER-FLOW.md](./02-USER-FLOW.md)** - Complete user journey and workflows
-- **[03-DATABASE.md](./03-DATABASE.md)** - Database schema and architecture
-- **[04-SETUP.md](./04-SETUP.md)** - Development environment setup
+- **[USER-FLOW.md](./USER-FLOW.md)** - Complete user journey and workflows (HIG compliant)
+- **[DATABASE.md](./DATABASE.md)** - Database schema and architecture
+- **[SETUP.md](./SETUP.md)** - Development environment setup (with AI tools)
 - **[05-ARCHITECTURE.md](./05-ARCHITECTURE.md)** - Technical architecture overview
 
 ### 🔧 Technical Documentation
@@ -20,9 +20,11 @@ This documentation provides comprehensive information about the Coffee Tasting J
 ### 🤖 AI/ML Documentation
 - **[09-AI-MAPPING.md](./09-AI-MAPPING.md)** - AI matching algorithm details
 - **[10-AI-FEATURE-SUMMARY.md](./10-AI-FEATURE-SUMMARY.md)** - AI feature overview and capabilities
+- **[PROMPTS.md](./PROMPTS.md)** - AI development prompt templates (HIG compliant)
 
 ### 📊 Supporting Resources
 - **[ai/synonyms.json](./ai/synonyms.json)** - Flavor terminology and synonyms
+- **[ios-native-font-guide.md](./ios-native-font-guide.md)** - iOS native font usage guide
 
 ## Root Documentation
 - **[README.md](../README.md)** - Project introduction and quick start
@@ -34,25 +36,27 @@ This documentation provides comprehensive information about the Coffee Tasting J
 ## Quick Navigation
 
 ### For Developers
-1. Start with [04-SETUP.md](./04-SETUP.md) for environment setup
+1. Start with [SETUP.md](./SETUP.md) for environment setup (including AI tools)
 2. Read [05-ARCHITECTURE.md](./05-ARCHITECTURE.md) for system overview
-3. Review [03-DATABASE.md](./03-DATABASE.md) for data structure
-4. Check [08-TROUBLESHOOTING.md](./08-TROUBLESHOOTING.md) for common issues
+3. Review [DATABASE.md](./DATABASE.md) for data structure
+4. Check [ios-native-font-guide.md](./ios-native-font-guide.md) for iOS font usage
+5. Use [PROMPTS.md](./PROMPTS.md) for AI development prompts
+6. Check [08-TROUBLESHOOTING.md](./08-TROUBLESHOOTING.md) for common issues
 
 ### For Product Managers
 1. Begin with [01-OVERVIEW.md](./01-OVERVIEW.md) for project context
-2. Review [02-USER-FLOW.md](./02-USER-FLOW.md) for user experience
+2. Review [USER-FLOW.md](./USER-FLOW.md) for user experience (HIG compliant)
 3. Examine [PRD.md](../PRD.md) for requirements
 4. Check [FEATURES.md](../FEATURES.md) for feature details
 
 ### For QA/Testing
-1. Understand [02-USER-FLOW.md](./02-USER-FLOW.md) for testing scenarios
+1. Understand [USER-FLOW.md](./USER-FLOW.md) for testing scenarios (HIG compliant)
 2. Review [08-TROUBLESHOOTING.md](./08-TROUBLESHOOTING.md) for known issues
 3. Check [09-AI-MAPPING.md](./09-AI-MAPPING.md) for AI testing
 4. Use [06-API.md](./06-API.md) for API testing
 
 ### For DevOps
-1. Start with [04-SETUP.md](./04-SETUP.md) for environment configuration
+1. Start with [SETUP.md](./SETUP.md) for environment configuration (including AI tools)
 2. Follow [07-DEPLOYMENT.md](./07-DEPLOYMENT.md) for deployment procedures
 3. Check [05-ARCHITECTURE.md](./05-ARCHITECTURE.md) for infrastructure needs
 4. Review [08-TROUBLESHOOTING.md](./08-TROUBLESHOOTING.md) for operational issues
@@ -115,17 +119,19 @@ This documentation provides comprehensive information about the Coffee Tasting J
 
 | Document | Status | Last Updated | Next Review |
 |----------|--------|--------------|-------------|
-| 00-INDEX.md | ✅ Complete | 2024-01-15 | 2024-02-15 |
-| 01-OVERVIEW.md | ✅ Complete | 2024-01-15 | 2024-02-15 |
-| 02-USER-FLOW.md | ✅ Complete | 2024-01-15 | 2024-02-15 |
-| 03-DATABASE.md | ✅ Complete | 2024-01-15 | 2024-02-15 |
-| 04-SETUP.md | ✅ Complete | 2024-01-15 | 2024-02-15 |
-| 05-ARCHITECTURE.md | ✅ Complete | 2024-01-15 | 2024-02-15 |
-| 06-API.md | 🔄 In Progress | 2024-01-15 | 2024-02-15 |
-| 07-DEPLOYMENT.md | 🔄 In Progress | 2024-01-15 | 2024-02-15 |
-| 08-TROUBLESHOOTING.md | ✅ Complete | 2024-01-15 | 2024-02-15 |
-| 09-AI-MAPPING.md | ✅ Complete | 2024-01-15 | 2024-02-15 |
-| 10-AI-FEATURE-SUMMARY.md | ✅ Complete | 2024-01-15 | 2024-02-15 |
+| 00-INDEX.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| 01-OVERVIEW.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| USER-FLOW.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| DATABASE.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| SETUP.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| 05-ARCHITECTURE.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| 06-API.md | 🔄 In Progress | 2025-01-18 | 2025-02-18 |
+| 07-DEPLOYMENT.md | 🔄 In Progress | 2025-01-18 | 2025-02-18 |
+| 08-TROUBLESHOOTING.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| 09-AI-MAPPING.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| 10-AI-FEATURE-SUMMARY.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| PROMPTS.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| ios-native-font-guide.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
 
 ## License
 

@@ -1,207 +1,295 @@
-# Coffee Tasting Journal - User Flow
+# ☕ Coffee Tasting Journal - 상세 User Flow (HIG 적용)
 
-## Overview
-The Coffee Tasting Journal app guides users through a 7-step process to record and evaluate their coffee tasting experience. The app compares user selections with roaster notes to calculate a match score.
+## 🎯 앱의 목적
+커피를 마시면서 맛과 향을 구분하는 능력을 기르도록 도와주는 앱
 
-## Key Features
-- OCR scanning for quick coffee info input
-- Smart autocomplete with filtering
-- Multi-level flavor selection based on SCA wheel
-- Offline storage with Realm + Cloud sync with Supabase
-- Match score calculation with detailed comparison
+## 🍎 HIG 준수 사항
+- **최소 터치 영역**: 모든 버튼 44×44pt 이상
+- **텍스트 크기**: 최소 11pt, Dynamic Type 지원
+- **대비율**: 배경/텍스트 4.5:1 이상
+- **피드백**: 모든 액션에 시각적/햅틱 피드백
+- **네비게이션**: iOS 표준 탭바 + 네비게이션바 사용
+- **폰트**: iOS 네이티브 시스템 폰트 사용 (fontFamily 지정 안 함)
 
-## Complete Flow Diagram
+---
+
+## 📱 앱 구조 (HIG 기반)
+
+### 🔷 탭바 구조 (하단 고정)
+```
+┌─────┬─────┬─────┬─────┬─────┐
+│ 홈  │ 새  │발견 │기록 │프로필│
+│ 🏠  │ ➕  │ 🔍  │ 📚  │ 👤  │
+└─────┴─────┴─────┴─────┴─────┘
+```
+- **아이콘 크기**: 30×30pt
+- **레이블**: 시스템 폰트 10pt
+- **선택 시**: 시스템 틴트 컬러 + 햅틱 피드백
+
+---
+
+## 📋 6단계 테이스팅 기록 프로세스 (HIG 적용)
+
+### 🏠 Step 1: 홈 화면
+**HIG 적용 사항:**
+- **네비게이션바**: "Coffee Journal" 타이틀 (시스템 폰트 17pt Bold)
+- **CTA 버튼**: 높이 50pt, 코너 반경 25pt
+- **리스트 셀**: 높이 최소 60pt, 좌우 패딩 20pt
+
+**화면 요소:**
+```
+┌─────────────────────────┐
+│    Coffee Journal       │ ← 네비게이션바
+├─────────────────────────┤
+│                         │
+│    오늘의 커피는?        │ ← 시스템 폰트 28pt (fontWeight: '700')
+│                         │
+│  ┌─────────────────┐   │
+│  │ 새 테이스팅 시작  │   │ ← 50pt 높이, 틴트 컬러
+│  └─────────────────┘   │
+│                         │
+│  최근 기록              │ ← 시스템 폰트 15pt (fontWeight: '600')
+│  ┌─────────────────┐   │
+│  │ ☕ 에티오피아     │   │ ← 60pt 높이 셀
+│  │    85% 매칭      │   │
+│  └─────────────────┘   │
+└─────────────────────────┘
+```
+
+---
+
+### ☕ Step 2: 커피 정보 입력
+**HIG 적용 사항:**
+- **텍스트 필드**: 높이 44pt, 좌측 패딩 16pt
+- **드롭다운**: SF Symbol "chevron.down" 사용
+- **진행 표시**: 상단 Progress Bar (높이 4pt)
+- **권한 요청**: 카메라/위치는 사용 직전에 요청
+
+**화면 레이아웃:**
+```
+┌─────────────────────────┐
+│ ← 뒤로  커피 정보   2/6 │ ← 네비게이션바 + 진행상황
+├─────────────────────────┤
+│ ━━━━━━━━━━━━━━━━━━━━━━━ │ ← Progress Bar
+│                         │
+│ 📍 현재 위치: 스타벅스    │ ← 위치 자동 감지
+│                         │
+│ 카페 이름               │ ← 레이블 13pt
+│ ┌─────────────────┐    │
+│ │ 스타벅스 강남점   ▼│    │ ← 44pt 높이
+│ └─────────────────┘    │
+│                         │
+│ 로스터리 * (필수)        │
+│ ┌─────────────────┐    │
+│ │                 ▼│    │
+│ └─────────────────┘    │
+│                         │
+│ 📷 패키지 촬영하기       │ ← OCR 버튼 (44×44pt)
+│                         │
+│ ┌─────────────────┐    │
+│ │      다음        │    │ ← 비활성 시 회색
+│ └─────────────────┘    │
+└─────────────────────────┘
+```
+
+**스마트 입력 지원:**
+- OCR 버튼 탭 → 카메라 권한 요청 → 촬영 → 자동 입력
+- 각 필드 포커스 시 키보드 위 자동완성 제안 (iOS QuickType 영역)
+
+---
+
+### 📝 Step 3: 로스터의 컵 노트 입력
+**HIG 적용 사항:**
+- **텍스트뷰**: 최소 높이 120pt, 내부 패딩 12pt
+- **플레이스홀더**: 회색 (#8E8E93)
+- **건너뛰기**: 우상단 버튼 (터치 영역 44×44pt)
+
+---
+
+### 👅 Step 4: 맛(Flavor) 노트 - HIG 멀티선택
+**HIG 적용 사항:**
+- **그리드 아이템**: 최소 60×60pt (실제 콘텐츠는 44×44pt)
+- **선택 표시**: 색상 + 체크마크 (SF Symbol "checkmark.circle.fill")
+- **그룹 간격**: 섹션 간 24pt
+- **햅틱**: 선택/해제 시 가벼운 햅틱
+
+**Level 1 - Category 화면:**
+```
+┌─────────────────────────┐
+│ ← 뒤로   맛 선택    4/6 │
+├─────────────────────────┤
+│                         │
+│ 느껴지는 맛을 모두      │
+│ 선택하세요 (필수)       │
+│                         │
+│ ┌─────┬─────┬─────┐   │
+│ │Fruity│Sour │Green│   │ ← 60×60pt
+│ │ ✓   │     │     │   │
+│ ├─────┼─────┼─────┤   │
+│ │Other│Roast│Spice│   │
+│ │     │ ✓   │     │   │
+│ ├─────┼─────┼─────┤   │
+│ │Nutty│Sweet│Flora│   │
+│ │     │     │     │   │
+│ └─────┴─────┴─────┘   │
+│                         │
+│ 선택: 2개               │ ← 선택 카운터
+│                         │
+│ ┌─────────────────┐    │
+│ │      다음        │    │
+│ └─────────────────┘    │
+└─────────────────────────┘
+```
+
+**선택 상태 표시:**
+- 비선택: 흰 배경 + 회색 테두리
+- 선택됨: 틴트 컬러 배경 + 흰색 체크마크
+- 햅틱: `UIImpactFeedbackGenerator.light()`
+
+---
+
+### 🤖 Step 4.5: AI 매핑 & 코칭 (Phase 2)
+**HIG 적용 사항:**
+- **모달 카드**: 하단에서 슬라이드업 (iOS 표준)
+- **블러 배경**: `UIVisualEffectView` 사용
+- **버튼**: 최소 높이 44pt, 좌우 패딩 20pt
 
 ```
-Home Screen
-    ↓
-Coffee Info (Step 1/7)
-    ↓ (OCR scan available)
-Roaster Notes (Step 2/7)
-    ↓ (can skip)
-Flavor Level 1 (Step 3/7)
-    ↓ (required)
-Flavor Level 2 (Step 4/7)
-    ↓ (can skip)
-Flavor Level 3 (Step 5/7)
-    ↓ (can skip / auto-skip if no options)
-Flavor Level 4 (Step 6/7)
-    ↓ (can skip / auto-skip if no options)
-Sensory Evaluation (Step 7/7)
-    ↓
-Result Screen
+┌─────────────────────────┐
+│ ░░░░░░░░░░░░░░░░░░░░░░░ │ ← 블러 배경
+│ ░░░░░░░░░░░░░░░░░░░░░░░ │
+│ ┌─────────────────────┐ │
+│ │  AI 분석 결과 ✨     │ │ ← 모달 카드
+│ │                     │ │
+│ │ "요거트" →          │ │
+│ │ Other > Fermented > │ │
+│ │ Creamy              │ │
+│ │                     │ │
+│ │ 💡 부드러운 질감에   │ │
+│ │    집중해보세요      │ │
+│ │                     │ │
+│ │ ┌─────────────────┐ │ │
+│ │ │  추천 표현 추가   │ │ │ ← Primary 버튼
+│ │ └─────────────────┘ │ │
+│ │ ┌─────────────────┐ │ │
+│ │ │  그대로 진행     │ │ │ ← Secondary 버튼
+│ │ └─────────────────┘ │ │
+│ └─────────────────────┘ │
+└─────────────────────────┘
 ```
 
-## Detailed Steps
+---
 
-### 1. Home Screen
-- **Purpose**: Entry point for new tasting session
-- **Actions**:
-  - "새 테이스팅 시작" button → navigates to Coffee Info
-- **Data**: None saved
+### 📊 Step 5: 감각적 특성 평가
+**HIG 적용 사항:**
+- **슬라이더**: 트랙 높이 4pt, 썸 크기 28×28pt
+- **레이블**: 좌우 끝에 설명 텍스트 (11pt)
+- **선택 버튼**: 최소 44×44pt, 선택 시 햅틱
 
-### 2. Coffee Info Screen (Step 1/7)
-- **Purpose**: Collect basic coffee information
-- **Fields** (8 total):
-  1. 카페 이름 (Cafe Name) - optional with autocomplete
-  2. 로스터리 (Roastery) - required* with autocomplete
-  3. 커피 이름 (Coffee Name) - required* with autocomplete & parsing
-  4. 생산지 (Origin) - optional with autocomplete
-  5. 품종 (Variety) - optional with autocomplete
-  6. 고도 (Altitude) - optional
-  7. 가공 방식 (Process) - optional with autocomplete
-  8. 온도 (Temperature) - toggle: Hot/Ice (default: Hot)
-- **Special Features**:
-  - OCR scan button for quick input
-  - Smart filtering: Cafe selection filters roasteries
-  - Coffee name parsing extracts origin/variety/process
-  - Autocomplete based on previous entries (Realm)
-- **Navigation**:
-  - Next button → Roaster Notes (enabled when required fields filled)
-- **Data Saved**: All fields stored in `currentTasting` object
+**화면 구성:**
+```
+┌─────────────────────────┐
+│ ← 뒤로   감각 평가  5/6 │
+├─────────────────────────┤
+│                         │
+│ Body (바디감)           │
+│ 가벼움 ━━━━●━━━ 무거움  │ ← 커스텀 슬라이더
+│                         │
+│ Acidity (산미)          │
+│ 약함 ━━━━━━●━━━ 강함   │
+│                         │
+│ Mouthfeel (입안 느낌)    │
+│ ┌────────┬────────┐    │
+│ │ Clean  │ Creamy │    │ ← 선택 버튼 그룹
+│ │   ✓    │        │    │
+│ ├────────┼────────┤    │
+│ │ Juicy  │ Silky  │    │
+│ │        │        │    │
+│ └────────┴────────┘    │
+└─────────────────────────┘
+```
 
-### 3. Roaster Notes Screen (Step 2/7)
-- **Purpose**: Record roaster's cupping notes
-- **Fields**:
-  - Multi-line text input for roaster's flavor description
-  - Example: "블루베리, 다크 초콜릿, 꿀"
-- **Navigation**:
-  - Skip button → Flavor Level 1
-  - Next button → Flavor Level 1
-- **Data Saved**: `roasterNotes` string
+---
 
-### 4. Flavor Selection - Level 1 (Step 3/7)
-- **Purpose**: Select main SCA flavor categories
-- **Options** (9 categories in 3x3 grid):
-  - Fruity (과일)
-  - Sour/Fermented (신맛/발효)
-  - Green/Vegetative (풀/식물)
-  - Other (기타)
-  - Roasted (로스팅)
-  - Spices (향신료)
-  - Nutty/Cocoa (견과류/코코아)
-  - Sweet (달콤한)
-  - Floral (꽃)
-- **Behavior**:
-  - Multi-select (can choose multiple)
-  - Minimum 1 selection required
-- **Navigation**:
-  - Next button → Flavor Level 2 (enabled when ≥1 selected)
-- **Data Saved**: `selectedFlavors.level1[]`
+### 🎯 Step 6: 결과 화면
+**HIG 적용 사항:**
+- **애니메이션**: 0.4초 이내, 스프링 효과
+- **공유 버튼**: SF Symbol "square.and.arrow.up"
+- **토스트 메시지**: 화면 상단에서 슬라이드다운
 
-### 5. Flavor Selection - Level 2 (Step 4/7)
-- **Purpose**: Select subcategories based on Level 1 choices
-- **Options**: Dynamic based on Level 1 selections
-  - Shows only subcategories for selected main categories
-  - Organized by section headers (e.g., "Fruity 하위")
-- **Behavior**:
-  - Multi-select
-  - Minimum 1 selection required
-- **Navigation**:
-  - Skip button → Sensory Evaluation
-  - Next button → Flavor Level 3 (enabled when ≥1 selected)
-- **Data Saved**: `selectedFlavors.level2[]`
+**결과 표시:**
+```
+┌─────────────────────────┐
+│      테이스팅 완료  ✓   │
+├─────────────────────────┤
+│ ┌─────────────────────┐ │
+│ │ 오프라인 저장 완료 ✓ │ │ ← 토스트 (3초 후 사라짐)
+│ └─────────────────────┘ │
+│                         │
+│       85% 매칭!         │ ← 숫자 애니메이션
+│                         │
+│ 로스터 노트             │
+│ 블루베리, 다크 초콜릿    │
+│                         │
+│ 내 테이스팅             │
+│ 베리류, 초콜릿 ✓        │ ← 일치 항목 하이라이트
+│                         │
+│ [레이더 차트]           │ ← 애니메이션 0.4초
+│                         │
+│ ┌──────┬──────┬──────┐ │
+│ │ 공유 │ 저장 │ 홈   │ │ ← 액션 버튼들
+│ └──────┴──────┴──────┘ │
+└─────────────────────────┘
+```
 
-### 6. Flavor Selection - Level 3 (Step 5/7)
-- **Purpose**: Select specific flavors based on Level 2 choices
-- **Options**: Dynamic based on Level 2 selections
-  - Example: Berry → [Blackberry, Raspberry, Blueberry, Strawberry]
-- **Behavior**:
-  - Multi-select
-  - Auto-skips if no Level 3 options available
-  - Minimum 1 selection required if options exist
-- **Navigation**:
-  - Skip button → Sensory Evaluation
-  - Next button → Flavor Level 4 (enabled when ≥1 selected)
-- **Data Saved**: `selectedFlavors.level3[]`
+---
 
-### 7. Flavor Selection - Level 4 (Step 6/7)
-- **Purpose**: Select flavor descriptors (optional)
-- **Options**: Dynamic based on Level 3 selections
-  - Example: Blackberry → [Fresh, Ripe, Jammy]
-- **Behavior**:
-  - Multi-select
-  - Optional (can proceed without selection)
-  - Auto-skips if no Level 4 options available
-- **Navigation**:
-  - Skip button → Sensory Evaluation
-  - Next button → Sensory Evaluation (always enabled)
-- **Data Saved**: `selectedFlavors.level4[]`
+## 💾 데이터 저장 흐름 (HIG 피드백)
 
-### 8. Sensory Evaluation (Step 7/7)
-- **Purpose**: Rate sensory attributes
-- **Fields** (5 attributes):
-  1. **바디감 (Body)**: 1-5 slider
-     - 1 = 가벼움 (Light)
-     - 5 = 무거움 (Heavy)
-  2. **산미 (Acidity)**: 1-5 slider
-     - 1 = 약함 (Low)
-     - 5 = 강함 (High)
-  3. **단맛 (Sweetness)**: 1-5 slider
-     - 1 = 없음 (None)
-     - 5 = 강함 (High)
-  4. **여운 (Finish)**: 1-5 slider
-     - 1 = 짧음 (Short)
-     - 5 = 길음 (Long)
-  5. **입안 느낌 (Mouthfeel)**: 4 selection buttons
-     - Clean (깔끔한)
-     - Creamy (크리미한)
-     - Juicy (쥬시한)
-     - Silky (실키한)
-- **Default Values**: All sliders start at 3, Mouthfeel defaults to "Clean"
-- **Navigation**:
-  - Complete button → Result Screen
-- **Data Saved**: `sensoryAttributes` object
+### 결과 표시
+```
+저장 중: Activity Indicator (시스템 스타일)
+저장 완료: 체크마크 + 햅틱 피드백
+저장 실패: 경고 아이콘 + 재시도 버튼
+```
 
-### 9. Result Screen
-- **Purpose**: Display tasting results and match score
-- **Display Elements**:
-  1. **Match Score**: Large percentage (0-100%)
-     - Celebration animation for scores >80%
-  2. **Coffee Info**: Name and roastery
-  3. **Comparison View**:
-     - Left: Roaster Notes
-     - Right: Your selected flavors
-  4. **Sensory Chart**: Bar chart visualization
-  5. **Save Status**: "기록이 저장되었습니다 ✓"
-- **Navigation**:
-  - "새 테이스팅" → Reset store & go to Home
-  - "홈으로" → Go to Home (keep data)
-- **Data Saved**: Complete tasting record with timestamp and match score
+### 동기화 표시
+- **아이콘**: SF Symbol "icloud.and.arrow.up" 
+- **위치**: 네비게이션바 우측
+- **애니메이션**: 회전 (동기화 중)
 
-## Skip Button Behavior
+---
 
-The skip button appears on:
-- **Roaster Notes**: Skips to Flavor Level 1
-- **Flavor Level 2**: Skips remaining flavor levels → Sensory
-- **Flavor Level 3**: Skips to Level 4 (or auto-skips if no options)
-- **Flavor Level 4**: Skips to Sensory (or auto-skips if no options)
+## 🔧 HIG 체크리스트
 
-**Note**: Flavor Level 1 cannot be skipped (minimum 1 selection required)
+### 필수 준수 사항
+- [x] 모든 터치 대상 44×44pt 이상
+- [x] 텍스트 최소 11pt + Dynamic Type
+- [x] 색상 대비 4.5:1 이상
+- [x] 시스템 폰트 사용 (iOS 네이티브)
+- [x] 표준 네비게이션 패턴
+- [x] 즉각적인 피드백 제공
+- [x] 모션 줄이기 옵션 대응
+- [x] 권한 요청 시점 최적화
 
-## Data Persistence
+### 추가 개선 사항
+- [x] 다크 모드 지원 준비
+- [x] VoiceOver 접근성 레이블
+- [x] 키보드 단축키 지원 (iPad)
+- [x] 가로 모드 레이아웃 대응
 
-### During Flow
-- All data is stored in Zustand store
-- Progress is tracked with navigation state
-- User can navigate back without losing data
-- Autocomplete suggestions from Realm database
+---
 
-### On Completion
-- `saveTasting()` creates a complete record with:
-  - Unique ID and timestamp
-  - All coffee info
-  - Roaster notes
-  - Selected flavors (all levels)
-  - Sensory attributes
-  - Calculated match score
-- Saved to:
-  - **Realm**: Local offline storage
-  - **Supabase**: Cloud sync (when online)
-  - Dual storage ensures offline-first functionality
+## 📱 디바이스별 대응
 
-## Match Score Calculation
-- **60% weight**: Flavor match (keyword matching between roaster notes and selections)
-- **40% weight**: Sensory match (sensory keywords in roaster notes vs. ratings)
-- Score range: 0-100%
-- Uses forgiving curve for better user experience
+### iPhone SE (작은 화면)
+- 그리드를 2×4로 조정
+- 폰트 크기 1pt 축소 허용
+
+### iPhone Pro Max (큰 화면)
+- 그리드를 4×3으로 확장
+- 추가 정보 표시 공간 활용
+
+### iPad
+- 사이드바 네비게이션 사용
+- 멀티태스킹 Split View 지원

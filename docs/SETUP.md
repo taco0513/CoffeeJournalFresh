@@ -1,323 +1,365 @@
-# Coffee Tasting Journal - Setup Guide
+# 🔧 Coffee Tasting Journal - 개발 환경 설정
 
-## 📋 Prerequisites
+> AI 도구를 활용한 1인 개발 환경 구축 가이드
 
-### System Requirements
+---
 
-#### For macOS (iOS Development)
-- macOS 10.15 (Catalina) or later
-- Xcode 13.0 or later
-- CocoaPods 1.11.0 or later
+## 📋 사전 준비 사항
 
-#### For Windows/Linux/macOS (Android Development)
-- Windows 10/11, macOS 10.15+, or Ubuntu 18.04+
-- Android Studio Electric Eel or later
-- Java Development Kit (JDK) 11
+### 필수 하드웨어
+- **Mac** (M1 이상 권장): iOS 개발은 Mac 필수
+- **iPhone**: 실제 테스트용 (선택사항)
 
-### Required Software
+### 필수 소프트웨어
+- **macOS**: Monterey 이상
+- **Xcode**: 14.0 이상
+- **Node.js**: 18.0 이상
 
-1. **Node.js**: Version 18.0.0 or later
-2. **npm**: Version 8.0.0 or later (comes with Node.js)
-3. **Git**: Version 2.0.0 or later
-4. **React Native CLI**: Will be installed during setup
+> 전체 기술 요구사항은 [TECH-STACK.md](TECH-STACK.md) 참조
 
-## 🚀 Quick Start
+---
 
-### 1. Check Your Environment
+## 🚀 Step 1: 기본 개발 도구 설치
 
+### 1.1 Homebrew 설치
 ```bash
-# Check Node.js version
-node --version
-# Should show v18.0.0 or higher
+# Terminal을 열고 실행
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Check npm version
-npm --version
-# Should show 8.0.0 or higher
-
-# Check Git version
-git --version
-# Should show 2.0.0 or higher
+# 설치 확인
+brew --version
 ```
 
-### 2. Clone the Repository
-
+### 1.2 Node.js 설치
 ```bash
-# Clone the project
-git clone https://github.com/your-username/CoffeeJournalFresh.git
+# Homebrew로 설치
+brew install node
 
-# Navigate to project directory
-cd CoffeeJournalFresh
+# 또는 공식 사이트에서 다운로드
+# https://nodejs.org
+
+# 설치 확인
+node --version  # v18.0.0 이상
+npm --version   # 9.0.0 이상
 ```
 
-### 3. Install Dependencies
-
+### 1.3 Watchman 설치 (Facebook의 파일 감시 도구)
 ```bash
-# Install all npm packages
-npm install
+brew install watchman
 
-# Install CocoaPods dependencies (macOS only, for iOS)
-cd ios && pod install && cd ..
+# 설치 확인
+watchman --version
 ```
 
-## 📱 Platform-Specific Setup
-
-### iOS Setup (macOS Only)
-
-#### 1. Install Xcode
-- Download from Mac App Store
-- Open Xcode and agree to license
-- Install additional components when prompted
-
-#### 2. Install Command Line Tools
-```bash
-xcode-select --install
-```
-
-#### 3. Install CocoaPods
+### 1.4 CocoaPods 설치
 ```bash
 sudo gem install cocoapods
+
+# 설치 확인
+pod --version
 ```
 
-#### 4. Install iOS Dependencies
+---
+
+## 🤖 Step 2: AI 개발 도구 설치
+
+### 2.1 Windsurf 설치
+1. [Windsurf 다운로드](https://windsurf.ai)
+2. 다운로드한 앱을 Applications 폴더로 이동
+3. 처음 실행 시 보안 경고: 시스템 설정 > 보안에서 허용
+
+### 2.2 Windsurf AI 설정
+```yaml
+# Windsurf 실행 후
+1. Settings (Cmd + ,)
+2. AI > API Keys
+3. 다음 키 입력:
+   - Anthropic API Key: sk-ant-...
+   - OpenAI API Key: sk-...
+
+# API 키 얻는 방법:
+- Claude: https://console.anthropic.com
+- OpenAI: https://platform.openai.com
+```
+
+### 2.3 Claude Code CLI 설치
 ```bash
+# 전역 설치
+npm install -g @anthropic/claude
+
+# API 키 설정
+claude login
+# 브라우저가 열리면 로그인
+
+# 설치 확인
+claude --version
+```
+
+---
+
+## 📱 Step 3: React Native 프로젝트 생성
+
+### 3.1 프로젝트 초기화
+```bash
+# 프로젝트 생성
+npx react-native init CoffeeJournal --template react-native-template-typescript
+
+# 프로젝트 폴더로 이동
+cd CoffeeJournal
+```
+
+### 3.2 iOS 의존성 설치
+```bash
+# iOS 폴더로 이동
 cd ios
+
+# CocoaPods 설치
 pod install
+
+# 프로젝트 루트로 돌아가기
 cd ..
 ```
 
-#### 5. Run on iOS Simulator
+### 3.3 첫 실행 테스트
 ```bash
-# Start Metro bundler
+# Metro 서버 시작 (터미널 1)
 npm start
 
-# In a new terminal, run iOS
+# iOS 시뮬레이터 실행 (터미널 2)
 npm run ios
 
-# Or specify a simulator
-npm run ios -- --simulator="iPhone 14"
+# 또는 특정 시뮬레이터 지정
+npx react-native run-ios --simulator="iPhone 15"
 ```
 
-### Android Setup
+---
 
-#### 1. Install Android Studio
-1. Download from [developer.android.com/studio](https://developer.android.com/studio)
-2. During installation, make sure to install:
-   - Android SDK
-   - Android SDK Platform
-   - Android Virtual Device (AVD)
+## 📦 Step 4: 필수 패키지 설치
 
-#### 2. Configure Environment Variables
-
-**macOS/Linux:**
-Add to `~/.bash_profile` or `~/.zshrc`:
+### 4.1 패키지 설치
 ```bash
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$PATH:$ANDROID_HOME/tools
-export PATH=$PATH:$ANDROID_HOME/tools/bin
+# 한 번에 모든 패키지 설치
+npm install \
+  zustand \
+  realm @realm/react \
+  @supabase/supabase-js \
+  @react-navigation/native @react-navigation/stack \
+  react-native-screens react-native-safe-area-context \
+  react-native-gesture-handler \
+  @react-native-community/slider \
+  react-native-vector-icons
+
+# 개발 의존성
+npm install --save-dev \
+  @types/react-native-vector-icons
 ```
 
-**Windows:**
-1. Open System Properties → Environment Variables
-2. Add new System Variable:
-   - Variable name: `ANDROID_HOME`
-   - Variable value: `C:\Users\[USERNAME]\AppData\Local\Android\Sdk`
-3. Add to PATH:
-   - `%ANDROID_HOME%\platform-tools`
-   - `%ANDROID_HOME%\emulator`
-   - `%ANDROID_HOME%\tools`
-   - `%ANDROID_HOME%\tools\bin`
-
-#### 3. Apply Environment Variables
+### 4.2 iOS 설정
 ```bash
-# macOS/Linux
-source ~/.bash_profile
-# or
-source ~/.zshrc
-
-# Windows - Restart Command Prompt/PowerShell
+# iOS 의존성 업데이트
+cd ios && pod install && cd ..
 ```
 
-#### 4. Create Android Virtual Device (AVD)
-1. Open Android Studio
-2. Click "AVD Manager" icon
-3. Create Virtual Device → Choose device (e.g., Pixel 4)
-4. Select system image (API 30 or higher recommended)
-5. Finish setup
+> 각 패키지의 역할과 선택 이유는 [TECH-STACK.md](TECH-STACK.md) 참조
 
-#### 5. Run on Android
+---
+
+## 🔐 Step 5: 환경 변수 설정
+
+### 5.1 환경 변수 패키지 설치
 ```bash
-# Start Metro bundler
-npm start
-
-# In a new terminal, run Android
-npm run android
+npm install react-native-dotenv
 ```
 
-## 📦 Required Packages Installation
+### 5.2 .env 파일 생성
+```bash
+# 프로젝트 루트에 .env 파일 생성
+touch .env
+```
 
-The following packages are already included in package.json:
+### 5.3 .env 내용 추가
+```env
+# Supabase
+SUPABASE_URL=your-project-url.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
 
-### Core Dependencies
+# API Keys (선택사항)
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
+```
+
+### 5.4 .gitignore에 추가
+```bash
+echo ".env" >> .gitignore
+```
+
+---
+
+## 🏗️ Step 6: 프로젝트 구조 설정
+
+### 6.1 폴더 구조 생성
+```bash
+# src 폴더 구조 생성
+mkdir -p src/{screens,components,services,stores,utils,data,types}
+
+# 문서 폴더
+mkdir -p docs
+
+# AI 프롬프트 폴더
+mkdir -p prompts/{screens,components,debug}
+```
+
+### 6.2 TypeScript 설정
 ```json
+// tsconfig.json 수정
 {
-  "react": "18.2.0",
-  "react-native": "0.72.6",
-  "@react-navigation/native": "^6.1.9",
-  "@react-navigation/stack": "^6.3.20",
-  "react-native-screens": "^3.27.0",
-  "react-native-safe-area-context": "^4.7.4",
-  "react-native-gesture-handler": "^2.13.4",
-  "zustand": "^4.4.6",
-  "@react-native-community/slider": "^4.4.3"
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@screens/*": ["src/screens/*"],
+      "@components/*": ["src/components/*"],
+      "@services/*": ["src/services/*"],
+      "@stores/*": ["src/stores/*"],
+      "@utils/*": ["src/utils/*"],
+      "@types/*": ["src/types/*"]
+    }
+  }
 }
 ```
 
-### If Adding New Packages
-```bash
-# Example: Adding AsyncStorage
-npm install @react-native-async-storage/async-storage
+---
 
-# For iOS, run pod install
-cd ios && pod install && cd ..
+## 🎨 Step 7: Windsurf 프로젝트 설정
+
+### 7.1 Windsurf에서 프로젝트 열기
+```bash
+# 터미널에서
+windsurf .
+
+# 또는 Windsurf 앱에서
+File > Open Folder > CoffeeJournal 선택
 ```
 
-## 🔧 Common Troubleshooting
-
-### Metro Bundler Issues
-
-#### Error: "Metro bundler is not running"
-```bash
-# Clear cache and restart
-npm start -- --reset-cache
+### 7.2 AI 컨텍스트 설정
+```yaml
+# .windsurf/project.yml 생성
+project:
+  name: Coffee Tasting Journal
+  type: React Native
+  platform: iOS
+  
+context:
+  - 1인 AI 개발
+  - TypeScript 사용
+  - Realm 로컬 DB
+  - Zustand 상태 관리
+  - 와이어프레임 UI (흑백, 시스템 폰트)
+  
+preferences:
+  - 한글 주석 포함
+  - 에러 처리 포함
+  - 타입 안전성 중시
 ```
 
-#### Error: "Port 8081 already in use"
+---
+
+## ✅ Step 8: 설치 확인
+
+### 8.1 체크리스트
 ```bash
-# Kill the process using port 8081
-# macOS/Linux
-lsof -i :8081
-kill -9 <PID>
+# 각 명령어가 에러 없이 실행되는지 확인
 
-# Windows
-netstat -ano | findstr :8081
-taskkill /PID <PID> /F
-
-# Or use a different port
-npm start -- --port=8082
+✅ node --version          # v18 이상
+✅ npm --version           # v9 이상
+✅ pod --version           # 1.11 이상
+✅ claude --version        # 설치됨
+✅ watchman --version      # 설치됨
 ```
 
-### iOS Issues
-
-#### Error: "No bundle URL present"
+### 8.2 프로젝트 실행 확인
 ```bash
-# Clean and rebuild
-cd ios
-rm -rf Pods Podfile.lock
-pod install
-cd ..
+# iOS 시뮬레이터에서 앱 실행
 npm run ios
+
+# 다음이 보이면 성공:
+# - Welcome to React Native 화면
+# - 에러 없이 실행
 ```
 
-#### Error: "Command PhaseScriptExecution failed"
+---
+
+## 🚨 일반적인 문제 해결
+
+### 문제 1: Metro 서버 연결 안됨
 ```bash
-# Clean build folder
-cd ios
-xcodebuild clean
-cd ..
-# Then rebuild
-npm run ios
+# 해결 방법
+npx react-native start --reset-cache
+
+# 그래도 안되면
+cd ios && pod deintegrate && pod install && cd ..
 ```
 
-### Android Issues
-
-#### Error: "SDK location not found"
-1. Create `local.properties` in `android/` folder
-2. Add: `sdk.dir = /path/to/Android/sdk`
-
-#### Error: "Could not connect to development server"
+### 문제 2: 시뮬레이터 실행 안됨
 ```bash
-# For physical device
-adb reverse tcp:8081 tcp:8081
+# Xcode 열기
+open ios/CoffeeJournal.xcworkspace
 
-# For emulator, check if it's running
-adb devices
+# Xcode에서 직접 실행 (▶️ 버튼)
 ```
 
-#### Error: "Gradle build failed"
+### 문제 3: 패키지 설치 에러
 ```bash
-cd android
-./gradlew clean
-cd ..
-npm run android
-```
-
-### General Issues
-
-#### Node Modules Issues
-```bash
-# Complete cleanup
+# node_modules 삭제 후 재설치
 rm -rf node_modules
-rm package-lock.json
 npm install
 
-# For iOS
-cd ios
-rm -rf Pods Podfile.lock
-pod install
-cd ..
+# iOS 관련 에러면
+cd ios && rm -rf Pods && pod install && cd ..
 ```
 
-#### React Native Version Mismatch
-```bash
-# Check versions
-npm list react-native
+> 더 많은 문제 해결 방법은 [08-TROUBLESHOOTING.md](08-TROUBLESHOOTING.md) 참조
 
-# Ensure matching versions in package.json
-```
+---
 
-## 🎯 Verify Setup
+## 🎯 다음 단계
 
-Run this checklist to ensure everything is working:
+설정이 완료되었다면:
 
-1. **Metro Bundler starts**: `npm start` shows Metro welcome screen
-2. **iOS builds**: `npm run ios` launches simulator with app
-3. **Android builds**: `npm run android` launches emulator with app
-4. **Hot Reload works**: Make a change in `App.tsx` and see it update
+1. **첫 화면 만들기**
+   ```bash
+   # Windsurf에서
+   "HomeScreen 컴포넌트를 만들어줘. 
+   큰 + 버튼과 최근 기록 3개를 보여줘"
+   ```
 
-## 📱 Running on Physical Devices
+2. **네비게이션 설정**
+   ```bash
+   # Claude Code로
+   claude "React Navigation으로 6개 화면 네비게이션 설정해줘"
+   ```
 
-### iOS Device
-1. Connect iPhone via USB
-2. Open `ios/CoffeeTastingJournal.xcworkspace` in Xcode
-3. Select your device from the device list
-4. Click Run button
+3. **개발 시작!**
 
-### Android Device
-1. Enable Developer Mode on device
-2. Enable USB Debugging
-3. Connect via USB
-4. Run `adb devices` to verify connection
-5. Run `npm run android`
+---
 
-## 🆘 Getting Help
+## 📚 추가 리소스
 
-If you encounter issues:
+### 공식 문서
+- [React Native](https://reactnative.dev/docs/getting-started)
+- [Realm React Native](https://www.mongodb.com/docs/realm/sdk/react-native/)
+- [Zustand](https://github.com/pmndrs/zustand)
 
-1. Check React Native docs: [reactnative.dev](https://reactnative.dev)
-2. Search existing issues on GitHub
-3. Ask in React Native Community Discord
-4. Create an issue with:
-   - Error message
-   - Steps to reproduce
-   - System information (`npx react-native info`)
+### AI 도구 문서
+- [Windsurf Docs](https://docs.windsurf.ai)
+- [Claude API](https://docs.anthropic.com)
 
-## 🎉 Success!
+### 프로젝트 문서
+- [아키텍처 설계](05-ARCHITECTURE.md)
+- [API 연동](06-API.md)
+- [문제 해결](08-TROUBLESHOOTING.md)
 
-If everything is working, you should see:
-- Home screen with "커피 테이스팅 저널" title
-- "새 테이스팅 시작" button
-- Brown/coffee color scheme
+---
 
-Happy coding! ☕️
+> 💡 **팁**: 모든 명령어는 복사해서 그대로 사용할 수 있도록 작성했습니다.  
+> 에러가 발생하면 Claude에게 에러 메시지를 그대로 보여주세요!
