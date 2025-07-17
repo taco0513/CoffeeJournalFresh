@@ -62,7 +62,6 @@
 | Tasting Templates | P1 | Save favorite evaluation patterns |
 | Quick Actions | P1 | Shortcuts for frequent tastings |
 | Improved Animations | P2 | Smoother transitions |
-| Dark Mode | P2 | Alternative color scheme |
 
 ### Enhanced Evaluation [P1]
 

@@ -61,12 +61,8 @@ export const HIGColors = {
   secondarySystemBackground: '#F2F2F7',
   tertiarySystemBackground: '#FFFFFF',
   
-  // 다크 모드 대응
-  ...(Platform.OS === 'ios' && {
-    dynamicBlue: { light: '#007AFF', dark: '#0A84FF' },
-    dynamicGreen: { light: '#34C759', dark: '#30D158' },
-    dynamicRed: { light: '#FF3B30', dark: '#FF453A' },
-  }),
+  // 오버레이
+  overlay: 'rgba(0, 0, 0, 0.4)',
 };
 
 // 공통 버튼 스타일

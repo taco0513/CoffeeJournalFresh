@@ -31,7 +31,6 @@ UI requirements:
 - Use system colors and semantic colors
 - Consistent spacing: 8pt grid
 - Safe area insets respected
-- Support dark mode preparation
 
 Functionality:
 [Specific features for this screen]
@@ -337,7 +336,6 @@ Visual Design:
 □ All text ≥ 11pt
 □ Color contrast ≥ 4.5:1
 □ Uses system colors
-□ Supports dark mode prep
 
 Interactive Elements:
 □ Touch targets ≥ 44×44pt
@@ -388,7 +386,6 @@ Create [Component] meeting HIG standards:
 - Feedback: visual + appropriate haptic
 - Animation: subtle spring effects
 - Accessibility: full VoiceOver support
-- Dark mode: use semantic colors
 ```
 
 ### HIG Fix Request
