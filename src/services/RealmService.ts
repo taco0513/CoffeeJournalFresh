@@ -21,9 +21,9 @@ class RealmService {
         schemaVersion: 1,
         deleteRealmIfMigrationNeeded: true, // For development
       });
-      console.log('Realm initialized successfully');
+      // console.log('Realm initialized successfully');
     } catch (error) {
-      console.error('Failed to initialize Realm:', error);
+      // console.error('Failed to initialize Realm:', error);
       throw error;
     }
   }

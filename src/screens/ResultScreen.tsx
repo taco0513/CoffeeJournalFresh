@@ -16,6 +16,7 @@ import { Colors } from '../constants/colors';
 import { FONT_SIZE, TEXT_STYLES } from '../constants/typography';
 import RealmService from '../services/realm/RealmService';
 import tastingService from '../services/supabase/tastingService';
+import { ErrorHandler, NetworkUtils } from '../utils/errorHandler';
 // import { ENABLE_SYNC } from '../../App';
 const ENABLE_SYNC = true; // Enable sync for now
 
@@ -35,24 +36,23 @@ export default function ResultScreen({navigation}: any) {
       }
 
       setIsLoadingComparison(true);
-      console.log('🔍 [ResultScreen] 비교 데이터 로드 시작:', {
-        coffeeName: currentTasting.coffeeName,
-        roastery: currentTasting.roastery,
-        origin: currentTasting.origin
-      });
-      
+      // console.log('🔍 [ResultScreen] 비교 데이터 로드 시작:', {
+      //   coffeeName: currentTasting.coffeeName,
+      //   roastery: currentTasting.roastery,
+      //   origin: currentTasting.origin
+      // });
       try {
         // Supabase 쿼리는 ENABLE_SYNC가 true일 때만 실행
         if (ENABLE_SYNC) {
           try {
             // Supabase에서 데이터 로드 시도
-            console.log('📊 [ResultScreen] Supabase에서 같은 커피 데이터 조회 중...');
+            // console.log('📊 [ResultScreen] Supabase에서 같은 커피 데이터 조회 중...');
             const supabaseComparison = await tastingService.getCoffeeComparison(
               currentTasting.coffeeName,
               currentTasting.roastery
             );
             
-            console.log('☕ [ResultScreen] Supabase에서 비슷한 커피 데이터 조회 중...');
+            // console.log('☕ [ResultScreen] Supabase에서 비슷한 커피 데이터 조회 중...');
             const supabaseSimilar = await tastingService.getSimilarCoffees(
               currentTasting.coffeeName,
               currentTasting.roastery,
@@ -60,16 +60,16 @@ export default function ResultScreen({navigation}: any) {
             );
 
             if (supabaseComparison) {
-              console.log('✅ [ResultScreen] Supabase 비교 데이터 조회 성공:', {
-                averageScore: supabaseComparison.averageScore,
-                totalTastings: supabaseComparison.totalTastings,
-                popularFlavorsCount: supabaseComparison.popularFlavors?.length || 0
-              });
+              // console.log('✅ [ResultScreen] Supabase 비교 데이터 조회 성공:', {
+              //   averageScore: supabaseComparison.averageScore,
+              //   totalTastings: supabaseComparison.totalTastings,
+              //   popularFlavorsCount: supabaseComparison.popularFlavors?.length || 0
+              // });
               setComparison(supabaseComparison);
               setSimilarCoffees(supabaseSimilar || []);
-              console.log('✅ [ResultScreen] 비슷한 커피 데이터:', supabaseSimilar?.length || 0, '개');
+              // console.log('✅ [ResultScreen] 비슷한 커피 데이터:', supabaseSimilar?.length || 0, '개');
             } else {
-              console.log('⚠️ [ResultScreen] Supabase에 데이터 없음, Realm 데이터 사용');
+              // console.log('⚠️ [ResultScreen] Supabase에 데이터 없음, Realm 데이터 사용');
               // Supabase에 데이터가 없으면 Realm 데이터 사용
               const realmService = RealmService.getInstance();
               
@@ -87,16 +87,16 @@ export default function ResultScreen({navigation}: any) {
               );
               
               setSimilarCoffees(similarData);
-              console.log('✅ [ResultScreen] Realm 데이터 로드 완료:', {
-                comparison: comparisonData,
-                similarCount: similarData?.length || 0
-              });
+              // console.log('✅ [ResultScreen] Realm 데이터 로드 완료:', {
+              //   comparison: comparisonData,
+              //   similarCount: similarData?.length || 0
+              // });
             }
           } catch (error) {
-            console.error('⚠️ [ResultScreen] Supabase 쿼리 실패 (무시됨):', error);
+            // console.error('⚠️ [ResultScreen] Supabase 쿼리 실패 (무시됨):', error);
             // Supabase 실패 시 Realm 데이터로 폴백
             try {
-              console.log('🔄 [ResultScreen] Realm 백업 데이터 로드 시도...');
+              // console.log('🔄 [ResultScreen] Realm 백업 데이터 로드 시도...');
               const realmService = RealmService.getInstance();
               const comparisonData = realmService.getSameCoffeeComparison(
                 currentTasting.coffeeName,
@@ -110,14 +110,14 @@ export default function ResultScreen({navigation}: any) {
                 currentTasting.origin
               );
               setSimilarCoffees(similarData);
-              console.log('✅ [ResultScreen] Realm 백업 데이터 로드 성공');
+              // console.log('✅ [ResultScreen] Realm 백업 데이터 로드 성공');
             } catch (realmError) {
-              console.error('❌ [ResultScreen] Realm 데이터 로드도 실패:', realmError);
+              // console.error('❌ [ResultScreen] Realm 데이터 로드도 실패:', realmError);
             }
           }
         } else {
           // ENABLE_SYNC가 false일 때는 Realm 데이터만 사용
-          console.log('⏸️ [ResultScreen] Supabase 동기화 비활성화됨, Realm 데이터만 사용');
+          // console.log('⏸️ [ResultScreen] Supabase 동기화 비활성화됨, Realm 데이터만 사용');
           const realmService = RealmService.getInstance();
           const comparisonData = realmService.getSameCoffeeComparison(
             currentTasting.coffeeName,
@@ -131,15 +131,15 @@ export default function ResultScreen({navigation}: any) {
             currentTasting.origin
           );
           setSimilarCoffees(similarData);
-          console.log('✅ [ResultScreen] Realm 데이터 로드 완료');
+          // console.log('✅ [ResultScreen] Realm 데이터 로드 완료');
         }
       } catch (error) {
-        console.error('❌ [ResultScreen] 비교 데이터 로드 실패:', error);
+        // console.error('❌ [ResultScreen] 비교 데이터 로드 실패:', error);
         setComparison(null);
         setSimilarCoffees([]);
       } finally {
         setIsLoadingComparison(false);
-        console.log('🏁 [ResultScreen] 비교 데이터 로드 완료');
+        // console.log('🏁 [ResultScreen] 비교 데이터 로드 완료');
       }
     };
 
@@ -151,14 +151,12 @@ export default function ResultScreen({navigation}: any) {
     if (isSaving) return; // 중복 저장 방지
     
     setIsSaving(true);
-    console.log('💾 [ResultScreen] 저장 시작...');
-    
+    // console.log('💾 [ResultScreen] 저장 시작...');
     try {
       // Realm에 저장
-      console.log('📱 [ResultScreen] Realm에 저장 중...');
+      // console.log('📱 [ResultScreen] Realm에 저장 중...');
       await saveTasting();
-      console.log('✅ [ResultScreen] Realm 저장 성공');
-      
+      // console.log('✅ [ResultScreen] Realm 저장 성공');
       // Supabase에도 저장 시도
       try {
         const tastingData = {
@@ -167,30 +165,32 @@ export default function ResultScreen({navigation}: any) {
           matchScore: matchScoreTotal || 0,
         };
         
-        console.log('☁️ [ResultScreen] Supabase에 저장 시도:', {
-          coffeeName: tastingData.coffeeName,
-          roastery: tastingData.roastery,
-          matchScore: tastingData.matchScore,
-          flavorCount: tastingData.selectedFlavors?.length || 0
-        });
-        
+        // console.log('☁️ [ResultScreen] Supabase에 저장 시도:', {
+        //   coffeeName: tastingData.coffeeName,
+        //   roastery: tastingData.roastery,
+        //   matchScore: tastingData.matchScore,
+        //   flavorCount: tastingData.selectedFlavors?.length || 0
+        // });
         if (ENABLE_SYNC) {
           await tastingService.saveTasting(tastingData);
-          console.log('✅ [ResultScreen] Supabase 저장 성공!');
+          // console.log('✅ [ResultScreen] Supabase 저장 성공!');
         } else {
-          console.log('⏸️ [ResultScreen] Supabase 동기화 비활성화됨');
+          // console.log('⏸️ [ResultScreen] Supabase 동기화 비활성화됨');
         }
-      } catch (supabaseError) {
-        console.error('❌ [ResultScreen] Supabase 저장 실패 (진행에는 영향 없음):', {
-          error: supabaseError instanceof Error ? supabaseError.message : supabaseError,
-          stack: supabaseError instanceof Error ? supabaseError.stack : undefined
-        });
+      } catch (supabaseError: any) {
+        // console.error('❌ [ResultScreen] Supabase 저장 실패 (진행에는 영향 없음):', {
+        //   error: supabaseError instanceof Error ? supabaseError.message : supabaseError,
+        //   stack: supabaseError instanceof Error ? supabaseError.stack : undefined
+        // });
+        // Only show network error to user if it's a network issue
+        if (NetworkUtils.isNetworkError(supabaseError)) {
+          showErrorToast('오프라인 모드', '네트워크 연결이 없어 로컬에만 저장되었습니다.');
+        }
         // Supabase 저장 실패는 무시하고 계속 진행
       }
       
       showSuccessToast('저장 완료', '테이스팅이 저장되었습니다');
-      console.log('🎉 [ResultScreen] 전체 저장 프로세스 완료');
-      
+      // console.log('🎉 [ResultScreen] 전체 저장 프로세스 완료');
       // 2초 후 홈 화면으로 이동
       setTimeout(() => {
         reset();
@@ -199,12 +199,12 @@ export default function ResultScreen({navigation}: any) {
           routes: [{name: 'Home'}],
         });
       }, 2000);
-    } catch (error) {
-      console.error('❌ [ResultScreen] Realm 저장 실패:', {
-        error: error instanceof Error ? error.message : error,
-        stack: error instanceof Error ? error.stack : undefined
-      });
-      showErrorToast('저장 실패', '저장에 실패했습니다');
+    } catch (error: any) {
+      // console.error('❌ [ResultScreen] Realm 저장 실패:', {
+      //   error: error instanceof Error ? error.message : error,
+      //   stack: error instanceof Error ? error.stack : undefined
+      // });
+      ErrorHandler.handle(error, '테이스팅 저장');
       setIsSaving(false); // 실패 시 다시 저장 가능하도록
     }
   };

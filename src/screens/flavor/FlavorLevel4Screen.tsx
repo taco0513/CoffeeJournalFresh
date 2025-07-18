@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTastingStore } from '../../stores/tastingStore';
@@ -13,10 +14,10 @@ import {
   hitSlop,
   HIGColors,
   HIGConstants,
+  commonButtonStyles,
+  commonTextStyles,
 } from '../../styles/common';
 import { NavigationButton } from '../../components/common';
-import { FONT_SIZE } from '../../constants/typography';
-import { Colors } from '../../constants/colors';
 
 interface FlavorPath {
   level1?: string;
@@ -29,43 +30,45 @@ import { flavorLevel4 } from '../../data/flavorWheel';
 const FlavorLevel4Screen = () => {
   const navigation = useNavigation();
   const { selectedFlavors, setSelectedFlavors } = useTastingStore();
-  const [selectedDescriptors, setSelectedDescriptors] = useState<string[]>(
+  const [selectedLevel4, setSelectedLevel4] = useState<string[]>(
     selectedFlavors?.map(f => f.level4).filter((item): item is string => Boolean(item)) || []
   );
 
-  // Group descriptors by their parent level3 item
+  // Group level4 options by their parent level3 category
   const level3Categories = selectedFlavors?.map(f => f.level3).filter((item): item is string => Boolean(item)) || [];
-  const categorizedDescriptors = level3Categories.reduce((acc, level3Item) => {
+  const categorizedLevel4 = level3Categories.reduce((acc, level3Item) => {
     if (level3Item) {
-      const descriptors = flavorLevel4[level3Item as keyof typeof flavorLevel4] || [];
-      if (descriptors.length > 0) {
-        acc[level3Item] = descriptors;
+      const level4Options = flavorLevel4[level3Item as keyof typeof flavorLevel4] || [];
+      if (level4Options.length > 0) {
+        acc[level3Item] = level4Options;
       }
     }
     return acc;
   }, {} as Record<string, string[]>);
 
-  // Check if there are any descriptors available
-  const hasDescriptors = Object.keys(categorizedDescriptors).length > 0;
+  // Check if there are any level4 options available
+  const hasLevel4Options = Object.keys(categorizedLevel4).length > 0;
 
-  const handleDescriptorPress = (descriptor: string) => {
-    setSelectedDescriptors(prev => {
-      if (prev.includes(descriptor)) {
-        return prev.filter(d => d !== descriptor);
+  const handleLevel4Press = (item: string) => {
+    setSelectedLevel4(prev => {
+      if (prev.includes(item)) {
+        return prev.filter(i => i !== item);
       } else {
-        return [...prev, descriptor];
+        return [...prev, item];
       }
     });
   };
 
   const handleNext = () => {
-    // 기존 FlavorPath들을 바탕으로 Level 4 추가
+    // Build updated flavor paths with level4
+    const existingPaths = selectedFlavors || [];
     const newFlavors: FlavorPath[] = [];
     
-    selectedFlavors?.forEach(flavor => {
-      const relatedLevel4 = selectedDescriptors.filter(level4 => 
-        (flavorLevel4[flavor.level3 as keyof typeof flavorLevel4] || []).includes(level4)
-      );
+    existingPaths.forEach(flavor => {
+      const relatedLevel4 = selectedLevel4.filter(l4 => {
+        const level4Options = flavor.level3 ? flavorLevel4[flavor.level3 as keyof typeof flavorLevel4] || [] : [];
+        return level4Options.includes(l4);
+      });
       
       if (relatedLevel4.length > 0) {
         relatedLevel4.forEach(level4 => {
@@ -84,208 +87,273 @@ const FlavorLevel4Screen = () => {
     navigation.navigate('Sensory' as never);
   };
 
+  const isNextEnabled = selectedLevel4.length > 0 || !hasLevel4Options;
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Skip Button */}
-      <View style={styles.skipButton}>
-        <NavigationButton
-          title="건너뛰기"
-          onPress={handleSkip}
-          variant="text"
-          fullWidth={false}
-        />
+      {/* HIG 준수 네비게이션 바 */}
+      <View style={styles.navigationBar}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        </TouchableOpacity>
+        <Text style={styles.navigationTitle}>세부 설명 선택</Text>
+        {hasLevel4Options ? (
+          <TouchableOpacity 
+            style={styles.skipButton}
+            onPress={handleSkip}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Text style={styles.skipButtonText}>건너뛰기</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.skipButton} />
+        )}
+      </View>
+      
+      {/* 진행 상태 바 */}
+      <View style={styles.progressBar}>
+        <View style={[styles.progressFill, { width: '100%' }]} />
       </View>
 
-      {/* Progress Bar */}
-      <View style={styles.progressContainer}>
-        <View style={styles.progressDot} />
-        <View style={styles.progressDot} />
-        <View style={styles.progressDot} />
-        <View style={styles.progressDot} />
-        <View style={styles.progressDot} />
-        <View style={[styles.progressDot, styles.activeDot]} />
+      {/* 제목 및 설명 */}
+      <View style={styles.headerSection}>
+        <Text style={styles.title}>세부 설명 선택</Text>
+        <Text style={styles.subtitle}>
+          {hasLevel4Options ? '원하는 세부 설명을 선택해주세요' : '선택할 수 있는 세부 설명이 없습니다'}
+        </Text>
       </View>
 
-      {/* Title */}
-      <Text style={styles.title}>플레이버 선택 (Level 4)</Text>
-      <Text style={styles.subtitle}>맛의 특성을 선택하세요 (선택사항)</Text>
-
-      {/* Descriptors by category */}
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {hasDescriptors ? (
-          Object.entries(categorizedDescriptors).map(([category, descriptors]) => (
+      {/* Content */}
+      {hasLevel4Options ? (
+        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+          {Object.entries(categorizedLevel4).map(([category, items]) => (
             <View key={category} style={styles.categorySection}>
-              <Text style={styles.sectionHeader}>{category} 특성</Text>
+              <Text style={styles.sectionHeader}>{category} 하위</Text>
               <View style={styles.gridContainer}>
-                {descriptors.map((descriptor) => (
-                  <TouchableOpacity
-                    key={descriptor}
-                    style={[
-                      styles.descriptorButton,
-                      selectedDescriptors.includes(descriptor) && styles.selectedButton,
-                    ]}
-                    onPress={() => handleDescriptorPress(descriptor)}
-                    hitSlop={hitSlop.small}
-                  >
-                    <Text
+                {items.map((item) => {
+                  const isSelected = selectedLevel4.includes(item);
+                  return (
+                    <TouchableOpacity
+                      key={item}
                       style={[
-                        styles.descriptorText,
-                        selectedDescriptors.includes(descriptor) && styles.selectedText,
+                        styles.categoryButton,
+                        isSelected && styles.selectedButton,
                       ]}
+                      onPress={() => handleLevel4Press(item)}
+                      hitSlop={hitSlop.small}
                     >
-                      {descriptor}
-                    </Text>
-                    {selectedDescriptors.includes(descriptor) && (
-                      <Text style={{
-                        position: 'absolute',
-                        top: 5,
-                        right: 5,
-                        color: 'white',
-                        fontSize: 16,
-                        fontWeight: 'bold'
-                      }}>✓</Text>
-                    )}
-                  </TouchableOpacity>
-                ))}
+                      <Text
+                        style={[
+                          styles.categoryText,
+                          isSelected && styles.selectedText,
+                        ]}
+                      >
+                        {item}
+                      </Text>
+                      {isSelected && (
+                        <Text style={styles.checkmark}>✓</Text>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
             </View>
-          ))
-        ) : (
-          <View style={styles.noDescriptorsContainer}>
-            <Text style={styles.noDescriptorsText}>
-              선택한 맛에 대한 세부 특성이 없습니다.
-            </Text>
-            <Text style={styles.noDescriptorsSubtext}>
-              다음 단계로 진행하거나 건너뛸 수 있습니다.
-            </Text>
-          </View>
-        )}
-      </ScrollView>
+          ))}
+        </ScrollView>
+      ) : (
+        <View style={styles.emptyStateContainer}>
+          <Text style={styles.emptyStateText}>
+            선택하신 플레이버에 대한 세부 설명이 없습니다.
+          </Text>
+        </View>
+      )}
 
-      {/* Next Button - Always enabled since selections are optional */}
-      <NavigationButton
-        title="다음"
-        onPress={handleNext}
-        variant="primary"
-        style={styles.nextButton}
-      />
+      {/* 다음 버튼 */}
+      <View style={styles.bottomContainer}>
+        <TouchableOpacity 
+          style={[
+            commonButtonStyles.buttonPrimary, 
+            styles.nextButton,
+            !isNextEnabled && commonButtonStyles.buttonDisabled
+          ]} 
+          onPress={handleNext}
+          disabled={!isNextEnabled}
+          activeOpacity={0.8}
+        >
+          <Text style={[
+            commonTextStyles.buttonTextLarge, 
+            styles.nextButtonText,
+            !isNextEnabled && commonTextStyles.buttonTextDisabled
+          ]}>
+            {hasLevel4Options ? '다음' : '완료'}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
 
+const { width } = Dimensions.get('window');
+const ITEM_WIDTH = (width - HIGConstants.SPACING_LG * 2 - HIGConstants.SPACING_SM * 2) / 3;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
+    backgroundColor: HIGColors.systemBackground,
+  },
+  navigationBar: {
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: HIGColors.systemBackground,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  backButton: {
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  backButtonText: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.blue,
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
   },
   skipButton: {
-    position: 'absolute',
-    top: 60,
-    right: 20,
-    zIndex: 1,
-  },
-  skipText: {
-    fontSize: 16,
-    color: Colors.TEXT_SECONDARY,
-  },
-  progressContainer: {
-    flexDirection: 'row',
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    height: HIGConstants.MIN_TOUCH_TARGET,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 60,
-    marginBottom: 40,
-    gap: HIGConstants.SPACING_SM,
+    alignItems: 'flex-end',
   },
-  progressDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: HIGColors.gray4,
+  skipButtonText: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.blue,
   },
-  activeDot: {
+  progressBar: {
+    height: 4,
+    backgroundColor: HIGColors.gray5,
+  },
+  progressFill: {
+    height: 4,
     backgroundColor: HIGColors.blue,
+  },
+  headerSection: {
+    paddingTop: HIGConstants.SPACING_LG,
+    paddingBottom: HIGConstants.SPACING_LG,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    alignItems: 'center',
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 17,
+    fontWeight: '400',
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-    marginBottom: 30,
   },
   scrollView: {
     flex: 1,
+    paddingHorizontal: HIGConstants.SPACING_LG,
   },
   categorySection: {
-    marginBottom: 24,
+    marginBottom: HIGConstants.SPACING_XL,
   },
   sectionHeader: {
     fontSize: 20,
     fontWeight: '600',
     color: HIGColors.label,
-    marginBottom: 12,
-    paddingHorizontal: 4,
+    marginBottom: HIGConstants.SPACING_MD,
+    paddingHorizontal: HIGConstants.SPACING_XS,
   },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    marginHorizontal: -6,
+    marginHorizontal: -HIGConstants.SPACING_XS,
   },
-  descriptorButton: {
-    minHeight: HIGConstants.MIN_TOUCH_TARGET,
-    backgroundColor: HIGColors.systemBackground,
-    borderWidth: 1,
-    borderColor: HIGColors.gray4,
-    borderRadius: HIGConstants.BORDER_RADIUS_LARGE,
-    paddingHorizontal: HIGConstants.SPACING_LG,
+  categoryButton: {
+    width: ITEM_WIDTH,
     paddingVertical: HIGConstants.SPACING_MD,
+    paddingHorizontal: HIGConstants.SPACING_SM,
     margin: HIGConstants.SPACING_XS,
-    justifyContent: 'center',
+    backgroundColor: HIGColors.secondarySystemBackground,
+    borderRadius: HIGConstants.BORDER_RADIUS,
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: HIGConstants.MIN_TOUCH_TARGET,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 1,
+    elevation: 1,
   },
   selectedButton: {
     backgroundColor: HIGColors.blue,
-    borderColor: HIGColors.blue,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 3,
   },
-  descriptorText: {
-    fontSize: HIGConstants.FONT_SIZE_MEDIUM,
-    fontWeight: '500',
+  categoryText: {
+    fontSize: 15,
+    fontWeight: '400',
     color: HIGColors.label,
     textAlign: 'center',
   },
   selectedText: {
     color: '#FFFFFF',
+    fontWeight: '600',
   },
-  nextButton: {
-    marginBottom: 40,
-    marginTop: 20,
+  checkmark: {
+    position: 'absolute',
+    top: HIGConstants.SPACING_XS,
+    right: HIGConstants.SPACING_XS,
+    fontSize: 16,
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
-  noDescriptorsContainer: {
+  emptyStateContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 60,
+    paddingHorizontal: HIGConstants.SPACING_LG,
   },
-  noDescriptorsText: {
-    fontSize: 18,
-    fontWeight: '600',
+  emptyStateText: {
+    fontSize: 17,
+    fontWeight: '400',
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-    marginBottom: 12,
   },
-  noDescriptorsSubtext: {
-    fontSize: 16,
-    color: HIGColors.tertiaryLabel,
-    textAlign: 'center',
-    lineHeight: 24,
+  bottomContainer: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingTop: HIGConstants.SPACING_MD,
+    paddingBottom: HIGConstants.SPACING_LG,
+    backgroundColor: HIGColors.systemBackground,
+    borderTopWidth: 0.5,
+    borderTopColor: HIGColors.gray4,
+  },
+  nextButton: {
+    width: '100%',
+  },
+  nextButtonText: {
+    color: '#FFFFFF',
   },
 });
 

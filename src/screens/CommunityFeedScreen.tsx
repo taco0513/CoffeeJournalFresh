@@ -89,7 +89,7 @@ const CommunityFeedScreen = () => {
 
       setReviews(mockReviews);
     } catch (error) {
-      console.error('Failed to load community reviews:', error);
+      // console.error('Failed to load community reviews:', error);
       Alert.alert('오류', '커뮤니티 리뷰를 불러오는 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);

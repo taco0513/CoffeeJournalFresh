@@ -14,12 +14,12 @@ export const RealmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     const initializeRealm = async () => {
       try {
-        console.log('Initializing Realm...');
+        // console.log('Initializing Realm...');
         await RealmService.initialize();
-        console.log('Realm initialized successfully');
+        // console.log('Realm initialized successfully');
         setIsReady(true);
       } catch (error) {
-        console.error('Failed to initialize Realm:', error);
+        // console.error('Failed to initialize Realm:', error);
         // Still set ready to true to allow app to function
         // Realm might work later or we can show an error
         setIsReady(true);

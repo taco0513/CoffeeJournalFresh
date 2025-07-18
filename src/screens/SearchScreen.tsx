@@ -70,7 +70,7 @@ export default function SearchScreen() {
       setAvailableCafes(Array.from(cafes).sort());
       setAvailableFlavors(Array.from(flavors).sort());
     } catch (error) {
-      console.error('Failed to load data:', error);
+      // console.error('Failed to load data:', error);
     } finally {
       setLoading(false);
     }

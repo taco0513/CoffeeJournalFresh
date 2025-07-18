@@ -61,7 +61,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
         });
       }
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      // console.error('Error loading dashboard data:', error);
     }
   };
 
@@ -79,16 +79,8 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     navigation.navigate('Journal' as never);
   };
 
-  const handleStats = () => {
-    navigation.navigate('Stats' as never);
-  };
-
   const handleQuickStats = () => {
     navigation.navigate('Stats' as never);
-  };
-
-  const handleSearch = () => {
-    navigation.navigate('Journal' as never, { screen: 'Search' } as never);
   };
 
   const handleTastingDetail = (tastingId: string) => {
@@ -170,22 +162,6 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
                 ☕ 새 테이스팅 시작
               </Text>
             </TouchableOpacity>
-            <View style={styles.secondaryActions}>
-              <TouchableOpacity 
-                style={[commonButtonStyles.buttonSecondary, styles.secondaryAction]}
-                onPress={handleSearch}
-                activeOpacity={0.7}
-              >
-                <Text style={[commonTextStyles.buttonText, styles.secondaryActionText]}>🔍 검색</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[commonButtonStyles.buttonSecondary, styles.secondaryAction]}
-                onPress={handleStats}
-                activeOpacity={0.7}
-              >
-                <Text style={[commonTextStyles.buttonText, styles.secondaryActionText]}>📊 통계</Text>
-              </TouchableOpacity>
-            </View>
           </View>
 
           {/* 최근 기록 섹션 */}
@@ -288,19 +264,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 17,
     fontWeight: '600',
-  },
-  secondaryActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  secondaryAction: {
-    flex: 1,
-    marginHorizontal: HIGConstants.SPACING_XS,
-  },
-  secondaryActionText: {
-    color: HIGColors.blue,
-    fontSize: 15,
-    fontWeight: '500',
   },
   welcomeTitle: {
     fontSize: 22,

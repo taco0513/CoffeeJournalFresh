@@ -69,7 +69,7 @@ const SensoryScreen = () => {
       saveTasting();
       navigation.navigate('Result' as never);
     } catch (error) {
-      console.error('Error saving tasting:', error);
+      // console.error('Error saving tasting:', error);
       // 에러가 발생해도 결과 화면으로 이동
       navigation.navigate('Result' as never);
     }

@@ -120,7 +120,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       set({ currentUser: newUser, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
     } catch (error) {
-      console.error('Sign up error:', error);
+      // console.error('Sign up error:', error);
       set({ isLoading: false });
       throw error;
     }
@@ -203,7 +203,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       set({ currentUser: user, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
     } catch (error) {
-      console.error('Sign in error:', error);
+      // console.error('Sign in error:', error);
       set({ isLoading: false });
       throw error;
     }
@@ -217,7 +217,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       await AsyncStorage.removeItem(STORAGE_KEY);
       set({ currentUser: null, isAuthenticated: false, isLoading: false });
     } catch (error) {
-      console.error('Sign out error:', error);
+      // console.error('Sign out error:', error);
       set({ isLoading: false });
       throw error;
     }
@@ -238,7 +238,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       set({ currentUser: updatedUser });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser));
     } catch (error) {
-      console.error('Update profile error:', error);
+      // console.error('Update profile error:', error);
       throw error;
     }
   },
@@ -329,7 +329,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
         set({ currentUser: user, isAuthenticated: true });
       }
     } catch (error) {
-      console.error('Load stored user error:', error);
+      // console.error('Load stored user error:', error);
     } finally {
       set({ isLoading: false });
     }

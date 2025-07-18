@@ -29,12 +29,12 @@ export default function DataTestScreen({ navigation }: any) {
       const stats = realmService.getStatistics();
       setStatistics(stats);
       
-      console.log('Data loaded:', {
-        tastingsCount: tastings.length,
-        statistics: stats,
-      });
+      // console.log('Data loaded:', {
+      //   tastingsCount: tastings.length,
+      //   statistics: stats,
+      // });
     } catch (error) {
-      console.error('Error loading data:', error);
+      // console.error('Error loading data:', error);
       Alert.alert('Error', 'Failed to load data');
     } finally {
       setIsLoading(false);
@@ -55,7 +55,7 @@ export default function DataTestScreen({ navigation }: any) {
         Alert.alert('Error', 'Failed to delete tasting');
       }
     } catch (error) {
-      console.error('Error deleting tasting:', error);
+      // console.error('Error deleting tasting:', error);
       Alert.alert('Error', 'Failed to delete tasting');
     }
   };
@@ -76,7 +76,7 @@ export default function DataTestScreen({ navigation }: any) {
               Alert.alert('Success', 'All tastings deleted');
               loadData();
             } catch (error) {
-              console.error('Error clearing all:', error);
+              // console.error('Error clearing all:', error);
               Alert.alert('Error', 'Failed to clear all tastings');
             }
           },

@@ -127,7 +127,7 @@ class TastingService {
 
       return savedTasting.id;
     } catch (error) {
-      console.error('Error saving tasting to Supabase:', error);
+      // console.error('Error saving tasting to Supabase:', error);
       throw error;
     }
   }
@@ -231,7 +231,7 @@ class TastingService {
         sensoryAverages,
       };
     } catch (error) {
-      console.error('Error getting coffee comparison:', error);
+      // console.error('Error getting coffee comparison:', error);
       return null;
     }
   }
@@ -289,7 +289,7 @@ class TastingService {
 
       return similarCoffees;
     } catch (error) {
-      console.error('Error getting similar coffees:', error);
+      // console.error('Error getting similar coffees:', error);
       return [];
     }
   }

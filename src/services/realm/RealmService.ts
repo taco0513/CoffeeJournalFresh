@@ -32,7 +32,7 @@ class RealmService {
   async initialize(): Promise<void> {
     try {
       if (this.realm && !this.realm.isClosed) {
-        console.log('Realm already initialized');
+        // console.log('Realm already initialized');
         return;
       }
 
@@ -50,7 +50,7 @@ class RealmService {
           const shouldCompact = totalSize > twentyFiveMB && usedSize / totalSize < 0.5;
           
           if (shouldCompact) {
-            console.log(`Realm compaction triggered - Total: ${(totalSize/1024/1024).toFixed(2)}MB, Used: ${(usedSize/1024/1024).toFixed(2)}MB`);
+            // console.log(`Realm compaction triggered - Total: ${(totalSize/1024/1024).toFixed(2)}MB, Used: ${(usedSize/1024/1024).toFixed(2)}MB`);
           }
           
           return shouldCompact;
@@ -58,10 +58,10 @@ class RealmService {
       });
       
       this.initialized = true;
-      console.log('Realm initialized successfully');
-      console.log('Realm path:', this.realm.path);
+      // console.log('Realm initialized successfully');
+      // console.log('Realm path:', this.realm.path);
     } catch (error) {
-      console.error('Failed to initialize Realm:', error);
+      // console.error('Failed to initialize Realm:', error);
       throw new Error(`Realm initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
@@ -94,17 +94,15 @@ class RealmService {
       sensoryScore?: number;
     };
   }): Promise<ITastingRecord> {
-    console.log('=== saveTasting 시작 ===');
-    console.log('전달받은 데이터:', data);
-    
+    // console.log('=== saveTasting 시작 ===');
+    // console.log('전달받은 데이터:', data);
     const realm = this.getRealm();
     
     try {
       let savedRecord: ITastingRecord;
       
       realm.write(() => {
-        console.log('Realm write 시작');
-        
+        // console.log('Realm write 시작');
         // 기본값 설정
         const defaultCoffeeInfo = {
           cafeName: '',
@@ -140,17 +138,15 @@ class RealmService {
           matchScore: { ...defaultMatchScore, ...(data.matchScore || {}) },
         };
         
-        console.log('안전한 데이터:', safeData);
-        
+        // console.log('안전한 데이터:', safeData);
         // Create flavor notes from selected flavors
         const flavorNotes: IFlavorNote[] = [];
         
         try {
-          console.log('FlavorNotes 생성 시작');
+          // console.log('FlavorNotes 생성 시작');
           if (Array.isArray(safeData.selectedFlavors)) {
             safeData.selectedFlavors.forEach((flavorPath, index) => {
-              console.log(`FlavorPath ${index}:`, flavorPath);
-              
+              // console.log(`FlavorPath ${index}:`, flavorPath);
               if (flavorPath && typeof flavorPath === 'object') {
                 // Level 1 flavor
                 if (flavorPath.level1) {
@@ -190,15 +186,15 @@ class RealmService {
               }
             });
           }
-          console.log('생성된 FlavorNotes:', flavorNotes);
+          // console.log('생성된 FlavorNotes:', flavorNotes);
         } catch (flavorError) {
-          console.error('FlavorNotes 생성 중 에러:', flavorError);
+          // console.error('FlavorNotes 생성 중 에러:', flavorError);
         }
         
         // Create sensory attribute with safe access
         let sensoryAttribute: ISensoryAttribute;
         try {
-          console.log('SensoryAttribute 생성 시작');
+          // console.log('SensoryAttribute 생성 시작');
           sensoryAttribute = {
             body: safeData.sensoryAttributes.body || 3,
             acidity: safeData.sensoryAttributes.acidity || 3,
@@ -206,15 +202,15 @@ class RealmService {
             finish: safeData.sensoryAttributes.finish || 3,
             mouthfeel: safeData.sensoryAttributes.mouthfeel || 'Clean',
           };
-          console.log('생성된 SensoryAttribute:', sensoryAttribute);
+          // console.log('생성된 SensoryAttribute:', sensoryAttribute);
         } catch (sensoryError) {
-          console.error('SensoryAttribute 생성 중 에러:', sensoryError);
+          // console.error('SensoryAttribute 생성 중 에러:', sensoryError);
           sensoryAttribute = defaultSensoryAttributes;
         }
         
         // Create the tasting record
         try {
-          console.log('TastingRecord 생성 시작');
+          // console.log('TastingRecord 생성 시작');
           savedRecord = realm.create<ITastingRecord>('TastingRecord', {
             id: uuid.v4() as string,
             createdAt: new Date(),
@@ -246,15 +242,15 @@ class RealmService {
             isSynced: false,
             isDeleted: false,
           });
-          console.log('TastingRecord 생성 완료:', savedRecord.id);
+          // console.log('TastingRecord 생성 완료:', savedRecord.id);
         } catch (recordError) {
-          console.error('TastingRecord 생성 중 에러:', recordError);
+          // console.error('TastingRecord 생성 중 에러:', recordError);
           throw recordError;
         }
         
         // Update coffee library
         try {
-          console.log('CoffeeLibrary 업데이트 시작');
+          // console.log('CoffeeLibrary 업데이트 시작');
           this.updateCoffeeLibrary({
             roastery: safeData.coffeeInfo.roastery,
             coffeeName: safeData.coffeeInfo.coffeeName,
@@ -264,15 +260,15 @@ class RealmService {
             process: safeData.coffeeInfo.process,
             roasterNotes: safeData.roasterNotes,
           });
-          console.log('CoffeeLibrary 업데이트 완료');
+          // console.log('CoffeeLibrary 업데이트 완료');
         } catch (libraryError) {
-          console.error('CoffeeLibrary 업데이트 중 에러:', libraryError);
+          // console.error('CoffeeLibrary 업데이트 중 에러:', libraryError);
           // 라이브러리 업데이트 실패는 치명적이지 않으므로 계속 진행
         }
         
         // Update cafe visit count if cafe name provided
         try {
-          console.log('Cafe 방문 카운트 업데이트 시작');
+          // console.log('Cafe 방문 카운트 업데이트 시작');
           if (safeData.coffeeInfo.cafeName) {
             const existingCafe = realm.objects<ICafeInfo>('CafeInfo')
               .filtered('name = $0', safeData.coffeeInfo.cafeName)[0];
@@ -293,14 +289,14 @@ class RealmService {
               });
             }
           }
-          console.log('Cafe 방문 카운트 업데이트 완료');
+          // console.log('Cafe 방문 카운트 업데이트 완료');
         } catch (cafeError) {
-          console.error('Cafe 방문 카운트 업데이트 중 에러:', cafeError);
+          // console.error('Cafe 방문 카운트 업데이트 중 에러:', cafeError);
         }
         
         // Update roaster stats
         try {
-          console.log('Roaster 통계 업데이트 시작');
+          // console.log('Roaster 통계 업데이트 시작');
           const existingRoaster = realm.objects<IRoasterInfo>('RoasterInfo')
             .filtered('name = $0', safeData.coffeeInfo.roastery)[0];
           
@@ -322,22 +318,22 @@ class RealmService {
               averageScore: safeData.matchScore.total,
             });
           }
-          console.log('Roaster 통계 업데이트 완료');
+          // console.log('Roaster 통계 업데이트 완료');
         } catch (roasterError) {
-          console.error('Roaster 통계 업데이트 중 에러:', roasterError);
+          // console.error('Roaster 통계 업데이트 중 에러:', roasterError);
         }
         
-        console.log('Realm write 완료');
+        // console.log('Realm write 완료');
       });
       
-      console.log('=== saveTasting 성공 ===');
-      console.log('저장된 레코드 ID:', savedRecord!.id);
+      // console.log('=== saveTasting 성공 ===');
+      // console.log('저장된 레코드 ID:', savedRecord!.id);
       return savedRecord!;
       
     } catch (error) {
-      console.error('=== saveTasting 실패 ===');
-      console.error('에러:', error);
-      console.error('스택 추적:', error instanceof Error ? error.stack : 'No stack trace');
+      // console.error('=== saveTasting 실패 ===');
+      // console.error('에러:', error);
+      // console.error('스택 추적:', error instanceof Error ? error.stack : 'No stack trace');
       throw new Error(`Failed to save tasting: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
@@ -368,7 +364,7 @@ class RealmService {
         createdAt: tasting.createdAt,
       }));
     } catch (error) {
-      console.error('Error getting recent tastings:', error);
+      // console.error('Error getting recent tastings:', error);
       return []; // 에러 시 빈 배열 반환
     }
   }
@@ -424,7 +420,7 @@ class RealmService {
         });
       }
     } catch (error) {
-      console.error('Failed to update coffee library:', error);
+      // console.error('Failed to update coffee library:', error);
       // Don't throw here, this is a non-critical operation
     }
   }
@@ -458,7 +454,7 @@ class RealmService {
       
       return cafes;
     } catch (error) {
-      console.error('Failed to get cafes by name:', error);
+      // console.error('Failed to get cafes by name:', error);
       return [];
     }
   }
@@ -493,7 +489,7 @@ class RealmService {
         return countB - countA;
       });
     } catch (error) {
-      console.error('Failed to get roasters by cafe:', error);
+      // console.error('Failed to get roasters by cafe:', error);
       return [];
     }
   }
@@ -937,9 +933,9 @@ class RealmService {
         realm.delete(roasterInfo);
       });
       
-      console.log('All tasting records cleared successfully');
+      // console.log('All tasting records cleared successfully');
     } catch (error) {
-      console.error('Failed to clear all tastings:', error);
+      // console.error('Failed to clear all tastings:', error);
       throw new Error(`Failed to clear all tastings: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
@@ -964,7 +960,7 @@ class RealmService {
       
       return cafes;
     } catch (error) {
-      console.error('Failed to get cafe suggestions:', error);
+      // console.error('Failed to get cafe suggestions:', error);
       return [];
     }
   }
@@ -988,7 +984,7 @@ class RealmService {
       
       return roasters;
     } catch (error) {
-      console.error('Failed to get roaster suggestions:', error);
+      // console.error('Failed to get roaster suggestions:', error);
       return [];
     }
   }
@@ -1015,7 +1011,7 @@ class RealmService {
       
       return Array.from(uniqueNames).slice(0, 10);
     } catch (error) {
-      console.error('Failed to get coffee name suggestions:', error);
+      // console.error('Failed to get coffee name suggestions:', error);
       return [];
     }
   }
@@ -1042,7 +1038,7 @@ class RealmService {
       
       return Array.from(uniqueOrigins).slice(0, 10);
     } catch (error) {
-      console.error('Failed to get origin suggestions:', error);
+      // console.error('Failed to get origin suggestions:', error);
       return [];
     }
   }
@@ -1069,7 +1065,7 @@ class RealmService {
       
       return Array.from(uniqueVarieties).slice(0, 10);
     } catch (error) {
-      console.error('Failed to get variety suggestions:', error);
+      // console.error('Failed to get variety suggestions:', error);
       return [];
     }
   }
@@ -1096,7 +1092,7 @@ class RealmService {
       
       return Array.from(uniqueProcesses).slice(0, 10);
     } catch (error) {
-      console.error('Failed to get process suggestions:', error);
+      // console.error('Failed to get process suggestions:', error);
       return [];
     }
   }
@@ -1131,7 +1127,7 @@ class RealmService {
       
       return Array.from(uniqueCoffees).slice(0, 10);
     } catch (error) {
-      console.error('Failed to get roaster coffees:', error);
+      // console.error('Failed to get roaster coffees:', error);
       return [];
     }
   }
@@ -1165,7 +1161,7 @@ class RealmService {
         roasterNotes: mostRecent.roasterNotes,
       };
     } catch (error) {
-      console.error('Failed to get coffee details:', error);
+      // console.error('Failed to get coffee details:', error);
       return null;
     }
   }
@@ -1227,7 +1223,7 @@ class RealmService {
       
       return roasters.slice(0, 10);
     } catch (error) {
-      console.error('Failed to get cafe roasters:', error);
+      // console.error('Failed to get cafe roasters:', error);
       return [];
     }
   }
@@ -1256,7 +1252,7 @@ class RealmService {
         }
       });
     } catch (error) {
-      console.error('Failed to increment cafe visit:', error);
+      // console.error('Failed to increment cafe visit:', error);
     }
   }
 
@@ -1282,7 +1278,7 @@ class RealmService {
         }
       });
     } catch (error) {
-      console.error('Failed to increment roaster visit:', error);
+      // console.error('Failed to increment roaster visit:', error);
     }
   }
 
@@ -1308,15 +1304,15 @@ class RealmService {
           // 부모 객체인 TastingRecord를 삭제하면 자동으로 삭제됨
           realm.delete(tasting);
           success = true;
-          console.log(`Successfully deleted tasting record: ${tastingId}`);
+          // console.log(`Successfully deleted tasting record: ${tastingId}`);
         } else {
-          console.warn(`Tasting record with id ${tastingId} not found`);
+          // console.warn(`Tasting record with id ${tastingId} not found`);
         }
       });
       
       return success;
     } catch (error) {
-      console.error('Delete tasting error:', error);
+      // console.error('Delete tasting error:', error);
       return false;
     }
   }
@@ -1326,9 +1322,9 @@ class RealmService {
     try {
       const instance = RealmService.getInstance();
       await instance.initialize();
-      console.log('Realm initialized successfully via static method');
+      // console.log('Realm initialized successfully via static method');
     } catch (error) {
-      console.error('Failed to initialize Realm via static method:', error);
+      // console.error('Failed to initialize Realm via static method:', error);
       throw error;
     }
   }
@@ -1343,13 +1339,13 @@ class RealmService {
         const oldDeletedRecords = realm.objects<ITastingRecord>('TastingRecord')
           .filtered('isDeleted = true AND updatedAt < $0', cutoffDate);
         
-        console.log(`Cleaning up ${oldDeletedRecords.length} old deleted records`);
+        // console.log(`Cleaning up ${oldDeletedRecords.length} old deleted records`);
         realm.delete(oldDeletedRecords);
       });
       
-      console.log('Deleted records cleanup completed');
+      // console.log('Deleted records cleanup completed');
     } catch (error) {
-      console.error('Failed to cleanup deleted records:', error);
+      // console.error('Failed to cleanup deleted records:', error);
     }
   }
 
@@ -1365,7 +1361,7 @@ class RealmService {
       
       instance.cleanupDeletedRecords();
     } catch (error) {
-      console.error('Failed to cleanup deleted records via static method:', error);
+      // console.error('Failed to cleanup deleted records via static method:', error);
     }
   }
 
@@ -1454,7 +1450,7 @@ class RealmService {
       
       return [...libraryResults, ...additionalResults];
     } catch (error) {
-      console.error('Failed to search coffees:', error);
+      // console.error('Failed to search coffees:', error);
       return [];
     }
   }
@@ -1527,7 +1523,7 @@ class RealmService {
         sensoryAverages
       };
     } catch (error) {
-      console.error('Failed to get same coffee comparison:', error);
+      // console.error('Failed to get same coffee comparison:', error);
       return {
         totalTastings: 0,
         averageScore: 0,
@@ -1595,7 +1591,7 @@ class RealmService {
         .sort((a, b) => b.averageScore - a.averageScore)
         .slice(0, 5); // 상위 5개
     } catch (error) {
-      console.error('Failed to get similar coffees:', error);
+      // console.error('Failed to get similar coffees:', error);
       return [];
     }
   }

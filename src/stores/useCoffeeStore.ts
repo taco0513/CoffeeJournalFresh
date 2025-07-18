@@ -98,7 +98,7 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
         isSaving: false 
       });
     } catch (error) {
-      console.error('Error saving tasting:', error);
+      // console.error('Error saving tasting:', error);
       set({ isSaving: false });
       throw error;
     }
@@ -110,7 +110,7 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
       const tastings = await StorageService.getTastings();
       set({ tastingSessions: tastings, isLoading: false });
     } catch (error) {
-      console.error('Error loading tastings:', error);
+      // console.error('Error loading tastings:', error);
       set({ isLoading: false });
     }
   },
@@ -120,7 +120,7 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
       await StorageService.deleteTasting(id);
       await get().loadTastings();
     } catch (error) {
-      console.error('Error deleting tasting:', error);
+      // console.error('Error deleting tasting:', error);
       throw error;
     }
   },
@@ -130,7 +130,7 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
       const { currentTasting } = get();
       await StorageService.saveCurrentTasting(currentTasting);
     } catch (error) {
-      console.error('Error saving progress:', error);
+      // console.error('Error saving progress:', error);
     }
   },
 
@@ -141,7 +141,7 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
         set({ currentTasting: savedProgress });
       }
     } catch (error) {
-      console.error('Error loading progress:', error);
+      // console.error('Error loading progress:', error);
     }
   }
 }));

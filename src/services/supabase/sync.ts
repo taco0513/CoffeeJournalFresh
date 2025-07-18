@@ -91,7 +91,7 @@ class SyncService {
       this.syncStatus.isOnline = state.isConnected || false;
       return this.syncStatus.isOnline;
     } catch (error) {
-      console.error('Network check failed:', error);
+      // console.error('Network check failed:', error);
       this.syncStatus.isOnline = false;
       return false;
     }
@@ -105,12 +105,12 @@ class SyncService {
   // 전체 동기화 실행
   async syncAll(): Promise<void> {
     if (!ENABLE_SYNC) {
-      console.log('⏸️ Sync disabled by ENABLE_SYNC flag');
+      // console.log('⏸️ Sync disabled by ENABLE_SYNC flag');
       return;
     }
     
     if (this.syncStatus.isSyncing) {
-      console.log('Sync already in progress');
+      // console.log('Sync already in progress');
       return;
     }
 
@@ -124,8 +124,7 @@ class SyncService {
         throw new Error('No internet connection');
       }
 
-      console.log('Starting sync process...');
-
+      // console.log('Starting sync process...');
       // 1. 로컬 → Supabase 업로드
       await this.uploadLocalChanges();
 
@@ -136,9 +135,9 @@ class SyncService {
       this.syncStatus.lastSyncTime = new Date();
       this.syncStatus.error = null;
       
-      console.log('Sync completed successfully');
+      // console.log('Sync completed successfully');
     } catch (error) {
-      console.error('Sync failed:', error);
+      // console.error('Sync failed:', error);
       this.syncStatus.error = error instanceof Error ? error.message : 'Unknown sync error';
     } finally {
       this.syncStatus.isSyncing = false;
@@ -155,13 +154,12 @@ class SyncService {
       this.syncStatus.pendingUploads = unsyncedRecords.length;
       this.updateTastingStore();
 
-      console.log(`Uploading ${unsyncedRecords.length} unsynced records`);
-
+      // console.log(`Uploading ${unsyncedRecords.length} unsynced records`);
       for (const record of unsyncedRecords) {
         try {
           await this.uploadSingleRecord(record);
         } catch (error) {
-          console.error(`Failed to upload record ${record.id}:`, error);
+          // console.error(`Failed to upload record ${record.id}:`, error);
           // 개별 업로드 실패는 전체 동기화를 중단하지 않음
         }
       }
@@ -169,7 +167,7 @@ class SyncService {
       this.syncStatus.pendingUploads = 0;
       this.updateTastingStore();
     } catch (error) {
-      console.error('Upload failed:', error);
+      // console.error('Upload failed:', error);
       throw error;
     }
   }
@@ -286,9 +284,9 @@ class SyncService {
       const realmService = RealmService.getInstance();
       realmService.markAsSynced([record.id]);
 
-      console.log(`Successfully uploaded record: ${record.id}`);
+      // console.log(`Successfully uploaded record: ${record.id}`);
     } catch (error) {
-      console.error(`Failed to upload record ${record.id}:`, error);
+      // console.error(`Failed to upload record ${record.id}:`, error);
       throw error;
     }
   }
@@ -324,8 +322,7 @@ class SyncService {
         throw error;
       }
 
-      console.log(`Downloaded ${remoteRecords?.length || 0} remote records`);
-
+      // console.log(`Downloaded ${remoteRecords?.length || 0} remote records`);
       // 각 레코드를 로컬에 저장
       if (remoteRecords && remoteRecords.length > 0) {
         for (const remoteRecord of remoteRecords) {
@@ -333,7 +330,7 @@ class SyncService {
         }
       }
     } catch (error) {
-      console.error('Download failed:', error);
+      // console.error('Download failed:', error);
       throw error;
     }
   }
@@ -352,7 +349,7 @@ class SyncService {
         await this.resolveConflict(localRecord, remoteRecord);
       }
     } catch (error) {
-      console.error(`Failed to download record ${remoteRecord.realm_id}:`, error);
+      // console.error(`Failed to download record ${remoteRecord.realm_id}:`, error);
       throw error;
     }
   }
@@ -425,9 +422,9 @@ class SyncService {
         });
       });
 
-      console.log(`Created local record: ${remoteRecord.realm_id}`);
+      // console.log(`Created local record: ${remoteRecord.realm_id}`);
     } catch (error) {
-      console.error(`Failed to create local record:`, error);
+      // console.error(`Failed to create local record:`, error);
       throw error;
     }
   }
@@ -438,23 +435,22 @@ class SyncService {
       const localUpdatedAt = localRecord.updatedAt;
       const remoteUpdatedAt = new Date(remoteRecord.updated_at);
 
-      console.log(`Resolving conflict for record ${localRecord.id}`);
-      console.log(`Local updated: ${localUpdatedAt.toISOString()}`);
-      console.log(`Remote updated: ${remoteUpdatedAt.toISOString()}`);
-
+      // console.log(`Resolving conflict for record ${localRecord.id}`);
+      // console.log(`Local updated: ${localUpdatedAt.toISOString()}`);
+      // console.log(`Remote updated: ${remoteUpdatedAt.toISOString()}`);
       // 원격 레코드가 더 최신인 경우
       if (remoteUpdatedAt > localUpdatedAt) {
-        console.log('Remote record is newer, updating local');
+        // console.log('Remote record is newer, updating local');
         await this.updateLocalRecord(localRecord, remoteRecord);
       } else if (localUpdatedAt > remoteUpdatedAt) {
-        console.log('Local record is newer, uploading to remote');
+        // console.log('Local record is newer, uploading to remote');
         await this.uploadSingleRecord(localRecord);
       } else {
-        console.log('Records have same timestamp, preferring remote');
+        // console.log('Records have same timestamp, preferring remote');
         await this.updateLocalRecord(localRecord, remoteRecord);
       }
     } catch (error) {
-      console.error('Conflict resolution failed:', error);
+      // console.error('Conflict resolution failed:', error);
       throw error;
     }
   }
@@ -519,9 +515,9 @@ class SyncService {
         }
       });
 
-      console.log(`Updated local record: ${localRecord.id}`);
+      // console.log(`Updated local record: ${localRecord.id}`);
     } catch (error) {
-      console.error('Failed to update local record:', error);
+      // console.error('Failed to update local record:', error);
       throw error;
     }
   }
@@ -529,10 +525,10 @@ class SyncService {
   // 수동 동기화 트리거
   async manualSync(): Promise<void> {
     if (!ENABLE_SYNC) {
-      console.log('⏸️ Manual sync disabled by ENABLE_SYNC flag');
+      // console.log('⏸️ Manual sync disabled by ENABLE_SYNC flag');
       return;
     }
-    console.log('Manual sync triggered');
+    // console.log('Manual sync triggered');
     await this.syncAll();
   }
 
@@ -552,9 +548,9 @@ class SyncService {
       }
 
       await this.uploadSingleRecord(record);
-      console.log(`Force uploaded record: ${recordId}`);
+      // console.log(`Force uploaded record: ${recordId}`);
     } catch (error) {
-      console.error(`Force upload failed for record ${recordId}:`, error);
+      // console.error(`Force upload failed for record ${recordId}:`, error);
       throw error;
     }
   }
@@ -588,9 +584,9 @@ class SyncService {
         });
       }
 
-      console.log('Cafe and roaster info synced');
+      // console.log('Cafe and roaster info synced');
     } catch (error) {
-      console.error('Failed to sync cafe and roaster info:', error);
+      // console.error('Failed to sync cafe and roaster info:', error);
     }
   }
 
@@ -599,13 +595,13 @@ class SyncService {
     // Zustand store는 직접 업데이트할 수 없으므로, 
     // 스토어에서 이 상태를 구독하도록 해야 함
     // 여기서는 단순히 콘솔 로그만 출력
-    console.log('Sync status updated:', this.syncStatus);
+    // console.log('Sync status updated:', this.syncStatus);
   }
 
   // 정리
   cleanup(): void {
     // 필요한 경우 리소스 정리
-    console.log('Sync service cleanup');
+    // console.log('Sync service cleanup');
   }
 }
 
@@ -633,7 +629,7 @@ export const syncUtils = {
   // 자동 동기화 시작
   startAutoSync: () => {
     if (!ENABLE_SYNC) {
-      console.log('⏸️ Auto sync disabled by ENABLE_SYNC flag');
+      // console.log('⏸️ Auto sync disabled by ENABLE_SYNC flag');
       return;
     }
     setInterval(async () => {

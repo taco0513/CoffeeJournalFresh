@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { Text, View } from 'react-native';
+import { Text, View, ActivityIndicator } from 'react-native';
+import AuthService from '../services/supabase/auth';
+import { useUserStore } from '../stores/useUserStore';
+import { HIGColors } from '../styles/common';
 
 // 화면 import
 import HomeScreen from '../screens/HomeScreen';
@@ -20,14 +23,16 @@ import OCRScanScreen from '../screens/OCRScanScreen';
 import OCRResultScreen from '../screens/OCRResultScreen';
 import SearchScreen from '../screens/SearchScreen';
 import TastingDetailScreen from '../screens/TastingDetailScreen';
-import ExportScreen from '../screens/ExportScreen';
 import DataTestScreen from '../screens/DataTestScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import PhotoGalleryScreen from '../screens/PhotoGalleryScreen';
-import PhotoViewerScreen from '../screens/PhotoViewerScreen';
+// Feature Backlog - Photo features
+// import PhotoGalleryScreen from '../screens/PhotoGalleryScreen';
+// import PhotoViewerScreen from '../screens/PhotoViewerScreen';
 import CommunityFeedScreen from '../screens/CommunityFeedScreen';
 import CommunityReviewScreen from '../screens/CommunityReviewScreen';
 import ShareReviewScreen from '../screens/ShareReviewScreen';
+import SignInScreen from '../screens/auth/SignInScreen';
+import SignUpScreen from '../screens/auth/SignUpScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -38,9 +43,9 @@ function TastingFlow() {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#8B4513',
+          backgroundColor: HIGColors.label,
         },
-        headerTintColor: '#fff',
+        headerTintColor: HIGColors.systemBackground,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -107,9 +112,9 @@ function HistoryStack() {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#8B4513',
+          backgroundColor: HIGColors.label,
         },
-        headerTintColor: '#fff',
+        headerTintColor: HIGColors.systemBackground,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -130,11 +135,12 @@ function HistoryStack() {
         component={SearchScreen} 
         options={{title: 'Search'}}
       />
-      <Stack.Screen 
+      {/* Feature Backlog - Community Share */}
+      {/* <Stack.Screen 
         name="ShareReview" 
         component={ShareReviewScreen} 
         options={{title: 'Share Review'}}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }
@@ -145,9 +151,9 @@ function StatsStack() {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#8B4513',
+          backgroundColor: HIGColors.label,
         },
-        headerTintColor: '#fff',
+        headerTintColor: HIGColors.systemBackground,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -158,24 +164,19 @@ function StatsStack() {
         component={StatsScreen} 
         options={{title: 'Statistics'}}
       />
-      <Stack.Screen 
-        name="Export" 
-        component={ExportScreen} 
-        options={{title: 'Export Data'}}
-      />
     </Stack.Navigator>
   );
 }
 
-// 커뮤니티 스택 네비게이터
+// 커뮤니티 스택 네비게이터 (Feature Backlog)
 function CommunityStack() {
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#8B4513',
+          backgroundColor: HIGColors.label,
         },
-        headerTintColor: '#fff',
+        headerTintColor: HIGColors.systemBackground,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -206,9 +207,9 @@ function ProfileStack() {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#8B4513',
+          backgroundColor: HIGColors.label,
         },
-        headerTintColor: '#fff',
+        headerTintColor: HIGColors.systemBackground,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -224,7 +225,8 @@ function ProfileStack() {
         component={DataTestScreen} 
         options={{title: 'Data Test'}}
       />
-      <Stack.Screen 
+      {/* Feature Backlog - Photo features */}
+      {/* <Stack.Screen 
         name="PhotoGallery" 
         component={PhotoGalleryScreen} 
         options={{title: 'Photo Gallery'}}
@@ -236,7 +238,7 @@ function ProfileStack() {
           title: 'Photo Viewer',
           headerShown: false,
         }}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }
@@ -260,8 +262,8 @@ function MainTabs() {
           fontWeight: '600',
           marginTop: 4,
         },
-        tabBarActiveTintColor: '#8B4513',
-        tabBarInactiveTintColor: '#8E8E93',
+        tabBarActiveTintColor: HIGColors.blue,
+        tabBarInactiveTintColor: HIGColors.gray2,
       }}
     >
       <Tab.Screen 
@@ -300,7 +302,8 @@ function MainTabs() {
           ),
         }}
       />
-      <Tab.Screen 
+      {/* Feature Backlog - Community Tab */}
+      {/* <Tab.Screen 
         name="Community" 
         component={CommunityStack} 
         options={{
@@ -311,7 +314,7 @@ function MainTabs() {
             </View>
           ),
         }}
-      />
+      /> */}
       <Tab.Screen 
         name="Profile" 
         component={ProfileStack} 
@@ -328,15 +331,68 @@ function MainTabs() {
   );
 }
 
+// Auth Stack Navigator
+function AuthStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="SignIn" component={SignInScreen} />
+      <Stack.Screen name="SignUp" component={SignUpScreen} />
+    </Stack.Navigator>
+  );
+}
+
 function AppNavigator() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { loadStoredUser } = useUserStore();
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
+    try {
+      const user = await AuthService.restoreSession();
+      if (user) {
+        // User is authenticated, load stored user profile
+        await loadStoredUser();
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      // console.error('Auth check error:', error);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: HIGColors.systemBackground }}>
+        <ActivityIndicator size="large" color={HIGColors.blue} />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator 
+        initialRouteName={isAuthenticated ? "MainTabs" : "Auth"}
         screenOptions={{
           headerShown: false,
           presentation: 'modal',
         }}
       >
+        <Stack.Screen 
+          name="Auth" 
+          component={AuthStack} 
+        />
         <Stack.Screen 
           name="MainTabs" 
           component={MainTabs} 

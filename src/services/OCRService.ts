@@ -32,7 +32,7 @@ class OCRService {
         blocks: result.blocks
       };
     } catch (error) {
-      console.error('ML Kit Text Recognition Error:', error);
+      // console.error('ML Kit Text Recognition Error:', error);
       return { text: '', confidence: 0, blocks: [] };
     }
   }
@@ -43,7 +43,7 @@ class OCRService {
       const result = await TextRecognition.recognize(imagePath);
       return parseMLKitResult(result.blocks);
     } catch (error) {
-      console.error('ML Kit Recognition and Parse Error:', error);
+      // console.error('ML Kit Recognition and Parse Error:', error);
       return {};
     }
   }

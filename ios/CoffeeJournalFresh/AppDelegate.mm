@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import <UIKit/UIKit.h>
 
 @implementation AppDelegate
 
@@ -10,6 +11,10 @@
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
+
+  // Force dark keyboard appearance globally
+  [[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+  [[UITextView appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

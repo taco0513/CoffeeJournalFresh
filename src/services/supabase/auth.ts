@@ -1,5 +1,6 @@
 import { supabase } from './client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ErrorHandler } from '../../utils/errorHandler';
 
 const AUTH_STORAGE_KEY = '@coffee_journal_auth';
 
@@ -31,8 +32,16 @@ class AuthService {
         password,
       });
       
-      if (error) throw error;
-      if (!data.user) throw new Error('No user returned from signup');
+      if (error) {
+        const authError = new Error(error.message);
+        (authError as any).code = 'AUTH_ERROR';
+        throw authError;
+      }
+      if (!data.user) {
+        const authError = new Error('No user returned from signup');
+        (authError as any).code = 'AUTH_ERROR';
+        throw authError;
+      }
       
       // Store auth state
       await this.saveAuthState(data.user.id);
@@ -41,8 +50,11 @@ class AuthService {
         id: data.user.id,
         email: data.user.email,
       };
-    } catch (error) {
-      console.error('Sign up error:', error);
+    } catch (error: any) {
+      // console.error('Sign up error:', error);
+      if (error.message?.includes('fetch')) {
+        error.code = 'NETWORK_ERROR';
+      }
       throw error;
     }
   }
@@ -68,7 +80,7 @@ class AuthService {
         email: data.user.email,
       };
     } catch (error) {
-      console.error('Sign in error:', error);
+      // console.error('Sign in error:', error);
       throw error;
     }
   }
@@ -84,7 +96,7 @@ class AuthService {
       // Clear auth state
       await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
     } catch (error) {
-      console.error('Sign out error:', error);
+      // console.error('Sign out error:', error);
       throw error;
     }
   }
@@ -103,7 +115,7 @@ class AuthService {
         email: user.email || undefined,
       };
     } catch (error) {
-      console.error('Get current user error:', error);
+      // console.error('Get current user error:', error);
       return null;
     }
   }
@@ -133,7 +145,7 @@ class AuthService {
       
       return user;
     } catch (error) {
-      console.error('Restore session error:', error);
+      // console.error('Restore session error:', error);
       return null;
     }
   }
@@ -167,7 +179,7 @@ class AuthService {
       
       if (error) throw error;
     } catch (error) {
-      console.error('Reset password error:', error);
+      // console.error('Reset password error:', error);
       throw error;
     }
   }
@@ -183,7 +195,7 @@ class AuthService {
       
       if (error) throw error;
     } catch (error) {
-      console.error('Update password error:', error);
+      // console.error('Update password error:', error);
       throw error;
     }
   }
@@ -192,7 +204,7 @@ class AuthService {
     try {
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, userId);
     } catch (error) {
-      console.error('Save auth state error:', error);
+      // console.error('Save auth state error:', error);
     }
   }
 }

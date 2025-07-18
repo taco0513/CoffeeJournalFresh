@@ -31,18 +31,18 @@ export const HIGConstants = {
   SPACING_XL: 20,
 };
 
-// Apple HIG 색상 시스템
-export const HIGColors = {
-  // 시스템 색상
+// Original Apple HIG Color System
+const HIGColorsOriginal = {
+  // System colors
   blue: '#007AFF',
-  green: '#2E7D32', // Updated for better contrast
+  green: '#2E7D32',
   red: '#FF3B30',
   orange: '#FF9500',
   yellow: '#FFCC00',
   purple: '#AF52DE',
   pink: '#FF2D92',
   
-  // 그레이 스케일
+  // Gray scale
   gray: '#8E8E93',
   gray2: '#AEAEB2',
   gray3: '#C7C7CC',
@@ -50,19 +50,67 @@ export const HIGColors = {
   gray5: '#E5E5EA',
   gray6: '#F2F2F7',
   
-  // 라벨 색상
+  // Label colors
   label: '#000000',
   secondaryLabel: '#3C3C43',
   tertiaryLabel: '#3C3C43',
   quaternaryLabel: '#3C3C43',
   
-  // 배경 색상
+  // Background colors
   systemBackground: '#FFFFFF',
   secondarySystemBackground: '#F2F2F7',
   tertiarySystemBackground: '#FFFFFF',
   
-  // 오버레이
+  // Overlay
   overlay: 'rgba(0, 0, 0, 0.4)',
+};
+
+// Monochromatic Color System
+const HIGColorsMonochrome = {
+  // All primary colors mapped to black
+  blue: '#000000',
+  green: '#2E7D32',    // Keep for success states only
+  red: '#FF3B30',      // Keep for errors/warnings only
+  orange: '#FF9500',   // Keep for warnings only
+  yellow: '#000000',
+  purple: '#000000',
+  pink: '#000000',
+  
+  // Monochromatic Scale
+  gray: '#666666',     // 60% black
+  gray2: '#999999',    // 40% black
+  gray3: '#CCCCCC',    // 20% black
+  gray4: '#E0E0E0',    // 12% black
+  gray5: '#F0F0F0',    // 6% black
+  gray6: '#F8F8F8',    // 3% black
+  
+  // Label Colors (monochromatic)
+  label: '#000000',
+  secondaryLabel: '#666666',
+  tertiaryLabel: '#999999',
+  quaternaryLabel: '#CCCCCC',
+  
+  // Background Colors (monochromatic)
+  systemBackground: '#FFFFFF',
+  secondarySystemBackground: '#F8F8F8',
+  tertiarySystemBackground: '#FFFFFF',
+  
+  // Overlay
+  overlay: 'rgba(0, 0, 0, 0.5)',
+};
+
+// For now, let's use a simple monochrome mode
+export const HIGColors = HIGColorsMonochrome;
+
+// Functions for future use
+export const toggleColorMode = () => {
+  return true; // Always monochrome for now
+};
+
+export const getColorMode = () => 'monochrome';
+
+export const setColorMode = (monochrome: boolean) => {
+  // No-op for now
 };
 
 // 공통 버튼 스타일
@@ -223,6 +271,7 @@ export const hitSlop = {
 
 // Add HIT_SLOP constant for backward compatibility
 HIGConstants.HIT_SLOP = hitSlop.default;
+
 
 // 공통 레이아웃 스타일
 export const commonLayoutStyles = StyleSheet.create({

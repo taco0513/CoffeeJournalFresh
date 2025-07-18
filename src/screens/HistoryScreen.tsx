@@ -40,7 +40,7 @@ export default function HistoryScreen() {
       const tastings = realmService.getTastingRecords({ isDeleted: false });
       setAllTastings(Array.from(tastings));
     } catch (error) {
-      console.error('Failed to load data:', error);
+      // console.error('Failed to load data:', error);
     } finally {
       setLoading(false);
     }

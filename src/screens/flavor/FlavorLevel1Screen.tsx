@@ -127,7 +127,7 @@ const FlavorLevel1Screen = () => {
                     isSelected && styles.selectedText,
                   ]}
                 >
-                  {category}
+                  {flavorWheelKorean.level1[category as keyof typeof flavorWheelKorean.level1]}
                 </Text>
                 <Text
                   style={[
@@ -135,7 +135,7 @@ const FlavorLevel1Screen = () => {
                     isSelected && styles.selectedText,
                   ]}
                 >
-                  ({flavorWheelKorean.level1[category as keyof typeof flavorWheelKorean.level1]})
+                  ({category})
                 </Text>
                 {isSelected && (
                   <Text style={styles.checkmark}>✓</Text>

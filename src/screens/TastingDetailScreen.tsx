@@ -108,7 +108,7 @@ const TastingDetailScreen = () => {
         setTastingRecord(plainRecord);
       }
     } catch (err) {
-      console.error('Failed to load tasting data:', err);
+      // console.error('Failed to load tasting data:', err);
       if (isMountedRef.current) {
         setError('데이터를 불러오는 중 오류가 발생했습니다.');
       }
@@ -122,15 +122,6 @@ const TastingDetailScreen = () => {
   const handleEdit = () => {
     // TODO: Navigate to edit screen
     Alert.alert('수정', '수정 기능은 아직 구현되지 않았습니다.');
-  };
-
-  const handleShare = () => {
-    if (!tastingId) {
-      showErrorToast('공유 실패', '테이스팅 ID가 없습니다');
-      return;
-    }
-    
-    navigation.navigate('ShareReview' as never, { tastingId } as never);
   };
 
   const handleDelete = () => {
@@ -169,7 +160,7 @@ const TastingDetailScreen = () => {
               
             } catch (error) {
               showErrorToast('삭제 실패', '다시 시도해주세요');
-              console.error('Delete error:', error);
+              // console.error('Delete error:', error);
               setIsDeleting(false);
             }
           }
@@ -241,13 +232,6 @@ const TastingDetailScreen = () => {
           textStyle={styles.backButtonText}
         />
         <View style={styles.headerButtons}>
-          <NavigationButton
-            title="공유"
-            onPress={handleShare}
-            variant="primary"
-            fullWidth={false}
-            style={styles.shareButton}
-          />
           <NavigationButton
             title="수정"
             onPress={handleEdit}
@@ -485,9 +469,6 @@ const styles = StyleSheet.create({
   headerButtons: {
     flexDirection: 'row',
     gap: 12,
-  },
-  shareButton: {
-    // 공통 스타일로 대체됨
   },
   editButton: {
     // 공통 스타일로 대체됨

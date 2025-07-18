@@ -59,7 +59,7 @@ class DataCollectionService {
       };
 
     } catch (error) {
-      console.error('데이터 수집 중 오류:', error);
+      // console.error('데이터 수집 중 오류:', error);
       return {
         success: false,
         message: `데이터 수집 실패: ${error instanceof Error ? error.message : '알 수 없는 오류'}`
@@ -124,7 +124,7 @@ class DataCollectionService {
           });
 
         if (error) {
-          console.error(`레코드 ${tasting.id} 업로드 실패:`, error);
+          // console.error(`레코드 ${tasting.id} 업로드 실패:`, error);
           continue;
         }
 
@@ -134,7 +134,7 @@ class DataCollectionService {
         await new Promise(resolve => setTimeout(resolve, 100));
 
       } catch (error) {
-        console.error(`레코드 ${tasting.id} 처리 중 오류:`, error);
+        // console.error(`레코드 ${tasting.id} 처리 중 오류:`, error);
         continue;
       }
     }
@@ -188,7 +188,7 @@ class DataCollectionService {
       };
 
     } catch (error) {
-      console.error('기간별 데이터 수집 중 오류:', error);
+      // console.error('기간별 데이터 수집 중 오류:', error);
       return {
         success: false,
         message: `기간별 데이터 수집 실패: ${error instanceof Error ? error.message : '알 수 없는 오류'}`
@@ -221,7 +221,7 @@ class DataCollectionService {
       };
 
     } catch (error) {
-      console.error('데이터 수집 상태 확인 중 오류:', error);
+      // console.error('데이터 수집 상태 확인 중 오류:', error);
       return {
         localRecords: 0,
         pendingRecords: 0
@@ -282,7 +282,7 @@ class DataCollectionService {
       };
 
     } catch (error) {
-      console.error('테스트 데이터 생성 중 오류:', error);
+      // console.error('테스트 데이터 생성 중 오류:', error);
       return {
         success: false,
         message: `테스트 데이터 생성 실패: ${error instanceof Error ? error.message : '알 수 없는 오류'}`

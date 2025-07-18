@@ -15,7 +15,7 @@ export class StorageService {
       const updatedData = [...existingData, tasting];
       await AsyncStorage.setItem(STORAGE_KEYS.TASTINGS, JSON.stringify(updatedData));
     } catch (error) {
-      console.error('Error saving tasting:', error);
+      // console.error('Error saving tasting:', error);
       throw error;
     }
   }
@@ -26,7 +26,7 @@ export class StorageService {
       const data = await AsyncStorage.getItem(STORAGE_KEYS.TASTINGS);
       return data ? JSON.parse(data) : [];
     } catch (error) {
-      console.error('Error getting tastings:', error);
+      // console.error('Error getting tastings:', error);
       return [];
     }
   }
@@ -39,7 +39,7 @@ export class StorageService {
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, limit);
     } catch (error) {
-      console.error('Error getting recent tastings:', error);
+      // console.error('Error getting recent tastings:', error);
       return [];
     }
   }
@@ -51,7 +51,7 @@ export class StorageService {
       const updatedTastings = tastings.filter(t => t.id !== id);
       await AsyncStorage.setItem(STORAGE_KEYS.TASTINGS, JSON.stringify(updatedTastings));
     } catch (error) {
-      console.error('Error deleting tasting:', error);
+      // console.error('Error deleting tasting:', error);
       throw error;
     }
   }
@@ -66,7 +66,7 @@ export class StorageService {
         await AsyncStorage.setItem(STORAGE_KEYS.TASTINGS, JSON.stringify(tastings));
       }
     } catch (error) {
-      console.error('Error updating tasting:', error);
+      // console.error('Error updating tasting:', error);
       throw error;
     }
   }
@@ -76,7 +76,7 @@ export class StorageService {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.CURRENT_TASTING, JSON.stringify(data));
     } catch (error) {
-      console.error('Error saving current tasting:', error);
+      // console.error('Error saving current tasting:', error);
       throw error;
     }
   }
@@ -87,7 +87,7 @@ export class StorageService {
       const data = await AsyncStorage.getItem(STORAGE_KEYS.CURRENT_TASTING);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.error('Error getting current tasting:', error);
+      // console.error('Error getting current tasting:', error);
       return null;
     }
   }
@@ -97,7 +97,7 @@ export class StorageService {
     try {
       await AsyncStorage.removeItem(STORAGE_KEYS.CURRENT_TASTING);
     } catch (error) {
-      console.error('Error clearing current tasting:', error);
+      // console.error('Error clearing current tasting:', error);
       throw error;
     }
   }
@@ -108,7 +108,7 @@ export class StorageService {
       const tastings = await this.getTastings();
       return JSON.stringify({ tastings, exportDate: new Date().toISOString() }, null, 2);
     } catch (error) {
-      console.error('Error exporting data:', error);
+      // console.error('Error exporting data:', error);
       throw error;
     }
   }
@@ -121,7 +121,7 @@ export class StorageService {
         await AsyncStorage.setItem(STORAGE_KEYS.TASTINGS, JSON.stringify(tastings));
       }
     } catch (error) {
-      console.error('Error importing data:', error);
+      // console.error('Error importing data:', error);
       throw error;
     }
   }
@@ -131,7 +131,7 @@ export class StorageService {
     try {
       await AsyncStorage.multiRemove(Object.values(STORAGE_KEYS));
     } catch (error) {
-      console.error('Error clearing all data:', error);
+      // console.error('Error clearing all data:', error);
       throw error;
     }
   }
@@ -149,7 +149,7 @@ export class StorageService {
         storageSize: `${sizeInKB} KB`
       };
     } catch (error) {
-      console.error('Error getting storage info:', error);
+      // console.error('Error getting storage info:', error);
       return { totalRecords: 0, storageSize: '0 KB' };
     }
   }

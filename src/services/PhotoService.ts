@@ -68,7 +68,7 @@ class PhotoService {
         );
         
         if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('Camera permission denied');
+          // console.log('Camera permission denied');
           return null;
         }
       }
@@ -104,7 +104,7 @@ class PhotoService {
         });
       });
     } catch (error) {
-      console.error('Camera error:', error);
+      // console.error('Camera error:', error);
       return null;
     }
   }
@@ -145,7 +145,7 @@ class PhotoService {
         });
       });
     } catch (error) {
-      console.error('Library error:', error);
+      // console.error('Library error:', error);
       return null;
     }
   }
@@ -174,7 +174,7 @@ class PhotoService {
       
       return localPath;
     } catch (error) {
-      console.error('Save photo error:', error);
+      // console.error('Save photo error:', error);
       return null;
     }
   }
@@ -190,7 +190,7 @@ class PhotoService {
       }
       return false;
     } catch (error) {
-      console.error('Delete photo error:', error);
+      // console.error('Delete photo error:', error);
       return false;
     }
   }
@@ -214,7 +214,7 @@ class PhotoService {
       // In a real implementation, you'd resize the image
       return photoPath;
     } catch (error) {
-      console.error('Create thumbnail error:', error);
+      // console.error('Create thumbnail error:', error);
       return null;
     }
   }
@@ -241,7 +241,7 @@ class PhotoService {
         }
       }
     } catch (error) {
-      console.error('Cleanup photos error:', error);
+      // console.error('Cleanup photos error:', error);
     }
   }
 }

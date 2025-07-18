@@ -116,7 +116,7 @@ const StatsScreen = () => {
         avgScore: data.count > 0 ? data.totalScore / data.count : 0
       }));
     } catch (error) {
-      console.error('Failed to load tasting trends:', error);
+      // console.error('Failed to load tasting trends:', error);
       return [];
     }
   };
@@ -152,7 +152,7 @@ const StatsScreen = () => {
         mouthfeel: totalMouthfeel / count
       };
     } catch (error) {
-      console.error('Failed to load sensory averages:', error);
+      // console.error('Failed to load sensory averages:', error);
       return null;
     }
   };
@@ -180,7 +180,7 @@ const StatsScreen = () => {
       setTastingTrend(trends);
       setSensoryData(sensoryAvg);
     } catch (error) {
-      console.error('Failed to load statistics:', error);
+      // console.error('Failed to load statistics:', error);
     } finally {
       setLoading(false);
     }
@@ -419,19 +419,6 @@ const StatsScreen = () => {
           </View>
         )}
 
-        {/* Export Button */}
-        <TouchableOpacity
-          style={styles.exportButton}
-          onPress={() => navigation.navigate('Export' as never)}
-        >
-          <Text style={styles.exportIcon}>📤</Text>
-          <View style={styles.exportTextContainer}>
-            <Text style={styles.exportTitle}>데이터 내보내기</Text>
-            <Text style={styles.exportSubtitle}>CSV 또는 JSON 형식으로 다운로드</Text>
-          </View>
-          <Text style={styles.exportArrow}>›</Text>
-        </TouchableOpacity>
-
         <View style={styles.bottomSpacer} />
       </ScrollView>
     </SafeAreaView>
@@ -627,41 +614,6 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: HIGConstants.SPACING_XL * 2,
-  },
-  exportButton: {
-    backgroundColor: HIGColors.secondarySystemBackground,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: HIGConstants.SPACING_LG,
-    marginHorizontal: HIGConstants.SPACING_LG,
-    marginTop: HIGConstants.SPACING_LG,
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  exportIcon: {
-    fontSize: 24,
-    marginRight: HIGConstants.SPACING_MD,
-  },
-  exportTextContainer: {
-    flex: 1,
-  },
-  exportTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  exportSubtitle: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
-  },
-  exportArrow: {
-    fontSize: 20,
-    color: HIGColors.tertiaryLabel,
   },
   chartCard: {
     backgroundColor: HIGColors.secondarySystemBackground,

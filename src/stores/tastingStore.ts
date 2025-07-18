@@ -93,11 +93,10 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       mouthfeel: currentTasting.mouthfeel || 'Clean',
     };
 
-    console.log('Saving tasting data:');
-    console.log('- currentTasting:', currentTasting);
-    console.log('- selectedFlavors:', selectedFlavors);
-    console.log('- sensoryAttributes:', sensoryAttributes);
-
+    // console.log('Saving tasting data:');
+    // console.log('- currentTasting:', currentTasting);
+    // console.log('- selectedFlavors:', selectedFlavors);
+    // console.log('- sensoryAttributes:', sensoryAttributes);
     try {
       RealmService.getInstance().saveTasting({
         coffeeInfo: {
@@ -120,12 +119,11 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         },
       });
 
-      console.log('Tasting saved successfully');
-
+      // console.log('Tasting saved successfully');
       // 저장 후 점수 계산
       state.calculateMatchScore();
     } catch (error) {
-      console.error('Error saving tasting:', error);
+      // console.error('Error saving tasting:', error);
       throw error;
     }
   },

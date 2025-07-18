@@ -94,7 +94,7 @@ const CommunityReviewScreen = () => {
 
       setReview(mockReview);
     } catch (error) {
-      console.error('Failed to load review details:', error);
+      // console.error('Failed to load review details:', error);
       Alert.alert('오류', '리뷰 상세 정보를 불러오는 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
@@ -131,7 +131,7 @@ const CommunityReviewScreen = () => {
 
       setComments(mockComments);
     } catch (error) {
-      console.error('Failed to load comments:', error);
+      // console.error('Failed to load comments:', error);
     }
   };
 
@@ -170,7 +170,7 @@ const CommunityReviewScreen = () => {
         } : prev);
       }
     } catch (error) {
-      console.error('Failed to add comment:', error);
+      // console.error('Failed to add comment:', error);
       Alert.alert('오류', '댓글을 추가하는 중 오류가 발생했습니다.');
     }
   };

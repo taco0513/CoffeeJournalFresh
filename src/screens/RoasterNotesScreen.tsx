@@ -26,7 +26,7 @@ const RoasterNotesScreen = () => {
   
   useEffect(() => {
     if (scannedRoasterNotes) {
-      console.log('스캔된 로스터 노트 적용:', scannedRoasterNotes);
+      // console.log('스캔된 로스터 노트 적용:', scannedRoasterNotes);
       setNotes(scannedRoasterNotes);
     }
   }, [scannedRoasterNotes]);

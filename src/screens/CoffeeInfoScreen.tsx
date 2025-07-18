@@ -14,13 +14,15 @@ import {
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useTastingStore} from '../stores/tastingStore';
 import { AutocompleteInput } from '../components/common';
-import PhotoPicker from '../components/PhotoPicker';
+// Feature Backlog - Photo feature
+// import PhotoPicker from '../components/PhotoPicker';
 import RealmService from '../services/realm/RealmService';
 import { parseCoffeeName } from '../utils/coffeeParser';
 import { NavigationButton } from '../components/common';
-import CameraModal from '../components/CameraModal';
-import { ParsedCoffeeInfo } from '../services/OCRService';
-import { parseOCRResult } from '../utils/ocrParser';
+// import CameraModal from '../components/CameraModal';
+// Feature Backlog - OCR imports
+// import { ParsedCoffeeInfo } from '../services/OCRService';
+// import { parseOCRResult } from '../utils/ocrParser';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 
 const CoffeeInfoScreen = () => {
@@ -30,8 +32,8 @@ const CoffeeInfoScreen = () => {
   // Zustand store 사용
   const { currentTasting, updateField } = useTastingStore();
   
-  // 사진 상태
-  const [photoUri, setPhotoUri] = useState<string>(currentTasting.photoUri || '');
+  // 사진 상태 (Feature Backlog)
+  // const [photoUri, setPhotoUri] = useState<string>(currentTasting.photoUri || '');
   
   // 자동완성 상태
   const [cafeSuggestions, setCafeSuggestions] = useState<string[]>([]);
@@ -42,47 +44,47 @@ const CoffeeInfoScreen = () => {
   const [processSuggestions, setProcessSuggestions] = useState<string[]>([]);
   // const [showCafeSuggestions, setShowCafeSuggestions] = useState(false);
   // const [showRoasterSuggestions, setShowRoasterSuggestions] = useState(false);
-  const [showCameraModal, setShowCameraModal] = useState(false);
+  // const [showCameraModal, setShowCameraModal] = useState(false);
   
-  // 스캔된 로스터 노트 저장
-  const [scannedRoasterNotes, setScannedRoasterNotes] = useState('');
+  // Feature Backlog - 스캔된 로스터 노트 저장
+  // const [scannedRoasterNotes, setScannedRoasterNotes] = useState('');
   
   const realmService = RealmService.getInstance();
   
   // 기본 가공 방식 옵션
   const defaultProcessOptions = ['Washed', 'Natural', 'Honey', 'Anaerobic'];
 
-  // OCR 결과 처리
-  useEffect(() => {
-    const params = route.params as any;
-    const ocrText = params?.ocrText;
-    const scannedText = params?.scannedText;
-    const scannedData = params?.scannedData;
-    
-    if (scannedData) {
-      console.log('스캔 데이터 적용:', scannedData);
-      
-      // 각 필드에 맞게 데이터 설정
-      if (scannedData.roastery) updateField('roastery', scannedData.roastery);
-      if (scannedData.coffeeName) updateField('coffeeName', scannedData.coffeeName);
-      if (scannedData.origin) updateField('origin', scannedData.origin);
-      if (scannedData.variety) updateField('variety', scannedData.variety);
-      if (scannedData.process) updateField('process', scannedData.process);
-      if (scannedData.altitude) updateField('altitude', scannedData.altitude);
-      
-      // 로스터 노트 저장
-      if (scannedData.roasterNotes) {
-        setScannedRoasterNotes(scannedData.roasterNotes);
-        console.log('스캔된 로스터 노트:', scannedData.roasterNotes);
-      }
-    } else if (scannedText) {
-      // 스캔된 텍스트를 커피 이름에 설정
-      updateField('coffeeName', scannedText);
-      console.log('스캔된 텍스트 적용:', scannedText);
-    } else if (ocrText) {
-      handleOCRResult(ocrText);
-    }
-  }, [route.params]);  // eslint-disable-line react-hooks/exhaustive-deps
+  // Feature Backlog - OCR 결과 처리
+  // useEffect(() => {
+  //   const params = route.params as any;
+  //   const ocrText = params?.ocrText;
+  //   const scannedText = params?.scannedText;
+  //   const scannedData = params?.scannedData;
+  //   
+  //   if (scannedData) {
+  //     console.log('스캔 데이터 적용:', scannedData);
+  //     
+  //     // 각 필드에 맞게 데이터 설정
+  //     if (scannedData.roastery) updateField('roastery', scannedData.roastery);
+  //     if (scannedData.coffeeName) updateField('coffeeName', scannedData.coffeeName);
+  //     if (scannedData.origin) updateField('origin', scannedData.origin);
+  //     if (scannedData.variety) updateField('variety', scannedData.variety);
+  //     if (scannedData.process) updateField('process', scannedData.process);
+  //     if (scannedData.altitude) updateField('altitude', scannedData.altitude);
+  //     
+  //     // 로스터 노트 저장
+  //     if (scannedData.roasterNotes) {
+  //       setScannedRoasterNotes(scannedData.roasterNotes);
+  //       console.log('스캔된 로스터 노트:', scannedData.roasterNotes);
+  //     }
+  //   } else if (scannedText) {
+  //     // 스캔된 텍스트를 커피 이름에 설정
+  //     updateField('coffeeName', scannedText);
+  //     console.log('스캔된 텍스트 적용:', scannedText);
+  //   } else if (ocrText) {
+  //     handleOCRResult(ocrText);
+  //   }
+  // }, [route.params]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   // 카페 입력 변경 시 제안 목록 업데이트
   useEffect(() => {
@@ -163,7 +165,7 @@ const CoffeeInfoScreen = () => {
               try {
                 await realmService.saveTasting(testTasting);
               } catch (error) {
-                console.error('Error saving test tasting:', error);
+                // console.error('Error saving test tasting:', error);
               }
             }
           };
@@ -172,7 +174,7 @@ const CoffeeInfoScreen = () => {
           addTestData();
         }
       } catch (error) {
-        console.error('Error checking database on mount:', error);
+        // console.error('Error checking database on mount:', error);
       }
     }
   }, []);
@@ -271,88 +273,91 @@ const CoffeeInfoScreen = () => {
         realmService.incrementRoasterVisit(currentTasting.roastery);
       }
       
-      // 다음 단계로 이동 (로스터 노트 전달)
-      if (scannedRoasterNotes) {
-        navigation.navigate('RoasterNotes' as never, {
-          scannedRoasterNotes: scannedRoasterNotes
-        } as never);
-      } else {
-        navigation.navigate('RoasterNotes' as never);
-      }
+      // Feature Backlog - 로스터 노트 전달
+      // if (scannedRoasterNotes) {
+      //   navigation.navigate('RoasterNotes' as never, {
+      //     scannedRoasterNotes: scannedRoasterNotes
+      //   } as never);
+      // } else {
+      navigation.navigate('RoasterNotes' as never);
+      // }
     }
   };
 
-  const handleScanPress = () => {
-    Alert.alert('테스트', '버튼이 클릭되었습니다!');
-    console.log('OCR Scan button pressed');
-    navigation.navigate('OCRScan' as never);
-  };
+  // Feature Backlog - OCR scan handler
+  // const handleScanPress = () => {
+  //   Alert.alert('테스트', '버튼이 클릭되었습니다!');
+  //   console.log('OCR Scan button pressed');
+  //   navigation.navigate('OCRScan' as never);
+  // };
 
-  const handleOCRResult = (ocrText: string) => {
-    try {
-      const parsedInfo = parseOCRResult([ocrText]);
-      
-      // Auto-fill form fields with extracted OCR data
-      if (parsedInfo.coffeeName) {
-        updateField('coffeeName', parsedInfo.coffeeName);
-      }
-      if (parsedInfo.roastery) {
-        updateField('roastery', parsedInfo.roastery);
-      }
-      if (parsedInfo.origin) {
-        updateField('origin', parsedInfo.origin);
-      }
-      if (parsedInfo.variety) {
-        updateField('variety', parsedInfo.variety);
-      }
-      if (parsedInfo.process) {
-        updateField('process', parsedInfo.process);
-      }
-      if (parsedInfo.altitude) {
-        updateField('altitude', parsedInfo.altitude);
-      }
-    } catch (error) {
-      console.error('OCR parsing error:', error);
-    }
-  };
+  // Feature Backlog - OCR result handler
+  // const handleOCRResult = (ocrText: string) => {
+  //   try {
+  //     const parsedInfo = parseOCRResult([ocrText]);
+  //     
+  //     // Auto-fill form fields with extracted OCR data
+  //     if (parsedInfo.coffeeName) {
+  //       updateField('coffeeName', parsedInfo.coffeeName);
+  //     }
+  //     if (parsedInfo.roastery) {
+  //       updateField('roastery', parsedInfo.roastery);
+  //     }
+  //     if (parsedInfo.origin) {
+  //       updateField('origin', parsedInfo.origin);
+  //     }
+  //     if (parsedInfo.variety) {
+  //       updateField('variety', parsedInfo.variety);
+  //     }
+  //     if (parsedInfo.process) {
+  //       updateField('process', parsedInfo.process);
+  //     }
+  //     if (parsedInfo.altitude) {
+  //       updateField('altitude', parsedInfo.altitude);
+  //     }
+  //   } catch (error) {
+  //     console.error('OCR parsing error:', error);
+  //   }
+  // };
 
   // const handleCameraPress = () => {
   //   setShowCameraModal(true);
   // };
 
-  const handleTextRecognized = (info: ParsedCoffeeInfo) => {
-    // Auto-fill form fields with extracted OCR data
-    if (info.coffeeName) {
-      updateField('coffeeName', info.coffeeName);
-    }
-    if (info.roastery) {
-      updateField('roastery', info.roastery);
-    }
-    if (info.origin) {
-      updateField('origin', info.origin);
-    }
-    if (info.variety) {
-      updateField('variety', info.variety);
-    }
-    if (info.process) {
-      updateField('process', info.process);
-    }
-    if (info.altitude) {
-      updateField('altitude', info.altitude);
-    }
-  };
+  // Feature Backlog - Text recognition handler
+  // const handleTextRecognized = (info: ParsedCoffeeInfo) => {
+  //   // Auto-fill form fields with extracted OCR data
+  //   if (info.coffeeName) {
+  //     updateField('coffeeName', info.coffeeName);
+  //   }
+  //   if (info.roastery) {
+  //     updateField('roastery', info.roastery);
+  //   }
+  //   if (info.origin) {
+  //     updateField('origin', info.origin);
+  //   }
+  //   if (info.variety) {
+  //     updateField('variety', info.variety);
+  //   }
+  //   if (info.process) {
+  //     updateField('process', info.process);
+  //   }
+  //   if (info.altitude) {
+  //     updateField('altitude', info.altitude);
+  //   }
+  // };
 
-  // 사진 선택 처리
-  const handlePhotoSelected = (uri: string) => {
-    setPhotoUri(uri);
-    updateField('photoUri', uri);
-  };
+  // 사진 선택 처리 (Feature Backlog)
+  // const handlePhotoSelected = (uri: string) => {
+  //   setPhotoUri(uri);
+  //   updateField('photoUri', uri);
+  // };
 
-  // 사진 삭제 처리
-  const handlePhotoRemoved = () => {
-    setPhotoUri('');
-    updateField('photoUri', '');
-  };
+  // 사진 삭제 처리 (Feature Backlog)
+  // const handlePhotoRemoved = () => {
+  //   setPhotoUri('');
+  //   updateField('photoUri', '');
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -383,8 +388,8 @@ const CoffeeInfoScreen = () => {
           showsVerticalScrollIndicator={true}
           keyboardShouldPersistTaps="handled">
 
-          {/* OCR 스캔 버튼 */}
-          <View style={styles.scanSection}>
+          {/* Feature Backlog - OCR 스캔 버튼 */}
+          {/* <View style={styles.scanSection}>
             <TouchableOpacity 
               style={[commonButtonStyles.buttonSecondary, styles.scanButton]} 
               onPress={handleScanPress}
@@ -395,20 +400,20 @@ const CoffeeInfoScreen = () => {
             <Text style={styles.scanHint}>
               커피 패키지 라벨을 스캔하여 정보를 자동으로 입력하세요
             </Text>
-          </View>
+          </View> */}
 
-          {/* 사진 선택 */}
-          <View style={styles.form}>
+          {/* Feature Backlog - 사진 선택 */}
+          {/* <View style={styles.form}>
             <PhotoPicker
               photoUri={photoUri}
               onPhotoSelected={handlePhotoSelected}
               onPhotoRemoved={handlePhotoRemoved}
             />
-          </View>
+          </View> */}
 
           {/* 입력 폼 */}
           <View style={styles.form}>
-            {/* 카페 이름 (선택) */}
+            {/* 카페 이름 */}
             <View style={{ zIndex: cafeSuggestions.length > 0 && currentTasting.cafeName ? 10 : 1 }}>
               <AutocompleteInput
                 value={currentTasting.cafeName || ''}
@@ -428,7 +433,7 @@ const CoffeeInfoScreen = () => {
                 }}
                 suggestions={cafeSuggestions}
                 placeholder="예: 블루보틀"
-                label="카페 이름 (선택)"
+                label="카페 이름"
               />
             </View>
 
@@ -486,7 +491,7 @@ const CoffeeInfoScreen = () => {
               </Text>
             </View>
 
-            {/* 생산지 (선택) */}
+            {/* 생산지 */}
             <View style={{ zIndex: originSuggestions.length > 0 && currentTasting.origin ? 3 : 1 }}>
               <AutocompleteInput
                 value={currentTasting.origin || ''}
@@ -494,11 +499,11 @@ const CoffeeInfoScreen = () => {
                 onSelect={(item) => updateField('origin', item)}
                 suggestions={originSuggestions}
                 placeholder="예: Ethiopia / Yirgacheffe"
-                label="생산지 (선택)"
+                label="생산지"
               />
             </View>
 
-            {/* 품종 (선택) */}
+            {/* 품종 */}
             <View style={{ zIndex: varietySuggestions.length > 0 && currentTasting.variety ? 2 : 1 }}>
               <AutocompleteInput
                 value={currentTasting.variety || ''}
@@ -506,13 +511,13 @@ const CoffeeInfoScreen = () => {
                 onSelect={(item) => updateField('variety', item)}
                 suggestions={varietySuggestions}
                 placeholder="예: Heirloom"
-                label="품종 (선택)"
+                label="품종"
               />
             </View>
 
-            {/* 고도 (선택) */}
+            {/* 고도 */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>고도 (선택)</Text>
+              <Text style={styles.label}>고도</Text>
               <TextInput
                 style={styles.input}
                 placeholder="예: 1,800-2,000m"
@@ -523,7 +528,7 @@ const CoffeeInfoScreen = () => {
               />
             </View>
 
-            {/* 가공 방식 (선택) */}
+            {/* 가공 방식 */}
             <View style={{ zIndex: processSuggestions.length > 0 && currentTasting.process ? 1 : 1 }}>
               <AutocompleteInput
                 value={currentTasting.process || ''}
@@ -531,7 +536,7 @@ const CoffeeInfoScreen = () => {
                 onSelect={(item) => updateField('process', item)}
                 suggestions={processSuggestions}
                 placeholder="예: Washed"
-                label="가공 방식 (선택)"
+                label="가공 방식"
               />
             </View>
 
@@ -587,12 +592,12 @@ const CoffeeInfoScreen = () => {
         </ScrollView>
       </KeyboardAvoidingView>
       
-      {/* 카메라 모달 */}
-      <CameraModal
+      {/* Feature Backlog - 카메라 모달 */}
+      {/* <CameraModal
         visible={showCameraModal}
         onClose={() => setShowCameraModal(false)}
         onTextRecognized={handleTextRecognized}
-      />
+      /> */}
     </SafeAreaView>
   );
 };

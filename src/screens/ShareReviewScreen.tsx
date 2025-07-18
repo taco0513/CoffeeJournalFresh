@@ -58,7 +58,7 @@ const ShareReviewScreen = () => {
         navigation.goBack();
       }
     } catch (error) {
-      console.error('Failed to load tasting record:', error);
+      // console.error('Failed to load tasting record:', error);
       Alert.alert('오류', '테이스팅 기록을 불러오는 중 오류가 발생했습니다.');
     }
   };
@@ -112,7 +112,7 @@ const ShareReviewScreen = () => {
         ]
       );
     } catch (error) {
-      console.error('Failed to share review:', error);
+      // console.error('Failed to share review:', error);
       Alert.alert('오류', '리뷰를 공유하는 중 오류가 발생했습니다.');
     } finally {
       setIsSharing(false);

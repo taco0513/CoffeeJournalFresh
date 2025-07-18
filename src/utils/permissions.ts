@@ -29,42 +29,40 @@ export const checkCameraPermission = async (): Promise<PermissionResult> => {
   try {
     const result = await check(CAMERA_PERMISSION);
     
-    console.log('[Permissions] Camera permission check result:', result);
-    console.log('[Permissions] Result type:', typeof result);
-    console.log('[Permissions] Result === RESULTS.GRANTED:', result === RESULTS.GRANTED);
-    console.log('[Permissions] RESULTS constants:', {
-      UNAVAILABLE: RESULTS.UNAVAILABLE,
-      DENIED: RESULTS.DENIED,
-      LIMITED: RESULTS.LIMITED,
-      GRANTED: RESULTS.GRANTED,
-      BLOCKED: RESULTS.BLOCKED,
-    });
-    
+    // console.log('[Permissions] Camera permission check result:', result);
+    // console.log('[Permissions] Result type:', typeof result);
+    // console.log('[Permissions] Result === RESULTS.GRANTED:', result === RESULTS.GRANTED);
+    // console.log('[Permissions] RESULTS constants:', {
+    //   UNAVAILABLE: RESULTS.UNAVAILABLE,
+    //   DENIED: RESULTS.DENIED,
+    //   LIMITED: RESULTS.LIMITED,
+    //   GRANTED: RESULTS.GRANTED,
+    //   BLOCKED: RESULTS.BLOCKED,
+    // });
     // Also log string comparison
-    console.log('[Permissions] String comparison - result === "granted":', result === 'granted');
-    
+    // console.log('[Permissions] String comparison - result === "granted":', result === 'granted');
     switch (result) {
       case RESULTS.UNAVAILABLE:
-        console.log('[Permissions] Camera is unavailable');
+        // console.log('[Permissions] Camera is unavailable');
         return { status: 'unavailable', canAskAgain: false };
       case RESULTS.DENIED:
-        console.log('[Permissions] Camera permission is denied');
+        // console.log('[Permissions] Camera permission is denied');
         return { status: 'denied', canAskAgain: true };
       case RESULTS.LIMITED:
-        console.log('[Permissions] Camera permission is limited');
+        // console.log('[Permissions] Camera permission is limited');
         return { status: 'limited', canAskAgain: false };
       case RESULTS.GRANTED:
-        console.log('[Permissions] Camera permission is granted');
+        // console.log('[Permissions] Camera permission is granted');
         return { status: 'granted', canAskAgain: false };
       case RESULTS.BLOCKED:
-        console.log('[Permissions] Camera permission is blocked');
+        // console.log('[Permissions] Camera permission is blocked');
         return { status: 'blocked', canAskAgain: false };
       default:
-        console.log('[Permissions] Unknown permission result:', result);
+        // console.log('[Permissions] Unknown permission result:', result);
         return { status: 'denied', canAskAgain: true };
     }
   } catch (error) {
-    console.error('[Permissions] Error checking camera permission:', error);
+    // console.error('[Permissions] Error checking camera permission:', error);
     return { status: 'denied', canAskAgain: true };
   }
 };
@@ -88,42 +86,39 @@ export const requestCameraPermission = async (): Promise<PermissionResult> => {
         return { status: 'denied', canAskAgain: true };
     }
   } catch (error) {
-    console.error('Error requesting camera permission:', error);
+    // console.error('Error requesting camera permission:', error);
     return { status: 'denied', canAskAgain: false };
   }
 };
 
 export const handleCameraPermission = async (): Promise<boolean> => {
-  console.log('[Permissions] ========== Starting handleCameraPermission ==========');
-  
+  // console.log('[Permissions] ========== Starting handleCameraPermission ==========');
   // First check current permission status
   const checkResult = await checkCameraPermission();
-  console.log('[Permissions] Check result:', JSON.stringify(checkResult));
-  
+  // console.log('[Permissions] Check result:', JSON.stringify(checkResult));
   // Also try direct check for debugging
   try {
     const directResult = await check(CAMERA_PERMISSION);
-    console.log('[Permissions] Direct check result:', directResult);
-    console.log('[Permissions] Direct check type:', typeof directResult);
-    console.log('[Permissions] Direct check === "granted":', directResult === 'granted');
-    console.log('[Permissions] Direct check === RESULTS.GRANTED:', directResult === RESULTS.GRANTED);
-    console.log('[Permissions] Direct check === "limited":', directResult === 'limited');
-    console.log('[Permissions] Direct check === RESULTS.LIMITED:', directResult === RESULTS.LIMITED);
+    // console.log('[Permissions] Direct check result:', directResult);
+    // console.log('[Permissions] Direct check type:', typeof directResult);
+    // console.log('[Permissions] Direct check === "granted":', directResult === 'granted');
+    // console.log('[Permissions] Direct check === RESULTS.GRANTED:', directResult === RESULTS.GRANTED);
+    // console.log('[Permissions] Direct check === "limited":', directResult === 'limited');
+    // console.log('[Permissions] Direct check === RESULTS.LIMITED:', directResult === RESULTS.LIMITED);
   } catch (e) {
-    console.log('[Permissions] Direct check error:', e);
+    // console.log('[Permissions] Direct check error:', e);
   }
   
   // VisionCamera is temporarily disabled due to compatibility issues
-  console.log('[Permissions] Vision Camera is disabled - using react-native-permissions only');
-  
+  // console.log('[Permissions] Vision Camera is disabled - using react-native-permissions only');
   if (checkResult.status === 'granted' || checkResult.status === 'limited') {
     // Already granted or limited (iOS), no need to ask
-    console.log('[Permissions] ✅ Permission already granted or limited, returning true');
+    // console.log('[Permissions] ✅ Permission already granted or limited, returning true');
     return true;
   }
   
   if (checkResult.status === 'unavailable') {
-    console.log('[Permissions] Camera unavailable on this device');
+    // console.log('[Permissions] Camera unavailable on this device');
     Alert.alert(
       '카메라 사용 불가',
       '이 기기에서는 카메라를 사용할 수 없습니다.',
@@ -134,7 +129,7 @@ export const handleCameraPermission = async (): Promise<boolean> => {
   
   if (checkResult.status === 'blocked' || !checkResult.canAskAgain) {
     // Permission was denied and can't ask again - need to go to settings
-    console.log('[Permissions] Permission blocked, showing settings alert');
+    // console.log('[Permissions] Permission blocked, showing settings alert');
     Alert.alert(
       '카메라 권한 필요',
       '커피 패키지를 스캔하려면 카메라 권한이 필요합니다. 설정에서 카메라 권한을 허용해주세요.',
@@ -150,18 +145,17 @@ export const handleCameraPermission = async (): Promise<boolean> => {
   }
   
   // Permission is denied but we can ask again
-  console.log('[Permissions] Requesting permission...');
+  // console.log('[Permissions] Requesting permission...');
   const requestResult = await requestCameraPermission();
-  console.log('[Permissions] Request result:', requestResult);
-  
+  // console.log('[Permissions] Request result:', requestResult);
   if (requestResult.status === 'granted' || requestResult.status === 'limited') {
-    console.log('[Permissions] Permission granted or limited after request');
+    // console.log('[Permissions] Permission granted or limited after request');
     return true;
   }
   
   if (requestResult.status === 'blocked') {
     // User denied and selected "Don't ask again"
-    console.log('[Permissions] Permission blocked after request');
+    // console.log('[Permissions] Permission blocked after request');
     Alert.alert(
       '카메라 권한 필요',
       '커피 패키지를 스캔하려면 카메라 권한이 필요합니다. 설정에서 카메라 권한을 허용해주세요.',
@@ -175,9 +169,9 @@ export const handleCameraPermission = async (): Promise<boolean> => {
     );
   }
   
-  console.log('[Permissions] ❌ Permission not granted, returning false');
-  console.log('[Permissions] Final checkResult:', JSON.stringify(checkResult));
-  console.log('[Permissions] ========== End handleCameraPermission ==========');
+  // console.log('[Permissions] ❌ Permission not granted, returning false');
+  // console.log('[Permissions] Final checkResult:', JSON.stringify(checkResult));
+  // console.log('[Permissions] ========== End handleCameraPermission ==========');
   return false;
 };
 

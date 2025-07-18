@@ -1,24 +1,29 @@
 # Features Specification
 
-## MVP Features (Phase 1) - Social Learning Core
+## MVP Features (Phase 1) - Personal Journal Core
 
-### Core Tasting Flow with Community
+### Core Tasting Flow
 - **Coffee Information Input**: Name, roastery, origin, variety, altitude, process, temperature
-- **Crowd-Sourced Database**: Auto-complete from community-added coffees
-- **Roaster Notes Input**: Free-form text or select from official roaster notes
+- **Personal Coffee Library**: Build your own coffee database
+- **Roaster Notes Input**: Free-form text entry for reference
 - **Hierarchical Flavor Selection**: 4-level SCA flavor wheel navigation
 - **Sensory Evaluation**: Body, acidity, sweetness, finish, mouthfeel rating
-- **Community Comparison**: See how others rated the same coffee
-- **Match Score Calculation**: AI-powered comparison with both roaster notes and community
-- **Results Display**: Your score vs community average, top flavors by percentage
+- **Match Score Calculation**: AI-powered comparison with roaster notes
+- **Results Display**: Personal scores and flavor analysis
+- **Tasting History**: Track your coffee journey over time
 
-### Community & Social Features
-- **Community Insights**: "87 others tasted this coffee"
-- **Flavor Consensus**: Most detected flavors with percentages
-- **Average Scores**: Community averages for each sensory attribute
-- **Social Comparison**: Your palate vs community patterns
-- **Expert Notes**: Learn from verified experts and roasters
-- **Coffee Discovery**: Find new coffees through community activity
+### Personal Analytics & Growth
+- **Flavor Profile Tracking**: Monitor your taste preferences
+- **Sensory Development**: Track improvement in identifying flavors
+- **Personal Statistics**: Charts and insights about your coffee habits
+- **Progress Visualization**: See your palate development over time
+- **Export Capabilities**: Save your data in various formats
+
+### Community Features (UI Complete - Backend Postponed)
+- **Community UI**: Browse and view coffee reviews (display only)
+- **Social Comparison UI**: Interface for future community features
+- **Expert Notes UI**: Layout for professional insights (future integration)
+- **Discovery UI**: Coffee discovery interface (pending backend)
 
 ### Gamification & Growth
 - **User Levels**: Progress from Beginner to Expert
@@ -36,28 +41,37 @@
 
 ### User Interface
 - **Korean Language Support**: Full localization
-- **Social Dashboard**: Community activity feed
-- **Intuitive Navigation**: Clear 6-step workflow with social elements
-- **Visual Feedback**: Animated scores and community comparisons
+- **Personal Dashboard**: Your coffee journey at a glance
+- **Intuitive Navigation**: Clear 6-step workflow
+- **Visual Feedback**: Animated scores and progress
 - **Progress Visualization**: Growth charts and level indicators
 - **Responsive Design**: Optimized for mobile devices
 
-## Advanced Features (Phase 2) - Enhanced Social Learning
+## Advanced Features (Phase 2) - Enhanced Personal Experience
 
-### Advanced Social Features
+### Advanced Personal Features
+- **Advanced Filtering**: Complex search and filter options
+- **Custom Tags**: Organize coffees your way
+- **Brew Methods**: Track different brewing techniques
+- **Equipment Tracking**: Monitor which equipment you used
+- **Location Memory**: Remember where you had each coffee
+- **Mood Tracking**: How coffee affected your day
+
+## Future Features (Backlog)
+
+### Community & Social Integration
+- **Backend Implementation**: Enable real community features
 - **Follow System**: Follow experts and friends
 - **Tasting Comments**: Discuss specific coffees
 - **Expert Insights**: Tips from verified professionals
 - **Group Challenges**: Team-based tasting events
 - **Regional Communities**: Local coffee scene connections
-- **Mentorship System**: Learn from experienced users
 
-### B2B Integration
-- **Roastery Partnerships**: Official tasting notes and challenges
-- **Cafe Integration**: Location-based coffee discovery
-- **Business Analytics**: Insights for roasters and cafes
-- **Official Challenges**: Roaster-sponsored tasting events
-- **Trend Reports**: Industry insights from community data
+### OCR & Automation
+- **Label Scanning**: Quick coffee info input from photos
+- **Automatic Data Entry**: Extract info from coffee bags
+- **Receipt Scanning**: Track coffee purchases
+- **Batch Import**: Import multiple coffees at once
 
 ### Enhanced Analytics & AI
 - **Personalized Coaching**: AI analyzes your strengths/weaknesses

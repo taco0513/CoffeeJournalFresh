@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useUserStore } from '../stores/useUserStore';
 import RealmService from '../services/realm/RealmService';
 import { HIGConstants, HIGColors, commonButtonStyles } from '../styles/common';
+import AuthService from '../services/supabase/auth';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -60,7 +61,7 @@ const ProfileScreen = () => {
         });
       }
     } catch (error) {
-      console.error('Error loading user stats:', error);
+      // console.error('Error loading user stats:', error);
     }
   };
 
@@ -75,33 +76,33 @@ const ProfileScreen = () => {
           style: 'destructive', 
           onPress: async () => {
             await signOut();
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Auth' as never }],
+            });
           }
         },
       ]
     );
   };
 
+
+
   const menuItems = [
-    {
-      title: '사진 갤러리',
-      icon: '📸',
-      onPress: () => {
-        navigation.navigate('PhotoGallery' as never);
-      }
-    },
+    // Feature Backlog - Photo Gallery
+    // {
+    //   title: '사진 갤러리',
+    //   icon: '📸',
+    //   onPress: () => {
+    //     navigation.navigate('PhotoGallery' as never);
+    //   }
+    // },
     {
       title: '설정',
       icon: '⚙️',
       onPress: () => {
         // 설정 화면으로 이동 (추후 구현)
         Alert.alert('설정', '설정 화면은 추후 구현 예정입니다.');
-      }
-    },
-    {
-      title: '데이터 내보내기',
-      icon: '📤',
-      onPress: () => {
-        navigation.navigate('Export' as never);
       }
     },
     {
@@ -117,7 +118,7 @@ const ProfileScreen = () => {
       onPress: () => {
         Alert.alert('도움말', '도움말 화면은 추후 구현 예정입니다.');
       }
-    }
+    },
   ];
 
   return (
@@ -160,6 +161,7 @@ const ProfileScreen = () => {
             </View>
           </View>
         </View>
+
 
         {/* 메뉴 아이템 */}
         <View style={styles.menuContainer}>

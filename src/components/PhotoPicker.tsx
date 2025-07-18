@@ -43,7 +43,7 @@ const PhotoPicker: React.FC<PhotoPickerProps> = ({
         onPhotoSelected(result.uri);
       }
     } catch (error) {
-      console.error('Photo selection error:', error);
+      // console.error('Photo selection error:', error);
       Alert.alert('오류', '사진을 선택하는 중 오류가 발생했습니다.');
     } finally {
       setIsSelecting(false);

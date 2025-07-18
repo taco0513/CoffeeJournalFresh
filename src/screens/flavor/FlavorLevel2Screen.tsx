@@ -26,6 +26,7 @@ interface FlavorPath {
   level4?: string;
 }
 import { flavorWheel } from '../../data/flavorWheel';
+import { flavorWheelKorean } from '../../data/flavorWheelKorean';
 
 const FlavorLevel2Screen = () => {
   const navigation = useNavigation();
@@ -79,11 +80,11 @@ const FlavorLevel2Screen = () => {
     });
     
     setSelectedFlavors(newFlavors);
-    navigation.navigate('Sensory' as never);
+    navigation.navigate('FlavorLevel3' as never);
   };
 
   const handleSkip = () => {
-    navigation.navigate('Sensory' as never);
+    navigation.navigate('FlavorLevel3' as never);
   };
 
   const isNextEnabled = selectedSubcategories.length > 0;
@@ -124,7 +125,9 @@ const FlavorLevel2Screen = () => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {Object.entries(categorizedSubcategories).map(([category, subcategories]) => (
           <View key={category} style={styles.categorySection}>
-            <Text style={styles.sectionHeader}>{category} 하위</Text>
+            <Text style={styles.sectionHeader}>
+              {flavorWheelKorean.level1[category as keyof typeof flavorWheelKorean.level1] || category}
+            </Text>
             <View style={styles.gridContainer}>
               {subcategories.map((subcategory) => {
                 const isSelected = selectedSubcategories.includes(subcategory);
@@ -144,7 +147,15 @@ const FlavorLevel2Screen = () => {
                         isSelected && styles.selectedText,
                       ]}
                     >
-                      {subcategory}
+                      {flavorWheelKorean.translations[subcategory as keyof typeof flavorWheelKorean.translations] || subcategory}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.categorySubtext,
+                        isSelected && styles.selectedSubtext,
+                      ]}
+                    >
+                      ({subcategory})
                     </Text>
                     {isSelected && (
                       <Text style={styles.checkmark}>✓</Text>

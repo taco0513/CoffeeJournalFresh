@@ -51,7 +51,7 @@ const PhotoViewerScreen = () => {
         url: photoUri,
       });
     } catch (error) {
-      console.error('Share error:', error);
+      // console.error('Share error:', error);
       Alert.alert('오류', '사진을 공유하는 중 오류가 발생했습니다.');
     }
   };
@@ -84,7 +84,7 @@ const PhotoViewerScreen = () => {
                 navigation.goBack();
               }
             } catch (error) {
-              console.error('Failed to delete photo:', error);
+              // console.error('Failed to delete photo:', error);
               Alert.alert('오류', '사진을 삭제하는 중 오류가 발생했습니다.');
             }
           }

@@ -1,12 +1,12 @@
 # Coffee Tasting Journal
 
-> **"나 혼자 커피를 즐기는 걸 넘어서, 전문가·친구들이 느낀 감각의 세계를 배우고, 내 미각 언어를 키워가는 소셜 테이스팅 앱"**
+> **"나만의 커피 테이스팅 여정을 기록하고, 미각 언어를 키워가는 개인 커피 저널"**
 
-A React Native app that transforms solitary coffee drinking into a social learning experience, helping you develop your palate language by connecting with the sensory world of experts and fellow coffee lovers.
+A React Native app that helps you document your personal coffee journey, develop your palate language, and track your tasting experiences with professional-grade tools and insights.
 
-> 📱 **iOS**: ✅ v0.3.0 Working - Complete UI redesign with community features  
+> 📱 **iOS**: ✅ v0.3.0 Working - Core personal journal features  
 > 🤖 **Android**: 📅 Planned - After iOS feature completion  
-> ✅ **Latest Update**: July 18, 2025 - Major UI overhaul with 5 phases completed
+> ✅ **Latest Update**: July 18, 2025 - Focus on core journal functionality
 
 ## 🚀 Features
 
@@ -14,26 +14,24 @@ A React Native app that transforms solitary coffee drinking into a social learni
 - **Bottom Tab Navigation**: Home, Stats, Community, and Profile tabs
 - **Coffee Tasting Flow**: Complete form with flavor profiles and ratings
 - **Photo Gallery**: Grid view with lightbox photo viewer
-- **Community Feed**: Browse and discover coffee reviews from others
 - **Statistics Dashboard**: Visual charts for consumption patterns
-- **Review Sharing**: Create and share detailed coffee reviews
-- **User Profiles**: Personal statistics and tasting history
 - **Modern UI Design**: iOS Human Interface Guidelines compliant
+- **Community UI**: Complete UI implementation (backend integration pending)
 
-### 🔄 In Development
-- **Persistent Storage**: AsyncStorage implementation
+### 🔄 In Development - Core Features
+- **Supabase Data Sync**: Personal data backup and sync
 - **Advanced Filtering**: Search by flavor, origin, brew method
-- **Social Features**: Follow users, like reviews, comments
-- **Data Export**: CSV/JSON export functionality
-- **Cloud Sync**: Supabase backend integration
-- **Push Notifications**: Review interactions and updates
-
-### 🎯 Future Plans
-- **Android Support**: Cross-platform compatibility
-- **OCR Scanning**: Quick coffee info input from labels
-- **Cloud Sync**: Backup data with Supabase
+- **Personal Coffee Library**: Organize and track your coffee collection
+- **Tasting Notes Enhancement**: Rich text editing and categorization
 - **Brew Timer**: Track extraction times
-- **Social Features**: Share tasting notes
+- **Offline-First Architecture**: Seamless sync when online
+
+### 📋 Backlog / Future Features
+- **Community Backend Integration**: Social features, following, comments
+- **Push Notifications**: Review interactions and updates
+- **OCR Scanning**: Quick coffee info input from labels
+- **Android Support**: Cross-platform compatibility
+- **Social Features**: Share tasting notes with friends
 
 ## 📱 Screenshots
 
@@ -103,14 +101,21 @@ CoffeeJournalFresh/
 - ✅ Phase 1: Bottom Tab Navigation Implementation
 - ✅ Phase 2: Screen Layout & Component Design
 - ✅ Phase 3: Photo Gallery & Viewer Features
-- ✅ Phase 4: Community & Social Features
+- ✅ Phase 4: Community UI (Backend integration postponed)
 - ✅ Phase 5: Statistics & Data Visualization
 
-### Overall Project Status
+### Current Focus Areas
+- 🎯 **Core Journal Features**: Personal coffee tracking and analysis
+- 🎯 **Data Persistence**: Local storage for offline-first experience
+- 🎯 **User Experience**: Smooth, intuitive tasting workflow
+- 🎯 **Analytics**: Personal insights and progress tracking
+
+### Project Status
 - ✅ Core UI/UX: Complete with modern design
-- 🔄 Data Persistence: In Progress
-- 📅 Backend Integration: Planned
-- 📅 Android Support: Future
+- 🔄 Data Persistence: Active Development
+- 📋 Community Backend: In Backlog
+- 📋 OCR Features: In Backlog
+- 📅 Android Support: Future Release
 
 ## 🤝 Contributing
 

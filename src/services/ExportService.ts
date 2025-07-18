@@ -84,7 +84,7 @@ class ExportService {
       
       return exportTastings;
     } catch (error) {
-      console.error('Error getting all tastings:', error);
+      // console.error('Error getting all tastings:', error);
       throw new Error(`Failed to fetch tastings: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
@@ -184,7 +184,7 @@ class ExportService {
 
       return 'Export completed';
     } catch (error) {
-      console.error('Error saving file:', error);
+      // console.error('Error saving file:', error);
       throw new Error(`Failed to save file: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
@@ -206,7 +206,7 @@ class ExportService {
       const result = await this.saveFile(csvContent, filename, 'csv');
       return { success: true, message: result };
     } catch (error) {
-      console.error('Error exporting to CSV:', error);
+      // console.error('Error exporting to CSV:', error);
       return { success: false, message: error instanceof Error ? error.message : 'Export failed' };
     }
   }
@@ -228,7 +228,7 @@ class ExportService {
       const result = await this.saveFile(jsonContent, filename, 'json');
       return { success: true, message: result };
     } catch (error) {
-      console.error('Error exporting to JSON:', error);
+      // console.error('Error exporting to JSON:', error);
       return { success: false, message: error instanceof Error ? error.message : 'Export failed' };
     }
   }
@@ -278,7 +278,7 @@ class ExportService {
         csvSample
       };
     } catch (error) {
-      console.error('Error getting export preview:', error);
+      // console.error('Error getting export preview:', error);
       throw error;
     }
   }
