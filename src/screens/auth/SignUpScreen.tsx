@@ -138,7 +138,7 @@ const SignUpScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="coffee_lover"
-                placeholderTextColor={HIGColors.tertiaryLabel}
+                placeholderTextColor="#CCCCCC"
                 value={username}
                 onChangeText={setUsername}
                 autoCapitalize="none"
@@ -159,7 +159,7 @@ const SignUpScreen = () => {
                 ref={emailInputRef}
                 style={styles.input}
                 placeholder="email@example.com"
-                placeholderTextColor={HIGColors.tertiaryLabel}
+                placeholderTextColor="#CCCCCC"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -178,7 +178,7 @@ const SignUpScreen = () => {
                 ref={passwordInputRef}
                 style={styles.input}
                 placeholder="••••••••"
-                placeholderTextColor={HIGColors.tertiaryLabel}
+                placeholderTextColor="#CCCCCC"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -197,7 +197,7 @@ const SignUpScreen = () => {
                 ref={confirmPasswordInputRef}
                 style={styles.input}
                 placeholder="••••••••"
-                placeholderTextColor={HIGColors.tertiaryLabel}
+                placeholderTextColor="#CCCCCC"
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.BORDER_RADIUS,
     paddingHorizontal: HIGConstants.SPACING_MD,
     fontSize: 17,
-    color: HIGColors.label,
+    color: '#000000',
     borderWidth: 1,
     borderColor: HIGColors.gray4,
   },

@@ -521,6 +521,7 @@ const CoffeeInfoScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="예: 1,800-2,000m"
+                placeholderTextColor="#CCCCCC"
                 value={currentTasting.altitude}
                 onChangeText={(text) => 
                   updateField('altitude', text)
@@ -675,6 +676,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_MD,
     paddingVertical: HIGConstants.SPACING_SM,
     fontSize: 17,
+    color: '#000000',
     backgroundColor: HIGColors.systemBackground,
   },
   temperatureButtons: {

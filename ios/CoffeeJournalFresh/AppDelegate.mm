@@ -12,16 +12,7 @@
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
 
-  // Set dark keyboard appearance after super initialization
-  BOOL result = [super application:application didFinishLaunchingWithOptions:launchOptions];
-  
-  // Set appearance on main thread
-  if ([NSThread isMainThread]) {
-    [[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
-    [[UITextView appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
-  }
-  
-  return result;
+  return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge

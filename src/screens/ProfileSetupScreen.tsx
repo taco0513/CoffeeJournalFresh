@@ -78,6 +78,7 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ onComplete }) =
               value={email}
               onChangeText={setEmail}
               placeholder="your@email.com"
+              placeholderTextColor="#CCCCCC"
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
@@ -91,6 +92,7 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ onComplete }) =
               value={password}
               onChangeText={setPassword}
               placeholder="At least 6 characters"
+              placeholderTextColor="#CCCCCC"
               secureTextEntry
               autoCapitalize="none"
             />
@@ -131,6 +133,7 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ onComplete }) =
               value={username}
               onChangeText={setUsername}
               placeholder="coffee_lover_123"
+              placeholderTextColor="#CCCCCC"
               autoCapitalize="none"
               autoCorrect={false}
             />
@@ -146,6 +149,7 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ onComplete }) =
               value={displayName}
               onChangeText={setDisplayName}
               placeholder="Coffee Explorer"
+              placeholderTextColor="#CCCCCC"
               autoCapitalize="words"
             />
             <Text style={styles.hint}>
@@ -229,7 +233,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
-    color: '#2C3E50',
+    color: '#000000',
   },
   hint: {
     fontSize: 12,

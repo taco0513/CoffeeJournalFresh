@@ -91,7 +91,7 @@ const RoasterNotesScreen = () => {
               multiline
               numberOfLines={8}
               placeholder="예: 블루베리, 다크 초콜릿, 꿀과 같은 단맛\n\n로스터가 제공한 맛 설명을 자유롭게 입력하세요. 이 정보는 나중에 여러분의 테이스팅 결과와 비교됩니다."
-              placeholderTextColor={HIGColors.tertiaryLabel}
+              placeholderTextColor="#CCCCCC"
               value={notes}
               onChangeText={setNotes}
               textAlignVertical="top"
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     fontSize: 17,
-    color: HIGColors.label,
+    color: '#000000',
     minHeight: 200,
     backgroundColor: HIGColors.systemBackground,
   },

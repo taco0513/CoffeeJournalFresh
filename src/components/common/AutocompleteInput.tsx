@@ -222,7 +222,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
           onBlur={handleBlur}
           onKeyPress={Platform.OS === 'web' ? handleKeyPress : undefined}
           placeholder={placeholder}
-          placeholderTextColor={Colors.PLACEHOLDER}
+          placeholderTextColor="#CCCCCC"
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="off"
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: FONT_SIZE.MEDIUM,
     backgroundColor: '#FAFAFA',
-    color: Colors.TEXT_TERTIARY,
+    color: '#000000',
     minHeight: 44, // Accessibility minimum touch target
   },
   inputDisabled: {

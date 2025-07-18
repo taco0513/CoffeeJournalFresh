@@ -270,6 +270,7 @@ export default function SearchScreen() {
                 <TextInput
                   style={styles.scoreInput}
                   placeholder="최소"
+                  placeholderTextColor="#CCCCCC"
                   value={filters.minScore?.toString() || ''}
                   onChangeText={(text) => {
                     const value = text ? parseInt(text) : undefined;
@@ -282,6 +283,7 @@ export default function SearchScreen() {
                 <TextInput
                   style={styles.scoreInput}
                   placeholder="최대"
+                  placeholderTextColor="#CCCCCC"
                   value={filters.maxScore?.toString() || ''}
                   onChangeText={(text) => {
                     const value = text ? parseInt(text) : undefined;
@@ -368,6 +370,7 @@ export default function SearchScreen() {
           <TextInput
             style={styles.searchInput}
             placeholder="커피명, 로스터리, 카페로 검색..."
+            placeholderTextColor="#CCCCCC"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
@@ -460,7 +463,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: Colors.TEXT_PRIMARY,
+    color: '#000000',
     paddingVertical: 14,
   },
   clearIcon: {
@@ -674,6 +677,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     fontSize: 16,
+    color: '#000000',
     textAlign: 'center',
   },
   scoreDash: {

@@ -188,6 +188,7 @@ const ShareReviewScreen = () => {
             <TextInput
               style={styles.reviewInput}
               placeholder="이 커피에 대한 당신의 생각을 공유해주세요..."
+              placeholderTextColor="#CCCCCC"
               value={reviewText}
               onChangeText={setReviewText}
               multiline
@@ -425,7 +426,7 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     fontSize: 16,
-    color: HIGColors.label,
+    color: '#000000',
     height: 120,
     borderWidth: 1,
     borderColor: HIGColors.gray4,

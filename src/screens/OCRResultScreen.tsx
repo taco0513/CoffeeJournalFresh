@@ -49,6 +49,7 @@ const OCRResultScreen = () => {
           value={editedInfo.roastery}
           onChangeText={(text) => setEditedInfo({...editedInfo, roastery: text})}
           placeholder="예: STEREOSCOPE"
+          placeholderTextColor="#CCCCCC"
         />
       </View>
       
@@ -59,6 +60,7 @@ const OCRResultScreen = () => {
           value={editedInfo.coffeeName}
           onChangeText={(text) => setEditedInfo({...editedInfo, coffeeName: text})}
           placeholder="예: Uteuzi Jimbo-Nyeri"
+          placeholderTextColor="#CCCCCC"
         />
       </View>
       
@@ -69,6 +71,7 @@ const OCRResultScreen = () => {
           value={editedInfo.origin}
           onChangeText={(text) => setEditedInfo({...editedInfo, origin: text})}
           placeholder="예: KENYA / Nyeri"
+          placeholderTextColor="#CCCCCC"
         />
       </View>
       
@@ -79,6 +82,7 @@ const OCRResultScreen = () => {
           value={editedInfo.variety}
           onChangeText={(text) => setEditedInfo({...editedInfo, variety: text})}
           placeholder="예: SL28, SL34"
+          placeholderTextColor="#CCCCCC"
         />
       </View>
       
@@ -89,6 +93,7 @@ const OCRResultScreen = () => {
           value={editedInfo.process}
           onChangeText={(text) => setEditedInfo({...editedInfo, process: text})}
           placeholder="예: Washed"
+          placeholderTextColor="#CCCCCC"
         />
       </View>
       
@@ -99,6 +104,7 @@ const OCRResultScreen = () => {
           value={editedInfo.roasterNotes}
           onChangeText={(text) => setEditedInfo({...editedInfo, roasterNotes: text})}
           placeholder="예: Pink Pineapple, Passionfruit"
+          placeholderTextColor="#CCCCCC"
           multiline
           numberOfLines={3}
         />
@@ -152,6 +158,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
+    color: '#000000',
   },
   multilineInput: {
     minHeight: 80,

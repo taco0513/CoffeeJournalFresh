@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import appleAuth from '@invertase/react-native-apple-authentication';
 import { useNavigation } from '@react-navigation/native';
 import { HIGColors, HIGConstants, commonButtonStyles, commonTextStyles } from '../../styles/common';
 import AuthService from '../../services/supabase/auth';
@@ -19,10 +20,26 @@ import { ErrorHandler } from '../../utils/errorHandler';
 
 const SignInScreen = () => {
   const navigation = useNavigation();
-  const { signIn } = useUserStore();
+  const { signIn, signInWithApple } = useUserStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isAppleSignInSupported, setIsAppleSignInSupported] = useState(false);
+
+  useEffect(() => {
+    // Check if Apple Sign-In is supported
+    const checkAppleSignInSupport = async () => {
+      try {
+        const isSupported = await appleAuth.isSupported;
+        setIsAppleSignInSupported(isSupported);
+      } catch (error) {
+        console.log('Apple Sign-In not supported:', error);
+        setIsAppleSignInSupported(false);
+      }
+    };
+    
+    checkAppleSignInSupport();
+  }, []);
 
   const handleSignIn = async () => {
     if (!email.trim() || !password.trim()) {
@@ -56,6 +73,25 @@ const SignInScreen = () => {
     Alert.alert('비밀번호 찾기', '이 기능은 준비 중입니다.');
   };
 
+  const handleAppleSignIn = async () => {
+    setLoading(true);
+    try {
+      await signInWithApple();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainTabs' as never }],
+      });
+    } catch (error: any) {
+      ErrorHandler.handle(error, 'Apple 로그인');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // const handleGoogleSignIn = async () => {
+  //   // Temporarily disabled
+  // };
+
   const handleSkip = () => {
     // Use app as guest - just navigate without auth
     navigation.reset({
@@ -85,7 +121,7 @@ const SignInScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="email@example.com"
-                placeholderTextColor={HIGColors.tertiaryLabel}
+                placeholderTextColor="#CCCCCC"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -100,7 +136,7 @@ const SignInScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="••••••••"
-                placeholderTextColor={HIGColors.tertiaryLabel}
+                placeholderTextColor="#CCCCCC"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -141,6 +177,34 @@ const SignInScreen = () => {
               </Text>
             </TouchableOpacity>
 
+            {/* 소셜 로그인 구분선 */}
+            <View style={styles.dividerContainer}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>또는</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            {/* Apple Sign-In */}
+            {isAppleSignInSupported ? (
+              <TouchableOpacity
+                style={[styles.socialButton, styles.appleButton]}
+                onPress={handleAppleSignIn}
+                disabled={loading}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.socialButtonText}>🍎 Apple로 계속하기</Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.socialComingSoon}>
+                <Text style={styles.comingSoonText}>Apple Sign-In은 실제 기기에서만 지원됩니다</Text>
+              </View>
+            )}
+
+            {/* Google Sign-In 준비 중 */}
+            <View style={styles.socialComingSoon}>
+              <Text style={styles.comingSoonText}>Google 로그인 준비 중...</Text>
+            </View>
+
             <TouchableOpacity
               style={styles.skipButton}
               onPress={handleSkip}
@@ -169,18 +233,18 @@ const styles = StyleSheet.create({
   },
   headerSection: {
     alignItems: 'center',
-    paddingTop: 60,
-    paddingBottom: 40,
+    paddingTop: 40,
+    paddingBottom: 30,
   },
   logo: {
-    fontSize: 72,
-    marginBottom: HIGConstants.SPACING_MD,
+    fontSize: 60,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   title: {
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: '700',
     color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   subtitle: {
     fontSize: 17,
@@ -189,7 +253,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   formSection: {
-    marginBottom: 40,
+    marginBottom: 30,
   },
   inputContainer: {
     marginBottom: HIGConstants.SPACING_LG,
@@ -207,7 +271,7 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.BORDER_RADIUS,
     paddingHorizontal: HIGConstants.SPACING_MD,
     fontSize: 17,
-    color: HIGColors.label,
+    color: '#000000',
     borderWidth: 1,
     borderColor: HIGColors.gray4,
   },
@@ -218,9 +282,7 @@ const styles = StyleSheet.create({
     paddingTop: HIGConstants.SPACING_SM,
   },
   buttonSection: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: 40,
+    paddingBottom: 30,
   },
   signInButton: {
     width: '100%',
@@ -231,18 +293,62 @@ const styles = StyleSheet.create({
   },
   signUpButton: {
     width: '100%',
-    marginBottom: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_MD,
   },
   signUpButtonText: {
     color: HIGColors.label,
   },
   skipButton: {
     alignSelf: 'center',
-    paddingVertical: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    marginTop: HIGConstants.SPACING_SM,
   },
   skipButtonText: {
     fontSize: 15,
     color: HIGColors.secondaryLabel,
+  },
+  // 소셜 로그인 스타일
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: HIGConstants.SPACING_MD,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: HIGColors.gray4,
+  },
+  dividerText: {
+    fontSize: 13,
+    color: HIGColors.tertiaryLabel,
+    marginHorizontal: HIGConstants.SPACING_MD,
+  },
+  socialButton: {
+    height: HIGConstants.MIN_TOUCH_TARGET,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: HIGConstants.SPACING_SM,
+    borderWidth: 1,
+  },
+  appleButton: {
+    backgroundColor: '#000000',
+    borderColor: '#000000',
+  },
+  socialButtonText: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  socialComingSoon: {
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  comingSoonText: {
+    fontSize: 15,
+    color: HIGColors.tertiaryLabel,
+    fontStyle: 'italic',
   },
 });
 
