@@ -3,31 +3,34 @@
 ## 1. Executive Summary
 
 ### Product Vision
-Create a comprehensive mobile application that empowers coffee enthusiasts to systematically record, analyze, and improve their coffee tasting skills through AI-powered flavor matching and detailed analytics.
+Transform solitary coffee drinking into a social learning experience. Coffee Tasting Journal connects users with the sensory world of experts and fellow coffee lovers, helping them develop their palate language through community comparison, AI-powered feedback, and gamified personal growth.
 
 ### Problem Statement
-Coffee enthusiasts lack a standardized, intelligent tool to:
-- Record and compare their tasting experiences
-- Validate their palate against professional roaster notes
-- Track their tasting skill development over time
-- Discover patterns in their coffee preferences
+Coffee enthusiasts face isolation in their sensory journey:
+- **Lonely Experience**: Drinking coffee alone without validation or comparison
+- **Limited Vocabulary**: Struggling to express what they taste
+- **No Community Connection**: Missing insights from experts and peers
+- **Lack of Growth Visibility**: No way to track palate development
+- **Missing Social Learning**: Unable to learn from collective experiences
 
 ### Solution Overview
-A mobile app featuring a 6-step tasting workflow with AI-powered matching that compares user flavor selections with roaster notes, providing accuracy scores and detailed feedback.
+A social tasting platform that combines personal coffee journaling with community insights. Users record tastings through a guided workflow, receive AI-powered feedback, compare with community data, and grow their sensory language through gamified challenges and expert connections.
 
 ## 2. Product Goals
 
 ### Primary Goals
-1. **Skill Development**: Help users improve their coffee tasting abilities
-2. **Standardization**: Provide consistent, SCA-based flavor terminology
-3. **Validation**: Offer objective feedback on tasting accuracy
-4. **Tracking**: Enable progress monitoring over time
+1. **Social Learning**: Connect users with expert and community insights
+2. **Personal Growth**: Develop sensory vocabulary through guided training
+3. **Community Building**: Create collective coffee knowledge database
+4. **Gamified Progress**: Motivate growth through challenges and achievements
+5. **B2B Connection**: Link users with roasteries and cafes
 
 ### Success Metrics
-- **User Engagement**: Daily active users, session duration
-- **Accuracy Improvement**: Average match score increase over time
-- **Retention**: Monthly active users, churn rate
-- **Satisfaction**: App store ratings, user feedback
+- **Community Engagement**: User interactions, comparisons viewed, insights shared
+- **Vocabulary Growth**: New flavor terms learned and used accurately
+- **Social Connections**: Following relationships, community contributions
+- **Gamification Success**: Challenge completion rates, level progression
+- **B2B Engagement**: Roastery partnerships, official notes usage
 
 ## 3. Target Audience
 
@@ -39,49 +42,76 @@ A mobile app featuring a 6-step tasting workflow with AI-powered matching that c
 
 ### User Personas
 
-#### Persona 1: The Serious Amateur
+#### Persona 1: The Social Learner
 - **Demographics**: 25-40 years old, urban professionals
-- **Behavior**: Buys specialty coffee, visits third-wave coffee shops
-- **Goals**: Understand coffee flavors, improve tasting skills
-- **Pain Points**: Inconsistent vocabulary, lack of feedback
+- **Behavior**: Active on social media, shares experiences, seeks validation
+- **Goals**: Connect with coffee community, learn from experts
+- **Pain Points**: Isolated tasting experience, no comparison points
 
-#### Persona 2: The Professional Barista
-- **Demographics**: 20-35 years old, service industry
-- **Behavior**: Works in specialty coffee, seeks certification
-- **Goals**: Develop professional palate, track progress
-- **Pain Points**: Limited training resources, skill validation
+#### Persona 2: The Growth Seeker
+- **Demographics**: 20-35 years old, ambitious learners
+- **Behavior**: Enjoys challenges, tracks progress, competitive
+- **Goals**: Level up tasting skills, earn recognition
+- **Pain Points**: No clear growth path, lack of motivation
 
-#### Persona 3: The Home Enthusiast
-- **Demographics**: 30-50 years old, disposable income
-- **Behavior**: Invests in equipment, experiments with brewing
-- **Goals**: Maximize coffee enjoyment, understand preferences
-- **Pain Points**: Overwhelming choices, lack of guidance
+#### Persona 3: The Community Contributor
+- **Demographics**: 30-50 years old, experienced coffee lover
+- **Behavior**: Shares knowledge, helps others, creates content
+- **Goals**: Give back to community, share expertise
+- **Pain Points**: No platform to share insights, limited reach
 
 ## 4. Product Requirements
 
 ### Functional Requirements
 
-#### Core Features
+#### Core Features (MVP)
 1. **Tasting Workflow**
    - 6-step guided process
    - Coffee information input
    - Roaster notes recording
    - Hierarchical flavor selection
    - Sensory evaluation
-   - Results and scoring
+   - Results with community comparison
 
-2. **AI Matching System**
+2. **Community Features**
+   - See how others tasted the same coffee
+   - Community flavor consensus
+   - Average sensory scores comparison
+   - Number of people who tasted
+   - Top flavors detected by percentage
+   - Your score vs community average
+
+3. **AI Matching & Feedback**
    - Text analysis of roaster notes
    - Flavor comparison algorithm
+   - Personalized feedback and tips
+   - Strength/weakness analysis
+   - Vocabulary suggestions
    - Bilingual processing (Korean/English)
-   - Weighted scoring (60% flavor, 40% sensory)
 
-3. **Data Management**
-   - Local storage with Realm
-   - Tasting history tracking
+4. **Gamification System**
+   - User levels based on experience
+   - Weekly tasting challenges
+   - Achievement badges
+   - Progress milestones
+   - Praise cards for accomplishments
+   - Leaderboards (optional)
+
+5. **Social Learning**
+   - Follow other users
+   - Expert insights and tips
+   - Share tasting notes
+   - Comment on tastings
+   - Learn from community patterns
+   - Discover new coffees through others
+
+6. **Data Management**
+   - Local storage for privacy
+   - Community data aggregation
+   - Crowd-sourced coffee database
    - Search and filtering
-   - Cloud sync with Supabase
-   - Developer data collection system
+   - Export personal data
+   - Anonymous contribution to community
 
 #### Supporting Features
 1. **User Interface**
@@ -229,34 +259,41 @@ A mobile app featuring a 6-step tasting workflow with AI-powered matching that c
 
 ## 10. Implementation Timeline
 
-### Phase 1: MVP (Months 1-3)
+### Phase 1: MVP with Social Core (Months 1-3)
 - Core tasting workflow
-- Basic AI matching
-- Local storage
-- Initial UI/UX
+- Community comparison features
+- Basic gamification (levels, badges)
+- AI matching with feedback
+- Crowd-sourced coffee database
+- Local + community data architecture
 
-### Phase 2: Enhancement (Months 4-6)
-- Advanced analytics
-- Improved matching algorithm
-- Performance optimization
-- User feedback integration
-- Developer data collection system
+### Phase 2: Social Enhancement (Months 4-6)
+- Follow/following system
+- Weekly challenges
+- Expert insights integration
+- Advanced gamification
+- B2B roastery partnerships
+- Community moderation tools
 
-### Phase 3: Growth (Months 7-12)
-- Premium features
-- Cloud synchronization (Supabase)
-- Social features
-- Business model implementation
-- Coffee industry insights from collected data
+### Phase 3: Growth & Monetization (Months 7-12)
+- Premium features (advanced analytics)
+- Personalized AI coaching
+- Business dashboard for roasteries
+- Regional community features
+- Advanced social features
+- Revenue model implementation
 
-### Phase 4: Scale (Year 2+)
-- Enterprise features
-- Advanced AI capabilities
-- Platform expansion
-- International markets
+### Phase 4: Scale & Innovation (Year 2+)
+- AI-powered recommendations
+- Global community events
+- Coffee education platform
+- Enterprise solutions
+- International expansion
 
 ## 11. Conclusion
 
-The Coffee Tasting Journal represents a unique opportunity to create a specialized tool for the growing specialty coffee market. By combining professional-grade tasting methodology with AI-powered analysis, we can provide significant value to coffee enthusiasts while building a sustainable business.
+Coffee Tasting Journal transforms the solitary act of coffee drinking into a connected, growth-oriented experience. By combining personal journaling with community insights, gamification, and AI-powered feedback, we're creating more than an app – we're building a platform for sensory language development and coffee community connection.
 
-The offline-first approach ensures reliability and privacy, while the AI matching system provides the intelligent feedback that sets this app apart from simple note-taking solutions. Success depends on execution quality, user experience, and effective market positioning.
+The unique value proposition of "learning from others while developing your own palate" addresses the fundamental human need for validation and growth. Our privacy-first approach with community benefits creates trust, while the gamification elements drive engagement and retention.
+
+Success will be measured not just in downloads or revenue, but in the growth of our users' sensory vocabulary and their connection to the global coffee community. We're not just tracking coffee – we're expanding the sensory world of coffee lovers everywhere.

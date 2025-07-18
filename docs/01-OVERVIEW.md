@@ -2,61 +2,77 @@
 
 ## Introduction
 
-The Coffee Tasting Journal is a comprehensive mobile application designed to help coffee enthusiasts systematically record, analyze, and improve their coffee tasting experiences. Built with React Native and powered by AI-driven flavor matching, the app provides professional-grade tools for coffee evaluation in an intuitive, user-friendly interface.
+Coffee Tasting Journal transforms the solitary act of coffee drinking into a connected, growth-oriented social experience. More than just a recording app, it's a platform where coffee lovers learn from experts and peers, develop their sensory vocabulary, and contribute to a collective understanding of coffee through gamified challenges and community insights.
 
 ## Vision Statement
 
-To create the definitive digital platform for coffee tasting that bridges the gap between amateur enthusiasm and professional expertise, enabling users to develop their palate through structured learning and intelligent feedback.
+"나 혼자 커피를 즐기는 걸 넘어서, 전문가·친구들이 느낀 감각의 세계를 배우고, 내 미각 언어를 키워가는 소셜 테이스팅 앱"
+
+To transform coffee tasting from an isolated experience into a social learning journey where users connect with the sensory world of experts and fellow enthusiasts, developing their palate language through community wisdom and personal growth tracking.
 
 ## Core Problem
 
-Coffee enthusiasts face several challenges when trying to develop their tasting skills:
+Coffee enthusiasts experience isolation and uncertainty in their sensory journey:
 
-1. **Lack of Structure**: No systematic approach to tasting
-2. **Subjective Validation**: Difficulty verifying personal impressions
-3. **Inconsistent Vocabulary**: Varied terminology across sources
-4. **Progress Tracking**: No way to measure skill improvement
-5. **Learning Curve**: Steep learning curve for beginners
+1. **Lonely Experience**: Tasting coffee alone without validation or comparison
+2. **Limited Expression**: Struggling to articulate what they taste
+3. **No Community Connection**: Missing insights from experts and peers
+4. **Invisible Growth**: No way to visualize palate development
+5. **Lack of Motivation**: No incentives or challenges to improve
+6. **Missed Learning**: Unable to learn from collective experiences
 
 ## Solution Approach
 
-The Coffee Tasting Journal addresses these challenges through:
+Coffee Tasting Journal creates a social learning ecosystem:
 
-### 1. Structured Workflow
-- **6-Step Process**: Systematic approach to tasting
-- **SCA Standards**: Based on Specialty Coffee Association guidelines
-- **Guided Experience**: Step-by-step instructions for consistency
+### 1. Community-Powered Learning
+- **Collective Insights**: See how others tasted the same coffee
+- **Expert Connection**: Learn from verified professionals
+- **Peer Comparison**: Validate your palate against the community
+- **Crowd-Sourced Database**: Community-built coffee catalog
 
-### 2. AI-Powered Validation
-- **Intelligent Matching**: Compare user selections with roaster notes
-- **Accuracy Scoring**: Objective feedback on tasting performance
-- **Progress Tracking**: Monitor improvement over time
+### 2. Gamified Personal Growth
+- **Level System**: Progress from beginner to expert
+- **Weekly Challenges**: Community tasting events
+- **Achievement Badges**: Celebrate milestones
+- **Visual Progress**: Track vocabulary expansion
 
-### 3. Standardized Vocabulary
-- **Flavor Wheel Integration**: SCA-approved terminology
-- **Bilingual Support**: Korean and English localization
-- **Consistent Categories**: Hierarchical flavor organization
+### 3. AI-Powered Coaching
+- **Personalized Feedback**: Tailored to your strengths/weaknesses
+- **Smart Recommendations**: Coffees to expand your palate
+- **Accuracy Tracking**: Measure against roaster notes
+- **Learning Paths**: Customized skill development
 
-### 4. Comprehensive Analytics
-- **Historical Data**: Track all tasting sessions
-- **Performance Metrics**: Detailed scoring and analysis
-- **Trend Analysis**: Identify patterns and improvements
+### 4. Social Features
+- **Follow System**: Connect with experts and friends
+- **Tasting Comments**: Discuss specific coffees
+- **Share Insights**: Contribute to community knowledge
+- **Regional Communities**: Local coffee scene connections
 
 ## Key Features
 
-### Core Functionality
-- **Coffee Information Entry**: Detailed coffee metadata
-- **Roaster Notes Input**: Professional tasting descriptions
-- **Hierarchical Flavor Selection**: 4-level flavor wheel navigation
-- **Sensory Evaluation**: Professional sensory attribute rating
-- **Match Score Calculation**: AI-powered comparison algorithm
-- **Results Analysis**: Detailed performance breakdown
+### Core Social Features
+- **Community Comparison**: "87 others tasted this coffee"
+- **Flavor Consensus**: Top flavors by percentage (e.g., "Blueberry 65%")
+- **Average Scores**: Community vs your ratings
+- **Expert Insights**: Tips from verified professionals
+- **Coffee Discovery**: Find new coffees through community
+- **Social Dashboard**: Activity feed and trends
 
-### Advanced Features
-- **Offline Operation**: Full functionality without internet
-- **Data Synchronization**: Local-first with cloud backup
-- **Export Capabilities**: Data export for analysis
-- **Progress Tracking**: Historical performance monitoring
+### Gamification & Growth
+- **User Levels**: Visual progression system
+- **Weekly Challenges**: Themed tasting events
+- **Achievement System**: Unlock badges and rewards
+- **Leaderboards**: Optional competitive elements
+- **Progress Visualization**: Track vocabulary growth
+- **Praise Cards**: Celebrate achievements
+
+### Personal Journey
+- **AI Coaching**: Personalized feedback and tips
+- **Strength Analysis**: Identify your tasting superpowers
+- **Learning Paths**: Customized skill development
+- **Match Scores**: Compare with roaster and community
+- **Export Data**: Own your tasting history
 
 ## Technical Architecture
 
@@ -80,16 +96,18 @@ The Coffee Tasting Journal addresses these challenges through:
 ## User Experience
 
 ### Target Audience
-- **Primary**: Coffee enthusiasts and home brewers
-- **Secondary**: Baristas and coffee professionals
-- **Tertiary**: Coffee shop owners and roasters
+- **Primary**: Social learners seeking community validation
+- **Secondary**: Growth-oriented coffee enthusiasts
+- **Tertiary**: Experts wanting to share knowledge
+- **B2B**: Roasteries and cafes seeking customer insights
 
 ### User Journey
-1. **Onboarding**: Quick introduction to tasting methodology
-2. **Setup**: Basic preferences and initial calibration
-3. **Tasting**: Guided 6-step evaluation process
-4. **Analysis**: Review results and receive feedback
-5. **Tracking**: Monitor progress and improvement
+1. **Social Onboarding**: Join the coffee community
+2. **First Tasting**: Discover community insights
+3. **Comparison**: See how others experienced it
+4. **Growth**: Level up through challenges
+5. **Connection**: Follow experts and friends
+6. **Contribution**: Add new coffees to database
 
 ### Design Principles
 - **Simplicity**: Clean, uncluttered interface
@@ -100,9 +118,10 @@ The Coffee Tasting Journal addresses these challenges through:
 ## Business Model
 
 ### Value Proposition
-- **For Users**: Improve coffee tasting skills through structured learning
-- **For Industry**: Standardize tasting vocabulary and methodology
-- **For Community**: Build connected coffee enthusiast network
+- **For Users**: Transform lonely coffee drinking into social learning
+- **For Community**: Create collective coffee wisdom
+- **For Industry**: Real-time consumer insights and engagement
+- **For Society**: Expand sensory vocabulary and appreciation
 
 ### Revenue Streams
 - **Freemium Model**: Basic features free, advanced features paid
@@ -118,10 +137,11 @@ The Coffee Tasting Journal addresses these challenges through:
 - **Bilingual Support**: Korean and English localization
 
 ### User Experience Differentiation
-- **Guided Learning**: Structured approach to skill development
-- **Objective Feedback**: Quantitative performance measurement
-- **Progress Tracking**: Long-term skill development monitoring
-- **Community Integration**: Connect with other coffee enthusiasts
+- **Social Validation**: Never taste alone again
+- **Gamified Growth**: Fun challenges and achievements
+- **Community Wisdom**: Learn from collective experience
+- **Personal + Social**: Private data with community benefits
+- **B2B Connection**: Direct link to roasteries
 
 ## Development Approach
 
@@ -140,10 +160,11 @@ The Coffee Tasting Journal addresses these challenges through:
 ## Success Metrics
 
 ### User Engagement
-- **Daily Active Users**: Regular app usage
-- **Session Duration**: Time spent in tasting sessions
-- **Completion Rate**: Percentage of completed tastings
-- **Retention Rate**: User return and engagement
+- **Community Interactions**: Comparisons, follows, comments
+- **Challenge Participation**: Weekly event engagement
+- **Contribution Rate**: New coffees added to database
+- **Social Connections**: Following relationships
+- **Vocabulary Growth**: New terms learned and used
 
 ### Business Metrics
 - **User Acquisition**: New user growth rate
@@ -166,10 +187,11 @@ The Coffee Tasting Journal addresses these challenges through:
 - **Performance Optimization**: Improve speed and reliability
 
 ### Medium-term (1-2 years)
-- **Advanced Features**: Premium functionality and analytics
-- **Community Features**: Social aspects and sharing
-- **Professional Tools**: Business-focused capabilities
-- **Platform Expansion**: Additional platform support
+- **Advanced Social**: Mentorship and expert programs
+- **Regional Communities**: Local coffee scenes
+- **B2B Platform**: Roastery partnerships
+- **Global Events**: International tasting challenges
+- **Education Platform**: Structured learning paths
 
 ### Long-term (2+ years)
 - **AI Enhancement**: Advanced machine learning capabilities
@@ -199,6 +221,6 @@ The Coffee Tasting Journal addresses these challenges through:
 
 ## Conclusion
 
-The Coffee Tasting Journal represents a unique opportunity to combine passion for coffee with cutting-edge technology to create a tool that genuinely helps users improve their tasting skills. By focusing on professional standards, user experience, and intelligent feedback, we can build a sustainable business while contributing to the coffee community's growth and education.
+Coffee Tasting Journal reimagines coffee tasting as a social, gamified learning experience. By connecting individual experiences with community wisdom, we're not just tracking coffee – we're expanding sensory vocabularies and building a global community of learners.
 
-The project's success depends on execution quality, user adoption, and continuous improvement based on real-world usage and feedback. With proper development and marketing, this app can become an essential tool for coffee enthusiasts worldwide.
+The unique combination of personal privacy with community benefits, gamification with serious learning, and individual growth with collective wisdom creates a platform that transforms how people experience and talk about coffee. Success will be measured not just in app metrics, but in the growth of our users' sensory language and their connections within the coffee community.

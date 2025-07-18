@@ -1,6 +1,8 @@
-# Coffee Journal Fresh
+# Coffee Tasting Journal
 
-A React Native mobile app for coffee enthusiasts to record and track their coffee tasting experiences.
+> **"나 혼자 커피를 즐기는 걸 넘어서, 전문가·친구들이 느낀 감각의 세계를 배우고, 내 미각 언어를 키워가는 소셜 테이스팅 앱"**
+
+A React Native app that transforms solitary coffee drinking into a social learning experience, helping you develop your palate language by connecting with the sensory world of experts and fellow coffee lovers.
 
 > 📱 **iOS**: ✅ v0.2.0 Working - Functional tasting flow with in-memory storage  
 > 🤖 **Android**: 📅 Planned - After iOS feature completion  

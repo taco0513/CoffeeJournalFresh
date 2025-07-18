@@ -1,197 +1,147 @@
 import { create } from 'zustand';
-import { Coffee, TastingSession } from '../models/Coffee';
-import RealmService from '../services/RealmService';
-
-interface TastingFormData {
-  coffeeName: string;
-  roastery: string;
-  origin: string;
-  brewMethod: string;
-  flavors: string[];
-  body: number;
-  acidity: number;
-  sweetness: number;
-  aftertaste: number;
-  overallScore: number;
-  notes: string;
-}
+import { StorageService } from '../services/StorageService';
+import { TastingData } from '../types';
 
 interface CoffeeStore {
-  // Current tasting session data
-  currentTasting: Partial<TastingFormData>;
+  // Current tasting session
+  currentTasting: Partial<TastingData>;
   
-  // Lists
-  coffees: Coffee[];
-  tastingSessions: TastingSession[];
+  // Cached tastings for display
+  tastingSessions: TastingData[];
   
   // Loading states
   isLoading: boolean;
+  isSaving: boolean;
   
   // Actions
-  setCurrentTasting: (data: Partial<TastingFormData>) => void;
-  updateCurrentTasting: (field: keyof TastingFormData, value: any) => void;
+  updateCurrentTasting: (field: keyof TastingData, value: any) => void;
   resetCurrentTasting: () => void;
-  
-  // CRUD operations
-  loadCoffees: () => void;
-  loadTastingSessions: () => void;
   saveTasting: () => Promise<void>;
-  deleteCoffee: (id: string) => void;
-  deleteTastingSession: (id: string) => void;
+  loadTastings: () => Promise<void>;
+  deleteTasting: (id: string) => Promise<void>;
   
-  // Search
-  searchCoffees: (query: string) => Coffee[];
+  // Storage progress
+  saveProgress: () => Promise<void>;
+  loadProgress: () => Promise<void>;
 }
 
-const initialTastingData: Partial<TastingFormData> = {
+const initialTastingData: Partial<TastingData> = {
   coffeeName: '',
   roastery: '',
   origin: '',
+  variety: '',
+  process: '',
+  roasterNotes: '',
   brewMethod: '',
-  flavors: [],
-  body: 3,
-  acidity: 3,
-  sweetness: 3,
-  aftertaste: 3,
-  overallScore: 0,
-  notes: '',
+  temperature: 'Hot',
+  selectedFlavors: {
+    level1: [],
+    level2: [],
+    level3: [],
+    level4: []
+  },
+  sensoryScore: {
+    body: 3,
+    acidity: 3,
+    sweetness: 3,
+    finish: 3
+  }
 };
 
 export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
   currentTasting: { ...initialTastingData },
-  coffees: [],
   tastingSessions: [],
   isLoading: false,
+  isSaving: false,
 
-  setCurrentTasting: (data) => set({ currentTasting: data }),
-
-  updateCurrentTasting: (field, value) => set((state) => ({
-    currentTasting: { ...state.currentTasting, [field]: value }
-  })),
-
-  resetCurrentTasting: () => set({ currentTasting: { ...initialTastingData } }),
-
-  loadCoffees: () => {
-    try {
-      const coffees = RealmService.getAllCoffees();
-      set({ coffees: Array.from(coffees) });
-    } catch (error) {
-      console.error('Failed to load coffees:', error);
-    }
+  updateCurrentTasting: (field, value) => {
+    set((state) => ({
+      currentTasting: { ...state.currentTasting, [field]: value }
+    }));
+    // Auto-save progress
+    get().saveProgress();
   },
 
-  loadTastingSessions: () => {
-    try {
-      const sessions = RealmService.getAllTastingSessions();
-      set({ tastingSessions: Array.from(sessions) });
-    } catch (error) {
-      console.error('Failed to load tasting sessions:', error);
-    }
+  resetCurrentTasting: () => {
+    set({ currentTasting: { ...initialTastingData } });
+    StorageService.clearCurrentTasting();
   },
 
   saveTasting: async () => {
-    const { currentTasting } = get();
-    set({ isLoading: true });
-
+    set({ isSaving: true });
     try {
-      console.log('Saving tasting with data:', currentTasting);
-      
-      // Calculate overall score if not set
-      const scores = [
-        currentTasting.body || 3,
-        currentTasting.acidity || 3,
-        currentTasting.sweetness || 3,
-        currentTasting.aftertaste || 3,
-      ];
-      const overallScore = currentTasting.overallScore || 
-        (scores.reduce((sum, score) => sum + score, 0) / scores.length) * 2;
-
-      // Check if Realm is initialized
-      try {
-        RealmService.getRealm();
-      } catch (error) {
-        console.error('Realm not initialized:', error);
-        throw new Error('Database not ready. Please try again.');
-      }
-
-      // Check if coffee exists
-      const existingCoffees = RealmService.searchCoffees(currentTasting.coffeeName || '');
-      let coffee = existingCoffees.find(c => 
-        c.name === currentTasting.coffeeName && 
-        c.roastery === currentTasting.roastery
-      );
-
-      // Create coffee if it doesn't exist
-      if (!coffee) {
-        coffee = RealmService.createCoffee({
-          name: currentTasting.coffeeName || '',
-          roastery: currentTasting.roastery || '',
-          origin: currentTasting.origin || '',
-          flavors: currentTasting.flavors || [],
-        });
-        console.log('Created new coffee:', coffee._id.toString());
-      }
-
-      // Create tasting session
-      const session = RealmService.createTastingSession({
-        coffeeId: coffee._id,
+      const { currentTasting } = get();
+      const newTasting: TastingData = {
+        id: Date.now().toString(),
         coffeeName: currentTasting.coffeeName || '',
         roastery: currentTasting.roastery || '',
         origin: currentTasting.origin || '',
-        brewMethod: currentTasting.brewMethod,
-        flavors: currentTasting.flavors || [],
-        body: currentTasting.body,
-        acidity: currentTasting.acidity,
-        sweetness: currentTasting.sweetness,
-        aftertaste: currentTasting.aftertaste,
-        overallScore,
-        notes: currentTasting.notes,
+        variety: currentTasting.variety || '',
+        process: currentTasting.process || '',
+        roasterNotes: currentTasting.roasterNotes || '',
+        brewMethod: currentTasting.brewMethod || 'Pour Over',
+        temperature: currentTasting.temperature || 'Hot',
+        selectedFlavors: currentTasting.selectedFlavors || { level1: [], level2: [], level3: [], level4: [] },
+        sensoryScore: currentTasting.sensoryScore || { body: 3, acidity: 3, sweetness: 3, finish: 3 },
+        matchScore: currentTasting.matchScore || { total: 0, flavor: 0, sensory: 0 },
+        createdAt: new Date(),
+      };
+      
+      await StorageService.saveTasting(newTasting);
+      await StorageService.clearCurrentTasting();
+      
+      // Reload tastings to update UI
+      await get().loadTastings();
+      
+      set({ 
+        currentTasting: { ...initialTastingData },
+        isSaving: false 
       });
-      console.log('Created tasting session:', session._id.toString());
-
-      // Update coffee's average rating
-      const avgRating = RealmService.getAverageRating(coffee._id.toString());
-      RealmService.updateCoffee(coffee._id.toString(), { rating: avgRating });
-
-      // Reload data
-      get().loadCoffees();
-      get().loadTastingSessions();
-      get().resetCurrentTasting();
-
     } catch (error) {
-      console.error('Failed to save tasting - Full error:', error);
+      console.error('Error saving tasting:', error);
+      set({ isSaving: false });
       throw error;
-    } finally {
+    }
+  },
+
+  loadTastings: async () => {
+    set({ isLoading: true });
+    try {
+      const tastings = await StorageService.getTastings();
+      set({ tastingSessions: tastings, isLoading: false });
+    } catch (error) {
+      console.error('Error loading tastings:', error);
       set({ isLoading: false });
     }
   },
 
-  deleteCoffee: (id) => {
+  deleteTasting: async (id: string) => {
     try {
-      RealmService.deleteCoffee(id);
-      get().loadCoffees();
+      await StorageService.deleteTasting(id);
+      await get().loadTastings();
     } catch (error) {
-      console.error('Failed to delete coffee:', error);
+      console.error('Error deleting tasting:', error);
+      throw error;
     }
   },
 
-  deleteTastingSession: (id) => {
+  saveProgress: async () => {
     try {
-      RealmService.deleteTastingSession(id);
-      get().loadTastingSessions();
+      const { currentTasting } = get();
+      await StorageService.saveCurrentTasting(currentTasting);
     } catch (error) {
-      console.error('Failed to delete tasting session:', error);
+      console.error('Error saving progress:', error);
     }
   },
 
-  searchCoffees: (query) => {
-    if (!query) return get().coffees;
+  loadProgress: async () => {
     try {
-      const results = RealmService.searchCoffees(query);
-      return Array.from(results);
+      const savedProgress = await StorageService.getCurrentTasting();
+      if (savedProgress) {
+        set({ currentTasting: savedProgress });
+      }
     } catch (error) {
-      console.error('Failed to search coffees:', error);
-      return [];
+      console.error('Error loading progress:', error);
     }
-  },
+  }
 }));

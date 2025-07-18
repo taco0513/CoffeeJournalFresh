@@ -1,44 +1,71 @@
 # Features Specification
 
-## MVP Features (Phase 1)
+## MVP Features (Phase 1) - Social Learning Core
 
-### Core Tasting Flow
+### Core Tasting Flow with Community
 - **Coffee Information Input**: Name, roastery, origin, variety, altitude, process, temperature
-- **Roaster Notes Input**: Free-form text input for roaster's flavor descriptions
+- **Crowd-Sourced Database**: Auto-complete from community-added coffees
+- **Roaster Notes Input**: Free-form text or select from official roaster notes
 - **Hierarchical Flavor Selection**: 4-level SCA flavor wheel navigation
 - **Sensory Evaluation**: Body, acidity, sweetness, finish, mouthfeel rating
-- **Match Score Calculation**: AI-powered comparison between roaster notes and user selections
-- **Results Display**: Visual match score with detailed breakdown
+- **Community Comparison**: See how others rated the same coffee
+- **Match Score Calculation**: AI-powered comparison with both roaster notes and community
+- **Results Display**: Your score vs community average, top flavors by percentage
+
+### Community & Social Features
+- **Community Insights**: "87 others tasted this coffee"
+- **Flavor Consensus**: Most detected flavors with percentages
+- **Average Scores**: Community averages for each sensory attribute
+- **Social Comparison**: Your palate vs community patterns
+- **Expert Notes**: Learn from verified experts and roasters
+- **Coffee Discovery**: Find new coffees through community activity
+
+### Gamification & Growth
+- **User Levels**: Progress from Beginner to Expert
+- **Achievement Badges**: Unlock for milestones and accuracy
+- **Weekly Challenges**: Community tasting challenges
+- **Progress Tracking**: Visualize vocabulary growth
+- **Praise Cards**: Celebrate achievements
+- **Leaderboards**: Optional competitive elements
 
 ### Data Management
-- **Local Storage**: Offline-first with Realm database
-- **Tasting History**: View past tasting sessions
-- **Match Analytics**: Historical performance tracking
+- **Local Storage**: Private tasting data stays on device
+- **Community Contribution**: Anonymous data sharing
+- **Tasting History**: Personal journey tracking
+- **Growth Analytics**: Track sensory vocabulary development
 
 ### User Interface
 - **Korean Language Support**: Full localization
-- **Intuitive Navigation**: Clear 6-step workflow
-- **Visual Feedback**: Animated score display
+- **Social Dashboard**: Community activity feed
+- **Intuitive Navigation**: Clear 6-step workflow with social elements
+- **Visual Feedback**: Animated scores and community comparisons
+- **Progress Visualization**: Growth charts and level indicators
 - **Responsive Design**: Optimized for mobile devices
 
-## Advanced Features (Phase 2)
+## Advanced Features (Phase 2) - Enhanced Social Learning
 
-### Enhanced Analytics
-- **Trend Analysis**: Track taste preferences over time
-- **Roaster Comparison**: Compare different roasters' accuracy
-- **Flavor Profile**: Personal taste preference mapping
-- **Statistical Insights**: Average scores, improvement tracking
+### Advanced Social Features
+- **Follow System**: Follow experts and friends
+- **Tasting Comments**: Discuss specific coffees
+- **Expert Insights**: Tips from verified professionals
+- **Group Challenges**: Team-based tasting events
+- **Regional Communities**: Local coffee scene connections
+- **Mentorship System**: Learn from experienced users
 
-### Social Features
-- **Tasting Sharing**: Share results with friends
-- **Community Ratings**: Compare with other users
-- **Roaster Reviews**: Rate and review roasters
-- **Recommendation Engine**: Suggest new coffees based on preferences
+### B2B Integration
+- **Roastery Partnerships**: Official tasting notes and challenges
+- **Cafe Integration**: Location-based coffee discovery
+- **Business Analytics**: Insights for roasters and cafes
+- **Official Challenges**: Roaster-sponsored tasting events
+- **Trend Reports**: Industry insights from community data
 
-### Data Management
-- **Developer Data Collection**: Internal data collection system for analytics
-- **Cloud Synchronization**: Optional Supabase cloud sync
-- **Local Backup**: Secure local data storage
+### Enhanced Analytics & AI
+- **Personalized Coaching**: AI analyzes your strengths/weaknesses
+- **Vocabulary Growth**: Track new flavor terms learned
+- **Accuracy Trends**: Improvement over time visualization
+- **Preference DNA**: Detailed taste preference mapping
+- **Smart Recommendations**: AI suggests coffees to try
+- **Learning Paths**: Customized skill development plans
 
 ## Technical Features
 
