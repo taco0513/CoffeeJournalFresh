@@ -38,6 +38,7 @@ function AppNavigator() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
+          presentation: 'card',
         }}
       >
         <Stack.Screen 

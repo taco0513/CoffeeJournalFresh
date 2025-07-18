@@ -8,6 +8,12 @@ file_path = File.join(Dir.pwd, "build/generated/ios/RCTThirdPartyComponentsProvi
 if File.exist?(file_path)
   content = File.read(file_path)
   
+  # Check if already fixed
+  if content.include?("NSMutableDictionary")
+    puts "✅ Already fixed - skipping"
+    exit 0
+  end
+  
   # Replace the direct dictionary creation with safe nil-checked version
   if content.include?("dispatch_once(&nativeComponentsToken, ^{")
     new_content = content.gsub(
@@ -17,8 +23,15 @@ if File.exist?(file_path)
     NSMutableDictionary<NSString *, Class<RCTComponentViewProtocol>> *mutableComponents = [[NSMutableDictionary alloc] init];
     
     // Safely add components with nil checks
+    NSLog(@"RCTThirdPartyComponentsProvider: Building component dictionary...");
+    
     Class sliderClass = NSClassFromString(@"RNCSliderComponentView");
-    if (sliderClass) mutableComponents[@"RNCSlider"] = sliderClass;
+    if (sliderClass) {
+      mutableComponents[@"RNCSlider"] = sliderClass;
+      NSLog(@"RCTThirdPartyComponentsProvider: Added RNCSlider");
+    } else {
+      NSLog(@"RCTThirdPartyComponentsProvider: RNCSliderComponentView not found");
+    }
     
     Class gestureButtonClass = NSClassFromString(@"RNGestureHandlerButtonComponentView");
     if (gestureButtonClass) mutableComponents[@"RNGestureHandlerButton"] = gestureButtonClass;

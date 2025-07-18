@@ -39,12 +39,13 @@ A comprehensive progressive web app (PWA) and mobile app for coffee enthusiasts 
 - **OCR**: Web APIs (Camera + Tesseract.js ready)
 - **Platform**: Progressive Web App (PWA)
 
-### Mobile Version (In Development)
-- **Frontend**: React Native with TypeScript
+### Mobile Version (iOS Ready)
+- **Frontend**: React Native 0.80.1 with TypeScript
 - **State Management**: Zustand
 - **Database**: Realm (Local-first)
-- **Navigation**: React Navigation
-- **Platform**: iOS & Android
+- **Navigation**: Simple state-based navigation (no React Navigation)
+- **Platform**: iOS working, Android pending
+- **Status**: JavaScript bridge error fixed, builds and runs successfully
 
 ## 🚀 Quick Start
 
@@ -67,11 +68,15 @@ npm run dev
 # Install dependencies
 npm install
 
-# iOS (requires Xcode setup)
-npx react-native run-ios
+# iOS Device (requires Xcode setup)
+npm run ios-device
+
+# iOS Simulator
+npm run ios
 
 # Note: Project renamed to CoffeeJournalFresh for iOS
 # All path configuration issues resolved
+# JavaScript bridge error fixed
 ```
 
 ## 📚 Documentation
@@ -108,12 +113,14 @@ npx react-native run-ios
 ## 🔧 Development
 
 This project uses:
-- React Native 0.80+
+- React Native 0.80.1
+- React 19.1.0
 - TypeScript for type safety
 - Zustand for state management
 - Realm for local data persistence
 - Supabase for cloud sync and data collection
 - SCA flavor wheel for standardized flavor terminology
+- Simple state-based navigation (no React Navigation for stability)
 
 ### Developer Tools
 - **DevUtils**: Console tools for data collection (development only)

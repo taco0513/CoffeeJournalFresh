@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C80B921A6F3F58F76C31292 /* libPods-CoffeeJournalFresh.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-CoffeeJournalFresh.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2E0F445EB22C126476069E3B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
-		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		C88547E789333E8C0D047941 /* libPods-CoffeeJournalFresh.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A6665497420D7CA72B84746C /* libPods-CoffeeJournalFresh.a */; };
+		D48E3615AC84434CB4F5DE39 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D48E3615AC84434CB4F5DE38 /* main.m */; };
+		ED633E922E2A3136009A33E6 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED633E912E2A3136009A33E6 /* AppDelegate.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,12 +20,14 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CoffeeJournalFresh/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = CoffeeJournalFresh/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = CoffeeJournalFresh/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		3B4392A12AC88292D35C810B /* Pods-CoffeeJournalFresh.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoffeeJournalFresh.debug.xcconfig"; path = "Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh.debug.xcconfig"; sourceTree = "<group>"; };
-		5709B34CF0A7D63546082F79 /* Pods-CoffeeJournalFresh.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoffeeJournalFresh.release.xcconfig"; path = "Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh.release.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-CoffeeJournalFresh.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CoffeeJournalFresh.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = CoffeeJournalFresh/AppDelegate.swift; sourceTree = "<group>"; };
+		67AA82DDBE692ACE18761B1D /* Pods-CoffeeJournalFresh.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoffeeJournalFresh.release.xcconfig"; path = "Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CoffeeJournalFresh/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8210DB6DF7F6DC18A462F586 /* Pods-CoffeeJournalFresh.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoffeeJournalFresh.debug.xcconfig"; path = "Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh.debug.xcconfig"; sourceTree = "<group>"; };
+		A6665497420D7CA72B84746C /* libPods-CoffeeJournalFresh.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CoffeeJournalFresh.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D48E3615AC84434CB4F5DE38 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		ED633E902E2A3136009A33E6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		ED633E912E2A3136009A33E6 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,7 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-CoffeeJournalFresh.a in Frameworks */,
+				C88547E789333E8C0D047941 /* libPods-CoffeeJournalFresh.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,8 +45,10 @@
 		13B07FAE1A68108700A75B9A /* CoffeeJournalFresh */ = {
 			isa = PBXGroup;
 			children = (
+				ED633E902E2A3136009A33E6 /* AppDelegate.h */,
+				ED633E912E2A3136009A33E6 /* AppDelegate.mm */,
+				D48E3615AC84434CB4F5DE38 /* main.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
-				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
@@ -55,7 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-CoffeeJournalFresh.a */,
+				A6665497420D7CA72B84746C /* libPods-CoffeeJournalFresh.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -92,8 +97,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				3B4392A12AC88292D35C810B /* Pods-CoffeeJournalFresh.debug.xcconfig */,
-				5709B34CF0A7D63546082F79 /* Pods-CoffeeJournalFresh.release.xcconfig */,
+				8210DB6DF7F6DC18A462F586 /* Pods-CoffeeJournalFresh.debug.xcconfig */,
+				67AA82DDBE692ACE18761B1D /* Pods-CoffeeJournalFresh.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -105,14 +110,15 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CoffeeJournalFresh" */;
 			buildPhases = (
-				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
+				3F10AD682486C501461EB5A0 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				2F889BBA5245821EB628FCC6 /* Fix RCTThirdPartyComponentsProvider */,
-				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
-				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				EDA718032E2A18DA000DBB8A /* Fix Hermes Sandbox Issue */,
+				CE39C137B911CCA2402A8324 /* [CP] Embed Pods Frameworks */,
+				F029C39136AFF3C5E2922E4E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -129,7 +135,8 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1120;
@@ -184,23 +191,6 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		2F889BBA5245821EB628FCC6 /* Fix RCTThirdPartyComponentsProvider */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -217,9 +207,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Fix React Native crash due to nil NSClassFromString returns\necho \"🔧 Fixing RCTThirdPartyComponentsProvider.mm...\"\n\n# Navigate to the iOS directory\ncd \"${SRCROOT}\"\n\n# Run the Ruby fix script\nif [ -f \"fix_rct_provider.rb\" ]; then\n    ruby fix_rct_provider.rb\n    echo \"✅ Fix applied successfully!\"\nelse\n    echo \"⚠️  fix_rct_provider.rb not found - skipping fix\"\nfi\n";
+			shellScript = "# Fix React Native crash due to nil NSClassFromString returns\necho \"🔧 Applying RCTThirdPartyComponentsProvider fix...\"\n\n# Navigate to the iOS directory\ncd \"${SRCROOT}\"\n\n# Apply the fix multiple times to ensure it's applied\nfor i in 1 2 3; do\n    if [ -f \"fix_rct_provider.rb\" ]; then\n        ruby fix_rct_provider.rb\n    fi\n    sleep 0.1\ndone\n\necho \"✅ Fix applied!\"\n";
 		};
-		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
+		3F10AD682486C501461EB5A0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -241,7 +231,42 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
+		CE39C137B911CCA2402A8324 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EDA718032E2A18DA000DBB8A /* Fix Hermes Sandbox Issue */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Fix Hermes Sandbox Issue";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n/Users/zimo_mbp16_m1max/Projects/CoffeeJournalFresh/ios/fix_hermes_sandbox.sh\n";
+		};
+		F029C39136AFF3C5E2922E4E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -265,7 +290,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+				ED633E922E2A3136009A33E6 /* AppDelegate.mm in Sources */,
+				D48E3615AC84434CB4F5DE39 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,11 +300,12 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-CoffeeJournalFresh.debug.xcconfig */;
+			baseConfigurationReference = 8210DB6DF7F6DC18A462F586 /* Pods-CoffeeJournalFresh.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6G57W2483G;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CoffeeJournalFresh/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -292,7 +319,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.brianjin.CoffeeJournalFresh;
 				PRODUCT_NAME = CoffeeJournalFresh;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -302,11 +329,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-CoffeeJournalFresh.release.xcconfig */;
+			baseConfigurationReference = 67AA82DDBE692ACE18761B1D /* Pods-CoffeeJournalFresh.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6G57W2483G;
 				INFOPLIST_FILE = CoffeeJournalFresh/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -319,7 +347,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.brianjin.CoffeeJournalFresh;
 				PRODUCT_NAME = CoffeeJournalFresh;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -359,6 +387,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -439,6 +468,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -473,6 +503,7 @@
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
 			};
