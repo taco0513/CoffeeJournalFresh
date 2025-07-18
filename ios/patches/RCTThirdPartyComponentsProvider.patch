@@ -1,0 +1,146 @@
+--- a/RCTThirdPartyComponentsProvider.mm
++++ b/RCTThirdPartyComponentsProvider.mm
+@@ -19,25 +19,96 @@
+   static dispatch_once_t nativeComponentsToken;
+ 
+   dispatch_once(&nativeComponentsToken, ^{
+-    thirdPartyComponents = @{
+-		@"RNCSlider": NSClassFromString(@"RNCSliderComponentView"), // @react-native-community/slider
+-		@"RNGestureHandlerButton": NSClassFromString(@"RNGestureHandlerButtonComponentView"), // react-native-gesture-handler
+-		@"RNCSafeAreaProvider": NSClassFromString(@"RNCSafeAreaProviderComponentView"), // react-native-safe-area-context
+-		@"RNCSafeAreaView": NSClassFromString(@"RNCSafeAreaViewComponentView"), // react-native-safe-area-context
+-		@"RNSFullWindowOverlay": NSClassFromString(@"RNSFullWindowOverlay"), // react-native-screens
+-		@"RNSModalScreen": NSClassFromString(@"RNSModalScreen"), // react-native-screens
+-		@"RNSScreenContainer": NSClassFromString(@"RNSScreenContainerView"), // react-native-screens
+-		@"RNSScreenContentWrapper": NSClassFromString(@"RNSScreenContentWrapper"), // react-native-screens
+-		@"RNSScreenFooter": NSClassFromString(@"RNSScreenFooter"), // react-native-screens
+-		@"RNSScreen": NSClassFromString(@"RNSScreenView"), // react-native-screens
+-		@"RNSScreenNavigationContainer": NSClassFromString(@"RNSScreenNavigationContainerView"), // react-native-screens
+-		@"RNSScreenStackHeaderConfig": NSClassFromString(@"RNSScreenStackHeaderConfig"), // react-native-screens
+-		@"RNSScreenStackHeaderSubview": NSClassFromString(@"RNSScreenStackHeaderSubview"), // react-native-screens
+-		@"RNSScreenStack": NSClassFromString(@"RNSScreenStackView"), // react-native-screens
+-		@"RNSSearchBar": NSClassFromString(@"RNSSearchBar"), // react-native-screens
+-		@"RNSStackScreen": NSClassFromString(@"RNSStackScreenComponentView"), // react-native-screens
+-		@"RNSScreenStackHost": NSClassFromString(@"RNSScreenStackHostComponentView"), // react-native-screens
+-		@"RNSBottomTabsScreen": NSClassFromString(@"RNSBottomTabsScreenComponentView"), // react-native-screens
+-		@"RNSBottomTabs": NSClassFromString(@"RNSBottomTabsHostComponentView"), // react-native-screens
+-		@"RNSSplitViewHost": NSClassFromString(@"RNSSplitViewHostComponentView"), // react-native-screens
+-		@"RNSSplitViewScreen": NSClassFromString(@"RNSSplitViewScreenComponentView"), // react-native-screens
+-    };
++    NSMutableDictionary<NSString *, Class<RCTComponentViewProtocol>> *mutableComponents = [[NSMutableDictionary alloc] init];
++    
++    // Safely add components with nil checks
++    NSLog(@"RCTThirdPartyComponentsProvider: Building component dictionary...");
++    
++    Class sliderClass = NSClassFromString(@"RNCSliderComponentView");
++    if (sliderClass) {
++      mutableComponents[@"RNCSlider"] = sliderClass;
++      NSLog(@"RCTThirdPartyComponentsProvider: Added RNCSlider");
++    } else {
++      NSLog(@"RCTThirdPartyComponentsProvider: RNCSliderComponentView not found");
++    }
++    
++    Class gestureButtonClass = NSClassFromString(@"RNGestureHandlerButtonComponentView");
++    if (gestureButtonClass) {
++      mutableComponents[@"RNGestureHandlerButton"] = gestureButtonClass;
++    }
++    
++    Class safeAreaProviderClass = NSClassFromString(@"RNCSafeAreaProviderComponentView");
++    if (safeAreaProviderClass) {
++      mutableComponents[@"RNCSafeAreaProvider"] = safeAreaProviderClass;
++    }
++    
++    Class safeAreaViewClass = NSClassFromString(@"RNCSafeAreaViewComponentView");
++    if (safeAreaViewClass) {
++      mutableComponents[@"RNCSafeAreaView"] = safeAreaViewClass;
++    }
++    
++    Class fullWindowOverlayClass = NSClassFromString(@"RNSFullWindowOverlay");
++    if (fullWindowOverlayClass) {
++      mutableComponents[@"RNSFullWindowOverlay"] = fullWindowOverlayClass;
++    }
++    
++    Class modalScreenClass = NSClassFromString(@"RNSModalScreen");
++    if (modalScreenClass) {
++      mutableComponents[@"RNSModalScreen"] = modalScreenClass;
++    }
++    
++    Class screenContainerClass = NSClassFromString(@"RNSScreenContainerView");
++    if (screenContainerClass) {
++      mutableComponents[@"RNSScreenContainer"] = screenContainerClass;
++    }
++    
++    Class screenContentWrapperClass = NSClassFromString(@"RNSScreenContentWrapper");
++    if (screenContentWrapperClass) {
++      mutableComponents[@"RNSScreenContentWrapper"] = screenContentWrapperClass;
++    }
++    
++    Class screenFooterClass = NSClassFromString(@"RNSScreenFooter");
++    if (screenFooterClass) {
++      mutableComponents[@"RNSScreenFooter"] = screenFooterClass;
++    }
++    
++    Class screenClass = NSClassFromString(@"RNSScreenView");
++    if (screenClass) {
++      mutableComponents[@"RNSScreen"] = screenClass;
++    }
++    
++    Class screenNavContainerClass = NSClassFromString(@"RNSScreenNavigationContainerView");
++    if (screenNavContainerClass) {
++      mutableComponents[@"RNSScreenNavigationContainer"] = screenNavContainerClass;
++    }
++    
++    Class stackHeaderConfigClass = NSClassFromString(@"RNSScreenStackHeaderConfig");
++    if (stackHeaderConfigClass) {
++      mutableComponents[@"RNSScreenStackHeaderConfig"] = stackHeaderConfigClass;
++    }
++    
++    Class stackHeaderSubviewClass = NSClassFromString(@"RNSScreenStackHeaderSubview");
++    if (stackHeaderSubviewClass) {
++      mutableComponents[@"RNSScreenStackHeaderSubview"] = stackHeaderSubviewClass;
++    }
++    
++    Class screenStackClass = NSClassFromString(@"RNSScreenStackView");
++    if (screenStackClass) {
++      mutableComponents[@"RNSScreenStack"] = screenStackClass;
++    }
++    
++    Class searchBarClass = NSClassFromString(@"RNSSearchBar");
++    if (searchBarClass) {
++      mutableComponents[@"RNSSearchBar"] = searchBarClass;
++    }
++    
++    Class stackScreenClass = NSClassFromString(@"RNSStackScreenComponentView");
++    if (stackScreenClass) {
++      mutableComponents[@"RNSStackScreen"] = stackScreenClass;
++    }
++    
++    Class stackHostClass = NSClassFromString(@"RNSScreenStackHostComponentView");
++    if (stackHostClass) {
++      mutableComponents[@"RNSScreenStackHost"] = stackHostClass;
++    }
++    
++    Class bottomTabsScreenClass = NSClassFromString(@"RNSBottomTabsScreenComponentView");
++    if (bottomTabsScreenClass) {
++      mutableComponents[@"RNSBottomTabsScreen"] = bottomTabsScreenClass;
++    }
++    
++    Class bottomTabsClass = NSClassFromString(@"RNSBottomTabsHostComponentView");
++    if (bottomTabsClass) {
++      mutableComponents[@"RNSBottomTabs"] = bottomTabsClass;
++    }
++    
++    Class splitViewHostClass = NSClassFromString(@"RNSSplitViewHostComponentView");
++    if (splitViewHostClass) {
++      mutableComponents[@"RNSSplitViewHost"] = splitViewHostClass;
++    }
++    
++    Class splitViewScreenClass = NSClassFromString(@"RNSSplitViewScreenComponentView");
++    if (splitViewScreenClass) {
++      mutableComponents[@"RNSSplitViewScreen"] = splitViewScreenClass;
++    }
++    
++    thirdPartyComponents = [mutableComponents copy];
+   });
+ 
+   return thirdPartyComponents;

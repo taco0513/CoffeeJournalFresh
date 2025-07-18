@@ -4,6 +4,7 @@
 # Xcode
 build/
 *.pbxuser
+ios/Build CoffeeJournalFresh_*.txt
 !default.pbxuser
 *.mode1v3
 !default.mode1v3
@@ -75,6 +76,9 @@ coverage
 .env
 .env.*
 !.env.example
+
+# MCP config with secrets
+.mcp.json
 
 # Bundle artifact
 *.jsbundle

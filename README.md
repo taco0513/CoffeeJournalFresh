@@ -3,8 +3,8 @@
 A comprehensive progressive web app (PWA) and mobile app for coffee enthusiasts to record, analyze, and track their coffee tasting experiences with AI-powered flavor matching.
 
 > 🌐 **Web Version**: ✅ **Ready for Testing** - Full-featured web app available at http://localhost:3000  
-> 📱 **Mobile Version**: ✅ **iOS Ready** - React Native version working, renamed to CoffeeJournalFresh  
-> ✅ **Current Features**: Complete tasting workflow, IndexedDB storage, OCR-ready interface
+> 📱 **Mobile Version**: ✅ **iOS Working** - React Native app with functional tasting flow and in-memory storage  
+> ✅ **Latest Update**: July 18, 2025 - v0.2.0 - Working iOS app with form validation and state management
 
 ## 🚀 Features
 
@@ -20,10 +20,12 @@ A comprehensive progressive web app (PWA) and mobile app for coffee enthusiasts 
 - **Comparison Data**: View how others rated the same coffee
 
 ### 🔄 개발 중
+- **Persistent Storage**: Fix Realm database for data persistence
 - **Cloud Sync**: Cross-device synchronization with Supabase
 - **User Authentication**: Personal coffee journey tracking
 - **Developer Data Collection**: Internal analytics system for coffee trends
 - **Photo Attachments**: Add coffee/cafe photos to tastings
+- **Scoring System**: Detailed evaluation scores
 
 ## 📱 Screenshots
 
@@ -39,13 +41,14 @@ A comprehensive progressive web app (PWA) and mobile app for coffee enthusiasts 
 - **OCR**: Web APIs (Camera + Tesseract.js ready)
 - **Platform**: Progressive Web App (PWA)
 
-### Mobile Version (iOS Ready)
+### Mobile Version (iOS Working - v0.2.0)
 - **Frontend**: React Native 0.80.1 with TypeScript
-- **State Management**: Zustand
-- **Database**: Realm (Local-first)
-- **Navigation**: Simple state-based navigation (no React Navigation)
+- **State Management**: Zustand with in-memory storage
+- **Database**: Realm prepared (not active due to iOS config issues)
+- **Navigation**: Simple state-based navigation (stable, no crashes)
 - **Platform**: iOS working, Android pending
-- **Status**: JavaScript bridge error fixed, builds and runs successfully
+- **Features**: Full tasting flow, form validation, flavor selection
+- **Status**: Functional app with temporary in-memory storage
 
 ## 🚀 Quick Start
 
