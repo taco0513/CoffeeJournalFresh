@@ -51,7 +51,7 @@ src/
 │   ├── HomeScreen.tsx   # Main screen
 │   ├── CoffeeInfoScreen.tsx
 │   └── ...
-├── navigation/          # Navigation configuration
+├── navigation/          # Simple state-based navigation
 └── hooks/              # Custom React hooks
 ```
 
@@ -180,7 +180,7 @@ Home Screen (Updated)
 ### Frontend Technologies
 - **React Native**: 0.72+ with New Architecture
 - **TypeScript**: 5.x with strict mode
-- **React Navigation**: 6.x with type safety
+- **Simple Navigation**: State-based navigation (no external navigation library)
 - **React Native Reanimated**: 3.x for animations
 - **React Native Gesture Handler**: Touch interactions
 
@@ -347,7 +347,7 @@ interface Logger {
 ### Future Scalability
 - **Multi-User Support**: User accounts and data sync
 - **Cloud Processing**: Server-side AI processing
-- **Real-time Features**: WebSocket connections
+- **Real-time Features**: Future consideration
 - **Data Analytics**: Aggregated usage analytics
 
 ## Maintenance & Updates

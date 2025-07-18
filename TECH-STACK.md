@@ -55,10 +55,10 @@ export const useTastingStore = create<TastingStore>((set) => ({
 
 ## Navigation
 
-### React Navigation
-- **Version**: 6.x
-- **Type**: Stack navigator
-- **Features**: TypeScript support, deep linking
+### Simple State-Based Navigation
+- **Type**: Custom state management
+- **Features**: TypeScript support, simple transitions
+- **Implementation**: No external navigation library
 
 **Navigation Stack**:
 ```
@@ -190,7 +190,7 @@ Home → CoffeeInfo → RoasterNotes → FlavorLevels → Sensory → Result
 src/
 ├── components/     # Reusable UI components
 ├── screens/        # Screen components
-├── navigation/     # Navigation configuration
+├── navigation/     # Simple state-based navigation
 ├── stores/         # Zustand stores
 ├── services/       # API and database services
 │   ├── realm/      # Realm database services
@@ -281,10 +281,9 @@ module.exports = {
 - **Recommendation**: Personalized suggestions
 
 ### Platform Extensions
-- **Web**: React Native Web
-- **Desktop**: Electron wrapper
-- **TV**: Apple TV, Android TV
-- **Watch**: Apple Watch, Wear OS
+- **iOS**: Primary platform
+- **Android**: Secondary platform
+- **Note**: No web version planned
 
 ## Version Control
 

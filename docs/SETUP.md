@@ -336,7 +336,7 @@ cd ios && rm -rf Pods && pod install && cd ..
 2. **네비게이션 설정**
    ```bash
    # Claude Code로
-   claude "React Navigation으로 6개 화면 네비게이션 설정해줘"
+   claude "Simple state-based navigation으로 6개 화면 네비게이션 설정해줘"
    ```
 
 3. **개발 시작!**

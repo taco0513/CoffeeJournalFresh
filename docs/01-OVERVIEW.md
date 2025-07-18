@@ -64,7 +64,7 @@ The Coffee Tasting Journal addresses these challenges through:
 - **Framework**: React Native with TypeScript
 - **State Management**: Zustand for reactive state
 - **Database**: Realm for local-first storage
-- **Navigation**: React Navigation with type safety
+- **Navigation**: Simple state-based navigation (no external navigation library)
 
 ### Core Components
 - **Matching Algorithm**: Intelligent text analysis and comparison

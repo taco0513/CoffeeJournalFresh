@@ -134,7 +134,7 @@ A mobile app featuring a 6-step tasting workflow with AI-powered matching that c
 - **Frontend**: React Native with TypeScript
 - **State Management**: Zustand
 - **Database**: Realm (local-first), Supabase (cloud)
-- **Navigation**: React Navigation
+- **Navigation**: Simple state-based navigation (no external navigation library)
 - **Testing**: Jest, Detox
 - **Developer Tools**: DevUtils for data collection
 
