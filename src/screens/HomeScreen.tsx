@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,15 @@ import {
   TouchableOpacity,
   FlatList,
   SafeAreaView,
+  ScrollView,
   Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitch from '../components/LanguageSwitch';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
+import RealmService from '../services/realm/RealmService';
+import { useUserStore } from '../stores/useUserStore';
+import { ITastingRecord } from '../services/realm/schemas';
 
 interface HomeScreenProps {
   navigation: any;
@@ -18,64 +22,105 @@ interface HomeScreenProps {
 
 export default function HomeScreen({navigation}: HomeScreenProps) {
   const { t } = useTranslation();
+  const { currentUser } = useUserStore();
+  const [recentTastings, setRecentTastings] = useState<ITastingRecord[]>([]);
+  const [stats, setStats] = useState({
+    totalTastings: 0,
+    thisWeekTastings: 0,
+    avgScore: 0,
+    bestScore: 0,
+  });
 
-  // 최근 테이스팅 기록 (더미 데이터 - 나중에 Realm에서 가져올 예정)
-  const recentTastings = [
-    {
-      id: '1',
-      coffeeName: '에티오피아 예가체프',
-      roasterName: '블루보틀',
-      matchScore: 85,
-      date: '2025-01-17',
-    },
-    {
-      id: '2',
-      coffeeName: '콜롬비아 수프리모',
-      roasterName: '스터디카페',
-      matchScore: 92,
-      date: '2025-01-16',
-    },
-    {
-      id: '3',
-      coffeeName: '케냐 AA',
-      roasterName: '프릳츠',
-      matchScore: 78,
-      date: '2025-01-15',
-    },
-  ];
+  const realmService = RealmService.getInstance();
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      if (realmService.isInitialized) {
+        const realm = realmService.getRealm();
+        const allTastings = realm.objects('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
+        
+        // 최근 3개 테이스팅
+        const recent = Array.from(allTastings.slice(0, 3));
+        setRecentTastings(recent);
+        
+        // 통계 계산
+        const total = allTastings.length;
+        const thisWeek = getThisWeekTastings(allTastings);
+        const avgScore = total > 0 ? allTastings.reduce((sum, t) => sum + t.matchScoreTotal, 0) / total : 0;
+        const bestScore = total > 0 ? Math.max(...allTastings.map(t => t.matchScoreTotal)) : 0;
+        
+        setStats({
+          totalTastings: total,
+          thisWeekTastings: thisWeek,
+          avgScore: Math.round(avgScore),
+          bestScore,
+        });
+      }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    }
+  };
+
+  const getThisWeekTastings = (tastings: any) => {
+    const now = new Date();
+    const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+    return tastings.filtered('createdAt >= $0', weekStart).length;
+  };
 
   const handleNewTasting = () => {
-    navigation.navigate('CoffeeInfo');
+    navigation.navigate('TastingFlow' as never, { screen: 'CoffeeInfo' } as never);
   };
 
   const handleViewHistory = () => {
-    navigation.navigate('History');
+    navigation.navigate('Journal' as never);
   };
 
   const handleStats = () => {
-    navigation.navigate('Stats');
+    navigation.navigate('Stats' as never);
+  };
+
+  const handleQuickStats = () => {
+    navigation.navigate('Stats' as never);
+  };
+
+  const handleSearch = () => {
+    navigation.navigate('Journal' as never, { screen: 'Search' } as never);
   };
 
   const handleTastingDetail = (tastingId: string) => {
-    navigation.navigate('TastingDetail', { tastingId });
+    navigation.navigate('Journal' as never, { screen: 'TastingDetail', params: { tastingId } } as never);
   };
 
-  const renderRecentTasting = ({ item }: { item: any }) => (
-    <TouchableOpacity 
-      style={styles.tastingCard} 
-      onPress={() => handleTastingDetail(item.id)}
-      activeOpacity={0.7}
-    >
-      <View style={styles.cardHeader}>
-        <Text style={styles.coffeeName}>{item.coffeeName}</Text>
-        <View style={styles.matchScoreContainer}>
-          <Text style={styles.matchScore}>{item.matchScore}%</Text>
+  const renderRecentTasting = ({ item }: { item: ITastingRecord }) => {
+    const formattedDate = new Date(item.createdAt).toLocaleDateString('ko-KR', {
+      month: 'short',
+      day: 'numeric',
+    });
+    
+    return (
+      <TouchableOpacity 
+        style={styles.tastingCard} 
+        onPress={() => handleTastingDetail(item.id)}
+        activeOpacity={0.7}
+      >
+        <View style={styles.cardHeader}>
+          <Text style={styles.coffeeName}>{item.coffeeName}</Text>
+          <View style={[styles.matchScoreContainer, {
+            backgroundColor: item.matchScoreTotal >= 85 ? HIGColors.green : 
+                           item.matchScoreTotal >= 70 ? HIGColors.orange : HIGColors.red
+          }]}>
+            <Text style={styles.matchScore}>{item.matchScoreTotal}</Text>
+          </View>
         </View>
-      </View>
-      <Text style={styles.roasterName}>{item.roasterName}</Text>
-      <Text style={styles.date}>{item.date}</Text>
-    </TouchableOpacity>
-  );
+        <Text style={styles.roasterName}>{item.roastery}</Text>
+        <Text style={styles.date}>{formattedDate}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,61 +130,90 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
         <LanguageSwitch style={styles.languageSwitch} />
       </View>
 
-      {/* 메인 컨텐츠 */}
-      <View style={styles.content}>
-        {/* 환영 메시지 */}
-        <View style={styles.welcomeSection}>
-          <Text style={styles.welcomeTitle}>오늘의 커피는?</Text>
-          <Text style={styles.welcomeSubtitle}>새로운 맛을 발견해보세요</Text>
-        </View>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* 메인 컨텐츠 */}
+        <View style={styles.content}>
+          {/* 환영 메시지 */}
+          <View style={styles.welcomeSection}>
+            <Text style={styles.welcomeTitle}>안녕하세요, {currentUser?.username || 'Guest'}님!</Text>
+            <Text style={styles.welcomeSubtitle}>오늘도 좋은 커피 한 잔 어떠세요?</Text>
+          </View>
 
-        {/* 새 테이스팅 시작 버튼 */}
-        <TouchableOpacity 
-          style={[commonButtonStyles.buttonPrimary, commonButtonStyles.buttonLarge, styles.newTastingButton]}
-          onPress={handleNewTasting}
-          activeOpacity={0.8}
-        >
-          <Text style={[commonTextStyles.buttonTextLarge, styles.newTastingButtonText]}>
-            새 테이스팅 시작
-          </Text>
-        </TouchableOpacity>
-
-        {/* 최근 기록 섹션 */}
-        <View style={styles.recentSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>최근 기록</Text>
-            <TouchableOpacity onPress={handleViewHistory}>
-              <Text style={styles.seeAllText}>전체 보기</Text>
+          {/* 통계 요약 카드 */}
+          <View style={styles.statsOverview}>
+            <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
+              <Text style={styles.statValue}>{stats.totalTastings}</Text>
+              <Text style={styles.statLabel}>총 테이스팅</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
+              <Text style={styles.statValue}>{stats.thisWeekTastings}</Text>
+              <Text style={styles.statLabel}>이번 주</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
+              <Text style={styles.statValue}>{stats.avgScore}</Text>
+              <Text style={styles.statLabel}>평균 점수</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
+              <Text style={styles.statValue}>{stats.bestScore}</Text>
+              <Text style={styles.statLabel}>최고 점수</Text>
             </TouchableOpacity>
           </View>
 
-          {recentTastings.length > 0 ? (
-            <FlatList
-              data={recentTastings}
-              renderItem={renderRecentTasting}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-              scrollEnabled={false}
-            />
-          ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>첫 테이스팅을 시작해보세요!</Text>
-              <Text style={styles.emptyStateSubtext}>위의 버튼을 눌러 새로운 커피를 평가해보세요</Text>
+          {/* 빠른 액션 버튼들 */}
+          <View style={styles.quickActions}>
+            <TouchableOpacity 
+              style={[commonButtonStyles.buttonPrimary, styles.primaryAction]}
+              onPress={handleNewTasting}
+              activeOpacity={0.8}
+            >
+              <Text style={[commonTextStyles.buttonText, styles.primaryActionText]}>
+                ☕ 새 테이스팅 시작
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.secondaryActions}>
+              <TouchableOpacity 
+                style={[commonButtonStyles.buttonSecondary, styles.secondaryAction]}
+                onPress={handleSearch}
+                activeOpacity={0.7}
+              >
+                <Text style={[commonTextStyles.buttonText, styles.secondaryActionText]}>🔍 검색</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[commonButtonStyles.buttonSecondary, styles.secondaryAction]}
+                onPress={handleStats}
+                activeOpacity={0.7}
+              >
+                <Text style={[commonTextStyles.buttonText, styles.secondaryActionText]}>📊 통계</Text>
+              </TouchableOpacity>
             </View>
-          )}
-        </View>
+          </View>
 
-        {/* 하단 액션 버튼들 */}
-        <View style={styles.bottomActions}>
-          <TouchableOpacity 
-            style={[commonButtonStyles.buttonOutline, styles.actionButton]}
-            onPress={handleStats}
-            activeOpacity={0.7}
-          >
-            <Text style={[commonTextStyles.buttonTextOutline, styles.actionButtonText]}>통계</Text>
-          </TouchableOpacity>
+          {/* 최근 기록 섹션 */}
+          <View style={styles.recentSection}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>최근 기록</Text>
+              <TouchableOpacity onPress={handleViewHistory}>
+                <Text style={styles.seeAllText}>전체 보기</Text>
+              </TouchableOpacity>
+            </View>
+
+            {recentTastings.length > 0 ? (
+              <FlatList
+                data={recentTastings}
+                renderItem={renderRecentTasting}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+                scrollEnabled={false}
+              />
+            ) : (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>첫 테이스팅을 시작해보세요!</Text>
+                <Text style={styles.emptyStateSubtext}>위의 버튼을 눌러 새로운 커피를 평가해보세요</Text>
+              </View>
+            )}
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -159,6 +233,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
   },
+  scrollView: {
+    flex: 1,
+  },
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
@@ -172,32 +249,74 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_LG,
   },
   welcomeSection: {
-    paddingTop: HIGConstants.SPACING_XL,
-    paddingBottom: HIGConstants.SPACING_XL,
+    paddingTop: HIGConstants.SPACING_LG,
+    paddingBottom: HIGConstants.SPACING_LG,
     alignItems: 'center',
   },
+  statsOverview: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: HIGConstants.SPACING_LG,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: HIGColors.secondarySystemBackground,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    alignItems: 'center',
+    marginHorizontal: HIGConstants.SPACING_XS,
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: HIGColors.blue,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+  },
+  quickActions: {
+    marginBottom: HIGConstants.SPACING_LG,
+  },
+  primaryAction: {
+    width: '100%',
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  primaryActionText: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  secondaryActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  secondaryAction: {
+    flex: 1,
+    marginHorizontal: HIGConstants.SPACING_XS,
+  },
+  secondaryActionText: {
+    color: HIGColors.blue,
+    fontSize: 15,
+    fontWeight: '500',
+  },
   welcomeTitle: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   welcomeSubtitle: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: '400',
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
   },
-  newTastingButton: {
-    width: '100%',
-    marginBottom: HIGConstants.SPACING_XL,
-  },
-  newTastingButtonText: {
-    color: '#FFFFFF',
-  },
   recentSection: {
-    flex: 1,
+    marginBottom: HIGConstants.SPACING_LG,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -273,15 +392,5 @@ const styles = StyleSheet.create({
     color: HIGColors.tertiaryLabel,
     textAlign: 'center',
     lineHeight: 20,
-  },
-  bottomActions: {
-    paddingTop: HIGConstants.SPACING_MD,
-    paddingBottom: HIGConstants.SPACING_XL,
-  },
-  actionButton: {
-    width: '100%',
-  },
-  actionButtonText: {
-    color: HIGColors.blue,
   },
 });

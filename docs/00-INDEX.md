@@ -8,6 +8,7 @@ This documentation provides comprehensive information about the Coffee Tasting J
 ### 📋 Core Documentation
 - **[01-OVERVIEW.md](./01-OVERVIEW.md)** - Project overview and key concepts
 - **[USER-FLOW.md](./USER-FLOW.md)** - Complete user journey and workflows (HIG compliant)
+- **[UI_FEATURES.md](./UI_FEATURES.md)** - Comprehensive UI features and design system
 - **[DATABASE.md](./DATABASE.md)** - Database schema and architecture
 - **[SETUP.md](./SETUP.md)** - Development environment setup (with AI tools)
 - **[05-ARCHITECTURE.md](./05-ARCHITECTURE.md)** - Technical architecture overview
@@ -119,9 +120,10 @@ This documentation provides comprehensive information about the Coffee Tasting J
 
 | Document | Status | Last Updated | Next Review |
 |----------|--------|--------------|-------------|
-| 00-INDEX.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| 00-INDEX.md | ✅ Complete | 2025-07-18 | 2025-08-18 |
 | 01-OVERVIEW.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
 | USER-FLOW.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
+| UI_FEATURES.md | ✅ Complete | 2025-07-18 | 2025-08-18 |
 | DATABASE.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
 | SETUP.md | ✅ Complete | 2025-01-18 | 2025-02-18 |
 | 05-ARCHITECTURE.md | ✅ Complete | 2025-01-18 | 2025-02-18 |

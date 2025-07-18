@@ -12,6 +12,7 @@ export const Colors = {
   GRADIENT_BROWN: '#6c4e31',
   
   BACKGROUND_GRAY: '#f5f5f5',
+  TAG_BACKGROUND: '#F0F0F0',
   SUCCESS_GREEN: '#2E7D32',
   ERROR_RED: '#C62828',
   INFO_BLUE: '#1565C0',

@@ -44,6 +44,10 @@ export interface ITastingRecord {
   flavorNotes: IFlavorNote[];
   sensoryAttribute: ISensoryAttribute;
   
+  // Photo
+  photoUri?: string;
+  photoThumbnailUri?: string;
+  
   // Sync Status
   isSynced: boolean;
   isDeleted: boolean;
@@ -150,6 +154,10 @@ export const TastingRecordSchema: Realm.ObjectSchema = {
     // Relationships
     flavorNotes: 'FlavorNote[]',
     sensoryAttribute: 'SensoryAttribute',
+    
+    // Photo
+    photoUri: 'string?',
+    photoThumbnailUri: 'string?',
     
     // Sync Status
     isSynced: { type: 'bool', default: false },

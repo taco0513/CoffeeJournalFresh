@@ -14,10 +14,10 @@ import {
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useTastingStore} from '../stores/tastingStore';
 import { AutocompleteInput } from '../components/common';
+import PhotoPicker from '../components/PhotoPicker';
 import RealmService from '../services/realm/RealmService';
 import { parseCoffeeName } from '../utils/coffeeParser';
 import { NavigationButton } from '../components/common';
-import { Colors } from '../constants/colors';
 import CameraModal from '../components/CameraModal';
 import { ParsedCoffeeInfo } from '../services/OCRService';
 import { parseOCRResult } from '../utils/ocrParser';
@@ -29,6 +29,9 @@ const CoffeeInfoScreen = () => {
   
   // Zustand store 사용
   const { currentTasting, updateField } = useTastingStore();
+  
+  // 사진 상태
+  const [photoUri, setPhotoUri] = useState<string>(currentTasting.photoUri || '');
   
   // 자동완성 상태
   const [cafeSuggestions, setCafeSuggestions] = useState<string[]>([]);
@@ -339,6 +342,18 @@ const CoffeeInfoScreen = () => {
     }
   };
 
+  // 사진 선택 처리
+  const handlePhotoSelected = (uri: string) => {
+    setPhotoUri(uri);
+    updateField('photoUri', uri);
+  };
+
+  // 사진 삭제 처리
+  const handlePhotoRemoved = () => {
+    setPhotoUri('');
+    updateField('photoUri', '');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* HIG 준수 네비게이션 바 */}
@@ -380,6 +395,15 @@ const CoffeeInfoScreen = () => {
             <Text style={styles.scanHint}>
               커피 패키지 라벨을 스캔하여 정보를 자동으로 입력하세요
             </Text>
+          </View>
+
+          {/* 사진 선택 */}
+          <View style={styles.form}>
+            <PhotoPicker
+              photoUri={photoUri}
+              onPhotoSelected={handlePhotoSelected}
+              onPhotoRemoved={handlePhotoRemoved}
+            />
           </View>
 
           {/* 입력 폼 */}

@@ -24,10 +24,10 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CoffeeJournalFresh/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8210DB6DF7F6DC18A462F586 /* Pods-CoffeeJournalFresh.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoffeeJournalFresh.debug.xcconfig"; path = "Target Support Files/Pods-CoffeeJournalFresh/Pods-CoffeeJournalFresh.debug.xcconfig"; sourceTree = "<group>"; };
 		A6665497420D7CA72B84746C /* libPods-CoffeeJournalFresh.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CoffeeJournalFresh.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D48E3615AC84434CB4F5DE38 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D48E3615AC84434CB4F5DE38 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = CoffeeJournalFresh/main.m; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		ED633E902E2A3136009A33E6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		ED633E912E2A3136009A33E6 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		ED633E902E2A3136009A33E6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = CoffeeJournalFresh/AppDelegate.h; sourceTree = "<group>"; };
+		ED633E912E2A3136009A33E6 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = CoffeeJournalFresh/AppDelegate.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

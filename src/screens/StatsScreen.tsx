@@ -7,10 +7,22 @@ import {
   SafeAreaView,
   ActivityIndicator,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import RealmService from '../services/realm/RealmService';
 import { Colors } from '../constants/colors';
+import { HIGConstants, HIGColors } from '../styles/common';
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from 'react-native-chart-kit';
+
+const screenWidth = Dimensions.get('window').width;
 
 interface Statistics {
   totalTastings: number;
@@ -41,6 +53,20 @@ interface FlavorProfile {
   percentage: number;
 }
 
+interface TastingTrend {
+  date: string;
+  count: number;
+  avgScore: number;
+}
+
+interface SensoryData {
+  body: number;
+  acidity: number;
+  sweetness: number;
+  finish: number;
+  mouthfeel: number;
+}
+
 const StatsScreen = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
@@ -49,10 +75,87 @@ const StatsScreen = () => {
   const [topCoffees, setTopCoffees] = useState<TopCoffee[]>([]);
   const [topCafes, setTopCafes] = useState<TopCafe[]>([]);
   const [flavorProfile, setFlavorProfile] = useState<FlavorProfile[]>([]);
+  const [tastingTrend, setTastingTrend] = useState<TastingTrend[]>([]);
+  const [sensoryData, setSensoryData] = useState<SensoryData | null>(null);
 
   useEffect(() => {
     loadStatistics();
   }, []);
+
+  const loadTastingTrends = async (): Promise<TastingTrend[]> => {
+    try {
+      const realmService = RealmService.getInstance();
+      const tastings = realmService.getTastingRecords({ isDeleted: false });
+      
+      // Group by month for the last 6 months
+      const monthData = new Map<string, { count: number; totalScore: number }>();
+      const now = new Date();
+      
+      // Initialize last 6 months
+      for (let i = 5; i >= 0; i--) {
+        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        monthData.set(key, { count: 0, totalScore: 0 });
+      }
+      
+      // Count tastings by month
+      tastings.forEach(tasting => {
+        const date = new Date(tasting.createdAt);
+        const key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        const data = monthData.get(key);
+        if (data) {
+          data.count++;
+          data.totalScore += tasting.matchScoreTotal || 0;
+        }
+      });
+      
+      // Convert to array
+      return Array.from(monthData.entries()).map(([date, data]) => ({
+        date: date.split('-')[1] + '월',
+        count: data.count,
+        avgScore: data.count > 0 ? data.totalScore / data.count : 0
+      }));
+    } catch (error) {
+      console.error('Failed to load tasting trends:', error);
+      return [];
+    }
+  };
+  
+  const loadSensoryAverages = async (): Promise<SensoryData | null> => {
+    try {
+      const realmService = RealmService.getInstance();
+      const tastings = realmService.getTastingRecords({ isDeleted: false });
+      
+      if (tastings.length === 0) return null;
+      
+      let totalBody = 0, totalAcidity = 0, totalSweetness = 0, totalFinish = 0, totalMouthfeel = 0;
+      let count = 0;
+      
+      tastings.forEach(tasting => {
+        if (tasting.sensoryAttribute) {
+          totalBody += tasting.sensoryAttribute.body || 0;
+          totalAcidity += tasting.sensoryAttribute.acidity || 0;
+          totalSweetness += tasting.sensoryAttribute.sweetness || 0;
+          totalFinish += tasting.sensoryAttribute.finish || 0;
+          totalMouthfeel += tasting.sensoryAttribute.mouthfeel || 0;
+          count++;
+        }
+      });
+      
+      if (count === 0) return null;
+      
+      return {
+        body: totalBody / count,
+        acidity: totalAcidity / count,
+        sweetness: totalSweetness / count,
+        finish: totalFinish / count,
+        mouthfeel: totalMouthfeel / count
+      };
+    } catch (error) {
+      console.error('Failed to load sensory averages:', error);
+      return null;
+    }
+  };
 
   const loadStatistics = async () => {
     try {
@@ -64,12 +167,18 @@ const StatsScreen = () => {
       const coffees = realmService.getTopCoffees(5);
       const cafes = realmService.getTopCafes(5);
       const flavors = realmService.getFlavorProfile();
+      
+      // Load chart data
+      const trends = await loadTastingTrends();
+      const sensoryAvg = await loadSensoryAverages();
 
       setStats(basicStats);
       setTopRoasters(roasters);
       setTopCoffees(coffees);
       setTopCafes(cafes);
       setFlavorProfile(flavors);
+      setTastingTrend(trends);
+      setSensoryData(sensoryAvg);
     } catch (error) {
       console.error('Failed to load statistics:', error);
     } finally {
@@ -192,27 +301,120 @@ const StatsScreen = () => {
           </View>
         )}
 
-        {/* 맛 프로필 */}
+        {/* 테이스팅 트렌드 차트 */}
+        {tastingTrend.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>📈 테이스팅 트렌드</Text>
+            <View style={styles.chartCard}>
+              <LineChart
+                data={{
+                  labels: tastingTrend.map(item => item.date),
+                  datasets: [{
+                    data: tastingTrend.map(item => item.count),
+                    strokeWidth: 3,
+                    color: (opacity = 1) => `rgba(52, 152, 219, ${opacity})`,
+                  }]
+                }}
+                width={screenWidth - 32}
+                height={220}
+                chartConfig={{
+                  backgroundColor: HIGColors.secondarySystemBackground,
+                  backgroundGradientFrom: HIGColors.secondarySystemBackground,
+                  backgroundGradientTo: HIGColors.secondarySystemBackground,
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(52, 152, 219, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(60, 60, 67, ${opacity})`,
+                  style: {
+                    borderRadius: HIGConstants.BORDER_RADIUS,
+                  },
+                  propsForDots: {
+                    r: "6",
+                    strokeWidth: "2",
+                    stroke: HIGColors.blue
+                  }
+                }}
+                bezier
+                style={styles.chart}
+              />
+            </View>
+          </View>
+        )}
+
+        {/* 감각 평가 레이더 차트 */}
+        {sensoryData && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>🎯 감각 평가 평균</Text>
+            <View style={styles.chartCard}>
+              <ProgressChart
+                data={{
+                  labels: ["바디", "산미", "단맛", "여운", "질감"],
+                  data: [
+                    sensoryData.body / 5,
+                    sensoryData.acidity / 5,
+                    sensoryData.sweetness / 5,
+                    sensoryData.finish / 5,
+                    sensoryData.mouthfeel / 5
+                  ]
+                }}
+                width={screenWidth - 32}
+                height={220}
+                strokeWidth={16}
+                radius={32}
+                chartConfig={{
+                  backgroundColor: HIGColors.secondarySystemBackground,
+                  backgroundGradientFrom: HIGColors.secondarySystemBackground,
+                  backgroundGradientTo: HIGColors.secondarySystemBackground,
+                  decimalPlaces: 1,
+                  color: (opacity = 1) => `rgba(52, 152, 219, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(60, 60, 67, ${opacity})`,
+                  style: {
+                    borderRadius: HIGConstants.BORDER_RADIUS,
+                  },
+                }}
+                style={styles.chart}
+              />
+            </View>
+          </View>
+        )}
+
+        {/* 맛 프로필 파이 차트 */}
         {flavorProfile.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>✨ 나의 맛 프로필</Text>
-            <View style={styles.flavorCard}>
-              {flavorProfile.map((flavor) => (
-                <View key={flavor.flavor} style={styles.flavorItem}>
-                  <View style={styles.flavorLeft}>
-                    <Text style={styles.flavorName}>{flavor.flavor}</Text>
-                    <View style={styles.flavorBarContainer}>
-                      <View 
-                        style={[
-                          styles.flavorBar, 
-                          { width: `${flavor.percentage}%` }
-                        ]} 
-                      />
-                    </View>
-                  </View>
-                  <Text style={styles.flavorCount}>{flavor.count}회</Text>
-                </View>
-              ))}
+            <View style={styles.chartCard}>
+              <PieChart
+                data={flavorProfile.slice(0, 5).map((flavor, index) => ({
+                  name: flavor.flavor,
+                  population: flavor.count,
+                  color: [
+                    '#3498db',
+                    '#e74c3c',
+                    '#2ecc71',
+                    '#f39c12',
+                    '#9b59b6'
+                  ][index % 5],
+                  legendFontColor: HIGColors.label,
+                  legendFontSize: 14,
+                }))}
+                width={screenWidth - 32}
+                height={220}
+                chartConfig={{
+                  backgroundColor: HIGColors.secondarySystemBackground,
+                  backgroundGradientFrom: HIGColors.secondarySystemBackground,
+                  backgroundGradientTo: HIGColors.secondarySystemBackground,
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(52, 152, 219, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(60, 60, 67, ${opacity})`,
+                  style: {
+                    borderRadius: HIGConstants.BORDER_RADIUS,
+                  },
+                }}
+                accessor="population"
+                backgroundColor="transparent"
+                paddingLeft="15"
+                absolute
+                style={styles.chart}
+              />
             </View>
           </View>
         )}
@@ -239,7 +441,7 @@ const StatsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: HIGColors.systemBackground,
   },
   scrollView: {
     flex: 1,
@@ -250,95 +452,101 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    marginTop: 16,
+    marginTop: HIGConstants.SPACING_MD,
     fontSize: 16,
-    color: Colors.TEXT_SECONDARY,
+    color: HIGColors.secondaryLabel,
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: HIGConstants.SPACING_LG,
   },
   emptyIcon: {
     fontSize: 48,
-    marginBottom: 16,
+    marginBottom: HIGConstants.SPACING_MD,
   },
   emptyText: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '600',
-    color: Colors.TEXT_TERTIARY,
-    marginBottom: 8,
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   emptySubtext: {
-    fontSize: 14,
-    color: Colors.TEXT_SECONDARY,
+    fontSize: 15,
+    color: HIGColors.tertiaryLabel,
     textAlign: 'center',
   },
   header: {
-    padding: 20,
-    paddingTop: 10,
+    padding: HIGConstants.SPACING_LG,
+    paddingTop: HIGConstants.SPACING_SM,
+    backgroundColor: HIGColors.systemBackground,
   },
   headerTitle: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 4,
+    fontWeight: '700',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   headerSubtitle: {
-    fontSize: 16,
-    color: Colors.TEXT_SECONDARY,
+    fontSize: 17,
+    color: HIGColors.secondaryLabel,
   },
   section: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_XL,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
-    color: '#000000',
-    marginBottom: 12,
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   statsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 12,
+    gap: HIGConstants.SPACING_SM,
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    padding: 20,
+    backgroundColor: HIGColors.secondarySystemBackground,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_LG,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 2,
   },
   statNumber: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: '700',
-    color: '#000000',
-    marginBottom: 4,
+    color: HIGColors.blue,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   statLabel: {
-    fontSize: 12,
-    color: Colors.TEXT_SECONDARY,
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
   },
   rankingCard: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: HIGColors.secondarySystemBackground,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 2,
   },
   rankingItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  rankingItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
   },
   rankingLeft: {
     flexDirection: 'row',
@@ -346,109 +554,129 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   rankNumber: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '700',
-    color: '#8B4513',
-    width: 30,
+    color: HIGColors.blue,
+    width: 28,
   },
   rankingInfo: {
     flex: 1,
-    marginLeft: 12,
+    marginLeft: HIGConstants.SPACING_SM,
   },
   rankName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000000',
+    color: HIGColors.label,
   },
   rankSubtext: {
-    fontSize: 12,
-    color: Colors.TEXT_SECONDARY,
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
     marginTop: 2,
   },
   rankScore: {
-    fontSize: 12,
-    color: Colors.TEXT_SECONDARY,
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
     marginTop: 2,
   },
   rankCount: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    color: Colors.TEXT_TERTIARY,
+    color: HIGColors.blue,
   },
   flavorCard: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: HIGColors.secondarySystemBackground,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 2,
   },
   flavorItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: HIGConstants.SPACING_MD,
   },
   flavorLeft: {
     flex: 1,
-    marginRight: 16,
+    marginRight: HIGConstants.SPACING_MD,
   },
   flavorName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000000',
-    marginBottom: 6,
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   flavorBarContainer: {
-    height: 8,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 4,
+    height: 6,
+    backgroundColor: HIGColors.gray4,
+    borderRadius: 3,
     overflow: 'hidden',
   },
   flavorBar: {
     height: '100%',
-    backgroundColor: '#8B4513',
-    borderRadius: 4,
+    backgroundColor: HIGColors.blue,
+    borderRadius: 3,
   },
   flavorCount: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
-    color: Colors.TEXT_SECONDARY,
+    color: HIGColors.blue,
   },
   bottomSpacer: {
-    height: 40,
+    height: HIGConstants.SPACING_XL * 2,
   },
   exportButton: {
-    backgroundColor: 'white',
+    backgroundColor: HIGColors.secondarySystemBackground,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 20,
-    marginHorizontal: 20,
-    marginTop: 20,
-    borderRadius: 12,
-    shadowColor: Colors.SHADOW_BLACK,
+    padding: HIGConstants.SPACING_LG,
+    marginHorizontal: HIGConstants.SPACING_LG,
+    marginTop: HIGConstants.SPACING_LG,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 2,
   },
   exportIcon: {
-    fontSize: 28,
-    marginRight: 16,
+    fontSize: 24,
+    marginRight: HIGConstants.SPACING_MD,
   },
   exportTextContainer: {
     flex: 1,
   },
   exportTitle: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '600',
-    color: Colors.TEXT_PRIMARY,
-    marginBottom: 4,
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   exportSubtitle: {
-    fontSize: 14,
-    color: Colors.TEXT_SECONDARY,
+    fontSize: 15,
+    color: HIGColors.secondaryLabel,
   },
   exportArrow: {
-    fontSize: 24,
-    color: Colors.TEXT_TERTIARY,
+    fontSize: 20,
+    color: HIGColors.tertiaryLabel,
+  },
+  chartCard: {
+    backgroundColor: HIGColors.secondarySystemBackground,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_SM,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 2,
+    alignItems: 'center',
+  },
+  chart: {
+    marginVertical: HIGConstants.SPACING_SM,
+    borderRadius: HIGConstants.BORDER_RADIUS,
   },
 });
 
