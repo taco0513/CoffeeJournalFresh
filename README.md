@@ -1,31 +1,36 @@
-# Coffee Tasting Journal
+# Coffee Journal Fresh
 
-A comprehensive progressive web app (PWA) and mobile app for coffee enthusiasts to record, analyze, and track their coffee tasting experiences with AI-powered flavor matching.
+A React Native mobile app for coffee enthusiasts to record and track their coffee tasting experiences.
 
-> 🌐 **Web Version**: ✅ **Ready for Testing** - Full-featured web app available at http://localhost:3000  
-> 📱 **Mobile Version**: ✅ **iOS Working** - React Native app with functional tasting flow and in-memory storage  
-> ✅ **Latest Update**: July 18, 2025 - v0.2.0 - Working iOS app with form validation and state management
+> 📱 **iOS**: ✅ v0.2.0 Working - Functional tasting flow with in-memory storage  
+> 🤖 **Android**: 📅 Planned - After iOS feature completion  
+> ✅ **Latest Update**: July 18, 2025 - Working iOS app with form validation
 
 ## 🚀 Features
 
-### ✅ 현재 사용 가능
-- **7-Step Tasting Flow**: Systematic coffee evaluation process
-- **OCR Scanning**: Quick coffee info input with camera
-- **Smart Autocomplete**: Contextual suggestions based on previous entries
-- **AI-Powered Matching**: Intelligent comparison between roaster notes and user selections
-- **Flavor Wheel Integration**: Based on SCA (Specialty Coffee Association) flavor wheel
-- **Bilingual Support**: Korean and English language support
-- **Local Storage**: Offline-first with Realm database
-- **Match Scoring**: Sophisticated algorithm combining flavor (60%) and sensory (40%) attributes
-- **Comparison Data**: View how others rated the same coffee
+### ✅ Currently Working
+- **Coffee Information Input**: Name, roastery, origin, brew method
+- **Flavor Selection**: 12 flavor options with visual feedback
+- **Form Validation**: Required field validation with alerts
+- **Tasting History**: View past tastings with dates
+- **In-Memory Storage**: Data persists during app session
+- **Simple Navigation**: Stable state-based navigation (no crashes)
 
-### 🔄 개발 중
-- **Persistent Storage**: Fix Realm database for data persistence
-- **Cloud Sync**: Cross-device synchronization with Supabase
-- **User Authentication**: Personal coffee journey tracking
-- **Developer Data Collection**: Internal analytics system for coffee trends
-- **Photo Attachments**: Add coffee/cafe photos to tastings
-- **Scoring System**: Detailed evaluation scores
+### 🔄 In Development
+- **Persistent Storage**: Fix Realm or implement AsyncStorage
+- **Scoring System**: Body, acidity, sweetness, finish ratings
+- **SCA Flavor Wheel**: Professional 4-level flavor hierarchy
+- **Photo Capture**: Add coffee bag photos to tastings
+- **Search & Filter**: Find specific tastings in history
+- **Export Data**: CSV/JSON export functionality
+- **Statistics**: Coffee consumption insights
+
+### 🎯 Future Plans
+- **Android Support**: Cross-platform compatibility
+- **OCR Scanning**: Quick coffee info input from labels
+- **Cloud Sync**: Backup data with Supabase
+- **Brew Timer**: Track extraction times
+- **Social Features**: Share tasting notes
 
 ## 📱 Screenshots
 
@@ -33,111 +38,77 @@ A comprehensive progressive web app (PWA) and mobile app for coffee enthusiasts 
 
 ## 🛠️ Tech Stack
 
-### Web Version (Primary)
-- **Frontend**: Next.js 15 with TypeScript
+- **Framework**: React Native 0.80.1
+- **Language**: TypeScript
 - **State Management**: Zustand
-- **Database**: IndexedDB (Browser Storage)
-- **UI Framework**: Tailwind CSS
-- **OCR**: Web APIs (Camera + Tesseract.js ready)
-- **Platform**: Progressive Web App (PWA)
+- **Database**: Realm (prepared, not active)
+- **Navigation**: Simple state-based (no React Navigation)
+- **Platform**: iOS (Android planned)
 
-### Mobile Version (iOS Working - v0.2.0)
-- **Frontend**: React Native 0.80.1 with TypeScript
-- **State Management**: Zustand with in-memory storage
-- **Database**: Realm prepared (not active due to iOS config issues)
-- **Navigation**: Simple state-based navigation (stable, no crashes)
-- **Platform**: iOS working, Android pending
-- **Features**: Full tasting flow, form validation, flavor selection
-- **Status**: Functional app with temporary in-memory storage
+## 🚀 Getting Started
 
-## 🚀 Quick Start
+### Prerequisites
+- Node.js 18+
+- Xcode 15+
+- iOS Simulator or physical device
 
-### Web Version (Recommended)
+### Installation
+
 ```bash
-# Navigate to web directory
-cd web
+# Clone the repository
+git clone https://github.com/taco0513/CoffeeJournalFresh.git
+cd CoffeeJournalFresh
 
 # Install dependencies
 npm install
 
-# Start development server
-npm run dev
+# iOS setup
+cd ios && pod install && cd ..
 
-# Open browser to http://localhost:3000
-```
+# Start Metro
+npm start
 
-### Mobile Version (iOS - Ready)
-```bash
-# Install dependencies
-npm install
-
-# iOS Device (requires Xcode setup)
-npm run ios-device
-
-# iOS Simulator
+# Run on iOS
 npm run ios
-
-# Note: Project renamed to CoffeeJournalFresh for iOS
-# All path configuration issues resolved
-# JavaScript bridge error fixed
+# or for physical device
+npm run ios-device
 ```
 
-## 📚 Documentation
+## 📁 Project Structure
 
-- [Features](./FEATURES.md) - Detailed feature specifications
-- [Tech Stack](./TECH-STACK.md) - Technical implementation details
-- [Setup Guide](./docs/SETUP.md) - Development environment setup
-- [Architecture](./docs/05-ARCHITECTURE.md) - System architecture overview
-- [Data Collection](./DATA_COLLECTION_README.md) - Developer data collection system
+```
+CoffeeJournalFresh/
+├── App.tsx                    # Main app with navigation
+├── src/
+│   ├── stores/               # Zustand state management
+│   ├── models/               # Realm database models (prepared)
+│   ├── services/             # Business logic
+│   └── contexts/             # React contexts
+├── ios/                      # iOS native code
+└── docs/                     # Documentation
+```
 
-## 🔄 Workflow
+## 🐛 Known Issues
 
-1. **Coffee Info** → Enter comprehensive coffee details (cafe, roastery, name, origin, variety, altitude, process, roast level, temperature)
-2. **Photo Upload** → OCR-ready photo upload for automatic data extraction
-3. **Roaster Notes** → Input roaster's flavor descriptions
-4. **Flavor Selection** → 4-level hierarchical flavor selection
-5. **Sensory Evaluation** → Rate body, acidity, sweetness, finish, mouthfeel
-6. **Results** → View match score, community comparison, and similar coffees
+1. **RCTEventEmitter Warning**: Harmless warning that doesn't affect functionality
+2. **Data Persistence**: Currently only saves in memory (lost on app restart)
+3. **Realm Integration**: Prepared but needs iOS configuration debugging
 
-## 🎯 Match Algorithm
+## 📈 Development Progress
 
-- **Flavor Matching (60%)**: Compares roaster notes with user selections
-- **Sensory Matching (40%)**: Evaluates sensory attribute alignment
-- **Score Range**: 0-100% matching accuracy
-- **Bilingual Processing**: Supports Korean and English terms
-
-## 📊 Key Metrics
-
-- **Match Score**: Overall tasting accuracy
-- **Flavor Score**: Flavor profile matching
-- **Sensory Score**: Sensory attribute alignment
-- **Historical Tracking**: View past tasting performance
-
-## 🔧 Development
-
-This project uses:
-- React Native 0.80.1
-- React 19.1.0
-- TypeScript for type safety
-- Zustand for state management
-- Realm for local data persistence
-- Supabase for cloud sync and data collection
-- SCA flavor wheel for standardized flavor terminology
-- Simple state-based navigation (no React Navigation for stability)
-
-### Developer Tools
-- **DevUtils**: Console tools for data collection (development only)
-- **DataCollectionService**: Internal analytics system
-- **Supabase Admin**: Database management
-
-## 📄 License
-
-MIT License - see [LICENSE](./LICENSE) for details
+- ✅ Phase 1: Basic UI and navigation (Complete)
+- 🔄 Phase 2: Core features and persistence (In Progress)
+- 📅 Phase 3: Advanced features (Planned)
+- 📅 Phase 4: Android support (Future)
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our contributing guidelines and submit pull requests.
+This is an active development project focused on iOS first, Android second. No web version planned.
 
-## 📞 Support
+## 📝 License
 
-For support, please open an issue in the GitHub repository or contact the development team.
+MIT License
+
+---
+
+**Current Focus**: iOS app development. Making it stable and feature-rich before expanding to Android.
