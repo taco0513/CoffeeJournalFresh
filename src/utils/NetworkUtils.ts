@@ -20,8 +20,12 @@ class NetworkError extends Error {
 export class NetworkUtils {
   private static isOnline = true;
   private static listeners = new Set<(isOnline: boolean) => void>();
+  private static initialized = false;
 
-  static {
+  private static initialize() {
+    if (this.initialized) return;
+    this.initialized = true;
+    
     // 네트워크 상태 모니터링 초기화
     NetInfo.addEventListener(state => {
       const wasOnline = this.isOnline;
@@ -37,6 +41,7 @@ export class NetworkUtils {
    * 네트워크 상태 리스너 추가
    */
   static addConnectionListener(listener: (isOnline: boolean) => void): () => void {
+    this.initialize();
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
   }
@@ -45,6 +50,7 @@ export class NetworkUtils {
    * 현재 네트워크 연결 상태 확인
    */
   static async isConnected(): Promise<boolean> {
+    this.initialize();
     const state = await NetInfo.fetch();
     return state.isConnected && state.isInternetReachable;
   }
@@ -53,6 +59,7 @@ export class NetworkUtils {
    * 네트워크 연결 대기
    */
   static async waitForConnection(timeout = 30000): Promise<boolean> {
+    this.initialize();
     if (await this.isConnected()) return true;
 
     return new Promise((resolve) => {

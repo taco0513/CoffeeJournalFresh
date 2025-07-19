@@ -47,6 +47,12 @@ React Native 0.80 coffee tasting journal app with Supabase backend and social fe
 - 112 TypeScript errors remain (non-blocking)
 - Metro bundler occasionally loses connection (workaround: rebuild)
 
+### Recent Fixes (2025-07-19)
+- ✅ **Build Error Fixed**: Resolved static class block issue in NetworkUtils.ts
+  - React Native's Babel doesn't support static blocks by default
+  - Refactored to use initialization method pattern
+  - Build now succeeds for iOS archive
+
 ### Next Steps
 1. Configure Google OAuth in Supabase dashboard
 2. Add real Google client ID to googleAuth.ts
