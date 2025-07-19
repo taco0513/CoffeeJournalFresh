@@ -1,7 +1,7 @@
 # Coffee Journal Fresh - Agent Handover
 
 ## Project Overview
-React Native 0.80 coffee tasting journal app with Supabase backend and social features.
+React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 고유한 커피 취향을 발견하고, 전문가·커뮤니티와 함께 나누며 성장하는 소셜 테이스팅 앱.
 
 ## Recent Progress (Session Summary)
 
@@ -53,12 +53,19 @@ React Native 0.80 coffee tasting journal app with Supabase backend and social fe
   - Refactored to use initialization method pattern
   - Build now succeeds for iOS archive
 
-### Next Steps
-1. Configure Google OAuth in Supabase dashboard
-2. Add real Google client ID to googleAuth.ts
-3. Test on real device via TestFlight
-4. Address TypeScript errors
-5. Re-enable Sentry when build issues resolved
+### Next Steps - Personal Taste, Shared Journey Evolution
+1. **Phase 1 (Personal Taste 강화)**:
+   - 개인 취향 발견 대시보드 구현
+   - Taste DNA 알고리즘 개발
+   - 맛 표현 게임화 요소 추가
+2. **Phase 2 (Shared Journey 시작)**:
+   - 기본 커뮤니티 기능
+   - 취향 유사도 매칭 시스템
+   - 소셜 학습 도구
+3. **Technical Debt**:
+   - Google OAuth 설정 완료
+   - TypeScript 에러 정리
+   - 테스트 커버리지 확장
 
 ### Commands to Run
 ```bash
