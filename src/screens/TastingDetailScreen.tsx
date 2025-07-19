@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Alert,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -14,11 +15,14 @@ import { RootStackParamList } from '../types/navigation';
 import { ITastingRecord } from '../services/realm/schemas';
 import RealmService from '../services/realm/RealmService';
 import { useToastStore } from '../stores/toastStore';
+import { useUserStore } from '../stores/useUserStore';
 import {
   HIGColors,
+  HIGConstants,
 } from '../styles/common';
 import { NavigationButton } from '../components/common';
 import { Colors } from '../constants/colors';
+import { generateGuestMockData } from '../utils/guestMockData';
 
 // Navigation types
 type TastingDetailScreenRouteProp = RouteProp<RootStackParamList, 'TastingDetail'>;
@@ -28,6 +32,7 @@ const TastingDetailScreen = () => {
   const navigation = useNavigation<TastingDetailScreenNavigationProp>();
   const route = useRoute<TastingDetailScreenRouteProp>();
   const { showSuccessToast, showErrorToast } = useToastStore();
+  const { currentUser } = useUserStore();
   
   const [tastingRecord, setTastingRecord] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,13 +41,16 @@ const TastingDetailScreen = () => {
   
   const realmService = RealmService.getInstance();
   const isMountedRef = useRef(true);
+  
+  // Check if in guest mode
+  const isGuestMode = !currentUser || currentUser.username === 'Guest';
 
   // Get tastingId from route params
   const tastingId = route.params?.tastingId;
 
   useEffect(() => {
     loadTastingData();
-  }, [tastingId]);
+  }, [tastingId, isGuestMode]);
 
   // Cleanup when component unmounts
   useEffect(() => {
@@ -61,6 +69,54 @@ const TastingDetailScreen = () => {
       if (!tastingId) {
         if (isMountedRef.current) {
           setError('테이스팅 ID가 없습니다.');
+        }
+        return;
+      }
+
+      // If in guest mode, load from mock data
+      if (isGuestMode) {
+        const mockData = generateGuestMockData();
+        const mockRecord = mockData.find(record => record.id === tastingId);
+        
+        if (!mockRecord) {
+          if (isMountedRef.current) {
+            setError('테이스팅 기록을 찾을 수 없습니다.');
+          }
+          return;
+        }
+
+        if (isMountedRef.current) {
+          // Convert mock data to display format
+          const plainRecord = {
+            id: mockRecord.id,
+            createdAt: mockRecord.createdAt,
+            updatedAt: mockRecord.updatedAt,
+            cafeName: mockRecord.cafeName,
+            roastery: mockRecord.roastery,
+            coffeeName: mockRecord.coffeeName,
+            origin: mockRecord.origin,
+            variety: mockRecord.variety,
+            altitude: mockRecord.altitude,
+            process: mockRecord.process,
+            temperature: mockRecord.temperature,
+            roasterNotes: mockRecord.roasterNotes,
+            matchScoreTotal: mockRecord.matchScoreTotal,
+            matchScoreFlavor: mockRecord.matchScoreFlavorNotes,
+            matchScoreSensory: mockRecord.matchScoreSensoryAttributes,
+            flavorNotes: mockRecord.flavorNotes ? mockRecord.flavorNotes.map(note => ({
+              level: note.level,
+              value: note.value,
+              koreanValue: note.koreanValue,
+            })) : [],
+            sensoryAttribute: mockRecord.sensoryAttributes ? {
+              body: mockRecord.sensoryAttributes.body,
+              acidity: mockRecord.sensoryAttributes.acidity,
+              sweetness: mockRecord.sensoryAttributes.sweetness,
+              finish: mockRecord.sensoryAttributes.finish,
+              mouthfeel: mockRecord.sensoryAttributes.mouthfeel[0] || 'Clean',
+            } : null,
+          };
+          setTastingRecord(plainRecord);
         }
         return;
       }
@@ -221,34 +277,38 @@ const TastingDetailScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header with Edit/Delete buttons */}
-      <View style={styles.header}>
-        <NavigationButton
-          title="← Back"
-          onPress={() => navigation.goBack()}
-          variant="text"
-          fullWidth={false}
+      {/* Navigation Bar */}
+      <View style={styles.navigationBar}>
+        <TouchableOpacity 
           style={styles.backButton}
-          textStyle={styles.backButtonText}
-        />
-        <View style={styles.headerButtons}>
-          <NavigationButton
-            title="수정"
-            onPress={handleEdit}
-            variant="primary"
-            fullWidth={false}
-            style={styles.editButton}
-          />
-          <NavigationButton
-            title="삭제"
-            onPress={handleDelete}
-            variant="secondary"
-            fullWidth={false}
-            disabled={isDeleting}
-            style={{ backgroundColor: HIGColors.red }}
-            textStyle={{ color: '#FFFFFF' }}
-          />
-        </View>
+          onPress={() => navigation.goBack()}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        </TouchableOpacity>
+        <Text style={styles.navigationTitle}>테이스팅 상세</Text>
+        {!isGuestMode && (
+          <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={handleEdit}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text style={styles.actionButtonText}>수정</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.deleteButton]}
+              onPress={handleDelete}
+              disabled={isDeleting}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text style={[styles.actionButtonText, styles.deleteButtonText]}>삭제</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {isGuestMode && (
+          <View style={styles.placeholder} />
+        )}
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -413,6 +473,19 @@ const TastingDetailScreen = () => {
             )}
           </View>
         </View>
+
+        {/* Guest Mode Notice */}
+        {isGuestMode && (
+          <View style={styles.guestNotice}>
+            <Text style={styles.guestNoticeText}>🔍 게스트 모드로 보는 샘플 데이터입니다</Text>
+            <TouchableOpacity
+              style={styles.loginPromptButton}
+              onPress={() => navigation.navigate('Auth' as never)}
+            >
+              <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -451,30 +524,53 @@ const styles = StyleSheet.create({
   retryButtonText: {
     // 공통 스타일로 대체됨
   },
-  header: {
+  navigationBar: {
+    height: 44,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
   },
   backButton: {
-    backgroundColor: 'transparent',
+    paddingVertical: HIGConstants.SPACING_SM,
   },
   backButtonText: {
+    fontSize: 17,
     color: HIGColors.blue,
+    fontWeight: '400',
   },
-  headerButtons: {
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  headerActions: {
     flexDirection: 'row',
-    gap: 12,
+    alignItems: 'center',
+    gap: HIGConstants.SPACING_SM,
   },
-  editButton: {
-    // 공통 스타일로 대체됨
+  actionButton: {
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
+    borderRadius: 6,
+    backgroundColor: HIGColors.blue,
+  },
+  actionButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   deleteButton: {
-    // 공통 스타일로 대체됨
+    backgroundColor: HIGColors.red,
+  },
+  deleteButtonText: {
+    color: '#FFFFFF',
+  },
+  placeholder: {
+    width: 1,
   },
   scrollView: {
     flex: 1,
@@ -609,6 +705,31 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.TEXT_SECONDARY,
     marginTop: 4,
+  },
+  // Guest Mode Styles
+  guestNotice: {
+    backgroundColor: '#F8F8F8',
+    borderRadius: 12,
+    padding: 16,
+    marginHorizontal: 20,
+    marginBottom: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  guestNoticeText: {
+    fontSize: 15,
+    color: Colors.TEXT_SECONDARY,
+    marginBottom: 12,
+  },
+  loginPromptButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  loginPromptText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: HIGColors.blue,
   },
 });
 

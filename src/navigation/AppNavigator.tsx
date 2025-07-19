@@ -17,7 +17,7 @@ import RoasterNotesScreen from '../screens/RoasterNotesScreen';
 import FlavorLevel1Screen from '../screens/flavor/FlavorLevel1Screen';
 import FlavorLevel2Screen from '../screens/flavor/FlavorLevel2Screen';
 import FlavorLevel3Screen from '../screens/flavor/FlavorLevel3Screen';
-import FlavorLevel4Screen from '../screens/flavor/FlavorLevel4Screen';
+// import FlavorLevel4Screen from '../screens/flavor/FlavorLevel4Screen'; // Feature Backlog
 import SensoryScreen from '../screens/SensoryScreen';
 import ResultScreen from '../screens/ResultScreen';
 import OCRScanScreen from '../screens/OCRScanScreen';
@@ -45,13 +45,7 @@ function TastingFlow() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: {
-          backgroundColor: HIGColors.label,
-        },
-        headerTintColor: HIGColors.systemBackground,
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
+        headerShown: false,
         presentation: 'card',
       }}
     >
@@ -80,11 +74,12 @@ function TastingFlow() {
         component={FlavorLevel3Screen} 
         options={{title: 'Select Flavor'}}
       />
-      <Stack.Screen 
+      {/* Feature Backlog - Level 4 (Detailed Descriptors) */}
+      {/* <Stack.Screen 
         name="FlavorLevel4" 
         component={FlavorLevel4Screen} 
         options={{title: 'Select Details'}}
-      />
+      /> */}
       <Stack.Screen 
         name="Sensory" 
         component={SensoryScreen} 
@@ -114,13 +109,7 @@ function HistoryStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: {
-          backgroundColor: HIGColors.label,
-        },
-        headerTintColor: HIGColors.systemBackground,
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
+        headerShown: false,
       }}
     >
       <Stack.Screen 
@@ -153,13 +142,7 @@ function StatsStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: {
-          backgroundColor: HIGColors.label,
-        },
-        headerTintColor: HIGColors.systemBackground,
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
+        headerShown: false,
       }}
     >
       <Stack.Screen 
@@ -182,11 +165,12 @@ function CommunityStack() {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: HIGColors.label,
+          backgroundColor: '#FFFFFF',
         },
-        headerTintColor: HIGColors.systemBackground,
+        headerTintColor: HIGColors.label,
         headerTitleStyle: {
           fontWeight: 'bold',
+          color: HIGColors.label,
         },
       }}
     >
@@ -214,13 +198,7 @@ function ProfileStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: {
-          backgroundColor: HIGColors.label,
-        },
-        headerTintColor: HIGColors.systemBackground,
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
+        headerShown: false,
       }}
     >
       <Stack.Screen 
@@ -356,11 +334,21 @@ function AuthStack() {
 function AppNavigator() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { loadStoredUser } = useUserStore();
+  const { loadStoredUser, currentUser } = useUserStore();
+  
+  // 게스트 모드 또는 인증된 사용자인 경우 MainTabs 표시
+  const shouldShowMainApp = isAuthenticated || currentUser?.username === 'Guest';
 
   useEffect(() => {
     checkAuthStatus();
   }, []);
+
+  // currentUser 변경 시 인증 상태 재확인
+  useEffect(() => {
+    if (currentUser?.username === 'Guest') {
+      setIsLoading(false);
+    }
+  }, [currentUser]);
 
   const checkAuthStatus = async () => {
     try {
@@ -391,10 +379,10 @@ function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator 
-        initialRouteName={isAuthenticated ? "MainTabs" : "Auth"}
+        initialRouteName={shouldShowMainApp ? "MainTabs" : "Auth"}
         screenOptions={{
           headerShown: false,
-          presentation: 'modal',
+          presentation: 'card',
         }}
       >
         <Stack.Screen 
@@ -409,7 +397,7 @@ function AppNavigator() {
           name="TastingFlow" 
           component={TastingFlow} 
           options={{
-            presentation: 'modal',
+            presentation: 'card',
           }}
         />
         <Stack.Screen 

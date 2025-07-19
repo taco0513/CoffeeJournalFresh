@@ -3,7 +3,30 @@
 ## Project Overview
 React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 고유한 커피 취향을 발견하고, 전문가·커뮤니티와 함께 나누며 성장하는 소셜 테이스팅 앱.
 
-## Recent Progress (2025-07-20)
+## Recent Progress (2025-07-19)
+
+### UI/UX Design System Overhaul ✨
+- ✅ **Navigation System Unification**
+  - Removed duplicate headers across all screens
+  - Unified custom navigation bars on Home, Journal, Stats, Profile
+  - TastingFlow screens use consistent navigation design
+  - Removed default Stack Navigator headers (`headerShown: false`)
+  - Clean single-header design throughout the app
+
+- ✅ **Guest Mode Enhancement** 🔍
+  - Complete guest mode support across all screens
+  - Mock data for Journal screen (5 realistic coffee records)
+  - Mock data for Stats screen (detailed charts and rankings)
+  - Mock data for Profile screen (user statistics and favorites)
+  - Guest mode navigation works properly with MainTabs
+  - Guest notices with login prompts on all tabs
+
+- ✅ **Design Consistency** 🎨
+  - All screens follow HomeScreenEnhanced design patterns
+  - Consistent navigation bars with BETA badges and language switch
+  - Unified card styles with proper shadows and colors
+  - Modal presentation changed to card style (no more bottom sheet hover)
+  - Proper spacing and typography throughout
 
 ### Coffee Discovery & Management System 🎆
 - ✅ **Coffee Catalog Database**
@@ -57,16 +80,15 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
   - Resolved Metro bundler connection issues
 
 ### Key Files Modified
-- **src/screens/auth/SignInScreen.tsx**: Added conditional Apple Sign-In display
-- **src/stores/useUserStore.ts**: Social login methods implemented
-- **src/services/supabase/appleAuth.ts**: Complete Apple Sign-In service
-- **src/services/supabase/googleAuth.ts**: Google Sign-In service (needs client ID)
-- **src/components/ErrorBoundary.tsx**: Crash protection component
-- **src/utils/NetworkUtils.ts**: Network retry with exponential backoff
-- **src/constants/HIG.ts**: Apple HIG design constants
-- **babel.config.js**: Production optimizations and path resolver
-- **tsconfig.json**: TypeScript path aliases
-- **index.js**: __DEV__ global variable fix
+- **src/navigation/AppNavigator.tsx**: Removed all Stack Navigator headers, unified card presentation
+- **src/screens/HomeScreenEnhanced.tsx**: Added guest mode support with mock data display
+- **src/screens/HistoryScreen.tsx**: Complete redesign with navigation bar, guest mode, mock data
+- **src/screens/StatsScreen.tsx**: Added navigation bar, guest mode with detailed mock statistics
+- **src/screens/ProfileScreen.tsx**: Added navigation bar, guest mode profile data, login/logout handling
+- **src/screens/TastingDetailScreen.tsx**: Updated to unified navigation bar design
+- **src/stores/useUserStore.ts**: Added setGuestMode function and guest user handling
+- **src/utils/guestMockData.ts**: Comprehensive mock data for guest mode experience
+- **src/screens/auth/SignInScreen.tsx**: Modified handleSkip to use setGuestMode properly
 
 ### Current Issues
 - Apple Sign-In only works on real devices (expected iOS limitation)
@@ -74,11 +96,30 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
 - 112 TypeScript errors remain (non-blocking)
 - Metro bundler occasionally loses connection (workaround: rebuild)
 
-### Previous Fixes (2025-07-19)
+### Recent Fixes (2025-07-19)
 - ✅ **Build Error Fixed**: Resolved static class block issue in NetworkUtils.ts
   - React Native's Babel doesn't support static blocks by default
   - Refactored to use initialization method pattern
   - Build now succeeds for iOS archive
+
+- ✅ **UI Color System Overhaul**: Complete removal of grayscale elements
+  - Fixed black header issue across all screens (navigationBars now use '#FFFFFF')
+  - Replaced all HIGColors.systemBackground with explicit white backgrounds
+  - Added colorful themed backgrounds to all cards and components:
+    - Home stat cards: Light green (#E8F5E8) with green borders
+    - Tasting cards: Cream (#FFF8DC) with beige borders
+    - Guest notices: Light blue (#E3F2FD) with blue borders
+    - Admin buttons: Light orange (#FFF3E0) with orange borders
+    - Action cards: Various themed colors with matching borders
+  - Removed monochrome mode and toggle functionality completely
+  - Updated all navigation bars, modals, and auth screens
+
+- ✅ **Guest Mode Enhancement**: Improved guest user experience
+  - All screens properly handle guest mode with comprehensive mock data
+  - Fixed backgrounds and styling consistency for guest mode screens
+  - Added guest notices with login prompts on all relevant screens
+  - Consistent white backgrounds across auth and main application screens
+  - Mock data includes: statistics, tasting records, roaster lists, flavor profiles
 
 ### Next Steps - Personal Taste, Shared Journey Evolution
 1. **Phase 1 (Personal Taste 강화)**:
@@ -120,6 +161,10 @@ watchman watch-del-all
 - Coffee Discovery System: Users can add/search coffees with admin approval
 - Achievement System: Coffee discovery badges and real-time notifications
 - Supabase Integration: Enhanced with catalog, notifications, and real-time subscriptions
+- UI/UX: Unified navigation system with consistent design patterns
+- Guest Mode: Complete experience across all screens with comprehensive mock data
+- Navigation: Clean single-header design, no duplicate headers
+- Design System: All screens follow HomeScreenEnhanced patterns with proper spacing and colors
 
 ## Feature Backlog
 
@@ -153,3 +198,9 @@ watchman watch-del-all
    - Coffee photo gallery
    - OCR improvements
    - Visual coffee diary
+
+3. **Flavor Level 4 - Detailed Descriptors** (Currently commented out)
+   - Additional layer beyond SCA Flavor Wheel Level 3
+   - Qualitative descriptors (e.g., Fresh vs Jammy Blackberry)
+   - More nuanced tasting notes for professional cuppers
+   - Enhanced matching accuracy with roaster notes

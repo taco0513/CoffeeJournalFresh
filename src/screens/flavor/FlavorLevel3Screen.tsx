@@ -90,11 +90,13 @@ const FlavorLevel3Screen = () => {
     });
     
     setSelectedFlavors(newFlavors);
-    navigation.navigate('FlavorLevel4' as never);
+    // Skip Level 4 and go directly to Sensory
+    navigation.navigate('Sensory' as never);
   };
 
   const handleSkip = () => {
-    navigation.navigate('FlavorLevel4' as never);
+    // Skip Level 4 and go directly to Sensory
+    navigation.navigate('Sensory' as never);
   };
 
   const isNextEnabled = selectedLevel3.length > 0;
@@ -214,7 +216,7 @@ const ITEM_WIDTH = (width - HIGConstants.SPACING_LG * 2 - HIGConstants.SPACING_S
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   navigationBar: {
     height: HIGConstants.MIN_TOUCH_TARGET,
@@ -222,7 +224,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
   },
@@ -344,7 +346,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingTop: HIGConstants.SPACING_MD,
     paddingBottom: HIGConstants.SPACING_LG,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.gray4,
   },

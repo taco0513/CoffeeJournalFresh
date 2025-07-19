@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderRadius: HIGConstants.BORDER_RADIUS * 2,
     width: '90%',
     maxHeight: '80%',
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_SM,
     fontSize: 17,
     color: HIGColors.label,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   notice: {
     backgroundColor: HIGColors.gray6,

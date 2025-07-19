@@ -17,6 +17,7 @@ import { useUserStore } from '../stores/useUserStore';
 import { ITastingRecord } from '../services/realm/schemas';
 import { useCoffeeNotifications } from '../hooks/useCoffeeNotifications';
 import { CoffeeDiscoveryAlert } from '../components/CoffeeDiscoveryAlert';
+import { generateGuestMockData, generateGuestStats } from '../utils/guestMockData';
 
 interface HomeScreenProps {
   navigation: any;
@@ -24,7 +25,20 @@ interface HomeScreenProps {
 
 export default function HomeScreen({navigation}: HomeScreenProps) {
   const { t } = useTranslation();
-  const { currentUser, user } = useUserStore();
+  const { currentUser } = useUserStore();
+  
+  // 게스트 모드 체크
+  const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
+  
+  // 게스트 모드일 때 mock 데이터 사용
+  const guestMockData = isGuestMode ? generateGuestMockData() : [];
+  const guestMockStats = isGuestMode ? generateGuestStats() : {
+    totalTastings: 0,
+    thisWeekTastings: 0,
+    avgScore: 0,
+    bestScore: 0,
+  };
+  
   const [recentTastings, setRecentTastings] = useState<ITastingRecord[]>([]);
   const [stats, setStats] = useState({
     totalTastings: 0,
@@ -42,16 +56,52 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
   } = useCoffeeNotifications();
   
   // Check if admin
-  const isAdmin = user?.email === 'hello@zimojin.com';
+  const isAdmin = currentUser?.email === 'hello@zimojin.com';
 
   const realmService = RealmService.getInstance();
 
   useEffect(() => {
     loadDashboardData();
+  }, [currentUser]);
+
+  // 컴포넌트 마운트 시에도 실행
+  useEffect(() => {
+    loadDashboardData();
   }, []);
+
+  // 디버깅용 useEffect - 컴포넌트 마운트 시 실행
+  useEffect(() => {
+    Alert.alert('HomeScreen', 'HomeScreen mounted!');
+  }, []);
+  
+  // currentUser 변경 시 실행
+  useEffect(() => {
+    if (currentUser) {
+      Alert.alert(
+        'User Changed',
+        `Username: ${currentUser.username}\nIsGuest: ${currentUser.username === 'Guest'}`
+      );
+    } else {
+      Alert.alert('User Changed', 'currentUser is null');
+    }
+  }, [currentUser]);
 
   const loadDashboardData = async () => {
     try {
+      // 게스트 모드 강제 체크 - currentUser가 Guest이거나 없는 경우
+      const isGuest = currentUser?.username === 'Guest' || !currentUser;
+      
+      if (isGuest) {
+        // 게스트용 mock 데이터 강제 로딩
+        const mockData = generateGuestMockData();
+        const mockStats = generateGuestStats();
+        
+        // 상태 강제 업데이트
+        setRecentTastings([...mockData.slice(0, 3)]);
+        setStats({...mockStats});
+        return;
+      }
+      
       if (realmService.isInitialized) {
         const realm = realmService.getRealm();
         const allTastings = realm.objects('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
@@ -85,6 +135,18 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
   };
 
   const handleNewTasting = () => {
+    // 게스트 모드 체크
+    if (!currentUser || currentUser.username === 'Guest') {
+      Alert.alert(
+        '로그인 필요',
+        '테이스팅 기록을 저장하려면 로그인이 필요합니다.',
+        [
+          { text: '취소', style: 'cancel' },
+          { text: '로그인', onPress: () => navigation.navigate('Auth' as never) }
+        ]
+      );
+      return;
+    }
     navigation.navigate('TastingFlow' as never, { screen: 'CoffeeInfo' } as never);
   };
 
@@ -156,7 +218,27 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
           <View style={styles.welcomeSection}>
             <Text style={styles.welcomeTitle}>안녕하세요, {currentUser?.username || 'Guest'}님!</Text>
             <Text style={styles.welcomeSubtitle}>오늘도 좋은 커피 한 잔 어떠세요?</Text>
+            {/* 디버깅용 텍스트 */}
+            <Text style={{fontSize: 12, color: 'red', marginTop: 10}}>
+              Debug: isGuestMode={isGuestMode.toString()}, username={currentUser?.username || 'null'}
+            </Text>
+            <Text style={{fontSize: 12, color: 'red'}}>
+              Mock data count: {guestMockData.length}
+            </Text>
           </View>
+
+          {/* 게스트 모드 안내 */}
+          {(!currentUser || currentUser.username === 'Guest') && (
+            <View style={styles.guestNotice}>
+              <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
+              <TouchableOpacity
+                style={styles.loginPromptButton}
+                onPress={() => navigation.navigate('Auth' as never)}
+              >
+                <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
           {/* 관리자 버튼 */}
           {isAdmin && (
@@ -171,19 +253,19 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
           {/* 통계 요약 카드 */}
           <View style={styles.statsOverview}>
             <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{stats.totalTastings}</Text>
+              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.totalTastings : stats.totalTastings}</Text>
               <Text style={styles.statLabel}>총 테이스팅</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{stats.thisWeekTastings}</Text>
+              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.thisWeekTastings : stats.thisWeekTastings}</Text>
               <Text style={styles.statLabel}>이번 주</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{stats.avgScore}</Text>
+              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.avgScore : stats.avgScore}</Text>
               <Text style={styles.statLabel}>평균 점수</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{stats.bestScore}</Text>
+              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.bestScore : stats.bestScore}</Text>
               <Text style={styles.statLabel}>최고 점수</Text>
             </TouchableOpacity>
           </View>
@@ -210,9 +292,9 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
               </TouchableOpacity>
             </View>
 
-            {recentTastings.length > 0 ? (
+            {(isGuestMode ? guestMockData.slice(0, 3) : recentTastings).length > 0 ? (
               <FlatList
-                data={recentTastings}
+                data={isGuestMode ? guestMockData.slice(0, 3) : recentTastings}
                 renderItem={renderRecentTasting}
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
@@ -234,7 +316,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   navigationBar: {
     height: 44,
@@ -242,7 +324,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
   },
@@ -290,11 +372,13 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#E8F5E8',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     alignItems: 'center',
     marginHorizontal: HIGConstants.SPACING_XS,
+    borderWidth: 1,
+    borderColor: HIGColors.green,
   },
   statValue: {
     fontSize: 24,
@@ -352,11 +436,13 @@ const styles = StyleSheet.create({
     color: HIGColors.blue,
   },
   tastingCard: {
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#FFF8DC',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_SM,
     minHeight: 60, // HIG 최소 터치 영역 보장
+    borderWidth: 1,
+    borderColor: '#DEB887',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -413,10 +499,12 @@ const styles = StyleSheet.create({
   
   // Coffee Discovery Styles
   discoverySection: {
-    backgroundColor: HIGColors.gray6,
+    backgroundColor: '#F3E5F5',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_LG,
+    borderWidth: 1,
+    borderColor: HIGColors.purple,
   },
   discoverySectionTitle: {
     fontSize: 17,
@@ -444,17 +532,42 @@ const styles = StyleSheet.create({
   
   // Admin Button
   adminButton: {
-    backgroundColor: HIGColors.gray6,
+    backgroundColor: '#FFF3E0',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_LG,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: HIGColors.gray5,
+    borderColor: HIGColors.orange,
   },
   adminButtonText: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
+  },
+  
+  // Guest Mode Styles
+  guestNotice: {
+    backgroundColor: '#E3F2FD',
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HIGColors.blue,
+  },
+  guestNoticeText: {
+    fontSize: 15,
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  loginPromptButton: {
+    paddingVertical: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+  },
+  loginPromptText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: HIGColors.blue,
   },
 });

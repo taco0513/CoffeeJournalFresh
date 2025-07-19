@@ -10,6 +10,8 @@ import {
   ActivityIndicator,
   RefreshControl,
   Alert,
+  StatusBar,
+  Platform,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -22,11 +24,25 @@ import { CoachInsightBanner } from '@/components/personalTaste';
 import { usePersonalTaste, useLiteAICoach } from '@/hooks/usePersonalTaste';
 import { CoachFeedbackModal } from '@/components/coach/CoachFeedbackModal';
 import LiteAICoachService from '@/services/LiteAICoachService';
+import { generateGuestMockData, generateGuestStats } from '../utils/guestMockData';
 
 export default function HomeScreenEnhanced() {
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const { currentUser } = useUserStore();
+  
+  // 게스트 모드 체크
+  const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
+  
+  // 게스트 모드일 때 mock 데이터 사용
+  const guestMockData = isGuestMode ? generateGuestMockData() : [];
+  const guestMockStats = isGuestMode ? generateGuestStats() : {
+    totalTastings: 0,
+    thisWeekTastings: 0,
+    avgScore: 0,
+    bestScore: 0,
+  };
+  
   const [recentTastings, setRecentTastings] = useState<ITastingRecord[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   
@@ -140,10 +156,20 @@ export default function HomeScreenEnhanced() {
       day: 'numeric',
     });
     
+    const handlePress = () => {
+      if (isGuestMode) {
+        // 게스트 모드에서는 Journal 탭으로 이동
+        navigation.navigate('Journal');
+      } else {
+        // 일반 모드에서는 상세 화면으로 이동
+        handleTastingDetail(item.id);
+      }
+    };
+    
     return (
       <TouchableOpacity 
         style={styles.tastingCard} 
-        onPress={() => handleTastingDetail(item.id)}
+        onPress={handlePress}
         activeOpacity={0.7}
       >
         <View style={styles.cardHeader}>
@@ -180,7 +206,7 @@ export default function HomeScreenEnhanced() {
         <View style={styles.titleContainer}>
           <Text style={styles.navigationTitle}>Coffee Journey</Text>
           <View style={styles.betaBadge}>
-            <Text style={styles.betaText}>v0.4</Text>
+            <Text style={styles.betaText}>BETA</Text>
           </View>
         </View>
         <LanguageSwitch style={styles.languageSwitch} />
@@ -207,7 +233,20 @@ export default function HomeScreenEnhanced() {
           <View style={styles.welcomeSection}>
             <Text style={styles.welcomeTitle}>안녕하세요, {currentUser?.username || 'Guest'}님!</Text>
             
-            {tastePattern && (
+            {/* 게스트 모드 안내 */}
+            {isGuestMode && (
+              <View style={styles.guestNotice}>
+                <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
+                <TouchableOpacity
+                  style={styles.loginPromptButton}
+                  onPress={() => navigation.navigate('Auth' as never)}
+                >
+                  <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            
+            {tastePattern && !isGuestMode && (
               <TouchableOpacity 
                 style={styles.journeyProgress}
                 onPress={handleViewPersonalDashboard}
@@ -235,22 +274,22 @@ export default function HomeScreenEnhanced() {
           {/* Enhanced Stats Overview */}
           <View style={styles.statsOverview}>
             <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{stats.totalTastings}</Text>
+              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.totalTastings : stats.totalTastings}</Text>
               <Text style={styles.statLabel}>총 테이스팅</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{stats.thisWeekTastings}</Text>
+              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.thisWeekTastings : stats.thisWeekTastings}</Text>
               <Text style={styles.statLabel}>이번 주</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.statCard} onPress={handleViewPersonalDashboard}>
               <Text style={styles.statValue}>
-                {tastePattern ? tastePattern.dominantFlavors.length : 0}
+                {isGuestMode ? 8 : (tastePattern ? tastePattern.dominantFlavors.length : 0)}
               </Text>
               <Text style={styles.statLabel}>발견한 향미</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.statCard} onPress={handleViewPersonalDashboard}>
               <Text style={styles.statValue}>
-                {growthMetrics ? Math.round(growthMetrics.accuracyImprovement) : 0}%
+                {isGuestMode ? 15 : (growthMetrics ? Math.round(growthMetrics.accuracyImprovement) : 0)}%
               </Text>
               <Text style={styles.statLabel}>성장률</Text>
             </TouchableOpacity>
@@ -357,9 +396,9 @@ export default function HomeScreenEnhanced() {
               </TouchableOpacity>
             </View>
 
-            {recentTastings.length > 0 ? (
+            {(isGuestMode ? guestMockData.slice(0, 3) : recentTastings).length > 0 ? (
               <FlatList
-                data={recentTastings}
+                data={isGuestMode ? guestMockData.slice(0, 3) : recentTastings}
                 renderItem={renderRecentTasting}
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
@@ -436,7 +475,7 @@ export default function HomeScreenEnhanced() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   navigationBar: {
     height: 44,
@@ -444,7 +483,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
   },
@@ -542,11 +581,18 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#FFFFFF',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     alignItems: 'center',
     marginHorizontal: HIGConstants.SPACING_XS,
+    borderWidth: 1,
+    borderColor: HIGColors.blue + '20',
+    shadowColor: HIGColors.blue,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   statValue: {
     fontSize: 24,
@@ -581,10 +627,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#FFFFFF',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     gap: HIGConstants.SPACING_SM,
+    borderWidth: 1,
+    borderColor: HIGColors.orange + '30',
+    shadowColor: HIGColors.orange,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 1,
   },
   actionIcon: {
     fontSize: 20,
@@ -617,11 +670,18 @@ const styles = StyleSheet.create({
     paddingRight: HIGConstants.SPACING_LG,
   },
   recommendationCard: {
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#FFFFFF',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     marginRight: HIGConstants.SPACING_MD,
     width: 160,
+    borderWidth: 1,
+    borderColor: HIGColors.green + '20',
+    shadowColor: HIGColors.green,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   recommendationHeader: {
     flexDirection: 'row',
@@ -658,11 +718,18 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_LG,
   },
   tastingCard: {
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#FFFFFF',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_SM,
     minHeight: 60,
+    borderWidth: 1,
+    borderColor: HIGColors.purple + '20',
+    shadowColor: HIGColors.purple,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -799,5 +866,30 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     color: HIGColors.white,
+  },
+  
+  // Guest Mode Styles
+  guestNotice: {
+    backgroundColor: '#E3F2FD',
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HIGColors.blue,
+  },
+  guestNoticeText: {
+    fontSize: 15,
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  loginPromptButton: {
+    paddingVertical: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+  },
+  loginPromptText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: HIGColors.blue,
   },
 });

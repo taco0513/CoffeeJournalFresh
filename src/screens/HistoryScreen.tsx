@@ -9,13 +9,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   SectionList,
+  ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import RealmService from '../services/realm/RealmService';
 import { ITastingRecord } from '../services/realm/schemas';
-import { Colors } from '../constants/colors';
-import { Heading2, BodyText, Caption } from '../components/common';
 import { HIGConstants, HIGColors } from '../styles/common';
+import { useUserStore } from '../stores/useUserStore';
+import { generateGuestMockData } from '../utils/guestMockData';
+import LanguageSwitch from '../components/LanguageSwitch';
 
 interface GroupedTastings {
   title: string;
@@ -24,10 +26,14 @@ interface GroupedTastings {
 
 export default function HistoryScreen() {
   const navigation = useNavigation();
+  const { currentUser } = useUserStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [allTastings, setAllTastings] = useState<ITastingRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'date' | 'score'>('date');
+  
+  // 게스트 모드 체크
+  const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
 
   useEffect(() => {
     loadData();
@@ -36,6 +42,15 @@ export default function HistoryScreen() {
   const loadData = async () => {
     try {
       setLoading(true);
+      
+      // 게스트 모드인 경우 mock 데이터 사용
+      if (isGuestMode) {
+        const guestMockData = generateGuestMockData();
+        setAllTastings(guestMockData);
+        setLoading(false);
+        return;
+      }
+      
       const realmService = RealmService.getInstance();
       const tastings = realmService.getTastingRecords({ isDeleted: false });
       setAllTastings(Array.from(tastings));
@@ -158,8 +173,8 @@ export default function HistoryScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color={Colors.GRADIENT_BROWN} />
-          <BodyText style={styles.loadingText}>기록 불러오는 중...</BodyText>
+          <ActivityIndicator size="large" color={HIGColors.blue} />
+          <Text style={styles.loadingText}>기록 불러오는 중...</Text>
         </View>
       </SafeAreaView>
     );
@@ -167,9 +182,32 @@ export default function HistoryScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Navigation Bar */}
+      <View style={styles.navigationBar}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.navigationTitle}>테이스팅 기록</Text>
+          <View style={styles.betaBadge}>
+            <Text style={styles.betaText}>BETA</Text>
+          </View>
+        </View>
+        <LanguageSwitch style={styles.languageSwitch} />
+      </View>
+
+      {/* 게스트 모드 안내 */}
+      {isGuestMode && (
+        <View style={styles.guestNotice}>
+          <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
+          <TouchableOpacity
+            style={styles.loginPromptButton}
+            onPress={() => navigation.navigate('Auth' as never)}
+          >
+            <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <View style={styles.header}>
-        <Heading2>테이스팅 기록</Heading2>
-        <Text style={styles.totalCount}>총 {allTastings.length}개의 기록</Text>
+        <Text style={styles.headerTitle}>총 {allTastings.length}개의 기록</Text>
       </View>
       
       <View style={styles.searchContainer}>
@@ -235,12 +273,12 @@ export default function HistoryScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>☕️</Text>
-            <BodyText style={styles.emptyText}>
+            <Text style={styles.emptyText}>
               {searchQuery ? '검색 결과가 없습니다' : '아직 기록이 없습니다'}
-            </BodyText>
-            <Caption style={styles.emptySubtext}>
+            </Text>
+            <Text style={styles.emptySubtext}>
               {searchQuery ? '다른 검색어를 시도해보세요' : '첫 테이스팅을 기록해보세요'}
-            </Caption>
+            </Text>
           </View>
         }
       />
@@ -251,7 +289,63 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
+  },
+  navigationBar: {
+    height: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  betaBadge: {
+    backgroundColor: HIGColors.accent,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  betaText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: HIGColors.white,
+    letterSpacing: 0.5,
+  },
+  languageSwitch: {},
+  guestNotice: {
+    backgroundColor: '#E3F2FD',
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    margin: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HIGColors.blue,
+  },
+  guestNoticeText: {
+    fontSize: 15,
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  loginPromptButton: {
+    paddingVertical: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+  },
+  loginPromptText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: HIGColors.blue,
   },
   centerContainer: {
     flex: 1,
@@ -261,12 +355,11 @@ const styles = StyleSheet.create({
   header: {
     padding: HIGConstants.SPACING_LG,
     paddingBottom: HIGConstants.SPACING_SM,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
-  totalCount: {
+  headerTitle: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
-    marginTop: HIGConstants.SPACING_XS,
   },
   searchContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
@@ -338,7 +431,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   loadingText: {
-    marginTop: HIGConstants.SPACING_SM,
+    marginTop: HIGConstants.SPACING_MD,
+    fontSize: 16,
     color: HIGColors.secondaryLabel,
   },
   listContent: {
@@ -350,7 +444,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   sectionTitle: {
     fontSize: 16,
@@ -362,14 +456,17 @@ const styles = StyleSheet.create({
     color: HIGColors.secondaryLabel,
   },
   tastingCard: {
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#FFFFFF',
     marginHorizontal: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
-    shadowColor: '#000',
+    minHeight: 60,
+    borderWidth: 1,
+    borderColor: HIGColors.purple + '20',
+    shadowColor: HIGColors.purple,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
   },
@@ -395,7 +492,7 @@ const styles = StyleSheet.create({
   },
   scoreContainer: {
     alignItems: 'center',
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderRadius: HIGConstants.BORDER_RADIUS,
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: HIGConstants.SPACING_XS,

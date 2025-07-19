@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import RealmService from '../services/realm/RealmService';
-import { Colors } from '../constants/colors';
 import { HIGConstants, HIGColors } from '../styles/common';
 import {
   LineChart,
@@ -21,6 +20,9 @@ import {
   ContributionGraph,
   StackedBarChart
 } from 'react-native-chart-kit';
+import { useUserStore } from '../stores/useUserStore';
+import { generateGuestMockData, generateGuestStats } from '../utils/guestMockData';
+import LanguageSwitch from '../components/LanguageSwitch';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -69,6 +71,7 @@ interface SensoryData {
 
 const StatsScreen = () => {
   const navigation = useNavigation();
+  const { currentUser } = useUserStore();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Statistics | null>(null);
   const [topRoasters, setTopRoasters] = useState<TopRoaster[]>([]);
@@ -77,6 +80,9 @@ const StatsScreen = () => {
   const [flavorProfile, setFlavorProfile] = useState<FlavorProfile[]>([]);
   const [tastingTrend, setTastingTrend] = useState<TastingTrend[]>([]);
   const [sensoryData, setSensoryData] = useState<SensoryData | null>(null);
+  
+  // 게스트 모드 체크
+  const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
 
   useEffect(() => {
     loadStatistics();
@@ -159,6 +165,75 @@ const StatsScreen = () => {
 
   const loadStatistics = async () => {
     try {
+      // 게스트 모드인 경우 mock 데이터 사용
+      if (isGuestMode) {
+        const guestMockData = generateGuestMockData();
+        const guestStats = generateGuestStats();
+        
+        // Mock 통계 데이터 생성
+        setStats({
+          totalTastings: guestStats.totalTastings,
+          averageScore: guestStats.avgScore,
+          firstTastingDays: 45,
+        });
+        
+        // Mock TOP 로스터리 데이터
+        setTopRoasters([
+          { name: 'Blue Bottle Coffee', count: 2, avgScore: 89 },
+          { name: 'Fritz Coffee Company', count: 1, avgScore: 85 },
+          { name: 'Center Coffee', count: 1, avgScore: 92 },
+          { name: 'Anthracite Coffee', count: 1, avgScore: 88 },
+        ]);
+        
+        // Mock TOP 커피 데이터
+        setTopCoffees([
+          { name: 'Three Africas', roastery: 'Blue Bottle Coffee', count: 1 },
+          { name: 'Colombia Geisha', roastery: 'Fritz Coffee Company', count: 1 },
+          { name: 'Ethiopia Yirgacheffe', roastery: 'Center Coffee', count: 1 },
+          { name: 'Single Origin Blend', roastery: 'Blue Bottle Coffee', count: 1 },
+          { name: 'Signature Blend', roastery: 'Anthracite Coffee', count: 1 },
+        ]);
+        
+        // Mock TOP 카페 데이터
+        setTopCafes([
+          { name: 'Blue Bottle 삼청점', count: 2 },
+          { name: 'Fritz 성수점', count: 1 },
+          { name: 'Center Coffee 홍대점', count: 1 },
+          { name: 'Anthracite 한남점', count: 1 },
+        ]);
+        
+        // Mock 향미 프로필 데이터
+        setFlavorProfile([
+          { flavor: 'Chocolate', count: 3, percentage: 60 },
+          { flavor: 'Fruity', count: 2, percentage: 40 },
+          { flavor: 'Floral', count: 2, percentage: 40 },
+          { flavor: 'Nutty', count: 1, percentage: 20 },
+          { flavor: 'Citrus', count: 1, percentage: 20 },
+        ]);
+        
+        // Mock 테이스팅 트렌드 데이터
+        setTastingTrend([
+          { date: '02월', count: 0, avgScore: 0 },
+          { date: '03월', count: 1, avgScore: 85 },
+          { date: '04월', count: 2, avgScore: 87 },
+          { date: '05월', count: 1, avgScore: 92 },
+          { date: '06월', count: 1, avgScore: 88 },
+          { date: '07월', count: 0, avgScore: 0 },
+        ]);
+        
+        // Mock 감각 평가 데이터
+        setSensoryData({
+          body: 3.8,
+          acidity: 3.2,
+          sweetness: 4.1,
+          finish: 3.9,
+          mouthfeel: 3.7,
+        });
+        
+        setLoading(false);
+        return;
+      }
+      
       const realmService = RealmService.getInstance();
       
       // Load all statistics
@@ -190,16 +265,27 @@ const StatsScreen = () => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#8B4513" />
+          <ActivityIndicator size="large" color={HIGColors.blue} />
           <Text style={styles.loadingText}>통계를 불러오는 중...</Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  if (!stats || stats.totalTastings === 0) {
+  if (!stats || (!isGuestMode && stats.totalTastings === 0)) {
     return (
       <SafeAreaView style={styles.container}>
+        {/* Navigation Bar */}
+        <View style={styles.navigationBar}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.navigationTitle}>통계</Text>
+            <View style={styles.betaBadge}>
+              <Text style={styles.betaText}>BETA</Text>
+            </View>
+          </View>
+          <LanguageSwitch style={styles.languageSwitch} />
+        </View>
+
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyIcon}>📊</Text>
           <Text style={styles.emptyText}>아직 테이스팅 기록이 없습니다</Text>
@@ -213,7 +299,31 @@ const StatsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Navigation Bar */}
+      <View style={styles.navigationBar}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.navigationTitle}>통계</Text>
+          <View style={styles.betaBadge}>
+            <Text style={styles.betaText}>BETA</Text>
+          </View>
+        </View>
+        <LanguageSwitch style={styles.languageSwitch} />
+      </View>
+
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* 게스트 모드 안내 */}
+        {isGuestMode && (
+          <View style={styles.guestNotice}>
+            <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
+            <TouchableOpacity
+              style={styles.loginPromptButton}
+              onPress={() => navigation.navigate('Auth' as never)}
+            >
+              <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View style={styles.header}>
           <Text style={styles.headerTitle}>나의 커피 통계</Text>
           <Text style={styles.headerSubtitle}>커피 여정을 한눈에</Text>
@@ -444,7 +554,63 @@ const StatsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
+  },
+  navigationBar: {
+    height: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  betaBadge: {
+    backgroundColor: HIGColors.accent,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  betaText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: HIGColors.white,
+    letterSpacing: 0.5,
+  },
+  languageSwitch: {},
+  guestNotice: {
+    backgroundColor: '#E3F2FD',
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    margin: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HIGColors.blue,
+  },
+  guestNoticeText: {
+    fontSize: 15,
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  loginPromptButton: {
+    paddingVertical: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+  },
+  loginPromptText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: HIGColors.blue,
   },
   scrollView: {
     flex: 1,
@@ -483,7 +649,7 @@ const styles = StyleSheet.create({
   header: {
     padding: HIGConstants.SPACING_LG,
     paddingTop: HIGConstants.SPACING_SM,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   headerTitle: {
     fontSize: 28,

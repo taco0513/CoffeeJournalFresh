@@ -378,7 +378,7 @@ export default function PersonalTasteDashboard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   navigationBar: {
     height: 44,
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
   },
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   tab: {
     flex: 1,
@@ -490,9 +490,11 @@ const styles = StyleSheet.create({
   insightItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#E3F2FD',
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS,
+    borderWidth: 1,
+    borderColor: HIGColors.blue,
   },
   insightIcon: {
     fontSize: 20,
@@ -510,10 +512,12 @@ const styles = StyleSheet.create({
   },
   actionCard: {
     flex: 1,
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#FFF3E0',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HIGColors.orange,
   },
   actionIcon: {
     fontSize: 32,
@@ -551,9 +555,11 @@ const styles = StyleSheet.create({
   },
   metricItem: {
     width: (SCREEN_WIDTH - HIGConstants.SPACING_LG * 2 - HIGConstants.SPACING_SM) / 2,
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#F3E5F5',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
+    borderWidth: 1,
+    borderColor: HIGColors.purple,
   },
   metricLabel: {
     fontSize: 14,

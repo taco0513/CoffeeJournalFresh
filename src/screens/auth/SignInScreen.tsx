@@ -20,7 +20,7 @@ import { ErrorHandler } from '../../utils/errorHandler';
 
 const SignInScreen = () => {
   const navigation = useNavigation();
-  const { signIn, signInWithApple } = useUserStore();
+  const { signIn, signInWithApple, setGuestMode } = useUserStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -93,11 +93,11 @@ const SignInScreen = () => {
   // };
 
   const handleSkip = () => {
-    // Use app as guest - just navigate without auth
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'MainTabs' as never }],
-    });
+    // 게스트 모드로 설정
+    setGuestMode();
+    
+    // Use app as guest - navigate to MainTabs
+    navigation.navigate('MainTabs' as never);
   };
 
   return (
@@ -222,7 +222,7 @@ const SignInScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   keyboardAvoidingView: {
     flex: 1,

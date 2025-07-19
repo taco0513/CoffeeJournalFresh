@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
   },
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     padding: HIGConstants.SPACING_XL,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     marginBottom: HIGConstants.SPACING_SM,
   },
   headerIcon: {
@@ -559,7 +559,7 @@ const styles = StyleSheet.create({
     color: HIGColors.green,
   },
   section: {
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     padding: HIGConstants.SPACING_LG,
     marginVertical: HIGConstants.SPACING_XS,
     marginHorizontal: HIGConstants.SPACING_LG,
@@ -593,7 +593,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     padding: HIGConstants.SPACING_LG,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.gray4,
   },

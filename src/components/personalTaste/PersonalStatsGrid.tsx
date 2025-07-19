@@ -221,13 +221,15 @@ const styles = StyleSheet.create({
     width: CARD_WIDTH,
   },
   statCardInner: {
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#FFF8DC',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
     borderTopWidth: 3,
     minHeight: 120,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#DEB887',
   },
   statIcon: {
     fontSize: 32,
@@ -248,11 +250,11 @@ const styles = StyleSheet.create({
     color: HIGColors.tertiaryLabel,
   },
   summaryCard: {
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: '#E8F5E8',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_LG,
     borderWidth: 1,
-    borderColor: HIGColors.gray5,
+    borderColor: HIGColors.green,
   },
   summaryHeader: {
     flexDirection: 'row',

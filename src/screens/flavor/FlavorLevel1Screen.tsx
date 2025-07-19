@@ -173,7 +173,7 @@ const FlavorLevel1Screen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   navigationBar: {
     height: HIGConstants.MIN_TOUCH_TARGET,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
   },
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   categoryButton: {
     minHeight: HIGConstants.MIN_TOUCH_TARGET * 1.5,
     minWidth: HIGConstants.MIN_TOUCH_TARGET * 1.5,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: HIGColors.gray4,
     borderRadius: HIGConstants.BORDER_RADIUS,

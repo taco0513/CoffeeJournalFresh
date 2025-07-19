@@ -14,6 +14,8 @@ import { useUserStore } from '../stores/useUserStore';
 import RealmService from '../services/realm/RealmService';
 import { HIGConstants, HIGColors, commonButtonStyles } from '../styles/common';
 import AuthService from '../services/supabase/auth';
+import LanguageSwitch from '../components/LanguageSwitch';
+import { generateGuestStats } from '../utils/guestMockData';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -25,6 +27,9 @@ const ProfileScreen = () => {
     tastingStreak: 0,
   });
 
+  // 게스트 모드 체크
+  const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
+
   const realmService = RealmService.getInstance();
 
   useEffect(() => {
@@ -33,6 +38,18 @@ const ProfileScreen = () => {
 
   const loadUserStats = async () => {
     try {
+      // 게스트 모드인 경우 mock 데이터 사용
+      if (isGuestMode) {
+        const guestStats = generateGuestStats();
+        setStats({
+          totalTastings: guestStats.totalTastings,
+          avgScore: guestStats.avgScore,
+          favoriteRoaster: 'Blue Bottle Coffee',
+          tastingStreak: 3,
+        });
+        return;
+      }
+
       if (realmService.isInitialized) {
         const realm = realmService.getRealm();
         const tastings = realm.objects('TastingRecord').filtered('isDeleted = false');
@@ -125,7 +142,31 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Navigation Bar */}
+      <View style={styles.navigationBar}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.navigationTitle}>프로필</Text>
+          <View style={styles.betaBadge}>
+            <Text style={styles.betaText}>BETA</Text>
+          </View>
+        </View>
+        <LanguageSwitch style={styles.languageSwitch} />
+      </View>
+
       <ScrollView style={styles.scrollView}>
+        {/* 게스트 모드 안내 */}
+        {isGuestMode && (
+          <View style={styles.guestNotice}>
+            <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
+            <TouchableOpacity
+              style={styles.loginPromptButton}
+              onPress={() => navigation.navigate('Auth' as never)}
+            >
+              <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* 프로필 헤더 */}
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
@@ -139,29 +180,49 @@ const ProfileScreen = () => {
           <Text style={styles.email}>{currentUser?.email || 'guest@example.com'}</Text>
         </View>
 
-        {/* 통계 카드 */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statsCard}>
-            <Text style={styles.statsTitle}>내 테이스팅 통계</Text>
-            <View style={styles.statsGrid}>
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>{stats.totalTastings}</Text>
-                <Text style={styles.statLabel}>총 테이스팅</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>{stats.avgScore}</Text>
-                <Text style={styles.statLabel}>평균 점수</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>{stats.tastingStreak}</Text>
-                <Text style={styles.statLabel}>연속 기록</Text>
-              </View>
+        {/* 빠른 메뉴 */}
+        <View style={styles.quickMenuContainer}>
+          <TouchableOpacity 
+            style={styles.quickMenuItem}
+            onPress={() => navigation.navigate('Stats' as never)}
+          >
+            <View style={styles.quickMenuIconContainer}>
+              <Text style={styles.quickMenuIcon}>📊</Text>
             </View>
-            <View style={styles.favoriteRoaster}>
-              <Text style={styles.favoriteLabel}>선호 로스터</Text>
-              <Text style={styles.favoriteValue}>{stats.favoriteRoaster}</Text>
+            <View style={styles.quickMenuContent}>
+              <Text style={styles.quickMenuTitle}>내 테이스팅 통계</Text>
+              <Text style={styles.quickMenuDescription}>상세한 분석과 차트 보기</Text>
             </View>
-          </View>
+            <Text style={styles.quickMenuArrow}>→</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.quickMenuItem}
+            onPress={() => navigation.navigate('Stats', { screen: 'PersonalTaste' } as never)}
+          >
+            <View style={styles.quickMenuIconContainer}>
+              <Text style={styles.quickMenuIcon}>🎯</Text>
+            </View>
+            <View style={styles.quickMenuContent}>
+              <Text style={styles.quickMenuTitle}>취향 분석</Text>
+              <Text style={styles.quickMenuDescription}>나만의 커피 DNA 확인</Text>
+            </View>
+            <Text style={styles.quickMenuArrow}>→</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.quickMenuItem}
+            onPress={() => Alert.alert('준비 중', '곧 추가될 예정입니다!')}
+          >
+            <View style={styles.quickMenuIconContainer}>
+              <Text style={styles.quickMenuIcon}>🏆</Text>
+            </View>
+            <View style={styles.quickMenuContent}>
+              <Text style={styles.quickMenuTitle}>나의 업적</Text>
+              <Text style={styles.quickMenuDescription}>획득한 배지와 마일스톤</Text>
+            </View>
+            <Text style={styles.quickMenuArrow}>→</Text>
+          </TouchableOpacity>
         </View>
 
 
@@ -182,13 +243,18 @@ const ProfileScreen = () => {
           ))}
         </View>
 
-        {/* 로그아웃 버튼 */}
+        {/* 로그아웃/로그인 버튼 */}
         <View style={styles.signOutContainer}>
           <TouchableOpacity
             style={[commonButtonStyles.buttonSecondary, styles.signOutButton]}
-            onPress={handleSignOut}
+            onPress={isGuestMode ? 
+              () => navigation.navigate('Auth' as never) : 
+              handleSignOut
+            }
           >
-            <Text style={styles.signOutText}>로그아웃</Text>
+            <Text style={styles.signOutText}>
+              {isGuestMode ? '로그인' : '로그아웃'}
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -199,7 +265,63 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
+  },
+  navigationBar: {
+    height: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  betaBadge: {
+    backgroundColor: HIGColors.accent,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  betaText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: HIGColors.white,
+    letterSpacing: 0.5,
+  },
+  languageSwitch: {},
+  guestNotice: {
+    backgroundColor: '#E3F2FD',
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    margin: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HIGColors.blue,
+  },
+  guestNoticeText: {
+    fontSize: 15,
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  loginPromptButton: {
+    paddingVertical: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+  },
+  loginPromptText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: HIGColors.blue,
   },
   scrollView: {
     flex: 1,
@@ -208,7 +330,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: HIGConstants.SPACING_XL,
     paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
   },
   avatarContainer: {
     marginBottom: HIGConstants.SPACING_MD,
@@ -241,7 +363,7 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_LG,
   },
   statsCard: {
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_LG,
     shadowColor: '#000',
@@ -292,6 +414,56 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: HIGColors.label,
   },
+  
+  // Quick Menu Styles
+  quickMenuContainer: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_LG,
+  },
+  quickMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    marginBottom: HIGConstants.SPACING_SM,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  quickMenuIconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: HIGColors.gray6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: HIGConstants.SPACING_MD,
+  },
+  quickMenuIcon: {
+    fontSize: 24,
+  },
+  quickMenuContent: {
+    flex: 1,
+  },
+  quickMenuTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+    marginBottom: 2,
+  },
+  quickMenuDescription: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+  },
+  quickMenuArrow: {
+    fontSize: 20,
+    color: HIGColors.tertiaryLabel,
+    marginLeft: HIGConstants.SPACING_SM,
+  },
+  
   menuContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_LG,
@@ -299,7 +471,7 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: '#FFFFFF',
     paddingVertical: HIGConstants.SPACING_MD,
     paddingHorizontal: HIGConstants.SPACING_LG,
     borderRadius: HIGConstants.BORDER_RADIUS,

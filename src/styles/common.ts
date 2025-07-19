@@ -50,6 +50,11 @@ const HIGColorsOriginal = {
   gray5: '#E5E5EA',
   gray6: '#F2F2F7',
   
+  // Additional colors
+  white: '#FFFFFF',
+  accent: '#007AFF',
+  brown: '#8B4513',
+  
   // Label colors
   label: '#000000',
   secondaryLabel: '#3C3C43',
@@ -58,60 +63,16 @@ const HIGColorsOriginal = {
   
   // Background colors
   systemBackground: '#FFFFFF',
-  secondarySystemBackground: '#F2F2F7',
+  secondarySystemBackground: '#F8F9FA', // Light gray for cards
   tertiarySystemBackground: '#FFFFFF',
   
   // Overlay
   overlay: 'rgba(0, 0, 0, 0.4)',
 };
 
-// Monochromatic Color System
-const HIGColorsMonochrome = {
-  // All primary colors mapped to black
-  blue: '#000000',
-  green: '#2E7D32',    // Keep for success states only
-  red: '#FF3B30',      // Keep for errors/warnings only
-  orange: '#FF9500',   // Keep for warnings only
-  yellow: '#000000',
-  purple: '#000000',
-  pink: '#000000',
-  
-  // Monochromatic Scale
-  gray: '#666666',     // 60% black
-  gray2: '#999999',    // 40% black
-  gray3: '#CCCCCC',    // 20% black
-  gray4: '#E0E0E0',    // 12% black
-  gray5: '#F0F0F0',    // 6% black
-  gray6: '#F8F8F8',    // 3% black
-  
-  // Label Colors (monochromatic)
-  label: '#000000',
-  secondaryLabel: '#666666',
-  tertiaryLabel: '#999999',
-  quaternaryLabel: '#CCCCCC',
-  
-  // Background Colors (monochromatic)
-  systemBackground: '#FFFFFF',
-  secondarySystemBackground: '#F8F8F8',
-  tertiarySystemBackground: '#FFFFFF',
-  
-  // Overlay
-  overlay: 'rgba(0, 0, 0, 0.5)',
-};
 
-// For now, let's use a simple monochrome mode
-export const HIGColors = HIGColorsMonochrome;
-
-// Functions for future use
-export const toggleColorMode = () => {
-  return true; // Always monochrome for now
-};
-
-export const getColorMode = () => 'monochrome';
-
-export const setColorMode = (monochrome: boolean) => {
-  // No-op for now
-};
+// Use HIG color system
+export const HIGColors = HIGColorsOriginal;
 
 // 공통 버튼 스타일
 export const commonButtonStyles = StyleSheet.create({

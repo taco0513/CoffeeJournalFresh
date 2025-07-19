@@ -45,52 +45,6 @@ const ColorsOriginal = {
   },
 } as const;
 
-// Monochromatic color palette
-const ColorsMonochrome = {
-  TEXT_PRIMARY: '#000000',
-  TEXT_SECONDARY: '#666666',
-  TEXT_DISABLED: '#999999',
-  TEXT_TERTIARY: '#999999',
-  
-  PLACEHOLDER: '#999999',
-  
-  TAB_INACTIVE: '#999999',
-  
-  GRADIENT_BROWN: '#333333',
-  
-  BACKGROUND_GRAY: '#F8F8F8',
-  TAG_BACKGROUND: '#F0F0F0',
-  SUCCESS_GREEN: '#2E7D32',     // Keep for success
-  ERROR_RED: '#D32F2F',         // Keep for errors
-  INFO_BLUE: '#000000',         // Black in monochrome
-  WARNING_ORANGE: '#F57C00',    // Keep for warnings
-  SHADOW_BLACK: '#000',
-  
-  WHITE: '#FFFFFF',
-  BLACK: '#000000',
-  PRIMARY: '#000000',           // Black in monochrome
-  FLAVOR_TAG_BG: '#F0F0F0',
-  
-  primary: {
-    main: '#000000',
-  },
-  background: {
-    primary: '#FAFAFA',
-    white: '#FFFFFF',
-  },
-  text: {
-    primary: '#000000',
-    secondary: '#666666',
-    tertiary: '#999999',
-  },
-  border: {
-    light: '#E0E0E0',
-  },
-  semantic: {
-    error: '#D32F2F',
-    success: '#2E7D32',
-  },
-} as const;
 
-// For now, use monochrome colors directly
-export const Colors = ColorsMonochrome;
+// Export color palette
+export const Colors = ColorsOriginal;
