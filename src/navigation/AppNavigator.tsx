@@ -36,6 +36,7 @@ import SignInScreen from '../screens/auth/SignInScreen';
 import SignUpScreen from '../screens/auth/SignUpScreen';
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
 import { AdminCoffeeEditScreen } from '../screens/admin/AdminCoffeeEditScreen';
+import DeveloperScreen from '../screens/DeveloperScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -411,6 +412,13 @@ function AppNavigator() {
         <Stack.Screen 
           name="AdminCoffeeEdit" 
           component={AdminCoffeeEditScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="DeveloperScreen" 
+          component={DeveloperScreen}
           options={{
             headerShown: false,
           }}

@@ -3,140 +3,124 @@ import {
   GrowthMetrics,
   CoffeeRecommendation,
   PersonalInsights,
-  DailyInsight,
-  LearningPath,
   MasteryLevel,
   PersonalStatsData,
   ProgressData,
   TasteProfileType,
-} from '@/types/personalTaste';
+  FlavorPreference,
+} from '../types/personalTaste';
+
+import {
+  DailyInsight,
+  LearningPath,
+} from '../services/LiteAICoachService';
 
 export const getMockTastePattern = (): TastePattern => ({
   userId: 'mock-user',
-  dominantFlavors: ['chocolate', 'caramel', 'nutty'],
-  preferredIntensity: 0.7,
-  sweetnessTolerance: 0.6,
-  acidityPreference: 0.5,
-  bodyPreference: 0.8,
-  roastPreference: 'medium',
-  originPreferences: ['Colombia', 'Ethiopia', 'Brazil'],
-  processingPreferences: ['washed', 'natural'],
-  consistency: 0.85,
-  adventurousness: 0.6,
+  dominantFlavors: [
+    { category: 'chocolate', preference: 0.9, frequency: 15, consistency: 0.8 },
+    { category: 'caramel', preference: 0.7, frequency: 12, consistency: 0.75 },
+    { category: 'nutty', preference: 0.6, frequency: 8, consistency: 0.7 },
+    { category: 'fruity', preference: 0.4, frequency: 5, consistency: 0.6 },
+    { category: 'floral', preference: 0.3, frequency: 3, consistency: 0.5 },
+    { category: 'sweet', preference: 0.8, frequency: 10, consistency: 0.8 },
+  ],
+  tasteProfile: 'Chocolate Lover',
+  growthTrend: {
+    vocabularyGrowth: 2.5,
+    accuracyImprovement: 0.25,
+    flavorDiversityIndex: 0.7,
+    consistencyScore: 0.85,
+    weeklyProgress: 0.8,
+  },
+  recommendations: [
+    '더 진한 초콜릿 향의 커피를 시도해보세요',
+    '브라질 원두로 달콤함을 경험해보세요',
+    '미디엄 로스트로 균형잡힌 맛을 찾아보세요',
+  ],
   lastUpdated: new Date(),
 });
 
 export const getMockGrowthMetrics = (): GrowthMetrics => ({
-  totalTastings: 42,
-  uniqueCoffees: 28,
-  flavorVocabularySize: 35,
+  vocabularyGrowth: 2.5,
   accuracyImprovement: 0.25,
+  flavorDiversityIndex: 0.7,
   consistencyScore: 0.85,
-  explorationScore: 0.7,
-  weeklyGrowthRate: 0.15,
-  milestones: [
-    {
-      type: 'first_10_tastings',
-      achieved: true,
-      date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-    },
-    {
-      type: 'flavor_expert',
-      achieved: true,
-      date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-    },
-  ],
+  weeklyProgress: 0.8,
 });
 
 export const getMockRecommendations = (): CoffeeRecommendation[] => [
   {
-    id: '1',
     coffeeName: 'Ethiopia Yirgacheffe',
     roasterName: 'Blue Bottle Coffee',
-    matchScore: 0.92,
+    matchScore: 92,
     flavorNotes: ['blueberry', 'lemon', 'floral'],
     reason: 'Based on your love for fruity and floral notes',
-    roastLevel: 'light',
-    origin: 'Ethiopia',
-    processing: 'washed',
+    difficulty: 'intermediate',
   },
   {
-    id: '2',
     coffeeName: 'Colombia Geisha',
     roasterName: 'Stumptown Coffee',
-    matchScore: 0.87,
+    matchScore: 87,
     flavorNotes: ['jasmine', 'peach', 'honey'],
     reason: 'Perfect balance of sweetness and acidity',
-    roastLevel: 'medium-light',
-    origin: 'Colombia',
-    processing: 'natural',
+    difficulty: 'advanced',
   },
 ];
 
 export const getMockPersonalInsights = (): PersonalInsights => ({
-  tasteTrends: [
-    {
-      trend: 'increasing_chocolate_preference',
-      description: 'Your appreciation for chocolate notes has grown 30% this month',
-      significance: 0.8,
-    },
-    {
-      trend: 'consistent_acidity',
-      description: 'You consistently prefer medium acidity levels',
-      significance: 0.9,
-    },
+  strengths: [
+    '초콜릿 향 식별에 뛰어남',
+    '단맛 감지 능력이 우수함',
+    '일관된 평가 기준을 가지고 있음',
   ],
-  flavorJourney: {
-    startingPoint: ['sweet', 'nutty'],
-    currentPosition: ['chocolate', 'caramel', 'fruity'],
-    trajectory: 'expanding',
-    nextMilestone: 'Explore more floral notes',
-  },
-  strengthsAndGaps: {
-    strengths: ['chocolate identification', 'sweetness detection'],
-    gaps: ['floral notes', 'spice identification'],
-    recommendations: ['Try more African coffees', 'Focus on aroma training'],
-  },
+  areasToExplore: [
+    '플로럴 향을 더 탐험해보세요',
+    '스파이시한 향신료 계열 커피 시도',
+    '아프리카 원두로 과일향 경험',
+  ],
+  recentDiscoveries: [
+    '이번 주에 카라멜 향을 새롭게 발견했습니다',
+    '에티오피아 커피의 블루베리 향을 식별했습니다',
+    '로스팅 정도에 따른 맛 변화를 인지했습니다',
+  ],
+  tastingTips: [
+    '커피를 한 번 더 식혀서 마셔보세요',
+    '첫 모금 후 30초 기다렸다가 다시 시도해보세요',
+    '향을 맡을 때 깊게 숨을 들이마셔보세요',
+  ],
 });
 
 export const getMockDailyInsight = (): DailyInsight => ({
-  id: 'daily-1',
-  type: 'flavor_tip',
-  title: '오늘의 커피 팁',
-  message: '초콜릿 향을 더 잘 느끼려면 커피를 한 모금 머금고 혀 전체로 맛을 느껴보세요.',
-  action: {
-    text: '테이스팅 시작',
-    target: 'new_tasting',
-  },
-  priority: 'medium',
-  createdAt: new Date(),
+  fact: '초콜릿 향은 로스팅 과정에서 메일라드 반응으로 생성됩니다',
+  personalizedMessage: '당신은 초콜릿 향 식별에 뛰어나시네요! 이 능력을 더욱 발전시켜보세요.',
+  suggestedAction: '오늘은 브라질 원두로 초콜릿 향의 미묘한 차이를 경험해보세요',
+  relatedAchievement: 'chocolate_master',
 });
 
 export const getMockLearningPath = (): LearningPath => ({
-  currentLevel: 3,
-  nextMilestone: 'Flavor Expert',
-  progressToNext: 0.65,
-  suggestedActivities: [
+  currentFocus: '초콜릿 향미 마스터하기',
+  nextMilestone: '플로럴 향미 탐험가',
+  estimatedTime: '2주',
+  exercises: [
     {
-      type: 'blind_tasting',
-      title: 'Blind Tasting Challenge',
-      description: 'Test your flavor identification skills',
-      estimatedTime: 15,
-      difficulty: 'medium',
+      type: 'tasting',
+      title: '브라질 원두 비교 테이스팅',
+      description: '서로 다른 브라질 농장의 초콜릿 향 차이 식별하기',
+      targetFlavor: 'chocolate',
+      difficulty: 3,
     },
     {
-      type: 'origin_comparison',
-      title: 'Compare Origins',
-      description: 'Taste coffees from different regions',
-      estimatedTime: 30,
-      difficulty: 'easy',
+      type: 'quiz',
+      title: '초콜릿 향미 퀴즈',
+      description: '다양한 초콜릿 향미를 구분하는 능력 테스트',
+      difficulty: 2,
     },
-  ],
-  recentProgress: [
     {
-      date: new Date(Date.now() - 24 * 60 * 60 * 1000),
-      achievement: 'Identified 5 flavors correctly',
-      points: 50,
+      type: 'exploration',
+      title: '새로운 로스터 탐험',
+      description: '초콜릿 향으로 유명한 새로운 로스터 커피 시도',
+      difficulty: 1,
     },
   ],
 });

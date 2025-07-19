@@ -23,6 +23,7 @@ interface UserStore {
   // signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   setGuestMode: () => void;
+  setTestUser: () => void;
   
   // Profile management
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
@@ -247,6 +248,33 @@ export const useUserStore = create<UserStore>((set, get) => ({
       currentUser: guestUser, 
       isAuthenticated: false,
       isLoading: false 
+    });
+  },
+
+  setTestUser: () => {
+    // 개발자 테스트용 로그인 바이패스
+    const testUser: UserProfile = {
+      id: 'test-dev-user',
+      username: 'Developer',
+      email: 'dev@test.com',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      level: 10,
+      total_tastings: 100,
+      badges: ['coffee_explorer_1', 'coffee_explorer_2', 'coffee_explorer_3'],
+      bio: '개발자 테스트 계정입니다.',
+      avatar_url: '',
+      is_verified: true,
+      is_moderator: true,
+      followers_count: 50,
+      following_count: 30,
+      privacy_level: 'public'
+    };
+
+    set({
+      currentUser: testUser,
+      isAuthenticated: true, // 개발자 모드에서는 인증된 상태
+      isLoading: false,
     });
   },
 

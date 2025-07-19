@@ -124,6 +124,13 @@ const ProfileScreen = () => {
     //   }
     // },
     {
+      title: '개발자 모드',
+      icon: '⚙️',
+      onPress: () => {
+        navigation.navigate('DeveloperScreen' as never);
+      }
+    },
+    {
       title: '데이터 테스트',
       icon: '🧪',
       onPress: () => {

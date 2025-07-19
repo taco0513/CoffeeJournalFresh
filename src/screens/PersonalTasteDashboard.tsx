@@ -18,14 +18,14 @@ import {
   useAchievements, 
   useFlavorMastery,
   useLiteAICoach 
-} from '@/hooks/usePersonalTaste';
-import { TasteProfileCard } from '@/components/personalTaste/TasteProfileCard';
-import { FlavorRadarChart } from '@/components/personalTaste/FlavorRadarChart';
-import { GrowthTimeline } from '@/components/personalTaste/GrowthTimeline';
-import { FlavorMasteryMap } from '@/components/personalTaste/FlavorMasteryMap';
-import { PersonalStatsGrid } from '@/components/personalTaste/PersonalStatsGrid';
-import { CoachTipCard } from '@/components/coach';
-import { PersonalTasteViewMode } from '@/types/personalTaste';
+} from '../hooks/usePersonalTaste';
+import { TasteProfileCard } from '../components/personalTaste/TasteProfileCard';
+import { FlavorRadarChart } from '../components/personalTaste/FlavorRadarChart';
+import { GrowthTimeline } from '../components/personalTaste/GrowthTimeline';
+import { FlavorMasteryMap } from '../components/personalTaste/FlavorMasteryMap';
+import { PersonalStatsGrid } from '../components/personalTaste/PersonalStatsGrid';
+import { CoachTipCard } from '../components/coach';
+import { PersonalTasteViewMode } from '../types/personalTaste';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 

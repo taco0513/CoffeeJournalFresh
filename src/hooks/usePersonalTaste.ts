@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useUserStore } from '@/stores/useUserStore';
+import { useUserStore } from '../stores/useUserStore';
 import { 
   PersonalTasteAnalysisService,
   FlavorLearningEngine,
   AchievementSystem,
   LiteAICoachService,
-} from '@/services/personalTaste';
+} from '../services/personalTaste';
 import {
   TastePattern,
   GrowthMetrics,
@@ -15,8 +15,8 @@ import {
   CoffeeRecommendation,
   PersonalInsights,
   MasteryLevel,
-} from '@/types/personalTaste';
-import RealmService from '@/services/realm/RealmService';
+} from '../types/personalTaste';
+import RealmService from '../services/realm/RealmService';
 import {
   getMockTastePattern,
   getMockGrowthMetrics,
@@ -24,7 +24,7 @@ import {
   getMockPersonalInsights,
   getMockDailyInsight,
   getMockLearningPath,
-} from '@/utils/mockPersonalTasteData';
+} from '../utils/mockPersonalTasteData';
 
 // Hook for overall personal taste data
 export const usePersonalTaste = () => {
@@ -69,31 +69,46 @@ export const usePersonalTaste = () => {
   });
 
   const loadPersonalTasteData = useCallback(async () => {
-    if (!userId || !services) return;
-
     try {
       setLoading(true);
       setError(null);
 
-      if (services) {
-        const [pattern, growth, recs, personalInsights] = await Promise.all([
-          services.analysisService.analyzePersonalTastePattern(userId),
-          services.analysisService.trackTasteGrowth(userId),
-          services.analysisService.generatePersonalRecommendations(userId),
-          services.analysisService.getPersonalInsights(userId),
-        ]);
-
-        setTastePattern(pattern);
-        setGrowthMetrics(growth);
-        setRecommendations(recs);
-        setInsights(personalInsights);
-      } else {
-        // Use mock data when services are not available
+      // 게스트 모드인 경우 바로 더미 데이터 표시
+      const isGuestMode = !currentUser || currentUser.username === 'Guest' || !userId;
+      
+      if (isGuestMode) {
+        // 게스트 모드: 바로 mock 데이터 설정하고 로딩 끝
         setTastePattern(getMockTastePattern());
         setGrowthMetrics(getMockGrowthMetrics());
         setRecommendations(getMockRecommendations());
         setInsights(getMockPersonalInsights());
+        setLoading(false);
+        return;
       }
+
+      // 일반 사용자 모드: 실제 분석 수행
+      if (!services) {
+        // 서비스가 없으면 mock 데이터 사용
+        setTastePattern(getMockTastePattern());
+        setGrowthMetrics(getMockGrowthMetrics());
+        setRecommendations(getMockRecommendations());
+        setInsights(getMockPersonalInsights());
+        setLoading(false);
+        return;
+      }
+
+      // 실제 분석 수행
+      const [pattern, growth, recs, personalInsights] = await Promise.all([
+        services.analysisService.analyzePersonalTastePattern(userId),
+        services.analysisService.trackTasteGrowth(userId),
+        services.analysisService.generatePersonalRecommendations(userId),
+        services.analysisService.getPersonalInsights(userId),
+      ]);
+
+      setTastePattern(pattern);
+      setGrowthMetrics(growth);
+      setRecommendations(recs);
+      setInsights(personalInsights);
     } catch (err) {
       console.error('Error loading personal taste data:', err);
       // Fall back to mock data on error
@@ -105,7 +120,7 @@ export const usePersonalTaste = () => {
     } finally {
       setLoading(false);
     }
-  }, [userId, services]);
+  }, [userId, services, currentUser]);
 
   useEffect(() => {
     loadPersonalTasteData();
@@ -138,10 +153,18 @@ export const useLiteAICoach = () => {
   const [loading, setLoading] = useState(true);
 
   const loadCoachData = useCallback(async () => {
-    if (!userId) return;
-
     try {
       setLoading(true);
+      
+      // 게스트 모드인 경우 바로 더미 데이터 표시
+      const isGuestMode = !currentUser || currentUser.username === 'Guest' || !userId;
+      
+      if (isGuestMode) {
+        setDailyInsight(getMockDailyInsight());
+        setLearningPath(getMockLearningPath());
+        setLoading(false);
+        return;
+      }
       
       if (services?.coachService) {
         const [insight, path] = await Promise.all([
@@ -164,7 +187,7 @@ export const useLiteAICoach = () => {
     } finally {
       setLoading(false);
     }
-  }, [userId, services]);
+  }, [userId, services, currentUser]);
 
   useEffect(() => {
     loadCoachData();
@@ -182,18 +205,64 @@ export const useLiteAICoach = () => {
 // Hook for achievements
 export const useAchievements = () => {
   const { services } = usePersonalTaste();
-  const { user } = useUserStore();
-  const userId = user?.id || '';
+  const { currentUser } = useUserStore();
+  const userId = currentUser?.id || '';
 
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const loadAchievements = useCallback(async () => {
-    if (!userId || !services) return;
-
     try {
       setLoading(true);
+      
+      // 게스트 모드인 경우 바로 더미 데이터 표시
+      const isGuestMode = !currentUser || currentUser.username === 'Guest' || !userId;
+      
+      if (isGuestMode) {
+        // Mock achievements for guest mode
+        const mockAchievements: Achievement[] = [
+          {
+            id: 'first_taste',
+            name: '첫 테이스팅',
+            description: '첫 번째 커피 테이스팅 완료',
+            category: 'milestone',
+            difficulty: 'easy',
+            points: 10,
+            unlocked: true,
+            unlockedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+            iconUrl: '☕',
+          },
+          {
+            id: 'flavor_explorer',
+            name: '맛 탐험가',
+            description: '10가지 다른 플레이버 발견',
+            category: 'exploration',
+            difficulty: 'medium',
+            points: 25,
+            unlocked: true,
+            unlockedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+            iconUrl: '🔍',
+          },
+        ];
+        
+        const mockStats = {
+          totalAchievements: 2,
+          totalPoints: 35,
+          completionRate: 0.15,
+          recentUnlocks: 1,
+        };
+        
+        setAchievements(mockAchievements);
+        setStats(mockStats);
+        setLoading(false);
+        return;
+      }
+      
+      if (!userId || !services) {
+        setLoading(false);
+        return;
+      }
       
       const [userAchievements, achievementStats] = await Promise.all([
         services.achievementSystem.getUserAchievements(userId),
@@ -207,7 +276,7 @@ export const useAchievements = () => {
     } finally {
       setLoading(false);
     }
-  }, [userId, services]);
+  }, [userId, services, currentUser]);
 
   useEffect(() => {
     loadAchievements();
@@ -215,6 +284,10 @@ export const useAchievements = () => {
 
   const checkForNewAchievements = useCallback(
     async (action: any) => {
+      // 게스트 모드인 경우 빈 배열 반환
+      const isGuestMode = !currentUser || currentUser.username === 'Guest' || !userId;
+      if (isGuestMode) return [];
+      
       if (!userId || !services) return [];
 
       try {
@@ -234,7 +307,7 @@ export const useAchievements = () => {
         return [];
       }
     },
-    [userId, services, loadAchievements]
+    [userId, services, loadAchievements, currentUser]
   );
 
   return {
@@ -249,17 +322,66 @@ export const useAchievements = () => {
 // Hook for flavor mastery
 export const useFlavorMastery = () => {
   const { services } = usePersonalTaste();
-  const { user } = useUserStore();
-  const userId = user?.id || '';
+  const { currentUser } = useUserStore();
+  const userId = currentUser?.id || '';
 
   const [flavorMastery, setFlavorMastery] = useState<Map<string, MasteryLevel>>(new Map());
   const [loading, setLoading] = useState(true);
 
   const loadFlavorMastery = useCallback(async () => {
-    if (!userId || !services) return;
-
     try {
       setLoading(true);
+      
+      // 게스트 모드인 경우 바로 더미 데이터 표시
+      const isGuestMode = !currentUser || currentUser.username === 'Guest' || !userId;
+      
+      if (isGuestMode) {
+        // Mock flavor mastery data for guest mode
+        const mockMasteryMap = new Map<string, MasteryLevel>([
+          ['chocolate', {
+            category: 'chocolate',
+            level: 'expert',
+            score: 85,
+            totalExposures: 120,
+            correctIdentifications: 102,
+            accuracyRate: 0.85,
+            lastImprovement: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+            progressToNext: 0.7,
+            nextMilestone: 'Master - 15 more correct identifications',
+          }],
+          ['fruity', {
+            category: 'fruity',
+            level: 'proficient',
+            score: 65,
+            totalExposures: 80,
+            correctIdentifications: 52,
+            accuracyRate: 0.65,
+            lastImprovement: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+            progressToNext: 0.3,
+            nextMilestone: 'Expert - Practice with African coffees',
+          }],
+          ['floral', {
+            category: 'floral',
+            level: 'apprentice',
+            score: 40,
+            totalExposures: 30,
+            correctIdentifications: 12,
+            accuracyRate: 0.4,
+            lastImprovement: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+            progressToNext: 0.6,
+            nextMilestone: 'Proficient - Try more light roasts',
+          }],
+        ]);
+        
+        setFlavorMastery(mockMasteryMap);
+        setLoading(false);
+        return;
+      }
+      
+      if (!userId || !services) {
+        setLoading(false);
+        return;
+      }
       
       const mastery = await services.learningEngine.getUserFlavorMasterySummary(userId);
       setFlavorMastery(mastery);
@@ -268,7 +390,7 @@ export const useFlavorMastery = () => {
     } finally {
       setLoading(false);
     }
-  }, [userId, services]);
+  }, [userId, services, currentUser]);
 
   useEffect(() => {
     loadFlavorMastery();
@@ -276,6 +398,10 @@ export const useFlavorMastery = () => {
 
   const updateFlavorProgress = useCallback(
     async (flavorIdentification: any) => {
+      // 게스트 모드인 경우 아무것도 하지 않음
+      const isGuestMode = !currentUser || currentUser.username === 'Guest' || !userId;
+      if (isGuestMode) return;
+      
       if (!userId || !services) return;
 
       try {
@@ -286,7 +412,7 @@ export const useFlavorMastery = () => {
         console.error('Error updating flavor progress:', error);
       }
     },
-    [userId, services, loadFlavorMastery]
+    [userId, services, loadFlavorMastery, currentUser]
   );
 
   return {
