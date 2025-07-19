@@ -15,6 +15,8 @@ import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '.
 import RealmService from '../services/realm/RealmService';
 import { useUserStore } from '../stores/useUserStore';
 import { ITastingRecord } from '../services/realm/schemas';
+import { useCoffeeNotifications } from '../hooks/useCoffeeNotifications';
+import { CoffeeDiscoveryAlert } from '../components/CoffeeDiscoveryAlert';
 
 interface HomeScreenProps {
   navigation: any;
@@ -22,7 +24,7 @@ interface HomeScreenProps {
 
 export default function HomeScreen({navigation}: HomeScreenProps) {
   const { t } = useTranslation();
-  const { currentUser } = useUserStore();
+  const { currentUser, user } = useUserStore();
   const [recentTastings, setRecentTastings] = useState<ITastingRecord[]>([]);
   const [stats, setStats] = useState({
     totalTastings: 0,
@@ -30,6 +32,17 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     avgScore: 0,
     bestScore: 0,
   });
+  
+  // Coffee discovery notifications
+  const {
+    showApprovalAlert,
+    approvalData,
+    discoveryStats,
+    dismissApprovalAlert,
+  } = useCoffeeNotifications();
+  
+  // Check if admin
+  const isAdmin = user?.email === 'hello@zimojin.com';
 
   const realmService = RealmService.getInstance();
 
@@ -116,6 +129,15 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Coffee Approval Alert */}
+      <CoffeeDiscoveryAlert
+        visible={showApprovalAlert}
+        type="approved"
+        coffeeName={approvalData?.coffee_name}
+        roasteryName={approvalData?.roastery}
+        badgeLevel={discoveryStats.level}
+        onClose={dismissApprovalAlert}
+      />
       {/* 네비게이션 바 영역 */}
       <View style={styles.navigationBar}>
         <View style={styles.titleContainer}>
@@ -135,6 +157,16 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
             <Text style={styles.welcomeTitle}>안녕하세요, {currentUser?.username || 'Guest'}님!</Text>
             <Text style={styles.welcomeSubtitle}>오늘도 좋은 커피 한 잔 어떠세요?</Text>
           </View>
+
+          {/* 관리자 버튼 */}
+          {isAdmin && (
+            <TouchableOpacity
+              style={styles.adminButton}
+              onPress={() => navigation.navigate('AdminDashboard' as never)}
+            >
+              <Text style={styles.adminButtonText}>🔧 관리자 대시보드</Text>
+            </TouchableOpacity>
+          )}
 
           {/* 통계 요약 카드 */}
           <View style={styles.statsOverview}>
@@ -377,5 +409,52 @@ const styles = StyleSheet.create({
     color: HIGColors.tertiaryLabel,
     textAlign: 'center',
     lineHeight: 20,
+  },
+  
+  // Coffee Discovery Styles
+  discoverySection: {
+    backgroundColor: HIGColors.gray6,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_LG,
+  },
+  discoverySectionTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  discoveryStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  discoveryStatItem: {
+    alignItems: 'center',
+  },
+  discoveryStatValue: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: HIGColors.blue,
+  },
+  discoveryStatLabel: {
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    marginTop: HIGConstants.SPACING_XS,
+  },
+  
+  // Admin Button
+  adminButton: {
+    backgroundColor: HIGColors.gray6,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HIGColors.gray5,
+  },
+  adminButtonText: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
   },
 });

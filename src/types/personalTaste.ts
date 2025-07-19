@@ -1,0 +1,176 @@
+// =============================================
+// Personal Taste Discovery Types
+// =============================================
+
+// Re-export types from services
+export type {
+  TastePattern,
+  FlavorPreference,
+  TasteProfileType,
+  GrowthMetrics,
+  CoffeeRecommendation,
+  PersonalInsights,
+} from '@/services/PersonalTasteAnalysisService';
+
+export type {
+  FlavorIdentification,
+  FlavorQuiz,
+  FlavorQuestion,
+  FlavorOption,
+  MasteryLevel,
+  LearningRecommendation,
+} from '@/services/FlavorLearningEngine';
+
+export type {
+  Achievement,
+  AchievementRequirement,
+  AchievementReward,
+  UserAction,
+  ProgressData,
+  AchievementNotification,
+} from '@/services/AchievementSystem';
+
+export { AchievementType } from '@/services/AchievementSystem';
+
+// Additional types for UI components
+export interface PersonalDashboardData {
+  tastePattern: TastePattern;
+  growthMetrics: GrowthMetrics;
+  recentAchievements: Achievement[];
+  weeklyProgress: WeeklyProgressData;
+  recommendations: CoffeeRecommendation[];
+}
+
+export interface WeeklyProgressData {
+  tastingsCompleted: number;
+  tastingsGoal: number;
+  newFlavorsDiscovered: number;
+  vocabularyExpanded: number;
+  accuracyImprovement: number;
+  currentStreak: number;
+}
+
+export interface FlavorWheelData {
+  name: string;
+  children?: FlavorWheelData[];
+  value?: number;
+  color?: string;
+  userMastery?: number; // 0-1 scale
+}
+
+export interface TastingEnhancement {
+  predictedMatch: number; // 0-100
+  suggestedFlavors: string[];
+  difficultyLevel: number; // 1-5
+  learningOpportunities: string[];
+  potentialAchievements: string[];
+}
+
+export interface QuizResult {
+  quizId: string;
+  score: number;
+  accuracy: number;
+  timeSpent: number; // seconds
+  correctAnswers: number;
+  totalQuestions: number;
+  earnedPoints: number;
+  unlockedAchievements: Achievement[];
+}
+
+export interface DailyChallengeData {
+  id: string;
+  title: string;
+  description: string;
+  type: 'tasting' | 'quiz' | 'exploration';
+  requirements: {
+    action: string;
+    target: number;
+  };
+  reward: {
+    points: number;
+    achievement?: string;
+  };
+  progress: number; // 0-1
+  expiresAt: Date;
+}
+
+export interface PersonalStatsData {
+  totalTastings: number;
+  uniqueCoffees: number;
+  uniqueRoasters: number;
+  favoriteRoaster: string;
+  favoriteFlavor: string;
+  averageMatchScore: number;
+  vocabularySize: number;
+  quizAccuracy: number;
+  currentLevel: number;
+  nextLevelProgress: number;
+}
+
+export interface FlavorComparison {
+  userFlavors: string[];
+  roasterFlavors: string[];
+  matchedFlavors: string[];
+  uniqueToUser: string[];
+  uniqueToRoaster: string[];
+  matchPercentage: number;
+  feedback: string;
+}
+
+// Enums for UI state management
+export enum PersonalTasteViewMode {
+  DASHBOARD = 'dashboard',
+  PROFILE = 'profile',
+  PROGRESS = 'progress',
+  ACHIEVEMENTS = 'achievements',
+  RECOMMENDATIONS = 'recommendations',
+}
+
+export enum QuizDifficulty {
+  BEGINNER = 'beginner',
+  INTERMEDIATE = 'intermediate',
+  ADVANCED = 'advanced',
+}
+
+export enum LearningFocusArea {
+  FRUITY = 'fruity',
+  FLORAL = 'floral',
+  SWEET = 'sweet',
+  NUTTY = 'nutty',
+  SPICES = 'spices',
+  ROASTED = 'roasted',
+  OTHER = 'other',
+}
+
+// Constants
+export const VOCABULARY_LEVELS = {
+  1: { name: 'Beginner', minWords: 0, color: '#8B4513' },
+  2: { name: 'Novice', minWords: 10, color: '#A0522D' },
+  3: { name: 'Apprentice', minWords: 25, color: '#CD853F' },
+  4: { name: 'Intermediate', minWords: 50, color: '#DEB887' },
+  5: { name: 'Advanced', minWords: 75, color: '#F4A460' },
+  6: { name: 'Expert', minWords: 100, color: '#FFD700' },
+  7: { name: 'Master', minWords: 150, color: '#FFA500' },
+  8: { name: 'Virtuoso', minWords: 200, color: '#FF8C00' },
+  9: { name: 'Connoisseur', minWords: 300, color: '#FF6347' },
+  10: { name: 'Legend', minWords: 500, color: '#DC143C' },
+} as const;
+
+export const ACHIEVEMENT_RARITY_COLORS = {
+  common: '#8B7355',
+  rare: '#4682B4',
+  epic: '#9370DB',
+  legendary: '#FFD700',
+} as const;
+
+export const TASTE_PROFILE_DESCRIPTIONS = {
+  'Fruity Explorer': 'You have a refined palate for fruit-forward coffees',
+  'Chocolate Lover': 'You appreciate rich, chocolatey notes in your coffee',
+  'Floral Enthusiast': 'You enjoy delicate floral aromatics',
+  'Nutty Adventurer': 'You love nutty and earthy flavors',
+  'Balanced Seeker': 'You prefer well-balanced, harmonious coffees',
+  'Bold Pioneer': 'You enjoy intense, bold coffee flavors',
+  'Sweet Tooth': 'You gravitate towards naturally sweet coffees',
+  'Acid Lover': 'You appreciate bright, vibrant acidity',
+  'Complex Connoisseur': 'You seek out complex, layered flavor profiles',
+} as const;

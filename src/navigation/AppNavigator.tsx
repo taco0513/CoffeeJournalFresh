@@ -8,10 +8,11 @@ import { useUserStore } from '../stores/useUserStore';
 import { HIGColors } from '../styles/common';
 
 // 화면 import
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreen from '../screens/HomeScreenEnhanced';
 import CoffeeInfoScreen from '../screens/CoffeeInfoScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import StatsScreen from '../screens/StatsScreen';
+import PersonalTasteDashboard from '../screens/PersonalTasteDashboard';
 import RoasterNotesScreen from '../screens/RoasterNotesScreen';
 import FlavorLevel1Screen from '../screens/flavor/FlavorLevel1Screen';
 import FlavorLevel2Screen from '../screens/flavor/FlavorLevel2Screen';
@@ -33,6 +34,8 @@ import CommunityReviewScreen from '../screens/CommunityReviewScreen';
 import ShareReviewScreen from '../screens/ShareReviewScreen';
 import SignInScreen from '../screens/auth/SignInScreen';
 import SignUpScreen from '../screens/auth/SignUpScreen';
+import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
+import { AdminCoffeeEditScreen } from '../screens/admin/AdminCoffeeEditScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -163,6 +166,11 @@ function StatsStack() {
         name="StatsMain" 
         component={StatsScreen} 
         options={{title: 'Statistics'}}
+      />
+      <Stack.Screen 
+        name="PersonalTaste" 
+        component={PersonalTasteDashboard} 
+        options={{title: 'Personal Taste Journey'}}
       />
     </Stack.Navigator>
   );
@@ -402,6 +410,21 @@ function AppNavigator() {
           component={TastingFlow} 
           options={{
             presentation: 'modal',
+          }}
+        />
+        <Stack.Screen 
+          name="AdminDashboard" 
+          component={AdminDashboardScreen}
+          options={{
+            headerShown: true,
+            headerTitle: '관리자 대시보드',
+          }}
+        />
+        <Stack.Screen 
+          name="AdminCoffeeEdit" 
+          component={AdminCoffeeEditScreen}
+          options={{
+            headerShown: false,
           }}
         />
       </Stack.Navigator>

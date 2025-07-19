@@ -219,6 +219,22 @@ const StatsScreen = () => {
           <Text style={styles.headerSubtitle}>커피 여정을 한눈에</Text>
         </View>
 
+        {/* Personal Taste Journey Button */}
+        <TouchableOpacity 
+          style={styles.personalTasteButton}
+          onPress={() => navigation.navigate('PersonalTaste' as never)}
+          activeOpacity={0.8}
+        >
+          <View style={styles.personalTasteContent}>
+            <Text style={styles.personalTasteIcon}>🎯</Text>
+            <View style={styles.personalTasteText}>
+              <Text style={styles.personalTasteTitle}>Personal Taste Journey</Text>
+              <Text style={styles.personalTasteSubtitle}>나만의 커피 취향 분석과 성장 기록</Text>
+            </View>
+            <Text style={styles.personalTasteArrow}>→</Text>
+          </View>
+        </TouchableOpacity>
+
         {/* 기본 통계 */}
         <View style={styles.section}>
           <View style={styles.statsGrid}>
@@ -614,6 +630,44 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: HIGConstants.SPACING_XL * 2,
+  },
+  personalTasteButton: {
+    marginHorizontal: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_LG,
+    backgroundColor: HIGColors.secondarySystemBackground,
+    borderRadius: HIGConstants.BORDER_RADIUS_LG,
+    padding: HIGConstants.SPACING_LG,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  personalTasteContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  personalTasteIcon: {
+    fontSize: 36,
+    marginRight: HIGConstants.SPACING_MD,
+  },
+  personalTasteText: {
+    flex: 1,
+  },
+  personalTasteTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  personalTasteSubtitle: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+  },
+  personalTasteArrow: {
+    fontSize: 24,
+    color: HIGColors.tertiaryLabel,
+    marginLeft: HIGConstants.SPACING_SM,
   },
   chartCard: {
     backgroundColor: HIGColors.secondarySystemBackground,
