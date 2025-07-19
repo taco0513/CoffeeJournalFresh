@@ -4,6 +4,8 @@ import { ITastingRecord, IFlavorNote, ISensoryAttribute } from '../realm/schemas
 import { useTastingStore } from '../../stores/tastingStore';
 import NetInfo from '@react-native-community/netinfo';
 import { ENABLE_SYNC } from '../../../App';
+import NetworkUtils from '../../utils/NetworkUtils';
+// import { reportError } from '../../utils/sentry';
 
 export interface SyncStatus {
   isOnline: boolean;
@@ -198,11 +200,27 @@ class SyncService {
         updated_at: record.updatedAt.toISOString(),
       };
 
-      const { data: tastingRecord, error: tastingError } = await supabase
-        .from('tasting_records')
-        .upsert(tastingData, { onConflict: 'realm_id' })
-        .select()
-        .single();
+      const { data: tastingRecord, error: tastingError } = await NetworkUtils.retry(
+        async () => {
+          const result = await supabase
+            .from('tasting_records')
+            .upsert(tastingData, { onConflict: 'realm_id' })
+            .select()
+            .single();
+          
+          if (result.error) {
+            throw result.error;
+          }
+          
+          return result;
+        },
+        {
+          maxRetries: 3,
+          onRetry: (attempt, error) => {
+            console.log(`[Sync] Retrying tasting record upload (attempt ${attempt}):`, error.message);
+          }
+        }
+      );
 
       if (tastingError) {
         throw tastingError;
@@ -316,7 +334,21 @@ class SyncService {
         query = query.gte('updated_at', lastSyncTime.toISOString());
       }
 
-      const { data: remoteRecords, error } = await query;
+      const { data: remoteRecords, error } = await NetworkUtils.retry(
+        async () => {
+          const result = await query;
+          if (result.error) {
+            throw result.error;
+          }
+          return result;
+        },
+        {
+          maxRetries: 3,
+          onRetry: (attempt, error) => {
+            console.log(`[Sync] Retrying download records (attempt ${attempt}):`, error.message);
+          }
+        }
+      );
 
       if (error) {
         throw error;

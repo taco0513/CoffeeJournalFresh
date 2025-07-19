@@ -405,6 +405,17 @@ export default function SearchScreen() {
         renderItem={renderTastingItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
+        // 메모리 최적화 설정
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={10}
+        windowSize={10}
+        initialNumToRender={15}
+        updateCellsBatchingPeriod={50}
+        getItemLayout={(data, index) => ({
+          length: 120, // 아이템 높이
+          offset: 120 * index,
+          index,
+        })}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>☕️</Text>

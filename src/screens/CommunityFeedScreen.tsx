@@ -260,6 +260,17 @@ const CommunityFeedScreen = () => {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.feedContent}
         showsVerticalScrollIndicator={false}
+        // 메모리 최적화 설정
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={5}
+        windowSize={10}
+        initialNumToRender={10}
+        updateCellsBatchingPeriod={50}
+        getItemLayout={(data, index) => ({
+          length: 380, // 리뷰 카드 높이 (이미지 포함)
+          offset: 380 * index,
+          index,
+        })}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }

@@ -97,14 +97,15 @@ const ProfileScreen = () => {
     //     navigation.navigate('PhotoGallery' as never);
     //   }
     // },
-    {
-      title: '설정',
-      icon: '⚙️',
-      onPress: () => {
-        // 설정 화면으로 이동 (추후 구현)
-        Alert.alert('설정', '설정 화면은 추후 구현 예정입니다.');
-      }
-    },
+    // Feature Backlog - Settings
+    // {
+    //   title: '설정',
+    //   icon: '⚙️',
+    //   onPress: () => {
+    //     // 설정 화면으로 이동 (추후 구현)
+    //     Alert.alert('설정', '설정 화면은 추후 구현 예정입니다.');
+    //   }
+    // },
     {
       title: '데이터 테스트',
       icon: '🧪',
@@ -112,13 +113,14 @@ const ProfileScreen = () => {
         navigation.navigate('DataTest' as never);
       }
     },
-    {
-      title: '도움말',
-      icon: '❓',
-      onPress: () => {
-        Alert.alert('도움말', '도움말 화면은 추후 구현 예정입니다.');
-      }
-    },
+    // Feature Backlog - Help
+    // {
+    //   title: '도움말',
+    //   icon: '❓',
+    //   onPress: () => {
+    //     Alert.alert('도움말', '도움말 화면은 추후 구현 예정입니다.');
+    //   }
+    // },
   ];
 
   return (

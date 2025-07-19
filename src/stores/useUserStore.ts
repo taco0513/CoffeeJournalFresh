@@ -5,6 +5,7 @@ import authService from '../services/supabase/auth';
 import appleAuthService from '../services/supabase/appleAuth';
 // import googleAuthService from '../services/supabase/googleAuth';
 import { supabase } from '../services/supabase/client';
+// import { setSentryUser, clearSentryUser } from '../utils/sentry';
 
 interface UserStore {
   // Current user
@@ -125,6 +126,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
       
       set({ currentUser: newUser, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
+      
+      // Set Sentry user context
+      // setSentryUser({ id: newUser.id, username: newUser.username }); // Temporarily disabled
     } catch (error) {
       // console.error('Sign up error:', error);
       set({ isLoading: false });
@@ -191,6 +195,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
       
       set({ currentUser: user, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+      
+      // Set Sentry user context
+      // setSentryUser({ id: user.id, username: user.username }); // Temporarily disabled
     } catch (error) {
       // console.error('Sign in error:', error);
       set({ isLoading: false });
@@ -205,6 +212,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
       await authService.signOut();
       await AsyncStorage.removeItem(STORAGE_KEY);
       set({ currentUser: null, isAuthenticated: false, isLoading: false });
+      
+      // Clear Sentry user context
+      // clearSentryUser(); // Temporarily disabled
     } catch (error) {
       // console.error('Sign out error:', error);
       set({ isLoading: false });
@@ -349,6 +359,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
       set({ currentUser: user, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+      
+      // Set Sentry user context
+      // setSentryUser({ id: user.id, username: user.username }); // Temporarily disabled
     } catch (error) {
       console.error('Social profile creation/update error:', error);
       set({ isLoading: false });
@@ -460,6 +473,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
         user.updatedAt = new Date(user.updatedAt);
         
         set({ currentUser: user, isAuthenticated: true });
+        
+        // Set Sentry user context for restored session
+        // setSentryUser({ id: user.id, username: user.username }); // Temporarily disabled
       }
     } catch (error) {
       // console.error('Load stored user error:', error);
@@ -471,5 +487,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
   clearStoredUser: async () => {
     await AsyncStorage.removeItem(STORAGE_KEY);
     set({ currentUser: null, isAuthenticated: false });
+    
+    // Clear Sentry user context
+    clearSentryUser();
   },
 }));

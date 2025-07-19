@@ -118,7 +118,12 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     <SafeAreaView style={styles.container}>
       {/* 네비게이션 바 영역 */}
       <View style={styles.navigationBar}>
-        <Text style={styles.navigationTitle}>Coffee Journal</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.navigationTitle}>Coffee Journal</Text>
+          <View style={styles.betaBadge}>
+            <Text style={styles.betaText}>BETA</Text>
+          </View>
+        </View>
         <LanguageSwitch style={styles.languageSwitch} />
       </View>
 
@@ -212,10 +217,27 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
+  },
+  betaBadge: {
+    backgroundColor: HIGColors.accent,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  betaText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: HIGColors.white,
+    letterSpacing: 0.5,
   },
   languageSwitch: {
     // 언어 스위치 스타일은 컴포넌트 내부에서 관리

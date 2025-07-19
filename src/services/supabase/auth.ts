@@ -1,6 +1,7 @@
 import { supabase } from './client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ErrorHandler } from '../../utils/errorHandler';
+import NetworkUtils from '../../utils/NetworkUtils';
 
 const AUTH_STORAGE_KEY = '@coffee_journal_auth';
 
@@ -27,10 +28,28 @@ class AuthService {
    */
   async signUp(email: string, password: string): Promise<AuthUser> {
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+      const { data, error } = await NetworkUtils.retry(
+        async () => {
+          const result = await supabase.auth.signUp({
+            email,
+            password,
+          });
+          
+          if (result.error) {
+            const authError = new Error(result.error.message);
+            (authError as any).code = 'AUTH_ERROR';
+            throw authError;
+          }
+          
+          return result;
+        },
+        {
+          maxRetries: 2,
+          onRetry: (attempt, error) => {
+            console.log(`[Auth] Retrying sign up (attempt ${attempt}):`, error.message);
+          }
+        }
+      );
       
       if (error) {
         const authError = new Error(error.message);
@@ -64,10 +83,25 @@ class AuthService {
    */
   async signIn(email: string, password: string): Promise<AuthUser> {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error } = await NetworkUtils.retry(
+        async () => {
+          const result = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+          
+          if (result.error) throw result.error;
+          if (!result.data.user) throw new Error('No user returned from signin');
+          
+          return result;
+        },
+        {
+          maxRetries: 2,
+          onRetry: (attempt, error) => {
+            console.log(`[Auth] Retrying sign in (attempt ${attempt}):`, error.message);
+          }
+        }
+      );
       
       if (error) throw error;
       if (!data.user) throw new Error('No user returned from signin');

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -48,6 +48,13 @@ const FlavorLevel4Screen = () => {
 
   // Check if there are any level4 options available
   const hasLevel4Options = Object.keys(categorizedLevel4).length > 0;
+
+  // Skip to Sensory if no level 4 options
+  useEffect(() => {
+    if (!hasLevel4Options) {
+      navigation.navigate('Sensory' as never);
+    }
+  }, [hasLevel4Options, navigation]);
 
   const handleLevel4Press = (item: string) => {
     setSelectedLevel4(prev => {
