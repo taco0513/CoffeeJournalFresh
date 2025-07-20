@@ -1,12 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -25,34 +35,99 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, Check, X, Edit, Loader2 } from "lucide-react";
+import { Search, Check, X, Edit, Loader2, RefreshCw } from "lucide-react";
+import { DateRange } from "react-day-picker";
 import type { Database } from "@/types/supabase";
+import { BulkActionToolbar } from "@/components/bulk-action-toolbar";
+import { CoffeeFilterBar } from "@/components/coffee-filter-bar";
+import { BulkEditDialog, BulkUpdateData } from "@/components/bulk-edit-dialog";
+import { useOptimisticUpdate } from "@/hooks/use-optimistic-update";
+import { TableLoadingSkeleton, FilterBarLoadingSkeleton } from "@/components/loading-skeleton";
 
 type Coffee = Database["public"]["Tables"]["coffee_catalog"]["Row"];
 
 export default function CoffeeCatalogPage() {
   const [coffees, setCoffees] = useState<Coffee[]>([]);
+  const [allCoffees, setAllCoffees] = useState<Coffee[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [roasterFilter, setRoasterFilter] = useState("all");
+  const [dateRangeFilter, setDateRangeFilter] = useState<DateRange | undefined>();
   const [isLoading, setIsLoading] = useState(true);
+  const [isBulkLoading, setIsBulkLoading] = useState(false);
   const [selectedCoffee, setSelectedCoffee] = useState<Coffee | null>(null);
+  const [selectedCoffeeIds, setSelectedCoffeeIds] = useState<Set<string>>(new Set());
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isBulkEditDialogOpen, setIsBulkEditDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const { toast } = useToast();
   const supabase = createClient();
+  const { execute: executeOptimistic } = useOptimisticUpdate();
+  
+  const ITEMS_PER_PAGE = 20;
 
   useEffect(() => {
     fetchCoffees();
-  }, []);
+  }, [currentPage]);
+  
+  useEffect(() => {
+    setCurrentPage(1);
+    fetchCoffees();
+  }, [searchQuery, statusFilter, roasterFilter, dateRangeFilter]);
 
   const fetchCoffees = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
+        .from("coffee_catalog")
+        .select("*", { count: "exact" });
+
+      // Apply filters
+      if (searchQuery) {
+        query = query.or(
+          `coffee_name.ilike.%${searchQuery}%,roastery.ilike.%${searchQuery}%,origin.ilike.%${searchQuery}%`
+        );
+      }
+
+      if (statusFilter === "verified") {
+        query = query.eq("verified_by_moderator", true);
+      } else if (statusFilter === "pending") {
+        query = query.eq("verified_by_moderator", false);
+      }
+
+      if (roasterFilter !== "all") {
+        query = query.eq("roastery", roasterFilter);
+      }
+
+      if (dateRangeFilter?.from) {
+        query = query.gte("created_at", dateRangeFilter.from.toISOString());
+      }
+      if (dateRangeFilter?.to) {
+        const toDate = new Date(dateRangeFilter.to);
+        toDate.setHours(23, 59, 59, 999);
+        query = query.lte("created_at", toDate.toISOString());
+      }
+
+      // Apply pagination
+      const from = (currentPage - 1) * ITEMS_PER_PAGE;
+      const to = from + ITEMS_PER_PAGE - 1;
+      query = query.range(from, to).order("created_at", { ascending: false });
+
+      const { data, error, count } = await query;
+
+      if (error) throw error;
+      
+      setCoffees(data || []);
+      setTotalCount(count || 0);
+      
+      // Also fetch all coffees for bulk operations (without pagination)
+      const { data: allData } = await supabase
         .from("coffee_catalog")
         .select("*")
         .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setCoffees(data || []);
+      setAllCoffees(allData || []);
+      
     } catch (error: any) {
       toast({
         title: "오류",
@@ -157,57 +232,302 @@ export default function CoffeeCatalogPage() {
     }
   };
 
-  const filteredCoffees = coffees.filter(
-    (coffee) =>
-      coffee.coffee_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      coffee.roastery.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      coffee.origin?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Bulk operations
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const currentPageIds = new Set(coffees.map(coffee => coffee.id));
+      setSelectedCoffeeIds(currentPageIds);
+    } else {
+      setSelectedCoffeeIds(new Set());
+    }
+  };
 
-  if (isLoading) {
+  const handleSelectCoffee = (coffeeId: string, checked: boolean) => {
+    const newSelected = new Set(selectedCoffeeIds);
+    if (checked) {
+      newSelected.add(coffeeId);
+    } else {
+      newSelected.delete(coffeeId);
+    }
+    setSelectedCoffeeIds(newSelected);
+  };
+
+  const handleBulkVerify = async () => {
+    const selectedIds = Array.from(selectedCoffeeIds);
+    const originalCoffees = [...coffees];
+    
+    await executeOptimistic(
+      // Optimistic update
+      () => {
+        setIsBulkLoading(true);
+        setCoffees(prev => prev.map(coffee => 
+          selectedCoffeeIds.has(coffee.id) 
+            ? { ...coffee, verified_by_moderator: true }
+            : coffee
+        ));
+      },
+      // Actual API call
+      async () => {
+        const { error } = await supabase
+          .from("coffee_catalog")
+          .update({ verified_by_moderator: true })
+          .in("id", selectedIds);
+
+        if (error) throw error;
+        return true;
+      },
+      // Revert function
+      () => {
+        setCoffees(originalCoffees);
+      },
+      // Config
+      {
+        onSuccess: () => {
+          toast({
+            title: "성공",
+            description: `${selectedCoffeeIds.size}개 커피가 검증되었습니다.`,
+          });
+          setSelectedCoffeeIds(new Set());
+          fetchCoffees(); // Refresh to ensure consistency
+        },
+        onError: (error) => {
+          toast({
+            title: "오류",
+            description: "일괄 검증에 실패했습니다.",
+            variant: "destructive",
+          });
+        },
+        onFinally: () => {
+          setIsBulkLoading(false);
+        }
+      }
+    );
+  };
+
+  const handleBulkUnverify = async () => {
+    setIsBulkLoading(true);
+    try {
+      const { error } = await supabase
+        .from("coffee_catalog")
+        .update({ verified_by_moderator: false })
+        .in("id", Array.from(selectedCoffeeIds));
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: `${selectedCoffeeIds.size}개 커피가 미검증 상태로 변경되었습니다.`,
+      });
+      
+      setSelectedCoffeeIds(new Set());
+      fetchCoffees();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: "일괄 미검증 처리에 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsBulkLoading(false);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    setIsBulkLoading(true);
+    try {
+      const { error } = await supabase
+        .from("coffee_catalog")
+        .delete()
+        .in("id", Array.from(selectedCoffeeIds));
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: `${selectedCoffeeIds.size}개 커피가 삭제되었습니다.`,
+      });
+      
+      setSelectedCoffeeIds(new Set());
+      fetchCoffees();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: "일괄 삭제에 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsBulkLoading(false);
+    }
+  };
+
+  const handleBulkEdit = () => {
+    setIsBulkEditDialogOpen(true);
+  };
+
+  const handleBulkSave = async (updates: BulkUpdateData) => {
+    setIsBulkLoading(true);
+    try {
+      const { error } = await supabase
+        .from("coffee_catalog")
+        .update(updates)
+        .in("id", Array.from(selectedCoffeeIds));
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: `${selectedCoffeeIds.size}개 커피 정보가 업데이트되었습니다.`,
+      });
+      
+      setIsBulkEditDialogOpen(false);
+      setSelectedCoffeeIds(new Set());
+      fetchCoffees();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: "일괄 수정에 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsBulkLoading(false);
+    }
+  };
+
+  const handleClearSelection = () => {
+    setSelectedCoffeeIds(new Set());
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("all");
+    setRoasterFilter("all");
+    setDateRangeFilter(undefined);
+  };
+
+  const handleRefresh = () => {
+    fetchCoffees();
+  };
+
+  // Calculate pagination
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+  const hasNextPage = currentPage < totalPages;
+  const hasPrevPage = currentPage > 1;
+  
+  // Check if all current page items are selected
+  const isAllCurrentPageSelected = coffees.length > 0 && 
+    coffees.every(coffee => selectedCoffeeIds.has(coffee.id));
+  
+  // Check if some current page items are selected
+  const isSomeCurrentPageSelected = coffees.some(coffee => selectedCoffeeIds.has(coffee.id));
+
+  if (isLoading && coffees.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-3xl font-bold tracking-tight">커피 카탈로그</h2>
+          <div className="flex items-center space-x-4">
+            <Button variant="outline" size="sm" disabled>
+              <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+              새로고침
+            </Button>
+          </div>
+        </div>
+        
+        <FilterBarLoadingSkeleton />
+        <div className="mt-4">
+          <TableLoadingSkeleton />
+        </div>
       </div>
     );
   }
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold tracking-tight">커피 카탈로그</h2>
         <div className="flex items-center space-x-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="커피 검색..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 w-64"
-            />
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={isLoading}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            새로고침
+          </Button>
         </div>
       </div>
 
+      {/* Filter Bar */}
+      <CoffeeFilterBar
+        onSearchChange={setSearchQuery}
+        onStatusFilter={setStatusFilter}
+        onRoasterFilter={setRoasterFilter}
+        onDateRangeFilter={setDateRangeFilter}
+        onClearFilters={handleClearFilters}
+      />
+
+      {/* Bulk Action Toolbar */}
+      <BulkActionToolbar
+        selectedCount={selectedCoffeeIds.size}
+        onBulkVerify={handleBulkVerify}
+        onBulkUnverify={handleBulkUnverify}
+        onBulkDelete={handleBulkDelete}
+        onBulkEdit={handleBulkEdit}
+        onClearSelection={handleClearSelection}
+        isLoading={isBulkLoading}
+      />
+
       <Card>
         <CardHeader>
-          <CardTitle>커피 목록 ({filteredCoffees.length}개)</CardTitle>
+          <div className="flex justify-between items-center">
+            <CardTitle>
+              커피 목록 ({totalCount.toLocaleString()}개)
+              {selectedCoffeeIds.size > 0 && (
+                <span className="ml-2 text-sm font-normal text-muted-foreground">
+                  • {selectedCoffeeIds.size}개 선택됨
+                </span>
+              )}
+            </CardTitle>
+            <div className="text-sm text-muted-foreground">
+              페이지 {currentPage} / {totalPages}
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">
+                  <Checkbox
+                    checked={isAllCurrentPageSelected}
+                    onCheckedChange={handleSelectAll}
+                    aria-label="전체 선택"
+                    className={isSomeCurrentPageSelected && !isAllCurrentPageSelected ? 'data-[state=checked]:bg-primary/50' : ''}
+                  />
+                </TableHead>
                 <TableHead>커피명</TableHead>
                 <TableHead>로스터리</TableHead>
                 <TableHead>원산지</TableHead>
                 <TableHead>품종</TableHead>
                 <TableHead>상태</TableHead>
+                <TableHead>등록일</TableHead>
                 <TableHead className="text-right">액션</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredCoffees.map((coffee) => (
-                <TableRow key={coffee.id}>
+              {coffees.map((coffee) => (
+                <TableRow 
+                  key={coffee.id}
+                  className={selectedCoffeeIds.has(coffee.id) ? 'bg-blue-50' : ''}
+                >
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedCoffeeIds.has(coffee.id)}
+                      onCheckedChange={(checked) => handleSelectCoffee(coffee.id, checked as boolean)}
+                      aria-label={`${coffee.coffee_name} 선택`}
+                    />
+                  </TableCell>
                   <TableCell className="font-medium">{coffee.coffee_name}</TableCell>
                   <TableCell>{coffee.roastery}</TableCell>
                   <TableCell>{coffee.origin || "-"}</TableCell>
@@ -218,6 +538,13 @@ export default function CoffeeCatalogPage() {
                     ) : (
                       <Badge variant="secondary">대기중</Badge>
                     )}
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {new Date(coffee.created_at).toLocaleDateString('ko-KR', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end space-x-2">
@@ -250,6 +577,54 @@ export default function CoffeeCatalogPage() {
               ))}
             </TableBody>
           </Table>
+          
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-6">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => hasPrevPage && setCurrentPage(p => p - 1)}
+                      className={!hasPrevPage ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    />
+                  </PaginationItem>
+                  
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage > totalPages - 3) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <PaginationItem key={pageNum}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(pageNum)}
+                          isActive={currentPage === pageNum}
+                          className="cursor-pointer"
+                        >
+                          {pageNum}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  })}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => hasNextPage && setCurrentPage(p => p + 1)}
+                      className={!hasNextPage ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -366,6 +741,15 @@ export default function CoffeeCatalogPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Bulk Edit Dialog */}
+      <BulkEditDialog
+        open={isBulkEditDialogOpen}
+        onOpenChange={setIsBulkEditDialogOpen}
+        selectedCount={selectedCoffeeIds.size}
+        onSave={handleBulkSave}
+        isLoading={isBulkLoading}
+      />
     </div>
   );
 }

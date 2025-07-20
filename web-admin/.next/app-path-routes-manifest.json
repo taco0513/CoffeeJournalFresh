@@ -1,0 +1,8 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/login/page": "/login",
+  "/page": "/",
+  "/dashboard/coffee/page": "/dashboard/coffee",
+  "/dashboard/page": "/dashboard",
+  "/dashboard/users/page": "/dashboard/users"
+}
