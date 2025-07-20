@@ -8,6 +8,7 @@
     "ios-device": "react-native run-ios --device",
     "ios-14": "react-native run-ios --simulator='iPhone 14'",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
     "start": "react-native start",
     "test": "jest",
     "postinstall": "cd ios && pod install && cd .. && ./scripts/fix-crash.sh",

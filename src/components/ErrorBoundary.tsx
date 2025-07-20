@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   reportButton: {
-    backgroundColor: HIGColors.systemGray5,
+    backgroundColor: HIGColors.systemGray6,
     paddingHorizontal: HIGConstants.SPACING_XL,
     paddingVertical: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.RADIUS_LG,

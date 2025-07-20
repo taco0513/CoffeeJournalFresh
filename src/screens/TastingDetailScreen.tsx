@@ -297,3 +297,87 @@ const TastingDetailScreen = () => {
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>테이스팅 상세</Text>
         <View style={styles.headerActions}>
+        </View>
+      </View>
+      
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Content will be added here */}
+        <View style={styles.contentContainer}>
+          <Text style={styles.placeholderText}>테이스팅 상세 내용이 여기에 표시됩니다.</Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  navigationBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  backButton: {
+    padding: HIGConstants.SPACING_XS,
+    flex: 0,
+  },
+  backButtonText: {
+    fontSize: 18,
+    color: HIGColors.blue,
+    fontWeight: '600',
+  },
+  navigationTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.label,
+    flex: 1,
+    textAlign: 'center',
+  },
+  headerActions: {
+    flex: 0,
+    width: 50,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  contentContainer: {
+    padding: HIGConstants.SPACING_MD,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 200,
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: HIGConstants.SPACING_LG,
+  },
+  errorText: {
+    fontSize: 16,
+    color: HIGColors.red,
+    textAlign: 'center',
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+});
+
+export default TastingDetailScreen;

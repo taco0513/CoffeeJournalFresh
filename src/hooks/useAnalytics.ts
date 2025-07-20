@@ -5,16 +5,16 @@ import { useUserStore } from '../stores/useUserStore';
 
 export const useAnalytics = () => {
   const navigation = useNavigation();
-  const { user } = useUserStore();
+  const { currentUser } = useUserStore();
 
   useEffect(() => {
     // Initialize analytics when user changes
-    if (user) {
-      analyticsService.initialize(user.id);
+    if (currentUser) {
+      analyticsService.initialize(currentUser.id);
     } else {
       analyticsService.initialize();
     }
-  }, [user?.id]);
+  }, [currentUser?.id]);
 
   useEffect(() => {
     // Handle app state changes
@@ -22,7 +22,7 @@ export const useAnalytics = () => {
       if (nextAppState === 'background' || nextAppState === 'inactive') {
         analyticsService.endSession();
       } else if (nextAppState === 'active') {
-        analyticsService.initialize(user?.id);
+        analyticsService.initialize(currentUser?.id);
       }
     };
 
@@ -33,7 +33,7 @@ export const useAnalytics = () => {
     return () => {
       analyticsService.endSession();
     };
-  }, [user?.id]);
+  }, [currentUser?.id]);
 
   const trackScreenView = useCallback((screenName: string, properties?: Record<string, any>) => {
     analyticsService.trackScreenView(screenName, properties);
@@ -80,15 +80,15 @@ export const useAnalytics = () => {
   };
 };
 
-// HOC for automatic screen view tracking
-export const withAnalytics = <T extends object>(WrappedComponent: React.ComponentType<T>, screenName: string) => {
-  return (props: T) => {
-    const { trackScreenView } = useAnalytics();
-
-    useEffect(() => {
-      trackScreenView(screenName);
-    }, [trackScreenView]);
-
-    return <WrappedComponent {...props} />;
-  };
-};
+// HOC for automatic screen view tracking - temporarily disabled due to JSX issues
+// export const withAnalytics = <T extends object>(WrappedComponent: React.ComponentType<T>, screenName: string) => {
+//   return (props: T) => {
+//     const { trackScreenView } = useAnalytics();
+//
+//     useEffect(() => {
+//       trackScreenView(screenName);
+//     }, [trackScreenView]);
+//
+//     return <WrappedComponent {...props} />;
+//   };
+// };

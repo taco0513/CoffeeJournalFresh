@@ -18,7 +18,7 @@ import { useUserStore } from '../../stores/useUserStore';
 import { FeedbackCategory, FEEDBACK_CATEGORY_LABELS } from '../../types/feedback';
 import { FeedbackService } from '../../services/FeedbackService';
 import { HIGColors } from '../../constants/HIG';
-import { showToast } from '../../utils/toast';
+import { showSuccessToast, showErrorToast } from '../../utils/toast';
 
 const RATING_EMOJIS = ['😞', '😕', '😐', '😊', '😍'];
 
@@ -61,7 +61,7 @@ export const FeedbackModal: React.FC = () => {
         // Show modal again
         useFeedbackStore.getState().showFeedback();
         setIsCapturingScreen(false);
-        showToast('스크린샷 기능은 준비 중입니다', 'info');
+        showErrorToast('스크린샷 기능은 준비 중입니다');
       }, 500);
     } catch (error) {
       console.error('Error capturing screen:', error);
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: HIGColors.systemGray5,
+    borderColor: HIGColors.systemGray6,
     backgroundColor: '#FFFFFF',
   },
   categoryItemSelected: {
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   },
   titleInput: {
     borderWidth: 1,
-    borderColor: HIGColors.systemGray5,
+    borderColor: HIGColors.systemGray6,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   },
   descriptionInput: {
     borderWidth: 1,
-    borderColor: HIGColors.systemGray5,
+    borderColor: HIGColors.systemGray6,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   submitButtonDisabled: {
-    backgroundColor: HIGColors.systemGray4,
+    backgroundColor: HIGColors.systemGray6,
   },
   submitButtonText: {
     color: '#FFFFFF',
