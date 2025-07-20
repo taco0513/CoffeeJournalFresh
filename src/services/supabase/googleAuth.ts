@@ -1,110 +1,217 @@
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import { supabase } from './client';
-import { GOOGLE_AUTH_CONFIG, validateGoogleConfig } from '@/config/googleAuth';
+import { supabase } from './supabase';
+import { GoogleAuthConfig, validateGoogleConfig, isGoogleSignInConfigured } from '@/config/googleAuth';
 
-class GoogleAuthService {
-  private isConfigured = false;
+export interface GoogleSignInResult {
+  success: boolean;
+  user?: any;
+  error?: string;
+}
 
-  // Google Sign-In 초기화
-  async configure(): Promise<void> {
+export class GoogleAuthService {
+  private static isConfigured = false;
+
+  /**
+   * Configure Google Sign-In
+   */
+  static configure(): void {
     try {
-      // Validate configuration before proceeding
-      if (!validateGoogleConfig()) {
-        throw new Error('Google Sign-In configuration is invalid. Please update src/config/googleAuth.ts');
+      if (!isGoogleSignInConfigured()) {
+        console.warn('Google Sign-In: Configuration not found. Please set environment variables.');
+        return;
       }
 
-      await GoogleSignin.configure({
-        webClientId: GOOGLE_AUTH_CONFIG.WEB_CLIENT_ID,
-        iosClientId: GOOGLE_AUTH_CONFIG.IOS_CLIENT_ID,
-        offlineAccess: true,
-        hostedDomain: '',
-        forceCodeForRefreshToken: true,
+      GoogleSignin.configure({
+        iosClientId: GoogleAuthConfig.iosClientId,
+        webClientId: GoogleAuthConfig.webClientId,
+        offlineAccess: GoogleAuthConfig.offlineAccess,
+        hostedDomain: GoogleAuthConfig.hostedDomain,
+        forceCodeForRefreshToken: GoogleAuthConfig.forceCodeForRefreshToken,
       });
-      
+
       this.isConfigured = true;
+      console.log('Google Sign-In configured successfully');
     } catch (error) {
       console.error('Google Sign-In configuration failed:', error);
       throw error;
     }
   }
 
-  // Google Sign-In 실행
-  async signIn(): Promise<any> {
+  /**
+   * Perform Google Sign-In
+   */
+  static async signIn(): Promise<GoogleSignInResult> {
     try {
-      // Google Sign-In 초기화 (한 번만 실행)
       if (!this.isConfigured) {
-        await this.configure();
+        this.configure();
       }
 
-      // Google Play Services 확인
+      if (!isGoogleSignInConfigured()) {
+        return {
+          success: false,
+          error: 'Google Sign-In is not configured. Please set OAuth credentials.',
+        };
+      }
+
+      // Check if device has Google Play Services (Android) or is supported (iOS)
       await GoogleSignin.hasPlayServices();
 
-      // Google Sign-In 실행
+      // Perform sign-in
       const userInfo = await GoogleSignin.signIn();
-
-      if (!userInfo.data?.idToken) {
-        throw new Error('Google Sign-In failed: No ID token received');
+      
+      if (!userInfo.idToken) {
+        return {
+          success: false,
+          error: 'Google Sign-In failed: No ID token received',
+        };
       }
 
-      // Supabase에 Google 토큰으로 로그인
+      // Sign in to Supabase with Google ID token
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
-        token: userInfo.data.idToken,
+        token: userInfo.idToken,
       });
 
       if (error) {
-        throw error;
+        console.error('Supabase Google Sign-In error:', error);
+        return {
+          success: false,
+          error: `Authentication failed: ${error.message}`,
+        };
       }
 
-      if (!data.user) {
-        throw new Error('Google Sign-In failed: No user returned');
-      }
-
-      return data.user;
-    } catch (error) {
+      return {
+        success: true,
+        user: data.user,
+      };
+    } catch (error: any) {
+      console.error('Google Sign-In error:', error);
+      
+      let errorMessage = 'Google Sign-In failed';
+      
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        throw new Error('Google Sign-In was cancelled');
+        errorMessage = 'Sign-in was cancelled';
       } else if (error.code === statusCodes.IN_PROGRESS) {
-        throw new Error('Google Sign-In is already in progress');
+        errorMessage = 'Sign-in is already in progress';
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        throw new Error('Google Play Services not available');
-      } else {
-        console.error('Google Sign-In failed:', error);
-        throw error;
+        errorMessage = 'Google Play Services not available';
+      } else if (error.message) {
+        errorMessage = error.message;
       }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
     }
   }
 
-  // Google Sign-Out
-  async signOut(): Promise<void> {
+  /**
+   * Sign out from Google
+   */
+  static async signOut(): Promise<GoogleSignInResult> {
     try {
+      // Sign out from Google
       await GoogleSignin.signOut();
-    } catch (error) {
-      console.error('Google Sign-Out failed:', error);
-      throw error;
+      
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
+
+      return {
+        success: true,
+      };
+    } catch (error: any) {
+      console.error('Google Sign-Out error:', error);
+      return {
+        success: false,
+        error: error.message || 'Sign-out failed',
+      };
     }
   }
 
-  // 현재 사용자 정보 가져오기
-  async getCurrentUser(): Promise<any> {
+  /**
+   * Check if user is signed in to Google
+   */
+  static async isSignedIn(): Promise<boolean> {
     try {
-      const userInfo = await GoogleSignin.signInSilently();
+      if (!this.isConfigured || !isGoogleSignInConfigured()) {
+        return false;
+      }
+      
+      return await GoogleSignin.isSignedIn();
+    } catch (error) {
+      console.error('Google Sign-In status check failed:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get current Google user info
+   */
+  static async getCurrentUser(): Promise<any> {
+    try {
+      if (!this.isConfigured || !isGoogleSignInConfigured()) {
+        return null;
+      }
+
+      const userInfo = await GoogleSignin.getCurrentUser();
       return userInfo;
     } catch (error) {
-      console.error('Failed to get current Google user:', error);
+      console.error('Get current Google user failed:', error);
       return null;
     }
   }
 
-  // Google Sign-In 상태 확인
-  async isSignedIn(): Promise<boolean> {
+  /**
+   * Revoke access (stronger than sign out)
+   */
+  static async revokeAccess(): Promise<GoogleSignInResult> {
     try {
-      return await GoogleSignin.isSignedIn();
+      await GoogleSignin.revokeAccess();
+      
+      // Also sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
+
+      return {
+        success: true,
+      };
+    } catch (error: any) {
+      console.error('Google revoke access error:', error);
+      return {
+        success: false,
+        error: error.message || 'Revoke access failed',
+      };
+    }
+  }
+
+  /**
+   * Get available scopes
+   */
+  static async getTokens(): Promise<any> {
+    try {
+      if (!this.isConfigured || !isGoogleSignInConfigured()) {
+        return null;
+      }
+
+      const tokens = await GoogleSignin.getTokens();
+      return tokens;
     } catch (error) {
-      console.error('Failed to check Google sign-in status:', error);
-      return false;
+      console.error('Get Google tokens failed:', error);
+      return null;
     }
   }
 }
-
-export default new GoogleAuthService();

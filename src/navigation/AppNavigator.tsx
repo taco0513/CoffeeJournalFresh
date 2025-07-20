@@ -39,6 +39,8 @@ import { AdminCoffeeEditScreen } from '../screens/admin/AdminCoffeeEditScreen';
 import DeveloperScreen from '../screens/DeveloperScreen';
 import { PersonalTasteQuizScreen } from '../screens/PersonalTasteQuizScreen';
 import { PersonalTasteQuizResultsScreen } from '../screens/PersonalTasteQuizResultsScreen';
+import AdminFeedbackScreen from '../screens/admin/AdminFeedbackScreen';
+import { FeedbackProvider } from '../components/feedback';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -390,53 +392,62 @@ function AppNavigator() {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator 
-        initialRouteName={shouldShowMainApp ? "MainTabs" : "Auth"}
-        screenOptions={{
-          headerShown: false,
-          presentation: 'card',
-        }}
-      >
-        <Stack.Screen 
-          name="Auth" 
-          component={AuthStack} 
-        />
-        <Stack.Screen 
-          name="MainTabs" 
-          component={MainTabs} 
-        />
-        <Stack.Screen 
-          name="TastingFlow" 
-          component={TastingFlow} 
-          options={{
+    <FeedbackProvider>
+      <NavigationContainer>
+        <Stack.Navigator 
+          initialRouteName={shouldShowMainApp ? "MainTabs" : "Auth"}
+          screenOptions={{
+            headerShown: false,
             presentation: 'card',
           }}
-        />
-        <Stack.Screen 
-          name="AdminDashboard" 
-          component={AdminDashboardScreen}
-          options={{
-            headerShown: true,
-            headerTitle: '관리자 대시보드',
-          }}
-        />
-        <Stack.Screen 
-          name="AdminCoffeeEdit" 
-          component={AdminCoffeeEditScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen 
-          name="DeveloperScreen" 
-          component={DeveloperScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+        >
+          <Stack.Screen 
+            name="Auth" 
+            component={AuthStack} 
+          />
+          <Stack.Screen 
+            name="MainTabs" 
+            component={MainTabs} 
+          />
+          <Stack.Screen 
+            name="TastingFlow" 
+            component={TastingFlow} 
+            options={{
+              presentation: 'card',
+            }}
+          />
+          <Stack.Screen 
+            name="AdminDashboard" 
+            component={AdminDashboardScreen}
+            options={{
+              headerShown: true,
+              headerTitle: '관리자 대시보드',
+            }}
+          />
+          <Stack.Screen 
+            name="AdminCoffeeEdit" 
+            component={AdminCoffeeEditScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen 
+            name="AdminFeedback" 
+            component={AdminFeedbackScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen 
+            name="DeveloperScreen" 
+            component={DeveloperScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </FeedbackProvider>
   );
 }
 

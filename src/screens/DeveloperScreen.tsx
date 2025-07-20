@@ -13,12 +13,14 @@ import { useNavigation } from '@react-navigation/native';
 import { HIGConstants, HIGColors } from '../styles/common';
 import { useDevStore } from '../stores/useDevStore';
 import { useUserStore } from '../stores/useUserStore';
+import { useFeedbackStore } from '../stores/useFeedbackStore';
 import RealmService from '../services/realm/RealmService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DeveloperScreen = () => {
   const navigation = useNavigation();
   const { currentUser, setTestUser, setGuestMode } = useUserStore();
+  const { showFeedback, enableShakeToFeedback, toggleShakeToFeedback, isBetaUser, setBetaStatus } = useFeedbackStore();
   const {
     isDeveloperMode,
     showDebugInfo,
@@ -116,10 +118,10 @@ const DeveloperScreen = () => {
                     variety: 'Heirloom',
                     process: 'Washed',
                     altitude: '1,800-2,000m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Bright and clean with floral notes, hints of lemon and bergamot.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Fruity', koreanValue: '과일향' },
                     { level: 2, value: 'Citrus Fruit', koreanValue: '감귤류' },
                     { level: 3, value: 'Lemon', koreanValue: '레몬' },
@@ -144,10 +146,10 @@ const DeveloperScreen = () => {
                     variety: 'Geisha',
                     process: 'Honey',
                     altitude: '1,600-1,800m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Complex and elegant with tropical fruit notes and wine-like acidity.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Fruity', koreanValue: '과일향' },
                     { level: 2, value: 'Other Fruit', koreanValue: '기타 과일' },
                     { level: 3, value: 'Mango', koreanValue: '망고' },
@@ -172,10 +174,10 @@ const DeveloperScreen = () => {
                     variety: 'Catuai',
                     process: 'Natural',
                     altitude: '1,200-1,400m',
-                    temperature: 'ice'
+                    temperature: 'ice' as const
                   },
                   roasterNotes: 'Rich chocolate notes with nutty undertones and caramel sweetness.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
                     { level: 2, value: 'Dark Chocolate', koreanValue: '다크 초콜릿' },
                     { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' },
@@ -201,10 +203,10 @@ const DeveloperScreen = () => {
                     variety: 'SL28, SL34',
                     process: 'Washed',
                     altitude: '1,500-1,700m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Bold and bright with blackcurrant notes and wine-like complexity.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Fruity', koreanValue: '과일향' },
                     { level: 2, value: 'Berry', koreanValue: '베리' },
                     { level: 3, value: 'Blackcurrant', koreanValue: '블랙커런트' },
@@ -229,10 +231,10 @@ const DeveloperScreen = () => {
                     variety: 'Bourbon, Typica',
                     process: 'Washed',
                     altitude: '1,500-1,900m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Full-bodied with chocolate and spice notes, smooth and balanced.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
                     { level: 2, value: 'Milk Chocolate', koreanValue: '밀크 초콜릿' },
                     { level: 1, value: 'Spices', koreanValue: '향신료' },
@@ -285,10 +287,10 @@ const DeveloperScreen = () => {
                     variety: 'Heirloom',
                     process: 'Natural',
                     altitude: '1,900-2,200m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Wine-like with berry notes, full body and complex finish.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Fruity', koreanValue: '과일향' },
                     { level: 2, value: 'Berry', koreanValue: '베리' },
                     { level: 3, value: 'Blueberry', koreanValue: '블루베리' },
@@ -312,10 +314,10 @@ const DeveloperScreen = () => {
                     variety: 'Geisha',
                     process: 'Washed',
                     altitude: '1,600-1,900m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Floral, tea-like, with jasmine and bergamot notes.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Floral', koreanValue: '꽃향기' },
                     { level: 2, value: 'Jasmine', koreanValue: '자스민' },
                     { level: 1, value: 'Fruity', koreanValue: '과일향' },
@@ -339,10 +341,10 @@ const DeveloperScreen = () => {
                     variety: 'Typica',
                     process: 'Washed',
                     altitude: '1,000-1,700m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Mild, well-balanced, with subtle chocolate and nutty notes.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
                     { level: 2, value: 'Milk Chocolate', koreanValue: '밀크 초콜릿' },
                     { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' },
@@ -366,10 +368,10 @@ const DeveloperScreen = () => {
                     variety: 'Bourbon',
                     process: 'Natural',
                     altitude: '1,000-1,200m',
-                    temperature: 'ice'
+                    temperature: 'ice' as const
                   },
                   roasterNotes: 'Rich and balanced with chocolate and caramel sweetness.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Sweet', koreanValue: '단맛' },
                     { level: 2, value: 'Caramel', koreanValue: '카라멜' },
                     { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
@@ -393,10 +395,10 @@ const DeveloperScreen = () => {
                     variety: 'Typica, Bourbon',
                     process: 'Natural',
                     altitude: '1,200-1,800m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Wine-like, fruity with chocolate undertones and earthy finish.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
                     { level: 2, value: 'Dark Chocolate', koreanValue: '다크 초콜릿' },
                     { level: 1, value: 'Fruity', koreanValue: '과일향' },
@@ -420,10 +422,10 @@ const DeveloperScreen = () => {
                     variety: 'Caturra',
                     process: 'Honey',
                     altitude: '1,200-1,700m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Bright acidity with citrus notes and honey sweetness.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Fruity', koreanValue: '과일향' },
                     { level: 2, value: 'Citrus Fruit', koreanValue: '감귤류' },
                     { level: 3, value: 'Orange', koreanValue: '오렌지' },
@@ -448,10 +450,10 @@ const DeveloperScreen = () => {
                     variety: 'Castillo',
                     process: 'Washed',
                     altitude: '1,500-2,000m',
-                    temperature: 'ice'
+                    temperature: 'ice' as const
                   },
                   roasterNotes: 'Balanced cup with nutty and caramel notes.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' },
                     { level: 2, value: 'Peanut', koreanValue: '땅콩' },
                     { level: 1, value: 'Sweet', koreanValue: '단맛' },
@@ -475,10 +477,10 @@ const DeveloperScreen = () => {
                     variety: 'Blend',
                     process: 'Mixed',
                     altitude: 'Various',
-                    temperature: 'ice'
+                    temperature: 'ice' as const
                   },
                   roasterNotes: 'Simple and clean blend for everyday drinking.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Roasted', koreanValue: '로스팅' },
                     { level: 2, value: 'Burnt', koreanValue: '탄맛' },
                     { level: 1, value: 'Bitter', koreanValue: '쓴맛' }
@@ -501,10 +503,10 @@ const DeveloperScreen = () => {
                     variety: 'Robusta, Arabica',
                     process: 'Natural',
                     altitude: '800-1,500m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Strong and bold with earthy and nutty notes.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' },
                     { level: 2, value: 'Cashew', koreanValue: '캐슈너트' },
                     { level: 1, value: 'Other', koreanValue: '기타' },
@@ -528,10 +530,10 @@ const DeveloperScreen = () => {
                     variety: 'Red Bourbon',
                     process: 'Washed',
                     altitude: '1,700-2,000m',
-                    temperature: 'hot'
+                    temperature: 'hot' as const
                   },
                   roasterNotes: 'Bright and clean with floral and tea-like characteristics.',
-                  flavorNotes: [
+                  selectedFlavors: [
                     { level: 1, value: 'Floral', koreanValue: '꽃향기' },
                     { level: 2, value: 'Rose', koreanValue: '장미' },
                     { level: 1, value: 'Other', koreanValue: '기타' },
@@ -750,6 +752,37 @@ const DeveloperScreen = () => {
               value={enableBetaFeatures}
               onValueChange={setBetaFeatures}
             />
+          </View>
+        </View>
+
+        {/* Beta Feedback Settings */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>베타 피드백</Text>
+          <View style={styles.card}>
+            <SettingRow
+              title="흔들어서 피드백 보내기"
+              description="기기를 흔들어 피드백 모달 열기"
+              value={enableShakeToFeedback}
+              onValueChange={toggleShakeToFeedback}
+            />
+            <SettingRow
+              title="베타 테스터 모드"
+              description="베타 테스터 전용 기능 활성화"
+              value={isBetaUser}
+              onValueChange={setBetaStatus}
+            />
+            <ActionButton
+              title="피드백 모달 열기"
+              onPress={showFeedback}
+            />
+            {currentUser?.email === 'hello@zimojin.com' && (
+              <ActionButton
+                title="피드백 관리 대시보드"
+                onPress={() => navigation.navigate('AdminFeedback' as never)}
+                style={styles.adminButton}
+                textStyle={styles.adminButtonText}
+              />
+            )}
           </View>
         </View>
 
@@ -977,6 +1010,12 @@ const styles = StyleSheet.create({
     backgroundColor: HIGColors.green,
   },
   successButtonText: {
+    color: HIGColors.white,
+  },
+  adminButton: {
+    backgroundColor: '#6B46C1', // Purple for admin
+  },
+  adminButtonText: {
     color: HIGColors.white,
   },
 });

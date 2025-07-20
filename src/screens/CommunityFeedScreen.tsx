@@ -116,7 +116,8 @@ const CommunityFeedScreen = () => {
   };
 
   const handleComment = (reviewId: string) => {
-    navigation.navigate('CommunityReview' as never, { reviewId } as never);
+    // TODO: Implement navigation to review detail
+    console.log('Navigate to review:', reviewId);
   };
 
   const handleShare = (reviewId: string) => {

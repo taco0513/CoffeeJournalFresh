@@ -7,27 +7,47 @@
 // 5. Download the configuration file
 // 6. Replace the placeholder values below
 
-export const GOOGLE_AUTH_CONFIG = {
+export const GoogleAuthConfig = {
+  // iOS client ID from Google Cloud Console
+  // This is the OAuth 2.0 Client ID of type "iOS"
+  iosClientId: process.env.GOOGLE_OAUTH_IOS_CLIENT_ID || '',
+  
   // Web client ID from Google Cloud Console
   // This is the OAuth 2.0 Client ID of type "Web application"
-  WEB_CLIENT_ID: process.env.GOOGLE_WEB_CLIENT_ID || 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com',
+  webClientId: process.env.GOOGLE_OAUTH_WEB_CLIENT_ID || '',
   
-  // iOS client ID (optional, for iOS-specific features)
-  IOS_CLIENT_ID: process.env.GOOGLE_IOS_CLIENT_ID || 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
+  // Android client ID from Google Cloud Console
+  // This is the OAuth 2.0 Client ID of type "Android"
+  androidClientId: process.env.GOOGLE_OAUTH_ANDROID_CLIENT_ID || '',
   
-  // Reversed client ID for iOS URL scheme
-  // Format: com.googleusercontent.apps.YOUR_CLIENT_ID
-  REVERSED_CLIENT_ID: process.env.GOOGLE_REVERSED_CLIENT_ID || 'com.googleusercontent.apps.YOUR_CLIENT_ID',
+  // Configuration settings
+  offlineAccess: true,
+  hostedDomain: '',
+  forceCodeForRefreshToken: true,
+};
+
+// Legacy export for backward compatibility
+export const GOOGLE_AUTH_CONFIG = {
+  WEB_CLIENT_ID: GoogleAuthConfig.webClientId,
+  IOS_CLIENT_ID: GoogleAuthConfig.iosClientId,
+  REVERSED_CLIENT_ID: GoogleAuthConfig.iosClientId 
+    ? `com.googleusercontent.apps.${GoogleAuthConfig.iosClientId.split('.')[0]}`
+    : '',
 };
 
 // Validation function
 export const validateGoogleConfig = (): boolean => {
-  const { WEB_CLIENT_ID, REVERSED_CLIENT_ID } = GOOGLE_AUTH_CONFIG;
+  const { iosClientId, webClientId } = GoogleAuthConfig;
   
-  if (WEB_CLIENT_ID.includes('YOUR_') || REVERSED_CLIENT_ID.includes('YOUR_')) {
-    console.warn('Google Sign-In: Configuration not set. Please update googleAuth.ts with your credentials.');
+  if (!iosClientId && !webClientId) {
+    console.warn('Google Sign-In: No client IDs configured. Please set GOOGLE_OAUTH_IOS_CLIENT_ID or GOOGLE_OAUTH_WEB_CLIENT_ID environment variables.');
     return false;
   }
   
   return true;
+};
+
+// Check if Google Sign-In is properly configured
+export const isGoogleSignInConfigured = (): boolean => {
+  return !!(GoogleAuthConfig.iosClientId || GoogleAuthConfig.webClientId);
 };

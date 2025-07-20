@@ -34,7 +34,7 @@ interface AdminStats {
 }
 
 export const AdminDashboardScreen = ({ navigation }: any) => {
-  const { user } = useUserStore();
+  const { currentUser: user } = useUserStore();
   const [isAdmin, setIsAdmin] = useState(false);
   const [pendingCoffees, setPendingCoffees] = useState<PendingCoffee[]>([]);
   const [stats, setStats] = useState<AdminStats>({

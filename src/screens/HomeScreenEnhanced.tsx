@@ -23,7 +23,7 @@ import { ITastingRecord } from '../services/realm/schemas';
 import { CoachInsightBanner } from '@/components/personalTaste';
 import { usePersonalTaste, useLiteAICoach } from '@/hooks/usePersonalTaste';
 import { CoachFeedbackModal } from '@/components/coach/CoachFeedbackModal';
-import LiteAICoachService from '@/services/LiteAICoachService';
+import { LiteAICoachService } from '@/services/LiteAICoachService';
 import { generateGuestMockData, generateGuestStats } from '../utils/guestMockData';
 
 export default function HomeScreenEnhanced() {
@@ -70,7 +70,10 @@ export default function HomeScreenEnhanced() {
   
   // AI Coach Modal state
   const [showCoachFeedback, setShowCoachFeedback] = useState(false);
-  const [coachFeedback, setCoachFeedback] = useState(null);
+  const [coachFeedback, setCoachFeedback] = useState<any>(null);
+  
+  // More options toggle
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   const realmService = RealmService.getInstance();
 
@@ -82,15 +85,15 @@ export default function HomeScreenEnhanced() {
     try {
       if (realmService.isInitialized) {
         const realm = realmService.getRealm();
-        const allTastings = realm.objects('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
+        const allTastings = realm.objects<ITastingRecord>('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
         
-        const recent = Array.from(allTastings.slice(0, 3));
+        const recent = Array.from(allTastings.slice(0, 3)) as ITastingRecord[];
         setRecentTastings(recent);
         
         const total = allTastings.length;
         const thisWeek = getThisWeekTastings(allTastings);
-        const avgScore = total > 0 ? allTastings.reduce((sum, t) => sum + t.matchScoreTotal, 0) / total : 0;
-        const bestScore = total > 0 ? Math.max(...allTastings.map(t => t.matchScoreTotal)) : 0;
+        const avgScore = total > 0 ? allTastings.reduce((sum, t) => sum + (t.matchScoreTotal || 0), 0) / total : 0;
+        const bestScore = total > 0 ? Math.max(...allTastings.map(t => t.matchScoreTotal || 0)) : 0;
         
         setStats({
           totalTastings: total,
@@ -187,17 +190,6 @@ export default function HomeScreenEnhanced() {
     );
   };
 
-  const renderRecommendation = ({ item }: { item: any }) => (
-    <TouchableOpacity style={styles.recommendationCard} activeOpacity={0.8}>
-      <View style={styles.recommendationHeader}>
-        <Text style={styles.recommendationScore}>{item.matchScore}%</Text>
-        <Text style={styles.recommendationMatch}>match</Text>
-      </View>
-      <Text style={styles.recommendationCoffee}>{item.coffeeName}</Text>
-      <Text style={styles.recommendationRoaster}>{item.roasterName}</Text>
-      <Text style={styles.recommendationReason}>{item.reason}</Text>
-    </TouchableOpacity>
-  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -219,21 +211,12 @@ export default function HomeScreenEnhanced() {
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
       >
-        {/* AI Coach Daily Insight */}
-        {dailyInsight && !coachLoading && (
-          <CoachInsightBanner
-            insight={dailyInsight}
-            onAction={handleInsightAction}
-            style={styles.insightBanner}
-          />
-        )}
-
         <View style={styles.content}>
-          {/* Welcome Section with Journey Progress */}
+          {/* Simplified Welcome Section */}
           <View style={styles.welcomeSection}>
             <Text style={styles.welcomeTitle}>안녕하세요, {currentUser?.username || 'Guest'}님!</Text>
             
-            {/* 게스트 모드 안내 */}
+            {/* 게스트 모드 안내 - 더 눈에 띄게 */}
             {isGuestMode && (
               <View style={styles.guestNotice}>
                 <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
@@ -245,103 +228,120 @@ export default function HomeScreenEnhanced() {
                 </TouchableOpacity>
               </View>
             )}
-            
-            {tastePattern && !isGuestMode && (
-              <TouchableOpacity 
-                style={styles.journeyProgress}
-                onPress={handleViewPersonalDashboard}
-                activeOpacity={0.8}
-              >
-                <View style={styles.progressHeader}>
-                  <Text style={styles.tasteProfile}>{tastePattern.tasteProfile}</Text>
-                  <Text style={styles.levelBadge}>Lv.{growthMetrics?.vocabularyGrowth || 1}</Text>
-                </View>
-                <View style={styles.progressBar}>
-                  <View 
-                    style={[
-                      styles.progressFill, 
-                      { width: `${(growthMetrics?.weeklyProgress || 0)}%` }
-                    ]} 
-                  />
-                </View>
-                <Text style={styles.progressText}>
-                  이번 주 {growthMetrics?.weeklyProgress || 0}% 달성
-                </Text>
-              </TouchableOpacity>
-            )}
           </View>
 
-          {/* Enhanced Stats Overview */}
-          <View style={styles.statsOverview}>
-            <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.totalTastings : stats.totalTastings}</Text>
-              <Text style={styles.statLabel}>총 테이스팅</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.thisWeekTastings : stats.thisWeekTastings}</Text>
-              <Text style={styles.statLabel}>이번 주</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.statCard} onPress={handleViewPersonalDashboard}>
-              <Text style={styles.statValue}>
-                {isGuestMode ? 8 : (tastePattern ? tastePattern.dominantFlavors.length : 0)}
+          {/* Today's Mission - NEW */}
+          {!isGuestMode && (
+            <View style={styles.todayMission}>
+              <View style={styles.missionHeader}>
+                <Text style={styles.missionTitle}>🎯 오늘의 미션</Text>
+                <Text style={styles.missionReward}>+10 EXP</Text>
+              </View>
+              <Text style={styles.missionDescription}>
+                {dailyInsight ? dailyInsight.content : "새로운 커피를 테이스팅하고 향미를 3개 이상 찾아보세요"}
               </Text>
-              <Text style={styles.statLabel}>발견한 향미</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.statCard} onPress={handleViewPersonalDashboard}>
-              <Text style={styles.statValue}>
+              <TouchableOpacity 
+                style={styles.missionButton}
+                onPress={handleNewTasting}
+              >
+                <Text style={styles.missionButtonText}>미션 시작 →</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Big Primary Action Button */}
+          <TouchableOpacity 
+            style={styles.bigActionButton}
+            onPress={handleNewTasting}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.bigActionEmoji}>☕</Text>
+            <Text style={styles.bigActionText}>커피 기록하기</Text>
+            <Text style={styles.bigActionSubtext}>새로운 커피를 테이스팅해보세요</Text>
+          </TouchableOpacity>
+
+          {/* Quick Stats Summary */}
+          <View style={styles.quickStats}>
+            <View style={styles.quickStatItem}>
+              <Text style={styles.quickStatValue}>{isGuestMode ? guestMockStats.totalTastings : stats.totalTastings}</Text>
+              <Text style={styles.quickStatLabel}>기록</Text>
+            </View>
+            <View style={styles.quickStatDivider} />
+            <View style={styles.quickStatItem}>
+              <Text style={styles.quickStatValue}>{isGuestMode ? guestMockStats.thisWeekTastings : stats.thisWeekTastings}</Text>
+              <Text style={styles.quickStatLabel}>이번주</Text>
+            </View>
+            <View style={styles.quickStatDivider} />
+            <View style={styles.quickStatItem}>
+              <Text style={styles.quickStatValue}>
                 {isGuestMode ? 15 : (growthMetrics ? Math.round(growthMetrics.accuracyImprovement) : 0)}%
               </Text>
-              <Text style={styles.statLabel}>성장률</Text>
-            </TouchableOpacity>
+              <Text style={styles.quickStatLabel}>성장률</Text>
+            </View>
           </View>
 
-          {/* Quick Actions */}
-          <View style={styles.quickActions}>
-            <TouchableOpacity 
-              style={[commonButtonStyles.buttonPrimary, styles.primaryAction]}
-              onPress={handleNewTasting}
-              activeOpacity={0.8}
-            >
-              <Text style={[commonTextStyles.buttonText, styles.primaryActionText]}>
-                ☕ 새 테이스팅 시작
-              </Text>
-            </TouchableOpacity>
-
-            <View style={styles.secondaryActions}>
-              <TouchableOpacity 
-                style={styles.secondaryAction}
-                onPress={() => navigation.navigate('FlavorQuiz')}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.actionIcon}>🎯</Text>
-                <Text style={styles.secondaryActionText}>향미 퀴즈</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={styles.secondaryAction}
-                onPress={handleViewPersonalDashboard}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.actionIcon}>📊</Text>
-                <Text style={styles.secondaryActionText}>내 취향 분석</Text>
+          {/* Recent Records Section - Simplified */}
+          <View style={styles.recentSection}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>최근 기록</Text>
+              <TouchableOpacity onPress={handleViewHistory}>
+                <Text style={styles.seeAllText}>전체 보기 →</Text>
               </TouchableOpacity>
             </View>
 
-            {/* AI Coach Button */}
-            <TouchableOpacity 
-              style={[styles.aiCoachButton]}
-              onPress={async () => {
-                // Generate AI coach feedback
-                if (recentTastings.length > 0) {
-                  const feedback = await LiteAICoachService.provideFeedback(recentTastings[0]);
-                  setCoachFeedback(feedback);
-                  setShowCoachFeedback(true);
-                } else {
-                  // Show welcome message if no tastings yet
+            {(isGuestMode ? guestMockData.slice(0, 2) : recentTastings.slice(0, 2)).length > 0 ? (
+              <FlatList
+                data={isGuestMode ? guestMockData.slice(0, 2) : recentTastings.slice(0, 2)}
+                renderItem={renderRecentTasting}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+                scrollEnabled={false}
+              />
+            ) : (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateEmoji}>☕</Text>
+                <Text style={styles.emptyStateText}>아직 기록이 없어요</Text>
+                <Text style={styles.emptyStateSubtext}>첫 커피를 기록해보세요!</Text>
+              </View>
+            )}
+          </View>
+
+          {/* More Options - Collapsible */}
+          <TouchableOpacity 
+            style={styles.moreOptions}
+            onPress={() => setShowMoreOptions(!showMoreOptions)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.moreOptionsText}>더 많은 기능 {showMoreOptions ? '접기' : '보기'}</Text>
+            <Text style={styles.moreOptionsArrow}>{showMoreOptions ? '↑' : '↓'}</Text>
+          </TouchableOpacity>
+
+          {/* Hidden Options */}
+          {showMoreOptions && (
+            <View style={styles.hiddenOptions}>
+              <TouchableOpacity 
+                style={styles.optionButton}
+                onPress={() => navigation.navigate('PersonalTasteDashboard')}
+              >
+                <Text style={styles.optionIcon}>📊</Text>
+                <Text style={styles.optionText}>내 취향 분석</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.optionButton}
+                onPress={() => navigation.navigate('FlavorQuiz')}
+              >
+                <Text style={styles.optionIcon}>🎯</Text>
+                <Text style={styles.optionText}>향미 퀴즈</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.optionButton}
+                onPress={async () => {
                   const welcomeFeedback = {
                     overall: 'improving',
                     matchScore: 0,
-                    encouragement: '안녕하세요! 저는 당신의 AI 커피 코치입니다. 첫 테이스팅을 시작해보세요!',
+                    encouragement: '안녕하세요! 저는 당신의 AI 커피 코치입니다.',
                     strengths: ['열정적인 시작', '배움에 대한 의지'],
                     improvements: ['첫 테이스팅 기록하기', '향미 표현 연습하기'],
                     tips: [{
@@ -354,86 +354,15 @@ export default function HomeScreenEnhanced() {
                   };
                   setCoachFeedback(welcomeFeedback);
                   setShowCoachFeedback(true);
-                }
-              }}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.aiCoachIcon}>🤖</Text>
-              <Text style={styles.aiCoachButtonText}>AI 코치와 대화하기</Text>
-              <View style={styles.newBadge}>
-                <Text style={styles.newBadgeText}>NEW</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* AI Recommendations */}
-          {recommendations.length > 0 && (
-            <View style={styles.recommendationsSection}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>AI 추천 커피</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Recommendations')}>
-                  <Text style={styles.seeAllText}>전체 보기</Text>
-                </TouchableOpacity>
-              </View>
-              
-              <FlatList
-                horizontal
-                data={recommendations.slice(0, 3)}
-                renderItem={renderRecommendation}
-                keyExtractor={(item, index) => `rec-${index}`}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.recommendationsList}
-              />
-            </View>
-          )}
-
-          {/* Recent Records Section */}
-          <View style={styles.recentSection}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>최근 기록</Text>
-              <TouchableOpacity onPress={handleViewHistory}>
-                <Text style={styles.seeAllText}>전체 보기</Text>
+                }}
+              >
+                <Text style={styles.optionIcon}>🤖</Text>
+                <Text style={styles.optionText}>AI 코치</Text>
+                <View style={styles.newBadge}>
+                  <Text style={styles.newBadgeText}>NEW</Text>
+                </View>
               </TouchableOpacity>
             </View>
-
-            {(isGuestMode ? guestMockData.slice(0, 3) : recentTastings).length > 0 ? (
-              <FlatList
-                data={isGuestMode ? guestMockData.slice(0, 3) : recentTastings}
-                renderItem={renderRecentTasting}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                scrollEnabled={false}
-              />
-            ) : (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>첫 테이스팅을 시작해보세요!</Text>
-                <Text style={styles.emptyStateSubtext}>AI 코치가 당신의 커피 여정을 도와드릴게요</Text>
-              </View>
-            )}
-          </View>
-
-          {/* Learning Path Preview */}
-          {learningPath && (
-            <TouchableOpacity 
-              style={styles.learningPathCard}
-              onPress={() => navigation.navigate('LearningPath')}
-              activeOpacity={0.8}
-            >
-              <View style={styles.learningPathHeader}>
-                <Text style={styles.learningPathTitle}>오늘의 학습</Text>
-                <Text style={styles.learningPathTime}>{learningPath.estimatedTime}</Text>
-              </View>
-              <Text style={styles.learningPathFocus}>
-                집중 영역: {learningPath.currentFocus}
-              </Text>
-              <Text style={styles.learningPathGoal}>
-                목표: {learningPath.nextMilestone}
-              </Text>
-              <View style={styles.learningPathCTA}>
-                <Text style={styles.learningPathCTAText}>시작하기</Text>
-                <Text style={styles.learningPathArrow}>→</Text>
-              </View>
-            </TouchableOpacity>
           )}
         </View>
       </ScrollView>
@@ -522,7 +451,7 @@ const styles = StyleSheet.create({
   },
   welcomeSection: {
     paddingTop: HIGConstants.SPACING_LG,
-    paddingBottom: HIGConstants.SPACING_LG,
+    paddingBottom: HIGConstants.SPACING_SM,
     alignItems: 'center',
   },
   welcomeTitle: {
@@ -531,6 +460,111 @@ const styles = StyleSheet.create({
     color: HIGColors.label,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_MD,
+  },
+  
+  // Today's Mission Styles
+  todayMission: {
+    backgroundColor: '#FFF3E0',
+    borderRadius: HIGConstants.BORDER_RADIUS * 1.5,
+    padding: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_LG,
+    borderWidth: 1,
+    borderColor: HIGColors.orange,
+  },
+  missionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  missionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: HIGColors.label,
+  },
+  missionReward: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: HIGColors.orange,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
+    borderRadius: 12,
+  },
+  missionDescription: {
+    fontSize: 15,
+    color: HIGColors.secondaryLabel,
+    lineHeight: 20,
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  missionButton: {
+    alignSelf: 'flex-end',
+  },
+  missionButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: HIGColors.orange,
+  },
+  
+  // Big Action Button Styles
+  bigActionButton: {
+    backgroundColor: HIGColors.accent,
+    borderRadius: HIGConstants.BORDER_RADIUS * 2,
+    padding: HIGConstants.SPACING_XL,
+    alignItems: 'center',
+    marginBottom: HIGConstants.SPACING_LG,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  bigActionEmoji: {
+    fontSize: 48,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  bigActionText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  bigActionSubtext: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    opacity: 0.9,
+  },
+  
+  // Quick Stats Styles
+  quickStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_LG,
+    borderWidth: 1,
+    borderColor: HIGColors.gray4,
+  },
+  quickStatItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  quickStatValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: HIGColors.label,
+    marginBottom: 2,
+  },
+  quickStatLabel: {
+    fontSize: 12,
+    color: HIGColors.secondaryLabel,
+  },
+  quickStatDivider: {
+    width: 1,
+    height: 30,
+    backgroundColor: HIGColors.gray4,
   },
   journeyProgress: {
     width: '100%',
@@ -574,82 +608,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: HIGColors.secondaryLabel,
   },
-  statsOverview: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: HIGConstants.SPACING_LG,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    alignItems: 'center',
-    marginHorizontal: HIGConstants.SPACING_XS,
-    borderWidth: 1,
-    borderColor: HIGColors.blue + '20',
-    shadowColor: HIGColors.blue,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: HIGColors.blue,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-  },
-  quickActions: {
-    marginBottom: HIGConstants.SPACING_LG,
-  },
-  primaryAction: {
-    width: '100%',
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  primaryActionText: {
-    color: '#FFFFFF',
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  secondaryActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: HIGConstants.SPACING_SM,
-  },
-  secondaryAction: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    gap: HIGConstants.SPACING_SM,
-    borderWidth: 1,
-    borderColor: HIGColors.orange + '30',
-    shadowColor: HIGColors.orange,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  actionIcon: {
-    fontSize: 20,
-  },
-  secondaryActionText: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: HIGColors.label,
-  },
-  recommendationsSection: {
-    marginBottom: HIGConstants.SPACING_LG,
-  },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -657,7 +615,7 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_MD,
   },
   sectionTitle: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
   },
@@ -665,54 +623,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '400',
     color: HIGColors.blue,
-  },
-  recommendationsList: {
-    paddingRight: HIGConstants.SPACING_LG,
-  },
-  recommendationCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    marginRight: HIGConstants.SPACING_MD,
-    width: 160,
-    borderWidth: 1,
-    borderColor: HIGColors.green + '20',
-    shadowColor: HIGColors.green,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  recommendationHeader: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  recommendationScore: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: HIGColors.accent,
-  },
-  recommendationMatch: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-    marginLeft: 4,
-  },
-  recommendationCoffee: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: 2,
-  },
-  recommendationRoaster: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  recommendationReason: {
-    fontSize: 12,
-    color: HIGColors.tertiaryLabel,
-    lineHeight: 16,
   },
   recentSection: {
     marginBottom: HIGConstants.SPACING_LG,
@@ -767,93 +677,68 @@ const styles = StyleSheet.create({
   },
   emptyState: {
     alignItems: 'center',
-    paddingVertical: HIGConstants.SPACING_XL * 2,
+    paddingVertical: HIGConstants.SPACING_XL,
+    backgroundColor: '#F5F5F5',
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    marginTop: HIGConstants.SPACING_SM,
+  },
+  emptyStateEmoji: {
+    fontSize: 36,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   emptyStateText: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  emptyStateSubtext: {
-    fontSize: 15,
-    fontWeight: '400',
-    color: HIGColors.tertiaryLabel,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  learningPathCard: {
-    backgroundColor: HIGColors.secondarySystemBackground,
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_LG,
-    borderWidth: 1,
-    borderColor: HIGColors.accent,
-  },
-  learningPathHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  learningPathTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
-  },
-  learningPathTime: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-  },
-  learningPathFocus: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  learningPathGoal: {
-    fontSize: 14,
-    color: HIGColors.tertiaryLabel,
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  learningPathCTA: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  learningPathCTAText: {
     fontSize: 16,
     fontWeight: '600',
-    color: HIGColors.accent,
+    color: HIGColors.label,
+    textAlign: 'center',
+    marginBottom: HIGConstants.SPACING_XS,
   },
-  learningPathArrow: {
-    fontSize: 20,
-    color: HIGColors.accent,
+  emptyStateSubtext: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
   },
   
-  // AI Coach Button Styles
-  aiCoachButton: {
+  // More Options Styles
+  moreOptions: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  moreOptionsText: {
+    fontSize: 15,
+    color: HIGColors.secondaryLabel,
+    marginRight: HIGConstants.SPACING_XS,
+  },
+  moreOptionsArrow: {
+    fontSize: 16,
+    color: HIGColors.secondaryLabel,
+  },
+  hiddenOptions: {
+    marginBottom: HIGConstants.SPACING_LG,
+  },
+  optionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: HIGColors.accent,
-    borderRadius: HIGConstants.BORDER_RADIUS * 2,
+    backgroundColor: '#FFFFFF',
+    borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
-    marginTop: HIGConstants.SPACING_MD,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    marginBottom: HIGConstants.SPACING_SM,
+    borderWidth: 1,
+    borderColor: HIGColors.gray4,
   },
-  aiCoachIcon: {
+  optionIcon: {
     fontSize: 24,
-    marginRight: HIGConstants.SPACING_SM,
+    marginRight: HIGConstants.SPACING_MD,
   },
-  aiCoachButtonText: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.white,
+  optionText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: HIGColors.label,
+    flex: 1,
   },
   newBadge: {
     backgroundColor: HIGColors.red,

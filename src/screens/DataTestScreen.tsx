@@ -88,7 +88,7 @@ export default function DataTestScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <NavigationButton onPress={() => navigation.goBack()} />
+        <NavigationButton title="Back" onPress={() => navigation.goBack()} />
         <Text style={styles.title}>Data Test</Text>
         <View style={{ width: 60 }} />
       </View>

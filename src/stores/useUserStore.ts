@@ -3,7 +3,7 @@ import { UserProfile, PublicProfile } from '../types/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import authService from '../services/supabase/auth';
 import appleAuthService from '../services/supabase/appleAuth';
-import googleAuthService from '../services/supabase/googleAuth';
+import { GoogleAuthService } from '../services/supabase/googleAuth';
 import { supabase } from '../services/supabase/client';
 // import { setSentryUser, clearSentryUser } from '../utils/sentry';
 
@@ -297,7 +297,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
     set({ isLoading: true });
     try {
       // Google Sign-In 실행
-      const authUser = await googleAuthService.signIn();
+      const result = await GoogleAuthService.signIn();
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Google Sign-In failed');
+      }
+      
+      const authUser = result.user;
       
       // 기존 유저 프로필 확인 또는 생성
       await get().createOrUpdateSocialProfile(authUser, 'google');

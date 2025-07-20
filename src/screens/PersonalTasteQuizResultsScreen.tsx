@@ -8,13 +8,13 @@ import {
   Animated,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@/navigation/types';
-import { HIGColors } from '@/constants/higColors';
+import { RootStackParamList } from '@/types/navigation';
+import { HIGColors } from '@/constants/HIG';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { FlavorLearningEngine, MasteryLevel } from '@/services/FlavorLearningEngine';
 import { useUserStore } from '@/stores/useUserStore';
 import { getRealm } from '@/services/realmService';
-import LottieView from 'lottie-react-native';
+// import LottieView from 'lottie-react-native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PersonalTasteQuizResults'>;
 

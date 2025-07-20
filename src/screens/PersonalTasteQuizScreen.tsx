@@ -10,9 +10,9 @@ import {
   Alert,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@/navigation/types';
+import { RootStackParamList } from '@/types/navigation';
 import { FlavorLearningEngine, FlavorQuiz, FlavorQuestion, FlavorIdentification } from '@/services/FlavorLearningEngine';
-import { HIGColors } from '@/constants/higColors';
+import { HIGColors } from '@/constants/HIG';
 import { useUserStore } from '@/stores/useUserStore';
 import { getRealm } from '@/services/realmService';
 import Icon from 'react-native-vector-icons/Ionicons';

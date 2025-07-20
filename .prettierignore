@@ -1,0 +1,69 @@
+# Dependencies
+node_modules/
+web-admin/node_modules/
+
+# Build outputs
+ios/
+android/
+web-admin/.next/
+web-admin/out/
+
+# Cache directories
+.expo/
+.cache/
+
+# Environment files
+.env*
+
+# Generated files
+coverage/
+*.lcov
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Metro bundler cache
+.metro-cache/
+
+# CocoaPods
+ios/Pods/
+
+# Gradle
+android/.gradle/
+android/app/build/
+
+# Flipper
+android/app/src/debug/java/com/
+android/app/src/debug/AndroidManifest.xml
+
+# Generated documentation
+docs/api/
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Package lock files (if using yarn)
+package-lock.json
+
+# Xcode
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+
+# Bundle
+*.jsbundle
+
+# Realm
+*.realm

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-na
 import { useTranslation } from 'react-i18next';
 import { Colors } from '../constants/colors';
 
-const OCRScanScreen = ({ navigation }) => {
+const OCRScanScreen = ({ navigation }: { navigation: any }) => {
   const { t } = useTranslation();
 
   return (
@@ -31,7 +31,7 @@ const OCRScanScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.darkBackground,
+    backgroundColor: Colors.BLACK,
   },
   header: {
     flexDirection: 'row',
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   closeButtonText: {
-    color: Colors.white,
+    color: Colors.WHITE,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -54,14 +54,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   message: {
-    color: Colors.white,
+    color: Colors.WHITE,
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: 10,
   },
   submessage: {
-    color: Colors.placeholderText,
+    color: Colors.PLACEHOLDER,
     fontSize: 14,
     textAlign: 'center',
     lineHeight: 20,

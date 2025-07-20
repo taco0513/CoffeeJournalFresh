@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import SyncService from '../services/supabase/sync';
+import { syncService } from '../services/supabase/sync';
 import NetInfo from '@react-native-community/netinfo';
 import { ENABLE_SYNC } from '../../App';
 
@@ -16,7 +16,7 @@ interface SyncStatusProps {
 }
 
 const SyncStatus: React.FC<SyncStatusProps> = ({ onPress, style }) => {
-  const [syncStatus, setSyncStatus] = useState(SyncService.getSyncStatus());
+  const [syncStatus, setSyncStatus] = useState(syncService.getSyncStatus());
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -24,14 +24,14 @@ const SyncStatus: React.FC<SyncStatusProps> = ({ onPress, style }) => {
 
     // Listen to sync status changes
     const interval = setInterval(() => {
-      setSyncStatus(SyncService.getSyncStatus());
-      const lastSync = SyncService.getLastSyncTime();
-      setLastSyncTime(lastSync);
+      const status = syncService.getSyncStatus();
+      setSyncStatus(status);
+      setLastSyncTime(status.lastSyncTime);
     }, 1000);
 
     // Listen to network status
     const unsubscribe = NetInfo.addEventListener(state => {
-      setSyncStatus(prev => ({ ...prev, isOnline: state.isConnected || false }));
+      setSyncStatus((prev: any) => ({ ...prev, isOnline: state.isConnected || false }));
     });
 
     return () => {
@@ -51,7 +51,7 @@ const SyncStatus: React.FC<SyncStatusProps> = ({ onPress, style }) => {
     if (!syncStatus.isOnline) {
       return '📵';
     }
-    if (syncStatus.hasError) {
+    if (syncStatus.error) {
       return '❌';
     }
     return '✅';
@@ -64,7 +64,7 @@ const SyncStatus: React.FC<SyncStatusProps> = ({ onPress, style }) => {
     if (!syncStatus.isOnline) {
       return 'Offline';
     }
-    if (syncStatus.hasError) {
+    if (syncStatus.error) {
       return 'Sync Error';
     }
     if (lastSyncTime) {
@@ -86,8 +86,8 @@ const SyncStatus: React.FC<SyncStatusProps> = ({ onPress, style }) => {
         <Text style={styles.icon}>{getStatusIcon()}</Text>
       )}
       <Text style={styles.text}>{getStatusText()}</Text>
-      {syncStatus.pendingChanges > 0 && (
-        <Text style={styles.pending}>({syncStatus.pendingChanges})</Text>
+      {syncStatus.pendingUploads > 0 && (
+        <Text style={styles.pending}>({syncStatus.pendingUploads})</Text>
       )}
     </View>
   );

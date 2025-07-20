@@ -17,7 +17,7 @@ import { HIGColors, HIGConstants, commonButtonStyles, commonTextStyles } from '.
 import AuthService from '../../services/supabase/auth';
 import { useUserStore } from '../../stores/useUserStore';
 import { ErrorHandler } from '../../utils/errorHandler';
-import { validateGoogleConfig } from '../../config/googleAuth';
+import { validateGoogleConfig, isGoogleSignInConfigured } from '../../config/googleAuth';
 
 const SignInScreen = () => {
   const navigation = useNavigation();
@@ -43,7 +43,7 @@ const SignInScreen = () => {
     checkAppleSignInSupport();
     
     // Check if Google Sign-In is configured
-    setIsGoogleSignInConfigured(validateGoogleConfig());
+    setIsGoogleSignInConfigured(isGoogleSignInConfigured());
   }, []);
 
   const handleSignIn = async () => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -20,7 +20,7 @@ interface CoffeeDiscoveryAlertProps {
   onClose: () => void;
 }
 
-export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = ({
+export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = memo(({
   visible,
   type,
   coffeeName,
@@ -55,7 +55,7 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = ({
     }
   }, [visible]);
 
-  const getMessage = () => {
+  const getMessage = useCallback(() => {
     if (type === 'discovered') {
       return {
         title: '🎉 새로운 커피 발견!',
@@ -73,9 +73,17 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = ({
         gradientColors: ['#4ECDC4', '#44A08D'],
       };
     }
-  };
+  }, [type, roasteryName, coffeeName, badgeLevel]);
 
   const { title, subtitle, message, badge, gradientColors } = getMessage();
+
+  const handleOverlayPress = useCallback(() => {
+    onClose();
+  }, [onClose]);
+
+  const handleButtonPress = useCallback(() => {
+    onClose();
+  }, [onClose]);
 
   return (
     <Modal
@@ -87,7 +95,7 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = ({
       <TouchableOpacity
         style={styles.overlay}
         activeOpacity={1}
-        onPress={onClose}
+        onPress={handleOverlayPress}
       >
         <Animated.View
           style={[
@@ -118,7 +126,7 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = ({
 
               <TouchableOpacity
                 style={styles.button}
-                onPress={onClose}
+                onPress={handleButtonPress}
                 activeOpacity={0.8}
               >
                 <Text style={styles.buttonText}>확인</Text>
@@ -129,7 +137,7 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = ({
       </TouchableOpacity>
     </Modal>
   );
-};
+});
 
 const styles = StyleSheet.create({
   overlay: {

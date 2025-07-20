@@ -168,8 +168,8 @@ const FlavorLevel3Screen = () => {
                     </Text>
                     <Text
                       style={[
-                        styles.categorySubtext,
-                        isSelected && styles.selectedSubtext,
+                        styles.categoryText,
+                        isSelected && styles.selectedText,
                       ]}
                     >
                       ({item})

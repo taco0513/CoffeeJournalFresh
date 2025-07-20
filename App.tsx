@@ -3,10 +3,14 @@ import './src/utils/i18n';
 import { StyleSheet } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
-// import { initSentry } from './src/utils/sentry';
+import { SentryService } from './src/services/SentryService';
+import { initializeShakeDetection } from './src/hooks/useShakeToFeedback';
 
 // Initialize Sentry for crash reporting
-// initSentry(); // Temporarily disabled due to build issues
+SentryService.initialize();
+
+// Initialize shake detection for feedback
+initializeShakeDetection();
 
 // Sync configuration - set to true when Supabase is ready
 export const ENABLE_SYNC = true;

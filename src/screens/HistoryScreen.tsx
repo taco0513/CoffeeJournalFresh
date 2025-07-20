@@ -122,7 +122,10 @@ export default function HistoryScreen() {
   const renderTastingItem = ({ item }: { item: ITastingRecord }) => (
     <TouchableOpacity
       style={styles.tastingCard}
-      onPress={() => navigation.navigate('TastingDetail' as never, { tastingId: item.id } as never)}
+      onPress={() => {
+        // TODO: Implement navigation to tasting detail
+        console.log('Navigate to tasting detail:', item.id);
+      }}
     >
       <View style={styles.cardHeader}>
         <View style={styles.cardTitleContainer}>

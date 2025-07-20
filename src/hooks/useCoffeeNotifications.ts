@@ -12,7 +12,7 @@ export const useCoffeeNotifications = () => {
     level: 0,
   });
   
-  const { user } = useUserStore();
+  const { currentUser: user } = useUserStore();
 
   useEffect(() => {
     if (!user?.id) return;

@@ -361,7 +361,7 @@ export function getChildFlavors(parentId: string): FlavorNode[] {
 
 export function getFlavorPath(flavorId: string): FlavorNode[] {
   const path: FlavorNode[] = [];
-  let current = flavorWheel[flavorId];
+  let current: FlavorNode | undefined = flavorWheel[flavorId];
   
   while (current) {
     path.unshift(current);

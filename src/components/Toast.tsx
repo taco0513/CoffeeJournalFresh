@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,68 +11,82 @@ import { Colors } from '../constants/colors';
 
 const { width } = Dimensions.get('window');
 
+// Memoized icon components for better performance
+const SuccessIcon = memo(() => (
+  <View style={styles.iconContainer}>
+    <Text style={[styles.icon, { color: Colors.SUCCESS_GREEN }]}>✓</Text>
+  </View>
+));
+
+const ErrorIcon = memo(() => (
+  <View style={styles.iconContainer}>
+    <Text style={[styles.icon, { color: Colors.ERROR_RED }]}>✕</Text>
+  </View>
+));
+
+const InfoIcon = memo(() => (
+  <View style={styles.iconContainer}>
+    <Text style={[styles.icon, { color: Colors.INFO_BLUE }]}>ⓘ</Text>
+  </View>
+));
+
+// Memoized Toast components
+const SuccessToast = memo((props: any) => (
+  <BaseToast
+    {...props}
+    style={[
+      styles.baseToast,
+      {
+        borderLeftColor: Colors.SUCCESS_GREEN,
+        backgroundColor: '#F1F8E9',
+      },
+    ]}
+    contentContainerStyle={styles.contentContainer}
+    text1Style={styles.text1}
+    text2Style={styles.text2}
+    renderLeadingIcon={() => <SuccessIcon />}
+  />
+));
+
+const CustomErrorToast = memo((props: any) => (
+  <ErrorToast
+    {...props}
+    style={[
+      styles.baseToast,
+      {
+        borderLeftColor: Colors.ERROR_RED,
+        backgroundColor: '#FFEBEE',
+      },
+    ]}
+    contentContainerStyle={styles.contentContainer}
+    text1Style={styles.text1}
+    text2Style={styles.text2}
+    renderLeadingIcon={() => <ErrorIcon />}
+  />
+));
+
+const CustomInfoToast = memo((props: any) => (
+  <InfoToast
+    {...props}
+    style={[
+      styles.baseToast,
+      {
+        borderLeftColor: Colors.INFO_BLUE,
+        backgroundColor: '#E3F2FD',
+      },
+    ]}
+    contentContainerStyle={styles.contentContainer}
+    text1Style={styles.text1}
+    text2Style={styles.text2}
+    renderLeadingIcon={() => <InfoIcon />}
+  />
+));
+
 // iOS HIG 스타일 커스텀 Toast 구성
 const toastConfig = {
-  success: (props: any) => (
-    <BaseToast
-      {...props}
-      style={[
-        styles.baseToast,
-        {
-          borderLeftColor: Colors.SUCCESS_GREEN,
-          backgroundColor: '#F1F8E9',
-        },
-      ]}
-      contentContainerStyle={styles.contentContainer}
-      text1Style={styles.text1}
-      text2Style={styles.text2}
-      renderLeadingIcon={() => (
-        <View style={styles.iconContainer}>
-          <Text style={[styles.icon, { color: Colors.SUCCESS_GREEN }]}>✓</Text>
-        </View>
-      )}
-    />
-  ),
-  error: (props: any) => (
-    <ErrorToast
-      {...props}
-      style={[
-        styles.baseToast,
-        {
-          borderLeftColor: Colors.ERROR_RED,
-          backgroundColor: '#FFEBEE',
-        },
-      ]}
-      contentContainerStyle={styles.contentContainer}
-      text1Style={styles.text1}
-      text2Style={styles.text2}
-      renderLeadingIcon={() => (
-        <View style={styles.iconContainer}>
-          <Text style={[styles.icon, { color: Colors.ERROR_RED }]}>✕</Text>
-        </View>
-      )}
-    />
-  ),
-  info: (props: any) => (
-    <InfoToast
-      {...props}
-      style={[
-        styles.baseToast,
-        {
-          borderLeftColor: Colors.INFO_BLUE,
-          backgroundColor: '#E3F2FD',
-        },
-      ]}
-      contentContainerStyle={styles.contentContainer}
-      text1Style={styles.text1}
-      text2Style={styles.text2}
-      renderLeadingIcon={() => (
-        <View style={styles.iconContainer}>
-          <Text style={[styles.icon, { color: Colors.INFO_BLUE }]}>i</Text>
-        </View>
-      )}
-    />
-  ),
+  success: (props: any) => <SuccessToast {...props} />,
+  error: (props: any) => <CustomErrorToast {...props} />,
+  info: (props: any) => <CustomInfoToast {...props} />,
 };
 
 const styles = StyleSheet.create({

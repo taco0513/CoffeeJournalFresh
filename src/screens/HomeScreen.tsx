@@ -104,17 +104,17 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       
       if (realmService.isInitialized) {
         const realm = realmService.getRealm();
-        const allTastings = realm.objects('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
+        const allTastings = realm.objects<ITastingRecord>('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
         
         // 최근 3개 테이스팅
-        const recent = Array.from(allTastings.slice(0, 3));
+        const recent = Array.from(allTastings.slice(0, 3)) as ITastingRecord[];
         setRecentTastings(recent);
         
         // 통계 계산
         const total = allTastings.length;
         const thisWeek = getThisWeekTastings(allTastings);
-        const avgScore = total > 0 ? allTastings.reduce((sum, t) => sum + t.matchScoreTotal, 0) / total : 0;
-        const bestScore = total > 0 ? Math.max(...allTastings.map(t => t.matchScoreTotal)) : 0;
+        const avgScore = total > 0 ? allTastings.reduce((sum, t) => sum + (t.matchScoreTotal || 0), 0) / total : 0;
+        const bestScore = total > 0 ? Math.max(...allTastings.map(t => t.matchScoreTotal || 0)) : 0;
         
         setStats({
           totalTastings: total,
