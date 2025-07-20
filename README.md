@@ -7,7 +7,8 @@ Coffee Tasting Journey는 개인의 고유한 미각과 표현을 존중하면�
 
 > 📱 **iOS**: ✅ v0.3.0 Working - Core personal journal features  
 > 🤖 **Android**: 📅 Planned - After iOS feature completion  
-> ✅ **Latest Update**: July 18, 2025 - Focus on core journal functionality
+> 🌐 **Web Admin**: 🚧 In Development - Next.js dashboard for coffee catalog management  
+> ✅ **Latest Update**: July 20, 2025 - Google OAuth, Web Admin, Korean Coffee Database
 
 ## 🚀 Current Status - MVP v0.3.0 ✅
 
@@ -45,6 +46,8 @@ Coffee Tasting Journey는 개인의 고유한 미각과 표현을 존중하면�
 - **Supabase** - BaaS (인증, 데이터베이스)
 - **React Navigation** - 네비게이션
 - **Zustand** - 상태 관리
+- **Next.js 15** - Web Admin Dashboard
+- **Python/BeautifulSoup** - Korean coffee data crawler
 
 ### 향후 확장 (v1.0.0+)
 - **Microservices** - 마이크로서비스 아키텍처
@@ -93,6 +96,8 @@ CoffeeJournalFresh/
 │   ├── stores/             # 상태 관리 (Zustand)
 │   ├── styles/             # 공통 스타일
 │   └── utils/              # 유틸리티 함수
+├── web-admin/              # Next.js 웹 관리자 대시보드
+├── korean-coffee-crawler/  # 한국 커피 데이터 크롤러
 ├── docs/                   # 프로젝트 문서
 ├── ios/                    # iOS 네이티브 코드
 ├── android/                # Android 네이티브 코드

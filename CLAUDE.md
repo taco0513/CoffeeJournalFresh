@@ -49,6 +49,41 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
 - Documentation created at `/docs/GOOGLE_OAUTH_SETUP.md`
 - Awaiting developer to add actual OAuth credentials
 
+### Korean Coffee Data Crawler 🕷️ (NEW)
+- ✅ **Python Web Scraping System**
+  - Located in `/korean-coffee-crawler/` directory
+  - Supports multiple Korean coffee roasters (Anthracite, Bean Brothers, Coffee Libre, etc.)
+  - Exports data to CSV/Excel formats
+  - Crawled data includes: coffee name, origin, process, roast level, price, tasting notes
+  - Successfully extracted 200+ coffee entries from 13 roasters
+  
+- ✅ **Supported Roasters**
+  - Anthracite Coffee Roasters
+  - Bean Brothers
+  - Center Coffee
+  - Coffee Libre
+  - Coffee Roasters
+  - El Cafe
+  - Fritz Coffee Company
+  - Kihei
+  - Leesar Coffee
+  - Lowkey Coffee
+  - Momos Coffee
+  - Reflect Coffee
+  - Terarosa
+  
+- ✅ **Output Files**
+  - `all_coffee_data_20250719_125741.csv` - Complete dataset
+  - `all_coffee_data_20250719_125741.xlsx` - Excel format
+  - Individual JSON files per roaster in `data/raw/`
+
+### Development Utilities 🛠️
+- ✅ **Clone Dated Script** (`clone-dated.sh`)
+  - Creates dated repository clones for feature development
+  - Automatically installs all dependencies (npm, iOS pods, web-admin)
+  - Naming convention: `CoffeeJournalFresh-YYYYMMDD-oauth-admin`
+  - Useful for maintaining multiple development environments
+
 ## Recent Progress (2025-07-19)
 
 ### Developer Mode Implementation 🔧
@@ -283,6 +318,9 @@ watchman watch-del-all
 - Personal Taste Analysis: Fully functional in guest mode with immediate data display
 - Navigation: Clean single-header design, no duplicate headers
 - Design System: All screens follow HomeScreenEnhanced patterns with proper spacing and colors
+- Korean Coffee Database: 200+ coffees from 13 major Korean roasters ready for import
+- Web Admin Dashboard: Foundation built with Next.js, authentication complete
+- Personal Taste Enhancement: Comprehensive 4-phase roadmap specified
 
 ## Feature Backlog
 
