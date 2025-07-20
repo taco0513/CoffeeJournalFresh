@@ -10,6 +10,7 @@ import { HIGColors } from '../styles/common';
 // 화면 import
 import HomeScreen from '../screens/HomeScreenEnhanced';
 import CoffeeInfoScreen from '../screens/CoffeeInfoScreen';
+import CoffeeDetailsScreen from '../screens/CoffeeDetailsScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import StatsScreen from '../screens/StatsScreen';
 import PersonalTasteDashboard from '../screens/PersonalTasteDashboard';
@@ -60,6 +61,11 @@ function TastingFlow() {
         name="CoffeeInfo" 
         component={CoffeeInfoScreen} 
         options={{title: 'Coffee Info'}}
+      />
+      <Stack.Screen 
+        name="CoffeeDetails" 
+        component={CoffeeDetailsScreen} 
+        options={{title: 'Coffee Details'}}
       />
       <Stack.Screen 
         name="RoasterNotes" 
@@ -157,21 +163,6 @@ function StatsStack() {
         component={StatsScreen} 
         options={{title: 'Statistics'}}
       />
-      <Stack.Screen 
-        name="PersonalTaste" 
-        component={PersonalTasteDashboard} 
-        options={{title: 'Personal Taste Journey'}}
-      />
-      <Stack.Screen 
-        name="PersonalTasteQuiz" 
-        component={PersonalTasteQuizScreen} 
-        options={{title: 'Flavor Quiz'}}
-      />
-      <Stack.Screen 
-        name="PersonalTasteQuizResults" 
-        component={PersonalTasteQuizResultsScreen} 
-        options={{title: 'Quiz Results'}}
-      />
     </Stack.Navigator>
   );
 }
@@ -222,6 +213,21 @@ function ProfileStack() {
         name="ProfileMain" 
         component={ProfileScreen} 
         options={{title: 'Profile'}}
+      />
+      <Stack.Screen 
+        name="PersonalTasteDashboard" 
+        component={PersonalTasteDashboard} 
+        options={{title: 'Personal Taste Journey'}}
+      />
+      <Stack.Screen 
+        name="PersonalTasteQuiz" 
+        component={PersonalTasteQuizScreen} 
+        options={{title: 'Flavor Quiz'}}
+      />
+      <Stack.Screen 
+        name="PersonalTasteQuizResults" 
+        component={PersonalTasteQuizResultsScreen} 
+        options={{title: 'Quiz Results'}}
       />
       <Stack.Screen 
         name="DataTest" 

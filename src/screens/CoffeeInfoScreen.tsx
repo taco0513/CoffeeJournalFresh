@@ -319,14 +319,8 @@ const CoffeeInfoScreen = () => {
         realmService.incrementRoasterVisit(currentTasting.roastery);
       }
       
-      // Feature Backlog - 로스터 노트 전달
-      // if (scannedRoasterNotes) {
-      //   navigation.navigate('RoasterNotes' as never, {
-      //     scannedRoasterNotes: scannedRoasterNotes
-      //   } as never);
-      // } else {
-      navigation.navigate('RoasterNotes' as never);
-      // }
+      // Navigate to CoffeeDetails screen (Step 2 of 3-step form)
+      navigation.navigate('CoffeeDetails' as never);
     }
   };
 
@@ -416,8 +410,8 @@ const CoffeeInfoScreen = () => {
         >
           <Text style={styles.backButtonText}>‹ 뒤로</Text>
         </TouchableOpacity>
-        <Text style={styles.navigationTitle}>커피 정보</Text>
-        <Text style={styles.progressIndicator}>2/6</Text>
+        <Text style={styles.navigationTitle}>기본 정보</Text>
+        <Text style={styles.progressIndicator}>2/7</Text>
       </View>
       
       {/* 진행 상태 바 */}
@@ -560,97 +554,8 @@ const CoffeeInfoScreen = () => {
               />
             </View>
             <Text style={styles.hintText}>
-              💡 생산지, 품종, 가공방식이 자동으로 인식됩니다. 블렌드도 지원합니다.
+              💡 커피 이름을 입력하면 상세 정보를 자동으로 추천해드려요!
             </Text>
-
-            {/* 생산지 */}
-            <View style={[styles.inputGroup, { zIndex: originSuggestions.length > 0 && currentTasting.origin ? 3 : 1 }]}>
-              <AutocompleteInput
-                value={currentTasting.origin || ''}
-                onChangeText={(text) => updateField('origin', text)}
-                onSelect={(item) => updateField('origin', item)}
-                suggestions={originSuggestions}
-                placeholder="예: Ethiopia / Yirgacheffe"
-                label="생산지"
-              />
-            </View>
-
-            {/* 품종 */}
-            <View style={[styles.inputGroup, { zIndex: varietySuggestions.length > 0 && currentTasting.variety ? 2 : 1 }]}>
-              <AutocompleteInput
-                value={currentTasting.variety || ''}
-                onChangeText={(text) => updateField('variety', text)}
-                onSelect={(item) => updateField('variety', item)}
-                suggestions={varietySuggestions}
-                placeholder="예: Heirloom"
-                label="품종"
-              />
-            </View>
-
-            {/* 고도 */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>고도</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="예: 1,800-2,000m"
-                placeholderTextColor="#CCCCCC"
-                value={currentTasting.altitude}
-                onChangeText={(text) => 
-                  updateField('altitude', text)
-                }
-              />
-            </View>
-
-            {/* 가공 방식 */}
-            <View style={[styles.inputGroup, { zIndex: processSuggestions.length > 0 && currentTasting.process ? 1 : 1 }]}>
-              <AutocompleteInput
-                value={currentTasting.process || ''}
-                onChangeText={(text) => updateField('process', text)}
-                onSelect={(item) => updateField('process', item)}
-                suggestions={processSuggestions}
-                placeholder="예: Washed"
-                label="가공 방식"
-              />
-            </View>
-
-            {/* 온도 선택 */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>온도</Text>
-              <View style={styles.temperatureButtons}>
-                <TouchableOpacity
-                  style={[
-                    styles.tempButton,
-                    currentTasting.temperature === 'hot' && styles.tempButtonActive,
-                  ]}
-                  onPress={() => 
-                    updateField('temperature', 'hot')
-                  }>
-                  <Text
-                    style={[
-                      styles.tempButtonText,
-                      currentTasting.temperature === 'hot' && styles.tempButtonTextActive,
-                    ]}>
-                    ☕ Hot
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.tempButton,
-                    currentTasting.temperature === 'ice' && styles.tempButtonActive,
-                  ]}
-                  onPress={() => 
-                    updateField('temperature', 'ice')
-                  }>
-                  <Text
-                    style={[
-                      styles.tempButtonText,
-                      currentTasting.temperature === 'ice' && styles.tempButtonTextActive,
-                    ]}>
-                    🧊 Ice
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
           </View>
 
           {/* 다음 버튼 */}
@@ -730,7 +635,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: 4,
-    width: '33%', // 2/6 = 33%
+    width: '29%', // 2/7 = 29%
     backgroundColor: HIGColors.blue,
   },
   scrollView: {

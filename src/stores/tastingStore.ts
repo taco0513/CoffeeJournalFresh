@@ -49,6 +49,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     variety: '',
     process: '',
     altitude: '',
+    roastLevel: '',
     temperature: 'hot',
     roasterNotes: '',
     body: 3,

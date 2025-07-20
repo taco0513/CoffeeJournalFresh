@@ -205,7 +205,7 @@ const ProfileScreen = () => {
 
           <TouchableOpacity 
             style={styles.quickMenuItem}
-            onPress={() => navigation.navigate('Stats', { screen: 'PersonalTaste' } as never)}
+            onPress={() => navigation.navigate('PersonalTasteDashboard' as never)}
           >
             <View style={styles.quickMenuIconContainer}>
               <Text style={styles.quickMenuIcon}>🎯</Text>
