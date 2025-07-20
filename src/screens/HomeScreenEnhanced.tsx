@@ -220,7 +220,7 @@ export default function HomeScreenEnhanced() {
             backgroundColor: item.matchScoreTotal >= 85 ? HIGColors.green : 
                            item.matchScoreTotal >= 70 ? HIGColors.orange : HIGColors.red
           }]}>
-            <Text style={styles.matchScore}>{item.matchScoreTotal}</Text>
+            <Text style={styles.matchScore}>{item.matchScoreTotal}%</Text>
           </View>
         </View>
         <Text style={styles.roasterName}>{item.roastery}</Text>

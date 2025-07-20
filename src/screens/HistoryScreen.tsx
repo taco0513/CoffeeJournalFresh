@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import RealmService from '../services/realm/RealmService';
 import { ITastingRecord } from '../services/realm/schemas';
 import { HIGConstants, HIGColors } from '../styles/common';
+
 import { useUserStore } from '../stores/useUserStore';
 import { generateGuestMockData } from '../utils/guestMockData';
 import LanguageSwitch from '../components/LanguageSwitch';
@@ -120,53 +121,37 @@ export default function HistoryScreen() {
     return grouped;
   }, [allTastings, searchQuery, sortBy]);
 
-  const renderTastingItem = ({ item }: { item: ITastingRecord }) => (
-    <TouchableOpacity
-      style={styles.tastingCard}
-      onPress={() => {
-        navigation.navigate('TastingDetail', { 
-          tastingId: item.id,
-          tasting: item 
-        });
-      }}
-    >
-      <View style={styles.cardHeader}>
-        <View style={styles.cardTitleContainer}>
+  const renderTastingItem = ({ item }: { item: ITastingRecord }) => {
+    const formattedDate = item.createdAt.toLocaleDateString('ko-KR', { 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    return (
+      <TouchableOpacity
+        style={styles.tastingCard}
+        onPress={() => {
+          navigation.navigate('TastingDetail', { 
+            tastingId: item.id,
+            tasting: item 
+          });
+        }}
+        activeOpacity={0.7}
+      >
+        <View style={styles.cardHeader}>
           <Text style={styles.coffeeName}>{item.coffeeName}</Text>
-          <Text style={styles.roastery}>{item.roastery}</Text>
+          <View style={[styles.matchScoreContainer, {
+            backgroundColor: item.matchScoreTotal >= 85 ? HIGColors.green : 
+                           item.matchScoreTotal >= 70 ? HIGColors.orange : HIGColors.red
+          }]}>
+            <Text style={styles.matchScore}>{item.matchScoreTotal}%</Text>
+          </View>
         </View>
-        <View style={styles.scoreContainer}>
-          <Text style={styles.matchScore}>{item.matchScoreTotal}%</Text>
-          <Text style={styles.scoreLabel}>매칭률</Text>
-        </View>
-      </View>
-      
-      <View style={styles.cardDetails}>
-        {item.cafeName && (
-          <Text style={styles.detailText}>📍 {item.cafeName}</Text>
-        )}
-        <Text style={styles.detailText}>
-          ⏰ {item.createdAt.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-        </Text>
-      </View>
-      
-      {item.flavorNotes.length > 0 && (
-        <View style={styles.flavorContainer}>
-          {item.flavorNotes
-            .filter(note => note.level === 1)
-            .slice(0, 3)
-            .map((note, index) => (
-              <View key={index} style={styles.flavorTag}>
-                <Text style={styles.flavorText}>{note.value}</Text>
-              </View>
-            ))}
-          {item.flavorNotes.filter(n => n.level === 1).length > 3 && (
-            <Text style={styles.moreText}>+{item.flavorNotes.filter(n => n.level === 1).length - 3}</Text>
-          )}
-        </View>
-      )}
-    </TouchableOpacity>
-  );
+        <Text style={styles.roasterName}>{item.roastery}</Text>
+        <Text style={styles.date}>{formattedDate}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const renderSectionHeader = ({ section }: { section: GroupedTastings }) => (
     <View style={styles.sectionHeader}>
@@ -489,71 +474,35 @@ const styles = StyleSheet.create({
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  cardTitleContainer: {
-    flex: 1,
-    marginRight: HIGConstants.SPACING_SM,
-  },
-  coffeeName: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
+    alignItems: 'center',
     marginBottom: HIGConstants.SPACING_XS,
   },
-  roastery: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
+  coffeeName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.label,
+    flex: 1,
   },
-  scoreContainer: {
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: HIGConstants.BORDER_RADIUS,
+  roasterName: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  date: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: HIGColors.tertiaryLabel,
+  },
+  matchScoreContainer: {
+    borderRadius: 12,
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: HIGConstants.SPACING_XS,
-    minWidth: 56,
   },
   matchScore: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: HIGColors.blue,
-  },
-  scoreLabel: {
-    fontSize: 11,
-    color: HIGColors.secondaryLabel,
-    marginTop: 1,
-  },
-  cardDetails: {
-    flexDirection: 'row',
-    gap: HIGConstants.SPACING_SM,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  detailText: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-  },
-  flavorContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: HIGConstants.SPACING_XS,
-    alignItems: 'center',
-  },
-  flavorTag: {
-    backgroundColor: HIGColors.gray5,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_XS,
-    borderRadius: 12,
-  },
-  flavorText: {
     fontSize: 12,
-    color: HIGColors.label,
-    fontWeight: '500',
-  },
-  moreText: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-    marginLeft: HIGConstants.SPACING_XS,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   emptyContainer: {
     alignItems: 'center',

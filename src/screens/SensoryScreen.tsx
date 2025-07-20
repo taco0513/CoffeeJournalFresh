@@ -65,14 +65,8 @@ const SensoryScreen = () => {
     updateField('finish', finish);
     updateField('mouthfeel', mouthfeel);
     
-    try {
-      saveTasting();
-      navigation.navigate('Result' as never);
-    } catch (error) {
-      // console.error('Error saving tasting:', error);
-      // 에러가 발생해도 결과 화면으로 이동
-      navigation.navigate('Result' as never);
-    }
+    // 개인 감상평 화면으로 이동
+    navigation.navigate('PersonalComment' as never);
   };
 
   const renderSlider = (
@@ -115,7 +109,7 @@ const SensoryScreen = () => {
           <Text style={styles.backButtonText}>‹ 뒤로</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>감각 평가</Text>
-        <Text style={styles.progressIndicator}>5/6</Text>
+        <Text style={styles.progressIndicator}>5/7</Text>
       </View>
       
       {/* 진행 상태 바 */}

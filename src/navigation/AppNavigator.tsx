@@ -19,6 +19,7 @@ import FlavorLevel2Screen from '../screens/flavor/FlavorLevel2Screen';
 import FlavorLevel3Screen from '../screens/flavor/FlavorLevel3Screen';
 // import FlavorLevel4Screen from '../screens/flavor/FlavorLevel4Screen'; // Feature Backlog
 import SensoryScreen from '../screens/SensoryScreen';
+import PersonalCommentScreen from '../screens/PersonalCommentScreen';
 import ResultScreen from '../screens/ResultScreen';
 import OCRScanScreen from '../screens/OCRScanScreen';
 import OCRResultScreen from '../screens/OCRResultScreen';
@@ -91,6 +92,11 @@ function TastingFlow() {
         name="Sensory" 
         component={SensoryScreen} 
         options={{title: 'Sensory Evaluation'}}
+      />
+      <Stack.Screen 
+        name="PersonalComment" 
+        component={PersonalCommentScreen} 
+        options={{title: 'Personal Comment'}}
       />
       <Stack.Screen 
         name="Result" 

@@ -35,6 +35,9 @@ export interface ITastingRecord {
   // Roaster Notes
   roasterNotes?: string;
   
+  // Personal Comment
+  personalComment?: string;
+  
   // Match Score
   matchScoreTotal: number;
   matchScoreFlavor: number;
@@ -145,6 +148,9 @@ export const TastingRecordSchema: Realm.ObjectSchema = {
     
     // Roaster Notes
     roasterNotes: 'string?',
+    
+    // Personal Comment
+    personalComment: 'string?',
     
     // Match Score
     matchScoreTotal: 'int',

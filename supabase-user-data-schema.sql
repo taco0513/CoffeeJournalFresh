@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS tasting_records (
   
   -- Notes
   roaster_notes TEXT,
+  personal_comment TEXT,
   
   -- Scores
   match_score_total DECIMAL(5,2),

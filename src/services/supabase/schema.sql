@@ -31,6 +31,9 @@ CREATE TABLE tasting_records (
   -- Roaster Notes
   roaster_notes TEXT,
   
+  -- Personal Comment
+  personal_comment TEXT,
+  
   -- Match Scores
   match_score_total INTEGER CHECK (match_score_total >= 0 AND match_score_total <= 100),
   match_score_flavor INTEGER CHECK (match_score_flavor >= 0 AND match_score_flavor <= 100),

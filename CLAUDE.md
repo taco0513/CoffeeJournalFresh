@@ -5,6 +5,20 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
 
 ## Recent Progress (2025-07-20)
 
+### UI/UX Consistency Updates 🎨
+- ✅ **Coffee Card Score Style Unification**
+  - Unified score display across Home and Journal screens
+  - Changed Journal screen to use Home's minimal badge style
+  - Consistent color coding: 85%+ green, 70%+ orange, below 70% red
+  - Removed "매칭률" label for cleaner look
+  
+- ✅ **Journal Screen Simplification**
+  - Completely matched Home screen's minimal card design
+  - Removed cafe name and time details
+  - Removed flavor note tags for consistency
+  - Card structure now identical: Coffee name + Score badge, Roaster, Date
+  - Applied same styling (shadows, padding, borders)
+
 ### Navigation and UI Fixes 🔧
 - ✅ **PersonalTasteDashboard Navigation Fix**
   - Fixed "나의 커피 여정" back button not returning to Profile screen

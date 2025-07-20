@@ -20,6 +20,7 @@ export interface TastingRecord {
   process?: string;
   temperature: string;
   roaster_notes?: string;
+  personal_comment?: string;
   
   // 매칭 점수
   match_score: number;
@@ -72,6 +73,7 @@ class TastingService {
         process: tasting.process,
         temperature: tasting.temperature,
         roaster_notes: tasting.roasterNotes,
+        personal_comment: tasting.personalComment,
         match_score: tasting.matchScoreTotal || tasting.matchScore || 0,
         // user_id, created_at, updated_at는 Supabase가 자동 처리
       };

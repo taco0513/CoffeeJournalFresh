@@ -30,6 +30,7 @@ export interface SupabaseTastingRecord {
   process?: string;
   temperature: 'hot' | 'ice';
   roaster_notes?: string;
+  personal_comment?: string;
   match_score: number;  // 단일 필드로 통합
 }
 
@@ -195,6 +196,7 @@ class SyncService {
         process: record.process || undefined,
         temperature: record.temperature,
         roaster_notes: record.roasterNotes || undefined,
+        personal_comment: record.personalComment || undefined,
         match_score: record.matchScoreTotal || 0,  // Total 점수만 사용
         created_at: record.createdAt.toISOString(),
         updated_at: record.updatedAt.toISOString(),
@@ -436,6 +438,7 @@ class SyncService {
         process: remoteRecord.process || '',
         temperature: remoteRecord.temperature,
         roasterNotes: remoteRecord.roaster_notes || '',
+        personalComment: remoteRecord.personal_comment || '',
         matchScoreTotal: remoteRecord.match_score || 0,
         matchScoreFlavor: 0,  // TODO: 나중에 제거
         matchScoreSensory: 0,  // TODO: 나중에 제거
@@ -505,6 +508,7 @@ class SyncService {
         localRecord.process = remoteRecord.process || '';
         localRecord.temperature = remoteRecord.temperature;
         localRecord.roasterNotes = remoteRecord.roaster_notes || '';
+        localRecord.personalComment = remoteRecord.personal_comment || '';
         localRecord.matchScoreTotal = remoteRecord.match_score || 0;
         // Flavor와 Sensory 점수는 현재 Supabase에 없으므로 0으로 설정
         localRecord.matchScoreFlavor = 0;
