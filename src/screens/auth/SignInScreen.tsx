@@ -26,7 +26,7 @@ const SignInScreen = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isAppleSignInSupported, setIsAppleSignInSupported] = useState(false);
-  const [isGoogleSignInConfigured, setIsGoogleSignInConfigured] = useState(false);
+  const [googleSignInEnabled, setGoogleSignInEnabled] = useState(false);
 
   useEffect(() => {
     // Check if Apple Sign-In is supported
@@ -43,7 +43,7 @@ const SignInScreen = () => {
     checkAppleSignInSupport();
     
     // Check if Google Sign-In is configured
-    setIsGoogleSignInConfigured(isGoogleSignInConfigured());
+    setGoogleSignInEnabled(isGoogleSignInConfigured());
   }, []);
 
   const handleSignIn = async () => {
@@ -228,7 +228,7 @@ const SignInScreen = () => {
             )}
 
             {/* Google Sign-In */}
-            {isGoogleSignInConfigured ? (
+            {googleSignInEnabled ? (
               <TouchableOpacity
                 style={[styles.socialButton, styles.googleButton]}
                 onPress={handleGoogleSignIn}

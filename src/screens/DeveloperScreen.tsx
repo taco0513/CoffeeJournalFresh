@@ -17,8 +17,20 @@ import { useFeedbackStore } from '../stores/useFeedbackStore';
 import RealmService from '../services/realm/RealmService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Category Icons
+const CategoryIcons = {
+  user: '👤',
+  debug: '🐛',
+  test: '🧪',
+  feature: '⚡',
+  beta: '🚀',
+  login: '🔑',
+  data: '💾',
+};
+
 const DeveloperScreen = () => {
   const navigation = useNavigation();
+  
   const { currentUser, setTestUser, setGuestMode } = useUserStore();
   const { showFeedback, enableShakeToFeedback, toggleShakeToFeedback, isBetaUser, setBetaStatus } = useFeedbackStore();
   const {
@@ -266,343 +278,78 @@ const DeveloperScreen = () => {
     );
   };
 
-  const handleAddMoreTestData = () => {
-    Alert.alert(
-      '대량 테스트 데이터 추가',
-      '10개의 다양한 샘플 테이스팅 데이터를 추가하시겠습니까?',
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '추가',
-          onPress: async () => {
-            try {
-              const realmService = RealmService.getInstance();
-              const moreTastings = [
-                {
-                  coffeeInfo: {
-                    cafeName: 'Paul Bassett 강남점',
-                    roastery: 'Paul Bassett',
-                    coffeeName: 'Ethiopia Sidamo',
-                    origin: 'Ethiopia / Sidamo',
-                    variety: 'Heirloom',
-                    process: 'Natural',
-                    altitude: '1,900-2,200m',
-                    temperature: 'hot' as const
-                  },
-                  roasterNotes: 'Wine-like with berry notes, full body and complex finish.',
-                  selectedFlavors: [
-                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
-                    { level: 2, value: 'Berry', koreanValue: '베리' },
-                    { level: 3, value: 'Blueberry', koreanValue: '블루베리' },
-                    { level: 1, value: 'Sour/Fermented', koreanValue: '신맛/발효' }
-                  ],
-                  sensoryAttributes: {
-                    body: 5,
-                    acidity: 3,
-                    sweetness: 4,
-                    finish: 4,
-                    mouthfeel: ['Juicy']
-                  },
-                  matchScore: { total: 91, flavorScore: 46, sensoryScore: 45 }
-                },
-                {
-                  coffeeInfo: {
-                    cafeName: 'Coffee Libre 홍대점',
-                    roastery: 'Coffee Libre',
-                    coffeeName: 'Panama Geisha',
-                    origin: 'Panama / Boquete',
-                    variety: 'Geisha',
-                    process: 'Washed',
-                    altitude: '1,600-1,900m',
-                    temperature: 'hot' as const
-                  },
-                  roasterNotes: 'Floral, tea-like, with jasmine and bergamot notes.',
-                  selectedFlavors: [
-                    { level: 1, value: 'Floral', koreanValue: '꽃향기' },
-                    { level: 2, value: 'Jasmine', koreanValue: '자스민' },
-                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
-                    { level: 2, value: 'Citrus Fruit', koreanValue: '감귤류' }
-                  ],
-                  sensoryAttributes: {
-                    body: 2,
-                    acidity: 5,
-                    sweetness: 3,
-                    finish: 5,
-                    mouthfeel: ['Clean']
-                  },
-                  matchScore: { total: 94, flavorScore: 48, sensoryScore: 46 }
-                },
-                {
-                  coffeeInfo: {
-                    cafeName: 'Starbucks Reserve 롯데타워점',
-                    roastery: 'Starbucks Reserve',
-                    coffeeName: 'Jamaica Blue Mountain',
-                    origin: 'Jamaica / Blue Mountain',
-                    variety: 'Typica',
-                    process: 'Washed',
-                    altitude: '1,000-1,700m',
-                    temperature: 'hot' as const
-                  },
-                  roasterNotes: 'Mild, well-balanced, with subtle chocolate and nutty notes.',
-                  selectedFlavors: [
-                    { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
-                    { level: 2, value: 'Milk Chocolate', koreanValue: '밀크 초콜릿' },
-                    { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' },
-                    { level: 2, value: 'Walnut', koreanValue: '호두' }
-                  ],
-                  sensoryAttributes: {
-                    body: 3,
-                    acidity: 3,
-                    sweetness: 3,
-                    finish: 3,
-                    mouthfeel: ['Silky']
-                  },
-                  matchScore: { total: 83, flavorScore: 39, sensoryScore: 44 }
-                },
-                {
-                  coffeeInfo: {
-                    cafeName: 'Twosome Place 강남점',
-                    roastery: 'Twosome Coffee',
-                    coffeeName: 'House Blend',
-                    origin: 'Brazil / Cerrado',
-                    variety: 'Bourbon',
-                    process: 'Natural',
-                    altitude: '1,000-1,200m',
-                    temperature: 'ice' as const
-                  },
-                  roasterNotes: 'Rich and balanced with chocolate and caramel sweetness.',
-                  selectedFlavors: [
-                    { level: 1, value: 'Sweet', koreanValue: '단맛' },
-                    { level: 2, value: 'Caramel', koreanValue: '카라멜' },
-                    { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
-                    { level: 2, value: 'Milk Chocolate', koreanValue: '밀크 초콜릿' }
-                  ],
-                  sensoryAttributes: {
-                    body: 4,
-                    acidity: 2,
-                    sweetness: 4,
-                    finish: 3,
-                    mouthfeel: ['Creamy']
-                  },
-                  matchScore: { total: 78, flavorScore: 36, sensoryScore: 42 }
-                },
-                {
-                  coffeeInfo: {
-                    cafeName: 'Hollys Coffee 압구정점',
-                    roastery: 'Hollys Coffee',
-                    coffeeName: 'Yemen Mocha',
-                    origin: 'Yemen / Mocha',
-                    variety: 'Typica, Bourbon',
-                    process: 'Natural',
-                    altitude: '1,200-1,800m',
-                    temperature: 'hot' as const
-                  },
-                  roasterNotes: 'Wine-like, fruity with chocolate undertones and earthy finish.',
-                  selectedFlavors: [
-                    { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
-                    { level: 2, value: 'Dark Chocolate', koreanValue: '다크 초콜릿' },
-                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
-                    { level: 2, value: 'Wine', koreanValue: '와인' }
-                  ],
-                  sensoryAttributes: {
-                    body: 5,
-                    acidity: 3,
-                    sweetness: 3,
-                    finish: 4,
-                    mouthfeel: ['Creamy']
-                  },
-                  matchScore: { total: 88, flavorScore: 43, sensoryScore: 45 }
-                },
-                {
-                  coffeeInfo: {
-                    cafeName: 'Coffee Bean 이태원점',
-                    roastery: 'Coffee Bean & Tea Leaf',
-                    coffeeName: 'Costa Rica Tarrazú',
-                    origin: 'Costa Rica / Tarrazú',
-                    variety: 'Caturra',
-                    process: 'Honey',
-                    altitude: '1,200-1,700m',
-                    temperature: 'hot' as const
-                  },
-                  roasterNotes: 'Bright acidity with citrus notes and honey sweetness.',
-                  selectedFlavors: [
-                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
-                    { level: 2, value: 'Citrus Fruit', koreanValue: '감귤류' },
-                    { level: 3, value: 'Orange', koreanValue: '오렌지' },
-                    { level: 1, value: 'Sweet', koreanValue: '단맛' },
-                    { level: 2, value: 'Honey', koreanValue: '꿀' }
-                  ],
-                  sensoryAttributes: {
-                    body: 3,
-                    acidity: 4,
-                    sweetness: 4,
-                    finish: 3,
-                    mouthfeel: ['Clean']
-                  },
-                  matchScore: { total: 84, flavorScore: 41, sensoryScore: 43 }
-                },
-                {
-                  coffeeInfo: {
-                    cafeName: 'Ediya Coffee 신촌점',
-                    roastery: 'Ediya Coffee',
-                    coffeeName: 'House Special',
-                    origin: 'Colombia / Nariño',
-                    variety: 'Castillo',
-                    process: 'Washed',
-                    altitude: '1,500-2,000m',
-                    temperature: 'ice' as const
-                  },
-                  roasterNotes: 'Balanced cup with nutty and caramel notes.',
-                  selectedFlavors: [
-                    { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' },
-                    { level: 2, value: 'Peanut', koreanValue: '땅콩' },
-                    { level: 1, value: 'Sweet', koreanValue: '단맛' },
-                    { level: 2, value: 'Brown Sugar', koreanValue: '흑설탕' }
-                  ],
-                  sensoryAttributes: {
-                    body: 3,
-                    acidity: 3,
-                    sweetness: 3,
-                    finish: 3,
-                    mouthfeel: ['Silky']
-                  },
-                  matchScore: { total: 76, flavorScore: 35, sensoryScore: 41 }
-                },
-                {
-                  coffeeInfo: {
-                    cafeName: 'Mega Coffee 건대점',
-                    roastery: 'Mega Coffee',
-                    coffeeName: 'Americano Blend',
-                    origin: 'Mixed Origins',
-                    variety: 'Blend',
-                    process: 'Mixed',
-                    altitude: 'Various',
-                    temperature: 'ice' as const
-                  },
-                  roasterNotes: 'Simple and clean blend for everyday drinking.',
-                  selectedFlavors: [
-                    { level: 1, value: 'Roasted', koreanValue: '로스팅' },
-                    { level: 2, value: 'Burnt', koreanValue: '탄맛' },
-                    { level: 1, value: 'Bitter', koreanValue: '쓴맛' }
-                  ],
-                  sensoryAttributes: {
-                    body: 2,
-                    acidity: 2,
-                    sweetness: 2,
-                    finish: 2,
-                    mouthfeel: ['Clean']
-                  },
-                  matchScore: { total: 65, flavorScore: 28, sensoryScore: 37 }
-                },
-                {
-                  coffeeInfo: {
-                    cafeName: 'Tom N Toms 명동점',
-                    roastery: 'Tom N Toms Coffee',
-                    coffeeName: 'Original Blend',
-                    origin: 'Vietnam / Dalat',
-                    variety: 'Robusta, Arabica',
-                    process: 'Natural',
-                    altitude: '800-1,500m',
-                    temperature: 'hot' as const
-                  },
-                  roasterNotes: 'Strong and bold with earthy and nutty notes.',
-                  selectedFlavors: [
-                    { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' },
-                    { level: 2, value: 'Cashew', koreanValue: '캐슈너트' },
-                    { level: 1, value: 'Other', koreanValue: '기타' },
-                    { level: 2, value: 'Earthy', koreanValue: '흙내음' }
-                  ],
-                  sensoryAttributes: {
-                    body: 4,
-                    acidity: 2,
-                    sweetness: 2,
-                    finish: 3,
-                    mouthfeel: ['Creamy']
-                  },
-                  matchScore: { total: 73, flavorScore: 33, sensoryScore: 40 }
-                },
-                {
-                  coffeeInfo: {
-                    cafeName: 'A Twosome Place 잠실점',
-                    roastery: 'Twosome Coffee',
-                    coffeeName: 'Rwanda Single Origin',
-                    origin: 'Rwanda / Huye',
-                    variety: 'Red Bourbon',
-                    process: 'Washed',
-                    altitude: '1,700-2,000m',
-                    temperature: 'hot' as const
-                  },
-                  roasterNotes: 'Bright and clean with floral and tea-like characteristics.',
-                  selectedFlavors: [
-                    { level: 1, value: 'Floral', koreanValue: '꽃향기' },
-                    { level: 2, value: 'Rose', koreanValue: '장미' },
-                    { level: 1, value: 'Other', koreanValue: '기타' },
-                    { level: 2, value: 'Tea-like', koreanValue: '차향' }
-                  ],
-                  sensoryAttributes: {
-                    body: 2,
-                    acidity: 4,
-                    sweetness: 3,
-                    finish: 4,
-                    mouthfeel: ['Clean']
-                  },
-                  matchScore: { total: 82, flavorScore: 39, sensoryScore: 43 }
-                }
-              ];
-
-              for (const testTasting of moreTastings) {
-                await realmService.saveTasting(testTasting);
-              }
-              Alert.alert('완료', `${moreTastings.length}개의 추가 테스트 데이터가 추가되었습니다.`);
-            } catch (error) {
-              Alert.alert('오류', '테스트 데이터 추가 중 오류가 발생했습니다.');
-            }
-          },
-        },
-      ]
-    );
-  };
-
   const SettingRow = ({ 
     title, 
     description, 
     value, 
     onValueChange, 
-    type = 'switch' 
+    icon,
   }: {
     title: string;
     description?: string;
     value?: boolean;
     onValueChange?: (value: boolean) => void;
-    type?: 'switch' | 'button';
+    icon?: string;
   }) => (
     <View style={styles.settingRow}>
+      {icon && (
+        <Text style={styles.settingIcon}>{icon}</Text>
+      )}
       <View style={styles.settingInfo}>
         <Text style={styles.settingTitle}>{title}</Text>
         {description && (
           <Text style={styles.settingDescription}>{description}</Text>
         )}
       </View>
-      {type === 'switch' && (
-        <Switch
-          value={value}
-          onValueChange={onValueChange}
-          trackColor={{ false: HIGColors.gray3, true: HIGColors.blue }}
-          thumbColor={value ? HIGColors.white : HIGColors.gray}
-        />
-      )}
+      <Switch
+        value={value}
+        onValueChange={onValueChange}
+        trackColor={{ false: HIGColors.gray3, true: HIGColors.blue }}
+        thumbColor={value ? HIGColors.white : HIGColors.gray}
+      />
     </View>
   );
 
-  const ActionButton = ({ title, onPress, style, textStyle }: {
+  const ActionButton = ({ title, onPress, style, textStyle, icon }: {
     title: string;
     onPress: () => void;
     style?: any;
     textStyle?: any;
+    icon?: string;
   }) => (
-    <TouchableOpacity style={[styles.actionButton, style]} onPress={onPress}>
-      <Text style={[styles.actionButtonText, textStyle]}>{title}</Text>
+    <TouchableOpacity 
+      style={[styles.actionButton, style]} 
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <View style={styles.actionButtonContent}>
+        {icon && <Text style={styles.actionButtonIcon}>{icon}</Text>}
+        <Text style={[styles.actionButtonText, textStyle]}>{title}</Text>
+      </View>
     </TouchableOpacity>
+  );
+
+  // Section Header Component
+  const SectionHeader = ({ 
+    title, 
+    icon, 
+    count,
+  }: {
+    title: string;
+    icon: string;
+    count?: number;
+  }) => (
+    <View style={styles.sectionHeader}>
+      <View style={styles.sectionHeaderLeft}>
+        <Text style={styles.sectionIcon}>{icon}</Text>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        {count !== undefined && count > 0 && (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{count}</Text>
+          </View>
+        )}
+      </View>
+    </View>
   );
 
   if (!isDeveloperMode) {
@@ -664,39 +411,72 @@ const DeveloperScreen = () => {
 
         {/* User Info */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>사용자 정보</Text>
+          <SectionHeader
+            title="사용자 정보"
+            icon={CategoryIcons.user}
+          />
           <View style={styles.card}>
-            <Text style={styles.infoText}>
-              사용자: {currentUser?.username || 'Guest'}{'\n'}
-              이메일: {currentUser?.email || 'N/A'}{'\n'}
-              모드: {currentUser?.username === 'Guest' ? '게스트' : '로그인'}
-            </Text>
+            <View style={styles.userInfoCard}>
+              <View style={styles.userAvatar}>
+                <Text style={styles.userAvatarText}>
+                  {currentUser?.username?.charAt(0).toUpperCase() || 'G'}
+                </Text>
+              </View>
+              <View style={styles.userDetails}>
+                <Text style={styles.userName}>
+                  {currentUser?.username || 'Guest User'}
+                </Text>
+                <Text style={styles.userEmail}>
+                  {currentUser?.email || 'guest@coffejournal.app'}
+                </Text>
+                <View style={styles.userBadges}>
+                  <View style={[styles.userBadge, { backgroundColor: currentUser?.username === 'Guest' ? '#FFC107' : '#4CAF50' }]}>
+                    <Text style={styles.userBadgeText}>
+                      {currentUser?.username === 'Guest' ? '게스트' : '로그인'}
+                    </Text>
+                  </View>
+                  {currentUser?.email === 'hello@zimojin.com' && (
+                    <View style={[styles.userBadge, { backgroundColor: '#6B46C1' }]}>
+                      <Text style={styles.userBadgeText}>관리자</Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+            </View>
           </View>
         </View>
 
         {/* Debug Settings */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>디버그 설정</Text>
+          <SectionHeader
+            title="디버그 설정"
+            icon={CategoryIcons.debug}
+            count={[showDebugInfo, enableNetworkLogs, enableRealmLogs, showPerformanceMetrics].filter(Boolean).length}
+          />
           <View style={styles.card}>
             <SettingRow
+              icon="📊"
               title="디버그 정보 표시"
               description="화면에 디버그 정보 오버레이 표시"
               value={showDebugInfo}
               onValueChange={setDebugInfo}
             />
             <SettingRow
+              icon="🌐"
               title="네트워크 로그"
               description="네트워크 요청/응답 로그 출력"
               value={enableNetworkLogs}
               onValueChange={setNetworkLogs}
             />
             <SettingRow
+              icon="💾"
               title="Realm 로그"
               description="데이터베이스 작업 로그 출력"
               value={enableRealmLogs}
               onValueChange={setRealmLogs}
             />
             <SettingRow
+              icon="⚡"
               title="성능 메트릭"
               description="렌더링 성능 정보 표시"
               value={showPerformanceMetrics}
@@ -707,27 +487,35 @@ const DeveloperScreen = () => {
 
         {/* Test Settings */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>테스트 설정</Text>
+          <SectionHeader
+            title="테스트 설정"
+            icon={CategoryIcons.test}
+            count={[enableMockData, forceGuestMode, skipAnimations, bypassLogin].filter(Boolean).length}
+          />
           <View style={styles.card}>
             <SettingRow
+              icon="🎭"
               title="Mock 데이터 강제 사용"
               description="실제 데이터 대신 Mock 데이터 사용"
               value={enableMockData}
               onValueChange={setMockData}
             />
             <SettingRow
+              icon="👻"
               title="게스트 모드 강제"
               description="로그인 상태에서도 게스트 모드로 표시"
               value={forceGuestMode}
               onValueChange={setForceGuestMode}
             />
             <SettingRow
+              icon="🏃"
               title="애니메이션 건너뛰기"
               description="모든 애니메이션 비활성화"
               value={skipAnimations}
               onValueChange={setSkipAnimations}
             />
             <SettingRow
+              icon="🚪"
               title="로그인 바이패스"
               description="로그인 화면을 건너뛰고 바로 앱 진입"
               value={bypassLogin}
@@ -738,15 +526,21 @@ const DeveloperScreen = () => {
 
         {/* Feature Flags */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>기능 플래그</Text>
+          <SectionHeader
+            title="기능 플래그"
+            icon={CategoryIcons.feature}
+            count={[enableExperimentalFeatures, enableBetaFeatures].filter(Boolean).length}
+          />
           <View style={styles.card}>
             <SettingRow
+              icon="🔬"
               title="실험적 기능"
               description="개발 중인 실험적 기능 활성화"
               value={enableExperimentalFeatures}
               onValueChange={setExperimentalFeatures}
             />
             <SettingRow
+              icon="🎯"
               title="베타 기능"
               description="베타 테스트 중인 기능 활성화"
               value={enableBetaFeatures}
@@ -757,40 +551,43 @@ const DeveloperScreen = () => {
 
         {/* Beta Feedback Settings */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>베타 피드백</Text>
+          <SectionHeader
+            title="베타 피드백"
+            icon={CategoryIcons.beta}
+            count={[enableShakeToFeedback, isBetaUser].filter(Boolean).length}
+          />
           <View style={styles.card}>
             <SettingRow
+              icon="📳"
               title="흔들어서 피드백 보내기"
               description="기기를 흔들어 피드백 모달 열기"
               value={enableShakeToFeedback}
               onValueChange={toggleShakeToFeedback}
             />
             <SettingRow
+              icon="🧑‍🚀"
               title="베타 테스터 모드"
               description="베타 테스터 전용 기능 활성화"
               value={isBetaUser}
               onValueChange={setBetaStatus}
             />
             <ActionButton
+              icon="💬"
               title="피드백 모달 열기"
               onPress={showFeedback}
             />
-            {currentUser?.email === 'hello@zimojin.com' && (
-              <ActionButton
-                title="피드백 관리 대시보드"
-                onPress={() => navigation.navigate('AdminFeedback' as never)}
-                style={styles.adminButton}
-                textStyle={styles.adminButtonText}
-              />
-            )}
           </View>
         </View>
 
         {/* Quick Login */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>빠른 로그인</Text>
+          <SectionHeader
+            title="빠른 로그인"
+            icon={CategoryIcons.login}
+          />
           <View style={styles.card}>
             <ActionButton
+              icon="🧑‍💻"
               title="테스트 사용자로 로그인"
               onPress={() => {
                 setTestUser();
@@ -800,6 +597,7 @@ const DeveloperScreen = () => {
               textStyle={styles.successButtonText}
             />
             <ActionButton
+              icon="👤"
               title="게스트 모드로 전환"
               onPress={() => {
                 setGuestMode();
@@ -811,34 +609,45 @@ const DeveloperScreen = () => {
 
         {/* Actions */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>개발자 액션</Text>
+          <SectionHeader
+            title="개발자 액션"
+            icon={CategoryIcons.data}
+          />
           <View style={styles.card}>
-            <ActionButton
-              title="테스트 데이터 추가 (5개)"
-              onPress={handleAddTestData}
-            />
-            <ActionButton
-              title="대량 테스트 데이터 추가 (10개)"
-              onPress={handleAddMoreTestData}
-            />
-            <ActionButton
-              title="Realm 데이터 삭제"
-              onPress={handleClearRealmData}
-              style={styles.dangerButton}
-              textStyle={styles.dangerButtonText}
-            />
-            <ActionButton
-              title="전체 저장소 삭제"
-              onPress={handleClearStorage}
-              style={styles.dangerButton}
-              textStyle={styles.dangerButtonText}
-            />
-            <ActionButton
-              title="모든 설정 초기화"
-              onPress={resetAllSettings}
-              style={styles.warningButton}
-              textStyle={styles.warningButtonText}
-            />
+            <View style={styles.actionGroup}>
+              <Text style={styles.actionGroupTitle}>데이터 생성</Text>
+              <ActionButton
+                icon="☕"
+                title="테스트 데이터 추가 (5개)"
+                onPress={handleAddTestData}
+                style={styles.dataButton}
+              />
+            </View>
+            
+            <View style={[styles.actionGroup, styles.dangerZone]}>
+              <Text style={[styles.actionGroupTitle, styles.dangerTitle]}>위험 구역</Text>
+              <ActionButton
+                icon="🗑️"
+                title="Realm 데이터 삭제"
+                onPress={handleClearRealmData}
+                style={styles.dangerButton}
+                textStyle={styles.dangerButtonText}
+              />
+              <ActionButton
+                icon="💣"
+                title="전체 저장소 삭제"
+                onPress={handleClearStorage}
+                style={styles.dangerButton}
+                textStyle={styles.dangerButtonText}
+              />
+              <ActionButton
+                icon="🔄"
+                title="모든 설정 초기화"
+                onPress={resetAllSettings}
+                style={styles.warningButton}
+                textStyle={styles.warningButtonText}
+              />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -940,12 +749,37 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: HIGConstants.SPACING_LG,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_MD,
+  },
+  sectionHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  sectionIcon: {
+    fontSize: 24,
+    marginRight: HIGConstants.SPACING_SM,
+  },
   sectionTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
-    paddingHorizontal: HIGConstants.SPACING_LG,
+  },
+  badge: {
+    backgroundColor: HIGColors.blue,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: 2,
+    borderRadius: 10,
+    marginLeft: HIGConstants.SPACING_SM,
+  },
+  badgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: HIGColors.white,
   },
   card: {
     backgroundColor: '#F8F9FA',
@@ -953,6 +787,7 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.BORDER_RADIUS,
     borderWidth: 1,
     borderColor: HIGColors.gray4,
+    overflow: 'hidden',
   },
   settingRow: {
     flexDirection: 'row',
@@ -960,6 +795,11 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_MD,
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
+    minHeight: 60,
+  },
+  settingIcon: {
+    fontSize: 20,
+    marginRight: HIGConstants.SPACING_SM,
   },
   settingInfo: {
     flex: 1,
@@ -976,18 +816,20 @@ const styles = StyleSheet.create({
     color: HIGColors.secondaryLabel,
     lineHeight: 16,
   },
-  infoText: {
-    fontSize: 14,
-    color: HIGColors.label,
-    padding: HIGConstants.SPACING_MD,
-    lineHeight: 20,
-  },
   actionButton: {
     backgroundColor: HIGColors.blue,
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS,
     margin: HIGConstants.SPACING_SM,
+  },
+  actionButtonContent: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionButtonIcon: {
+    fontSize: 20,
+    marginRight: HIGConstants.SPACING_XS,
   },
   actionButtonText: {
     color: HIGColors.white,
@@ -1012,11 +854,74 @@ const styles = StyleSheet.create({
   successButtonText: {
     color: HIGColors.white,
   },
-  adminButton: {
-    backgroundColor: '#6B46C1', // Purple for admin
+  dataButton: {
+    backgroundColor: HIGColors.green,
   },
-  adminButtonText: {
+  userInfoCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: HIGConstants.SPACING_MD,
+  },
+  userAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: HIGColors.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: HIGConstants.SPACING_MD,
+  },
+  userAvatarText: {
+    fontSize: 24,
+    fontWeight: '600',
     color: HIGColors.white,
+  },
+  userDetails: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: HIGColors.label,
+    marginBottom: 4,
+  },
+  userEmail: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  userBadges: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  userBadge: {
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: 4,
+    borderRadius: HIGConstants.BORDER_RADIUS_SM,
+    marginRight: HIGConstants.SPACING_XS,
+  },
+  userBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: HIGColors.white,
+  },
+  actionGroup: {
+    padding: HIGConstants.SPACING_MD,
+  },
+  actionGroupTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_SM,
+    textTransform: 'uppercase',
+  },
+  dangerZone: {
+    backgroundColor: '#FFF3E0',
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    marginTop: HIGConstants.SPACING_SM,
+  },
+  dangerTitle: {
+    color: HIGColors.red,
   },
 });
 

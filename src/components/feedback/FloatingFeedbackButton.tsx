@@ -14,17 +14,20 @@ import { HIGColors } from '../../constants/HIG';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const BUTTON_SIZE = 56;
 const SAFE_AREA = 20;
+const BOTTOM_SAFE_AREA = 100; // For tab bar and bottom safe area
 
 export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible }) => {
   const { showFeedback } = useFeedbackStore();
   const [expanded, setExpanded] = useState(false);
   
-  // Animation values
-  const pan = useRef(new Animated.ValueXY({
+  // Store the actual position
+  const position = useRef({
     x: SCREEN_WIDTH - BUTTON_SIZE - SAFE_AREA,
-    y: SCREEN_HEIGHT - BUTTON_SIZE - 200,
-  })).current;
+    y: SCREEN_HEIGHT / 2,
+  }).current;
   
+  // Animation values
+  const pan = useRef(new Animated.ValueXY(position)).current;
   const opacity = useRef(new Animated.Value(1)).current;
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -37,6 +40,13 @@ export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible
         return Math.abs(gestureState.dx) > 5 || Math.abs(gestureState.dy) > 5;
       },
       onPanResponderGrant: () => {
+        // Store current position when starting drag
+        pan.setOffset({
+          x: position.x,
+          y: position.y,
+        });
+        pan.setValue({ x: 0, y: 0 });
+        
         // Reduce opacity when dragging
         Animated.timing(opacity, {
           toValue: 0.8,
@@ -44,10 +54,11 @@ export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible
           useNativeDriver: true,
         }).start();
       },
-      onPanResponderMove: Animated.event(
-        [null, { dx: pan.x, dy: pan.y }],
-        { useNativeDriver: false }
-      ),
+      onPanResponderMove: (_, gestureState) => {
+        // Update position during drag
+        pan.x.setValue(gestureState.dx);
+        pan.y.setValue(gestureState.dy);
+      },
       onPanResponderRelease: (_, gestureState) => {
         // Restore opacity
         Animated.timing(opacity, {
@@ -56,36 +67,47 @@ export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible
           useNativeDriver: true,
         }).start();
 
+        // Clear offset
+        pan.flattenOffset();
+
         // If not dragged much, treat as a tap
         if (Math.abs(gestureState.dx) < 5 && Math.abs(gestureState.dy) < 5) {
           handlePress();
           return;
         }
 
-        // Snap to edges
-        const currentX = gestureState.moveX;
-        const targetX = currentX < SCREEN_WIDTH / 2 
+        // Calculate new position
+        let newX = position.x + gestureState.dx;
+        let newY = position.y + gestureState.dy;
+
+        // Snap to edges horizontally
+        const targetX = newX + BUTTON_SIZE / 2 < SCREEN_WIDTH / 2 
           ? SAFE_AREA 
           : SCREEN_WIDTH - BUTTON_SIZE - SAFE_AREA;
 
-        Animated.spring(pan.x, {
-          toValue: targetX,
-          useNativeDriver: false,
-          tension: 40,
-          friction: 8,
-        }).start();
+        // Keep within vertical bounds
+        newY = Math.max(SAFE_AREA + 50, newY);
+        newY = Math.min(SCREEN_HEIGHT - BUTTON_SIZE - BOTTOM_SAFE_AREA, newY);
 
-        // Keep within screen bounds
-        let targetY = gestureState.moveY - BUTTON_SIZE / 2;
-        targetY = Math.max(SAFE_AREA, targetY);
-        targetY = Math.min(SCREEN_HEIGHT - BUTTON_SIZE - 100, targetY);
+        // Update stored position
+        position.x = targetX;
+        position.y = newY;
 
-        Animated.spring(pan.y, {
-          toValue: targetY,
-          useNativeDriver: false,
-          tension: 40,
-          friction: 8,
-        }).start();
+        // Animate to final position
+        Animated.parallel([
+          Animated.spring(pan.x, {
+            toValue: targetX,
+            useNativeDriver: false,
+            tension: 40,
+            friction: 8,
+          }),
+          Animated.spring(pan.y, {
+            toValue: newY,
+            useNativeDriver: false,
+            tension: 40,
+            friction: 8,
+          }),
+        ]).start();
       },
     })
   ).current;

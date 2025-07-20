@@ -253,7 +253,7 @@ export const PersonalTasteQuizScreen: React.FC<Props> = ({ navigation }) => {
             );
           }}
         >
-          <Icon name="close" size={24} color={HIGColors.text.primary} />
+          <Icon name="close" size={24} color={HIGColors.label} />
         </TouchableOpacity>
         
         <View style={styles.scoreContainer}>
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: HIGColors.background.secondary,
+    backgroundColor: HIGColors.systemBackground,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 16,
     fontWeight: '600',
-    color: HIGColors.text.primary,
+    color: HIGColors.label,
   },
   progressContainer: {
     paddingHorizontal: 20,
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 8,
-    backgroundColor: HIGColors.background.secondary,
+    backgroundColor: HIGColors.systemBackground,
     borderRadius: 4,
     overflow: 'hidden',
   },
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   progressText: {
     marginTop: 8,
     fontSize: 12,
-    color: HIGColors.text.secondary,
+    color: HIGColors.secondaryLabel,
     textAlign: 'center',
   },
   content: {
@@ -366,20 +366,20 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: HIGColors.text.secondary,
+    color: HIGColors.secondaryLabel,
   },
   questionContainer: {
     marginBottom: 32,
   },
   questionNumber: {
     fontSize: 14,
-    color: HIGColors.text.secondary,
+    color: HIGColors.secondaryLabel,
     marginBottom: 8,
   },
   questionText: {
     fontSize: 20,
     fontWeight: '600',
-    color: HIGColors.text.primary,
+    color: HIGColors.label,
     lineHeight: 28,
   },
   hintContainer: {
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
   hintText: {
     marginLeft: 8,
     fontSize: 14,
-    color: HIGColors.text.primary,
+    color: HIGColors.label,
     flex: 1,
   },
   optionsContainer: {
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: HIGColors.border.light,
+    borderColor: HIGColors.gray5,
     marginRight: 12,
   },
   selectedRadio: {
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    color: HIGColors.text.primary,
+    color: HIGColors.label,
     flex: 1,
   },
   selectedOptionText: {

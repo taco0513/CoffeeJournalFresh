@@ -92,7 +92,7 @@ export const PersonalTasteQuizResultsScreen: React.FC<Props> = ({ navigation, ro
           style={styles.closeButton}
           onPress={() => navigation.navigate('PersonalTasteDashboard')}
         >
-          <Icon name="close" size={24} color={HIGColors.text.primary} />
+          <Icon name="close" size={24} color={HIGColors.label} />
         </TouchableOpacity>
       </View>
 
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: HIGColors.background.secondary,
+    backgroundColor: HIGColors.systemBackground,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 32,
     borderWidth: 1,
-    borderColor: HIGColors.border.light,
+    borderColor: HIGColors.gray5,
   },
   scoreCircle: {
     alignItems: 'center',
@@ -256,13 +256,13 @@ const styles = StyleSheet.create({
   },
   scoreDivider: {
     fontSize: 24,
-    color: HIGColors.text.secondary,
+    color: HIGColors.secondaryLabel,
     marginVertical: 4,
   },
   totalScore: {
     fontSize: 32,
     fontWeight: '600',
-    color: HIGColors.text.secondary,
+    color: HIGColors.secondaryLabel,
   },
   performanceLabel: {
     fontSize: 24,
@@ -280,23 +280,23 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 20,
     fontWeight: '600',
-    color: HIGColors.text.primary,
+    color: HIGColors.label,
     marginTop: 8,
   },
   statLabel: {
     fontSize: 14,
-    color: HIGColors.text.secondary,
+    color: HIGColors.secondaryLabel,
     marginTop: 4,
   },
   statDivider: {
     width: 1,
     height: 60,
-    backgroundColor: HIGColors.border.light,
+    backgroundColor: HIGColors.gray5,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: HIGColors.text.primary,
+    color: HIGColors.label,
     marginBottom: 16,
   },
   masteryCard: {
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: HIGColors.border.light,
+    borderColor: HIGColors.gray5,
   },
   masteryHeader: {
     flexDirection: 'row',
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   masteryCategory: {
     fontSize: 18,
     fontWeight: '600',
-    color: HIGColors.text.primary,
+    color: HIGColors.label,
   },
   masteryBadge: {
     paddingHorizontal: 12,
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   },
   masteryProgressBar: {
     height: 8,
-    backgroundColor: HIGColors.background.secondary,
+    backgroundColor: HIGColors.systemBackground,
     borderRadius: 4,
     overflow: 'hidden',
     marginBottom: 8,
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   },
   masteryProgressText: {
     fontSize: 12,
-    color: HIGColors.text.secondary,
+    color: HIGColors.secondaryLabel,
   },
   masteryStats: {
     flexDirection: 'row',
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   },
   masteryStat: {
     fontSize: 14,
-    color: HIGColors.text.secondary,
+    color: HIGColors.secondaryLabel,
   },
   actionsContainer: {
     marginTop: 32,
