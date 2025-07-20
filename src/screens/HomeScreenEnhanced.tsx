@@ -72,8 +72,6 @@ export default function HomeScreenEnhanced() {
   const [showCoachFeedback, setShowCoachFeedback] = useState(false);
   const [coachFeedback, setCoachFeedback] = useState<any>(null);
   
-  // More options toggle
-  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   const realmService = RealmService.getInstance();
 
@@ -306,98 +304,6 @@ export default function HomeScreenEnhanced() {
             )}
           </View>
 
-          {/* More Options - Collapsible */}
-          <TouchableOpacity 
-            style={styles.moreOptions}
-            onPress={() => setShowMoreOptions(!showMoreOptions)}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.moreOptionsText}>더 많은 기능 {showMoreOptions ? '접기' : '보기'}</Text>
-            <Text style={styles.moreOptionsArrow}>{showMoreOptions ? '↑' : '↓'}</Text>
-          </TouchableOpacity>
-
-          {/* Hidden Options */}
-          {showMoreOptions && (
-            <View style={styles.hiddenOptions}>
-              <TouchableOpacity 
-                style={styles.optionButton}
-                onPress={() => navigation.navigate('PersonalTasteDashboard')}
-              >
-                <Text style={styles.optionIcon}>📊</Text>
-                <Text style={styles.optionText}>내 취향 분석</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={styles.optionButton}
-                onPress={() => navigation.navigate('PersonalTasteQuiz')}
-              >
-                <Text style={styles.optionIcon}>🎯</Text>
-                <Text style={styles.optionText}>향미 퀴즈</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={styles.optionButton}
-                onPress={async () => {
-                  const welcomeFeedback = {
-                    overall: 'improving',
-                    matchScore: 0,
-                    encouragement: '안녕하세요! 저는 당신의 AI 커피 코치입니다.',
-                    strengths: ['열정적인 시작', '배움에 대한 의지'],
-                    improvements: ['첫 테이스팅 기록하기', '향미 표현 연습하기'],
-                    tips: [{
-                      id: 'welcome-tip',
-                      type: 'taste' as const,
-                      content: '커피를 테이스팅할 때는 온도가 변함에 따라 향미가 어떻게 변하는지 주목해보세요.',
-                      action: '테이스팅 시작하기',
-                      level: 'beginner' as const,
-                    }],
-                  };
-                  setCoachFeedback(welcomeFeedback);
-                  setShowCoachFeedback(true);
-                }}
-              >
-                <Text style={styles.optionIcon}>🤖</Text>
-                <Text style={styles.optionText}>AI 코치</Text>
-                <View style={styles.newBadge}>
-                  <Text style={styles.newBadgeText}>NEW</Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={styles.optionButton}
-                onPress={() => navigation.navigate('Search')}
-              >
-                <Text style={styles.optionIcon}>🔍</Text>
-                <Text style={styles.optionText}>커피 검색</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={styles.optionButton}
-                onPress={() => navigation.navigate('CommunityFeed')}
-              >
-                <Text style={styles.optionIcon}>👥</Text>
-                <Text style={styles.optionText}>커뮤니티</Text>
-              </TouchableOpacity>
-
-              {currentUser?.email === 'hello@zimojin.com' && (
-                <TouchableOpacity 
-                  style={styles.optionButton}
-                  onPress={() => navigation.navigate('AdminDashboard')}
-                >
-                  <Text style={styles.optionIcon}>⚙️</Text>
-                  <Text style={styles.optionText}>관리자 대시보드</Text>
-                </TouchableOpacity>
-              )}
-
-              <TouchableOpacity 
-                style={styles.optionButton}
-                onPress={() => navigation.navigate('DeveloperScreen')}
-              >
-                <Text style={styles.optionIcon}>🛠️</Text>
-                <Text style={styles.optionText}>개발자 설정</Text>
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
       </ScrollView>
       
@@ -734,58 +640,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   
-  // More Options Styles
-  moreOptions: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  moreOptionsText: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
-    marginRight: HIGConstants.SPACING_XS,
-  },
-  moreOptionsArrow: {
-    fontSize: 16,
-    color: HIGColors.secondaryLabel,
-  },
-  hiddenOptions: {
-    marginBottom: HIGConstants.SPACING_LG,
-  },
-  optionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_SM,
-    borderWidth: 1,
-    borderColor: HIGColors.gray4,
-  },
-  optionIcon: {
-    fontSize: 24,
-    marginRight: HIGConstants.SPACING_MD,
-  },
-  optionText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: HIGColors.label,
-    flex: 1,
-  },
-  newBadge: {
-    backgroundColor: HIGColors.red,
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    marginLeft: HIGConstants.SPACING_SM,
-  },
-  newBadgeText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: HIGColors.white,
-  },
   
   // Guest Mode Styles
   guestNotice: {
