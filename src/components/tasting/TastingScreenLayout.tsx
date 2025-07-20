@@ -47,7 +47,7 @@ export const TastingScreenLayout: React.FC<TastingScreenLayoutProps> = ({
 
   const Container = keyboardAvoidingEnabled ? KeyboardAvoidingView : View;
   const containerProps = keyboardAvoidingEnabled
-    ? { behavior: Platform.OS === 'ios' ? 'padding' : 'height' as const, style: styles.container }
+    ? { behavior: (Platform.OS === 'ios' ? 'padding' : 'height') as 'padding' | 'height', style: styles.container }
     : { style: styles.container };
 
   return (

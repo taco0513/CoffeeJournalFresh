@@ -1,4 +1,5 @@
 import {create} from 'zustand';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import RealmService from '../services/realm/RealmService';
 
 export interface FlavorPath {
@@ -37,6 +38,12 @@ interface TastingState {
   calculateMatchScore: () => void;
   reset: () => void;
   updateSyncStatus: (status: Partial<SyncStatus>) => void;
+  
+  // Auto-save functionality
+  autoSave: () => Promise<void>;
+  loadDraft: () => Promise<boolean>;
+  clearDraft: () => Promise<void>;
+  hasDraft: () => Promise<boolean>;
 }
 
 export const useTastingStore = create<TastingState>((set, get) => ({
@@ -68,18 +75,30 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     error: null,
   },
 
-  updateField: (field, value) =>
+  updateField: (field, value) => {
     set((state) => ({
       currentTasting: {
         ...state.currentTasting,
         [field]: value,
       },
-    })),
+    }));
+    
+    // Auto-save after field update
+    setTimeout(() => {
+      get().autoSave();
+    }, 500); // Debounce auto-save by 500ms
+  },
 
-  setSelectedFlavors: (flavors) =>
+  setSelectedFlavors: (flavors) => {
     set(() => ({
       selectedFlavors: flavors,
-    })),
+    }));
+    
+    // Auto-save after flavor selection
+    setTimeout(() => {
+      get().autoSave();
+    }, 500);
+  },
 
   saveTasting: () => {
     const state = get();
@@ -153,6 +172,54 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         ...status,
       },
     })),
+
+  // Auto-save functionality
+  autoSave: async () => {
+    try {
+      const { currentTasting, selectedFlavors } = get();
+      const draftData = {
+        currentTasting,
+        selectedFlavors,
+        timestamp: new Date().toISOString(),
+      };
+      await AsyncStorage.setItem('@tasting_draft', JSON.stringify(draftData));
+    } catch (error) {
+      console.error('Auto-save failed:', error);
+    }
+  },
+
+  loadDraft: async () => {
+    try {
+      const draftData = await AsyncStorage.getItem('@tasting_draft');
+      if (draftData) {
+        const { currentTasting, selectedFlavors } = JSON.parse(draftData);
+        set({ currentTasting, selectedFlavors });
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Load draft failed:', error);
+      return false;
+    }
+  },
+
+  clearDraft: async () => {
+    try {
+      await AsyncStorage.removeItem('@tasting_draft');
+    } catch (error) {
+      console.error('Clear draft failed:', error);
+    }
+  },
+
+  hasDraft: async () => {
+    try {
+      const draftData = await AsyncStorage.getItem('@tasting_draft');
+      return !!draftData;
+    } catch (error) {
+      console.error('Check draft failed:', error);
+      return false;
+    }
+  },
 
   reset: () =>
     set({

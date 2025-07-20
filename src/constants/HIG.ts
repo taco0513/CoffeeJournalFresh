@@ -11,6 +11,7 @@ export const HIGColors = {
   systemPurple: '#AF52DE',
   systemTeal: '#5AC8FA',
   systemIndigo: '#5856D6',
+  systemBrown: '#A2845E', // Coffee-themed brown color
   
   // Monochrome
   label: '#000000',
@@ -45,6 +46,8 @@ export const HIGColors = {
   white: '#FFFFFF',
   black: '#000000',
   accent: '#007AFF',
+  systemGray4: '#D1D1D6',
+  systemGray5: '#E5E5EA',
   systemGray6: '#F2F2F7',
 };
 

@@ -26,6 +26,7 @@ import { NavigationButton } from '../components/common';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 import { searchRoasters, searchCoffees, CoffeeSearchResult } from '../services/supabase/coffeeSearch';
 import { AddCoffeeModal } from '../components/AddCoffeeModal';
+import { BetaFeedbackPrompt } from '../components/beta/BetaFeedbackPrompt';
 
 const CoffeeInfoScreen = () => {
   const navigation = useNavigation();
@@ -120,7 +121,7 @@ const CoffeeInfoScreen = () => {
       }
       
       // Fetch from Supabase if query is long enough
-      if (currentTasting.roastery && currentTasting.roastery.trim().length >= 2) {
+      if (currentTasting.roastery && currentTasting.roastery.trim().length >= 1) {
         const supabaseRoasters = await searchRoasters(currentTasting.roastery);
         const supabaseNames = supabaseRoasters.map(r => r.name);
         
@@ -215,7 +216,7 @@ const CoffeeInfoScreen = () => {
         localSuggestions.push(...suggestions);
         
         // Fetch from Supabase
-        if (currentTasting.coffeeName && currentTasting.coffeeName.trim().length >= 2) {
+        if (currentTasting.coffeeName && currentTasting.coffeeName.trim().length >= 1) {
           const supabaseCoffees = await searchCoffees(currentTasting.roastery, currentTasting.coffeeName);
           const supabaseNames = supabaseCoffees.map(c => c.coffee_name);
           
@@ -290,8 +291,8 @@ const CoffeeInfoScreen = () => {
     }
   }, []);
   
-  // 필수 필드가 채워졌는지 확인
-  const isValid = currentTasting.roastery && currentTasting.coffeeName;
+  // 필수 필드가 채워졌는지 확인 (간소화: 커피명만 필수)
+  const isValid = currentTasting.coffeeName && currentTasting.coffeeName.trim().length > 0;
 
   // Parse coffee name and auto-fill fields
   const handleCoffeeNameParse = (coffeeName: string) => {
@@ -409,6 +410,12 @@ const CoffeeInfoScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <BetaFeedbackPrompt 
+        screenName="Coffee Info Entry"
+        context="User is entering coffee details"
+        delayMs={10000} // 10 seconds after entering screen
+      />
+      
       {/* HIG 준수 네비게이션 바 */}
       <View style={styles.navigationBar}>
         <TouchableOpacity 

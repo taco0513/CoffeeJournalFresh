@@ -6,10 +6,10 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import RealmService from '../services/realm/RealmService';
-import { Colors } from '../constants/colors';
-import { NavigationButton } from '../components/common';
+import { HIGConstants, HIGColors } from '../styles/common';
 
 export default function DataTestScreen({ navigation }: any) {
   const [recentTastings, setRecentTastings] = useState<any[]>([]);
@@ -86,11 +86,14 @@ export default function DataTestScreen({ navigation }: any) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <NavigationButton title="Back" onPress={() => navigation.goBack()} />
-        <Text style={styles.title}>Data Test</Text>
-        <View style={{ width: 60 }} />
+    <SafeAreaView style={styles.container}>
+      {/* Navigation Bar */}
+      <View style={styles.navigationBar}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backButton}>←</Text>
+        </TouchableOpacity>
+        <Text style={styles.navigationTitle}>데이터 테스트</Text>
+        <View style={{ width: 30 }} />
       </View>
 
       <ScrollView style={styles.content}>
@@ -162,63 +165,67 @@ export default function DataTestScreen({ navigation }: any) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: '#FFFFFF',
   },
-  header: {
+  navigationBar: {
+    height: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
-    backgroundColor: Colors.background.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border.light,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.systemGray4,
   },
-  title: {
-    fontSize: 20,
+  backButton: {
+    fontSize: 24,
+    color: HIGColors.systemBlue,
+  },
+  navigationTitle: {
+    fontSize: 17,
     fontWeight: '600',
-    color: Colors.text.primary,
+    color: HIGColors.label,
   },
   content: {
     flex: 1,
-    padding: 20,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingTop: HIGConstants.SPACING_MD,
   },
   section: {
-    marginBottom: 30,
+    marginBottom: HIGConstants.SPACING_LG,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '600',
-    color: Colors.text.primary,
-    marginBottom: 15,
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_MD,
   },
   statsContainer: {
-    backgroundColor: Colors.background.white,
-    padding: 15,
-    borderRadius: 12,
+    backgroundColor: '#E8F5E8',
+    padding: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.cornerRadiusMedium,
     borderWidth: 1,
-    borderColor: Colors.border.light,
+    borderColor: HIGColors.systemGreen,
   },
   statText: {
     fontSize: 16,
-    color: Colors.text.primary,
-    marginBottom: 8,
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   tastingCard: {
-    backgroundColor: Colors.background.white,
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 10,
+    backgroundColor: '#FFF8DC',
+    padding: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    marginBottom: HIGConstants.SPACING_SM,
     borderWidth: 1,
-    borderColor: Colors.border.light,
+    borderColor: HIGColors.systemOrange,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -229,72 +236,72 @@ const styles = StyleSheet.create({
   coffeeName: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.text.primary,
-    marginBottom: 4,
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   roasteryName: {
     fontSize: 14,
-    color: Colors.text.secondary,
+    color: HIGColors.secondaryLabel,
     marginBottom: 2,
   },
   cafeText: {
     fontSize: 14,
-    color: Colors.text.tertiary,
+    color: HIGColors.tertiaryLabel,
     marginBottom: 2,
   },
   scoreText: {
     fontSize: 14,
-    fontWeight: '500',
-    color: Colors.PRIMARY,
+    fontWeight: '600',
+    color: HIGColors.systemBrown,
     marginBottom: 2,
   },
   dateText: {
     fontSize: 12,
-    color: Colors.text.tertiary,
+    color: HIGColors.tertiaryLabel,
   },
   deleteButton: {
-    backgroundColor: Colors.semantic.error,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: HIGColors.systemRed,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_XS,
+    borderRadius: HIGConstants.cornerRadiusSmall,
   },
   deleteButtonText: {
-    color: Colors.background.white,
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '500',
   },
   refreshButton: {
-    backgroundColor: Colors.PRIMARY,
-    padding: 15,
-    borderRadius: 12,
+    backgroundColor: HIGColors.systemBlue,
+    padding: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   refreshButtonText: {
-    color: Colors.background.white,
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
   },
   clearButton: {
-    backgroundColor: Colors.semantic.error,
-    padding: 15,
-    borderRadius: 12,
+    backgroundColor: HIGColors.systemRed,
+    padding: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
   },
   clearButtonText: {
-    color: Colors.background.white,
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
   },
   loadingText: {
     fontSize: 16,
-    color: Colors.text.tertiary,
+    color: HIGColors.tertiaryLabel,
     textAlign: 'center',
-    padding: 20,
+    padding: HIGConstants.SPACING_LG,
   },
   emptyText: {
     fontSize: 16,
-    color: Colors.text.tertiary,
+    color: HIGColors.tertiaryLabel,
     textAlign: 'center',
     padding: 20,
   },

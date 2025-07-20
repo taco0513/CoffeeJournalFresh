@@ -31,6 +31,17 @@ export interface SessionData {
   isActive: boolean;
 }
 
+export interface UserContext {
+  currentScreen: string;
+  previousScreen?: string;
+  recentActions: string[];
+  lastErrorTime?: Date;
+  lastErrorMessage?: string;
+  screenTimeSpent: number;
+  formData?: Record<string, any>;
+  navigationPath: string[];
+}
+
 class AnalyticsService {
   private currentSession: SessionData | null = null;
   private eventQueue: AnalyticsEvent[] = [];
@@ -39,6 +50,16 @@ class AnalyticsService {
   private readonly QUEUE_KEY = '@analytics_queue';
   private readonly SESSION_KEY = '@current_session';
   private readonly MAX_QUEUE_SIZE = 100;
+  
+  // User context tracking
+  private userContext: UserContext = {
+    currentScreen: '',
+    recentActions: [],
+    screenTimeSpent: 0,
+    navigationPath: [],
+  };
+  private readonly MAX_RECENT_ACTIONS = 10;
+  private readonly MAX_NAVIGATION_PATH = 20;
 
   async initialize(userId?: string): Promise<void> {
     await this.startSession(userId);
@@ -95,6 +116,7 @@ class AnalyticsService {
     // End previous screen timing
     if (this.currentScreen && this.screenStartTime) {
       const duration = Date.now() - this.screenStartTime.getTime();
+      this.userContext.screenTimeSpent = duration;
       await this.trackEvent({
         eventType: 'timing',
         eventName: 'screen_view_duration',
@@ -104,6 +126,16 @@ class AnalyticsService {
           previousScreen: this.currentScreen,
         },
       });
+    }
+
+    // Update user context
+    this.userContext.previousScreen = this.userContext.currentScreen;
+    this.userContext.currentScreen = screenName;
+    this.userContext.navigationPath.push(screenName);
+    
+    // Keep navigation path size manageable
+    if (this.userContext.navigationPath.length > this.MAX_NAVIGATION_PATH) {
+      this.userContext.navigationPath = this.userContext.navigationPath.slice(-this.MAX_NAVIGATION_PATH);
     }
 
     // Start new screen timing
@@ -123,6 +155,10 @@ class AnalyticsService {
   }
 
   async trackButtonClick(buttonName: string, screenName?: string, properties?: Record<string, any>): Promise<void> {
+    // Add to recent actions
+    const action = `clicked_${buttonName}`;
+    this.addRecentAction(action);
+    
     await this.trackEvent({
       eventType: 'button_click',
       eventName: 'button_click',
@@ -134,7 +170,19 @@ class AnalyticsService {
     });
   }
 
+  private addRecentAction(action: string): void {
+    this.userContext.recentActions.push(action);
+    
+    // Keep only recent actions
+    if (this.userContext.recentActions.length > this.MAX_RECENT_ACTIONS) {
+      this.userContext.recentActions = this.userContext.recentActions.slice(-this.MAX_RECENT_ACTIONS);
+    }
+  }
+
   async trackFeatureUse(featureName: string, properties?: Record<string, any>): Promise<void> {
+    // Add to recent actions
+    this.addRecentAction(`used_${featureName}`);
+    
     await this.trackEvent({
       eventType: 'feature_use',
       eventName: featureName,
@@ -144,6 +192,10 @@ class AnalyticsService {
   }
 
   async trackError(errorName: string, errorMessage: string, stackTrace?: string, properties?: Record<string, any>): Promise<void> {
+    // Update user context with error info
+    this.userContext.lastErrorTime = new Date();
+    this.userContext.lastErrorMessage = errorMessage;
+    
     await this.trackEvent({
       eventType: 'error',
       eventName: errorName,
@@ -254,7 +306,20 @@ class AnalyticsService {
       screenViews: this.currentSession.screenViews.length,
       eventCount: this.currentSession.eventCount,
       queueSize: this.eventQueue.length,
+      // Add user context for ErrorContextService
+      currentScreen: this.userContext.currentScreen,
+      previousScreen: this.userContext.previousScreen,
+      navigationPath: this.userContext.navigationPath,
+      recentActions: this.userContext.recentActions,
+      screenTimeSpent: this.userContext.screenTimeSpent,
+      lastErrorTime: this.userContext.lastErrorTime,
+      lastErrorMessage: this.userContext.lastErrorMessage,
     };
+  }
+
+  // Method for ErrorContextService to access user context directly
+  getUserContext(): UserContext {
+    return { ...this.userContext };
   }
 
   // Coffee-specific tracking methods

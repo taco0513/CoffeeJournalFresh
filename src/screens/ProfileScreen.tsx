@@ -112,13 +112,6 @@ const ProfileScreen = () => {
         navigation.navigate('DeveloperScreen' as never);
       }
     },
-    {
-      title: '데이터 테스트',
-      icon: '🧪',
-      onPress: () => {
-        navigation.navigate('DataTest' as never);
-      }
-    },
     // Feature Backlog - Help
     // {
     //   title: '도움말',

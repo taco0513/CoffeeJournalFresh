@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FeedbackService } from '../services/FeedbackService';
 import { FeedbackCategory } from '../types/feedback';
+import { errorContextService } from '../services/ErrorContextService';
 
 interface FeedbackStore {
   // State
@@ -18,7 +19,8 @@ interface FeedbackStore {
   description: string;
   
   // Actions
-  showFeedback: () => void;
+  showFeedback: (screenName?: string, context?: string) => void;
+  showSmartFeedback: () => Promise<void>; // Auto-fill with context
   hideFeedback: () => void;
   setCategory: (category: FeedbackCategory) => void;
   setRating: (rating: number) => void;
@@ -52,7 +54,44 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
   enableShakeToFeedback: true,
 
   // Actions
-  showFeedback: () => set({ isVisible: true }),
+  showFeedback: (screenName?: string, context?: string) => {
+    const updates: any = { isVisible: true };
+    
+    if (screenName && !get().title) {
+      updates.title = `Feedback for ${screenName}`;
+    }
+    
+    if (context && !get().description) {
+      updates.description = `Context: ${context}\n\n`;
+    }
+    
+    set(updates);
+  },
+  
+  showSmartFeedback: async () => {
+    try {
+      // Get current context
+      const context = await errorContextService.getContextForFeedback();
+      
+      // Smart suggestions based on context
+      const suggestedCategory = errorContextService.suggestFeedbackCategory(context);
+      const suggestedTitle = errorContextService.generateSmartTitle(context);
+      const suggestedDescription = errorContextService.generateSmartDescription(context);
+      
+      // Auto-fill form with smart suggestions
+      set({ 
+        isVisible: true,
+        category: suggestedCategory,
+        title: suggestedTitle,
+        description: suggestedDescription,
+      });
+    } catch (error) {
+      console.error('Error generating smart feedback:', error);
+      // Fallback to regular feedback
+      set({ isVisible: true });
+    }
+  },
+  
   hideFeedback: () => set({ isVisible: false }),
   
   setCategory: (category) => set({ category }),
@@ -85,10 +124,7 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
         userId,
         userEmail,
         username,
-        context: {
-          screenName: 'HomeScreen', // This would be dynamic based on current screen
-          isBetaUser: state.isBetaUser,
-        },
+        context: await errorContextService.getContextForFeedback(),
       });
 
       set({ 

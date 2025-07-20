@@ -21,6 +21,7 @@ import { useUserStore } from '../stores/useUserStore';
 import { ITastingRecord } from '../services/realm/schemas';
 import { usePersonalTaste } from '@/hooks/usePersonalTaste';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { DraftRecoveryModal } from '../components/tasting/DraftRecoveryModal';
 // Guest mode disabled - removed mock data imports
 
 export default function HomeScreenEnhanced() {
@@ -187,6 +188,8 @@ export default function HomeScreenEnhanced() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <DraftRecoveryModal />
+      
       {/* Navigation Bar */}
       <View style={styles.navigationBar}>
         <View style={styles.titleContainer}>

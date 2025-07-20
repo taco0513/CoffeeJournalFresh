@@ -32,8 +32,10 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = memo(({
   const [scaleAnimation] = useState(new Animated.Value(0.8));
 
   useEffect(() => {
+    let animationRef: Animated.CompositeAnimation | null = null;
+    
     if (visible) {
-      Animated.parallel([
+      animationRef = Animated.parallel([
         Animated.timing(animation, {
           toValue: 1,
           duration: 400,
@@ -45,15 +47,24 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = memo(({
           friction: 7,
           useNativeDriver: true,
         }),
-      ]).start();
+      ]);
+      animationRef.start();
     } else {
-      Animated.timing(animation, {
+      animationRef = Animated.timing(animation, {
         toValue: 0,
         duration: 300,
         useNativeDriver: true,
-      }).start();
+      });
+      animationRef.start();
     }
-  }, [visible]);
+
+    // Cleanup function to stop animations on unmount
+    return () => {
+      if (animationRef) {
+        animationRef.stop();
+      }
+    };
+  }, [visible, animation, scaleAnimation]);
 
   const getMessage = useCallback(() => {
     if (type === 'discovered') {

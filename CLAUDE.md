@@ -3,6 +3,33 @@
 ## Project Overview
 React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 고유한 커피 취향을 발견하고, 전문가·커뮤니티와 함께 나누며 성장하는 소셜 테이스팅 앱.
 
+## Recent Progress (2025-07-21)
+
+### 🔧 Critical Bug Fixes & Stability Improvements (2025-07-21)
+- ✅ **Journal Navigation Restoration**
+  - Fixed Journal tab button not responding issue
+  - Added useFocusEffect to HistoryScreen for proper data refresh
+  - Resolved test data format compatibility in RealmService:src/services/realm/RealmService.ts:247
+  - Simplified test data structure for reliable saving/loading
+
+- ✅ **Data Management & Testing Enhancement**
+  - Fixed RealmService to handle both legacy and new flavor data formats
+  - Created reliable 5-record quick test data generation in DeveloperScreen:src/screens/DeveloperScreen.tsx:219
+  - Improved debugging capabilities with comprehensive logging
+  - Enhanced test data creation with individual error handling
+
+- ✅ **Performance & Memory Optimizations**
+  - Added proper animation cleanup in CoffeeDiscoveryAlert:src/components/CoffeeDiscoveryAlert.tsx:61
+  - Fixed Animated.Value references and cleanup in SkeletonLoader:src/components/common/SkeletonLoader.tsx:35
+  - Improved FlavorMasteryMap animation lifecycle:src/components/personalTaste/FlavorMasteryMap.tsx:52
+  - Enhanced error context collection for better debugging
+
+- ✅ **Beta Testing Infrastructure**
+  - Implemented FirstTimeUserFeedback component for new users
+  - Added BetaFeedbackPrompt for contextual feedback collection
+  - Enhanced shake-to-feedback with smart targeting in useShakeToFeedback:src/hooks/useShakeToFeedback.ts:25
+  - Improved screenshot service for visual bug reporting
+
 ## Recent Progress (2025-07-20)
 
 ### AI Strategy Redefinition & Implementation 🤖

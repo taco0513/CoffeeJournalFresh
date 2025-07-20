@@ -40,6 +40,24 @@ export { AchievementType } from '@/services/AchievementSystem';
 //   LearningPath,
 // } from '@/services/LiteAICoachService';
 
+// Placeholder types for future roadmap features
+export interface DailyInsight {
+  id: string;
+  title: string;
+  message: string;
+  actionText?: string;
+  date: string;
+}
+
+export interface LearningPath {
+  id: string;
+  name: string;
+  description: string;
+  steps: string[];
+  currentStep: number;
+  estimatedDuration: string;
+}
+
 // Additional missing types
 export interface GrowthMilestone {
   id: string;

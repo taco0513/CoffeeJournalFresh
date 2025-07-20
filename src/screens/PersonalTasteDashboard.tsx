@@ -136,7 +136,7 @@ export default function PersonalTasteDashboard() {
     <SafeAreaView style={styles.container}>
       {/* Navigation Bar */}
       <View style={styles.navigationBar}>
-        <TouchableOpacity onPress={() => navigation.navigate('ProfileMain' as never)}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>나의 커피 여정</Text>

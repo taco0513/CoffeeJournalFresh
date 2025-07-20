@@ -1,6 +1,21 @@
 import { useToastStore } from '../stores/toastStore';
 
 // Toast 유틸리티 함수들
+export const showToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'info') => {
+  const store = useToastStore.getState();
+  switch (type) {
+    case 'success':
+      store.showSuccessToast(title, message);
+      break;
+    case 'error':
+      store.showErrorToast(title, message);
+      break;
+    case 'info':
+    default:
+      store.showInfoToast(title, message);
+      break;
+  }
+};
 export const showSuccessToast = (title: string, message?: string) => {
   const { showSuccessToast } = useToastStore.getState();
   showSuccessToast(title, message);

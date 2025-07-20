@@ -17,7 +17,7 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
   const shimmerValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.loop(
+    const animationLoop = Animated.loop(
       Animated.sequence([
         Animated.timing(shimmerValue, {
           toValue: 1,
@@ -30,7 +30,14 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
           useNativeDriver: true,
         }),
       ])
-    ).start();
+    );
+    
+    animationLoop.start();
+
+    // Cleanup function to stop animation on unmount
+    return () => {
+      animationLoop.stop();
+    };
   }, [shimmerValue]);
 
   const opacity = shimmerValue.interpolate({
@@ -43,8 +50,8 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
       style={[
         styles.skeleton,
         {
-          width,
-          height,
+          width: width as any,
+          height: height as any,
           borderRadius,
           opacity,
         },

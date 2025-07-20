@@ -41,18 +41,24 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
   ).current;
 
   useEffect(() => {
-    // Staggered animation
+    // Reset animations when categories change
+    animatedValues.forEach(anim => anim.setValue(0));
+    
+    // Staggered animation with proper completion
     const animations = animatedValues.map((anim, index) =>
       Animated.timing(anim, {
         toValue: 1,
-        duration: 400,
-        delay: index * 50,
+        duration: 300,
+        delay: index * 80,
         useNativeDriver: true,
       })
     );
 
-    Animated.parallel(animations).start();
-  }, []);
+    Animated.stagger(80, animations).start(() => {
+      // Animation complete - ensure all values are at final state
+      animatedValues.forEach(anim => anim.setValue(1));
+    });
+  }, [categories.length]);
 
   const getMasteryColor = (score: number): string => {
     if (score >= 90) return HIGColors.green;
@@ -110,7 +116,15 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
                     {
                       scale: animatedValues[index].interpolate({
                         inputRange: [0, 1],
-                        outputRange: [0.8, 1],
+                        outputRange: [0.9, 1],
+                        extrapolate: 'clamp',
+                      }),
+                    },
+                    {
+                      translateY: animatedValues[index].interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [20, 0],
+                        extrapolate: 'clamp',
                       }),
                     },
                   ],

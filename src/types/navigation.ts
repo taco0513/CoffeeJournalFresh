@@ -1,6 +1,7 @@
 export type RootStackParamList = {
     Home: undefined;
     HomeMain: undefined;
+    ProfileMain: undefined;
     CoffeeInfo: { ocrText?: string } | undefined;
     OCRScan: undefined;
     OCRResult: { parsedInfo: any; rawTexts: string[] };
@@ -9,6 +10,7 @@ export type RootStackParamList = {
     FlavorLevel2: undefined;
     FlavorLevel3: undefined;
     Sensory: undefined;
+    PersonalComment: undefined;
     Result: undefined;
     TastingDetail: { tastingId: string };
     Stats: undefined;
@@ -23,4 +25,6 @@ export type RootStackParamList = {
       totalQuestions: number;
       focusAreas: string[];
     };
+    DataTest: undefined;
+    DeveloperScreen: undefined;
   };

@@ -1,9 +1,0 @@
-{
-  "/_not-found/page": "/_not-found",
-  "/api/health/route": "/api/health",
-  "/login/page": "/login",
-  "/page": "/",
-  "/dashboard/page": "/dashboard",
-  "/dashboard/coffee/page": "/dashboard/coffee",
-  "/dashboard/users/page": "/dashboard/users"
-}

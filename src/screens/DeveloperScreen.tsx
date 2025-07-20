@@ -10,12 +10,15 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
 import { HIGConstants, HIGColors } from '../styles/common';
 import { useDevStore } from '../stores/useDevStore';
 import { useUserStore } from '../stores/useUserStore';
 import { useFeedbackStore } from '../stores/useFeedbackStore';
 import RealmService from '../services/realm/RealmService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ScreenshotService } from '../services/ScreenshotService';
 
 // Category Icons
 const CategoryIcons = {
@@ -28,8 +31,10 @@ const CategoryIcons = {
   data: '💾',
 };
 
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
 const DeveloperScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
   
   const { currentUser, setTestUser, setGuestMode } = useUserStore();
   const { showFeedback, enableShakeToFeedback, toggleShakeToFeedback, isBetaUser, setBetaStatus } = useFeedbackStore();
@@ -109,6 +114,277 @@ const DeveloperScreen = () => {
     );
   };
 
+  // Screenshot functions
+  const handleViewScreenshots = async () => {
+    const screenshots = await ScreenshotService.getSavedScreenshots();
+    Alert.alert(
+      '저장된 스크린샷',
+      screenshots.length > 0 
+        ? `${screenshots.length}개의 스크린샷이 있습니다.\n\n최근 파일:\n${screenshots.slice(0, 3).map(path => path.split('/').pop()).join('\n')}`
+        : '저장된 스크린샷이 없습니다.',
+      [{ text: '확인' }]
+    );
+  };
+
+  const handleClearScreenshots = () => {
+    Alert.alert(
+      '스크린샷 삭제',
+      '모든 저장된 스크린샷을 삭제하시겠습니까?',
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '삭제',
+          style: 'destructive',
+          onPress: async () => {
+            const success = await ScreenshotService.clearAllScreenshots();
+            Alert.alert(
+              success ? '완료' : '오류',
+              success ? '모든 스크린샷이 삭제되었습니다.' : '스크린샷 삭제 중 오류가 발생했습니다.'
+            );
+          }
+        }
+      ]
+    );
+  };
+
+  const handleScreenshotGuide = () => {
+    Alert.alert(
+      '스크린샷 가이드',
+      '앱 스크린들을 이미지로 저장하는 방법:\n\n1. iOS 시뮬레이터 사용:\n   Device > Screenshot 메뉴\n\n2. 실제 기기:\n   홈+전원 버튼 동시 누름\n\n3. 자동 스크린샷 (개발 중):\n   각 화면에 스크린샷 기능 추가 예정\n\n저장된 스크린샷은 사진 앱에서 확인할 수 있습니다.',
+      [{ text: '확인' }]
+    );
+  };
+
+  const handleAddSimpleTest = () => {
+    Alert.alert(
+      '간단한 테스트',
+      '1개의 간단한 테이스팅 데이터를 추가하시겠습니까?',
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '추가',
+          onPress: async () => {
+            try {
+              const realmService = RealmService.getInstance();
+              
+              if (!realmService.isInitialized) {
+                await realmService.initialize();
+              }
+              
+              const simpleData = {
+                coffeeInfo: {
+                  cafeName: 'Test Cafe',
+                  roastery: 'Test Roaster',
+                  coffeeName: 'Test Coffee',
+                  origin: 'Test Origin',
+                  variety: 'Test Variety',
+                  process: 'Washed',
+                  altitude: '1000m',
+                  temperature: 'hot' as const
+                },
+                roasterNotes: 'Simple test notes',
+                selectedFlavors: [
+                  { level: 1, value: 'Fruity', koreanValue: '과일향' }
+                ],
+                sensoryAttributes: {
+                  body: 3,
+                  acidity: 3,
+                  sweetness: 3,
+                  finish: 3,
+                  mouthfeel: 'Clean'
+                },
+                matchScore: { total: 85, flavorScore: 40, sensoryScore: 45 }
+              };
+              
+              console.log('🧪 Saving simple test data...');
+              const savedRecord = await realmService.saveTasting(simpleData);
+              console.log('✅ Simple test saved with ID:', savedRecord.id);
+              
+              const allRecords = realmService.getTastingRecords({ isDeleted: false });
+              console.log('🔍 Total records after simple test:', allRecords.length);
+              
+              Alert.alert('완료', `간단한 테스트 데이터가 저장되었습니다.\n\nID: ${savedRecord.id}\n전체 기록: ${allRecords.length}개`);
+            } catch (error) {
+              console.error('❌ Simple test failed:', error);
+              Alert.alert('오류', `테스트 데이터 저장 실패: ${error.message}`);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleAddQuickTest = () => {
+    Alert.alert(
+      '빠른 테스트',
+      '5개의 간단한 테이스팅 데이터를 추가하시겠습니까?',
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '추가',
+          onPress: async () => {
+            try {
+              const realmService = RealmService.getInstance();
+              
+              if (!realmService.isInitialized) {
+                await realmService.initialize();
+              }
+              
+              const quickTestData = [
+                {
+                  coffeeInfo: {
+                    cafeName: 'Blue Bottle Coffee 삼청점',
+                    roastery: 'Blue Bottle Coffee',
+                    coffeeName: 'Three Africas',
+                    origin: 'Ethiopia',
+                    variety: 'Heirloom',
+                    process: 'Washed',
+                    altitude: '1800m',
+                    temperature: 'hot' as const
+                  },
+                  roasterNotes: 'Bright and clean with floral notes',
+                  selectedFlavors: [
+                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
+                    { level: 2, value: 'Citrus Fruit', koreanValue: '감귤류' }
+                  ],
+                  sensoryAttributes: {
+                    body: 3,
+                    acidity: 4,
+                    sweetness: 3,
+                    finish: 4,
+                    mouthfeel: 'Clean'
+                  },
+                  matchScore: { total: 89, flavorScore: 43, sensoryScore: 46 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Fritz Coffee 성수점',
+                    roastery: 'Fritz Coffee',
+                    coffeeName: 'Colombia Geisha',
+                    origin: 'Colombia',
+                    variety: 'Geisha',
+                    process: 'Honey',
+                    altitude: '1600m',
+                    temperature: 'hot' as const
+                  },
+                  roasterNotes: 'Complex tropical fruit notes',
+                  selectedFlavors: [
+                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
+                    { level: 2, value: 'Other Fruit', koreanValue: '기타 과일' }
+                  ],
+                  sensoryAttributes: {
+                    body: 4,
+                    acidity: 5,
+                    sweetness: 4,
+                    finish: 5,
+                    mouthfeel: 'Juicy'
+                  },
+                  matchScore: { total: 92, flavorScore: 47, sensoryScore: 45 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Anthracite 한남점',
+                    roastery: 'Anthracite',
+                    coffeeName: 'Brazil Santos',
+                    origin: 'Brazil',
+                    variety: 'Catuai',
+                    process: 'Natural',
+                    altitude: '1200m',
+                    temperature: 'ice' as const
+                  },
+                  roasterNotes: 'Rich chocolate and nuts',
+                  selectedFlavors: [
+                    { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
+                    { level: 2, value: 'Dark Chocolate', koreanValue: '다크 초콜릿' }
+                  ],
+                  sensoryAttributes: {
+                    body: 5,
+                    acidity: 2,
+                    sweetness: 4,
+                    finish: 3,
+                    mouthfeel: 'Creamy'
+                  },
+                  matchScore: { total: 85, flavorScore: 40, sensoryScore: 45 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Terarosa 강남점',
+                    roastery: 'Terarosa',
+                    coffeeName: 'Guatemala Antigua',
+                    origin: 'Guatemala',
+                    variety: 'Bourbon',
+                    process: 'Washed',
+                    altitude: '1500m',
+                    temperature: 'hot' as const
+                  },
+                  roasterNotes: 'Balanced chocolate and spice',
+                  selectedFlavors: [
+                    { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
+                    { level: 1, value: 'Spices', koreanValue: '향신료' }
+                  ],
+                  sensoryAttributes: {
+                    body: 4,
+                    acidity: 3,
+                    sweetness: 4,
+                    finish: 4,
+                    mouthfeel: 'Silky'
+                  },
+                  matchScore: { total: 86, flavorScore: 41, sensoryScore: 45 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Starbucks 강남점',
+                    roastery: 'Starbucks',
+                    coffeeName: 'Pike Place',
+                    origin: 'Latin America',
+                    variety: 'Various',
+                    process: 'Washed',
+                    altitude: '1200m',
+                    temperature: 'hot' as const
+                  },
+                  roasterNotes: 'Smooth and balanced',
+                  selectedFlavors: [
+                    { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
+                    { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' }
+                  ],
+                  sensoryAttributes: {
+                    body: 3,
+                    acidity: 2,
+                    sweetness: 3,
+                    finish: 3,
+                    mouthfeel: 'Smooth'
+                  },
+                  matchScore: { total: 78, flavorScore: 38, sensoryScore: 40 }
+                }
+              ];
+              
+              console.log('⚡ Saving quick test data...');
+              let savedCount = 0;
+              
+              for (const testItem of quickTestData) {
+                try {
+                  await realmService.saveTasting(testItem);
+                  savedCount++;
+                  console.log(`✅ Saved ${savedCount}/${quickTestData.length}`);
+                } catch (error) {
+                  console.error(`❌ Failed to save item ${savedCount + 1}:`, error);
+                }
+              }
+              
+              const allRecords = realmService.getTastingRecords({ isDeleted: false });
+              console.log('🔍 Total records after quick test:', allRecords.length);
+              
+              Alert.alert('완료', `빠른 테스트 데이터 ${savedCount}개가 저장되었습니다.\n\n전체 기록: ${allRecords.length}개\n\nJournal 탭에서 확인해보세요!`);
+            } catch (error) {
+              console.error('❌ Quick test failed:', error);
+              Alert.alert('오류', `테스트 데이터 저장 실패: ${error.message}`);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const handleAddTestData = () => {
     Alert.alert(
       '테스트 데이터 추가',
@@ -123,7 +399,11 @@ const DeveloperScreen = () => {
               
               // Realm이 초기화되지 않았으면 초기화
               if (!realmService.isInitialized) {
+                console.log('🔧 Initializing Realm...');
                 await realmService.initialize();
+                console.log('✅ Realm initialized');
+              } else {
+                console.log('✅ Realm already initialized');
               }
               
               const testTastings = [
@@ -142,16 +422,14 @@ const DeveloperScreen = () => {
                   selectedFlavors: [
                     { level: 1, value: 'Fruity', koreanValue: '과일향' },
                     { level: 2, value: 'Citrus Fruit', koreanValue: '감귤류' },
-                    { level: 3, value: 'Lemon', koreanValue: '레몬' },
-                    { level: 2, value: 'Floral', koreanValue: '꽃향기' },
-                    { level: 3, value: 'Jasmine', koreanValue: '자스민' }
+                    { level: 3, value: 'Lemon', koreanValue: '레몬' }
                   ],
                   sensoryAttributes: {
                     body: 3,
                     acidity: 4,
                     sweetness: 3,
                     finish: 4,
-                    mouthfeel: 'Clean' as const
+                    mouthfeel: 'Clean'
                   },
                   matchScore: { total: 89, flavorScore: 43, sensoryScore: 46 }
                 },
@@ -170,16 +448,14 @@ const DeveloperScreen = () => {
                   selectedFlavors: [
                     { level: 1, value: 'Fruity', koreanValue: '과일향' },
                     { level: 2, value: 'Other Fruit', koreanValue: '기타 과일' },
-                    { level: 3, value: 'Mango', koreanValue: '망고' },
-                    { level: 1, value: 'Sweet', koreanValue: '단맛' },
-                    { level: 2, value: 'Honey', koreanValue: '꿀' }
+                    { level: 3, value: 'Mango', koreanValue: '망고' }
                   ],
                   sensoryAttributes: {
                     body: 4,
                     acidity: 5,
                     sweetness: 4,
                     finish: 5,
-                    mouthfeel: 'Juicy' as const
+                    mouthfeel: 'Juicy'
                   },
                   matchScore: { total: 92, flavorScore: 47, sensoryScore: 45 }
                 },
@@ -210,7 +486,12 @@ const DeveloperScreen = () => {
                     finish: 3,
                     mouthfeel: 'Creamy' as const
                   },
-                  matchScore: { total: 85, flavorScore: 40, sensoryScore: 45 }
+                  matchScore: { total: 85, flavorScore: 40, sensoryScore: 45 },
+                  personalComment: 'Anthracite 한남점에서 마신 브라질 내추럴 프로세싱 커피. 아이스로 마셨는데도 초콜릿과 견과류 향이 진하게 느껴진다. 바디감이 좋고 크리미한 텍스쳐가 인상적이다.',
+                  brewingMethod: 'Cold Brew',
+                  grindSize: 'Coarse',
+                  waterTemp: 'Cold',
+                  brewTime: '12시간'
                 },
                 {
                   coffeeInfo: {
@@ -238,7 +519,12 @@ const DeveloperScreen = () => {
                     finish: 4,
                     mouthfeel: 'Clean' as const
                   },
-                  matchScore: { total: 87, flavorScore: 44, sensoryScore: 43 }
+                  matchScore: { total: 87, flavorScore: 44, sensoryScore: 43 },
+                  personalComment: '카페 어니언에서 마신 케냐 커피. 블랙커런트향이 정말 강하고 와인같은 복잡한 맛이 인상적이다. 산미가 강해서 호불호가 갈릴 수 있지만 개성이 뚜렷한 커피다.',
+                  brewingMethod: 'Chemex',
+                  grindSize: 'Medium-Coarse',
+                  waterTemp: '94°C',
+                  brewTime: '5분'
                 },
                 {
                   coffeeInfo: {
@@ -267,7 +553,12 @@ const DeveloperScreen = () => {
                     finish: 4,
                     mouthfeel: 'Silky' as const
                   },
-                  matchScore: { total: 86, flavorScore: 41, sensoryScore: 45 }
+                  matchScore: { total: 86, flavorScore: 41, sensoryScore: 45 },
+                  personalComment: '테라로사 강남점에서 마신 과테말라 안티구아. 초콜릿과 계피향이 조화롭고 바디감이 좋다. 밸런스가 잘 잡혀 있어서 매일 마셔도 질리지 않을 것 같다.',
+                  brewingMethod: 'French Press',
+                  grindSize: 'Coarse',
+                  waterTemp: '95°C',
+                  brewTime: '4분'
                 },
                 {
                   coffeeInfo: {
@@ -297,7 +588,12 @@ const DeveloperScreen = () => {
                     finish: 3,
                     mouthfeel: 'Smooth' as const
                   },
-                  matchScore: { total: 78, flavorScore: 38, sensoryScore: 40 }
+                  matchScore: { total: 78, flavorScore: 38, sensoryScore: 40 },
+                  personalComment: '스타벅스 파이크 플레이스 로스트. 평범하지만 안정적인 맛이다. 초콜릿과 견과류 향이 있지만 특별함은 없다. 그래도 언제 어디서나 마실 수 있다는 장점이 있다.',
+                  brewingMethod: 'Drip',
+                  grindSize: 'Medium',
+                  waterTemp: '90°C',
+                  brewTime: '6분'
                 },
                 {
                   coffeeInfo: {
@@ -327,7 +623,12 @@ const DeveloperScreen = () => {
                     finish: 4,
                     mouthfeel: 'Juicy' as const
                   },
-                  matchScore: { total: 90, flavorScore: 45, sensoryScore: 45 }
+                  matchScore: { total: 90, flavorScore: 45, sensoryScore: 45 },
+                  personalComment: '폴바셋 청담점에서 마신 에티오피아 시다모 아이스커피. 블루베리향이 진짜 블루베리 먹는 것처럼 달콤하고 과일향이 풍부하다. 아이스로 마셔도 향이 살아있어서 놀랐다.',
+                  brewingMethod: 'Pour Over (Iced)',
+                  grindSize: 'Medium-Fine',
+                  waterTemp: '92°C',
+                  brewTime: '3분'
                 },
                 {
                   coffeeInfo: {
@@ -358,7 +659,12 @@ const DeveloperScreen = () => {
                     finish: 4,
                     mouthfeel: 'Syrupy' as const
                   },
-                  matchScore: { total: 88, flavorScore: 44, sensoryScore: 44 }
+                  matchScore: { total: 88, flavorScore: 44, sensoryScore: 44 },
+                  personalComment: '커피랩R 성수점의 온두라스 COE 커피. 복숭아와 오렌지 향이 정말 과일주스 같다. 허니 프로세싱의 특성이 잘 드러나는 커피로 단맛이 자연스럽고 깔끔하다.',
+                  brewingMethod: 'Aeropress',
+                  grindSize: 'Fine',
+                  waterTemp: '88°C',
+                  brewTime: '2분 30초'
                 },
                 {
                   coffeeInfo: {
@@ -388,7 +694,12 @@ const DeveloperScreen = () => {
                     finish: 3,
                     mouthfeel: 'Clean' as const
                   },
-                  matchScore: { total: 82, flavorScore: 40, sensoryScore: 42 }
+                  matchScore: { total: 82, flavorScore: 40, sensoryScore: 42 },
+                  personalComment: '할리스 역삼점에서 마신 코스타리카 타라주. 자몽같은 시트러스 산미가 상쾌하고 깔끔하다. 밀크 초콜릿 뒷맛이 균형을 잡아주어 마시기 편한 커피다.',
+                  brewingMethod: 'Pour Over',
+                  grindSize: 'Medium',
+                  waterTemp: '91°C',
+                  brewTime: '4분 30초'
                 },
                 {
                   coffeeInfo: {
@@ -418,7 +729,12 @@ const DeveloperScreen = () => {
                     finish: 4,
                     mouthfeel: 'Delicate' as const
                   },
-                  matchScore: { total: 84, flavorScore: 42, sensoryScore: 42 }
+                  matchScore: { total: 84, flavorScore: 42, sensoryScore: 42 },
+                  personalComment: '투썸플레이스의 자메이카 블루마운틴. 마일드하고 우아한 맛이다. 꽃향기와 견과류향이 은은하게 느껴지고 뒷맛이 깔끔하다. 비싸지만 그만한 가치가 있는 커피.',
+                  brewingMethod: 'Siphon',
+                  grindSize: 'Medium',
+                  waterTemp: '92°C',
+                  brewTime: '8분'
                 },
                 {
                   coffeeInfo: {
@@ -448,7 +764,12 @@ const DeveloperScreen = () => {
                     finish: 3,
                     mouthfeel: 'Smooth' as const
                   },
-                  matchScore: { total: 80, flavorScore: 39, sensoryScore: 41 }
+                  matchScore: { total: 80, flavorScore: 39, sensoryScore: 41 },
+                  personalComment: '이디야 선릉점의 콜롬비아 수프리모 아이스. 카라멜 단맛과 건포도향이 특징적이다. 아이스로 마셔도 풍미가 살아있고 가격 대비 괜찮은 퀄리티다.',
+                  brewingMethod: 'Cold Drip',
+                  grindSize: 'Medium-Coarse',
+                  waterTemp: 'Cold',
+                  brewTime: '8시간'
                 },
                 {
                   coffeeInfo: {
@@ -479,7 +800,12 @@ const DeveloperScreen = () => {
                     finish: 5,
                     mouthfeel: 'Tea-like' as const
                   },
-                  matchScore: { total: 94, flavorScore: 48, sensoryScore: 46 }
+                  matchScore: { total: 94, flavorScore: 48, sensoryScore: 46 },
+                  personalComment: 'A투썸의 파나마 게이샤는 정말 놀라운 커피였다. 패션프루트와 자스민향이 엄청나게 화려하고 베르가못향까지 느껴진다. 마치 향수를 마시는 것 같은 경험이었다.',
+                  brewingMethod: 'V60',
+                  grindSize: 'Medium-Fine',
+                  waterTemp: '89°C',
+                  brewTime: '3분'
                 },
                 {
                   coffeeInfo: {
@@ -509,7 +835,12 @@ const DeveloperScreen = () => {
                     finish: 2,
                     mouthfeel: 'Heavy' as const
                   },
-                  matchScore: { total: 72, flavorScore: 35, sensoryScore: 37 }
+                  matchScore: { total: 72, flavorScore: 35, sensoryScore: 37 },
+                  personalComment: '메가커피의 베트남 로부스타 블렌드. 진하고 쓴맛이 강하다. 고무냄새와 탄맛이 느껴져서 개인적으로는 별로였다. 하지만 가격이 저렴해서 그런가보다.',
+                  brewingMethod: 'Espresso (Iced)',
+                  grindSize: 'Fine',
+                  waterTemp: '93°C',
+                  brewTime: '25초'
                 },
                 {
                   coffeeInfo: {
@@ -541,16 +872,36 @@ const DeveloperScreen = () => {
                     finish: 4,
                     mouthfeel: 'Silky' as const
                   },
-                  matchScore: { total: 91, flavorScore: 46, sensoryScore: 45 }
+                  matchScore: { total: 91, flavorScore: 46, sensoryScore: 45 },
+                  personalComment: '매머드커피 이태원점의 르완다 부르봉. 딸기향이 정말 진하고 흑설탕의 단맛이 좋다. 홍차같은 깔끔한 뒷맛도 마음에 든다. 아프리카 커피의 매력을 잘 보여주는 커피다.',
+                  brewingMethod: 'Kalita Wave',
+                  grindSize: 'Medium',
+                  waterTemp: '93°C',
+                  brewTime: '5분 30초'
                 }
               ];
 
               // Save test data 
-              for (const testTasting of testTastings) {
-                await realmService.saveTasting(testTasting);
+              console.log('🧪 Saving test data - total items:', testTastings.length);
+              for (let i = 0; i < testTastings.length; i++) {
+                const testTasting = testTastings[i];
+                console.log(`🧪 Saving item ${i + 1}:`, testTasting.coffeeInfo.coffeeName);
+                try {
+                  const savedRecord = await realmService.saveTasting(testTasting);
+                  console.log(`✅ Saved item ${i + 1} with ID:`, savedRecord.id);
+                } catch (error) {
+                  console.error(`❌ Failed to save item ${i + 1}:`, error);
+                }
               }
               
-              Alert.alert('완료', `${testTastings.length}개의 테스트 데이터가 추가되었습니다.\n\n다양한 커피숍과 로스터리의 커피 ${testTastings.length}개가 추가되었으며, 각각 고유한 향미 프로필을 가지고 있습니다.\n\n참고: 새로운 커피 발견 알림이 표시될 수 있습니다.`);
+              // Verify data was saved
+              const allRecords = realmService.getTastingRecords({ isDeleted: false });
+              console.log('🔍 Total records in database after saving:', allRecords.length);
+              
+              const uniqueRoasters = [...new Set(testTastings.map(t => t.coffeeInfo.roastery))];
+              const uniqueCafes = [...new Set(testTastings.map(t => t.coffeeInfo.cafeName))];
+              
+              Alert.alert('완료', `${testTastings.length}개의 테스트 데이터가 추가되었습니다.\n\n📍 카페: ${uniqueCafes.length}곳\n☕ 로스터리: ${uniqueRoasters.length}곳\n🎯 커피: ${testTastings.length}종\n\n포함된 로스터리:\n${uniqueRoasters.slice(0, 3).join(', ')}${uniqueRoasters.length > 3 ? ` 외 ${uniqueRoasters.length - 3}곳` : ''}\n\n참고: 새로운 커피 발견 알림이 표시될 수 있습니다.`);
             } catch (error) {
               console.error('테스트 데이터 추가 오류:', error);
               const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
@@ -902,9 +1253,49 @@ const DeveloperScreen = () => {
               <Text style={styles.actionGroupTitle}>데이터 생성</Text>
               <ActionButton
                 icon="☕"
-                title="테스트 데이터 추가 (5개)"
+                title="테스트 데이터 추가 (14개)"
                 onPress={handleAddTestData}
                 style={styles.dataButton}
+              />
+              <ActionButton
+                icon="🧪"
+                title="간단한 테스트 (1개)"
+                onPress={handleAddSimpleTest}
+                style={styles.dataButton}
+              />
+              <ActionButton
+                icon="⚡"
+                title="빠른 테스트 (5개)"
+                onPress={handleAddQuickTest}
+                style={styles.dataButton}
+              />
+              <ActionButton
+                icon="🧪"
+                title="데이터 테스트 화면"
+                onPress={() => navigation.navigate('DataTest')}
+                style={styles.actionButton}
+              />
+            </View>
+            
+            <View style={styles.actionGroup}>
+              <Text style={styles.actionGroupTitle}>스크린샷 도구</Text>
+              <ActionButton
+                icon="📸"
+                title="스크린샷 가이드"
+                onPress={handleScreenshotGuide}
+                style={styles.actionButton}
+              />
+              <ActionButton
+                icon="🖼️"
+                title="저장된 스크린샷 보기"
+                onPress={handleViewScreenshots}
+                style={styles.actionButton}
+              />
+              <ActionButton
+                icon="🗑️"
+                title="스크린샷 모두 삭제"
+                onPress={handleClearScreenshots}
+                style={styles.warningButton}
               />
             </View>
             

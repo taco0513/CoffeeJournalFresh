@@ -3,8 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { supabase } from '@/lib/supabase';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  AreaChart, Area, ComposedChart, ScatterChart, Scatter, RadialBarChart, RadialBar, FunnelChart, Funnel, LabelList
+} from 'recharts';
+import { supabase } from '@/lib/supabase/client';
 import { format, subDays, parseISO } from 'date-fns';
 
 interface AnalyticsData {
@@ -32,13 +36,53 @@ interface PopularScreens {
   view_count: number;
 }
 
+interface HourlyActivity {
+  hour: number;
+  users: number;
+  events: number;
+  day: string;
+}
+
+interface RetentionData {
+  cohort: string;
+  day0: number;
+  day1: number;
+  day7: number;
+  day14: number;
+  day30: number;
+}
+
+interface FunnelData {
+  step: string;
+  users: number;
+  retention_rate: number;
+  step_order: number;
+}
+
+interface FeatureTrend {
+  date: string;
+  coffee_logging: number;
+  flavor_selection: number;
+  photo_upload: number;
+  social_features: number;
+  search_usage: number;
+}
+
 const COLORS = ['#8B4513', '#CD853F', '#DEB887', '#F4A460', '#D2691E'];
 
 export default function AnalyticsPage() {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData[]>([]);
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
   const [popularScreens, setPopularScreens] = useState<PopularScreens[]>([]);
+  const [hourlyActivity, setHourlyActivity] = useState<HourlyActivity[]>([]);
+  const [retentionData, setRetentionData] = useState<RetentionData[]>([]);
+  const [funnelData, setFunnelData] = useState<FunnelData[]>([]);
+  const [featureTrends, setFeatureTrends] = useState<FeatureTrend[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Interactive filters
+  const [selectedTimeRange, setSelectedTimeRange] = useState('7d');
+  const [selectedDayOfWeek, setSelectedDayOfWeek] = useState('Mon');
   const [totalStats, setTotalStats] = useState({
     totalUsers: 0,
     totalSessions: 0,
@@ -50,6 +94,60 @@ export default function AnalyticsPage() {
   useEffect(() => {
     fetchAnalyticsData();
   }, []);
+
+  // Generate mock data for new charts (replace with real Supabase queries)
+  const generateMockHourlyActivity = (): HourlyActivity[] => {
+    const data: HourlyActivity[] = [];
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    
+    days.forEach(day => {
+      for (let hour = 0; hour < 24; hour++) {
+        data.push({
+          hour,
+          day,
+          users: Math.floor(Math.random() * 50) + (hour >= 9 && hour <= 21 ? 20 : 5),
+          events: Math.floor(Math.random() * 200) + (hour >= 9 && hour <= 21 ? 100 : 20),
+        });
+      }
+    });
+    
+    return data;
+  };
+
+  const generateMockRetentionData = (): RetentionData[] => {
+    return [
+      { cohort: 'Week 1', day0: 100, day1: 85, day7: 65, day14: 45, day30: 30 },
+      { cohort: 'Week 2', day0: 120, day1: 95, day7: 75, day14: 55, day30: 35 },
+      { cohort: 'Week 3', day0: 140, day1: 110, day7: 85, day14: 60, day30: 40 },
+      { cohort: 'Week 4', day0: 160, day1: 125, day7: 95, day14: 70, day30: 45 },
+    ];
+  };
+
+  const generateMockFunnelData = (): FunnelData[] => {
+    return [
+      { step: 'App Opens', users: 1000, retention_rate: 100, step_order: 1 },
+      { step: 'Start Coffee Log', users: 750, retention_rate: 75, step_order: 2 },
+      { step: 'Coffee Info Entry', users: 600, retention_rate: 60, step_order: 3 },
+      { step: 'Flavor Selection', users: 450, retention_rate: 45, step_order: 4 },
+      { step: 'Complete Tasting', users: 300, retention_rate: 30, step_order: 5 },
+    ];
+  };
+
+  const generateMockFeatureTrends = (): FeatureTrend[] => {
+    const data: FeatureTrend[] = [];
+    for (let i = 14; i >= 0; i--) {
+      const date = format(subDays(new Date(), i), 'yyyy-MM-dd');
+      data.push({
+        date,
+        coffee_logging: Math.floor(Math.random() * 100) + 50,
+        flavor_selection: Math.floor(Math.random() * 80) + 30,
+        photo_upload: Math.floor(Math.random() * 60) + 20,
+        social_features: Math.floor(Math.random() * 40) + 10,
+        search_usage: Math.floor(Math.random() * 70) + 25,
+      });
+    }
+    return data;
+  };
 
   const fetchAnalyticsData = async () => {
     try {
@@ -112,6 +210,12 @@ export default function AnalyticsPage() {
       setAnalyticsData(analytics || []);
       setPerformanceData(performance || []);
       setPopularScreens(popularScreensData);
+      
+      // Set mock data for new charts
+      setHourlyActivity(generateMockHourlyActivity());
+      setRetentionData(generateMockRetentionData());
+      setFunnelData(generateMockFunnelData());
+      setFeatureTrends(generateMockFeatureTrends());
       setTotalStats({
         totalUsers,
         totalSessions,
@@ -196,10 +300,12 @@ export default function AnalyticsPage() {
       </div>
 
       <Tabs defaultValue="usage" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="usage">User Engagement</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="screens">Screen Analytics</TabsTrigger>
+          <TabsTrigger value="advanced">Advanced Insights</TabsTrigger>
+          <TabsTrigger value="funnel">User Journey</TabsTrigger>
         </TabsList>
 
         <TabsContent value="usage" className="space-y-4">
@@ -389,6 +495,260 @@ export default function AnalyticsPage() {
                       <div className="text-right">
                         <div className="text-lg font-bold text-amber-900">{screen.view_count}</div>
                         <div className="text-xs text-amber-600">views</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="advanced" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Hourly Activity Heatmap */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-amber-900">Activity Heatmap</CardTitle>
+                <CardDescription>User activity by hour and day of week</CardDescription>
+                <div className="flex space-x-2 mt-2">
+                  <Select value={selectedDayOfWeek} onValueChange={setSelectedDayOfWeek}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Day" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Mon">Monday</SelectItem>
+                      <SelectItem value="Tue">Tuesday</SelectItem>
+                      <SelectItem value="Wed">Wednesday</SelectItem>
+                      <SelectItem value="Thu">Thursday</SelectItem>
+                      <SelectItem value="Fri">Friday</SelectItem>
+                      <SelectItem value="Sat">Saturday</SelectItem>
+                      <SelectItem value="Sun">Sunday</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <ComposedChart data={hourlyActivity.filter(h => h.day === selectedDayOfWeek)}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="hour" 
+                      tickFormatter={(value) => `${value}:00`}
+                    />
+                    <YAxis />
+                    <Tooltip 
+                      formatter={(value: number, name: string) => [value, name]}
+                      labelFormatter={(value) => `${value}:00`}
+                    />
+                    <Legend />
+                    <Area
+                      type="monotone"
+                      dataKey="users"
+                      fill="#8B4513"
+                      fillOpacity={0.3}
+                      stroke="#8B4513"
+                      strokeWidth={2}
+                      name="Active Users"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="events"
+                      stroke="#CD853F"
+                      strokeWidth={2}
+                      name="Events"
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* User Retention Cohort */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-amber-900">User Retention Cohorts</CardTitle>
+                <CardDescription>User return rates by signup week</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={retentionData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="cohort" />
+                    <YAxis />
+                    <Tooltip 
+                      formatter={(value: number) => [`${value} users`, 'Users']}
+                    />
+                    <Legend />
+                    <Line type="monotone" dataKey="day0" stroke="#8B4513" strokeWidth={3} name="Day 0" />
+                    <Line type="monotone" dataKey="day1" stroke="#CD853F" strokeWidth={2} name="Day 1" />
+                    <Line type="monotone" dataKey="day7" stroke="#DEB887" strokeWidth={2} name="Day 7" />
+                    <Line type="monotone" dataKey="day14" stroke="#F4A460" strokeWidth={2} name="Day 14" />
+                    <Line type="monotone" dataKey="day30" stroke="#D2691E" strokeWidth={2} name="Day 30" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Feature Usage Trends */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle className="text-amber-900">Feature Usage Trends</CardTitle>
+                <CardDescription>How different features are being adopted over time</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={400}>
+                  <AreaChart data={featureTrends}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="date" 
+                      tickFormatter={(value) => format(parseISO(value), 'MMM dd')}
+                    />
+                    <YAxis />
+                    <Tooltip 
+                      labelFormatter={(value) => format(parseISO(value), 'PPP')}
+                      formatter={(value: number, name: string) => [value, name]}
+                    />
+                    <Legend />
+                    <Area
+                      type="monotone"
+                      dataKey="coffee_logging"
+                      stackId="1"
+                      stroke="#8B4513"
+                      fill="#8B4513"
+                      fillOpacity={0.8}
+                      name="Coffee Logging"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="flavor_selection"
+                      stackId="1"
+                      stroke="#CD853F"
+                      fill="#CD853F"
+                      fillOpacity={0.8}
+                      name="Flavor Selection"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="search_usage"
+                      stackId="1"
+                      stroke="#DEB887"
+                      fill="#DEB887"
+                      fillOpacity={0.8}
+                      name="Search"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="photo_upload"
+                      stackId="1"
+                      stroke="#F4A460"
+                      fill="#F4A460"
+                      fillOpacity={0.8}
+                      name="Photo Upload"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="social_features"
+                      stackId="1"
+                      stroke="#D2691E"
+                      fill="#D2691E"
+                      fillOpacity={0.8}
+                      name="Social Features"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="funnel" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Coffee Tasting Funnel */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-amber-900">Coffee Tasting Funnel</CardTitle>
+                <CardDescription>User conversion through the tasting flow</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart 
+                    data={funnelData} 
+                    layout="horizontal"
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="step" type="category" width={120} />
+                    <Tooltip 
+                      formatter={(value: number, name: string) => [
+                        name === 'users' ? `${value} users` : `${value}%`,
+                        name === 'users' ? 'Users' : 'Retention Rate'
+                      ]}
+                    />
+                    <Legend />
+                    <Bar dataKey="users" fill="#8B4513" name="Users" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Conversion Rate Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-amber-900">Conversion Rates</CardTitle>
+                <CardDescription>Step-by-step retention analysis</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={400}>
+                  <LineChart data={funnelData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="step_order" />
+                    <YAxis domain={[0, 100]} />
+                    <Tooltip 
+                      formatter={(value: number) => [`${value}%`, 'Retention Rate']}
+                      labelFormatter={(value) => `Step ${value}`}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="retention_rate"
+                      stroke="#8B4513"
+                      strokeWidth={3}
+                      dot={{ fill: '#8B4513', strokeWidth: 2, r: 6 }}
+                      name="Retention Rate"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Funnel Summary Table */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle className="text-amber-900">Funnel Summary</CardTitle>
+                <CardDescription>Detailed breakdown of user journey</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {funnelData.map((step, index) => (
+                    <div key={step.step} className="flex items-center justify-between p-4 bg-amber-50 rounded-lg">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-10 h-10 bg-amber-200 rounded-full flex items-center justify-center text-lg font-bold text-amber-800">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-amber-900">{step.step}</h3>
+                          <p className="text-sm text-amber-600">{step.retention_rate}% retention rate</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-amber-900">{step.users}</div>
+                        <div className="text-sm text-amber-600">users</div>
+                        {index > 0 && (
+                          <div className="text-xs text-red-600">
+                            -{funnelData[index - 1].users - step.users} dropped off
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}

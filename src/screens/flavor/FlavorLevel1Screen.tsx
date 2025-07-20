@@ -87,7 +87,13 @@ const FlavorLevel1Screen = () => {
           <Text style={styles.backButtonText}>‹ 뒤로</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>플레이버 선택</Text>
-        <Text style={styles.progressIndicator}>4/6</Text>
+        <TouchableOpacity 
+          style={styles.skipButton}
+          onPress={() => navigation.navigate('Sensory' as never)}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={styles.skipButtonText}>건너뛰기</Text>
+        </TouchableOpacity>
       </View>
       
       {/* 진행 상태 바 */}
@@ -201,12 +207,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: HIGColors.label,
   },
-  progressIndicator: {
-    fontSize: 15,
-    fontWeight: '400',
-    color: HIGColors.secondaryLabel,
-    minWidth: HIGConstants.MIN_TOUCH_TARGET,
-    textAlign: 'right',
+  skipButton: {
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
+  },
+  skipButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: HIGColors.systemBlue,
   },
   progressBar: {
     height: 4,

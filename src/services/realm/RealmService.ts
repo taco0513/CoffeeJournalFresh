@@ -148,40 +148,51 @@ class RealmService {
             safeData.selectedFlavors.forEach((flavorPath, index) => {
               // console.log(`FlavorPath ${index}:`, flavorPath);
               if (flavorPath && typeof flavorPath === 'object') {
-                // Level 1 flavor
-                if (flavorPath.level1) {
+                // Handle test data format: { level, value, koreanValue }
+                if (flavorPath.level && flavorPath.value) {
                   flavorNotes.push({
-                    level: 1,
-                    value: flavorPath.level1,
-                    koreanValue: undefined,
+                    level: flavorPath.level,
+                    value: flavorPath.value,
+                    koreanValue: flavorPath.koreanValue,
                   });
                 }
-                
-                // Level 2 flavor
-                if (flavorPath.level2) {
-                  flavorNotes.push({
-                    level: 2,
-                    value: flavorPath.level2,
-                    koreanValue: undefined,
-                  });
-                }
-                
-                // Level 3 flavor
-                if (flavorPath.level3) {
-                  flavorNotes.push({
-                    level: 3,
-                    value: flavorPath.level3,
-                    koreanValue: undefined,
-                  });
-                }
-                
-                // Level 4 flavor
-                if (flavorPath.level4) {
-                  flavorNotes.push({
-                    level: 4,
-                    value: flavorPath.level4,
-                    koreanValue: undefined,
-                  });
+                // Handle original format: { level1, level2, level3, level4 }
+                else {
+                  // Level 1 flavor
+                  if (flavorPath.level1) {
+                    flavorNotes.push({
+                      level: 1,
+                      value: flavorPath.level1,
+                      koreanValue: undefined,
+                    });
+                  }
+                  
+                  // Level 2 flavor
+                  if (flavorPath.level2) {
+                    flavorNotes.push({
+                      level: 2,
+                      value: flavorPath.level2,
+                      koreanValue: undefined,
+                    });
+                  }
+                  
+                  // Level 3 flavor
+                  if (flavorPath.level3) {
+                    flavorNotes.push({
+                      level: 3,
+                      value: flavorPath.level3,
+                      koreanValue: undefined,
+                    });
+                  }
+                  
+                  // Level 4 flavor
+                  if (flavorPath.level4) {
+                    flavorNotes.push({
+                      level: 4,
+                      value: flavorPath.level4,
+                      koreanValue: undefined,
+                    });
+                  }
                 }
               }
             });

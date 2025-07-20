@@ -66,7 +66,7 @@ const SensoryScreen = () => {
     updateField('mouthfeel', mouthfeel);
     
     // 개인 감상평 화면으로 이동
-    navigation.navigate('PersonalComment' as never);
+    navigation.navigate('PersonalComment');
   };
 
   const renderSlider = (

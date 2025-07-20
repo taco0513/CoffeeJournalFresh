@@ -6,7 +6,7 @@ import { useUserStore } from '../stores/useUserStore';
 import { FeedbackService } from '../services/FeedbackService';
 
 export function useShakeToFeedback() {
-  const { showFeedback, enableShakeToFeedback, setBetaStatus } = useFeedbackStore();
+  const { showSmartFeedback, enableShakeToFeedback, setBetaStatus } = useFeedbackStore();
   const { currentUser } = useUserStore();
   const isHandlingShake = useRef(false);
 
@@ -22,7 +22,9 @@ export function useShakeToFeedback() {
       if (isHandlingShake.current) return;
       
       isHandlingShake.current = true;
-      showFeedback();
+      
+      // Use smart feedback instead of regular feedback
+      showSmartFeedback();
       
       // Reset flag after a delay
       setTimeout(() => {
@@ -38,14 +40,12 @@ export function useShakeToFeedback() {
         RNShake.removeAllListeners();
       }
     };
-  }, [enableShakeToFeedback, currentUser?.id, showFeedback, setBetaStatus]);
+  }, [enableShakeToFeedback, currentUser?.id, showSmartFeedback, setBetaStatus]);
 }
 
 // Hook to initialize shake detection when app starts
 export function initializeShakeDetection() {
   // This is called once in the app's entry point
-  if (Platform.OS === 'android') {
-    // Android requires explicit start
-    RNShake.startListening();
-  }
+  // react-native-shake automatically starts listening when listeners are added
+  // No explicit startListening method needed
 }
