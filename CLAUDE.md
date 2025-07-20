@@ -5,6 +5,42 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
 
 ## Recent Progress (2025-07-20)
 
+### AI Strategy Redefinition & Implementation 🤖
+- ✅ **COMPLETE AI Terminology Overhaul**
+  - **Phase 1**: LiteAI Coach removal from MVP (services preserved for Phase 3)
+  - **Phase 2**: 3-Phase AI Strategy document created (`/docs/AI_STRATEGY_ROADMAP.md`)
+  - **Phase 3**: Comprehensive terminology audit and updates across entire codebase
+  - **Result**: Honest, data-driven communication with clear roadmap
+
+- ✅ **3-Phase AI Strategy Established**
+  - **Phase 1 (MVP)**: Data collection + basic analytics (no "AI" claims)
+  - **Phase 2 (6mo)**: Pattern recognition + smart recommendations  
+  - **Phase 3 (1yr+)**: True AI/ML with sufficient data foundation
+  - **Prerequisites**: 1000+ users, 10,000+ tastings, standardized data
+
+- ✅ **Complete Documentation Updates**
+  - `/docs/AI_STRATEGY_ROADMAP.md` - New comprehensive strategy
+  - `CLAUDE.md` - Updated with honest approach
+  - `/docs/PERSONAL_TASTE_ENHANCEMENT_SPEC.md` - "LiteAI Coach" → "Smart Insights (Phase 3)"
+  - `/docs/09-AI-MAPPING.md` - Added Phase 3 deprecation notice
+  - `/docs/LITE_AI_COACH_INTEGRATION.md` - DEPRECATED notice added
+  - `MVP_v0.4.0_DETAILED_WITH_AI_COACH.md` - Deprecation notice
+  - `MIGRATION_v0.4.0_README.md` - "AI-generated" → "Data-driven insights"
+
+- ✅ **UI Terminology Updates**
+  - PersonalTasteDashboard: "AI 인사이트" → "데이터 인사이트"
+  - OnboardingScreen: "AI 코치와 함께 성장" → "데이터 기반 인사이트로 성장"
+  - All user-facing "AI" terminology replaced with honest alternatives
+  - Quality Score implementation (avgMatchScore * 0.7 + qualityRatio * 30)
+
+- ✅ **Technical Implementation**
+  - All AI services moved to "Future Roadmap" status
+  - Rule-based pattern matching for current analytics
+  - Data collection infrastructure maintained for future ML training
+  - Backward compatibility preserved for Phase 3 implementation
+
+## Recent Progress (2025-07-20)
+
 ### UI/UX Consistency Updates 🎨
 - ✅ **Coffee Card Score Style Unification**
   - Unified score display across Home and Journal screens
@@ -176,7 +212,7 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
   - PersonalTasteAnalysisService: Analyzes taste patterns and generates recommendations
   - FlavorLearningEngine: Manages flavor learning progress and personalized quizzes
   - AchievementSystem: Tracks 15+ achievement types with progress tracking
-  - LiteAICoachService: Provides contextual tips and personalized guidance
+  - ~~LiteAICoachService~~ → **Moved to Future Roadmap**
   
 - ✅ **Database Layer**
   - SQL migrations for taste profiles, learning progress, achievements
@@ -184,13 +220,13 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
   - Complete TypeScript types in `/src/types/personalTaste.ts`
   
 - ✅ **UI Components Created**
-  - Coach components: CoachTipCard, CoachInsightBanner, CoachFeedbackModal
+  - ~~Coach components~~ → **Moved to Future Roadmap**
   - Personal taste components: FlavorRadarChart, TasteProfileCard, GrowthTimeline
   - FlavorMasteryMap and PersonalStatsGrid for analytics visualization
   
 - ✅ **Hooks & Integration**
   - usePersonalTaste: Main hook for taste analysis data
-  - useLiteAICoach: AI coach integration with daily insights
+  - ~~useLiteAICoach~~ → **Moved to Future Roadmap**
   - useAchievements: Achievement tracking and unlocking
   - useFlavorMastery: Flavor learning progress tracking
   - Full guest mode support with comprehensive mock data
@@ -324,7 +360,7 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
   - Immediate mock data display without loading screens for guests
   - All personal taste hooks optimized for guest experience:
     - usePersonalTaste: Shows mock taste patterns and recommendations
-    - useLiteAICoach: Shows mock daily insights and learning paths
+    - ~~useLiteAICoach~~ → **Moved to Future Roadmap**
     - useAchievements: Shows mock achievements and statistics
     - useFlavorMastery: Shows mock flavor mastery levels
 
@@ -408,11 +444,11 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
 - **src/services/PersonalTasteAnalysisService.ts**: Core taste analysis engine
 - **src/services/FlavorLearningEngine.ts**: Flavor education and quiz system
 - **src/services/AchievementSystem.ts**: Achievement tracking and rewards
-- **src/services/LiteAICoachService.ts**: AI-powered coaching guidance
+- ~~**src/services/LiteAICoachService.ts**~~ → **Moved to Future Roadmap**
 - **src/types/personalTaste.ts**: Complete type definitions
 - **src/database/migrations/v0.4.0_personal_taste_discovery.sql**: Database schema
 - **src/database/schemas/PersonalTasteSchemas.ts**: Realm schemas for offline support
-- **src/components/coach/**: AI coach UI components (3 files)
+- ~~**src/components/coach/**~~ → **Moved to Future Roadmap**
 - **src/components/personalTaste/**: Personal taste UI components (5 files)
 - **src/hooks/useCoffeeNotifications.ts**: Real-time notification hook
 
@@ -506,9 +542,10 @@ watchman watch-del-all
 - **Testing**: Ready for TestFlight deployment
 
 ### 📱 Mobile App Features
+- **Data-Driven Analytics**: Quality Score system, pattern recognition, honest statistics
+- **Personal Taste Discovery**: Interactive quiz system, preference tracking (no "AI" claims)
+- **Smart Recommendations**: Data-based suggestions without ML terminology
 - **Beta Feedback System**: Shake-to-feedback, floating button, comprehensive forms
-- **Personal Taste Quiz**: Complete interactive system ready for testing
-- **Personal Taste Analysis**: Fully functional with comprehensive mock data
 - **Apple Sign-In**: Ready for device testing
 - **Google Sign-In**: Implementation complete, awaiting OAuth credentials
 - **Developer Mode**: Complete testing suite with realistic mock data
@@ -532,11 +569,17 @@ watchman watch-del-all
 ## Feature Backlog
 
 ### High Priority
-1. ✅ **Google OAuth Configuration**: ~~Complete Google Sign-In setup~~ **DONE (2025-07-20)**
-   - Implementation complete, developer needs to add credentials
-   - See `/docs/GOOGLE_OAUTH_SETUP.md` for instructions
+1. ✅ **AI Strategy Implementation**: ~~Complete AI feature restructuring~~ **DONE (2025-07-20)**
+   - LiteAI Coach removed from MVP
+   - 3-phase roadmap established at `/docs/AI_STRATEGY_ROADMAP.md`
+   - Terminology updated to honest, data-driven language
+   - Quality Score system implemented
 2. **TypeScript Error Resolution**: Fix remaining 112 TS errors
-3. **Test Coverage**: Expand unit and integration tests
+3. **Data Analytics Enhancement**: Implement Phase 1 AI strategy
+   - User behavior tracking
+   - A/B testing framework
+   - Advanced pattern recognition
+4. **Test Coverage**: Expand unit and integration tests
 
 ### Medium Priority
 1. ✅ **Web Admin Dashboard** ~~(NEW)~~ **COMPLETED MVP (2025-07-20)**
@@ -586,3 +629,76 @@ watchman watch-del-all
    - Qualitative descriptors (e.g., Fresh vs Jammy Blackberry)
    - More nuanced tasting notes for professional cuppers
    - Enhanced matching accuracy with roaster notes
+
+## Future Roadmap (Post-MVP)
+
+### 🤖 **AI Strategy Implementation** (3-Phase Roadmap)
+
+#### **Phase 1: Data Foundation** (Current MVP - 6 months)
+- ✅ Basic statistics and pattern recognition
+- ✅ Quality Score metric implementation
+- ✅ Data collection infrastructure
+- 🔄 User behavior tracking and analytics
+- 🔄 A/B testing framework for feature validation
+
+#### **Phase 2: Smart Patterns** (6 months - 1 year)
+**Prerequisites**: 1,000+ users, 10,000+ tastings
+- Pattern recognition and clustering algorithms
+- Seasonal preference analysis
+- Similar user group identification  
+- Basic recommendation system (collaborative filtering)
+- Smart insights without "AI" branding
+
+#### **Phase 3: True AI Implementation** (1+ years)
+**Prerequisites**: 10,000+ users, 100,000+ tastings
+- Machine Learning models for flavor prediction
+- Neural networks for personalized recommendations
+- Natural language processing for tasting notes
+- Reinforcement learning from user feedback
+- **Only then**: Legitimate "AI" terminology usage
+
+### 🎯 **Enhanced AI Coach Features** (Phase 3 Implementation)
+1. **ML-Powered Coaching System**
+   - Real-time tasting guidance with ML predictions
+   - Post-tasting feedback with algorithmic analysis
+   - Personalized insights based on behavior patterns
+   - Adaptive learning paths using reinforcement learning
+
+2. **AI Coach Components** (Re-implementation)
+   - CoachTipCard: ML-driven contextual recommendations
+   - CoachInsightBanner: Data-driven daily insights
+   - CoachFeedbackModal: Algorithm-based detailed feedback
+   - Conversational AI interface for natural interaction
+
+3. **Advanced Integration**
+   - Computer vision for coffee bean/brewing analysis
+   - Predictive modeling for taste preferences
+   - Community-driven collaborative filtering
+   - Real-time adaptation based on user interactions
+
+### 🎯 **Mission/Challenge Features** (Removed from MVP)
+1. **Daily Missions and Challenges**
+   - "매일 커피 기록" 압박감 제거
+   - 연속 기록 시스템 제외
+   - 일일 목표 및 보상 시스템 제거
+   
+2. **Minimal "Today's Discovery" (대안)**
+   - 선택적 참여 가능한 가벼운 제안
+   - 교육적 가치 중심 (보상 없음)
+   - 주 1회 정도의 특별한 탐험 권유
+   
+3. **Philosophy**
+   - "의무"가 아닌 "영감"
+   - 스페셜티 커피의 현실적 소비 패턴 반영
+   - 부담 없는 장기적 사용 유도
+
+### 🌐 **Language Settings**
+- Move language toggle to Profile > Settings menu
+- Support for multiple languages beyond Korean/English
+- Localized content for different regions
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.

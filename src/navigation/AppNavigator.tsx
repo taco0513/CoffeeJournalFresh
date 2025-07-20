@@ -17,7 +17,6 @@ import RoasterNotesScreen from '../screens/RoasterNotesScreen';
 import FlavorLevel1Screen from '../screens/flavor/FlavorLevel1Screen';
 import FlavorLevel2Screen from '../screens/flavor/FlavorLevel2Screen';
 import FlavorLevel3Screen from '../screens/flavor/FlavorLevel3Screen';
-// import FlavorLevel4Screen from '../screens/flavor/FlavorLevel4Screen'; // Feature Backlog
 import SensoryScreen from '../screens/SensoryScreen';
 import PersonalCommentScreen from '../screens/PersonalCommentScreen';
 import ResultScreen from '../screens/ResultScreen';
@@ -82,12 +81,6 @@ function TastingFlow() {
         component={FlavorLevel3Screen} 
         options={{title: 'Select Flavor'}}
       />
-      {/* Feature Backlog - Level 4 (Detailed Descriptors) */}
-      {/* <Stack.Screen 
-        name="FlavorLevel4" 
-        component={FlavorLevel4Screen} 
-        options={{title: 'Select Details'}}
-      /> */}
       <Stack.Screen 
         name="Sensory" 
         component={SensoryScreen} 

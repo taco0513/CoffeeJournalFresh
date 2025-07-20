@@ -1,8 +1,10 @@
 # AI Mapping Logic Documentation
 
+> **⚠️ CURRENT STATUS (July 2025)**: This AI mapping system has been moved to Phase 3 of our AI roadmap (1+ years). Currently implementing rule-based pattern matching in MVP. See `/docs/AI_STRATEGY_ROADMAP.md` for current approach.
+
 ## Overview
 
-The Coffee Tasting Journal implements a sophisticated AI-powered matching algorithm that compares user flavor selections and sensory evaluations with roaster notes to provide objective feedback on tasting accuracy. This document details the algorithm's architecture, implementation, and optimization strategies.
+The Coffee Tasting Journal will implement a sophisticated AI-powered matching algorithm that compares user flavor selections and sensory evaluations with roaster notes to provide objective feedback on tasting accuracy. This document details the planned algorithm's architecture, implementation, and optimization strategies for future development.
 
 ## Algorithm Architecture
 
@@ -84,13 +86,12 @@ const parseRoasterNotes = (notes: string): ParsedNotes => {
 ## Flavor Matching Algorithm
 
 ### Hierarchical Matching
-The algorithm uses a 4-level hierarchical approach based on the SCA flavor wheel:
+The algorithm uses a 3-level hierarchical approach based on the SCA flavor wheel:
 
 ```typescript
 // Level 1: Primary categories (Fruity, Floral, etc.)
 // Level 2: Secondary categories (Berry, Citrus, etc.)
 // Level 3: Specific flavors (Blueberry, Lemon, etc.)
-// Level 4: Flavor descriptors (Bright, Sweet, etc.)
 
 const getFlavorVariations = (flavor: string): string[] => {
   const variations = new Set<string>();
@@ -391,8 +392,7 @@ describe('Flavor Matching Algorithm', () => {
     const result = calculateFlavorMatch('bright citrus', {
       level1: [],
       level2: ['Citrus'],
-      level3: [],
-      level4: ['Bright']
+      level3: []
     });
     
     expect(result).toBeGreaterThan(80);
@@ -402,8 +402,7 @@ describe('Flavor Matching Algorithm', () => {
     const result = calculateFlavorMatch('과일향', {
       level1: ['Fruity'],
       level2: [],
-      level3: [],
-      level4: []
+      level3: []
     });
     
     expect(result).toBeGreaterThan(70);

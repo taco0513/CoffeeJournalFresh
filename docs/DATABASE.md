@@ -45,7 +45,6 @@
 | level1 | String | 1단계 Category (예: Fruity) | ✅ | - |
 | level2 | String | 2단계 Subcategory (예: Berry) | ❌ | null |
 | level3 | String | 3단계 Specific (예: Blackberry) | ❌ | null |
-| level4 | String | 4단계 Descriptor (예: Ripe) | ❌ | null |
 | raw_note | String | 사용자 원본 입력 (AI 매핑 전) | ❌ | null |
 | order_index | Integer | 표시 순서 | ✅ | 0 |
 
@@ -138,7 +137,7 @@ SCA 플레이버 휠 마스터 데이터
 | 필드명 | 타입 | 설명 | 필수 | 기본값 |
 |--------|------|------|------|--------|
 | id | UUID | 고유 식별자 | ✅ | 자동생성 |
-| level | Integer | 단계 (1-4) | ✅ | - |
+| level | Integer | 단계 (1-3) | ✅ | - |
 | parent_id | UUID | 상위 항목 ID | ❌ | null |
 | name_en | String | 영문명 | ✅ | - |
 | name_ko | String | 한글명 | ✅ | - |
@@ -231,14 +230,13 @@ const FlavorNoteSchema = {
     level1: 'string',         // Category (필수)
     level2: 'string?',        // Subcategory (선택)
     level3: 'string?',        // Specific (선택)
-    level4: 'string?',        // Descriptor (선택)
     raw_note: 'string?',      // AI 매핑 전 원본 (Phase 2)
     order_index: { type: 'int', default: 0 }
   }
 };
 
 // 예시: 한 테이스팅에 여러 FlavorNote 레코드 생성
-// - Fruity > Berry > Blueberry > Ripe
+// - Fruity > Berry > Blueberry
 // - Sweet > Chocolate
 // - Roasted > Nutty
 ```
@@ -321,7 +319,6 @@ CREATE TABLE flavor_notes (
   level1 VARCHAR(100) NOT NULL,
   level2 VARCHAR(100),
   level3 VARCHAR(100),
-  level4 VARCHAR(100),
   raw_note TEXT,  -- AI 매핑 전 원본 입력 (Phase 2)
   order_index INTEGER DEFAULT 0
 );

@@ -10,7 +10,6 @@ import {
   Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import LanguageSwitch from '../components/LanguageSwitch';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 import RealmService from '../services/realm/RealmService';
 import { useUserStore } from '../stores/useUserStore';
@@ -208,7 +207,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
             <Text style={styles.betaText}>BETA</Text>
           </View>
         </View>
-        <LanguageSwitch style={styles.languageSwitch} />
+        <View style={{ width: 80 }} />
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>

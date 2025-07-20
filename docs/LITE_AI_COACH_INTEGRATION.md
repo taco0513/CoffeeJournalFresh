@@ -1,8 +1,10 @@
 # Lite AI Coach Integration Guide
 
+> **⚠️ DEPRECATED (July 2025)**: This feature has been removed from MVP and moved to Phase 3 of our AI roadmap. See `/docs/AI_STRATEGY_ROADMAP.md` for current strategy. This document is preserved for future reference.
+
 ## 🤖 Overview
 
-The Lite AI Coach provides intelligent, personalized guidance throughout the coffee tasting journey. It uses the data from PersonalTasteAnalysisService, FlavorLearningEngine, and AchievementSystem to offer contextual tips and feedback.
+The Lite AI Coach was designed to provide intelligent, personalized guidance throughout the coffee tasting journey. It would use data from PersonalTasteAnalysisService, FlavorLearningEngine, and AchievementSystem to offer contextual tips and feedback.
 
 ## 📁 New Files Created
 

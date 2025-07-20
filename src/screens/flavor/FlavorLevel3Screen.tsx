@@ -50,12 +50,34 @@ const FlavorLevel3Screen = () => {
   // Check if there are any level3 options available
   const hasLevel3Options = Object.keys(categorizedLevel3).length > 0;
 
-  // Skip to level 4 if no level 3 options
-  useEffect(() => {
-    if (!hasLevel3Options) {
-      navigation.navigate('FlavorLevel4' as never);
-    }
-  }, [hasLevel3Options]);
+  // If no level 3 options, show a message and allow skip
+  if (!hasLevel3Options) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.navigationBar}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Text style={styles.backButtonText}>‹ 뒤로</Text>
+          </TouchableOpacity>
+          <Text style={styles.navigationTitle}>Level 3 플레이버</Text>
+          <Text style={styles.progressIndicator}>4/7</Text>
+        </View>
+        
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>선택 가능한 Level 3 옵션이 없습니다</Text>
+          <TouchableOpacity 
+            style={[commonButtonStyles.buttonPrimary, styles.skipButton]}
+            onPress={() => navigation.navigate('Sensory' as never)}
+          >
+            <Text style={commonTextStyles.buttonText}>다음 단계로</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   const handleLevel3Press = (item: string) => {
     setSelectedLevel3(prev => {
@@ -90,21 +112,14 @@ const FlavorLevel3Screen = () => {
     });
     
     setSelectedFlavors(newFlavors);
-    // Skip Level 4 and go directly to Sensory
     navigation.navigate('Sensory' as never);
   };
 
   const handleSkip = () => {
-    // Skip Level 4 and go directly to Sensory
     navigation.navigate('Sensory' as never);
   };
 
   const isNextEnabled = selectedLevel3.length > 0;
-
-  // Don't render if no options available
-  if (!hasLevel3Options) {
-    return null;
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -355,6 +370,18 @@ const styles = StyleSheet.create({
   },
   nextButtonText: {
     color: '#FFFFFF',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+  },
+  emptyText: {
+    fontSize: 17,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    marginBottom: HIGConstants.SPACING_XL,
   },
 });
 

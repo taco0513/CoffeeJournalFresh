@@ -166,8 +166,6 @@ Flavor Level 2 Screen
     ↓
 Flavor Level 3 Screen
     ↓
-Flavor Level 4 Screen
-    ↓
 Sensory Screen
     ↓
 Result Screen

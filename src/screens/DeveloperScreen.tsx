@@ -268,13 +268,289 @@ const DeveloperScreen = () => {
                     mouthfeel: 'Silky' as const
                   },
                   matchScore: { total: 86, flavorScore: 41, sensoryScore: 45 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Starbucks 강남R점',
+                    roastery: 'Starbucks',
+                    coffeeName: 'Pike Place Roast',
+                    origin: 'Latin America',
+                    variety: 'Various',
+                    process: 'Washed',
+                    altitude: '1,200-1,500m',
+                    temperature: 'hot' as const
+                  },
+                  roasterNotes: 'Smooth and balanced with notes of chocolate and toasted nuts.',
+                  selectedFlavors: [
+                    { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
+                    { level: 2, value: 'Cocoa', koreanValue: '코코아' },
+                    { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' },
+                    { level: 2, value: 'Nutty', koreanValue: '견과류' },
+                    { level: 3, value: 'Peanuts', koreanValue: '땅콩' },
+                    { level: 1, value: 'Roasted', koreanValue: '로스팅향' },
+                    { level: 2, value: 'Cereal', koreanValue: '시리얼' }
+                  ],
+                  sensoryAttributes: {
+                    body: 3,
+                    acidity: 2,
+                    sweetness: 3,
+                    finish: 3,
+                    mouthfeel: 'Smooth' as const
+                  },
+                  matchScore: { total: 78, flavorScore: 38, sensoryScore: 40 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Paul Bassett 청담점',
+                    roastery: 'Paul Bassett',
+                    coffeeName: 'Ethiopia Sidamo',
+                    origin: 'Ethiopia / Sidamo',
+                    variety: 'Heirloom',
+                    process: 'Natural',
+                    altitude: '1,600-2,000m',
+                    temperature: 'ice' as const
+                  },
+                  roasterNotes: 'Fruity and sweet with blueberry and wine-like characteristics.',
+                  selectedFlavors: [
+                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
+                    { level: 2, value: 'Berry', koreanValue: '베리' },
+                    { level: 3, value: 'Blueberry', koreanValue: '블루베리' },
+                    { level: 1, value: 'Sweet', koreanValue: '단맛' },
+                    { level: 2, value: 'Vanillin', koreanValue: '바닐린' },
+                    { level: 1, value: 'Sour/Fermented', koreanValue: '신맛/발효' },
+                    { level: 2, value: 'Winey', koreanValue: '와인향' }
+                  ],
+                  sensoryAttributes: {
+                    body: 3,
+                    acidity: 4,
+                    sweetness: 5,
+                    finish: 4,
+                    mouthfeel: 'Juicy' as const
+                  },
+                  matchScore: { total: 90, flavorScore: 45, sensoryScore: 45 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Coffee Lab R 성수점',
+                    roastery: 'Coffee Lab R',
+                    coffeeName: 'Honduras COE #3',
+                    origin: 'Honduras / Marcala',
+                    variety: 'Pacas',
+                    process: 'Honey',
+                    altitude: '1,400-1,600m',
+                    temperature: 'hot' as const
+                  },
+                  roasterNotes: 'Stone fruit sweetness with brown sugar and orange notes.',
+                  selectedFlavors: [
+                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
+                    { level: 2, value: 'Other Fruit', koreanValue: '기타 과일' },
+                    { level: 3, value: 'Peach', koreanValue: '복숭아' },
+                    { level: 1, value: 'Sweet', koreanValue: '단맛' },
+                    { level: 2, value: 'Brown Sugar', koreanValue: '흑설탕' },
+                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
+                    { level: 2, value: 'Citrus Fruit', koreanValue: '감귤류' },
+                    { level: 3, value: 'Orange', koreanValue: '오렌지' }
+                  ],
+                  sensoryAttributes: {
+                    body: 4,
+                    acidity: 3,
+                    sweetness: 5,
+                    finish: 4,
+                    mouthfeel: 'Syrupy' as const
+                  },
+                  matchScore: { total: 88, flavorScore: 44, sensoryScore: 44 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Hollys Coffee 역삼점',
+                    roastery: 'Hollys Coffee',
+                    coffeeName: 'Costa Rica Tarrazú',
+                    origin: 'Costa Rica / Tarrazú',
+                    variety: 'Caturra, Catuai',
+                    process: 'Washed',
+                    altitude: '1,200-1,600m',
+                    temperature: 'hot' as const
+                  },
+                  roasterNotes: 'Clean and bright with citrus acidity and milk chocolate finish.',
+                  selectedFlavors: [
+                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
+                    { level: 2, value: 'Citrus Fruit', koreanValue: '감귤류' },
+                    { level: 3, value: 'Grapefruit', koreanValue: '자몽' },
+                    { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
+                    { level: 2, value: 'Milk Chocolate', koreanValue: '밀크 초콜릿' },
+                    { level: 1, value: 'Green/Vegetative', koreanValue: '풀/채소향' },
+                    { level: 2, value: 'Fresh', koreanValue: '신선한향' }
+                  ],
+                  sensoryAttributes: {
+                    body: 3,
+                    acidity: 4,
+                    sweetness: 3,
+                    finish: 3,
+                    mouthfeel: 'Clean' as const
+                  },
+                  matchScore: { total: 82, flavorScore: 40, sensoryScore: 42 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Twosome Place 삼성점',
+                    roastery: 'Twosome Place',
+                    coffeeName: 'Jamaica Blue Mountain',
+                    origin: 'Jamaica / Blue Mountain',
+                    variety: 'Typica',
+                    process: 'Washed',
+                    altitude: '900-1,500m',
+                    temperature: 'hot' as const
+                  },
+                  roasterNotes: 'Mild and sweet with subtle floral notes and clean finish.',
+                  selectedFlavors: [
+                    { level: 1, value: 'Floral', koreanValue: '꽃향기' },
+                    { level: 2, value: 'Black Tea', koreanValue: '홍차' },
+                    { level: 1, value: 'Sweet', koreanValue: '단맛' },
+                    { level: 2, value: 'Overall Sweet', koreanValue: '전반적 단맛' },
+                    { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' },
+                    { level: 2, value: 'Nutty', koreanValue: '견과류' },
+                    { level: 3, value: 'Almond', koreanValue: '아몬드' }
+                  ],
+                  sensoryAttributes: {
+                    body: 2,
+                    acidity: 3,
+                    sweetness: 4,
+                    finish: 4,
+                    mouthfeel: 'Delicate' as const
+                  },
+                  matchScore: { total: 84, flavorScore: 42, sensoryScore: 42 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Ediya Coffee 선릉점',
+                    roastery: 'Ediya Coffee',
+                    coffeeName: 'Colombia Supremo',
+                    origin: 'Colombia / Nariño',
+                    variety: 'Castillo',
+                    process: 'Washed',
+                    altitude: '1,500-2,000m',
+                    temperature: 'ice' as const
+                  },
+                  roasterNotes: 'Balanced with caramel sweetness and mild fruit notes.',
+                  selectedFlavors: [
+                    { level: 1, value: 'Sweet', koreanValue: '단맛' },
+                    { level: 2, value: 'Caramel', koreanValue: '카라멜' },
+                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
+                    { level: 2, value: 'Dried Fruit', koreanValue: '건과일' },
+                    { level: 3, value: 'Raisin', koreanValue: '건포도' },
+                    { level: 1, value: 'Roasted', koreanValue: '로스팅향' },
+                    { level: 2, value: 'Tobacco', koreanValue: '담배' }
+                  ],
+                  sensoryAttributes: {
+                    body: 3,
+                    acidity: 3,
+                    sweetness: 4,
+                    finish: 3,
+                    mouthfeel: 'Smooth' as const
+                  },
+                  matchScore: { total: 80, flavorScore: 39, sensoryScore: 41 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'A Twosome Place 강남점',
+                    roastery: 'A Twosome Place',
+                    coffeeName: 'Panama Geisha',
+                    origin: 'Panama / Boquete',
+                    variety: 'Geisha',
+                    process: 'Natural',
+                    altitude: '1,500-1,700m',
+                    temperature: 'hot' as const
+                  },
+                  roasterNotes: 'Exotic and complex with tropical fruit, jasmine, and bergamot notes.',
+                  selectedFlavors: [
+                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
+                    { level: 2, value: 'Other Fruit', koreanValue: '기타 과일' },
+                    { level: 3, value: 'Passion Fruit', koreanValue: '패션프루트' },
+                    { level: 1, value: 'Floral', koreanValue: '꽃향기' },
+                    { level: 2, value: 'Jasmine', koreanValue: '자스민' },
+                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
+                    { level: 2, value: 'Citrus Fruit', koreanValue: '감귤류' },
+                    { level: 3, value: 'Bergamot', koreanValue: '베르가못' }
+                  ],
+                  sensoryAttributes: {
+                    body: 3,
+                    acidity: 5,
+                    sweetness: 5,
+                    finish: 5,
+                    mouthfeel: 'Tea-like' as const
+                  },
+                  matchScore: { total: 94, flavorScore: 48, sensoryScore: 46 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Mega Coffee 강남역점',
+                    roastery: 'Mega Coffee',
+                    coffeeName: 'Vietnam Robusta Blend',
+                    origin: 'Vietnam / Dak Lak',
+                    variety: 'Robusta',
+                    process: 'Natural',
+                    altitude: '500-800m',
+                    temperature: 'ice' as const
+                  },
+                  roasterNotes: 'Strong and bold with earthy and nutty characteristics.',
+                  selectedFlavors: [
+                    { level: 1, value: 'Other', koreanValue: '기타' },
+                    { level: 2, value: 'Chemical', koreanValue: '화학적향' },
+                    { level: 3, value: 'Rubber', koreanValue: '고무' },
+                    { level: 1, value: 'Roasted', koreanValue: '로스팅향' },
+                    { level: 2, value: 'Burnt', koreanValue: '탄향' },
+                    { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류/코코아' },
+                    { level: 2, value: 'Nutty', koreanValue: '견과류' }
+                  ],
+                  sensoryAttributes: {
+                    body: 5,
+                    acidity: 1,
+                    sweetness: 2,
+                    finish: 2,
+                    mouthfeel: 'Heavy' as const
+                  },
+                  matchScore: { total: 72, flavorScore: 35, sensoryScore: 37 }
+                },
+                {
+                  coffeeInfo: {
+                    cafeName: 'Mammoth Coffee 이태원점',
+                    roastery: 'Mammoth Coffee',
+                    coffeeName: 'Rwanda Bourbon',
+                    origin: 'Rwanda / Nyamasheke',
+                    variety: 'Red Bourbon',
+                    process: 'Washed',
+                    altitude: '1,700-2,000m',
+                    temperature: 'hot' as const
+                  },
+                  roasterNotes: 'Bright and sweet with red fruit, brown sugar, and tea-like finish.',
+                  selectedFlavors: [
+                    { level: 1, value: 'Fruity', koreanValue: '과일향' },
+                    { level: 2, value: 'Berry', koreanValue: '베리' },
+                    { level: 3, value: 'Strawberry', koreanValue: '딸기' },
+                    { level: 1, value: 'Sweet', koreanValue: '단맛' },
+                    { level: 2, value: 'Brown Sugar', koreanValue: '흑설탕' },
+                    { level: 1, value: 'Floral', koreanValue: '꽃향기' },
+                    { level: 2, value: 'Black Tea', koreanValue: '홍차' },
+                    { level: 1, value: 'Spices', koreanValue: '향신료' },
+                    { level: 2, value: 'Clove', koreanValue: '정향' }
+                  ],
+                  sensoryAttributes: {
+                    body: 3,
+                    acidity: 4,
+                    sweetness: 4,
+                    finish: 4,
+                    mouthfeel: 'Silky' as const
+                  },
+                  matchScore: { total: 91, flavorScore: 46, sensoryScore: 45 }
                 }
               ];
 
+              // Save test data 
               for (const testTasting of testTastings) {
                 await realmService.saveTasting(testTasting);
               }
-              Alert.alert('완료', `${testTastings.length}개의 테스트 데이터가 추가되었습니다.`);
+              
+              Alert.alert('완료', `${testTastings.length}개의 테스트 데이터가 추가되었습니다.\n\n다양한 커피숍과 로스터리의 커피 ${testTastings.length}개가 추가되었으며, 각각 고유한 향미 프로필을 가지고 있습니다.\n\n참고: 새로운 커피 발견 알림이 표시될 수 있습니다.`);
             } catch (error) {
               console.error('테스트 데이터 추가 오류:', error);
               const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';

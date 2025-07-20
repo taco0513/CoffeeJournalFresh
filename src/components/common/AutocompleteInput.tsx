@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   },
   suggestionsContainer: {
     position: 'absolute',
-    top: 70,
+    top: '100%',
     left: 0,
     right: 0,
     backgroundColor: 'white',
@@ -287,6 +287,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
+    marginTop: 2,
   },
   suggestionsList: {
     flex: 1,

@@ -15,15 +15,11 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
-import LanguageSwitch from '../components/LanguageSwitch';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 import RealmService from '../services/realm/RealmService';
 import { useUserStore } from '../stores/useUserStore';
 import { ITastingRecord } from '../services/realm/schemas';
-import { CoachInsightBanner } from '@/components/personalTaste';
-import { usePersonalTaste, useLiteAICoach } from '@/hooks/usePersonalTaste';
-import { CoachFeedbackModal } from '@/components/coach/CoachFeedbackModal';
-import { LiteAICoachService } from '@/services/LiteAICoachService';
+import { usePersonalTaste } from '@/hooks/usePersonalTaste';
 import { generateGuestMockData, generateGuestStats } from '../utils/guestMockData';
 
 export default function HomeScreenEnhanced() {
@@ -38,7 +34,7 @@ export default function HomeScreenEnhanced() {
   const guestMockData = isGuestMode ? generateGuestMockData() : [];
   const guestMockStats = isGuestMode ? generateGuestStats() : {
     thisWeekTastings: 0,
-    currentStreak: 0,
+    currentStreak: 0, // 이제 품질 점수로 사용
     thisMonthNewCoffees: 0,
     avgScore: 0,
   };
@@ -55,22 +51,12 @@ export default function HomeScreenEnhanced() {
     refresh: refreshTaste 
   } = usePersonalTaste();
   
-  const { 
-    dailyInsight, 
-    learningPath,
-    loading: coachLoading 
-  } = useLiteAICoach();
-
   const [stats, setStats] = useState({
     thisWeekTastings: 0,
-    currentStreak: 0,
+    currentStreak: 0, // 품질 점수 (Quality Score)
     thisMonthNewCoffees: 0,
     avgScore: 0,
   });
-  
-  // AI Coach Modal state
-  const [showCoachFeedback, setShowCoachFeedback] = useState(false);
-  const [coachFeedback, setCoachFeedback] = useState<any>(null);
   
 
   const realmService = RealmService.getInstance();
@@ -90,12 +76,12 @@ export default function HomeScreenEnhanced() {
         
         const thisWeek = getThisWeekTastings(allTastings);
         const avgScore = allTastings.length > 0 ? allTastings.reduce((sum, t) => sum + (t.matchScoreTotal || 0), 0) / allTastings.length : 0;
-        const currentStreak = calculateCurrentStreak(allTastings);
+        const qualityScore = calculateQualityScore(allTastings);
         const thisMonthNewCoffees = getThisMonthNewCoffees(allTastings);
         
         setStats({
           thisWeekTastings: thisWeek,
-          currentStreak,
+          currentStreak: qualityScore, // 품질 점수로 대체
           thisMonthNewCoffees,
           avgScore: Math.round(avgScore),
         });
@@ -111,32 +97,22 @@ export default function HomeScreenEnhanced() {
     return tastings.filtered('createdAt >= $0', weekStart).length;
   };
 
-  const calculateCurrentStreak = (tastings: any) => {
-    // 연속 테이스팅 일수 계산 (간단 버전)
+  const calculateQualityScore = (tastings: any) => {
+    // 품질 점수 계산 - 높은 매칭률과 다양성 고려
     if (tastings.length === 0) return 0;
     
-    const sortedTastings = Array.from(tastings).sort((a: any, b: any) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    const recentTastings = Array.from(tastings.slice(0, 10)) as ITastingRecord[];
     
-    let streak = 0;
-    let currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
+    // 평균 매칭률
+    const avgMatchScore = recentTastings.reduce((sum, t) => sum + (t.matchScoreTotal || 0), 0) / recentTastings.length;
     
-    for (const tasting of sortedTastings) {
-      const tastingDate = new Date(tasting.createdAt);
-      tastingDate.setHours(0, 0, 0, 0);
-      
-      const daysDiff = Math.floor((currentDate.getTime() - tastingDate.getTime()) / (1000 * 60 * 60 * 24));
-      
-      if (daysDiff === streak) {
-        streak++;
-      } else if (daysDiff > streak) {
-        break;
-      }
-    }
+    // 고품질 기록 (매칭률 80% 이상)
+    const highQualityCount = recentTastings.filter(t => (t.matchScoreTotal || 0) >= 80).length;
     
-    return streak;
+    // 품질 점수 = 평균 매칭률 * 0.7 + 고품질 비율 * 30
+    const qualityScore = Math.round(avgMatchScore * 0.7 + (highQualityCount / recentTastings.length) * 30);
+    
+    return qualityScore;
   };
 
   const getThisMonthNewCoffees = (tastings: any) => {
@@ -177,20 +153,7 @@ export default function HomeScreenEnhanced() {
     navigation.navigate('Journal', { screen: 'TastingDetail', params: { tastingId } });
   };
 
-  const handleInsightAction = () => {
-    // Navigate based on the insight's suggested action
-    if (dailyInsight?.suggestedAction.includes('tasting')) {
-      handleNewTasting();
-    } else if (dailyInsight?.suggestedAction.includes('explore')) {
-      navigation.navigate('PersonalTasteDashboard');
-    } else {
-      navigation.navigate('Journal');
-    }
-  };
 
-  const handleViewPersonalDashboard = () => {
-    navigation.navigate('PersonalTasteDashboard');
-  };
 
   const renderRecentTasting = ({ item }: { item: ITastingRecord }) => {
     const formattedDate = new Date(item.createdAt).toLocaleDateString('ko-KR', {
@@ -240,7 +203,7 @@ export default function HomeScreenEnhanced() {
             <Text style={styles.betaText}>BETA</Text>
           </View>
         </View>
-        <LanguageSwitch style={styles.languageSwitch} />
+        <View style={{ width: 80 }} />
       </View>
 
       <ScrollView 
@@ -269,24 +232,7 @@ export default function HomeScreenEnhanced() {
             )}
           </View>
 
-          {/* Today's Mission - NEW */}
-          {!isGuestMode && (
-            <View style={styles.todayMission}>
-              <View style={styles.missionHeader}>
-                <Text style={styles.missionTitle}>🎯 오늘의 미션</Text>
-                <Text style={styles.missionReward}>+10 EXP</Text>
-              </View>
-              <Text style={styles.missionDescription}>
-                {dailyInsight ? dailyInsight.content : "새로운 커피를 테이스팅하고 향미를 3개 이상 찾아보세요"}
-              </Text>
-              <TouchableOpacity 
-                style={styles.missionButton}
-                onPress={handleNewTasting}
-              >
-                <Text style={styles.missionButtonText}>미션 시작 →</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+          {/* AI Coach - Moved to Future Roadmap */}
 
           {/* Big Primary Action Button */}
           <TouchableOpacity 
@@ -308,9 +254,9 @@ export default function HomeScreenEnhanced() {
             <View style={styles.quickStatDivider} />
             <View style={styles.quickStatItem}>
               <Text style={styles.quickStatValue}>
-                {isGuestMode ? 3 : (stats.currentStreak || 0)}
+                {isGuestMode ? 85 : (stats.currentStreak || 0)}
               </Text>
-              <Text style={styles.quickStatLabel}>연속일</Text>
+              <Text style={styles.quickStatLabel}>품질점수</Text>
             </View>
             <View style={styles.quickStatDivider} />
             <View style={styles.quickStatItem}>
@@ -349,37 +295,6 @@ export default function HomeScreenEnhanced() {
 
         </View>
       </ScrollView>
-      
-      {/* AI Coach Feedback Modal */}
-      <CoachFeedbackModal
-        visible={showCoachFeedback}
-        feedback={coachFeedback}
-        onClose={() => {
-          setShowCoachFeedback(false);
-          setCoachFeedback(null);
-        }}
-        onAction={(action) => {
-          switch (action) {
-            case '테이스팅 시작하기':
-            case 'start-tasting':
-              setShowCoachFeedback(false);
-              handleNewTasting();
-              break;
-            case 'practice-flavors':
-              setShowCoachFeedback(false);
-              navigation.navigate('FlavorQuiz' as never);
-              break;
-            case 'view-progress':
-              setShowCoachFeedback(false);
-              handleViewPersonalDashboard();
-              break;
-            case 'ask-question':
-              // TODO: Implement chat with AI coach
-              Alert.alert('준비 중', 'AI 코치와의 대화 기능은 곧 추가될 예정입니다!');
-              break;
-          }
-        }}
-      />
     </SafeAreaView>
   );
 }
@@ -445,49 +360,7 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_MD,
   },
   
-  // Today's Mission Styles
-  todayMission: {
-    backgroundColor: '#FFF3E0',
-    borderRadius: HIGConstants.BORDER_RADIUS * 1.5,
-    padding: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_LG,
-    borderWidth: 1,
-    borderColor: HIGColors.orange,
-  },
-  missionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  missionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: HIGColors.label,
-  },
-  missionReward: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: HIGColors.orange,
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_XS,
-    borderRadius: 12,
-  },
-  missionDescription: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
-    lineHeight: 20,
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  missionButton: {
-    alignSelf: 'flex-end',
-  },
-  missionButtonText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: HIGColors.orange,
-  },
+  // Mission styles - Moved to future roadmap
   
   // Big Action Button Styles
   bigActionButton: {

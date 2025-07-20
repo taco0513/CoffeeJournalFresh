@@ -17,7 +17,6 @@ import {
 } from 'react-native-chart-kit';
 import { useUserStore } from '../stores/useUserStore';
 import { generateGuestMockData, generateGuestStats } from '../utils/guestMockData';
-import LanguageSwitch from '../components/LanguageSwitch';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -201,7 +200,7 @@ const StatsScreen = () => {
               <Text style={styles.betaText}>BETA</Text>
             </View>
           </View>
-          <LanguageSwitch style={styles.languageSwitch} />
+          <View style={{ width: 80 }} />
         </View>
 
         <View style={styles.emptyContainer}>
@@ -225,7 +224,7 @@ const StatsScreen = () => {
             <Text style={styles.betaText}>BETA</Text>
           </View>
         </View>
-        <LanguageSwitch style={styles.languageSwitch} />
+        <View style={{ width: 80 }} />
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>

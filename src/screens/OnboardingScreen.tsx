@@ -25,7 +25,7 @@ interface OnboardingSlide {
 const slides: OnboardingSlide[] = [
   {
     title: '커피 취향 발견',
-    description: '개인의 고유한 커피 취향을 발견하고\nAI 코치와 함께 성장해보세요',
+    description: '개인의 고유한 커피 취향을 발견하고\n데이터 기반 인사이트로 성장해보세요',
     emoji: '☕',
     backgroundColor: '#FFF8DC',
   },

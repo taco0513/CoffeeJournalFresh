@@ -4,7 +4,6 @@ import {
   PersonalTasteAnalysisService,
   FlavorLearningEngine,
   AchievementSystem,
-  LiteAICoachService,
 } from '../services/personalTaste';
 import { AchievementType } from '../services/AchievementSystem';
 import {
@@ -51,17 +50,11 @@ export const usePersonalTaste = () => {
       const analysisService = new PersonalTasteAnalysisService(realm);
       const learningEngine = new FlavorLearningEngine(realm);
       const achievementSystem = new AchievementSystem(realm);
-      const coachService = new LiteAICoachService(
-        analysisService,
-        learningEngine,
-        achievementSystem
-      );
 
       return {
         analysisService,
         learningEngine,
         achievementSystem,
-        coachService,
       };
     } catch (error) {
       console.error('Error initializing personal taste services:', error);
@@ -143,65 +136,65 @@ export const usePersonalTaste = () => {
   };
 };
 
-// Hook for AI Coach features
-export const useLiteAICoach = () => {
-  const { services } = usePersonalTaste();
-  const { currentUser } = useUserStore();
-  const userId = currentUser?.id || '';
+// Hook for AI Coach features - Moved to Future Roadmap
+// export const useLiteAICoach = () => {
+//   const { services } = usePersonalTaste();
+//   const { currentUser } = useUserStore();
+//   const userId = currentUser?.id || '';
 
-  const [dailyInsight, setDailyInsight] = useState<DailyInsight | null>(null);
-  const [learningPath, setLearningPath] = useState<LearningPath | null>(null);
-  const [loading, setLoading] = useState(true);
+//   const [dailyInsight, setDailyInsight] = useState<DailyInsight | null>(null);
+//   const [learningPath, setLearningPath] = useState<LearningPath | null>(null);
+//   const [loading, setLoading] = useState(true);
 
-  const loadCoachData = useCallback(async () => {
-    try {
-      setLoading(true);
+//   const loadCoachData = useCallback(async () => {
+//     try {
+//       setLoading(true);
       
-      // 게스트 모드인 경우 바로 더미 데이터 표시
-      const isGuestMode = !currentUser || currentUser.username === 'Guest' || !userId;
+//       // 게스트 모드인 경우 바로 더미 데이터 표시
+//       const isGuestMode = !currentUser || currentUser.username === 'Guest' || !userId;
       
-      if (isGuestMode) {
-        setDailyInsight(getMockDailyInsight());
-        setLearningPath(getMockLearningPath());
-        setLoading(false);
-        return;
-      }
+//       if (isGuestMode) {
+//         setDailyInsight(getMockDailyInsight());
+//         setLearningPath(getMockLearningPath());
+//         setLoading(false);
+//         return;
+//       }
       
-      if (services?.coachService) {
-        const [insight, path] = await Promise.all([
-          services.coachService.getDailyInsight(userId),
-          services.coachService.generateLearningPath(userId),
-        ]);
+//       if (services?.coachService) {
+//         const [insight, path] = await Promise.all([
+//           services.coachService.getDailyInsight(userId),
+//           services.coachService.generateLearningPath(userId),
+//         ]);
 
-        setDailyInsight(insight);
-        setLearningPath(path);
-      } else {
-        // Use mock data when services are not available
-        setDailyInsight(getMockDailyInsight());
-        setLearningPath(getMockLearningPath());
-      }
-    } catch (error) {
-      console.error('Error loading coach data:', error);
-      // Fall back to mock data on error
-      setDailyInsight(getMockDailyInsight());
-      setLearningPath(getMockLearningPath());
-    } finally {
-      setLoading(false);
-    }
-  }, [userId, services, currentUser]);
+//         setDailyInsight(insight);
+//         setLearningPath(path);
+//       } else {
+//         // Use mock data when services are not available
+//         setDailyInsight(getMockDailyInsight());
+//         setLearningPath(getMockLearningPath());
+//       }
+//     } catch (error) {
+//       console.error('Error loading coach data:', error);
+//       // Fall back to mock data on error
+//       setDailyInsight(getMockDailyInsight());
+//       setLearningPath(getMockLearningPath());
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [userId, services, currentUser]);
 
-  useEffect(() => {
-    loadCoachData();
-  }, [loadCoachData]);
+//   useEffect(() => {
+//     loadCoachData();
+//   }, [loadCoachData]);
 
-  return {
-    dailyInsight,
-    learningPath,
-    loading,
-    coachService: services?.coachService,
-    refresh: loadCoachData,
-  };
-};
+//   return {
+//     dailyInsight,
+//     learningPath,
+//     loading,
+//     coachService: services?.coachService,
+//     refresh: loadCoachData,
+//   };
+// };
 
 // Hook for achievements
 export const useAchievements = () => {

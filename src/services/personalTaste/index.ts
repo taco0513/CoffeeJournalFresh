@@ -5,7 +5,7 @@
 export { PersonalTasteAnalysisService } from '../PersonalTasteAnalysisService';
 export { FlavorLearningEngine } from '../FlavorLearningEngine';
 export { AchievementSystem } from '../AchievementSystem';
-export { LiteAICoachService } from '../LiteAICoachService';
+// export { LiteAICoachService } from '../LiteAICoachService'; // Moved to future roadmap
 
 // Re-export types
 export * from '@/types/personalTaste';

@@ -18,7 +18,6 @@ import { HIGConstants, HIGColors } from '../styles/common';
 
 import { useUserStore } from '../stores/useUserStore';
 import { generateGuestMockData } from '../utils/guestMockData';
-import LanguageSwitch from '../components/LanguageSwitch';
 import { SkeletonList } from '../components/common/SkeletonLoader';
 
 interface GroupedTastings {
@@ -171,7 +170,7 @@ export default function HistoryScreen() {
               <Text style={styles.betaText}>BETA</Text>
             </View>
           </View>
-          <LanguageSwitch style={styles.languageSwitch} />
+          <View style={{ width: 80 }} />
         </View>
         
         <ScrollView style={styles.content} contentContainerStyle={styles.listContent}>
@@ -191,7 +190,7 @@ export default function HistoryScreen() {
             <Text style={styles.betaText}>BETA</Text>
           </View>
         </View>
-        <LanguageSwitch style={styles.languageSwitch} />
+        <View style={{ width: 80 }} />
       </View>
 
       {/* 게스트 모드 안내 */}

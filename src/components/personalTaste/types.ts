@@ -4,10 +4,10 @@ import {
   PersonalStatsData,
   ProgressData,
   TasteProfileType,
-  CoachInsight,
-  TastingData,
-  CoffeeInfo,
-  CoachFeedback
+  // CoachInsight, // Moved to Future Roadmap
+  // TastingData, // Moved to Future Roadmap
+  // CoffeeInfo, // Moved to Future Roadmap
+  // CoachFeedback // Moved to Future Roadmap
 } from '@/types/personalTaste';
 
 // TasteProfileCard Props
@@ -74,30 +74,28 @@ export interface PersonalStatsGridProps {
   style?: any;
 }
 
-// CoachTipCard Props
-export interface CoachTipCardProps {
-  tip: string;
-  type?: 'info' | 'warning' | 'success';
-  onDismiss?: () => void;
-  autoDismiss?: boolean;
-  dismissTimeout?: number;
-  style?: any;
-}
+// Coach Components - Moved to Future Roadmap
+// export interface CoachTipCardProps {
+//   tip: string;
+//   type?: 'info' | 'warning' | 'success';
+//   onDismiss?: () => void;
+//   autoDismiss?: boolean;
+//   dismissTimeout?: number;
+//   style?: any;
+// }
 
-// CoachInsightBanner Props
-export interface CoachInsightBannerProps {
-  insight: CoachInsight;
-  onActionPress?: () => void;
-  onDismiss?: () => void;
-  style?: any;
-}
+// export interface CoachInsightBannerProps {
+//   insight: CoachInsight;
+//   onActionPress?: () => void;
+//   onDismiss?: () => void;
+//   style?: any;
+// }
 
-// CoachFeedbackModal Props
-export interface CoachFeedbackModalProps {
-  visible: boolean;
-  feedback: CoachFeedback | null;
-  tastingData: TastingData;
-  coffeeInfo: CoffeeInfo;
-  onClose: () => void;
-  onActionPress?: (action: string) => void;
-}
+// export interface CoachFeedbackModalProps {
+//   visible: boolean;
+//   feedback: CoachFeedback | null;
+//   tastingData: TastingData;
+//   coffeeInfo: CoffeeInfo;
+//   onClose: () => void;
+//   onActionPress?: (action: string) => void;
+// }

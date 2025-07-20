@@ -1,4 +1,7 @@
 # MVP v0.4.0 "Personal Taste Discovery" with Lite AI Coach - 상세 개발 계획
+
+> **⚠️ DEPRECATED (July 2025)**: This plan has been superseded by new AI strategy. AI Coach features moved to Phase 3 roadmap. See `/docs/AI_STRATEGY_ROADMAP.md` for current approach.
+
 ## 개인 취향 발견 + AI 코치 지원 버전
 
 ---

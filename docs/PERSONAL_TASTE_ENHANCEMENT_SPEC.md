@@ -11,7 +11,7 @@ This document outlines enhancements to the Coffee Journal Fresh personal taste f
 ✅ **Taste Pattern Analysis** - 9 distinct taste profiles  
 ✅ **Growth Metrics** - Vocabulary, accuracy, diversity tracking  
 ✅ **Achievement System** - Milestone and exploration badges  
-✅ **LiteAI Coach** - Contextual guidance and tips  
+⏳ **Smart Insights** - Data-driven guidance and tips (Phase 3 Roadmap)  
 ✅ **Flavor Mastery** - Category-based skill progression  
 ✅ **Offline Support** - Realm database with Supabase sync  
 
@@ -36,11 +36,11 @@ This document outlines enhancements to the Coffee Journal Fresh personal taste f
 **Objective**: Transform passive learning into active skill development
 
 **Features**:
-- **Daily Flavor Challenge**
-  - 5-question quiz based on user's level
-  - Progressive difficulty algorithm
+- **Optional Flavor Exploration**
+  - Self-paced quiz when discovering new coffees
+  - Difficulty adapts to experience level
   - Visual and descriptive questions
-  - Immediate feedback with explanations
+  - Educational feedback without pressure
   
 - **Quiz Types**:
   - Flavor identification (show coffee, guess notes)
@@ -230,21 +230,21 @@ This document outlines enhancements to the Coffee Journal Fresh personal taste f
   - Unlock special features
   - Prestige system
 
-#### 4.3 Daily Missions
-**Objective**: Encourage regular engagement
+#### 4.3 Discovery Suggestions (Revised from Daily Missions)
+**Objective**: Inspire quality exploration without pressure
 
 **Features**:
-- **Mission Types**:
-  - Quick taste (5-min exercise)
-  - Learn something new
-  - Share with community
-  - Perfect a technique
+- **Weekly Discovery Themes**:
+  - New origin exploration
+  - Processing method comparison
+  - Local roaster spotlight
+  - Flavor depth exercises
   
-- **Streak System**:
-  - Visual calendar
-  - Milestone rewards
-  - Freeze tokens
-  - Comeback bonuses
+- **Quality Tracking** (instead of streaks):
+  - Monthly highlights collection
+  - Taste evolution timeline
+  - Personal milestones (not daily)
+  - Discovery celebrations
 
 ## Technical Implementation
 

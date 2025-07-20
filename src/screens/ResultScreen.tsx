@@ -191,6 +191,7 @@ export default function ResultScreen({navigation}: any) {
       
       showSuccessToast('저장 완료', '테이스팅이 저장되었습니다');
       // console.log('🎉 [ResultScreen] 전체 저장 프로세스 완료');
+      
       // 2초 후 홈 화면으로 이동
       setTimeout(() => {
         reset();

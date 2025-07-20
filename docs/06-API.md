@@ -44,6 +44,7 @@ updateCoffeeInfo({
 const { setFlavorLevel } = useTastingStore();
 setFlavorLevel(1, ['Fruity', 'Floral']);
 setFlavorLevel(2, ['Berry', 'Citrus']);
+setFlavorLevel(3, ['Blueberry', 'Lemon']);
 
 // Complete tasting
 const { completeTasting } = useTastingStore();
@@ -192,8 +193,7 @@ const score = calculateMatchScore(
   {
     level1: ['Fruity'],
     level2: ['Citrus'],
-    level3: ['Lemon'],
-    level4: ['Bright']
+    level3: ['Lemon']
   },
   {
     body: 3,

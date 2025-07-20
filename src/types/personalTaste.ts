@@ -32,12 +32,13 @@ export type {
 
 export { AchievementType } from '@/services/AchievementSystem';
 
-export type {
-  CoachFeedback,
-  CoachInsight,
-  DailyInsight,
-  LearningPath,
-} from '@/services/LiteAICoachService';
+// Coach types - Moved to Future Roadmap
+// export type {
+//   CoachFeedback,
+//   CoachInsight,
+//   DailyInsight,
+//   LearningPath,
+// } from '@/services/LiteAICoachService';
 
 // Additional missing types
 export interface GrowthMilestone {

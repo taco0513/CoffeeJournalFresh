@@ -14,7 +14,6 @@ import { useUserStore } from '../stores/useUserStore';
 import RealmService from '../services/realm/RealmService';
 import { HIGConstants, HIGColors, commonButtonStyles } from '../styles/common';
 import AuthService from '../services/supabase/auth';
-import LanguageSwitch from '../components/LanguageSwitch';
 import { generateGuestStats } from '../utils/guestMockData';
 
 const ProfileScreen = () => {
@@ -153,7 +152,7 @@ const ProfileScreen = () => {
             <Text style={styles.betaText}>BETA</Text>
           </View>
         </View>
-        <LanguageSwitch style={styles.languageSwitch} />
+        <View style={{ width: 80 }} />
       </View>
 
       <ScrollView style={styles.scrollView}>

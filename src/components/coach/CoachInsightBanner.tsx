@@ -22,6 +22,11 @@ export const CoachInsightBanner: React.FC<CoachInsightBannerProps> = ({
   onAction,
   style,
 }) => {
+  // Ensure insight has all required fields
+  if (!insight || !insight.fact) {
+    return null;
+  }
+  
   return (
     <View style={[styles.container, style]}>
       <View style={styles.banner}>
@@ -31,24 +36,28 @@ export const CoachInsightBanner: React.FC<CoachInsightBannerProps> = ({
         
         <View style={styles.content}>
           <Text style={styles.fact}>{insight.fact}</Text>
-          <Text style={styles.message}>{insight.personalizedMessage}</Text>
+          {insight.personalizedMessage && (
+            <Text style={styles.message}>{insight.personalizedMessage}</Text>
+          )}
           
-          <TouchableOpacity
-            style={styles.actionContainer}
-            onPress={onAction}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.actionText}>{insight.suggestedAction}</Text>
-            <View style={styles.actionIcon}>
-              <Text style={styles.actionArrow}>→</Text>
-            </View>
-          </TouchableOpacity>
+          {insight.suggestedAction && (
+            <TouchableOpacity
+              style={styles.actionContainer}
+              onPress={onAction}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.actionText}>{insight.suggestedAction}</Text>
+              <View style={styles.actionIcon}>
+                <Text style={styles.actionArrow}>→</Text>
+              </View>
+            </TouchableOpacity>
+          )}
 
           {insight.relatedAchievement && (
             <View style={styles.achievementHint}>
               <Text style={styles.achievementIcon}>🏆</Text>
               <Text style={styles.achievementText}>
-                Related to: {insight.relatedAchievement.replace(/_/g, ' ')}
+                Related to: {String(insight.relatedAchievement).replace(/_/g, ' ')}
               </Text>
             </View>
           )}

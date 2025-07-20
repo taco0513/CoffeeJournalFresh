@@ -123,8 +123,11 @@ const SignInScreen = () => {
     // 게스트 모드로 설정
     setGuestMode();
     
-    // Use app as guest - navigate to MainTabs
-    navigation.navigate('MainTabs' as never);
+    // Use app as guest - reset navigation to MainTabs
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'MainTabs' as never }],
+    });
   };
 
   return (

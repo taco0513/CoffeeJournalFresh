@@ -69,10 +69,6 @@
     "level3": {
       "title": "Flavor Selection (Level 3)",
       "subtitle": "Select specific flavors"
-    },
-    "level4": {
-      "title": "Flavor Selection (Level 4)",
-      "subtitle": "Select flavor characteristics (optional)"
     }
   },
   "sensory": {

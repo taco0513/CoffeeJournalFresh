@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { HIGColors, HIGConstants } from '@/styles/common';
 import { addCoffeeToCatalog } from '@/services/supabase/coffeeSearch';
 import { CoffeeDiscoveryAlert } from './CoffeeDiscoveryAlert';
@@ -29,6 +30,7 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
   roastery,
   onCoffeeAdded,
 }) => {
+  const navigation = useNavigation();
   const [coffeeName, setCoffeeName] = useState('');
   const [origin, setOrigin] = useState('');
   const [region, setRegion] = useState('');
@@ -70,9 +72,29 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
       
       // Show discovery alert instead of default alert
       setShowDiscoveryAlert(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding coffee:', error);
-      Alert.alert('오류', '커피 추가 중 오류가 발생했습니다.');
+      
+      // Check if it's an authentication error
+      if (error.message && error.message.includes('로그인이 필요합니다')) {
+        Alert.alert(
+          '로그인 필요',
+          error.message,
+          [
+            { text: '취소', style: 'cancel' },
+            { 
+              text: '로그인하기', 
+              onPress: () => {
+                onClose();
+                // Navigate to login screen
+                navigation.navigate('SignIn' as never);
+              }
+            }
+          ]
+        );
+      } else {
+        Alert.alert('오류', '커피 추가 중 오류가 발생했습니다.');
+      }
     } finally {
       setIsSubmitting(false);
     }

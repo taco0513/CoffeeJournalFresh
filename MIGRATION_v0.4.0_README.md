@@ -81,7 +81,7 @@ Master list of available achievements (pre-populated with 15 achievements)
 
 ### `tasting_records`
 Added columns:
-- `personal_insights` (JSONB) - AI-generated insights
+- `personal_insights` (JSONB) - Data-driven insights (rule-based patterns)
 - `vocabulary_used` (TEXT[]) - Words used in description
 - `difficulty_level` (INTEGER) - Tasting difficulty 1-5
 - `learning_points` (INTEGER) - Points earned

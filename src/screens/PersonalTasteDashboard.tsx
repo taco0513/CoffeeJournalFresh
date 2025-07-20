@@ -18,15 +18,13 @@ import { HIGConstants, HIGColors } from '../styles/common';
 import { 
   usePersonalTaste, 
   useAchievements, 
-  useFlavorMastery,
-  useLiteAICoach 
+  useFlavorMastery
 } from '../hooks/usePersonalTaste';
 import { TasteProfileCard } from '../components/personalTaste/TasteProfileCard';
 import { FlavorRadarChart } from '../components/personalTaste/FlavorRadarChart';
 import { GrowthTimeline } from '../components/personalTaste/GrowthTimeline';
 import { FlavorMasteryMap } from '../components/personalTaste/FlavorMasteryMap';
 import { PersonalStatsGrid } from '../components/personalTaste/PersonalStatsGrid';
-import { CoachTipCard } from '../components/coach';
 import { PersonalTasteViewMode } from '../types/personalTaste';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -61,8 +59,6 @@ export default function PersonalTasteDashboard() {
     flavorMastery,
     loading: masteryLoading 
   } = useFlavorMastery();
-
-  const { coachService } = useLiteAICoach();
 
   const loading = tasteLoading || achievementsLoading || masteryLoading;
 
@@ -181,7 +177,7 @@ export default function PersonalTasteDashboard() {
               {/* Quick Insights */}
               {insights && (
                 <View style={styles.insightsSection}>
-                  <Text style={styles.sectionTitle}>AI 인사이트</Text>
+                  <Text style={styles.sectionTitle}>데이터 인사이트</Text>
                   <View style={styles.insightsList}>
                     {insights.strengths.map((strength, index) => (
                       <View key={`strength-${index}`} style={styles.insightItem}>
@@ -287,18 +283,10 @@ export default function PersonalTasteDashboard() {
                 <View style={styles.recommendationsSection}>
                   <Text style={styles.sectionTitle}>맞춤 추천</Text>
                   {tastePattern.recommendations.map((rec, index) => (
-                    <CoachTipCard
-                      key={`rec-${index}`}
-                      tip={{
-                        id: `rec-${index}`,
-                        type: 'guidance',
-                        priority: 'medium',
-                        title: '추천',
-                        message: rec,
-                        icon: '💡',
-                      }}
-                      onAction={() => {}}
-                    />
+                    <View key={`rec-${index}`} style={styles.recommendationItem}>
+                      <Text style={styles.recommendationIcon}>💡</Text>
+                      <Text style={styles.recommendationText}>{rec}</Text>
+                    </View>
                   ))}
                 </View>
               )}
@@ -590,6 +578,25 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     color: HIGColors.secondaryLabel,
+    lineHeight: 20,
+  },
+  recommendationItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#F5F5F5',
+    padding: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  recommendationIcon: {
+    fontSize: 16,
+    marginRight: HIGConstants.SPACING_SM,
+    marginTop: 2,
+  },
+  recommendationText: {
+    flex: 1,
+    fontSize: 15,
+    color: HIGColors.label,
     lineHeight: 20,
   },
 });

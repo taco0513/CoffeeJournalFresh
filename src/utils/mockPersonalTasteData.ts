@@ -10,10 +10,20 @@ import {
   FlavorPreference,
 } from '../types/personalTaste';
 
-import {
-  DailyInsight,
-  LearningPath,
-} from '../services/LiteAICoachService';
+// Coach types defined locally for mock data
+interface DailyInsight {
+  fact: string;
+  personalizedMessage: string;
+  suggestedAction: string;
+  relatedAchievement?: string;
+}
+
+interface LearningPath {
+  currentFocus: string;
+  nextMilestone: string;
+  estimatedTime: string;
+  exercises: any[];
+}
 
 export const getMockTastePattern = (): TastePattern => ({
   userId: 'mock-user',

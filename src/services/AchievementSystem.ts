@@ -96,12 +96,12 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
   },
   first_week: {
     type: 'first_week',
-    title: '첫 주간 완주',
-    description: '일주일 동안 매일 테이스팅하세요',
+    title: '첫 주간 탐험가',
+    description: '일주일 내 3가지 이상 다른 커피 시도',
     icon: '📅',
     rarity: 'common',
     category: AchievementType.FIRST_STEPS,
-    requirements: { type: 'consecutive_days', value: 7 },
+    requirements: { type: 'weekly_variety', value: 3 },
     rewards: { type: 'points', value: 500 },
   },
   first_flavor_match: {
@@ -206,12 +206,12 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
   },
   month_master: {
     type: 'month_master',
-    title: '월간 마스터',
-    description: '30일 연속 테이스팅',
+    title: '월간 큐레이터',
+    description: '한 달에 10가지 이상 고품질 커피 기록',
     icon: '🏆',
     rarity: 'rare',
     category: AchievementType.CONSISTENCY,
-    requirements: { type: 'consecutive_days', value: 30 },
+    requirements: { type: 'monthly_quality', value: 10 },
     rewards: { type: 'points', value: 2000 },
   },
   hundred_tastings: {
@@ -292,13 +292,13 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
   },
   weekend_warrior: {
     type: 'weekend_warrior',
-    title: '주말 전사',
-    description: '10주 연속 주말 테이스팅',
+    title: '주말 커피 애호가',
+    description: '주말에 만 마신 특별한 커피 10가지',
     icon: '🎉',
     rarity: 'rare',
     category: AchievementType.HIDDEN,
     requirements: { 
-      type: 'weekend_streak', 
+      type: 'weekend_specials', 
       value: 10 
     },
     rewards: { type: 'badge', value: 'weekend_warrior' },
@@ -464,8 +464,16 @@ export class AchievementSystem {
           currentValue = await this.getTastingCount(userId);
           break;
         
-        case 'consecutive_days':
-          currentValue = await this.getConsecutiveDays(userId);
+        case 'weekly_variety':
+          currentValue = await this.getWeeklyVariety(userId);
+          break;
+          
+        case 'monthly_quality':
+          currentValue = await this.getMonthlyQualityCount(userId);
+          break;
+          
+        case 'weekend_specials':
+          currentValue = await this.getWeekendSpecialsCount(userId);
           break;
         
         case 'unique_flavors':
@@ -719,7 +727,9 @@ export class AchievementSystem {
   private isActionRelevant(requirementType: string, actionType: string): boolean {
     const relevanceMap: Record<string, string[]> = {
       tasting_count: ['tasting'],
-      consecutive_days: ['tasting'],
+      weekly_variety: ['tasting'],
+      monthly_quality: ['tasting'],
+      weekend_specials: ['tasting'],
       unique_flavors: ['tasting'],
       quiz_accuracy: ['quiz'],
       weekly_tastings: ['tasting'],
@@ -729,7 +739,6 @@ export class AchievementSystem {
       flavor_match: ['tasting'],
       category_completion: ['tasting'],
       tasting_time: ['tasting'],
-      weekend_streak: ['tasting'],
     };
 
     return relevanceMap[requirementType]?.includes(actionType) || false;
@@ -848,38 +857,56 @@ export class AchievementSystem {
       .length;
   }
 
-  private async getConsecutiveDays(userId: string): Promise<number> {
+  private async getWeeklyVariety(userId: string): Promise<number> {
+    if (!this.realm) return 0;
+
+    const weekStart = new Date();
+    weekStart.setDate(weekStart.getDate() - 7);
+    
+    const records = this.realm
+      .objects('TastingRecord')
+      .filtered('userId = $0 AND createdAt >= $1', userId, weekStart);
+
+    const uniqueCoffees = new Set();
+    Array.from(records).forEach((record: any) => {
+      uniqueCoffees.add(`${record.roastery}-${record.coffeeName}`);
+    });
+
+    return uniqueCoffees.size;
+  }
+
+  private async getMonthlyQualityCount(userId: string): Promise<number> {
+    if (!this.realm) return 0;
+
+    const monthStart = new Date();
+    monthStart.setDate(monthStart.getDate() - 30);
+    
+    const records = this.realm
+      .objects('TastingRecord')
+      .filtered('userId = $0 AND createdAt >= $1 AND matchScoreTotal >= 80', userId, monthStart);
+
+    return records.length;
+  }
+
+  private async getWeekendSpecialsCount(userId: string): Promise<number> {
     if (!this.realm) return 0;
 
     const records = this.realm
       .objects('TastingRecord')
-      .filtered('userId = $0', userId)
-      .sorted('createdAt', true);
+      .filtered('userId = $0', userId);
 
-    if (records.length === 0) return 0;
-
-    let consecutiveDays = 1;
-    let currentStreak = 1;
-    let lastDate = new Date(records[0].createdAt);
-    lastDate.setHours(0, 0, 0, 0);
-
-    for (let i = 1; i < records.length; i++) {
-      const recordDate = new Date(records[i].createdAt);
-      recordDate.setHours(0, 0, 0, 0);
+    let weekendSpecials = 0;
+    Array.from(records).forEach((record: any) => {
+      const recordDate = new Date(record.createdAt);
+      const dayOfWeek = recordDate.getDay();
       
-      const dayDiff = Math.floor((lastDate.getTime() - recordDate.getTime()) / (1000 * 60 * 60 * 24));
-      
-      if (dayDiff === 1) {
-        currentStreak++;
-        consecutiveDays = Math.max(consecutiveDays, currentStreak);
-      } else if (dayDiff > 1) {
-        currentStreak = 1;
+      // Weekend (Saturday = 6, Sunday = 0)
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        weekendSpecials++;
       }
-      
-      lastDate = recordDate;
-    }
+    });
 
-    return consecutiveDays;
+    return weekendSpecials;
   }
 
   private async getUniqueFlavorsCount(userId: string): Promise<number> {

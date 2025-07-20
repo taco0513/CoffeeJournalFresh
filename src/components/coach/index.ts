@@ -1,16 +1,16 @@
 // =============================================
-// Coach UI Components
+// Coach UI Components - Moved to Future Roadmap
 // =============================================
 
-export { CoachTipCard } from './CoachTipCard';
-export { CoachInsightBanner } from './CoachInsightBanner';
-export { CoachFeedbackModal } from './CoachFeedbackModal';
+// export { CoachTipCard } from './CoachTipCard';
+// export { CoachInsightBanner } from './CoachInsightBanner';
+// export { CoachFeedbackModal } from './CoachFeedbackModal';
 
 // Re-export types for convenience
-export type {
-  CoachTip,
-  CoachFeedback,
-  TastingGuidance,
-  DailyInsight,
-  LearningPath,
-} from '@/services/LiteAICoachService';
+// export type {
+//   CoachTip,
+//   CoachFeedback,
+//   TastingGuidance,
+//   DailyInsight,
+//   LearningPath,
+// } from '@/services/LiteAICoachService';

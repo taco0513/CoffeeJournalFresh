@@ -5,10 +5,10 @@ export { GrowthTimeline } from './GrowthTimeline';
 export { FlavorMasteryMap } from './FlavorMasteryMap';
 export { PersonalStatsGrid } from './PersonalStatsGrid';
 
-// AI Coach Components (re-export from coach directory)
-export { CoachTipCard } from '../coach/CoachTipCard';
-export { CoachInsightBanner } from '../coach/CoachInsightBanner';
-export { CoachFeedbackModal } from '../coach/CoachFeedbackModal';
+// AI Coach Components - Moved to Future Roadmap
+// export { CoachTipCard } from '../coach/CoachTipCard';
+// export { CoachInsightBanner } from '../coach/CoachInsightBanner';
+// export { CoachFeedbackModal } from '../coach/CoachFeedbackModal';
 
 // Export types if needed
 export type {
@@ -17,7 +17,7 @@ export type {
   GrowthTimelineProps,
   FlavorMasteryMapProps,
   PersonalStatsGridProps,
-  CoachTipCardProps,
-  CoachInsightBannerProps,
-  CoachFeedbackModalProps,
+  // CoachTipCardProps, // Moved to Future Roadmap
+  // CoachInsightBannerProps, // Moved to Future Roadmap
+  // CoachFeedbackModalProps, // Moved to Future Roadmap
 } from './types';
