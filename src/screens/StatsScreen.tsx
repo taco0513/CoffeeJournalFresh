@@ -14,11 +14,6 @@ import RealmService from '../services/realm/RealmService';
 import { HIGConstants, HIGColors } from '../styles/common';
 import {
   LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
 } from 'react-native-chart-kit';
 import { useUserStore } from '../stores/useUserStore';
 import { generateGuestMockData, generateGuestStats } from '../utils/guestMockData';
@@ -49,24 +44,10 @@ interface TopCafe {
   count: number;
 }
 
-interface FlavorProfile {
-  flavor: string;
-  count: number;
-  percentage: number;
-}
-
 interface TastingTrend {
   date: string;
   count: number;
   avgScore: number;
-}
-
-interface SensoryData {
-  body: number;
-  acidity: number;
-  sweetness: number;
-  finish: number;
-  mouthfeel: number;
 }
 
 const StatsScreen = () => {
@@ -77,9 +58,7 @@ const StatsScreen = () => {
   const [topRoasters, setTopRoasters] = useState<TopRoaster[]>([]);
   const [topCoffees, setTopCoffees] = useState<TopCoffee[]>([]);
   const [topCafes, setTopCafes] = useState<TopCafe[]>([]);
-  const [flavorProfile, setFlavorProfile] = useState<FlavorProfile[]>([]);
   const [tastingTrend, setTastingTrend] = useState<TastingTrend[]>([]);
-  const [sensoryData, setSensoryData] = useState<SensoryData | null>(null);
   
   // 게스트 모드 체크
   const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
@@ -127,41 +106,6 @@ const StatsScreen = () => {
     }
   };
   
-  const loadSensoryAverages = async (): Promise<SensoryData | null> => {
-    try {
-      const realmService = RealmService.getInstance();
-      const tastings = realmService.getTastingRecords({ isDeleted: false });
-      
-      if (tastings.length === 0) return null;
-      
-      let totalBody = 0, totalAcidity = 0, totalSweetness = 0, totalFinish = 0, totalMouthfeel = 0;
-      let count = 0;
-      
-      tastings.forEach(tasting => {
-        if (tasting.sensoryAttribute) {
-          totalBody += tasting.sensoryAttribute.body || 0;
-          totalAcidity += tasting.sensoryAttribute.acidity || 0;
-          totalSweetness += tasting.sensoryAttribute.sweetness || 0;
-          totalFinish += tasting.sensoryAttribute.finish || 0;
-          totalMouthfeel += tasting.sensoryAttribute.mouthfeel || 0;
-          count++;
-        }
-      });
-      
-      if (count === 0) return null;
-      
-      return {
-        body: totalBody / count,
-        acidity: totalAcidity / count,
-        sweetness: totalSweetness / count,
-        finish: totalFinish / count,
-        mouthfeel: totalMouthfeel / count
-      };
-    } catch (error) {
-      // console.error('Failed to load sensory averages:', error);
-      return null;
-    }
-  };
 
   const loadStatistics = async () => {
     try {
@@ -177,38 +121,25 @@ const StatsScreen = () => {
           firstTastingDays: 45,
         });
         
-        // Mock TOP 로스터리 데이터
+        // Mock TOP 로스터리 데이터 (3등까지)
         setTopRoasters([
-          { name: 'Blue Bottle Coffee', count: 2, avgScore: 89 },
-          { name: 'Fritz Coffee Company', count: 1, avgScore: 85 },
-          { name: 'Center Coffee', count: 1, avgScore: 92 },
-          { name: 'Anthracite Coffee', count: 1, avgScore: 88 },
+          { name: 'Blue Bottle Coffee', count: 8, avgScore: 89 },
+          { name: 'Fritz Coffee Company', count: 5, avgScore: 85 },
+          { name: 'Anthracite Coffee', count: 3, avgScore: 88 },
         ]);
         
-        // Mock TOP 커피 데이터
+        // Mock TOP 커피 데이터 (3등까지)
         setTopCoffees([
-          { name: 'Three Africas', roastery: 'Blue Bottle Coffee', count: 1 },
-          { name: 'Colombia Geisha', roastery: 'Fritz Coffee Company', count: 1 },
-          { name: 'Ethiopia Yirgacheffe', roastery: 'Center Coffee', count: 1 },
-          { name: 'Single Origin Blend', roastery: 'Blue Bottle Coffee', count: 1 },
-          { name: 'Signature Blend', roastery: 'Anthracite Coffee', count: 1 },
+          { name: 'Three Africas', roastery: 'Blue Bottle Coffee', count: 4 },
+          { name: 'Colombia Geisha', roastery: 'Fritz Coffee Company', count: 3 },
+          { name: 'Ethiopia Yirgacheffe', roastery: 'Anthracite Coffee', count: 2 },
         ]);
         
-        // Mock TOP 카페 데이터
+        // Mock TOP 카페 데이터 (3등까지)
         setTopCafes([
-          { name: 'Blue Bottle 삼청점', count: 2 },
-          { name: 'Fritz 성수점', count: 1 },
-          { name: 'Center Coffee 홍대점', count: 1 },
-          { name: 'Anthracite 한남점', count: 1 },
-        ]);
-        
-        // Mock 향미 프로필 데이터
-        setFlavorProfile([
-          { flavor: 'Chocolate', count: 3, percentage: 60 },
-          { flavor: 'Fruity', count: 2, percentage: 40 },
-          { flavor: 'Floral', count: 2, percentage: 40 },
-          { flavor: 'Nutty', count: 1, percentage: 20 },
-          { flavor: 'Citrus', count: 1, percentage: 20 },
+          { name: 'Blue Bottle 삼청점', count: 6 },
+          { name: 'Fritz 성수점', count: 4 },
+          { name: 'Anthracite 한남점', count: 2 },
         ]);
         
         // Mock 테이스팅 트렌드 데이터
@@ -221,15 +152,6 @@ const StatsScreen = () => {
           { date: '07월', count: 0, avgScore: 0 },
         ]);
         
-        // Mock 감각 평가 데이터
-        setSensoryData({
-          body: 3.8,
-          acidity: 3.2,
-          sweetness: 4.1,
-          finish: 3.9,
-          mouthfeel: 3.7,
-        });
-        
         setLoading(false);
         return;
       }
@@ -238,22 +160,18 @@ const StatsScreen = () => {
       
       // Load all statistics
       const basicStats = realmService.getStatistics();
-      const roasters = realmService.getTopRoasters(5);
-      const coffees = realmService.getTopCoffees(5);
-      const cafes = realmService.getTopCafes(5);
-      const flavors = realmService.getFlavorProfile();
+      const roasters = realmService.getTopRoasters(3);
+      const coffees = realmService.getTopCoffees(3);
+      const cafes = realmService.getTopCafes(3);
       
       // Load chart data
       const trends = await loadTastingTrends();
-      const sensoryAvg = await loadSensoryAverages();
 
       setStats(basicStats);
       setTopRoasters(roasters);
       setTopCoffees(coffees);
       setTopCafes(cafes);
-      setFlavorProfile(flavors);
       setTastingTrend(trends);
-      setSensoryData(sensoryAvg);
     } catch (error) {
       // console.error('Failed to load statistics:', error);
     } finally {
@@ -451,84 +369,23 @@ const StatsScreen = () => {
           </View>
         )}
 
-        {/* 감각 평가 레이더 차트 */}
-        {sensoryData && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>🎯 감각 평가 평균</Text>
-            <View style={styles.chartCard}>
-              <ProgressChart
-                data={{
-                  labels: ["바디", "산미", "단맛", "여운", "질감"],
-                  data: [
-                    sensoryData.body / 5,
-                    sensoryData.acidity / 5,
-                    sensoryData.sweetness / 5,
-                    sensoryData.finish / 5,
-                    sensoryData.mouthfeel / 5
-                  ]
-                }}
-                width={screenWidth - 32}
-                height={220}
-                strokeWidth={16}
-                radius={32}
-                chartConfig={{
-                  backgroundColor: HIGColors.secondarySystemBackground,
-                  backgroundGradientFrom: HIGColors.secondarySystemBackground,
-                  backgroundGradientTo: HIGColors.secondarySystemBackground,
-                  decimalPlaces: 1,
-                  color: (opacity = 1) => `rgba(52, 152, 219, ${opacity})`,
-                  labelColor: (opacity = 1) => `rgba(60, 60, 67, ${opacity})`,
-                  style: {
-                    borderRadius: HIGConstants.BORDER_RADIUS,
-                  },
-                }}
-                style={styles.chart}
-              />
-            </View>
-          </View>
-        )}
-
-        {/* 맛 프로필 파이 차트 */}
-        {flavorProfile.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>✨ 나의 맛 프로필</Text>
-            <View style={styles.chartCard}>
-              <PieChart
-                data={flavorProfile.slice(0, 5).map((flavor, index) => ({
-                  name: flavor.flavor,
-                  population: flavor.count,
-                  color: [
-                    '#3498db',
-                    '#e74c3c',
-                    '#2ecc71',
-                    '#f39c12',
-                    '#9b59b6'
-                  ][index % 5],
-                  legendFontColor: HIGColors.label,
-                  legendFontSize: 14,
-                }))}
-                width={screenWidth - 32}
-                height={220}
-                chartConfig={{
-                  backgroundColor: HIGColors.secondarySystemBackground,
-                  backgroundGradientFrom: HIGColors.secondarySystemBackground,
-                  backgroundGradientTo: HIGColors.secondarySystemBackground,
-                  decimalPlaces: 0,
-                  color: (opacity = 1) => `rgba(52, 152, 219, ${opacity})`,
-                  labelColor: (opacity = 1) => `rgba(60, 60, 67, ${opacity})`,
-                  style: {
-                    borderRadius: HIGConstants.BORDER_RADIUS,
-                  },
-                }}
-                accessor="population"
-                backgroundColor="transparent"
-                paddingLeft="15"
-                absolute
-                style={styles.chart}
-              />
-            </View>
-          </View>
-        )}
+        {/* 더 보기 버튼 */}
+        <View style={styles.section}>
+          <TouchableOpacity 
+            style={styles.moreButton}
+            onPress={() => {
+              // 임시로 PersonalTasteDashboard로 이동 (추후 상세 분석 화면 구현 예정)
+              navigation.navigate('Profile', { 
+                screen: 'PersonalTasteDashboard' 
+              });
+            }}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.moreButtonText}>더 자세한 분석 보기</Text>
+            <Text style={styles.moreButtonSubtext}>감각평가, 맛프로필 차트 등</Text>
+            <Text style={styles.moreButtonArrow}>→</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
@@ -796,6 +653,30 @@ const styles = StyleSheet.create({
   chart: {
     marginVertical: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.BORDER_RADIUS,
+  },
+  moreButton: {
+    backgroundColor: '#F0F9FF',
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HIGColors.blue + '30',
+    flexDirection: 'column',
+  },
+  moreButtonText: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: HIGColors.blue,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  moreButtonSubtext: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  moreButtonArrow: {
+    fontSize: 20,
+    color: HIGColors.blue,
   },
 });
 

@@ -21,10 +21,9 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const { currentUser, signOut } = useUserStore();
   const [stats, setStats] = useState({
-    totalTastings: 0,
-    avgScore: 0,
+    joinedDaysAgo: 0,
+    achievementCount: 0,
     favoriteRoaster: '',
-    tastingStreak: 0,
   });
 
   // 게스트 모드 체크
@@ -40,12 +39,10 @@ const ProfileScreen = () => {
     try {
       // 게스트 모드인 경우 mock 데이터 사용
       if (isGuestMode) {
-        const guestStats = generateGuestStats();
         setStats({
-          totalTastings: guestStats.totalTastings,
-          avgScore: guestStats.avgScore,
+          joinedDaysAgo: 45,
+          achievementCount: 8,
           favoriteRoaster: 'Blue Bottle Coffee',
-          tastingStreak: 3,
         });
         return;
       }
@@ -53,11 +50,6 @@ const ProfileScreen = () => {
       if (realmService.isInitialized) {
         const realm = realmService.getRealm();
         const tastings = realm.objects('TastingRecord').filtered('isDeleted = false');
-        
-        const totalTastings = tastings.length;
-        const avgScore = totalTastings > 0 
-          ? tastings.reduce((sum, tasting) => sum + tasting.matchScoreTotal, 0) / totalTastings 
-          : 0;
         
         // 가장 많이 방문한 로스터 찾기
         const roasterCounts = {};
@@ -70,11 +62,15 @@ const ProfileScreen = () => {
           roasterCounts[a] > roasterCounts[b] ? a : b
         , '') || 'None';
 
+        // 가입일부터 경과 일수 계산 (임시로 테이스팅 데이터 기준)
+        const joinedDaysAgo = tastings.length > 0 
+          ? Math.floor((Date.now() - new Date(tastings[tastings.length - 1].createdAt).getTime()) / (1000 * 60 * 60 * 24))
+          : 0;
+
         setStats({
-          totalTastings,
-          avgScore: Math.round(avgScore),
+          joinedDaysAgo,
+          achievementCount: Math.min(tastings.length, 15), // 임시 achievement 계산
           favoriteRoaster,
-          tastingStreak: Math.min(totalTastings, 7), // 임시 스트릭 계산
         });
       }
     } catch (error) {

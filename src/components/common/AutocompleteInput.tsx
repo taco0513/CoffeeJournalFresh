@@ -248,23 +248,24 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: 8,
   },
   label: {
-    fontSize: FONT_SIZE.SMALL,
+    fontSize: 13,
     fontWeight: '600',
     color: Colors.TEXT_PRIMARY,
-    marginBottom: 8,
+    marginBottom: 4,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: '#D1D1D6',
     borderRadius: 8,
-    padding: 12,
-    fontSize: FONT_SIZE.MEDIUM,
-    backgroundColor: '#FAFAFA',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    fontSize: 16,
+    backgroundColor: '#FFFFFF',
     color: '#000000',
-    minHeight: 44, // Accessibility minimum touch target
+    minHeight: 40,
   },
   inputDisabled: {
     backgroundColor: '#F0F0F0',

@@ -37,10 +37,10 @@ export default function HomeScreenEnhanced() {
   // 게스트 모드일 때 mock 데이터 사용
   const guestMockData = isGuestMode ? generateGuestMockData() : [];
   const guestMockStats = isGuestMode ? generateGuestStats() : {
-    totalTastings: 0,
     thisWeekTastings: 0,
+    currentStreak: 0,
+    thisMonthNewCoffees: 0,
     avgScore: 0,
-    bestScore: 0,
   };
   
   const [recentTastings, setRecentTastings] = useState<ITastingRecord[]>([]);
@@ -62,10 +62,10 @@ export default function HomeScreenEnhanced() {
   } = useLiteAICoach();
 
   const [stats, setStats] = useState({
-    totalTastings: 0,
     thisWeekTastings: 0,
+    currentStreak: 0,
+    thisMonthNewCoffees: 0,
     avgScore: 0,
-    bestScore: 0,
   });
   
   // AI Coach Modal state
@@ -88,16 +88,16 @@ export default function HomeScreenEnhanced() {
         const recent = Array.from(allTastings.slice(0, 3)) as ITastingRecord[];
         setRecentTastings(recent);
         
-        const total = allTastings.length;
         const thisWeek = getThisWeekTastings(allTastings);
-        const avgScore = total > 0 ? allTastings.reduce((sum, t) => sum + (t.matchScoreTotal || 0), 0) / total : 0;
-        const bestScore = total > 0 ? Math.max(...allTastings.map(t => t.matchScoreTotal || 0)) : 0;
+        const avgScore = allTastings.length > 0 ? allTastings.reduce((sum, t) => sum + (t.matchScoreTotal || 0), 0) / allTastings.length : 0;
+        const currentStreak = calculateCurrentStreak(allTastings);
+        const thisMonthNewCoffees = getThisMonthNewCoffees(allTastings);
         
         setStats({
-          totalTastings: total,
           thisWeekTastings: thisWeek,
+          currentStreak,
+          thisMonthNewCoffees,
           avgScore: Math.round(avgScore),
-          bestScore,
         });
       }
     } catch (error) {
@@ -109,6 +109,47 @@ export default function HomeScreenEnhanced() {
     const now = new Date();
     const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
     return tastings.filtered('createdAt >= $0', weekStart).length;
+  };
+
+  const calculateCurrentStreak = (tastings: any) => {
+    // 연속 테이스팅 일수 계산 (간단 버전)
+    if (tastings.length === 0) return 0;
+    
+    const sortedTastings = Array.from(tastings).sort((a: any, b: any) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    
+    let streak = 0;
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    
+    for (const tasting of sortedTastings) {
+      const tastingDate = new Date(tasting.createdAt);
+      tastingDate.setHours(0, 0, 0, 0);
+      
+      const daysDiff = Math.floor((currentDate.getTime() - tastingDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (daysDiff === streak) {
+        streak++;
+      } else if (daysDiff > streak) {
+        break;
+      }
+    }
+    
+    return streak;
+  };
+
+  const getThisMonthNewCoffees = (tastings: any) => {
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const thisMonthTastings = tastings.filtered('createdAt >= $0', monthStart);
+    
+    const uniqueCoffees = new Set();
+    Array.from(thisMonthTastings).forEach((tasting: any) => {
+      uniqueCoffees.add(`${tasting.roastery}-${tasting.coffeeName}`);
+    });
+    
+    return uniqueCoffees.size;
   };
 
   const handleRefresh = async () => {
@@ -261,20 +302,22 @@ export default function HomeScreenEnhanced() {
           {/* Quick Stats Summary */}
           <View style={styles.quickStats}>
             <View style={styles.quickStatItem}>
-              <Text style={styles.quickStatValue}>{isGuestMode ? guestMockStats.totalTastings : stats.totalTastings}</Text>
-              <Text style={styles.quickStatLabel}>기록</Text>
-            </View>
-            <View style={styles.quickStatDivider} />
-            <View style={styles.quickStatItem}>
               <Text style={styles.quickStatValue}>{isGuestMode ? guestMockStats.thisWeekTastings : stats.thisWeekTastings}</Text>
               <Text style={styles.quickStatLabel}>이번주</Text>
             </View>
             <View style={styles.quickStatDivider} />
             <View style={styles.quickStatItem}>
               <Text style={styles.quickStatValue}>
-                {isGuestMode ? 15 : (growthMetrics ? Math.round(growthMetrics.accuracyImprovement) : 0)}%
+                {isGuestMode ? 3 : (stats.currentStreak || 0)}
               </Text>
-              <Text style={styles.quickStatLabel}>성장률</Text>
+              <Text style={styles.quickStatLabel}>연속일</Text>
+            </View>
+            <View style={styles.quickStatDivider} />
+            <View style={styles.quickStatItem}>
+              <Text style={styles.quickStatValue}>
+                {isGuestMode ? 5 : (stats.thisMonthNewCoffees || 0)}
+              </Text>
+              <Text style={styles.quickStatLabel}>신규 커피</Text>
             </View>
           </View>
 

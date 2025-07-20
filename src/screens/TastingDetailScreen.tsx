@@ -38,6 +38,7 @@ const TastingDetailScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [expandedFlavorLevels, setExpandedFlavorLevels] = useState<number[]>([1, 2]);
   
   const realmService = RealmService.getInstance();
   const isMountedRef = useRef(true);
@@ -245,6 +246,60 @@ const TastingDetailScreen = () => {
     return mapping[mouthfeel] || mouthfeel;
   };
 
+  const getSensoryDescription = (attribute: string, value: number) => {
+    const descriptions: { [key: string]: string[] } = {
+      body: ['Very Light', 'Light', 'Medium', 'Medium-Full', 'Full'],
+      acidity: ['Low', 'Mild', 'Moderate', 'Bright', 'Very Bright'],
+      sweetness: ['None', 'Subtle', 'Moderate', 'High', 'Very High'],
+      finish: ['Short', 'Medium-Short', 'Medium', 'Medium-Long', 'Long']
+    };
+    return descriptions[attribute]?.[value - 1] || `${value}/5`;
+  };
+
+  const renderRoasterNotes = (notes: string) => {
+    try {
+      // Try to parse as JSON first
+      const parsed = JSON.parse(notes);
+      
+      if (parsed.notes && Array.isArray(parsed.notes)) {
+        // Handle structured roaster notes with flavor array
+        return (
+          <View>
+            <View style={styles.roasterFlavorTags}>
+              {parsed.notes.map((note: string, index: number) => (
+                <View key={index} style={styles.roasterFlavorTag}>
+                  <Text style={styles.roasterFlavorText}>{note}</Text>
+                </View>
+              ))}
+            </View>
+            {parsed.description && (
+              <Text style={styles.roasterDescription}>{parsed.description}</Text>
+            )}
+          </View>
+        );
+      } else if (typeof parsed === 'object') {
+        // Handle other JSON structures
+        return (
+          <View>
+            {Object.entries(parsed).map(([key, value], index) => (
+              <View key={index} style={styles.roasterNoteRow}>
+                <Text style={styles.roasterNoteLabel}>{key}:</Text>
+                <Text style={styles.roasterNoteValue}>
+                  {Array.isArray(value) ? value.join(', ') : String(value)}
+                </Text>
+              </View>
+            ))}
+          </View>
+        );
+      }
+    } catch (error) {
+      // If not JSON, treat as plain text
+    }
+    
+    // Fallback to plain text display
+    return <Text style={styles.notesText}>{notes}</Text>;
+  };
+
   // Loading state
   if (loading || isDeleting) {
     return (
@@ -282,7 +337,11 @@ const TastingDetailScreen = () => {
         <TouchableOpacity 
           style={styles.backButton}
           onPress={() => navigation.goBack()}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="뒤로 가기"
+          accessibilityHint="이전 화면으로 돌아갑니다"
         >
           <Text style={styles.backButtonText}>‹ 뒤로</Text>
         </TouchableOpacity>
@@ -292,7 +351,11 @@ const TastingDetailScreen = () => {
             <TouchableOpacity
               style={styles.actionButton}
               onPress={handleEdit}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="테이스팅 기록 수정"
+              accessibilityHint="이 테이스팅 기록을 편집합니다"
             >
               <Text style={styles.actionButtonText}>수정</Text>
             </TouchableOpacity>
@@ -300,7 +363,11 @@ const TastingDetailScreen = () => {
               style={[styles.actionButton, styles.deleteButton]}
               onPress={handleDelete}
               disabled={isDeleting}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="테이스팅 기록 삭제"
+              accessibilityHint="이 테이스팅 기록을 영구적으로 삭제합니다"
             >
               <Text style={[styles.actionButtonText, styles.deleteButtonText]}>삭제</Text>
             </TouchableOpacity>
@@ -316,14 +383,34 @@ const TastingDetailScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>커피 정보</Text>
           <View style={styles.card}>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>커피 이름</Text>
-              <Text style={styles.infoValue}>{tastingRecord.coffeeName}</Text>
+            {/* Primary Information */}
+            <View 
+              style={styles.primaryInfo}
+              accessible={true}
+              accessibilityRole="text"
+              accessibilityLabel={`커피 정보: ${tastingRecord.coffeeName}, ${tastingRecord.roastery}, ${tastingRecord.temperature === 'hot' ? '뜨거운 커피' : '아이스 커피'}`}
+            >
+              <View style={styles.primaryInfoHeader}>
+                <View style={styles.coffeeNameContainer}>
+                  <Text style={styles.coffeeName}>{tastingRecord.coffeeName}</Text>
+                  <Text style={styles.roastery}>{tastingRecord.roastery}</Text>
+                </View>
+                <View 
+                  style={[styles.temperatureBadge, 
+                    tastingRecord.temperature === 'hot' ? styles.hotBadge : styles.iceBadge]}
+                  accessible={true}
+                  accessibilityLabel={tastingRecord.temperature === 'hot' ? '뜨거운 커피' : '아이스 커피'}
+                >
+                  <Text style={[styles.temperatureText, 
+                    tastingRecord.temperature === 'hot' ? styles.hotText : styles.iceText]}>
+                    {tastingRecord.temperature === 'hot' ? '☕ Hot' : '🧊 Iced'}
+                  </Text>
+                </View>
+              </View>
             </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>로스터리</Text>
-              <Text style={styles.infoValue}>{tastingRecord.roastery}</Text>
-            </View>
+            
+            {/* Secondary Information */}
+            <View style={styles.secondaryInfo}>
             {tastingRecord.cafeName && (
               <View style={styles.infoRow}>
                 <Text style={styles.infoLabel}>카페</Text>
@@ -354,9 +441,6 @@ const TastingDetailScreen = () => {
                 <Text style={styles.infoValue}>{tastingRecord.process}</Text>
               </View>
             )}
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>온도</Text>
-              <Text style={styles.infoValue}>{tastingRecord.temperature === 'hot' ? '☕ Hot' : '🧊 Ice'}</Text>
             </View>
           </View>
         </View>
@@ -366,7 +450,7 @@ const TastingDetailScreen = () => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>로스터 노트</Text>
             <View style={styles.card}>
-              <Text style={styles.notesText}>{tastingRecord.roasterNotes}</Text>
+              {renderRoasterNotes(tastingRecord.roasterNotes)}
             </View>
           </View>
         )}
@@ -375,23 +459,25 @@ const TastingDetailScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>선택한 맛</Text>
           <View style={styles.card}>
-            {[1, 2, 3, 4].map(level => {
-              const flavorsAtLevel = tastingRecord.flavorNotes.filter(note => note.level === level);
-              if (flavorsAtLevel.length === 0) return null;
-              
-              return (
-                <View key={level} style={styles.flavorLevel}>
-                  <Text style={styles.flavorLevelTitle}>Level {level}</Text>
-                  <View style={styles.flavorTags}>
-                    {flavorsAtLevel.map((note, index) => (
-                      <View key={index} style={styles.flavorTag}>
-                        <Text style={styles.flavorTagText}>{note.value}</Text>
-                      </View>
-                    ))}
-                  </View>
+            <View style={styles.allFlavorTags}>
+              {tastingRecord.flavorNotes.map((note, index) => (
+                <View key={index} style={[styles.flavorTag, 
+                  note.level === 1 ? styles.level1Tag :
+                  note.level === 2 ? styles.level2Tag :
+                  note.level === 3 ? styles.level3Tag :
+                  styles.level4Tag
+                ]}>
+                  <Text style={styles.flavorTagText}>{note.value}</Text>
                 </View>
-              );
-            })}
+              ))}
+            </View>
+            {/* Personal Tasting Comment */}
+            {(tastingRecord.personalComment || isGuestMode) && (
+              <Text style={styles.personalComment}>
+                {tastingRecord.personalComment || 
+                 '"풍부한 과일향과 초콜릿의 조화가 인상적이었고, 뒷맛까지 깔끔하게 이어지는 균형 잡힌 커피"'}
+              </Text>
+            )}
           </View>
         </View>
 
@@ -399,33 +485,65 @@ const TastingDetailScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>감각 평가</Text>
           <View style={styles.card}>
-            <View style={styles.sensoryRow}>
-              <Text style={styles.sensoryLabel}>바디감</Text>
+            <View 
+              style={styles.sensoryRow}
+              accessible={true}
+              accessibilityLabel={`바디감 ${tastingRecord.sensoryAttribute.body}점, ${getSensoryDescription('body', tastingRecord.sensoryAttribute.body)}`}
+              accessibilityRole="progressbar"
+            >
+              <View style={styles.sensoryTopRow}>
+                <Text style={styles.sensoryLabel}>바디감</Text>
+                <Text style={styles.sensoryDescription}>{getSensoryDescription('body', tastingRecord.sensoryAttribute.body)}</Text>
+                <Text style={styles.sensoryValue}>{tastingRecord.sensoryAttribute.body}/5</Text>
+              </View>
               <View style={styles.sensoryBar}>
                 <View style={[styles.sensoryFill, { width: `${tastingRecord.sensoryAttribute.body * 20}%` }]} />
               </View>
-              <Text style={styles.sensoryValue}>{tastingRecord.sensoryAttribute.body}/5</Text>
             </View>
-            <View style={styles.sensoryRow}>
-              <Text style={styles.sensoryLabel}>산미</Text>
+            <View 
+              style={styles.sensoryRow}
+              accessible={true}
+              accessibilityLabel={`산미 ${tastingRecord.sensoryAttribute.acidity}점, ${getSensoryDescription('acidity', tastingRecord.sensoryAttribute.acidity)}`}
+              accessibilityRole="progressbar"
+            >
+              <View style={styles.sensoryTopRow}>
+                <Text style={styles.sensoryLabel}>산미</Text>
+                <Text style={styles.sensoryDescription}>{getSensoryDescription('acidity', tastingRecord.sensoryAttribute.acidity)}</Text>
+                <Text style={styles.sensoryValue}>{tastingRecord.sensoryAttribute.acidity}/5</Text>
+              </View>
               <View style={styles.sensoryBar}>
                 <View style={[styles.sensoryFill, { width: `${tastingRecord.sensoryAttribute.acidity * 20}%` }]} />
               </View>
-              <Text style={styles.sensoryValue}>{tastingRecord.sensoryAttribute.acidity}/5</Text>
             </View>
-            <View style={styles.sensoryRow}>
-              <Text style={styles.sensoryLabel}>단맛</Text>
+            <View 
+              style={styles.sensoryRow}
+              accessible={true}
+              accessibilityLabel={`단맛 ${tastingRecord.sensoryAttribute.sweetness}점, ${getSensoryDescription('sweetness', tastingRecord.sensoryAttribute.sweetness)}`}
+              accessibilityRole="progressbar"
+            >
+              <View style={styles.sensoryTopRow}>
+                <Text style={styles.sensoryLabel}>단맛</Text>
+                <Text style={styles.sensoryDescription}>{getSensoryDescription('sweetness', tastingRecord.sensoryAttribute.sweetness)}</Text>
+                <Text style={styles.sensoryValue}>{tastingRecord.sensoryAttribute.sweetness}/5</Text>
+              </View>
               <View style={styles.sensoryBar}>
                 <View style={[styles.sensoryFill, { width: `${tastingRecord.sensoryAttribute.sweetness * 20}%` }]} />
               </View>
-              <Text style={styles.sensoryValue}>{tastingRecord.sensoryAttribute.sweetness}/5</Text>
             </View>
-            <View style={styles.sensoryRow}>
-              <Text style={styles.sensoryLabel}>여운</Text>
+            <View 
+              style={styles.sensoryRow}
+              accessible={true}
+              accessibilityLabel={`여운 ${tastingRecord.sensoryAttribute.finish}점, ${getSensoryDescription('finish', tastingRecord.sensoryAttribute.finish)}`}
+              accessibilityRole="progressbar"
+            >
+              <View style={styles.sensoryTopRow}>
+                <Text style={styles.sensoryLabel}>여운</Text>
+                <Text style={styles.sensoryDescription}>{getSensoryDescription('finish', tastingRecord.sensoryAttribute.finish)}</Text>
+                <Text style={styles.sensoryValue}>{tastingRecord.sensoryAttribute.finish}/5</Text>
+              </View>
               <View style={styles.sensoryBar}>
                 <View style={[styles.sensoryFill, { width: `${tastingRecord.sensoryAttribute.finish * 20}%` }]} />
               </View>
-              <Text style={styles.sensoryValue}>{tastingRecord.sensoryAttribute.finish}/5</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>질감</Text>
@@ -438,10 +556,25 @@ const TastingDetailScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>매칭 점수</Text>
           <View style={styles.card}>
-            <View style={styles.scoreContainer}>
+            <View style={styles.scoreExplanation}>
+              <Text style={styles.scoreExplanationText}>
+                💡 개인 취향 프로필과의 일치도를 나타냅니다
+              </Text>
+            </View>
+            <View 
+              style={styles.scoreContainer}
+              accessible={true}
+              accessibilityRole="text"
+              accessibilityLabel={`전체 매칭 점수 ${tastingRecord.matchScoreTotal}퍼센트, 맛 매칭 ${tastingRecord.matchScoreFlavor}퍼센트, 감각 매칭 ${tastingRecord.matchScoreSensory}퍼센트`}
+            >
               <View style={styles.mainScore}>
                 <Text style={styles.scoreValue}>{tastingRecord.matchScoreTotal}%</Text>
                 <Text style={styles.scoreLabel}>전체 매칭</Text>
+                <View style={[styles.scoreIndicator, 
+                  tastingRecord.matchScoreTotal >= 80 ? styles.excellentScore :
+                  tastingRecord.matchScoreTotal >= 60 ? styles.goodScore :
+                  styles.averageScore
+                ]} />
               </View>
               <View style={styles.subScores}>
                 <View style={styles.subScore}>
@@ -481,6 +614,11 @@ const TastingDetailScreen = () => {
             <TouchableOpacity
               style={styles.loginPromptButton}
               onPress={() => navigation.navigate('Auth' as never)}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="로그인하고 나만의 기록 시작하기"
+              accessibilityHint="로그인 화면으로 이동하여 계정을 만들거나 로그인합니다"
             >
               <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
             </TouchableOpacity>
@@ -553,10 +691,14 @@ const styles = StyleSheet.create({
     gap: HIGConstants.SPACING_SM,
   },
   actionButton: {
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_XS,
-    borderRadius: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
     backgroundColor: HIGColors.blue,
+    minHeight: 36,
+    minWidth: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   actionButtonText: {
     fontSize: 14,
@@ -592,6 +734,172 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E0E0E0',
   },
+  // Enhanced Information Hierarchy Styles
+  primaryInfo: {
+    marginBottom: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+  },
+  primaryInfoHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  coffeeNameContainer: {
+    flex: 1,
+    marginRight: 12,
+  },
+  coffeeName: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#000000',
+    marginBottom: 4,
+    lineHeight: 30,
+  },
+  roastery: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#666666',
+  },
+  temperatureBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    alignSelf: 'flex-start',
+    marginTop: 2,
+  },
+  hotBadge: {
+    backgroundColor: '#FFF3E0',
+    borderColor: '#FF8A50',
+  },
+  iceBadge: {
+    backgroundColor: '#E3F2FD',
+    borderColor: '#42A5F5',
+  },
+  temperatureText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  hotText: {
+    color: '#FF8A50',
+  },
+  iceText: {
+    color: '#42A5F5',
+  },
+  secondaryInfo: {
+    // No additional styles needed, uses existing infoRow styles
+  },
+  // Enhanced Flavor Notes Styles
+  allFlavorTags: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+  },
+  level1Tag: {
+    backgroundColor: '#E8F5E8',
+    borderColor: '#4CAF50',
+    borderWidth: 1,
+  },
+  level2Tag: {
+    backgroundColor: '#E3F2FD',
+    borderColor: '#2196F3',
+    borderWidth: 1,
+  },
+  level3Tag: {
+    backgroundColor: '#FFF3E0',
+    borderColor: '#FF9800',
+    borderWidth: 1,
+  },
+  level4Tag: {
+    backgroundColor: '#F3E5F5',
+    borderColor: '#9C27B0',
+    borderWidth: 1,
+  },
+  personalComment: {
+    fontSize: 14,
+    color: '#555555',
+    lineHeight: 20,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E8E8E8',
+  },
+  // Enhanced Sensory Evaluation Styles
+  sensoryRow: {
+    marginBottom: 12,
+  },
+  sensoryTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  sensoryLabel: {
+    fontSize: 14,
+    color: '#333333',
+    fontWeight: '600',
+    minWidth: 50,
+  },
+  sensoryDescription: {
+    fontSize: 12,
+    color: '#666666',
+    fontWeight: '500',
+    flex: 1,
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+  sensoryValue: {
+    fontSize: 14,
+    color: '#000000',
+    fontWeight: '700',
+    minWidth: 30,
+    textAlign: 'right',
+  },
+  sensoryBar: {
+    height: 6,
+    backgroundColor: '#E8E8E8',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  sensoryFill: {
+    height: '100%',
+    backgroundColor: '#2196F3',
+    borderRadius: 3,
+  },
+  // Enhanced Matching Score Styles
+  scoreExplanation: {
+    backgroundColor: '#F0F8FF',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    borderLeftWidth: 3,
+    borderLeftColor: HIGColors.blue,
+  },
+  scoreExplanationText: {
+    fontSize: 13,
+    color: '#1976D2',
+    fontWeight: '500',
+    lineHeight: 18,
+  },
+  scoreIndicator: {
+    width: 60,
+    height: 4,
+    borderRadius: 2,
+    marginTop: 8,
+  },
+  excellentScore: {
+    backgroundColor: '#4CAF50',
+  },
+  goodScore: {
+    backgroundColor: '#FF9800',
+  },
+  averageScore: {
+    backgroundColor: '#9E9E9E',
+  },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -617,19 +925,49 @@ const styles = StyleSheet.create({
     color: '#000000',
     lineHeight: 20,
   },
-  flavorLevel: {
-    marginBottom: 16,
-  },
-  flavorLevelTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#000000',
-    marginBottom: 8,
-  },
-  flavorTags: {
+  // Roaster Notes Styles
+  roasterFlavorTags: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
+    marginBottom: 12,
+  },
+  roasterFlavorTag: {
+    backgroundColor: '#FFF8DC',
+    borderColor: '#DEB887',
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  roasterFlavorText: {
+    fontSize: 13,
+    color: '#8B4513',
+    fontWeight: '500',
+  },
+  roasterDescription: {
+    fontSize: 14,
+    color: '#555555',
+    lineHeight: 20,
+    fontStyle: 'italic',
+  },
+  roasterNoteRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+    alignItems: 'flex-start',
+  },
+  roasterNoteLabel: {
+    fontSize: 13,
+    color: '#666666',
+    fontWeight: '600',
+    minWidth: 80,
+    textTransform: 'capitalize',
+  },
+  roasterNoteValue: {
+    fontSize: 13,
+    color: '#333333',
+    flex: 1,
+    lineHeight: 18,
   },
   flavorTag: {
     backgroundColor: '#E0E0E0',
@@ -640,36 +978,6 @@ const styles = StyleSheet.create({
   flavorTagText: {
     fontSize: 12,
     color: '#000000',
-  },
-  sensoryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  sensoryLabel: {
-    fontSize: 14,
-    color: Colors.TEXT_SECONDARY,
-    width: 60,
-    fontWeight: '500',
-  },
-  sensoryBar: {
-    flex: 1,
-    height: 8,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 4,
-    marginHorizontal: 12,
-  },
-  sensoryFill: {
-    height: '100%',
-    backgroundColor: '#000000',
-    borderRadius: 4,
-  },
-  sensoryValue: {
-    fontSize: 14,
-    color: '#000000',
-    fontWeight: '600',
-    width: 40,
-    textAlign: 'right',
   },
   scoreContainer: {
     alignItems: 'center',
@@ -723,8 +1031,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   loginPromptButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loginPromptText: {
     fontSize: 15,

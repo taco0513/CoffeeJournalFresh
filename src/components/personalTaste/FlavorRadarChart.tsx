@@ -1,11 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  Animated,
 } from 'react-native';
 import Svg, {
   Circle,
@@ -53,9 +52,6 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
   onFlavorTap,
   style,
 }) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.8)).current;
-
   const categories = [
     { key: 'fruity', label: 'Fruity', emoji: '🍓', color: '#FF6B6B' },
     { key: 'floral', label: 'Floral', emoji: '🌸', color: '#C06CC6' },
@@ -65,21 +61,6 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
     { key: 'spices', label: 'Spices', emoji: '🌶️', color: '#FF4757' },
   ];
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 8,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
 
   // Calculate angle for each category
   const angleStep = (Math.PI * 2) / categories.length;
@@ -200,16 +181,7 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
     : '';
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          opacity: fadeAnim,
-          transform: [{ scale: scaleAnim }],
-        },
-        style,
-      ]}
-    >
+    <View style={[styles.container, style]}>
       <View style={styles.chartContainer}>
         <Svg width={CHART_SIZE} height={CHART_SIZE} style={styles.svg}>
           {/* Grid */}
@@ -281,7 +253,7 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
       {interactive && (
         <Text style={styles.hint}>각 향미를 탭하여 자세히 보기</Text>
       )}
-    </Animated.View>
+    </View>
   );
 };
 

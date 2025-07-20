@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Animated,
   Dimensions,
 } from 'react-native';
 import { DailyInsight } from '@/services/LiteAICoachService';
@@ -23,36 +22,8 @@ export const CoachInsightBanner: React.FC<CoachInsightBannerProps> = ({
   onAction,
   style,
 }) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.95)).current;
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 8,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
-
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          opacity: fadeAnim,
-          transform: [{ scale: scaleAnim }],
-        },
-        style,
-      ]}
-    >
+    <View style={[styles.container, style]}>
       <View style={styles.banner}>
         <View style={styles.iconContainer}>
           <Text style={styles.icon}>💡</Text>
@@ -83,7 +54,7 @@ export const CoachInsightBanner: React.FC<CoachInsightBannerProps> = ({
           )}
         </View>
       </View>
-    </Animated.View>
+    </View>
   );
 };
 

@@ -55,8 +55,9 @@ const CoffeeInfoScreen = () => {
   
   const realmService = RealmService.getInstance();
   
-  // 기본 가공 방식 옵션
+  // 기본 가공 방식과 로스팅 레벨 옵션
   const defaultProcessOptions = ['Washed', 'Natural', 'Honey', 'Anaerobic'];
+  const roastLevelOptions = ['Light', 'Medium', 'Dark'];
 
   // Feature Backlog - OCR 결과 처리
   // useEffect(() => {
@@ -267,20 +268,27 @@ const CoffeeInfoScreen = () => {
   // 가공 방식 입력 변경 시 제안 목록 업데이트
   useEffect(() => {
     if (currentTasting.process && currentTasting.process.trim().length > 0) {
-      // Filter default options based on input
-      const filtered = defaultProcessOptions.filter(option => 
-        option.toLowerCase().startsWith(currentTasting.process.toLowerCase())
-      );
-      // Also add previously used process methods from RealmService
-      const previousProcesses = realmService.getProcessSuggestions(currentTasting.process);
-      
-      // Combine and remove duplicates
-      const combined = [...new Set([...filtered, ...previousProcesses])];
-      setProcessSuggestions(combined.slice(0, 10));
+      const localSuggestions = realmService.getProcessSuggestions(currentTasting.process);
+      const combinedSuggestions = [
+        ...new Set([...localSuggestions, ...defaultProcessOptions.filter(option => 
+          option.toLowerCase().includes(currentTasting.process.toLowerCase())
+        )])
+      ];
+      setProcessSuggestions(combinedSuggestions);
     } else {
       setProcessSuggestions(defaultProcessOptions);
     }
   }, [currentTasting.process]);
+  
+  // 컴포넌트 마운트 시 스마트 기본값 제공
+  useEffect(() => {
+    if (currentTasting.coffeeName && !currentTasting.origin && !currentTasting.variety) {
+      const parsed = parseCoffeeName(currentTasting.coffeeName);
+      if (parsed.origin) updateField('origin', parsed.origin);
+      if (parsed.variety) updateField('variety', parsed.variety);
+      if (parsed.process) updateField('process', parsed.process);
+    }
+  }, []);
   
   // 필수 필드가 채워졌는지 확인
   const isValid = currentTasting.roastery && currentTasting.coffeeName;
@@ -319,8 +327,8 @@ const CoffeeInfoScreen = () => {
         realmService.incrementRoasterVisit(currentTasting.roastery);
       }
       
-      // Navigate to CoffeeDetails screen (Step 2 of 3-step form)
-      navigation.navigate('CoffeeDetails' as never);
+      // Navigate directly to RoasterNotes screen
+      navigation.navigate('RoasterNotes' as never);
     }
   };
 
@@ -410,7 +418,7 @@ const CoffeeInfoScreen = () => {
         >
           <Text style={styles.backButtonText}>‹ 뒤로</Text>
         </TouchableOpacity>
-        <Text style={styles.navigationTitle}>기본 정보</Text>
+        <Text style={styles.navigationTitle}>커피 정보</Text>
         <Text style={styles.progressIndicator}>2/7</Text>
       </View>
       
@@ -454,108 +462,215 @@ const CoffeeInfoScreen = () => {
           {/* 입력 폼 */}
           <View style={styles.form}>
             {/* 카페 이름 */}
-            <View style={[styles.inputGroup, { zIndex: cafeSuggestions.length > 0 && currentTasting.cafeName ? 10 : 1 }]}>
-              <AutocompleteInput
-                value={currentTasting.cafeName || ''}
-                onChangeText={(text) => updateField('cafeName', text)}
-                onSelect={(item) => {
-                  // Update cafe name
-                  updateField('cafeName', item);
-                  
-                  // Check if there's a roastery with the same name
-                  const roastersWithSameName = realmService.getRoasterSuggestions(item);
-                  if (roastersWithSameName.length > 0 && 
-                      roastersWithSameName.some(r => r.name === item) &&
-                      !currentTasting.roastery) {
-                    // Auto-fill roastery if cafe name matches a roastery name
-                    updateField('roastery', item);
-                  }
-                }}
-                suggestions={cafeSuggestions}
-                placeholder="예: 블루보틀"
-                label="카페 이름"
-              />
-            </View>
-
-            {/* 로스터리 (필수) */}
-            <View style={[styles.inputGroup, { zIndex: roasterSuggestions.length > 0 && currentTasting.roastery ? 5 : 1 }]}>
-              <AutocompleteInput
-                value={currentTasting.roastery || ''}
-                onChangeText={(text) => updateField('roastery', text)}
-                onSelect={(item) => updateField('roastery', item)}
-                suggestions={roasterSuggestions}
-                placeholder="예: 프릳츠"
-                label="로스터리 *"
-              />
-            </View>
-
-            {/* 커피 이름 (필수) */}
-            <View style={[styles.inputGroup, { zIndex: coffeeNameSuggestions.length > 0 && currentTasting.coffeeName ? 4 : 1 }]}>
-              <AutocompleteInput
-                value={currentTasting.coffeeName || ''}
-                onChangeText={(text) => updateField('coffeeName', text)}
-                onSelect={async (item) => {
-                  // Check if user wants to add a new coffee
-                  if (item.startsWith('+ "') && item.includes('새 커피 등록')) {
-                    setShowAddCoffeeModal(true);
-                    return;
-                  }
-                  
-                  // Update coffee name
-                  updateField('coffeeName', item);
-                  
-                  // Auto-fill other fields if we have previous data
-                  if (currentTasting.roastery) {
-                    // First check local database
-                    const details = realmService.getCoffeeDetails(currentTasting.roastery, item);
-                    if (details) {
-                      if (details.origin) updateField('origin', details.origin);
-                      if (details.variety) updateField('variety', details.variety);
-                      if (details.altitude) updateField('altitude', details.altitude);
-                      if (details.process) updateField('process', details.process);
-                      if (details.roasterNotes) updateField('roasterNotes', details.roasterNotes);
-                    } else {
-                      // Check Supabase for coffee details
-                      const supabaseCoffees = await searchCoffees(currentTasting.roastery, item);
-                      const matchedCoffee = supabaseCoffees.find(c => c.coffee_name === item);
-                      
-                      if (matchedCoffee) {
-                        setSelectedCoffeeData(matchedCoffee);
-                        if (matchedCoffee.origin) updateField('origin', matchedCoffee.origin);
-                        if (matchedCoffee.variety) updateField('variety', matchedCoffee.variety);
-                        if (matchedCoffee.process) updateField('process', matchedCoffee.process);
-                        if (matchedCoffee.altitude) updateField('altitude', matchedCoffee.altitude);
-                        if (matchedCoffee.region) {
-                          // If we have region info, append it to origin
-                          const origin = matchedCoffee.origin 
-                            ? `${matchedCoffee.origin} / ${matchedCoffee.region}`
-                            : matchedCoffee.region;
-                          updateField('origin', origin);
-                        }
-                      } else {
-                        // If no data found, try parsing the coffee name
-                        handleCoffeeNameParse(item);
-                      }
+              <View style={[styles.inputGroup, { zIndex: cafeSuggestions.length > 0 && currentTasting.cafeName ? 10 : 1 }]}>
+                <AutocompleteInput
+                  value={currentTasting.cafeName || ''}
+                  onChangeText={(text) => updateField('cafeName', text)}
+                  onSelect={(item) => {
+                    // Update cafe name
+                    updateField('cafeName', item);
+                    
+                    // Check if there's a roastery with the same name
+                    const roastersWithSameName = realmService.getRoasterSuggestions(item);
+                    if (roastersWithSameName.length > 0 && 
+                        roastersWithSameName.some(r => r.name === item) &&
+                        !currentTasting.roastery) {
+                      // Auto-fill roastery if cafe name matches a roastery name
+                      updateField('roastery', item);
                     }
-                  } else {
-                    // If no roastery selected, try parsing the coffee name
-                    handleCoffeeNameParse(item);
-                  }
-                }}
-                onBlur={() => {
-                  // Parse coffee name when user finishes typing
-                  if (currentTasting.coffeeName) {
-                    handleCoffeeNameParse(currentTasting.coffeeName);
-                  }
-                }}
-                suggestions={coffeeNameSuggestions}
-                placeholder="예: 에티오피아 예가체프 G1"
-                label="커피 이름 *"
-              />
-            </View>
-            <Text style={styles.hintText}>
-              💡 커피 이름을 입력하면 상세 정보를 자동으로 추천해드려요!
-            </Text>
+                  }}
+                  suggestions={cafeSuggestions}
+                  placeholder="예: 블루보틀"
+                  label="카페 이름"
+                />
+              </View>
+
+              {/* 로스터리 (필수) */}
+              <View style={[styles.inputGroup, { zIndex: roasterSuggestions.length > 0 && currentTasting.roastery ? 5 : 1 }]}>
+                <AutocompleteInput
+                  value={currentTasting.roastery || ''}
+                  onChangeText={(text) => updateField('roastery', text)}
+                  onSelect={(item) => updateField('roastery', item)}
+                  suggestions={roasterSuggestions}
+                  placeholder="예: 프릳츠"
+                  label="로스터리 *"
+                />
+              </View>
+
+              {/* 커피 이름 (필수) */}
+              <View style={[styles.inputGroup, { zIndex: coffeeNameSuggestions.length > 0 && currentTasting.coffeeName ? 4 : 1 }]}>
+                <AutocompleteInput
+                  value={currentTasting.coffeeName || ''}
+                  onChangeText={(text) => updateField('coffeeName', text)}
+                  onSelect={async (item) => {
+                    // Check if user wants to add a new coffee
+                    if (item.startsWith('+ "') && item.includes('새 커피 등록')) {
+                      setShowAddCoffeeModal(true);
+                      return;
+                    }
+                    
+                    // Update coffee name
+                    updateField('coffeeName', item);
+                    
+                    // Auto-fill other fields if we have previous data
+                    if (currentTasting.roastery) {
+                      // First check local database
+                      const details = realmService.getCoffeeDetails(currentTasting.roastery, item);
+                      if (details) {
+                        if (details.origin) updateField('origin', details.origin);
+                        if (details.variety) updateField('variety', details.variety);
+                        if (details.altitude) updateField('altitude', details.altitude);
+                        if (details.process) updateField('process', details.process);
+                        if (details.roasterNotes) updateField('roasterNotes', details.roasterNotes);
+                      } else {
+                        // Check Supabase for coffee details
+                        const supabaseCoffees = await searchCoffees(currentTasting.roastery, item);
+                        const matchedCoffee = supabaseCoffees.find(c => c.coffee_name === item);
+                        
+                        if (matchedCoffee) {
+                          setSelectedCoffeeData(matchedCoffee);
+                          if (matchedCoffee.origin) updateField('origin', matchedCoffee.origin);
+                          if (matchedCoffee.variety) updateField('variety', matchedCoffee.variety);
+                          if (matchedCoffee.process) updateField('process', matchedCoffee.process);
+                          if (matchedCoffee.altitude) updateField('altitude', matchedCoffee.altitude);
+                          if (matchedCoffee.region) {
+                            // If we have region info, append it to origin
+                            const origin = matchedCoffee.origin 
+                              ? `${matchedCoffee.origin} / ${matchedCoffee.region}`
+                              : matchedCoffee.region;
+                            updateField('origin', origin);
+                          }
+                        } else {
+                          // If no data found, try parsing the coffee name
+                          handleCoffeeNameParse(item);
+                        }
+                      }
+                    } else {
+                      // If no roastery selected, try parsing the coffee name
+                      handleCoffeeNameParse(item);
+                    }
+                  }}
+                  onBlur={() => {
+                    // Parse coffee name when user finishes typing
+                    if (currentTasting.coffeeName) {
+                      handleCoffeeNameParse(currentTasting.coffeeName);
+                    }
+                  }}
+                  suggestions={coffeeNameSuggestions}
+                  placeholder="예: 에티오피아 예가체프 G1"
+                  label="커피 이름 *"
+                />
+              </View>
+              
+              <Text style={styles.hintText}>
+                💡 커피 이름을 입력하면 상세 정보를 자동으로 추천해드려요!
+              </Text>
+
+              {/* 생산지 */}
+              <View style={[styles.inputGroup, { zIndex: originSuggestions.length > 0 && currentTasting.origin ? 5 : 1 }]}>
+                <AutocompleteInput
+                  value={currentTasting.origin || ''}
+                  onChangeText={(text) => updateField('origin', text)}
+                  onSelect={(item) => updateField('origin', item)}
+                  suggestions={originSuggestions}
+                  placeholder="예: Ethiopia / Yirgacheffe"
+                  label="생산지"
+                />
+              </View>
+
+              {/* 품종 */}
+              <View style={[styles.inputGroup, { zIndex: varietySuggestions.length > 0 && currentTasting.variety ? 4 : 1 }]}>
+                <AutocompleteInput
+                  value={currentTasting.variety || ''}
+                  onChangeText={(text) => updateField('variety', text)}
+                  onSelect={(item) => updateField('variety', item)}
+                  suggestions={varietySuggestions}
+                  placeholder="예: Heirloom, Geisha"
+                  label="품종"
+                />
+              </View>
+
+              {/* 가공 방식 */}
+              <View style={[styles.inputGroup, { zIndex: processSuggestions.length > 0 && currentTasting.process ? 3 : 1 }]}>
+                <AutocompleteInput
+                  value={currentTasting.process || ''}
+                  onChangeText={(text) => updateField('process', text)}
+                  onSelect={(item) => updateField('process', item)}
+                  suggestions={processSuggestions}
+                  placeholder="예: Washed, Natural"
+                  label="가공 방식"
+                />
+              </View>
+
+              {/* 고도 */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>고도</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="예: 1,800-2,000m"
+                  placeholderTextColor="#CCCCCC"
+                  value={currentTasting.altitude}
+                  onChangeText={(text) => updateField('altitude', text)}
+                />
+              </View>
+
+              {/* 로스팅 레벨 */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>로스팅 레벨</Text>
+                <View style={styles.roastLevelButtons}>
+                  {roastLevelOptions.map((level) => (
+                    <TouchableOpacity
+                      key={level}
+                      style={[
+                        styles.roastButton,
+                        currentTasting.roastLevel === level && styles.roastButtonActive,
+                      ]}
+                      onPress={() => updateField('roastLevel', level)}>
+                      <Text style={[
+                        styles.roastButtonText,
+                        currentTasting.roastLevel === level && styles.roastButtonTextActive,
+                      ]}>
+                        {level === 'Light' ? '☕ Light' : 
+                         level === 'Medium' ? '🟤 Medium' : 
+                         '⚫ Dark'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* 온도 선택 */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>온도 *</Text>
+                <View style={styles.temperatureButtons}>
+                  <TouchableOpacity
+                    style={[
+                      styles.tempButton,
+                      currentTasting.temperature === 'hot' && styles.tempButtonActive,
+                    ]}
+                    onPress={() => updateField('temperature', 'hot')}>
+                    <Text style={[
+                      styles.tempButtonText,
+                      currentTasting.temperature === 'hot' && styles.tempButtonTextActive,
+                    ]}>
+                      ☕ Hot
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.tempButton,
+                      currentTasting.temperature === 'ice' && styles.tempButtonActive,
+                    ]}
+                    onPress={() => updateField('temperature', 'ice')}>
+                    <Text style={[
+                      styles.tempButtonText,
+                      currentTasting.temperature === 'ice' && styles.tempButtonTextActive,
+                    ]}>
+                      🧊 Ice
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
           </View>
 
           {/* 다음 버튼 */}
@@ -637,6 +752,7 @@ const styles = StyleSheet.create({
     height: 4,
     width: '29%', // 2/7 = 29%
     backgroundColor: HIGColors.blue,
+    borderRadius: 2,
   },
   scrollView: {
     flex: 1,
@@ -647,45 +763,46 @@ const styles = StyleSheet.create({
   },
   form: {
     paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingTop: HIGConstants.SPACING_LG,
-    paddingBottom: HIGConstants.SPACING_XL,
+    paddingTop: HIGConstants.SPACING_SM,
+    paddingBottom: HIGConstants.SPACING_MD,
   },
   inputGroup: {
-    marginBottom: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   label: {
     fontSize: 13,
     fontWeight: '600',
     color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   required: {
     color: HIGColors.red,
+    fontWeight: '700',
   },
   input: {
-    minHeight: HIGConstants.MIN_TOUCH_TARGET,
+    minHeight: 40,
     borderWidth: 1,
     borderColor: HIGColors.gray4,
     borderRadius: HIGConstants.BORDER_RADIUS,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    fontSize: 17,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
+    fontSize: 16,
     color: '#000000',
     backgroundColor: '#FFFFFF',
   },
   temperatureButtons: {
     flexDirection: 'row',
-    gap: HIGConstants.SPACING_MD,
+    gap: HIGConstants.SPACING_SM,
     marginTop: HIGConstants.SPACING_XS,
   },
   tempButton: {
     flex: 1,
-    minHeight: HIGConstants.MIN_TOUCH_TARGET,
+    minHeight: 36,
     borderWidth: 1,
     borderColor: HIGColors.gray4,
     borderRadius: HIGConstants.BORDER_RADIUS,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -702,19 +819,24 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   bottomContainer: {
-    padding: HIGConstants.SPACING_LG,
-    paddingTop: HIGConstants.SPACING_MD,
+    padding: HIGConstants.SPACING_MD,
+    paddingTop: HIGConstants.SPACING_SM,
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.gray4,
     backgroundColor: '#FFFFFF',
   },
   hintText: {
-    fontSize: 13,
+    fontSize: 12,
     color: HIGColors.secondaryLabel,
-    marginTop: -HIGConstants.SPACING_SM,
-    marginBottom: HIGConstants.SPACING_LG,
+    marginTop: HIGConstants.SPACING_XS,
+    marginBottom: HIGConstants.SPACING_SM,
     paddingHorizontal: HIGConstants.SPACING_SM,
-    lineHeight: 18,
+    lineHeight: 16,
+    backgroundColor: '#F8F9FA',
+    padding: HIGConstants.SPACING_SM,
+    borderRadius: HIGConstants.BORDER_RADIUS / 2,
+    borderLeftWidth: 2,
+    borderLeftColor: HIGColors.blue,
   },
   scanSection: {
     paddingHorizontal: HIGConstants.SPACING_LG,
@@ -735,6 +857,35 @@ const styles = StyleSheet.create({
     color: HIGColors.tertiaryLabel,
     textAlign: 'center',
     paddingHorizontal: HIGConstants.SPACING_LG,
+  },
+  roastLevelButtons: {
+    flexDirection: 'row',
+    gap: HIGConstants.SPACING_SM,
+    marginTop: HIGConstants.SPACING_XS,
+  },
+  roastButton: {
+    flex: 1,
+    minHeight: 36,
+    borderWidth: 1,
+    borderColor: HIGColors.gray4,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    paddingHorizontal: HIGConstants.SPACING_XS,
+    paddingVertical: HIGConstants.SPACING_XS,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  roastButtonActive: {
+    backgroundColor: HIGColors.systemBrown,
+    borderColor: HIGColors.systemBrown,
+  },
+  roastButtonText: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: HIGColors.label,
+    textAlign: 'center',
+  },
+  roastButtonTextActive: {
+    color: '#FFFFFF',
   },
 });
 

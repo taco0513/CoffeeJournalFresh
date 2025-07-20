@@ -5,6 +5,25 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
 
 ## Recent Progress (2025-07-20)
 
+### Navigation and UI Fixes 🔧
+- ✅ **PersonalTasteDashboard Navigation Fix**
+  - Fixed "나의 커피 여정" back button not returning to Profile screen
+  - Changed `navigation.goBack()` to explicit `navigation.navigate('ProfileMain')`
+  - Resolves user navigation issue from PersonalTasteDashboard
+  
+- ✅ **Component Optimization**
+  - Removed unnecessary Animated.View usage from UI components
+  - Cleaned up import statements and removed unused dependencies
+  - Optimized CoachTipCard, CoachInsightBanner, FlavorRadarChart components
+  - Fixed PersonalStatsGrid by removing complex animations and summary card
+  - Simplified TasteProfileCard animations for better performance
+
+- ✅ **Code Structure Cleanup**
+  - Deleted unused CoffeeDetailsScreen.tsx file
+  - Removed CoffeeDetails route from AppNavigator
+  - Fixed AutocompleteInput styling for better consistency
+  - Updated component exports and imports
+
 ### iOS Simulator Deployment Success 🚀
 - ✅ **App Running on iPhone 16 Simulator**
   - Successfully resolved all dependency issues

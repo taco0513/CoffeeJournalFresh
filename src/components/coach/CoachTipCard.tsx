@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Animated,
   Dimensions,
 } from 'react-native';
 import { CoachTip } from '@/services/LiteAICoachService';
@@ -30,25 +29,8 @@ export const CoachTipCard: React.FC<CoachTipCardProps> = ({
   style,
 }) => {
   const [isVisible, setIsVisible] = useState(true);
-  const fadeAnim = new Animated.Value(0);
-  const slideAnim = new Animated.Value(-20);
 
   useEffect(() => {
-    // Entrance animation
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.spring(slideAnim, {
-        toValue: 0,
-        tension: 50,
-        friction: 8,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
     // Auto hide timer
     if (autoHide && autoHideDelay > 0) {
       const timer = setTimeout(() => {
@@ -60,21 +42,8 @@ export const CoachTipCard: React.FC<CoachTipCardProps> = ({
   }, []);
 
   const handleDismiss = () => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: -20,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      setIsVisible(false);
-      onDismiss?.();
-    });
+    setIsVisible(false);
+    onDismiss?.();
   };
 
   const handleAction = () => {
@@ -100,16 +69,7 @@ export const CoachTipCard: React.FC<CoachTipCardProps> = ({
   };
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          opacity: fadeAnim,
-          transform: [{ translateY: slideAnim }],
-        },
-        style,
-      ]}
-    >
+    <View style={[styles.container, style]}>
       <View style={[styles.card, { borderLeftColor: priorityColors[tip.priority] }]}>
         <View style={styles.header}>
           <Text style={styles.icon}>{tip.icon || typeIcons[tip.type]}</Text>
@@ -129,7 +89,7 @@ export const CoachTipCard: React.FC<CoachTipCardProps> = ({
           </TouchableOpacity>
         )}
       </View>
-    </Animated.View>
+    </View>
   );
 };
 

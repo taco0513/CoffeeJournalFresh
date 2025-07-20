@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Animated,
   Dimensions,
 } from 'react-native';
 import { HIGColors, HIGConstants } from '@/styles/common';
@@ -27,25 +26,6 @@ export const TasteProfileCard: React.FC<TasteProfileCardProps> = ({
   onLevelTap,
   style,
 }) => {
-  const scaleAnim = useRef(new Animated.Value(0.95)).current;
-  const progressAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    // Entrance animation
-    Animated.parallel([
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 8,
-        useNativeDriver: true,
-      }),
-      Animated.timing(progressAnim, {
-        toValue: progress.percentage,
-        duration: 1000,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  }, [progress.percentage]);
 
   const getLevelName = (level: number): string => {
     const levels = [
@@ -85,13 +65,7 @@ export const TasteProfileCard: React.FC<TasteProfileCardProps> = ({
   };
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        { transform: [{ scale: scaleAnim }] },
-        style,
-      ]}
-    >
+    <View style={[styles.container, style]}>
       <TouchableOpacity
         style={styles.card}
         onPress={onLevelTap}
@@ -124,14 +98,11 @@ export const TasteProfileCard: React.FC<TasteProfileCardProps> = ({
           {/* Progress Bar */}
           <View style={styles.progressContainer}>
             <View style={styles.progressBar}>
-              <Animated.View
+              <View
                 style={[
                   styles.progressFill,
                   {
-                    width: progressAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ['0%', '100%'],
-                    }),
+                    width: `${Math.round(progress.percentage * 100)}%`,
                     backgroundColor: getProgressColor(progress.percentage * 100),
                   },
                 ]}
@@ -186,7 +157,7 @@ export const TasteProfileCard: React.FC<TasteProfileCardProps> = ({
           </View>
         )}
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 };
 

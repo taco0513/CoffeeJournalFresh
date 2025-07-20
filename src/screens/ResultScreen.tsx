@@ -196,7 +196,7 @@ export default function ResultScreen({navigation}: any) {
         reset();
         navigation.reset({
           index: 0,
-          routes: [{name: 'Home'}],
+          routes: [{name: 'MainTabs'}],
         });
       }, 2000);
     } catch (error: any) {
@@ -211,19 +211,25 @@ export default function ResultScreen({navigation}: any) {
 
   const handleNewTasting = () => {
     reset();
-    // navigation.navigate 대신 navigation.reset 사용
+    // TastingFlow로 이동
     navigation.reset({
       index: 0,
-      routes: [{name: 'CoffeeInfo'}],
+      routes: [{
+        name: 'TastingFlow',
+        state: {
+          routes: [{name: 'CoffeeInfo'}],
+          index: 0,
+        },
+      }],
     });
   };
 
   const handleGoHome = () => {
     reset();
-    // navigation.navigate 대신 navigation.reset 사용
+    // MainTabs로 이동
     navigation.reset({
       index: 0,
-      routes: [{name: 'Home'}],
+      routes: [{name: 'MainTabs'}],
     });
   };
 
