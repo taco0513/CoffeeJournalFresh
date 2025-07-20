@@ -3,7 +3,7 @@ import { UserProfile, PublicProfile } from '../types/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import authService from '../services/supabase/auth';
 import appleAuthService from '../services/supabase/appleAuth';
-// import googleAuthService from '../services/supabase/googleAuth';
+import googleAuthService from '../services/supabase/googleAuth';
 import { supabase } from '../services/supabase/client';
 // import { setSentryUser, clearSentryUser } from '../utils/sentry';
 
@@ -20,7 +20,7 @@ interface UserStore {
   signUp: (email: string, username: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithApple: () => Promise<void>;
-  // signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   setGuestMode: () => void;
   setTestUser: () => void;
@@ -293,20 +293,20 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
-  // signInWithGoogle: async () => {
-  //   set({ isLoading: true });
-  //   try {
-  //     // Google Sign-In 실행
-  //     const authUser = await googleAuthService.signIn();
-  //     
-  //     // 기존 유저 프로필 확인 또는 생성
-  //     await get().createOrUpdateSocialProfile(authUser, 'google');
-  //   } catch (error) {
-  //     console.error('Google Sign-In error:', error);
-  //     set({ isLoading: false });
-  //     throw error;
-  //   }
-  // },
+  signInWithGoogle: async () => {
+    set({ isLoading: true });
+    try {
+      // Google Sign-In 실행
+      const authUser = await googleAuthService.signIn();
+      
+      // 기존 유저 프로필 확인 또는 생성
+      await get().createOrUpdateSocialProfile(authUser, 'google');
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
+      set({ isLoading: false });
+      throw error;
+    }
+  },
 
   // 소셜 로그인 프로필 생성/업데이트 헬퍼 함수
   createOrUpdateSocialProfile: async (authUser: any, provider: 'apple' | 'google') => {
@@ -545,6 +545,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
     set({ currentUser: null, isAuthenticated: false });
     
     // Clear Sentry user context
-    clearSentryUser();
+    // clearSentryUser(); // Temporarily disabled
   },
 }));

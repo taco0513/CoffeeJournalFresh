@@ -17,14 +17,16 @@ import { HIGColors, HIGConstants, commonButtonStyles, commonTextStyles } from '.
 import AuthService from '../../services/supabase/auth';
 import { useUserStore } from '../../stores/useUserStore';
 import { ErrorHandler } from '../../utils/errorHandler';
+import { validateGoogleConfig } from '../../config/googleAuth';
 
 const SignInScreen = () => {
   const navigation = useNavigation();
-  const { signIn, signInWithApple, setGuestMode } = useUserStore();
+  const { signIn, signInWithApple, signInWithGoogle, setGuestMode } = useUserStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isAppleSignInSupported, setIsAppleSignInSupported] = useState(false);
+  const [isGoogleSignInConfigured, setIsGoogleSignInConfigured] = useState(false);
 
   useEffect(() => {
     // Check if Apple Sign-In is supported
@@ -39,6 +41,9 @@ const SignInScreen = () => {
     };
     
     checkAppleSignInSupport();
+    
+    // Check if Google Sign-In is configured
+    setIsGoogleSignInConfigured(validateGoogleConfig());
   }, []);
 
   const handleSignIn = async () => {
@@ -88,9 +93,31 @@ const SignInScreen = () => {
     }
   };
 
-  // const handleGoogleSignIn = async () => {
-  //   // Temporarily disabled
-  // };
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    try {
+      await signInWithGoogle();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainTabs' as never }],
+      });
+    } catch (error: any) {
+      // Handle specific Google Sign-In errors
+      if (error.message?.includes('configuration is invalid')) {
+        Alert.alert(
+          'Google 로그인 설정 필요',
+          'Google 로그인을 사용하려면 먼저 개발자가 Google OAuth를 설정해야 합니다.\n\nsrc/config/googleAuth.ts 파일을 확인해주세요.',
+          [{ text: '확인' }]
+        );
+      } else if (error.message?.includes('cancelled')) {
+        // User cancelled - no need to show error
+      } else {
+        ErrorHandler.handle(error, 'Google 로그인');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSkip = () => {
     // 게스트 모드로 설정
@@ -200,10 +227,21 @@ const SignInScreen = () => {
               </View>
             )}
 
-            {/* Google Sign-In 준비 중 */}
-            <View style={styles.socialComingSoon}>
-              <Text style={styles.comingSoonText}>Google 로그인 준비 중...</Text>
-            </View>
+            {/* Google Sign-In */}
+            {isGoogleSignInConfigured ? (
+              <TouchableOpacity
+                style={[styles.socialButton, styles.googleButton]}
+                onPress={handleGoogleSignIn}
+                disabled={loading}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.socialButtonText}>🔵 Google로 계속하기</Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.socialComingSoon}>
+                <Text style={styles.comingSoonText}>Google 로그인 설정 필요</Text>
+              </View>
+            )}
 
             <TouchableOpacity
               style={styles.skipButton}
@@ -334,6 +372,10 @@ const styles = StyleSheet.create({
   appleButton: {
     backgroundColor: '#000000',
     borderColor: '#000000',
+  },
+  googleButton: {
+    backgroundColor: '#4285F4',
+    borderColor: '#4285F4',
   },
   socialButtonText: {
     fontSize: 17,

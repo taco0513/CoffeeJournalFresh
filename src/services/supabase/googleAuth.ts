@@ -1,16 +1,27 @@
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { supabase } from './client';
+import { GOOGLE_AUTH_CONFIG, validateGoogleConfig } from '@/config/googleAuth';
 
 class GoogleAuthService {
+  private isConfigured = false;
+
   // Google Sign-In 초기화
   async configure(): Promise<void> {
     try {
+      // Validate configuration before proceeding
+      if (!validateGoogleConfig()) {
+        throw new Error('Google Sign-In configuration is invalid. Please update src/config/googleAuth.ts');
+      }
+
       await GoogleSignin.configure({
-        webClientId: '1234567890-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com', // TODO: 실제 웹 클라이언트 ID로 교체
+        webClientId: GOOGLE_AUTH_CONFIG.WEB_CLIENT_ID,
+        iosClientId: GOOGLE_AUTH_CONFIG.IOS_CLIENT_ID,
         offlineAccess: true,
         hostedDomain: '',
         forceCodeForRefreshToken: true,
       });
+      
+      this.isConfigured = true;
     } catch (error) {
       console.error('Google Sign-In configuration failed:', error);
       throw error;
@@ -20,8 +31,10 @@ class GoogleAuthService {
   // Google Sign-In 실행
   async signIn(): Promise<any> {
     try {
-      // Google Sign-In 초기화
-      await this.configure();
+      // Google Sign-In 초기화 (한 번만 실행)
+      if (!this.isConfigured) {
+        await this.configure();
+      }
 
       // Google Play Services 확인
       await GoogleSignin.hasPlayServices();
