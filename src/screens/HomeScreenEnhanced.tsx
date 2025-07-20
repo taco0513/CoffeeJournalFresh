@@ -329,7 +329,7 @@ export default function HomeScreenEnhanced() {
               
               <TouchableOpacity 
                 style={styles.optionButton}
-                onPress={() => navigation.navigate('FlavorQuiz')}
+                onPress={() => navigation.navigate('PersonalTasteQuiz')}
               >
                 <Text style={styles.optionIcon}>🎯</Text>
                 <Text style={styles.optionText}>향미 퀴즈</Text>
@@ -361,6 +361,40 @@ export default function HomeScreenEnhanced() {
                 <View style={styles.newBadge}>
                   <Text style={styles.newBadgeText}>NEW</Text>
                 </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.optionButton}
+                onPress={() => navigation.navigate('Search')}
+              >
+                <Text style={styles.optionIcon}>🔍</Text>
+                <Text style={styles.optionText}>커피 검색</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.optionButton}
+                onPress={() => navigation.navigate('CommunityFeed')}
+              >
+                <Text style={styles.optionIcon}>👥</Text>
+                <Text style={styles.optionText}>커뮤니티</Text>
+              </TouchableOpacity>
+
+              {currentUser?.email === 'hello@zimojin.com' && (
+                <TouchableOpacity 
+                  style={styles.optionButton}
+                  onPress={() => navigation.navigate('AdminDashboard')}
+                >
+                  <Text style={styles.optionIcon}>⚙️</Text>
+                  <Text style={styles.optionText}>관리자 대시보드</Text>
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity 
+                style={styles.optionButton}
+                onPress={() => navigation.navigate('DeveloperScreen')}
+              >
+                <Text style={styles.optionIcon}>🛠️</Text>
+                <Text style={styles.optionText}>개발자 설정</Text>
               </TouchableOpacity>
             </View>
           )}

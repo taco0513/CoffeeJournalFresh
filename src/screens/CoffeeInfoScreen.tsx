@@ -430,8 +430,8 @@ const CoffeeInfoScreen = () => {
         style={{flex: 1}}>
         <ScrollView 
           style={styles.scrollView}
-          contentContainerStyle={{flexGrow: 1}}
-          showsVerticalScrollIndicator={true}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled">
 
           {/* Feature Backlog - OCR 스캔 버튼 */}
@@ -460,7 +460,7 @@ const CoffeeInfoScreen = () => {
           {/* 입력 폼 */}
           <View style={styles.form}>
             {/* 카페 이름 */}
-            <View style={{ zIndex: cafeSuggestions.length > 0 && currentTasting.cafeName ? 10 : 1 }}>
+            <View style={[styles.inputGroup, { zIndex: cafeSuggestions.length > 0 && currentTasting.cafeName ? 10 : 1 }]}>
               <AutocompleteInput
                 value={currentTasting.cafeName || ''}
                 onChangeText={(text) => updateField('cafeName', text)}
@@ -484,7 +484,7 @@ const CoffeeInfoScreen = () => {
             </View>
 
             {/* 로스터리 (필수) */}
-            <View style={{ zIndex: roasterSuggestions.length > 0 && currentTasting.roastery ? 5 : 1 }}>
+            <View style={[styles.inputGroup, { zIndex: roasterSuggestions.length > 0 && currentTasting.roastery ? 5 : 1 }]}>
               <AutocompleteInput
                 value={currentTasting.roastery || ''}
                 onChangeText={(text) => updateField('roastery', text)}
@@ -496,7 +496,7 @@ const CoffeeInfoScreen = () => {
             </View>
 
             {/* 커피 이름 (필수) */}
-            <View style={{ zIndex: coffeeNameSuggestions.length > 0 && currentTasting.coffeeName ? 4 : 1 }}>
+            <View style={[styles.inputGroup, { zIndex: coffeeNameSuggestions.length > 0 && currentTasting.coffeeName ? 4 : 1 }]}>
               <AutocompleteInput
                 value={currentTasting.coffeeName || ''}
                 onChangeText={(text) => updateField('coffeeName', text)}
@@ -558,13 +558,13 @@ const CoffeeInfoScreen = () => {
                 placeholder="예: 에티오피아 예가체프 G1"
                 label="커피 이름 *"
               />
-              <Text style={styles.hintText}>
-                💡 생산지, 품종, 가공방식이 자동으로 인식됩니다. 블렌드도 지원합니다.
-              </Text>
             </View>
+            <Text style={styles.hintText}>
+              💡 생산지, 품종, 가공방식이 자동으로 인식됩니다. 블렌드도 지원합니다.
+            </Text>
 
             {/* 생산지 */}
-            <View style={{ zIndex: originSuggestions.length > 0 && currentTasting.origin ? 3 : 1 }}>
+            <View style={[styles.inputGroup, { zIndex: originSuggestions.length > 0 && currentTasting.origin ? 3 : 1 }]}>
               <AutocompleteInput
                 value={currentTasting.origin || ''}
                 onChangeText={(text) => updateField('origin', text)}
@@ -576,7 +576,7 @@ const CoffeeInfoScreen = () => {
             </View>
 
             {/* 품종 */}
-            <View style={{ zIndex: varietySuggestions.length > 0 && currentTasting.variety ? 2 : 1 }}>
+            <View style={[styles.inputGroup, { zIndex: varietySuggestions.length > 0 && currentTasting.variety ? 2 : 1 }]}>
               <AutocompleteInput
                 value={currentTasting.variety || ''}
                 onChangeText={(text) => updateField('variety', text)}
@@ -602,7 +602,7 @@ const CoffeeInfoScreen = () => {
             </View>
 
             {/* 가공 방식 */}
-            <View style={{ zIndex: processSuggestions.length > 0 && currentTasting.process ? 1 : 1 }}>
+            <View style={[styles.inputGroup, { zIndex: processSuggestions.length > 0 && currentTasting.process ? 1 : 1 }]}>
               <AutocompleteInput
                 value={currentTasting.process || ''}
                 onChangeText={(text) => updateField('process', text)}
@@ -736,8 +736,14 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: HIGConstants.SPACING_LG,
+  },
   form: {
     paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingTop: HIGConstants.SPACING_LG,
+    paddingBottom: HIGConstants.SPACING_XL,
   },
   inputGroup: {
     marginBottom: HIGConstants.SPACING_LG,
@@ -764,7 +770,8 @@ const styles = StyleSheet.create({
   },
   temperatureButtons: {
     flexDirection: 'row',
-    gap: HIGConstants.SPACING_SM,
+    gap: HIGConstants.SPACING_MD,
+    marginTop: HIGConstants.SPACING_XS,
   },
   tempButton: {
     flex: 1,
@@ -791,15 +798,18 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,
+    paddingTop: HIGConstants.SPACING_MD,
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.gray4,
+    backgroundColor: '#FFFFFF',
   },
   hintText: {
-    fontSize: 12,
-    color: HIGColors.tertiaryLabel,
-    marginTop: HIGConstants.SPACING_XS,
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    marginTop: -HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_LG,
-    paddingHorizontal: HIGConstants.SPACING_XS,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    lineHeight: 18,
   },
   scanSection: {
     paddingHorizontal: HIGConstants.SPACING_LG,
