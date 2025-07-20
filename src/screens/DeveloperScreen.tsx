@@ -120,6 +120,12 @@ const DeveloperScreen = () => {
           onPress: async () => {
             try {
               const realmService = RealmService.getInstance();
+              
+              // Realm이 초기화되지 않았으면 초기화
+              if (!realmService.isInitialized) {
+                await realmService.initialize();
+              }
+              
               const testTastings = [
                 {
                   coffeeInfo: {
@@ -145,7 +151,7 @@ const DeveloperScreen = () => {
                     acidity: 4,
                     sweetness: 3,
                     finish: 4,
-                    mouthfeel: ['Clean']
+                    mouthfeel: 'Clean' as const
                   },
                   matchScore: { total: 89, flavorScore: 43, sensoryScore: 46 }
                 },
@@ -173,7 +179,7 @@ const DeveloperScreen = () => {
                     acidity: 5,
                     sweetness: 4,
                     finish: 5,
-                    mouthfeel: ['Juicy']
+                    mouthfeel: 'Juicy' as const
                   },
                   matchScore: { total: 92, flavorScore: 47, sensoryScore: 45 }
                 },
@@ -202,7 +208,7 @@ const DeveloperScreen = () => {
                     acidity: 2,
                     sweetness: 4,
                     finish: 3,
-                    mouthfeel: ['Creamy']
+                    mouthfeel: 'Creamy' as const
                   },
                   matchScore: { total: 85, flavorScore: 40, sensoryScore: 45 }
                 },
@@ -230,7 +236,7 @@ const DeveloperScreen = () => {
                     acidity: 5,
                     sweetness: 2,
                     finish: 4,
-                    mouthfeel: ['Clean']
+                    mouthfeel: 'Clean' as const
                   },
                   matchScore: { total: 87, flavorScore: 44, sensoryScore: 43 }
                 },
@@ -259,7 +265,7 @@ const DeveloperScreen = () => {
                     acidity: 3,
                     sweetness: 4,
                     finish: 4,
-                    mouthfeel: ['Silky']
+                    mouthfeel: 'Silky' as const
                   },
                   matchScore: { total: 86, flavorScore: 41, sensoryScore: 45 }
                 }
@@ -270,7 +276,9 @@ const DeveloperScreen = () => {
               }
               Alert.alert('완료', `${testTastings.length}개의 테스트 데이터가 추가되었습니다.`);
             } catch (error) {
-              Alert.alert('오류', '테스트 데이터 추가 중 오류가 발생했습니다.');
+              console.error('테스트 데이터 추가 오류:', error);
+              const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
+              Alert.alert('오류', `테스트 데이터 추가 중 오류가 발생했습니다:\n${errorMessage}`);
             }
           },
         },

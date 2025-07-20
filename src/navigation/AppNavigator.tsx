@@ -41,6 +41,8 @@ import { PersonalTasteQuizScreen } from '../screens/PersonalTasteQuizScreen';
 import { PersonalTasteQuizResultsScreen } from '../screens/PersonalTasteQuizResultsScreen';
 import AdminFeedbackScreen from '../screens/admin/AdminFeedbackScreen';
 import { FeedbackProvider } from '../components/feedback';
+import OnboardingScreen from '../screens/OnboardingScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -349,10 +351,15 @@ function AuthStack() {
 function AppNavigator() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true); // Default to true to skip by default
   const { loadStoredUser, currentUser } = useUserStore();
   
-  // 게스트 모드 또는 인증된 사용자인 경우 MainTabs 표시
-  const shouldShowMainApp = isAuthenticated || currentUser?.username === 'Guest';
+  // 초기 화면 결정 로직
+  const getInitialRouteName = () => {
+    if (!hasSeenOnboarding) return 'Onboarding';
+    if (isAuthenticated || currentUser?.username === 'Guest') return 'MainTabs';
+    return 'Auth';
+  };
 
   useEffect(() => {
     checkAuthStatus();
@@ -367,6 +374,10 @@ function AppNavigator() {
 
   const checkAuthStatus = async () => {
     try {
+      // Check if user has seen onboarding
+      const onboardingStatus = await AsyncStorage.getItem('hasSeenOnboarding');
+      setHasSeenOnboarding(onboardingStatus === 'true');
+      
       const user = await AuthService.restoreSession();
       if (user) {
         // User is authenticated, load stored user profile
@@ -395,12 +406,16 @@ function AppNavigator() {
     <FeedbackProvider>
       <NavigationContainer>
         <Stack.Navigator 
-          initialRouteName={shouldShowMainApp ? "MainTabs" : "Auth"}
+          initialRouteName={getInitialRouteName()}
           screenOptions={{
             headerShown: false,
             presentation: 'card',
           }}
         >
+          <Stack.Screen 
+            name="Onboarding" 
+            component={OnboardingScreen} 
+          />
           <Stack.Screen 
             name="Auth" 
             component={AuthStack} 

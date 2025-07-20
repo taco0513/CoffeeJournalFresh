@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Animated,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types/navigation';
@@ -23,14 +22,9 @@ export const PersonalTasteQuizResultsScreen: React.FC<Props> = ({ navigation, ro
   const { user } = useUserStore();
   const [masteryLevels, setMasteryLevels] = useState<Map<string, MasteryLevel>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
-  
-  const scoreAnimation = React.useRef(new Animated.Value(0)).current;
-  const fadeAnimation = React.useRef(new Animated.Value(0)).current;
-  const scaleAnimation = React.useRef(new Animated.Value(0.8)).current;
 
   useEffect(() => {
     loadMasteryData();
-    animateResults();
   }, []);
 
   const loadMasteryData = async () => {
@@ -52,28 +46,6 @@ export const PersonalTasteQuizResultsScreen: React.FC<Props> = ({ navigation, ro
     }
   };
 
-  const animateResults = () => {
-    Animated.parallel([
-      Animated.timing(scoreAnimation, {
-        toValue: score / totalPoints,
-        duration: 1500,
-        useNativeDriver: false,
-      }),
-      Animated.timing(fadeAnimation, {
-        toValue: 1,
-        duration: 800,
-        delay: 300,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnimation, {
-        toValue: 1,
-        friction: 4,
-        tension: 15,
-        delay: 500,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
 
   const getPerformanceLevel = () => {
     const percentage = (score / totalPoints) * 100;
@@ -97,22 +69,11 @@ export const PersonalTasteQuizResultsScreen: React.FC<Props> = ({ navigation, ro
       </View>
 
       <View style={styles.content}>
-        <Animated.View
-          style={[
-            styles.scoreCard,
-            {
-              transform: [{ scale: scaleAnimation }],
-              opacity: fadeAnimation,
-            },
-          ]}
-        >
+        <View style={styles.scoreCard}>
           <View style={styles.scoreCircle}>
-            <Animated.Text style={[styles.scoreNumber, { color: performance.color }]}>
-              {scoreAnimation.interpolate({
-                inputRange: [0, 1],
-                outputRange: ['0', score.toString()],
-              }).interpolate(value => Math.round(Number(value)).toString())}
-            </Animated.Text>
+            <Text style={[styles.scoreNumber, { color: performance.color }]}>
+              {score}
+            </Text>
             <Text style={styles.scoreDivider}>—</Text>
             <Text style={styles.totalScore}>{totalPoints}</Text>
           </View>
@@ -138,10 +99,10 @@ export const PersonalTasteQuizResultsScreen: React.FC<Props> = ({ navigation, ro
               <Text style={styles.statLabel}>Accuracy</Text>
             </View>
           </View>
-        </Animated.View>
+        </View>
 
         {!isLoading && masteryLevels.size > 0 && (
-          <Animated.View style={{ opacity: fadeAnimation }}>
+          <View>
             <Text style={styles.sectionTitle}>Flavor Progress</Text>
             {Array.from(masteryLevels.entries()).map(([category, mastery]) => (
               <View key={category} style={styles.masteryCard}>
@@ -179,10 +140,10 @@ export const PersonalTasteQuizResultsScreen: React.FC<Props> = ({ navigation, ro
                 </View>
               </View>
             ))}
-          </Animated.View>
+          </View>
         )}
 
-        <Animated.View style={[styles.actionsContainer, { opacity: fadeAnimation }]}>
+        <View style={styles.actionsContainer}>
           <TouchableOpacity
             style={styles.primaryButton}
             onPress={() => navigation.navigate('PersonalTasteDashboard')}
@@ -198,7 +159,7 @@ export const PersonalTasteQuizResultsScreen: React.FC<Props> = ({ navigation, ro
             <Icon name="refresh" size={20} color={HIGColors.primary} />
             <Text style={styles.secondaryButtonText}>Take Another Quiz</Text>
           </TouchableOpacity>
-        </Animated.View>
+        </View>
       </View>
     </ScrollView>
   );

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Animated,
   ActivityIndicator,
   Alert,
 } from 'react-native';
@@ -30,22 +29,11 @@ export const PersonalTasteQuizScreen: React.FC<Props> = ({ navigation }) => {
   const [startTime, setStartTime] = useState<number>(0);
   const [answers, setAnswers] = useState<FlavorIdentification[]>([]);
   
-  const progressAnimation = useRef(new Animated.Value(0)).current;
-  const fadeAnimation = useRef(new Animated.Value(1)).current;
   const flavorEngine = useRef<FlavorLearningEngine | null>(null);
 
   useEffect(() => {
     initializeQuiz();
   }, []);
-
-  useEffect(() => {
-    // Animate progress bar
-    Animated.timing(progressAnimation, {
-      toValue: (currentQuestionIndex / (quiz?.questions.length || 1)) * 100,
-      duration: 500,
-      useNativeDriver: false,
-    }).start();
-  }, [currentQuestionIndex, quiz]);
 
   const initializeQuiz = async () => {
     try {
@@ -98,19 +86,7 @@ export const PersonalTasteQuizScreen: React.FC<Props> = ({ navigation }) => {
       setScore(score + currentQuestion.points);
     }
 
-    // Animate transition
-    Animated.sequence([
-      Animated.timing(fadeAnimation, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(fadeAnimation, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    // No animation needed
 
     // Move to next question or finish
     if (currentQuestionIndex < quiz.questions.length - 1) {
@@ -153,7 +129,7 @@ export const PersonalTasteQuizScreen: React.FC<Props> = ({ navigation }) => {
     const question = quiz.questions[currentQuestionIndex];
 
     return (
-      <Animated.View style={{ opacity: fadeAnimation }}>
+      <View>
         <View style={styles.questionContainer}>
           <Text style={styles.questionNumber}>
             Question {currentQuestionIndex + 1} of {quiz.questions.length}
@@ -224,7 +200,7 @@ export const PersonalTasteQuizScreen: React.FC<Props> = ({ navigation }) => {
             <Icon name="arrow-forward" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
-      </Animated.View>
+      </View>
     );
   };
 
@@ -264,14 +240,11 @@ export const PersonalTasteQuizScreen: React.FC<Props> = ({ navigation }) => {
 
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
-          <Animated.View
+          <View
             style={[
               styles.progressFill,
               {
-                width: progressAnimation.interpolate({
-                  inputRange: [0, 100],
-                  outputRange: ['0%', '100%'],
-                }),
+                width: `${Math.round((currentQuestionIndex / (quiz?.questions.length || 1)) * 100)}%`,
               },
             ]}
           />

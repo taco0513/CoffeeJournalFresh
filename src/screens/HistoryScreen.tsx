@@ -18,6 +18,7 @@ import { HIGConstants, HIGColors } from '../styles/common';
 import { useUserStore } from '../stores/useUserStore';
 import { generateGuestMockData } from '../utils/guestMockData';
 import LanguageSwitch from '../components/LanguageSwitch';
+import { SkeletonList } from '../components/common/SkeletonLoader';
 
 interface GroupedTastings {
   title: string;
@@ -123,8 +124,10 @@ export default function HistoryScreen() {
     <TouchableOpacity
       style={styles.tastingCard}
       onPress={() => {
-        // TODO: Implement navigation to tasting detail
-        console.log('Navigate to tasting detail:', item.id);
+        navigation.navigate('TastingDetail', { 
+          tastingId: item.id,
+          tasting: item 
+        });
       }}
     >
       <View style={styles.cardHeader}>
@@ -175,10 +178,20 @@ export default function HistoryScreen() {
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color={HIGColors.blue} />
-          <Text style={styles.loadingText}>기록 불러오는 중...</Text>
+        {/* Navigation Bar */}
+        <View style={styles.navigationBar}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.navigationTitle}>테이스팅 기록</Text>
+            <View style={styles.betaBadge}>
+              <Text style={styles.betaText}>BETA</Text>
+            </View>
+          </View>
+          <LanguageSwitch style={styles.languageSwitch} />
         </View>
+        
+        <ScrollView style={styles.content} contentContainerStyle={styles.listContent}>
+          <SkeletonList count={5} />
+        </ScrollView>
       </SafeAreaView>
     );
   }
