@@ -30,6 +30,8 @@
     "next": "15.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-native-localize": "^3.5.1",
+    "react-native-toast-message": "^2.3.3",
     "recharts": "^2.15.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
