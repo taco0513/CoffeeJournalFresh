@@ -22,6 +22,7 @@ export const HIGConstants = {
   // 모서리 둥글기
   BORDER_RADIUS: 8,
   BORDER_RADIUS_LARGE: 12,
+  BORDER_RADIUS_LG: 16,
   
   // 간격
   SPACING_XS: 4,
@@ -52,6 +53,7 @@ const HIGColorsOriginal = {
   
   // Additional colors
   white: '#FFFFFF',
+  black: '#000000',
   accent: '#007AFF',
   brown: '#8B4513',
   

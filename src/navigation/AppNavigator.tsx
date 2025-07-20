@@ -37,6 +37,8 @@ import SignUpScreen from '../screens/auth/SignUpScreen';
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
 import { AdminCoffeeEditScreen } from '../screens/admin/AdminCoffeeEditScreen';
 import DeveloperScreen from '../screens/DeveloperScreen';
+import { PersonalTasteQuizScreen } from '../screens/PersonalTasteQuizScreen';
+import { PersonalTasteQuizResultsScreen } from '../screens/PersonalTasteQuizResultsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -155,6 +157,16 @@ function StatsStack() {
         name="PersonalTaste" 
         component={PersonalTasteDashboard} 
         options={{title: 'Personal Taste Journey'}}
+      />
+      <Stack.Screen 
+        name="PersonalTasteQuiz" 
+        component={PersonalTasteQuizScreen} 
+        options={{title: 'Flavor Quiz'}}
+      />
+      <Stack.Screen 
+        name="PersonalTasteQuizResults" 
+        component={PersonalTasteQuizResultsScreen} 
+        options={{title: 'Quiz Results'}}
       />
     </Stack.Navigator>
   );

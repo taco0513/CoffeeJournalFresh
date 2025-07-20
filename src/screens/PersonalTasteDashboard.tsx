@@ -11,6 +11,8 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@/types/navigation';
 import { useTranslation } from 'react-i18next';
 import { HIGConstants, HIGColors } from '../styles/common';
 import { 
@@ -31,7 +33,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function PersonalTasteDashboard() {
   const { t } = useTranslation();
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const scrollViewRef = useRef<ScrollView>(null);
   
   const [viewMode, setViewMode] = useState<PersonalTasteViewMode>(
@@ -84,7 +86,7 @@ export default function PersonalTasteDashboard() {
   };
 
   const handleStartQuiz = () => {
-    navigation.navigate('FlavorQuiz');
+    navigation.navigate('PersonalTasteQuiz');
   };
 
   const handleViewRecommendations = () => {

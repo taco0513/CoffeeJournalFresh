@@ -40,6 +40,12 @@ export const HIGColors = {
   
   // Link color
   link: '#007AFF',
+  
+  // Additional colors for compatibility
+  white: '#FFFFFF',
+  black: '#000000',
+  accent: '#007AFF',
+  systemGray6: '#F2F2F7',
 };
 
 export const HIGConstants = {
@@ -50,11 +56,21 @@ export const HIGConstants = {
   cornerRadiusSmall: 8,
   cornerRadiusMedium: 12,
   cornerRadiusLarge: 16,
+  RADIUS_MD: 12,
+  RADIUS_LG: 16,
+  BORDER_RADIUS_LG: 16,
   
   // Button heights
   buttonHeightRegular: 44,
   buttonHeightSmall: 32,
   buttonHeightLarge: 56,
+  
+  // Spacing
+  SPACING_XS: 4,
+  SPACING_SM: 8,
+  SPACING_MD: 12,
+  SPACING_LG: 16,
+  SPACING_XL: 20,
   
   // Font sizes
   fontSizeCaption2: 11,

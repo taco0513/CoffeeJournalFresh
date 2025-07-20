@@ -32,6 +32,52 @@ export type {
 
 export { AchievementType } from '@/services/AchievementSystem';
 
+export type {
+  CoachFeedback,
+  CoachInsight,
+  DailyInsight,
+  LearningPath,
+} from '@/services/LiteAICoachService';
+
+// Additional missing types
+export interface GrowthMilestone {
+  id: string;
+  week: number;
+  title: string;
+  description: string;
+  isCompleted: boolean;
+  points: number;
+  unlockedAt?: Date;
+}
+
+export interface TastingData {
+  id: string;
+  coffeeInfo: CoffeeInfo;
+  flavorNotes: string[];
+  sensoryScores: {
+    body: number;
+    acidity: number;
+    sweetness: number;
+    finish: number;
+  };
+  rating: number;
+  notes?: string;
+  createdAt: Date;
+  isDeleted?: boolean;
+}
+
+export interface CoffeeInfo {
+  cafeName?: string;
+  roastery: string;
+  coffeeName: string;
+  origin?: string;
+  region?: string;
+  variety?: string;
+  process?: string;
+  altitude?: string;
+  roasterNotes?: string;
+}
+
 // Additional types for UI components
 export interface PersonalDashboardData {
   tastePattern: TastePattern;

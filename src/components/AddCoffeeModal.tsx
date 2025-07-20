@@ -14,7 +14,7 @@ import {
 import { HIGColors, HIGConstants } from '@/styles/common';
 import { addCoffeeToCatalog } from '@/services/supabase/coffeeSearch';
 import { CoffeeDiscoveryAlert } from './CoffeeDiscoveryAlert';
-import AchievementSystem from '@/services/AchievementSystem';
+import { AchievementSystem } from '@/services/AchievementSystem';
 
 interface AddCoffeeModalProps {
   visible: boolean;

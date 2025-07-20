@@ -15,4 +15,13 @@ export type RootStackParamList = {
     Stats: undefined;
     Search: undefined;
     Export: undefined;
+    PersonalTasteDashboard: undefined;
+    PersonalTasteQuiz: undefined;
+    PersonalTasteQuizResults: {
+      score: number;
+      totalPoints: number;
+      correctAnswers: number;
+      totalQuestions: number;
+      focusAreas: string[];
+    };
   };

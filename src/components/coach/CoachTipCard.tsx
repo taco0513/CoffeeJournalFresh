@@ -184,7 +184,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.blue,
-    fontWeight: '500',
   },
   actionArrow: {
     fontSize: 18,

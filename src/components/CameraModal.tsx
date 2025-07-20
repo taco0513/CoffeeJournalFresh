@@ -46,7 +46,7 @@ const CameraModal: React.FC<CameraModalProps> = ({ visible, onClose }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.darkBackground,
+    backgroundColor: Colors.BLACK,
   },
   header: {
     flexDirection: 'row',
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   closeButtonText: {
-    color: Colors.white,
+    color: Colors.WHITE,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -69,14 +69,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   message: {
-    color: Colors.white,
+    color: Colors.WHITE,
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: 10,
   },
   submessage: {
-    color: Colors.placeholderText,
+    color: Colors.PLACEHOLDER,
     fontSize: 14,
     textAlign: 'center',
   },
