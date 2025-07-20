@@ -6,35 +6,70 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { HIGColors, HIGConstants } from '@/constants/HIG';
+import { performanceMonitor } from '../services/PerformanceMonitor';
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+  onError?: (error: Error, errorInfo: any) => void;
 }
 
 interface State {
   hasError: boolean;
   error: Error | null;
+  errorInfo: any;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, errorInfo: null };
   }
 
   static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
+    return { hasError: true, error, errorInfo: null };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    this.setState({
+      errorInfo,
+    });
+
+    // Report to performance monitor
+    performanceMonitor.reportCrash(error, errorInfo);
+    
+    // Call custom error handler if provided
+    if (this.props.onError) {
+      this.props.onError(error, errorInfo);
+    }
   }
 
   handleReset = () => {
-    this.setState({ hasError: false, error: null });
+    this.setState({ hasError: false, error: null, errorInfo: null });
+  };
+
+  handleReportIssue = () => {
+    const errorMessage = this.state.error?.message || 'Unknown error';
+    const stackTrace = this.state.error?.stack || 'No stack trace available';
+    
+    Alert.alert(
+      '오류 신고',
+      '이 오류를 개발팀에 신고하시겠습니까?',
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '신고하기',
+          onPress: () => {
+            console.log('Error reported:', { errorMessage, stackTrace });
+          },
+        },
+      ]
+    );
   };
 
   render() {
@@ -70,12 +105,21 @@ export class ErrorBoundary extends Component<Props, State> {
                 </View>
               )}
 
-              <TouchableOpacity 
-                style={styles.resetButton}
-                onPress={this.handleReset}
-              >
-                <Text style={styles.resetButtonText}>다시 시도</Text>
-              </TouchableOpacity>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity 
+                  style={styles.resetButton}
+                  onPress={this.handleReset}
+                >
+                  <Text style={styles.resetButtonText}>다시 시도</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={styles.reportButton}
+                  onPress={this.handleReportIssue}
+                >
+                  <Text style={styles.reportButtonText}>문제 신고</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -150,15 +194,34 @@ const styles = StyleSheet.create({
     color: HIGColors.systemRed,
     fontFamily: 'Courier',
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: HIGConstants.SPACING_MD,
+  },
   resetButton: {
     backgroundColor: HIGColors.accent,
     paddingHorizontal: HIGConstants.SPACING_XL,
     paddingVertical: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.RADIUS_LG,
+    flex: 1,
   },
   resetButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.white,
+    textAlign: 'center',
+  },
+  reportButton: {
+    backgroundColor: HIGColors.systemGray5,
+    paddingHorizontal: HIGConstants.SPACING_XL,
+    paddingVertical: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.RADIUS_LG,
+    flex: 1,
+  },
+  reportButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: HIGColors.label,
+    textAlign: 'center',
   },
 });

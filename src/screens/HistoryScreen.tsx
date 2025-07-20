@@ -17,7 +17,6 @@ import { ITastingRecord } from '../services/realm/schemas';
 import { HIGConstants, HIGColors } from '../styles/common';
 
 import { useUserStore } from '../stores/useUserStore';
-import { generateGuestMockData } from '../utils/guestMockData';
 import { SkeletonList } from '../components/common/SkeletonLoader';
 
 interface GroupedTastings {
@@ -33,8 +32,6 @@ export default function HistoryScreen() {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'date' | 'score'>('date');
   
-  // 게스트 모드 체크
-  const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
 
   useEffect(() => {
     loadData();
@@ -44,13 +41,6 @@ export default function HistoryScreen() {
     try {
       setLoading(true);
       
-      // 게스트 모드인 경우 mock 데이터 사용
-      if (isGuestMode) {
-        const guestMockData = generateGuestMockData();
-        setAllTastings(guestMockData);
-        setLoading(false);
-        return;
-      }
       
       const realmService = RealmService.getInstance();
       const tastings = realmService.getTastingRecords({ isDeleted: false });
@@ -193,18 +183,6 @@ export default function HistoryScreen() {
         <View style={{ width: 80 }} />
       </View>
 
-      {/* 게스트 모드 안내 */}
-      {isGuestMode && (
-        <View style={styles.guestNotice}>
-          <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
-          <TouchableOpacity
-            style={styles.loginPromptButton}
-            onPress={() => navigation.navigate('Auth' as never)}
-          >
-            <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
       <View style={styles.header}>
         <Text style={styles.headerTitle}>총 {allTastings.length}개의 기록</Text>
@@ -324,29 +302,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   languageSwitch: {},
-  guestNotice: {
-    backgroundColor: '#E3F2FD',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    margin: HIGConstants.SPACING_LG,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: HIGColors.blue,
-  },
-  guestNoticeText: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  loginPromptButton: {
-    paddingVertical: HIGConstants.SPACING_SM,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-  },
-  loginPromptText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: HIGColors.blue,
-  },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',

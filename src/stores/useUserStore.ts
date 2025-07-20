@@ -22,7 +22,6 @@ interface UserStore {
   signInWithApple: () => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
-  setGuestMode: () => void;
   setTestUser: () => void;
   
   // Profile management
@@ -224,32 +223,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
-  setGuestMode: () => {
-    // 게스트 모드 설정
-    const guestUser: UserProfile = {
-      id: 'guest',
-      username: 'Guest',
-      email: 'guest@example.com',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      level: 1,
-      total_tastings: 0,
-      badges: [],
-      bio: '',
-      avatar_url: '',
-      is_verified: false,
-      is_moderator: false,
-      followers_count: 0,
-      following_count: 0,
-      privacy_level: 'public'
-    };
-    
-    set({ 
-      currentUser: guestUser, 
-      isAuthenticated: false,
-      isLoading: false 
-    });
-  },
 
   setTestUser: () => {
     // 개발자 테스트용 로그인 바이패스

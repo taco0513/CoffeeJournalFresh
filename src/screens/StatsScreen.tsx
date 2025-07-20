@@ -16,7 +16,6 @@ import {
   LineChart,
 } from 'react-native-chart-kit';
 import { useUserStore } from '../stores/useUserStore';
-import { generateGuestMockData, generateGuestStats } from '../utils/guestMockData';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -59,8 +58,6 @@ const StatsScreen = () => {
   const [topCafes, setTopCafes] = useState<TopCafe[]>([]);
   const [tastingTrend, setTastingTrend] = useState<TastingTrend[]>([]);
   
-  // 게스트 모드 체크
-  const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
 
   useEffect(() => {
     loadStatistics();
@@ -108,52 +105,6 @@ const StatsScreen = () => {
 
   const loadStatistics = async () => {
     try {
-      // 게스트 모드인 경우 mock 데이터 사용
-      if (isGuestMode) {
-        const guestMockData = generateGuestMockData();
-        const guestStats = generateGuestStats();
-        
-        // Mock 통계 데이터 생성
-        setStats({
-          totalTastings: guestStats.totalTastings,
-          averageScore: guestStats.avgScore,
-          firstTastingDays: 45,
-        });
-        
-        // Mock TOP 로스터리 데이터 (3등까지)
-        setTopRoasters([
-          { name: 'Blue Bottle Coffee', count: 8, avgScore: 89 },
-          { name: 'Fritz Coffee Company', count: 5, avgScore: 85 },
-          { name: 'Anthracite Coffee', count: 3, avgScore: 88 },
-        ]);
-        
-        // Mock TOP 커피 데이터 (3등까지)
-        setTopCoffees([
-          { name: 'Three Africas', roastery: 'Blue Bottle Coffee', count: 4 },
-          { name: 'Colombia Geisha', roastery: 'Fritz Coffee Company', count: 3 },
-          { name: 'Ethiopia Yirgacheffe', roastery: 'Anthracite Coffee', count: 2 },
-        ]);
-        
-        // Mock TOP 카페 데이터 (3등까지)
-        setTopCafes([
-          { name: 'Blue Bottle 삼청점', count: 6 },
-          { name: 'Fritz 성수점', count: 4 },
-          { name: 'Anthracite 한남점', count: 2 },
-        ]);
-        
-        // Mock 테이스팅 트렌드 데이터
-        setTastingTrend([
-          { date: '02월', count: 0, avgScore: 0 },
-          { date: '03월', count: 1, avgScore: 85 },
-          { date: '04월', count: 2, avgScore: 87 },
-          { date: '05월', count: 1, avgScore: 92 },
-          { date: '06월', count: 1, avgScore: 88 },
-          { date: '07월', count: 0, avgScore: 0 },
-        ]);
-        
-        setLoading(false);
-        return;
-      }
       
       const realmService = RealmService.getInstance();
       
@@ -189,7 +140,7 @@ const StatsScreen = () => {
     );
   }
 
-  if (!stats || (!isGuestMode && stats.totalTastings === 0)) {
+  if (!stats || stats.totalTastings === 0) {
     return (
       <SafeAreaView style={styles.container}>
         {/* Navigation Bar */}
@@ -228,18 +179,6 @@ const StatsScreen = () => {
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* 게스트 모드 안내 */}
-        {isGuestMode && (
-          <View style={styles.guestNotice}>
-            <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
-            <TouchableOpacity
-              style={styles.loginPromptButton}
-              onPress={() => navigation.navigate('Auth' as never)}
-            >
-              <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
-            </TouchableOpacity>
-          </View>
-        )}
 
         <View style={styles.header}>
           <Text style={styles.headerTitle}>나의 커피 통계</Text>
@@ -430,29 +369,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   languageSwitch: {},
-  guestNotice: {
-    backgroundColor: '#E3F2FD',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    margin: HIGConstants.SPACING_LG,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: HIGColors.blue,
-  },
-  guestNoticeText: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  loginPromptButton: {
-    paddingVertical: HIGConstants.SPACING_SM,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-  },
-  loginPromptText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: HIGColors.blue,
-  },
   scrollView: {
     flex: 1,
   },

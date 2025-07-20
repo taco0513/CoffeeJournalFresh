@@ -20,24 +20,16 @@ import RealmService from '../services/realm/RealmService';
 import { useUserStore } from '../stores/useUserStore';
 import { ITastingRecord } from '../services/realm/schemas';
 import { usePersonalTaste } from '@/hooks/usePersonalTaste';
-import { generateGuestMockData, generateGuestStats } from '../utils/guestMockData';
+import { useAnalytics } from '../hooks/useAnalytics';
+// Guest mode disabled - removed mock data imports
 
 export default function HomeScreenEnhanced() {
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const { currentUser } = useUserStore();
+  const { trackScreenView, trackButtonClick, trackFeatureUse } = useAnalytics();
   
-  // 게스트 모드 체크
-  const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
-  
-  // 게스트 모드일 때 mock 데이터 사용
-  const guestMockData = isGuestMode ? generateGuestMockData() : [];
-  const guestMockStats = isGuestMode ? generateGuestStats() : {
-    thisWeekTastings: 0,
-    currentStreak: 0, // 이제 품질 점수로 사용
-    thisMonthNewCoffees: 0,
-    avgScore: 0,
-  };
+  // Guest mode disabled - removed all guest mode functionality
   
   const [recentTastings, setRecentTastings] = useState<ITastingRecord[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -62,8 +54,9 @@ export default function HomeScreenEnhanced() {
   const realmService = RealmService.getInstance();
 
   useEffect(() => {
+    trackScreenView('Home');
     loadDashboardData();
-  }, []);
+  }, [trackScreenView]);
 
   const loadDashboardData = async () => {
     try {
@@ -138,18 +131,23 @@ export default function HomeScreenEnhanced() {
   };
 
   const handleNewTasting = () => {
+    trackButtonClick('new_tasting_button', { source: 'home_screen' });
+    trackFeatureUse('start_new_tasting');
     navigation.navigate('TastingFlow', { screen: 'CoffeeInfo' });
   };
 
   const handleViewHistory = () => {
+    trackButtonClick('view_history_button', { source: 'home_screen' });
     navigation.navigate('Journal');
   };
 
   const handleQuickStats = () => {
+    trackButtonClick('quick_stats_button', { source: 'home_screen' });
     navigation.navigate('Stats');
   };
 
   const handleTastingDetail = (tastingId: string) => {
+    trackButtonClick('tasting_detail_button', { tastingId, source: 'home_recent_list' });
     navigation.navigate('Journal', { screen: 'TastingDetail', params: { tastingId } });
   };
 
@@ -162,13 +160,7 @@ export default function HomeScreenEnhanced() {
     });
     
     const handlePress = () => {
-      if (isGuestMode) {
-        // 게스트 모드에서는 Journal 탭으로 이동
-        navigation.navigate('Journal');
-      } else {
-        // 일반 모드에서는 상세 화면으로 이동
-        handleTastingDetail(item.id);
-      }
+      handleTastingDetail(item.id);
     };
     
     return (
@@ -216,20 +208,7 @@ export default function HomeScreenEnhanced() {
         <View style={styles.content}>
           {/* Simplified Welcome Section */}
           <View style={styles.welcomeSection}>
-            <Text style={styles.welcomeTitle}>안녕하세요, {currentUser?.username || 'Guest'}님!</Text>
-            
-            {/* 게스트 모드 안내 - 더 눈에 띄게 */}
-            {isGuestMode && (
-              <View style={styles.guestNotice}>
-                <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
-                <TouchableOpacity
-                  style={styles.loginPromptButton}
-                  onPress={() => navigation.navigate('Auth' as never)}
-                >
-                  <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+            <Text style={styles.welcomeTitle}>안녕하세요, {currentUser?.username || 'User'}님!</Text>
           </View>
 
           {/* AI Coach - Moved to Future Roadmap */}
@@ -248,20 +227,20 @@ export default function HomeScreenEnhanced() {
           {/* Quick Stats Summary */}
           <View style={styles.quickStats}>
             <View style={styles.quickStatItem}>
-              <Text style={styles.quickStatValue}>{isGuestMode ? guestMockStats.thisWeekTastings : stats.thisWeekTastings}</Text>
+              <Text style={styles.quickStatValue}>{stats.thisWeekTastings}</Text>
               <Text style={styles.quickStatLabel}>이번주</Text>
             </View>
             <View style={styles.quickStatDivider} />
             <View style={styles.quickStatItem}>
               <Text style={styles.quickStatValue}>
-                {isGuestMode ? 85 : (stats.currentStreak || 0)}
+                {stats.currentStreak || 0}
               </Text>
               <Text style={styles.quickStatLabel}>품질점수</Text>
             </View>
             <View style={styles.quickStatDivider} />
             <View style={styles.quickStatItem}>
               <Text style={styles.quickStatValue}>
-                {isGuestMode ? 5 : (stats.thisMonthNewCoffees || 0)}
+                {stats.thisMonthNewCoffees || 0}
               </Text>
               <Text style={styles.quickStatLabel}>신규 커피</Text>
             </View>
@@ -276,9 +255,9 @@ export default function HomeScreenEnhanced() {
               </TouchableOpacity>
             </View>
 
-            {(isGuestMode ? guestMockData.slice(0, 2) : recentTastings.slice(0, 2)).length > 0 ? (
+            {recentTastings.slice(0, 2).length > 0 ? (
               <FlatList
-                data={isGuestMode ? guestMockData.slice(0, 2) : recentTastings.slice(0, 2)}
+                data={recentTastings.slice(0, 2)}
                 renderItem={renderRecentTasting}
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}

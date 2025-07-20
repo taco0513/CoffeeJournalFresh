@@ -14,7 +14,6 @@ import { useUserStore } from '../stores/useUserStore';
 import RealmService from '../services/realm/RealmService';
 import { HIGConstants, HIGColors, commonButtonStyles } from '../styles/common';
 import AuthService from '../services/supabase/auth';
-import { generateGuestStats } from '../utils/guestMockData';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -25,8 +24,6 @@ const ProfileScreen = () => {
     favoriteRoaster: '',
   });
 
-  // 게스트 모드 체크
-  const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
 
   const realmService = RealmService.getInstance();
 
@@ -36,16 +33,6 @@ const ProfileScreen = () => {
 
   const loadUserStats = async () => {
     try {
-      // 게스트 모드인 경우 mock 데이터 사용
-      if (isGuestMode) {
-        setStats({
-          joinedDaysAgo: 45,
-          achievementCount: 8,
-          favoriteRoaster: 'Blue Bottle Coffee',
-        });
-        return;
-      }
-
       if (realmService.isInitialized) {
         const realm = realmService.getRealm();
         const tastings = realm.objects('TastingRecord').filtered('isDeleted = false');
@@ -156,18 +143,6 @@ const ProfileScreen = () => {
       </View>
 
       <ScrollView style={styles.scrollView}>
-        {/* 게스트 모드 안내 */}
-        {isGuestMode && (
-          <View style={styles.guestNotice}>
-            <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
-            <TouchableOpacity
-              style={styles.loginPromptButton}
-              onPress={() => navigation.navigate('Auth' as never)}
-            >
-              <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
-            </TouchableOpacity>
-          </View>
-        )}
 
         {/* 프로필 헤더 */}
         <View style={styles.profileHeader}>
@@ -178,8 +153,8 @@ const ProfileScreen = () => {
               </Text>
             </View>
           </View>
-          <Text style={styles.username}>{currentUser?.username || 'Guest'}</Text>
-          <Text style={styles.email}>{currentUser?.email || 'guest@example.com'}</Text>
+          <Text style={styles.username}>{currentUser?.username || 'User'}</Text>
+          <Text style={styles.email}>{currentUser?.email || 'user@example.com'}</Text>
         </View>
 
         {/* 빠른 메뉴 */}
@@ -245,18 +220,13 @@ const ProfileScreen = () => {
           ))}
         </View>
 
-        {/* 로그아웃/로그인 버튼 */}
+        {/* 로그아웃 버튼 */}
         <View style={styles.signOutContainer}>
           <TouchableOpacity
             style={[commonButtonStyles.buttonSecondary, styles.signOutButton]}
-            onPress={isGuestMode ? 
-              () => navigation.navigate('Auth' as never) : 
-              handleSignOut
-            }
+            onPress={handleSignOut}
           >
-            <Text style={styles.signOutText}>
-              {isGuestMode ? '로그인' : '로그아웃'}
-            </Text>
+            <Text style={styles.signOutText}>로그아웃</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -302,29 +272,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   languageSwitch: {},
-  guestNotice: {
-    backgroundColor: '#E3F2FD',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    margin: HIGConstants.SPACING_LG,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: HIGColors.blue,
-  },
-  guestNoticeText: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  loginPromptButton: {
-    paddingVertical: HIGConstants.SPACING_SM,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-  },
-  loginPromptText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: HIGColors.blue,
-  },
   scrollView: {
     flex: 1,
   },

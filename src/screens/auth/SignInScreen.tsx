@@ -21,7 +21,7 @@ import { validateGoogleConfig, isGoogleSignInConfigured } from '../../config/goo
 
 const SignInScreen = () => {
   const navigation = useNavigation();
-  const { signIn, signInWithApple, signInWithGoogle, setGuestMode } = useUserStore();
+  const { signIn, signInWithApple, signInWithGoogle } = useUserStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -119,16 +119,6 @@ const SignInScreen = () => {
     }
   };
 
-  const handleSkip = () => {
-    // 게스트 모드로 설정
-    setGuestMode();
-    
-    // Use app as guest - reset navigation to MainTabs
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'MainTabs' as never }],
-    });
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -246,13 +236,6 @@ const SignInScreen = () => {
               </View>
             )}
 
-            <TouchableOpacity
-              style={styles.skipButton}
-              onPress={handleSkip}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.skipButtonText}>둘러보기</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -338,15 +321,6 @@ const styles = StyleSheet.create({
   },
   signUpButtonText: {
     color: HIGColors.label,
-  },
-  skipButton: {
-    alignSelf: 'center',
-    paddingVertical: HIGConstants.SPACING_SM,
-    marginTop: HIGConstants.SPACING_SM,
-  },
-  skipButtonText: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
   },
   // 소셜 로그인 스타일
   dividerContainer: {

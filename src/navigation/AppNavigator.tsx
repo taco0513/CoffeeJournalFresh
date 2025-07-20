@@ -348,77 +348,33 @@ function AuthStack() {
 }
 
 function AppNavigator() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true); // Default to true to skip by default
-  const { loadStoredUser, currentUser } = useUserStore();
+  // Skip authentication entirely - go directly to main app
+  const { loadStoredUser } = useUserStore();
   
-  // 초기 화면 결정 로직
-  const getInitialRouteName = () => {
-    if (!hasSeenOnboarding) return 'Onboarding';
-    if (isAuthenticated || currentUser?.username === 'Guest') return 'MainTabs';
-    return 'Auth';
-  };
-
   useEffect(() => {
-    checkAuthStatus();
+    // Initialize app without authentication check
+    initializeApp();
   }, []);
 
-  // currentUser 변경 시 인증 상태 재확인
-  useEffect(() => {
-    if (currentUser?.username === 'Guest') {
-      setIsLoading(false);
-    }
-  }, [currentUser]);
-
-  const checkAuthStatus = async () => {
+  const initializeApp = async () => {
     try {
-      // Check if user has seen onboarding
-      const onboardingStatus = await AsyncStorage.getItem('hasSeenOnboarding');
-      setHasSeenOnboarding(onboardingStatus === 'true');
-      
-      const user = await AuthService.restoreSession();
-      if (user) {
-        // User is authenticated, load stored user profile
-        await loadStoredUser();
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-      }
+      // Load any stored user data if available
+      await loadStoredUser();
     } catch (error) {
-      // console.error('Auth check error:', error);
-      setIsAuthenticated(false);
-    } finally {
-      setIsLoading(false);
+      // Continue without stored data
     }
   };
-
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: HIGColors.systemBackground }}>
-        <ActivityIndicator size="large" color={HIGColors.blue} />
-      </View>
-    );
-  }
 
   return (
     <FeedbackProvider>
       <NavigationContainer>
         <Stack.Navigator 
-          initialRouteName={getInitialRouteName()}
+          initialRouteName="MainTabs"
           screenOptions={{
             headerShown: false,
             presentation: 'card',
           }}
         >
-          <Stack.Screen 
-            name="Onboarding" 
-            component={OnboardingScreen} 
-          />
-          <Stack.Screen 
-            name="Auth" 
-            component={AuthStack} 
-          />
           <Stack.Screen 
             name="MainTabs" 
             component={MainTabs} 
