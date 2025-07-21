@@ -270,10 +270,8 @@ export default function UnifiedFlavorScreen() {
   const navigation = useNavigation();
   const { currentTasting, updateField } = useTastingStore();
   const [searchQuery, setSearchQuery] = useState('');
-  // Cafe Mode: 모든 카테고리를 기본적으로 열어둠
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(
-    flavorData.map(item => item.category)
-  );
+  // Cafe Mode: 초기에는 모든 카테고리를 닫아서 Level 1에 집중
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [expandedSubCategories, setExpandedSubCategories] = useState<Set<string>>(new Set());
 
   const selectedPaths = currentTasting.selectedFlavors || [];
@@ -823,18 +821,19 @@ const styles = StyleSheet.create({
   },
   subCategoryChip: {
     backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_XS,
-    borderRadius: 12,
-    marginRight: HIGConstants.SPACING_XS,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderRadius: 16,
+    marginRight: HIGConstants.SPACING_SM,
     borderWidth: 0,
+    minHeight: 36,
   },
   subCategoryChipSelected: {
     backgroundColor: HIGColors.systemBlue,
     borderWidth: 0,
   },
   subCategoryText: {
-    fontSize: 13,
+    fontSize: 14,
     color: HIGColors.label,
     fontWeight: '500',
   },
@@ -866,14 +865,15 @@ const styles = StyleSheet.create({
   },
   flavorButton: {
     backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_XS,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.cornerRadiusSmall,
-    marginRight: HIGConstants.SPACING_XS,
-    marginBottom: HIGConstants.SPACING_XS,
+    marginRight: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_SM,
     borderWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
+    minHeight: 36,
   },
   flavorButtonSelected: {
     backgroundColor: HIGColors.systemBlue,
@@ -884,7 +884,7 @@ const styles = StyleSheet.create({
     backgroundColor: HIGColors.systemGray5,
   },
   flavorText: {
-    fontSize: 13,
+    fontSize: 14,
     color: HIGColors.label,
     fontWeight: '500',
   },
