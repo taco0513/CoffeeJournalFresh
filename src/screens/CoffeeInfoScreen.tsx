@@ -11,34 +11,24 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import {useTastingStore} from '../stores/tastingStore';
 import { useDevStore } from '../stores/useDevStore';
 import { AutocompleteInput } from '../components/common';
-// Feature Backlog - Photo feature
-// import PhotoPicker from '../components/PhotoPicker';
 import RealmService from '../services/realm/RealmService';
 import { parseCoffeeName } from '../utils/coffeeParser';
 import { NavigationButton } from '../components/common';
-// import CameraModal from '../components/CameraModal';
-// Feature Backlog - OCR imports
-// import { ParsedCoffeeInfo } from '../services/OCRService';
-// import { parseOCRResult } from '../utils/ocrParser';
-import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
-import { searchRoasters, searchCoffees, CoffeeSearchResult } from '../services/supabase/coffeeSearch';
+import { HIGConstants, HIGColors } from '../styles/common';
+import { searchRoasters, searchCoffees } from '../services/supabase/coffeeSearch';
 import { AddCoffeeModal } from '../components/AddCoffeeModal';
 import { BetaFeedbackPrompt } from '../components/beta/BetaFeedbackPrompt';
 
 const CoffeeInfoScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
   
   // Zustand store 사용
   const { currentTasting, updateField } = useTastingStore();
   const { isDeveloperMode } = useDevStore();
-  
-  // 사진 상태 (Feature Backlog)
-  // const [photoUri, setPhotoUri] = useState<string>(currentTasting.photoUri || '');
   
   // 자동완성 상태
   const [cafeSuggestions, setCafeSuggestions] = useState<string[]>([]);
@@ -47,9 +37,7 @@ const CoffeeInfoScreen = () => {
   const [originSuggestions, setOriginSuggestions] = useState<string[]>([]);
   const [varietySuggestions, setVarietySuggestions] = useState<string[]>([]);
   const [processSuggestions, setProcessSuggestions] = useState<string[]>([]);
-  const [selectedCoffeeData, setSelectedCoffeeData] = useState<CoffeeSearchResult | null>(null);
   const [showAddCoffeeModal, setShowAddCoffeeModal] = useState(false);
-  // const [showCafeSuggestions, setShowCafeSuggestions] = useState(false);
 
   // Developer mode: Dummy data for quick testing
   const dummyData = [
@@ -100,11 +88,6 @@ const CoffeeInfoScreen = () => {
     
     Alert.alert('개발자 모드', '더미 데이터가 입력되었습니다!');
   };
-  // const [showRoasterSuggestions, setShowRoasterSuggestions] = useState(false);
-  // const [showCameraModal, setShowCameraModal] = useState(false);
-  
-  // Feature Backlog - 스캔된 로스터 노트 저장
-  // const [scannedRoasterNotes, setScannedRoasterNotes] = useState('');
   
   const realmService = RealmService.getInstance();
   
@@ -112,50 +95,19 @@ const CoffeeInfoScreen = () => {
   const defaultProcessOptions = ['Washed', 'Natural', 'Honey', 'Anaerobic'];
   const roastLevelOptions = ['Light', 'Medium', 'Dark'];
 
-  // Feature Backlog - OCR 결과 처리
-  // useEffect(() => {
-  //   const params = route.params as any;
-  //   const ocrText = params?.ocrText;
-  //   const scannedText = params?.scannedText;
-  //   const scannedData = params?.scannedData;
-  //   
-  //   if (scannedData) {
-  //     console.log('스캔 데이터 적용:', scannedData);
-  //     
-  //     // 각 필드에 맞게 데이터 설정
-  //     if (scannedData.roastery) updateField('roastery', scannedData.roastery);
-  //     if (scannedData.coffeeName) updateField('coffeeName', scannedData.coffeeName);
-  //     if (scannedData.origin) updateField('origin', scannedData.origin);
-  //     if (scannedData.variety) updateField('variety', scannedData.variety);
-  //     if (scannedData.process) updateField('process', scannedData.process);
-  //     if (scannedData.altitude) updateField('altitude', scannedData.altitude);
-  //     
-  //     // 로스터 노트 저장
-  //     if (scannedData.roasterNotes) {
-  //       setScannedRoasterNotes(scannedData.roasterNotes);
-  //       console.log('스캔된 로스터 노트:', scannedData.roasterNotes);
-  //     }
-  //   } else if (scannedText) {
-  //     // 스캔된 텍스트를 커피 이름에 설정
-  //     updateField('coffeeName', scannedText);
-  //     console.log('스캔된 텍스트 적용:', scannedText);
-  //   } else if (ocrText) {
-  //     handleOCRResult(ocrText);
-  //   }
-  // }, [route.params]);  // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 카페 입력 변경 시 제안 목록 업데이트
-  useEffect(() => {
-    if (currentTasting.cafeName && currentTasting.cafeName.trim().length > 0) {
-      const suggestions = realmService.getCafeSuggestions(currentTasting.cafeName);
-      setCafeSuggestions(suggestions.map(cafe => cafe.name));
-    } else {
-      setCafeSuggestions([]);
-    }
-  }, [currentTasting.cafeName]);
+  // 카페 입력 변경 시 제안 목록 업데이트 - TEMPORARILY DISABLED
+  // useEffect(() => {
+  //   if (currentTasting.cafeName && currentTasting.cafeName.trim().length > 0) {
+  //     const suggestions = realmService.getCafeSuggestions(currentTasting.cafeName);
+  //     setCafeSuggestions(suggestions.map(cafe => cafe.name));
+  //   } else {
+  //     setCafeSuggestions([]);
+  //   }
+  // }, [currentTasting.cafeName]);
   
-  // 로스터 입력 변경 시 제안 목록 업데이트 (카페 기반 + Supabase)
-  useEffect(() => {
+  // 로스터 입력 변경 시 제안 목록 업데이트 (카페 기반 + Supabase) - TEMPORARILY DISABLED
+  /* useEffect(() => {
     const fetchRoasterSuggestions = async () => {
       const localSuggestions = [];
       
@@ -186,76 +138,11 @@ const CoffeeInfoScreen = () => {
     };
     
     fetchRoasterSuggestions();
-  }, [currentTasting.roastery, currentTasting.cafeName]);
-  
-  // Add sample data if database is empty (for testing purposes)
-  useEffect(() => {
-    if (realmService.isInitialized) {
-      try {
-        const realm = realmService.getRealm();
-        const allRecords = realm.objects('TastingRecord').filtered('isDeleted = false');
-        
-        // If database is empty, add some test data
-        if (allRecords.length === 0) {
-          const addTestData = async () => {
-            const testTastings = [
-              {
-                coffeeInfo: {
-                  cafeName: 'Test Cafe',
-                  roastery: 'Blue Bottle',
-                  coffeeName: 'Blue Bottle Blend',
-                  origin: 'Ethiopia',
-                  variety: 'Heirloom',
-                  process: 'Washed'
-                },
-                matchScore: { total: 85, flavorScore: 40, sensoryScore: 45 }
-              },
-              {
-                coffeeInfo: {
-                  cafeName: 'Test Cafe 2',
-                  roastery: 'Blue Bottle',
-                  coffeeName: 'Blue Berry Blend',
-                  origin: 'Kenya',
-                  variety: 'SL28',
-                  process: 'Natural'
-                },
-                matchScore: { total: 90, flavorScore: 45, sensoryScore: 45 }
-              },
-              {
-                coffeeInfo: {
-                  cafeName: 'Test Cafe 3',
-                  roastery: 'Stumptown',
-                  coffeeName: 'Stumptown Special',
-                  origin: 'Colombia',
-                  variety: 'Caturra',
-                  process: 'Honey'
-                },
-                matchScore: { total: 80, flavorScore: 38, sensoryScore: 42 }
-              }
-            ];
-            
-            // Save test data sequentially
-            for (const testTasting of testTastings) {
-              try {
-                await realmService.saveTasting(testTasting);
-              } catch (error) {
-                // console.error('Error saving test tasting:', error);
-              }
-            }
-          };
-          
-          // Add test data asynchronously
-          addTestData();
-        }
-      } catch (error) {
-        // console.error('Error checking database on mount:', error);
-      }
-    }
-  }, []);
+  }, [currentTasting.roastery, currentTasting.cafeName]); */
 
   
-  // 커피 이름 입력 변경 시 제안 목록 업데이트 (로스터리 기반 + Supabase)
-  useEffect(() => {
+  // 커피 이름 입력 변경 시 제안 목록 업데이트 (로스터리 기반 + Supabase) - TEMPORARILY DISABLED
+  /* useEffect(() => {
     const fetchCoffeeSuggestions = async () => {
       const localSuggestions = [];
       
@@ -296,30 +183,30 @@ const CoffeeInfoScreen = () => {
     };
     
     fetchCoffeeSuggestions();
-  }, [currentTasting.coffeeName, currentTasting.roastery]);
+  }, [currentTasting.coffeeName, currentTasting.roastery]); */
   
-  // 생산지 입력 변경 시 제안 목록 업데이트
-  useEffect(() => {
+  // 생산지 입력 변경 시 제안 목록 업데이트 - TEMPORARILY DISABLED
+  /* useEffect(() => {
     if (currentTasting.origin && currentTasting.origin.trim().length > 0) {
       const suggestions = realmService.getOriginSuggestions(currentTasting.origin);
       setOriginSuggestions(suggestions);
     } else {
       setOriginSuggestions([]);
     }
-  }, [currentTasting.origin]);
+  }, [currentTasting.origin]); */
   
-  // 품종 입력 변경 시 제안 목록 업데이트
-  useEffect(() => {
+  // 품종 입력 변경 시 제안 목록 업데이트 - TEMPORARILY DISABLED
+  /* useEffect(() => {
     if (currentTasting.variety && currentTasting.variety.trim().length > 0) {
       const suggestions = realmService.getVarietySuggestions(currentTasting.variety);
       setVarietySuggestions(suggestions);
     } else {
       setVarietySuggestions([]);
     }
-  }, [currentTasting.variety]);
+  }, [currentTasting.variety]); */
   
-  // 가공 방식 입력 변경 시 제안 목록 업데이트
-  useEffect(() => {
+  // 가공 방식 입력 변경 시 제안 목록 업데이트 - TEMPORARILY DISABLED
+  /* useEffect(() => {
     if (currentTasting.process && currentTasting.process.trim().length > 0) {
       const localSuggestions = realmService.getProcessSuggestions(currentTasting.process);
       const combinedSuggestions = [
@@ -331,17 +218,25 @@ const CoffeeInfoScreen = () => {
     } else {
       setProcessSuggestions(defaultProcessOptions);
     }
-  }, [currentTasting.process]);
+  }, [currentTasting.process]); */
   
-  // 컴포넌트 마운트 시 스마트 기본값 제공
-  useEffect(() => {
+  // 컴포넌트 마운트 시 스마트 기본값 제공 - TEMPORARILY DISABLED
+  /* useEffect(() => {
     if (currentTasting.coffeeName && !currentTasting.origin && !currentTasting.variety) {
       const parsed = parseCoffeeName(currentTasting.coffeeName);
-      if (parsed.origin) updateField('origin', parsed.origin);
-      if (parsed.variety) updateField('variety', parsed.variety);
-      if (parsed.process) updateField('process', parsed.process);
+      
+      // Batch update to prevent multiple re-renders
+      const updates: any = {};
+      if (parsed.origin && !currentTasting.origin) updates.origin = parsed.origin;
+      if (parsed.variety && !currentTasting.variety) updates.variety = parsed.variety;
+      if (parsed.process && !currentTasting.process) updates.process = parsed.process;
+      
+      // Update all fields at once
+      Object.keys(updates).forEach(key => {
+        updateField(key, updates[key]);
+      });
     }
-  }, []);
+  }, []); */ // Only run on mount
   
   // 필수 필드가 채워졌는지 확인 (커피명, 로스터리, 카페이름, 온도)
   const isValid = currentTasting.coffeeName && currentTasting.coffeeName.trim().length > 0 &&
@@ -388,80 +283,6 @@ const CoffeeInfoScreen = () => {
     }
   };
 
-  // Feature Backlog - OCR scan handler
-  // const handleScanPress = () => {
-  //   Alert.alert('테스트', '버튼이 클릭되었습니다!');
-  //   console.log('OCR Scan button pressed');
-  //   navigation.navigate('OCRScan' as never);
-  // };
-
-  // Feature Backlog - OCR result handler
-  // const handleOCRResult = (ocrText: string) => {
-  //   try {
-  //     const parsedInfo = parseOCRResult([ocrText]);
-  //     
-  //     // Auto-fill form fields with extracted OCR data
-  //     if (parsedInfo.coffeeName) {
-  //       updateField('coffeeName', parsedInfo.coffeeName);
-  //     }
-  //     if (parsedInfo.roastery) {
-  //       updateField('roastery', parsedInfo.roastery);
-  //     }
-  //     if (parsedInfo.origin) {
-  //       updateField('origin', parsedInfo.origin);
-  //     }
-  //     if (parsedInfo.variety) {
-  //       updateField('variety', parsedInfo.variety);
-  //     }
-  //     if (parsedInfo.process) {
-  //       updateField('process', parsedInfo.process);
-  //     }
-  //     if (parsedInfo.altitude) {
-  //       updateField('altitude', parsedInfo.altitude);
-  //     }
-  //   } catch (error) {
-  //     console.error('OCR parsing error:', error);
-  //   }
-  // };
-
-  // const handleCameraPress = () => {
-  //   setShowCameraModal(true);
-  // };
-
-  // Feature Backlog - Text recognition handler
-  // const handleTextRecognized = (info: ParsedCoffeeInfo) => {
-  //   // Auto-fill form fields with extracted OCR data
-  //   if (info.coffeeName) {
-  //     updateField('coffeeName', info.coffeeName);
-  //   }
-  //   if (info.roastery) {
-  //     updateField('roastery', info.roastery);
-  //   }
-  //   if (info.origin) {
-  //     updateField('origin', info.origin);
-  //   }
-  //   if (info.variety) {
-  //     updateField('variety', info.variety);
-  //   }
-  //   if (info.process) {
-  //     updateField('process', info.process);
-  //   }
-  //   if (info.altitude) {
-  //     updateField('altitude', info.altitude);
-  //   }
-  // };
-
-  // 사진 선택 처리 (Feature Backlog)
-  // const handlePhotoSelected = (uri: string) => {
-  //   setPhotoUri(uri);
-  //   updateField('photoUri', uri);
-  // };
-
-  // 사진 삭제 처리 (Feature Backlog)
-  // const handlePhotoRemoved = () => {
-  //   setPhotoUri('');
-  //   updateField('photoUri', '');
-  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -510,29 +331,6 @@ const CoffeeInfoScreen = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled">
-
-          {/* Feature Backlog - OCR 스캔 버튼 */}
-          {/* <View style={styles.scanSection}>
-            <TouchableOpacity 
-              style={[commonButtonStyles.buttonSecondary, styles.scanButton]} 
-              onPress={handleScanPress}
-              activeOpacity={0.7}
-            >
-              <Text style={[commonTextStyles.buttonText, styles.scanButtonText]}>📷 패키지 촬영하기</Text>
-            </TouchableOpacity>
-            <Text style={styles.scanHint}>
-              커피 패키지 라벨을 스캔하여 정보를 자동으로 입력하세요
-            </Text>
-          </View> */}
-
-          {/* Feature Backlog - 사진 선택 */}
-          {/* <View style={styles.form}>
-            <PhotoPicker
-              photoUri={photoUri}
-              onPhotoSelected={handlePhotoSelected}
-              onPhotoRemoved={handlePhotoRemoved}
-            />
-          </View> */}
 
           {/* 가이드 메시지 */}
           <View style={styles.guideSection}>
@@ -610,7 +408,6 @@ const CoffeeInfoScreen = () => {
                         const matchedCoffee = supabaseCoffees.find(c => c.coffee_name === item);
                         
                         if (matchedCoffee) {
-                          setSelectedCoffeeData(matchedCoffee);
                           if (matchedCoffee.origin) updateField('origin', matchedCoffee.origin);
                           if (matchedCoffee.variety) updateField('variety', matchedCoffee.variety);
                           if (matchedCoffee.process) updateField('process', matchedCoffee.process);
@@ -768,13 +565,6 @@ const CoffeeInfoScreen = () => {
         />
       </View>
       
-      {/* Feature Backlog - 카메라 모달 */}
-      {/* <CameraModal
-        visible={showCameraModal}
-        onClose={() => setShowCameraModal(false)}
-        onTextRecognized={handleTextRecognized}
-      /> */}
-      
       {/* 커피 추가 모달 */}
       <AddCoffeeModal
         visible={showAddCoffeeModal}
@@ -878,10 +668,6 @@ const styles = StyleSheet.create({
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
   },
-  required: {
-    color: HIGColors.red,
-    fontWeight: '700',
-  },
   input: {
     minHeight: 40,
     borderWidth: 1,
@@ -939,26 +725,6 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.BORDER_RADIUS / 2,
     borderLeftWidth: 2,
     borderLeftColor: HIGColors.systemBlue,
-  },
-  scanSection: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_MD,
-    alignItems: 'center',
-  },
-  scanButton: {
-    width: '100%',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  scanButtonText: {
-    color: HIGColors.label,
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  scanHint: {
-    fontSize: 13,
-    color: HIGColors.tertiaryLabel,
-    textAlign: 'center',
-    paddingHorizontal: HIGConstants.SPACING_LG,
   },
   roastLevelButtons: {
     flexDirection: 'row',
