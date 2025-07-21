@@ -1,11 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  TextInput,
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -13,6 +12,14 @@ import { HIGConstants, HIGColors } from '../../styles/common';
 import { useTastingStore } from '../../stores/tastingStore';
 import { flavorWheelKorean } from '../../data/flavorWheelKorean';
 import { FlavorPath } from '../../stores/tastingStore';
+import { 
+  FlavorWheelData, 
+  TransformedCategory, 
+  TransformedSubcategory, 
+  TransformedFlavor 
+} from '../../types/flavor';
+import { FlavorCategory } from '../../components/flavor/FlavorCategory';
+import { SelectedFlavors } from '../../components/flavor/SelectedFlavors';
 
 // Category colors for visual distinction
 const CATEGORY_COLORS: Record<string, string> = {
@@ -40,19 +47,19 @@ const CATEGORY_EMOJIS: Record<string, string> = {
   'Other': '📦',
 };
 
-// Transform flavorWheelKorean data into the expected format
-const transformFlavorData = () => {
-  const result = [];
-  const { level1, level2, level3, translations } = flavorWheelKorean;
+// Transform flavorWheelKorean data into the expected format with proper typing
+const transformFlavorData = (data: FlavorWheelData): TransformedCategory[] => {
+  const result: TransformedCategory[] = [];
+  const { level1, level2, level3, translations } = data;
   
   for (const [category, koreanName] of Object.entries(level1)) {
-    const subcategories = level2[category] || [];
-    const subcategoryData = subcategories.map(subcat => {
-      const flavors = level3[subcat] || [];
+    const subcategories = (level2[category as keyof typeof level2] || []) as string[];
+    const subcategoryData: TransformedSubcategory[] = subcategories.map((subcat: string) => {
+      const flavors = (level3[subcat as keyof typeof level3] || []) as string[];
       return {
         name: subcat,
-        koreanName: translations[subcat] || subcat,
-        flavors: flavors.map(flavor => ({
+        koreanName: translations[subcat as keyof typeof translations] || subcat,
+        flavors: flavors.map((flavor: string): TransformedFlavor => ({
           name: flavor,
           koreanName: flavor, // Korean flavors are already in Korean
         })),
@@ -70,20 +77,24 @@ const transformFlavorData = () => {
   return result;
 };
 
-const flavorData = transformFlavorData();
-
 export default function UnifiedFlavorScreen() {
   const navigation = useNavigation();
   const { currentTasting, updateField } = useTastingStore();
-  const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+
+  // Memoize the transformed data to prevent recalculation on every render
+  const flavorData = useMemo(
+    () => transformFlavorData(flavorWheelKorean as FlavorWheelData),
+    []
+  );
 
   const selectedPaths = currentTasting.selectedFlavors || [];
 
-  const handleSelectFlavor = (path: FlavorPath) => {
+  const handleSelectFlavor = useCallback((level1: string, level2: string, level3: string) => {
+    const path: FlavorPath = { level1, level2, level3 };
     const currentPaths = [...selectedPaths];
     const existingIndex = currentPaths.findIndex(
-      p => p.level1 === path.level1 && p.level2 === path.level2 && p.level3 === path.level3
+      (p: FlavorPath) => p.level1 === path.level1 && p.level2 === path.level2 && p.level3 === path.level3
     );
 
     if (existingIndex >= 0) {
@@ -93,7 +104,14 @@ export default function UnifiedFlavorScreen() {
     }
 
     updateField('selectedFlavors', currentPaths);
-  };
+  }, [selectedPaths, updateField]);
+
+  const handleRemoveFlavor = useCallback((path: FlavorPath) => {
+    const currentPaths = selectedPaths.filter(
+      (p: FlavorPath) => !(p.level1 === path.level1 && p.level2 === path.level2 && p.level3 === path.level3)
+    );
+    updateField('selectedFlavors', currentPaths);
+  }, [selectedPaths, updateField]);
 
   const toggleCategory = useCallback((category: string) => {
     setExpandedCategories(prev => {
@@ -109,7 +127,7 @@ export default function UnifiedFlavorScreen() {
     navigation.navigate('Sensory' as never);
   };
 
-  // Filter categories based on search - DISABLED FOR DEBUGGING
+  // Use memoized flavor data
   const filteredData = flavorData;
 
   return (
@@ -125,117 +143,28 @@ export default function UnifiedFlavorScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar - TEMPORARILY DISABLED
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBar}>
-          <Text style={styles.searchIcon}>🔍</Text>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="향미 검색..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholderTextColor={HIGColors.tertiaryLabel}
-          />
-          {searchQuery !== '' && (
-            <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Text style={styles.clearIcon}>✕</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </View> */}
-
       {/* Selected Flavors */}
-      <View style={styles.selectedContainer}>
-        <Text style={styles.selectedTitle}>
-          선택한 향미 ({selectedPaths.length}/5)
-        </Text>
-        {selectedPaths.length > 0 ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {selectedPaths.map((path, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.selectedChip}
-                onPress={() => handleSelectFlavor(path)}
-              >
-                <Text style={styles.selectedChipText}>
-                  {path.level3 || path.level2} ✕
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        ) : (
-          <Text style={styles.emptyMessage}>아직 선택된 향미가 없습니다</Text>
-        )}
-      </View>
+      <SelectedFlavors
+        selectedPaths={selectedPaths}
+        onRemove={handleRemoveFlavor}
+      />
 
       {/* Categories */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {filteredData.map(item => {
+        {filteredData.map((item: TransformedCategory) => {
           const isExpanded = expandedCategories.includes(item.category);
-          const selectedCount = selectedPaths.filter(p => p.level1 === item.category).length;
+          const selectedCount = selectedPaths.filter((p: FlavorPath) => p.level1 === item.category).length;
 
           return (
-            <View key={item.category} style={styles.categoryContainer}>
-              <TouchableOpacity
-                style={styles.categoryHeader}
-                onPress={() => toggleCategory(item.category)}
-              >
-                <View style={styles.categoryLeft}>
-                  <Text style={styles.categoryEmoji}>{item.emoji}</Text>
-                  <Text style={styles.categoryTitle}>{item.koreanName}</Text>
-                </View>
-                <View style={styles.categoryRight}>
-                  {selectedCount > 0 && (
-                    <View style={styles.selectedBadge}>
-                      <Text style={styles.selectedBadgeText}>{selectedCount}</Text>
-                    </View>
-                  )}
-                  <Text style={styles.expandIcon}>
-                    {isExpanded ? '▼' : '▶'}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-
-              {isExpanded && (
-                <View style={styles.subcategoryContainer}>
-                  {item.subcategories.map(sub => (
-                    <View key={sub.name} style={styles.subcategory}>
-                      <Text style={styles.subcategoryTitle}>{sub.koreanName}</Text>
-                      <View style={styles.flavorGrid}>
-                        {sub.flavors.map(flavor => {
-                          const isSelected = selectedPaths.some(
-                            p => p.level1 === item.category && 
-                                 p.level2 === sub.name && 
-                                 p.level3 === flavor.name
-                          );
-                          return (
-                            <TouchableOpacity
-                              key={flavor.name}
-                              style={[
-                                styles.flavorChip,
-                                isSelected && styles.flavorChipSelected
-                              ]}
-                              onPress={() => handleSelectFlavor({
-                                level1: item.category,
-                                level2: sub.name,
-                                level3: flavor.name,
-                              })}
-                            >
-                              <Text style={[
-                                styles.flavorText,
-                                isSelected && styles.flavorTextSelected
-                              ]}>
-                                {flavor.koreanName}
-                              </Text>
-                            </TouchableOpacity>
-                          );
-                        })}
-                      </View>
-                    </View>
-                  ))}
-                </View>
-              )}
-            </View>
+            <FlavorCategory
+              key={item.category}
+              category={item}
+              isExpanded={isExpanded}
+              selectedCount={selectedCount}
+              onToggle={() => toggleCategory(item.category)}
+              onSelectFlavor={handleSelectFlavor}
+              selectedPaths={selectedPaths}
+            />
           );
         })}
       </ScrollView>
@@ -284,141 +213,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: HIGColors.systemBlue,
   },
-  searchContainer: {
-    padding: HIGConstants.SPACING_LG,
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: 12,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    height: 44,
-  },
-  searchIcon: {
-    fontSize: 16,
-    marginRight: HIGConstants.SPACING_SM,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: HIGColors.label,
-  },
-  clearIcon: {
-    fontSize: 18,
-    color: HIGColors.tertiaryLabel,
-    padding: HIGConstants.SPACING_XS,
-  },
-  selectedContainer: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingBottom: HIGConstants.SPACING_MD,
-  },
-  selectedTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  selectedChip: {
-    backgroundColor: HIGColors.systemBlue,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: 20,
-    marginRight: HIGConstants.SPACING_SM,
-  },
-  selectedChipText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  emptyMessage: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-  },
   content: {
     flex: 1,
-  },
-  categoryContainer: {
-    marginHorizontal: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  categoryHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: HIGConstants.SPACING_MD,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: 12,
-  },
-  categoryLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  categoryEmoji: {
-    fontSize: 20,
-    marginRight: HIGConstants.SPACING_SM,
-  },
-  categoryTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.label,
-  },
-  categoryRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  selectedBadge: {
-    backgroundColor: HIGColors.systemBlue,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: 2,
-    borderRadius: 10,
-    marginRight: HIGConstants.SPACING_SM,
-  },
-  selectedBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  expandIcon: {
-    fontSize: 12,
-    color: HIGColors.tertiaryLabel,
-  },
-  subcategoryContainer: {
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-  },
-  subcategory: {
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  subcategoryTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  flavorGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  flavorChip: {
-    backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: 8,
-    marginRight: HIGConstants.SPACING_SM,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  flavorChipSelected: {
-    backgroundColor: HIGColors.systemBlue,
-  },
-  flavorText: {
-    fontSize: 14,
-    color: HIGColors.label,
-  },
-  flavorTextSelected: {
-    color: '#FFFFFF',
-    fontWeight: '500',
   },
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,

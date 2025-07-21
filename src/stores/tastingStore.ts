@@ -104,10 +104,10 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       },
     }));
     
-    // Auto-save after field update
-    setTimeout(() => {
-      get().autoSave();
-    }, 500); // Debounce auto-save by 500ms
+    // Auto-save after field update - TEMPORARILY DISABLED
+    // setTimeout(() => {
+    //   get().autoSave();
+    // }, 500); // Debounce auto-save by 500ms
   },
 
   setSelectedFlavors: (flavors) => {
@@ -115,10 +115,10 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       selectedFlavors: flavors,
     }));
     
-    // Auto-save after flavor selection
-    setTimeout(() => {
-      get().autoSave();
-    }, 500);
+    // Auto-save after flavor selection - TEMPORARILY DISABLED
+    // setTimeout(() => {
+    //   get().autoSave();
+    // }, 500);
   },
 
   setSelectedSensoryExpressions: (expressions) => {
@@ -126,10 +126,10 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       selectedSensoryExpressions: expressions,
     }));
     
-    // Auto-save after sensory expression selection
-    setTimeout(() => {
-      get().autoSave();
-    }, 500);
+    // Auto-save after sensory expression selection - TEMPORARILY DISABLED
+    // setTimeout(() => {
+    //   get().autoSave();
+    // }, 500);
   },
 
   saveTasting: async () => {
