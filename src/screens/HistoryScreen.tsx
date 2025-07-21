@@ -64,13 +64,13 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
         }
       }
       
-      const tastings = realmService.getTastingRecords({ isDeleted: false });
+      const tastings = await realmService.getTastingRecords({ isDeleted: false });
       const tastingsArray = Array.from(tastings);
       
       console.log('📊 HistoryScreen data loaded:', {
         isInitialized: realmService.isInitialized,
         recordsCount: tastingsArray.length,
-        firstRecord: tastingsArray[0]?.coffeeInfo?.coffeeName
+        firstRecord: tastingsArray[0]?.coffeeName
       });
       
       setAllTastings(tastingsArray);
@@ -192,7 +192,7 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
           <View style={{ width: 80 }} />
         </View>
         
-        <ScrollView style={styles.content} contentContainerStyle={styles.listContent}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.listContent}>
           <SkeletonList count={5} />
         </ScrollView>
       </SafeAreaView>
