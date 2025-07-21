@@ -473,23 +473,22 @@ export default function UnifiedFlavorScreen() {
               }
               
               return (
-                <View key={index} style={[
-                  styles.selectedChip,
-                  isSubcategorySelection && styles.selectedSubcategoryChip
-                ]}>
+                <TouchableOpacity 
+                  key={index} 
+                  style={[
+                    styles.selectedChip,
+                    isSubcategorySelection && styles.selectedSubcategoryChip
+                  ]}
+                  onPress={() => handleRemoveFlavor(index)}
+                  activeOpacity={0.7}
+                >
                   <Text style={[
                     styles.selectedChipText,
                     isSubcategorySelection && styles.selectedSubcategoryText
                   ]} numberOfLines={1}>
                     {displayName}
                   </Text>
-                  <TouchableOpacity 
-                    onPress={() => handleRemoveFlavor(index)}
-                    style={styles.removeButton}
-                  >
-                    <Text style={styles.removeIcon}>×</Text>
-                  </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               );
             })}
           </ScrollView>
@@ -682,8 +681,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    paddingLeft: HIGConstants.SPACING_SM,
-    paddingRight: HIGConstants.SPACING_XS,
+    paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: HIGConstants.SPACING_SM,
     borderRadius: 20,
     marginRight: HIGConstants.SPACING_SM,
@@ -715,15 +713,6 @@ const styles = StyleSheet.create({
     color: HIGColors.systemBlue,
     fontWeight: '600',
     maxWidth: 100,
-  },
-  removeButton: {
-    marginLeft: HIGConstants.SPACING_XS,
-    padding: HIGConstants.SPACING_XS,
-  },
-  removeIcon: {
-    fontSize: 18,
-    color: HIGColors.systemRed,
-    fontWeight: '600',
   },
   remainingChip: {
     paddingHorizontal: HIGConstants.SPACING_MD,

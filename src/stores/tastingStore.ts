@@ -25,16 +25,30 @@ export interface SensoryAttributes {
   sweetness: number;
   finish: number;
   mouthfeel: string;
+  bitterness?: number;
+  balance?: number;
+}
+
+export interface SelectedSensoryExpression {
+  categoryId: string;
+  expressionId: string;
+  korean: string;
+  english: string;
+  emoji: string;
+  intensity: number;
+  selected: boolean;
 }
 
 interface TastingState {
   currentTasting: any;
   selectedFlavors: FlavorPath[];
+  selectedSensoryExpressions: SelectedSensoryExpression[];
   matchScoreTotal: number | null;
   syncStatus: SyncStatus;
   
   updateField: (field: string, value: any) => void;
   setSelectedFlavors: (flavors: FlavorPath[]) => void;
+  setSelectedSensoryExpressions: (expressions: SelectedSensoryExpression[]) => void;
   saveTasting: () => Promise<void>;
   calculateMatchScore: () => void;
   reset: () => void;
@@ -66,10 +80,13 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     acidity: 3,
     sweetness: 3,
     finish: 3,
+    bitterness: 3,
+    balance: 3,
     mouthfeel: 'Clean',
     personalComment: '',
   },
   selectedFlavors: [],
+  selectedSensoryExpressions: [],
   matchScoreTotal: null,
   syncStatus: {
     isOnline: false,
@@ -104,9 +121,20 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     }, 500);
   },
 
+  setSelectedSensoryExpressions: (expressions) => {
+    set(() => ({
+      selectedSensoryExpressions: expressions,
+    }));
+    
+    // Auto-save after sensory expression selection
+    setTimeout(() => {
+      get().autoSave();
+    }, 500);
+  },
+
   saveTasting: async () => {
     const state = get();
-    const {currentTasting, selectedFlavors} = state;
+    const {currentTasting, selectedFlavors, selectedSensoryExpressions} = state;
 
     // sensoryAttributes 구조 생성
     const sensoryAttributes = {
@@ -114,6 +142,8 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       acidity: currentTasting.acidity || 3,
       sweetness: currentTasting.sweetness || 3,
       finish: currentTasting.finish || 3,
+      bitterness: currentTasting.bitterness || 3,
+      balance: currentTasting.balance || 3,
       mouthfeel: currentTasting.mouthfeel || 'Clean',
     };
 
@@ -135,6 +165,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         },
         roasterNotes: currentTasting.roasterNotes,
         selectedFlavors: selectedFlavors,
+        selectedSensoryExpressions: selectedSensoryExpressions,
         sensoryAttributes: sensoryAttributes,
         matchScore: {
           total: state.matchScoreTotal || 0,
@@ -182,7 +213,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
   // Auto-save functionality
   autoSave: async () => {
     try {
-      const { currentTasting, selectedFlavors } = get();
+      const { currentTasting, selectedFlavors, selectedSensoryExpressions } = get();
       
       // Only save if there's meaningful data (not just initial/empty state)
       const hasSignificantData = 
@@ -196,17 +227,21 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         currentTasting.roasterNotes?.trim() ||
         currentTasting.personalComment?.trim() ||
         selectedFlavors.length > 0 ||
+        selectedSensoryExpressions.length > 0 ||
         // Check if sensory values have been modified from defaults
         currentTasting.body !== 3 ||
         currentTasting.acidity !== 3 ||
         currentTasting.sweetness !== 3 ||
         currentTasting.finish !== 3 ||
+        currentTasting.bitterness !== 3 ||
+        currentTasting.balance !== 3 ||
         (currentTasting.mouthfeel && currentTasting.mouthfeel !== 'Clean');
       
       if (hasSignificantData) {
         const draftData = {
           currentTasting,
           selectedFlavors,
+          selectedSensoryExpressions,
           timestamp: new Date().toISOString(),
         };
         await AsyncStorage.setItem('@tasting_draft', JSON.stringify(draftData));
@@ -220,8 +255,8 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     try {
       const draftData = await AsyncStorage.getItem('@tasting_draft');
       if (draftData) {
-        const { currentTasting, selectedFlavors } = JSON.parse(draftData);
-        set({ currentTasting, selectedFlavors });
+        const { currentTasting, selectedFlavors, selectedSensoryExpressions = [] } = JSON.parse(draftData);
+        set({ currentTasting, selectedFlavors, selectedSensoryExpressions });
         return true;
       }
       return false;
@@ -269,10 +304,13 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         acidity: 3,
         sweetness: 3,
         finish: 3,
+        bitterness: 3,
+        balance: 3,
         mouthfeel: 'Clean',
         personalComment: '',
       },
       selectedFlavors: [],
+      selectedSensoryExpressions: [],
       matchScoreTotal: null,
     });
   },
