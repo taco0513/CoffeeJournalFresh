@@ -527,13 +527,12 @@ export default function UnifiedFlavorScreen() {
             })}
           </ScrollView>
         ) : (
-          <Text style={styles.emptyMessage}>처음 느껴지는 맛을 선택해보세요. 정답은 없어요!</Text>
+          <Text style={styles.emptyMessage}>최대 5개까지 선택 가능</Text>
         )}
       </View>
       
       {/* 안내 메시지 */}
       <View style={styles.guideContainer}>
-        <Text style={styles.guideText}>최대 5개까지 선택 가능 • {selectedPaths.length}/5</Text>
         <TouchableOpacity onPress={toggleAllCategories}>
           <Text style={styles.toggleAllButton}>
             {expandedCategories.length === flavorData.length ? '모든 카테고리 닫기' : '모든 카테고리 열기'}
@@ -693,15 +692,11 @@ const styles = StyleSheet.create({
   },
   guideContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
     backgroundColor: HIGColors.systemGray6,
-  },
-  guideText: {
-    fontSize: 13,
-    color: HIGColors.secondaryLabel,
   },
   toggleAllButton: {
     fontSize: 13,
