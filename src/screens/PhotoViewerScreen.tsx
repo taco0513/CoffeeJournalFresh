@@ -75,7 +75,7 @@ const PhotoViewerScreen = () => {
                 await PhotoService.deletePhotoLocally(tasting.photoUri);
                 
                 // Update tasting record
-                realmService.updateTastingRecord(photoItem.tastingId, {
+                await realmService.updateTastingRecord(photoItem.tastingId, {
                   photoUri: undefined,
                   photoThumbnailUri: undefined,
                 });

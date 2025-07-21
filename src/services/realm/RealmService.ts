@@ -556,13 +556,18 @@ class RealmService {
     return record!;
   }
 
-  getTastingRecords(filter?: {
+  async getTastingRecords(filter?: {
     isDeleted?: boolean;
     isSynced?: boolean;
     roastery?: string;
     minScore?: number;
-  }): Realm.Results<ITastingRecord> {
+  }): Promise<Realm.Results<ITastingRecord>> {
     try {
+      // Ensure Realm is initialized before proceeding
+      if (!this.initialized || !this.realm || this.realm.isClosed) {
+        await this.initialize();
+      }
+      
       const realm = this.getRealm();
       let query = realm.objects<ITastingRecord>('TastingRecord');
 
@@ -597,14 +602,24 @@ class RealmService {
     }
   }
 
-  getTastingRecordById(id: string): ITastingRecord | null {
+  async getTastingRecordById(id: string): Promise<ITastingRecord | null> {
+    // Ensure Realm is initialized before proceeding
+    if (!this.initialized || !this.realm || this.realm.isClosed) {
+      await this.initialize();
+    }
+    
     const realm = this.getRealm();
     return realm.objectForPrimaryKey<ITastingRecord>('TastingRecord', id);
   }
 
-  updateTastingRecord(id: string, updates: Partial<ITastingRecord>): void {
+  async updateTastingRecord(id: string, updates: Partial<ITastingRecord>): Promise<void> {
+    // Ensure Realm is initialized before proceeding
+    if (!this.initialized || !this.realm || this.realm.isClosed) {
+      await this.initialize();
+    }
+    
     const realm = this.getRealm();
-    const record = this.getTastingRecordById(id);
+    const record = await this.getTastingRecordById(id);
 
     if (!record) {
       throw new Error(`Tasting record with id ${id} not found`);
@@ -618,9 +633,14 @@ class RealmService {
     });
   }
 
-  deleteTastingRecord(id: string, hardDelete: boolean = false): void {
+  async deleteTastingRecord(id: string, hardDelete: boolean = false): Promise<void> {
+    // Ensure Realm is initialized before proceeding
+    if (!this.initialized || !this.realm || this.realm.isClosed) {
+      await this.initialize();
+    }
+    
     const realm = this.getRealm();
-    const record = this.getTastingRecordById(id);
+    const record = await this.getTastingRecordById(id);
 
     if (!record) {
       throw new Error(`Tasting record with id ${id} not found`);

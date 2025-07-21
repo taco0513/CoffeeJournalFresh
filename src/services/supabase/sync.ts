@@ -373,7 +373,7 @@ class SyncService {
   private async downloadSingleRecord(remoteRecord: any): Promise<void> {
     try {
       const realmService = RealmService.getInstance();
-      const localRecord = realmService.getTastingRecordById(remoteRecord.realm_id);
+      const localRecord = await realmService.getTastingRecordById(remoteRecord.realm_id);
 
       if (!localRecord) {
         // 새로운 레코드 생성
@@ -572,7 +572,7 @@ class SyncService {
   async forceUploadRecord(recordId: string): Promise<void> {
     try {
       const realmService = RealmService.getInstance();
-      const record = realmService.getTastingRecordById(recordId);
+      const record = await realmService.getTastingRecordById(recordId);
       
       if (!record) {
         throw new Error(`Record not found: ${recordId}`);

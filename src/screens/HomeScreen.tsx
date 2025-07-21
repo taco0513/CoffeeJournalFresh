@@ -68,6 +68,11 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       setIsLoading(true);
       setError(null);
       
+      // Ensure Realm is initialized before proceeding
+      if (!realmService.isInitialized) {
+        await realmService.initialize();
+      }
+      
       if (realmService.isInitialized) {
         const realm = realmService.getRealm();
         const allTastings = realm.objects<ITastingRecord>('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);

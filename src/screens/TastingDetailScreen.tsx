@@ -72,7 +72,7 @@ const TastingDetailScreen = () => {
       }
 
 
-      const record = realmService.getTastingRecordById(tastingId);
+      const record = await realmService.getTastingRecordById(tastingId);
       
       if (!record) {
         if (isMountedRef.current) {
