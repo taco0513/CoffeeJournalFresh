@@ -62,14 +62,22 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
   const [topCoffees, setTopCoffees] = useState<TopCoffee[]>([]);
   const [topCafes, setTopCafes] = useState<TopCafe[]>([]);
   const [tastingTrend, setTastingTrend] = useState<TastingTrend[]>([]);
+  const [insights, setInsights] = useState<any[]>([]);
   
 
   useEffect(() => {
     loadStatistics();
+    loadInsights();
   }, []);
 
+  // 30일 인사이트 로드 함수
+  const loadInsights = async () => {
+    const insightsData = await generateInsights();
+    setInsights(insightsData);
+  };
+
   // 30일 인사이트 생성 함수
-  const generateInsights = () => {
+  const generateInsights = async () => {
     const insights = [];
     
     // 데이터가 없을 때 더미 데이터 표시
@@ -99,10 +107,15 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
     
     // 실제 데이터 분석
     const realmService = RealmService.getInstance();
-    const recentTastings = realmService.getTastingRecords({ 
-      isDeleted: false,
-      startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30일 전
+    const allTastings = await realmService.getTastingRecords({ 
+      isDeleted: false
     });
+    
+    // 최근 30일 데이터로 필터링
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const recentTastings = Array.from(allTastings).filter(tasting => 
+      tasting.createdAt >= thirtyDaysAgo
+    );
 
     // 1. 많이 마신 원산지
     const originCounts = new Map<string, number>();
@@ -306,7 +319,7 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
             <Text style={styles.insightPreviewText}>
               기록이 쌓이면 이런 인사이트를 볼 수 있어요!
             </Text>
-            {generateInsights().map((insight, index) => (
+            {insights.map((insight, index) => (
               <InsightCard key={index} {...insight} />
             ))}
           </View>
@@ -440,7 +453,7 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
         {/* 30일 인사이트 섹션 */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>30일 인사이트</Text>
-          {generateInsights().map((insight, index) => (
+          {insights.map((insight, index) => (
             <InsightCard key={index} {...insight} />
           ))}
         </View>
