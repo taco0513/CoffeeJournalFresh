@@ -119,6 +119,12 @@ class RealmService {
   }): Promise<ITastingRecord> {
     // console.log('=== saveTasting 시작 ===');
     // console.log('전달받은 데이터:', data);
+    
+    // Ensure Realm is initialized before proceeding
+    if (!this.initialized || !this.realm || this.realm.isClosed) {
+      await this.initialize();
+    }
+    
     const realm = this.getRealm();
     
     try {
