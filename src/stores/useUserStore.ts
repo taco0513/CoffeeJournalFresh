@@ -23,7 +23,6 @@ interface UserStore {
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   setTestUser: () => void;
-  setGuestMode: () => void;
   
   // Profile management
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
@@ -252,14 +251,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
     });
   },
 
-  setGuestMode: () => {
-    // 게스트 모드 설정 - 인증되지 않은 상태로 설정
-    set({
-      currentUser: null,
-      isAuthenticated: false,
-      isLoading: false,
-    });
-  },
 
   signInWithApple: async () => {
     set({ isLoading: true });

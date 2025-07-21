@@ -1,5 +1,10 @@
-## 🚀 개발 로드맵 & A/B 테스팅
+## 🚀 개발 로드맵 & A/B 테스팅 (Mode-Based Development)
 ### 핵심 개발 철학: "Personal Taste, Shared Journey"
+
+### 🍃 Mode-Based Development Strategy
+- **Phase 1 (Current)**: 🍃 Cafe Mode MVP - 일반 커피 애호가 대상
+- **Phase 2**: 🔬 Lab Mode 추가 - 전문가/바리스타 대상  
+- **Phase 3**: 통합 및 고도화
 
 ### A/B 테스팅 전략 - Personal + Shared 관점
 

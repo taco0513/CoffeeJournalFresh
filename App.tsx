@@ -9,6 +9,7 @@ import { performanceMonitor } from './src/services/PerformanceMonitor';
 import { analyticsService } from './src/services/AnalyticsService';
 import { errorContextService } from './src/services/ErrorContextService';
 import { FirstTimeUserFeedback } from './src/components/beta/FirstTimeUserFeedback';
+import { DebugOverlay } from './src/components/DebugOverlay';
 
 // Initialize Sentry for crash reporting
 SentryService.initialize();
@@ -21,6 +22,8 @@ performanceMonitor.initialize();
 
 // Initialize error context service
 errorContextService.initialize();
+
+// Note: Realm initialization is done lazily when needed in components
 
 // Sync configuration - set to true when Supabase is ready
 export const ENABLE_SYNC = true;
@@ -52,6 +55,7 @@ function App(): React.JSX.Element {
     <ErrorBoundary>
       <AppNavigator />
       <FirstTimeUserFeedback />
+      <DebugOverlay />
     </ErrorBoundary>
   );
 }

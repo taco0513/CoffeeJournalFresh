@@ -81,9 +81,6 @@ export default function PersonalTasteDashboard() {
     navigation.navigate('Achievements');
   };
 
-  const handleStartQuiz = () => {
-    navigation.navigate('PersonalTasteQuiz');
-  };
 
   const handleViewRecommendations = () => {
     navigation.navigate('Recommendations');
@@ -197,14 +194,6 @@ export default function PersonalTasteDashboard() {
 
               {/* Quick Actions */}
               <View style={styles.quickActions}>
-                <TouchableOpacity 
-                  style={styles.actionCard} 
-                  onPress={handleStartQuiz}
-                >
-                  <Text style={styles.actionIcon}>🎯</Text>
-                  <Text style={styles.actionTitle}>향미 퀴즈</Text>
-                  <Text style={styles.actionSubtitle}>실력 테스트</Text>
-                </TouchableOpacity>
 
                 <TouchableOpacity 
                   style={styles.actionCard}

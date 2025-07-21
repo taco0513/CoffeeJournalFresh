@@ -1,6 +1,7 @@
 import { launchImageLibrary, launchCamera, ImagePickerResponse, MediaType } from 'react-native-image-picker';
 import { Alert, Platform, PermissionsAndroid } from 'react-native';
 import RNFS from 'react-native-fs';
+import { Logger, PerformanceTimer, logError } from '../utils/logger';
 
 export interface PhotoResult {
   uri: string;
@@ -68,7 +69,9 @@ class PhotoService {
         );
         
         if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          // console.log('Camera permission denied');
+          Logger.warn('Camera permission denied', 'photo', {
+            function: 'requestCameraPermission'
+          });
           return null;
         }
       }
@@ -104,7 +107,10 @@ class PhotoService {
         });
       });
     } catch (error) {
-      // console.error('Camera error:', error);
+      logError(error instanceof Error ? error : new Error(String(error)), {
+        function: 'openCamera',
+        options
+      }, 'photo');
       return null;
     }
   }
@@ -145,7 +151,10 @@ class PhotoService {
         });
       });
     } catch (error) {
-      // console.error('Library error:', error);
+      logError(error instanceof Error ? error : new Error(String(error)), {
+        function: 'openLibrary',
+        options
+      }, 'photo');
       return null;
     }
   }
@@ -174,7 +183,11 @@ class PhotoService {
       
       return localPath;
     } catch (error) {
-      // console.error('Save photo error:', error);
+      logError(error instanceof Error ? error : new Error(String(error)), {
+        function: 'savePhoto',
+        sourceUri,
+        destinationDir
+      }, 'photo');
       return null;
     }
   }
@@ -190,7 +203,10 @@ class PhotoService {
       }
       return false;
     } catch (error) {
-      // console.error('Delete photo error:', error);
+      logError(error instanceof Error ? error : new Error(String(error)), {
+        function: 'deletePhoto',
+        photoUri
+      }, 'photo');
       return false;
     }
   }
@@ -214,7 +230,12 @@ class PhotoService {
       // In a real implementation, you'd resize the image
       return photoPath;
     } catch (error) {
-      // console.error('Create thumbnail error:', error);
+      logError(error instanceof Error ? error : new Error(String(error)), {
+        function: 'createThumbnail',
+        photoUri,
+        maxWidth,
+        maxHeight
+      }, 'photo');
       return null;
     }
   }
@@ -241,7 +262,9 @@ class PhotoService {
         }
       }
     } catch (error) {
-      // console.error('Cleanup photos error:', error);
+      logError(error instanceof Error ? error : new Error(String(error)), {
+        function: 'cleanupPhotos'
+      }, 'photo');
     }
   }
 }

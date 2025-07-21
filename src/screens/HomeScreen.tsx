@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
@@ -16,7 +17,6 @@ import { useUserStore } from '../stores/useUserStore';
 import { ITastingRecord } from '../services/realm/schemas';
 import { useCoffeeNotifications } from '../hooks/useCoffeeNotifications';
 import { CoffeeDiscoveryAlert } from '../components/CoffeeDiscoveryAlert';
-import { generateGuestMockData, generateGuestStats } from '../utils/guestMockData';
 
 interface HomeScreenProps {
   navigation: any;
@@ -26,25 +26,18 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
   const { t } = useTranslation();
   const { currentUser } = useUserStore();
   
-  // 게스트 모드 체크
-  const isGuestMode = currentUser?.username === 'Guest' || !currentUser;
-  
-  // 게스트 모드일 때 mock 데이터 사용
-  const guestMockData = isGuestMode ? generateGuestMockData() : [];
-  const guestMockStats = isGuestMode ? generateGuestStats() : {
-    totalTastings: 0,
-    thisWeekTastings: 0,
-    avgScore: 0,
-    bestScore: 0,
-  };
   
   const [recentTastings, setRecentTastings] = useState<ITastingRecord[]>([]);
   const [stats, setStats] = useState({
     totalTastings: 0,
+    totalRoasteries: 0,
     thisWeekTastings: 0,
     avgScore: 0,
     bestScore: 0,
+    newCoffeesThisMonth: 0,
   });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   // Coffee discovery notifications
   const {
@@ -69,37 +62,11 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
   }, []);
 
   // 디버깅용 useEffect - 컴포넌트 마운트 시 실행
-  useEffect(() => {
-    Alert.alert('HomeScreen', 'HomeScreen mounted!');
-  }, []);
-  
-  // currentUser 변경 시 실행
-  useEffect(() => {
-    if (currentUser) {
-      Alert.alert(
-        'User Changed',
-        `Username: ${currentUser.username}\nIsGuest: ${currentUser.username === 'Guest'}`
-      );
-    } else {
-      Alert.alert('User Changed', 'currentUser is null');
-    }
-  }, [currentUser]);
 
   const loadDashboardData = async () => {
     try {
-      // 게스트 모드 강제 체크 - currentUser가 Guest이거나 없는 경우
-      const isGuest = currentUser?.username === 'Guest' || !currentUser;
-      
-      if (isGuest) {
-        // 게스트용 mock 데이터 강제 로딩
-        const mockData = generateGuestMockData();
-        const mockStats = generateGuestStats();
-        
-        // 상태 강제 업데이트
-        setRecentTastings([...mockData.slice(0, 3)]);
-        setStats({...mockStats});
-        return;
-      }
+      setIsLoading(true);
+      setError(null);
       
       if (realmService.isInitialized) {
         const realm = realmService.getRealm();
@@ -115,15 +82,31 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
         const avgScore = total > 0 ? allTastings.reduce((sum, t) => sum + (t.matchScoreTotal || 0), 0) / total : 0;
         const bestScore = total > 0 ? Math.max(...allTastings.map(t => t.matchScoreTotal || 0)) : 0;
         
+        // 이번 달 새로운 커피 수 계산
+        const newCoffees = getNewCoffeesThisMonth(allTastings);
+        
+        // 총 로스터리 수 계산
+        const uniqueRoasteries = new Set();
+        allTastings.forEach(tasting => {
+          if (tasting.roastery) {
+            uniqueRoasteries.add(tasting.roastery);
+          }
+        });
+        
         setStats({
           totalTastings: total,
+          totalRoasteries: uniqueRoasteries.size,
           thisWeekTastings: thisWeek,
           avgScore: Math.round(avgScore),
           bestScore,
+          newCoffeesThisMonth: newCoffees,
         });
       }
     } catch (error) {
-      // console.error('Error loading dashboard data:', error);
+      console.error('Error loading dashboard data:', error);
+      setError('데이터를 불러오는 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,19 +116,23 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     return tastings.filtered('createdAt >= $0', weekStart).length;
   };
 
+  const getNewCoffeesThisMonth = (tastings: any) => {
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    // 이번 달 테이스팅 중 고유한 커피 조합 (roastery + coffeeName) 수 계산
+    const thisMonthTastings = tastings.filtered('createdAt >= $0', monthStart);
+    const uniqueCoffees = new Set();
+    
+    thisMonthTastings.forEach((tasting: ITastingRecord) => {
+      const coffeeKey = `${tasting.roastery}-${tasting.coffeeName}`;
+      uniqueCoffees.add(coffeeKey);
+    });
+    
+    return uniqueCoffees.size;
+  };
+
   const handleNewTasting = () => {
-    // 게스트 모드 체크
-    if (!currentUser || currentUser.username === 'Guest') {
-      Alert.alert(
-        '로그인 필요',
-        '테이스팅 기록을 저장하려면 로그인이 필요합니다.',
-        [
-          { text: '취소', style: 'cancel' },
-          { text: '로그인', onPress: () => navigation.navigate('Auth' as never) }
-        ]
-      );
-      return;
-    }
     navigation.navigate('TastingFlow' as never, { screen: 'CoffeeInfo' } as never);
   };
 
@@ -154,7 +141,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
   };
 
   const handleQuickStats = () => {
-    navigation.navigate('Stats' as never);
+    navigation.navigate('Journal' as never, { initialTab: 'stats' } as never);
   };
 
   const handleTastingDetail = (tastingId: string) => {
@@ -172,6 +159,10 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
         style={styles.tastingCard} 
         onPress={() => handleTastingDetail(item.id)}
         activeOpacity={0.7}
+        accessible={true}
+        accessibilityLabel={`${item.coffeeName}, ${item.roastery}, 점수 ${item.matchScoreTotal}점, ${formattedDate}`}
+        accessibilityHint="탭하여 상세 정보를 확인합니다"
+        accessibilityRole="button"
       >
         <View style={styles.cardHeader}>
           <Text style={styles.coffeeName}>{item.coffeeName}</Text>
@@ -179,11 +170,11 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
             backgroundColor: item.matchScoreTotal >= 85 ? HIGColors.green : 
                            item.matchScoreTotal >= 70 ? HIGColors.orange : HIGColors.red
           }]}>
-            <Text style={styles.matchScore}>{item.matchScoreTotal}</Text>
+            <Text style={styles.matchScore} accessibilityElementsHidden={true}>{item.matchScoreTotal}</Text>
           </View>
         </View>
-        <Text style={styles.roasterName}>{item.roastery}</Text>
-        <Text style={styles.date}>{formattedDate}</Text>
+        <Text style={styles.roasterName} accessibilityElementsHidden={true}>{item.roastery}</Text>
+        <Text style={styles.date} accessibilityElementsHidden={true}>{formattedDate}</Text>
       </TouchableOpacity>
     );
   };
@@ -215,85 +206,113 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
         <View style={styles.content}>
           {/* 환영 메시지 */}
           <View style={styles.welcomeSection}>
-            <Text style={styles.welcomeTitle}>안녕하세요, {currentUser?.username || 'Guest'}님!</Text>
+            <Text style={styles.welcomeTitle}>안녕하세요, {currentUser?.username || 'User'}님!</Text>
             <Text style={styles.welcomeSubtitle}>오늘도 좋은 커피 한 잔 어떠세요?</Text>
-            {/* 디버깅용 텍스트 */}
-            <Text style={{fontSize: 12, color: 'red', marginTop: 10}}>
-              Debug: isGuestMode={isGuestMode.toString()}, username={currentUser?.username || 'null'}
-            </Text>
-            <Text style={{fontSize: 12, color: 'red'}}>
-              Mock data count: {guestMockData.length}
-            </Text>
           </View>
 
-          {/* 게스트 모드 안내 */}
-          {(!currentUser || currentUser.username === 'Guest') && (
-            <View style={styles.guestNotice}>
-              <Text style={styles.guestNoticeText}>🔍 게스트 모드로 둘러보는 중입니다</Text>
-              <TouchableOpacity
-                style={styles.loginPromptButton}
-                onPress={() => navigation.navigate('Auth' as never)}
+          {/* 로딩 상태 */}
+          {isLoading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={HIGColors.blue} />
+              <Text style={styles.loadingText}>데이터를 불러오는 중...</Text>
+            </View>
+          )}
+
+          {/* 에러 상태 */}
+          {error && !isLoading && (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorIcon}>⚠️</Text>
+              <Text style={styles.errorText}>{error}</Text>
+              <TouchableOpacity 
+                style={styles.retryButton} 
+                onPress={loadDashboardData}
+                accessible={true}
+                accessibilityLabel="다시 시도"
+                accessibilityHint="탭하여 데이터를 다시 불러옵니다"
+                accessibilityRole="button"
               >
-                <Text style={styles.loginPromptText}>로그인하고 나만의 기록 시작하기 →</Text>
+                <Text style={styles.retryButtonText}>다시 시도</Text>
               </TouchableOpacity>
             </View>
           )}
+
+          {/* 메인 콘텐츠는 로딩/에러가 없을 때만 표시 */}
+          {!isLoading && !error && (
+            <>
+
 
           {/* 관리자 버튼 */}
           {isAdmin && (
             <TouchableOpacity
               style={styles.adminButton}
               onPress={() => navigation.navigate('AdminDashboard' as never)}
+              accessible={true}
+              accessibilityLabel="관리자 대시보드"
+              accessibilityHint="탭하여 관리자 기능에 접근합니다"
+              accessibilityRole="button"
             >
-              <Text style={styles.adminButtonText}>🔧 관리자 대시보드</Text>
+              <Text style={styles.adminButtonText}>관리자 대시보드</Text>
             </TouchableOpacity>
           )}
 
-          {/* 통계 요약 카드 */}
+          {/* 통계 요약 카드 - MVP 2개로 단순화 */}
           <View style={styles.statsOverview}>
-            <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.totalTastings : stats.totalTastings}</Text>
-              <Text style={styles.statLabel}>총 테이스팅</Text>
+            <TouchableOpacity 
+              style={styles.statCard} 
+              onPress={handleQuickStats}
+              accessible={true}
+              accessibilityLabel={`나의 커피 기록 ${stats.totalTastings || 0}개`}
+              accessibilityHint="탭하여 상세 통계를 확인합니다"
+              accessibilityRole="button"
+            >
+              <Text style={styles.statValue}>{stats.totalTastings || 0}</Text>
+              <Text style={styles.statLabel}>나의 커피 기록</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.thisWeekTastings : stats.thisWeekTastings}</Text>
-              <Text style={styles.statLabel}>이번 주</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.avgScore : stats.avgScore}</Text>
-              <Text style={styles.statLabel}>평균 점수</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.statCard} onPress={handleQuickStats}>
-              <Text style={styles.statValue}>{isGuestMode ? guestMockStats.bestScore : stats.bestScore}</Text>
-              <Text style={styles.statLabel}>최고 점수</Text>
+            <TouchableOpacity 
+              style={styles.statCard} 
+              onPress={handleQuickStats}
+              accessible={true}
+              accessibilityLabel={`발견한 로스터리 ${stats.totalRoasteries || 0}곳`}
+              accessibilityHint="탭하여 상세 통계를 확인합니다"
+              accessibilityRole="button"
+            >
+              <Text style={styles.statValue}>{stats.totalRoasteries || 0}</Text>
+              <Text style={styles.statLabel}>발견한 로스터리</Text>
             </TouchableOpacity>
           </View>
 
-          {/* 빠른 액션 버튼들 */}
-          <View style={styles.quickActions}>
-            <TouchableOpacity 
-              style={[commonButtonStyles.buttonPrimary, styles.primaryAction]}
-              onPress={handleNewTasting}
-              activeOpacity={0.8}
-            >
-              <Text style={[commonTextStyles.buttonText, styles.primaryActionText]}>
-                ☕ 새 테이스팅 시작
-              </Text>
-            </TouchableOpacity>
-          </View>
+          {/* 빠른 액션 버튼 */}
+          <TouchableOpacity 
+            style={styles.primaryActionCard}
+            onPress={handleNewTasting}
+            activeOpacity={0.8}
+            accessible={true}
+            accessibilityLabel="커피 기록하기"
+            accessibilityHint="탭하여 새로운 커피 테이스팅을 기록합니다"
+            accessibilityRole="button"
+          >
+            <Text style={styles.primaryActionTitle}>커피 기록하기</Text>
+            <Text style={styles.primaryActionSubtitle}>새로운 커피를 테이스팅해보세요</Text>
+          </TouchableOpacity>
 
           {/* 최근 기록 섹션 */}
           <View style={styles.recentSection}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>최근 기록</Text>
-              <TouchableOpacity onPress={handleViewHistory}>
+              <TouchableOpacity 
+                onPress={handleViewHistory}
+                accessible={true}
+                accessibilityLabel="전체 기록 보기"
+                accessibilityHint="탭하여 모든 커피 기록을 확인합니다"
+                accessibilityRole="button"
+              >
                 <Text style={styles.seeAllText}>전체 보기</Text>
               </TouchableOpacity>
             </View>
 
-            {(isGuestMode ? guestMockData.slice(0, 3) : recentTastings).length > 0 ? (
+            {recentTastings.length > 0 ? (
               <FlatList
-                data={isGuestMode ? guestMockData.slice(0, 3) : recentTastings}
+                data={recentTastings}
                 renderItem={renderRecentTasting}
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
@@ -306,6 +325,8 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
               </View>
             )}
           </View>
+            </>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -360,60 +381,82 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_LG,
   },
   welcomeSection: {
-    paddingTop: HIGConstants.SPACING_LG,
+    paddingTop: HIGConstants.SPACING_MD,
     paddingBottom: HIGConstants.SPACING_LG,
-    alignItems: 'center',
   },
   statsOverview: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_XL,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    gap: HIGConstants.SPACING_MD,
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#E8F5E8',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_XL,
     alignItems: 'center',
-    marginHorizontal: HIGConstants.SPACING_XS,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
     borderWidth: 1,
-    borderColor: HIGColors.green,
+    borderColor: '#F1F5F9',
+    minHeight: 110,
   },
   statValue: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: '700',
-    color: HIGColors.blue,
-    marginBottom: HIGConstants.SPACING_XS,
+    color: '#2563EB',
+    marginBottom: HIGConstants.SPACING_SM,
   },
   statLabel: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-  },
-  quickActions: {
-    marginBottom: HIGConstants.SPACING_LG,
-  },
-  primaryAction: {
-    width: '100%',
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  primaryActionText: {
-    color: '#FFFFFF',
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: '600',
-  },
-  welcomeTitle: {
-    fontSize: 22,
-    fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
+    lineHeight: 18,
+  },
+  primaryActionCard: {
+    backgroundColor: HIGColors.blue,
+    borderRadius: 16,
+    padding: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_XL,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  primaryActionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: HIGColors.white,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  primaryActionSubtitle: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'center',
+  },
+  welcomeTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
   },
   welcomeSubtitle: {
     fontSize: 15,
     fontWeight: '400',
     color: HIGColors.secondaryLabel,
-    textAlign: 'center',
   },
   recentSection: {
     marginBottom: HIGConstants.SPACING_LG,
@@ -425,23 +468,31 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_MD,
   },
   sectionTitle: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
   },
   seeAllText: {
     fontSize: 15,
-    fontWeight: '400',
+    fontWeight: '600',
     color: HIGColors.blue,
   },
   tastingCard: {
-    backgroundColor: '#FFF8DC',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_SM,
-    minHeight: 60, // HIG 최소 터치 영역 보장
-    borderWidth: 1,
-    borderColor: '#DEB887',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_MD,
+    minHeight: 80,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0, 0, 0, 0.06)',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -450,25 +501,29 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_XS,
   },
   coffeeName: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 17,
+    fontWeight: '700',
     color: HIGColors.label,
     flex: 1,
+    letterSpacing: 0.1,
   },
   matchScoreContainer: {
     backgroundColor: HIGColors.green,
-    borderRadius: 12,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_XS,
+    borderRadius: 14,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: 6,
+    minWidth: 44,
+    alignItems: 'center',
   },
   matchScore: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: '700',
     color: '#FFFFFF',
+    letterSpacing: 0.2,
   },
   roasterName: {
-    fontSize: 14,
-    fontWeight: '400',
+    fontSize: 15,
+    fontWeight: '500',
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_XS,
   },
@@ -482,18 +537,19 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_XL * 2,
   },
   emptyStateText: {
-    fontSize: 17,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_SM,
+    letterSpacing: 0.1,
   },
   emptyStateSubtext: {
     fontSize: 15,
-    fontWeight: '400',
+    fontWeight: '500',
     color: HIGColors.tertiaryLabel,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 22,
   },
   
   // Coffee Discovery Styles
@@ -532,41 +588,68 @@ const styles = StyleSheet.create({
   // Admin Button
   adminButton: {
     backgroundColor: '#FFF3E0',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
+    borderRadius: 16,
+    padding: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_LG,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: HIGColors.orange,
+    shadowColor: HIGColors.orange,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   adminButtonText: {
-    fontSize: 17,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: '700',
     color: HIGColors.label,
+    letterSpacing: 0.2,
   },
   
-  // Guest Mode Styles
-  guestNotice: {
-    backgroundColor: '#E3F2FD',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_LG,
+  // Loading & Error States
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_XL * 3,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: HIGColors.secondaryLabel,
+    marginTop: HIGConstants.SPACING_MD,
+  },
+  errorContainer: {
+    backgroundColor: '#FEE',
+    borderRadius: 16,
+    padding: HIGConstants.SPACING_LG,
+    marginVertical: HIGConstants.SPACING_LG,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: HIGColors.blue,
+    borderColor: '#FCC',
   },
-  guestNoticeText: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_SM,
+  errorIcon: {
+    fontSize: 48,
+    marginBottom: HIGConstants.SPACING_MD,
   },
-  loginPromptButton: {
-    paddingVertical: HIGConstants.SPACING_SM,
-    paddingHorizontal: HIGConstants.SPACING_MD,
+  errorText: {
+    fontSize: 16,
+    color: HIGColors.red,
+    textAlign: 'center',
+    marginBottom: HIGConstants.SPACING_LG,
   },
-  loginPromptText: {
+  retryButton: {
+    backgroundColor: HIGColors.red,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+  },
+  retryButtonText: {
+    color: HIGColors.white,
     fontSize: 15,
     fontWeight: '600',
-    color: HIGColors.blue,
   },
 });

@@ -25,7 +25,6 @@ import { ITastingRecord } from '../services/realm/schemas';
 import { usePersonalTaste } from '@/hooks/usePersonalTaste';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { DraftRecoveryModal } from '../components/tasting/DraftRecoveryModal';
-// Guest mode disabled - removed mock data imports
 
 // Navigation type definitions
 type MainTabParamList = {
@@ -52,7 +51,6 @@ export default function HomeScreenEnhanced() {
   const { currentUser } = useUserStore();
   const { trackScreenView, trackButtonClick, trackFeatureUse } = useAnalytics();
   
-  // Guest mode disabled - removed all guest mode functionality
   
   const [recentTastings, setRecentTastings] = useState<ITastingRecord[]>([]);
   const [refreshing, setRefreshing] = useState(false);

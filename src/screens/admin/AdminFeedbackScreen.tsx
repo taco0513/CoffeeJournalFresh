@@ -324,7 +324,7 @@ export default function AdminFeedbackScreen({ navigation }: any) {
                           styles.statusButtonText,
                           selectedFeedback.status === status && styles.statusButtonTextActive
                         ]}>
-                          {FEEDBACK_STATUS_LABELS[status].ko}
+                          {FEEDBACK_STATUS_LABELS[status as keyof typeof FEEDBACK_STATUS_LABELS].ko}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_MD,
     marginHorizontal: HIGConstants.SPACING_MD,
     marginVertical: HIGConstants.SPACING_SM,
-    borderRadius: HIGConstants.BORDER_RADIUS,
+    borderRadius: HIGConstants.BORDER_RADIUS_LG,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -523,13 +523,13 @@ const styles = StyleSheet.create({
   screenshot: {
     width: '100%',
     height: 200,
-    borderRadius: HIGConstants.BORDER_RADIUS,
+    borderRadius: HIGConstants.BORDER_RADIUS_LG,
     marginTop: HIGConstants.SPACING_SM,
   },
   adminNotesInput: {
     borderWidth: 1,
     borderColor: HIGColors.systemGray5,
-    borderRadius: HIGConstants.BORDER_RADIUS,
+    borderRadius: HIGConstants.BORDER_RADIUS_LG,
     padding: HIGConstants.SPACING_SM,
     fontSize: 16,
     minHeight: 80,

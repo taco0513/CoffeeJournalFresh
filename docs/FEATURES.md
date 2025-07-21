@@ -1,14 +1,18 @@
-# Coffee Tasting Journal - Features Roadmap
+# Coffee Tasting Journal - Features Roadmap (Mode-Based Development)
 
-## 📊 Feature Priority Levels
+## 📊 Feature Priority Levels & Mode Strategy
 
-**Last Updated**: 2025-07-18
+**Last Updated**: 2025-07-21
 
 - **P0 (Critical)**: Core functionality, must have for MVP
 - **P1 (Important)**: Enhances user experience significantly
 - **P2 (Nice-to-have)**: Additional features for future releases
 
-## ✅ MVP Features (Phase 1) - Current Release
+### 🍃 Cafe Mode vs 🔬 Lab Mode
+- **🍃 Cafe Mode (Phase 1)**: General coffee enthusiasts, simple & intuitive
+- **🔬 Lab Mode (Phase 2)**: Professional baristas, advanced analysis tools
+
+## ✅ MVP Features (Phase 1) - 🍃 Cafe Mode Focus
 
 ### Core Tasting Flow [P0] ✅ Implemented
 

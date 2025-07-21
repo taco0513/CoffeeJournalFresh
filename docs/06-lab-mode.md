@@ -1,7 +1,9 @@
-# ☕ Coffee Tasting Journey - Lab 모드
+# ☕ Coffee Tasting Journey - Lab 모드 (Phase 2)
 
-## 🔬 Lab 모드 - 전문적 미각 훈련
+## 🔬 Lab 모드 - 전문적 미각 훈련 (Phase 2 Development)
 ### 핵심 철학: "Personal Excellence, Shared Expertise"
+
+> **⚠️ Phase 2 Features**: 이 문서의 기능들은 Phase 2에서 개발 예정입니다. 현재 MVP는 Cafe Mode에 집중하고 있습니다.
 
 ### 💰 가격 정보
 - **일반 사용자**: $9.99/월

@@ -49,6 +49,14 @@ export const HIGColors = {
   systemGray4: '#D1D1D6',
   systemGray5: '#E5E5EA',
   systemGray6: '#F2F2F7',
+  
+  // Semantic colors
+  primary: '#007AFF',
+  success: '#34C759',
+  warning: '#FF9500',
+  info: '#007AFF',
+  placeholderText: '#8E8E93',
+  disabled: '#8E8E93',
 };
 
 export const HIGConstants = {

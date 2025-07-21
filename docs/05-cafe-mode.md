@@ -1,6 +1,8 @@
-# ☕ Coffee Tasting Journey - Café 모드
+# ☕ Coffee Tasting Journey - Café 모드 (MVP Phase 1)
 
-## ☕ Café 모드 - 일상의 커피 여정
+## ☕ Café 모드 - 일상의 커피 여정 (Current Focus)
+
+> **🎯 MVP Status**: 이 문서는 현재 개발 중인 Phase 1 MVP의 핵심 기능들을 설명합니다.
 
 ### 🌟 핵심 기능: Personal Taste, Shared Journey
 

@@ -92,7 +92,7 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
     rarity: 'common',
     category: AchievementType.FIRST_STEPS,
     requirements: { type: 'tasting_count', value: 1 },
-    rewards: { type: 'points', value: 100 },
+    rewards: { type: 'points', value: 10 },
   },
   first_week: {
     type: 'first_week',
@@ -102,7 +102,7 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
     rarity: 'common',
     category: AchievementType.FIRST_STEPS,
     requirements: { type: 'weekly_variety', value: 3 },
-    rewards: { type: 'points', value: 500 },
+    rewards: { type: 'points', value: 50 },
   },
   first_flavor_match: {
     type: 'first_flavor_match',
@@ -112,7 +112,7 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
     rarity: 'common',
     category: AchievementType.FIRST_STEPS,
     requirements: { type: 'flavor_match', value: 1 },
-    rewards: { type: 'points', value: 150 },
+    rewards: { type: 'points', value: 15 },
   },
 
   // Flavor Explorer Series
@@ -202,7 +202,7 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
       value: 5,
       additionalConditions: { weeks: 4 }
     },
-    rewards: { type: 'points', value: 1000 },
+    rewards: { type: 'points', value: 100 },
   },
   month_master: {
     type: 'month_master',
@@ -212,7 +212,7 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
     rarity: 'rare',
     category: AchievementType.CONSISTENCY,
     requirements: { type: 'monthly_quality', value: 10 },
-    rewards: { type: 'points', value: 2000 },
+    rewards: { type: 'points', value: 200 },
   },
   hundred_tastings: {
     type: 'hundred_tastings',
@@ -234,7 +234,7 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
     rarity: 'common',
     category: AchievementType.VOCABULARY,
     requirements: { type: 'unique_words', value: 50 },
-    rewards: { type: 'points', value: 750 },
+    rewards: { type: 'points', value: 75 },
   },
   vocabulary_virtuoso: {
     type: 'vocabulary_virtuoso',
@@ -260,7 +260,7 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
       value: 7,
       additionalConditions: { before: true }
     },
-    rewards: { type: 'points', value: 500 },
+    rewards: { type: 'points', value: 50 },
   },
   night_owl: {
     type: 'night_owl',
@@ -274,7 +274,7 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
       value: 22,
       additionalConditions: { after: true }
     },
-    rewards: { type: 'points', value: 500 },
+    rewards: { type: 'points', value: 50 },
   },
   perfect_match: {
     type: 'perfect_match',

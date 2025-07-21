@@ -43,7 +43,7 @@ const SHAKE_ENABLED_KEY = '@shake_to_feedback_enabled';
 export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
   // Initial state
   isVisible: false,
-  isBetaUser: false,
+  isBetaUser: true, // 기본값을 true로 설정하여 배지가 표시되도록 함
   pendingScreenshot: null,
   submitStatus: 'idle',
   errorMessage: null,

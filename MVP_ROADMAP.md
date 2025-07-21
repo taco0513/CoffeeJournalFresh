@@ -1,9 +1,14 @@
-# Coffee Tasting Journey - MVP 로드맵
+# Coffee Tasting Journey - MVP 로드맵 (Mode-Based Strategy)
 ## "Personal Taste, Shared Journey" 단계별 출시 전략
+
+### 🍃 Mode-Based Development Strategy
+- **Phase 1**: 🍃 Cafe Mode MVP (일반 사용자 대상)
+- **Phase 2**: 🔬 Lab Mode 추가 (전문가 대상)
+- **Phase 3**: 통합 및 고도화
 
 ---
 
-## 📍 현재 위치: MVP v0.3.0 (완료)
+## 📍 현재 위치: MVP v0.3.0 (완료) - Cafe Mode Foundation
 
 ### ✅ 이미 구현된 핵심 기능
 - **커피 테이스팅 플로우**: 정보입력 → 향미선택 → 감각평가 → 결과
@@ -23,11 +28,13 @@
 
 ## 🎯 MVP 출시 단계별 전략
 
-### MVP v0.4.0 - "Personal Taste Discovery" (1-2개월)
-> **목표**: 개인 취향 발견에 특화된 첫 번째 출시 버전
+### MVP v0.4.0 - "Personal Taste Discovery" 🍃 Cafe Mode (1-2개월)
+> **목표**: 개인 취향 발견에 특화된 첫 번째 출시 버전 (Cafe Mode 집중)
 
-#### 🎯 핵심 가치 제안
+#### 🎯 핵심 가치 제안 (Cafe Mode)
 **"당신만의 커피 취향을 발견하세요"**
+- 일반 커피 애호가 대상의 접근 가능한 인터페이스
+- 복잡한 전문가 도구 없이 개인 취향 발견에 집중
 - 막연한 "맛있다"에서 구체적인 향미 표현으로
 - 개인 취향 패턴 분석과 시각화
 - 성장하는 미각을 실시간으로 추적

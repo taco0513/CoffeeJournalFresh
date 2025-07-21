@@ -76,29 +76,23 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
     if (!stats || stats.totalTastings === 0) {
       return [
         {
-          icon: '🍓',
-          title: '가장 좋아한 향미',
-          value: '과일향',
-          detail: '예시) 15회 선택',
+          icon: '🌍',
+          title: '많이 마신 원산지',
+          value: '에티오피아',
+          detail: '예시) 15회',
           trend: 'up' as const,
         },
         {
+          icon: '🍓',
+          title: '많이 느낀 향미',
+          value: '과일향',
+          detail: '예시) 12회',
+        },
+        {
           icon: '☕',
-          title: '최애 원산지',
-          value: '에티오피아',
-          detail: '예시) 평균 88점',
-        },
-        {
-          icon: '⏰',
-          title: '커피 타임',
-          value: '오전형',
-          detail: '예시) 10시 피크',
-        },
-        {
-          icon: '🎯',
-          title: '일관성 점수',
-          value: '82%',
-          detail: '예시) 취향이 명확한 편입니다',
+          title: '총 테이스팅',
+          value: '45잔',
+          detail: '예시) 지난 30일간',
         },
       ];
     }
@@ -110,11 +104,42 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
       startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30일 전
     });
 
-    // 1. 가장 좋아한 향미
+    // 1. 많이 마신 원산지
+    const originCounts = new Map<string, number>();
+    recentTastings.forEach(tasting => {
+      if (tasting.origin) {
+        originCounts.set(tasting.origin, (originCounts.get(tasting.origin) || 0) + 1);
+      }
+    });
+
+    let topOrigin = '';
+    let topOriginCount = 0;
+    originCounts.forEach((count, origin) => {
+      if (count > topOriginCount) {
+        topOrigin = origin;
+        topOriginCount = count;
+      }
+    });
+
+    if (topOrigin) {
+      insights.push({
+        icon: '🌍',
+        title: '많이 마신 원산지',
+        value: topOrigin,
+        detail: `${topOriginCount}회`,
+        trend: topOriginCount > 10 ? 'up' : 'stable',
+      });
+    }
+
+    // 2. 많이 느낀 향미
     const flavorCounts = new Map<string, number>();
     recentTastings.forEach(tasting => {
       tasting.flavorNotes.forEach(flavor => {
-        flavorCounts.set(flavor, (flavorCounts.get(flavor) || 0) + 1);
+        // Handle both string and object flavor formats
+        const flavorKey = typeof flavor === 'string' ? flavor : (flavor.koreanValue || flavor.value || '');
+        if (flavorKey) {
+          flavorCounts.set(flavorKey, (flavorCounts.get(flavorKey) || 0) + 1);
+        }
       });
     });
 
@@ -130,113 +155,43 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
     if (topFlavor) {
       insights.push({
         icon: '🍓',
-        title: '가장 좋아한 향미',
+        title: '많이 느낀 향미',
         value: topFlavor,
-        detail: `${topFlavorCount}회 선택`,
-        trend: topFlavorCount > 10 ? 'up' : 'stable',
+        detail: `${topFlavorCount}회`,
       });
     }
 
-    // 2. 최애 원산지
-    const topOrigins = new Map<string, { count: number; totalScore: number }>();
-    recentTastings.forEach(tasting => {
-      if (tasting.origin) {
-        const current = topOrigins.get(tasting.origin) || { count: 0, totalScore: 0 };
-        current.count++;
-        current.totalScore += tasting.matchScore || 0;
-        topOrigins.set(tasting.origin, current);
-      }
+    // 3. 총 테이스팅 (30일간)
+    const totalIn30Days = recentTastings.length;
+    insights.push({
+      icon: '☕',
+      title: '총 테이스팅',
+      value: `${totalIn30Days}잔`,
+      detail: '지난 30일간',
     });
 
-    let bestOrigin = '';
-    let bestScore = 0;
-    topOrigins.forEach((data, origin) => {
-      const avgScore = data.totalScore / data.count;
-      if (avgScore > bestScore) {
-        bestOrigin = origin;
-        bestScore = avgScore;
-      }
-    });
-
-    if (bestOrigin) {
-      insights.push({
-        icon: '☕',
-        title: '최애 원산지',
-        value: bestOrigin,
-        detail: `평균 ${Math.round(bestScore)}점`,
-      });
-    }
-
-    // 3. 커피 타임
-    const timeDistribution = new Map<number, number>();
-    recentTastings.forEach(tasting => {
-      const hour = new Date(tasting.createdAt).getHours();
-      timeDistribution.set(hour, (timeDistribution.get(hour) || 0) + 1);
-    });
-
-    let peakHour = 0;
-    let peakCount = 0;
-    timeDistribution.forEach((count, hour) => {
-      if (count > peakCount) {
-        peakHour = hour;
-        peakCount = count;
-      }
-    });
-
-    if (peakHour > 0) {
-      const timeType = peakHour < 12 ? '오전형' : peakHour < 18 ? '오후형' : '저녁형';
-      insights.push({
-        icon: '⏰',
-        title: '커피 타임',
-        value: timeType,
-        detail: `${peakHour}시 피크`,
-      });
-    }
-
-    // 4. 일관성 점수
-    if (recentTastings.length > 5) {
-      const scores = recentTastings.map(t => t.matchScore || 0);
-      const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
-      const variance = scores.reduce((sum, score) => sum + Math.pow(score - avgScore, 2), 0) / scores.length;
-      const consistency = Math.max(0, 100 - Math.sqrt(variance) * 2);
-
-      insights.push({
-        icon: '🎯',
-        title: '일관성 점수',
-        value: `${Math.round(consistency)}%`,
-        detail: consistency > 80 ? '취향이 명확한 편입니다' : '다양한 스타일을 탐험중',
-      });
-    }
-
-    // 최소 4개의 인사이트를 보장
-    while (insights.length < 4) {
-      if (!insights.find(i => i.title === '가장 좋아한 향미')) {
+    // 최소 3개의 인사이트를 보장
+    while (insights.length < 3) {
+      if (!insights.find(i => i.title === '많이 마신 원산지')) {
         insights.push({
-          icon: '🍓',
-          title: '가장 좋아한 향미',
-          value: '더 많은 기록이 필요해요',
-          detail: '5개 이상 기록 후 확인 가능',
-        });
-      } else if (!insights.find(i => i.title === '최애 원산지')) {
-        insights.push({
-          icon: '☕',
-          title: '최애 원산지',
+          icon: '🌍',
+          title: '많이 마신 원산지',
           value: '더 많은 기록이 필요해요',
           detail: '원산지 정보 입력 필요',
         });
-      } else if (!insights.find(i => i.title === '커피 타임')) {
+      } else if (!insights.find(i => i.title === '많이 느낀 향미')) {
         insights.push({
-          icon: '⏰',
-          title: '커피 타임',
-          value: '패턴 분석중',
-          detail: '더 많은 기록이 필요해요',
+          icon: '🍓',
+          title: '많이 느낀 향미',
+          value: '더 많은 기록이 필요해요',
+          detail: '5개 이상 기록 후 확인 가능',
         });
-      } else if (!insights.find(i => i.title === '일관성 점수')) {
+      } else if (!insights.find(i => i.title === '총 테이스팅')) {
         insights.push({
-          icon: '🎯',
-          title: '일관성 점수',
-          value: '계산중',
-          detail: '5개 이상 기록 필요',
+          icon: '☕',
+          title: '총 테이스팅',
+          value: '0잔',
+          detail: '지난 30일간',
         });
       }
     }
@@ -339,7 +294,6 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>📊</Text>
             <Text style={styles.emptyText}>아직 테이스팅 기록이 없습니다</Text>
             <Text style={styles.emptySubtext}>
               첫 테이스팅을 기록하면 통계를 볼 수 있습니다
@@ -391,15 +345,11 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
           <View style={styles.statsGrid}>
             <View style={styles.statCard}>
               <Text style={styles.statNumber}>{stats.totalTastings}</Text>
-              <Text style={styles.statLabel}>총 테이스팅</Text>
+              <Text style={styles.statLabel}>나의 커피 기록</Text>
             </View>
             <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{stats.averageScore}%</Text>
-              <Text style={styles.statLabel}>평균 매칭</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{stats.firstTastingDays}일</Text>
-              <Text style={styles.statLabel}>커피 여정</Text>
+              <Text style={styles.statNumber}>{topRoasters.length}</Text>
+              <Text style={styles.statLabel}>발견한 로스터리</Text>
             </View>
           </View>
         </View>
@@ -407,7 +357,7 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
         {/* TOP 로스터리 */}
         {topRoasters.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>🏆 가장 많이 마신 로스터리</Text>
+            <Text style={styles.sectionTitle}>가장 많이 마신 로스터리</Text>
             <View style={styles.rankingCard}>
               {topRoasters.map((roaster, index) => (
                 <View key={roaster.name} style={styles.rankingItem}>
@@ -425,33 +375,11 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
           </View>
         )}
 
-        {/* TOP 커피 */}
-        {topCoffees.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>☕ 가장 많이 마신 커피</Text>
-            <View style={styles.rankingCard}>
-              {topCoffees.map((coffee, index) => (
-                <View key={`${coffee.roastery}-${coffee.name}`} style={styles.rankingItem}>
-                  <View style={styles.rankingLeft}>
-                    <Text style={styles.rankNumber}>{index + 1}</Text>
-                    <View style={styles.rankingInfo}>
-                      <Text style={styles.rankName} numberOfLines={1}>
-                        {coffee.name}
-                      </Text>
-                      <Text style={styles.rankSubtext}>{coffee.roastery}</Text>
-                    </View>
-                  </View>
-                  <Text style={styles.rankCount}>{coffee.count}회</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
 
         {/* TOP 카페 */}
         {topCafes.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>🏠 자주 방문한 카페</Text>
+            <Text style={styles.sectionTitle}>자주 방문한 카페</Text>
             <View style={styles.rankingCard}>
               {topCafes.map((cafe, index) => (
                 <View key={cafe.name} style={styles.rankingItem}>
@@ -622,8 +550,8 @@ const styles = StyleSheet.create({
   },
   statsGrid: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: HIGConstants.SPACING_SM,
+    justifyContent: 'space-around',
+    gap: HIGConstants.SPACING_LG,
   },
   statCard: {
     flex: 1,

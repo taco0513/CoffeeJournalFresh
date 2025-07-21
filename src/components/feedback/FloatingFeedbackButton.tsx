@@ -20,36 +20,8 @@ export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible
   const { showSmartFeedback } = useFeedbackStore();
   const [expanded, setExpanded] = useState(false);
   
-  // Pulsing effect to make button more noticeable
-  React.useEffect(() => {
-    if (!expanded) {
-      const pulseAnimation = Animated.loop(
-        Animated.sequence([
-          Animated.timing(pulse, {
-            toValue: 1.2,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-          Animated.timing(pulse, {
-            toValue: 1,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-        ]),
-        { iterations: -1 } // Infinite loop
-      );
-      
-      // Start pulsing after 5 seconds
-      const timeout = setTimeout(() => {
-        pulseAnimation.start();
-      }, 5000);
-      
-      return () => {
-        clearTimeout(timeout);
-        pulseAnimation.stop();
-      };
-    }
-  }, [expanded, pulse]);
+  // Animation values - 애니메이션 제거
+  // const pulse = useRef(new Animated.Value(1)).current;
   
   // Store the actual position
   const position = useRef({
@@ -61,7 +33,6 @@ export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible
   const pan = useRef(new Animated.ValueXY(position)).current;
   const opacity = useRef(new Animated.Value(1)).current;
   const scale = useRef(new Animated.Value(1)).current;
-  const pulse = useRef(new Animated.Value(1)).current;
 
   // Pan responder for dragging
   const panResponder = useRef(
@@ -145,20 +116,6 @@ export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible
   ).current;
 
   const handlePress = () => {
-    // Animate press
-    Animated.sequence([
-      Animated.timing(scale, {
-        toValue: 0.9,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scale, {
-        toValue: 1,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
     // Toggle expanded state or show feedback
     if (expanded) {
       showSmartFeedback();
@@ -180,7 +137,7 @@ export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible
           transform: [
             { translateX: pan.x },
             { translateY: pan.y },
-            { scale: Animated.multiply(scale, pulse) },
+            { scale: scale },
           ],
           opacity,
         },

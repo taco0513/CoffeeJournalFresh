@@ -16,7 +16,7 @@ export interface ScreenshotWrapperRef {
 
 export const ScreenshotWrapper = forwardRef<ScreenshotWrapperRef, ScreenshotWrapperProps>(
   ({ children, screenName = 'screen', style }, ref) => {
-    const viewShotRef = useRef<ViewShot>(null);
+    const viewShotRef = useRef<ViewShot | null>(null);
 
     useImperativeHandle(ref, () => ({
       captureScreen: async () => {

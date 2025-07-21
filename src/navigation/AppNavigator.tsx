@@ -6,9 +6,10 @@ import { Text, View, ActivityIndicator } from 'react-native';
 import AuthService from '../services/supabase/auth';
 import { useUserStore } from '../stores/useUserStore';
 import { HIGColors } from '../styles/common';
+import StatusBadge from '../components/StatusBadge';
 
 // 화면 import
-import HomeScreen from '../screens/HomeScreenEnhanced';
+import HomeScreen from '../screens/HomeScreen';
 import CoffeeInfoScreen from '../screens/CoffeeInfoScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import StatsScreen from '../screens/StatsScreen';
@@ -38,15 +39,24 @@ import SignUpScreen from '../screens/auth/SignUpScreen';
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
 import { AdminCoffeeEditScreen } from '../screens/admin/AdminCoffeeEditScreen';
 import DeveloperScreen from '../screens/DeveloperScreen';
-import { PersonalTasteQuizScreen } from '../screens/PersonalTasteQuizScreen';
-import { PersonalTasteQuizResultsScreen } from '../screens/PersonalTasteQuizResultsScreen';
 import AdminFeedbackScreen from '../screens/admin/AdminFeedbackScreen';
 import { FeedbackProvider } from '../components/feedback';
 import OnboardingScreen from '../screens/OnboardingScreen';
+import { AchievementGalleryScreen } from '../screens/AchievementGalleryScreen';
+import { AchievementProvider } from '../contexts/AchievementContext';
+import { RealmProvider } from '../contexts/RealmContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+// 공통 헤더 옵션
+const commonHeaderOptions = {
+  headerRight: () => <StatusBadge />,
+  headerRightContainerStyle: {
+    paddingRight: 16,
+  },
+};
 
 // 테이스팅 플로우 스택 네비게이터
 function TastingFlow() {
@@ -123,13 +133,22 @@ function HistoryStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+        headerTintColor: HIGColors.label,
+        headerTitleStyle: {
+          fontWeight: '600',
+          fontSize: 17,
+        },
+        ...commonHeaderOptions,
       }}
     >
       <Stack.Screen 
         name="HistoryMain" 
         component={JournalIntegratedScreen} 
-        options={{title: 'Journal'}}
+        options={{headerShown: false}}
       />
       <Stack.Screen 
         name="TastingDetail" 
@@ -166,6 +185,7 @@ function CommunityStack() {
           fontWeight: 'bold',
           color: HIGColors.label,
         },
+        ...commonHeaderOptions,
       }}
     >
       <Stack.Screen 
@@ -192,7 +212,16 @@ function ProfileStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+        headerTintColor: HIGColors.label,
+        headerTitleStyle: {
+          fontWeight: '600',
+          fontSize: 17,
+        },
+        ...commonHeaderOptions,
         presentation: 'card',
         animationTypeForReplace: 'push',
         cardStyleInterpolator: ({ current, layouts }) => {
@@ -239,14 +268,9 @@ function ProfileStack() {
         options={{title: 'Profile'}}
       />
       <Stack.Screen 
-        name="PersonalTasteQuiz" 
-        component={PersonalTasteQuizScreen} 
-        options={{title: 'Flavor Quiz'}}
-      />
-      <Stack.Screen 
-        name="PersonalTasteQuizResults" 
-        component={PersonalTasteQuizResultsScreen} 
-        options={{title: 'Quiz Results'}}
+        name="AchievementGallery" 
+        component={AchievementGalleryScreen} 
+        options={{title: 'Achievements'}}
       />
       <Stack.Screen 
         name="DataTest" 
@@ -276,7 +300,20 @@ function MainTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0.5,
+          borderBottomColor: '#E0E0E0',
+        },
+        headerTintColor: HIGColors.label,
+        headerTitleStyle: {
+          fontWeight: '600',
+          fontSize: 17,
+        },
+        ...commonHeaderOptions,
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopColor: '#E0E0E0',
@@ -310,6 +347,7 @@ function MainTabs() {
         name="Journal" 
         component={HistoryStack} 
         options={{
+          headerShown: false, // HistoryStack has its own navigation
           tabBarLabel: 'Journal',
           tabBarIcon: ({ color }) => (
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -335,6 +373,7 @@ function MainTabs() {
         name="Profile" 
         component={ProfileStack} 
         options={{
+          headerShown: false, // ProfileStack has its own navigation
           tabBarLabel: 'Profile',
           tabBarIcon: ({ color }) => (
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -380,58 +419,62 @@ function AppNavigator() {
   };
 
   return (
-    <FeedbackProvider>
-      <NavigationContainer>
-        <Stack.Navigator 
-          initialRouteName="MainTabs"
-          screenOptions={{
-            headerShown: false,
-            presentation: 'card',
-          }}
-        >
-          <Stack.Screen 
-            name="MainTabs" 
-            component={MainTabs} 
-          />
-          <Stack.Screen 
-            name="TastingFlow" 
-            component={TastingFlow} 
-            options={{
+    <RealmProvider>
+      <AchievementProvider>
+        <FeedbackProvider>
+          <NavigationContainer>
+          <Stack.Navigator 
+            initialRouteName="MainTabs"
+            screenOptions={{
+              headerShown: false,
               presentation: 'card',
             }}
-          />
-          <Stack.Screen 
-            name="AdminDashboard" 
-            component={AdminDashboardScreen}
-            options={{
-              headerShown: true,
-              headerTitle: '관리자 대시보드',
-            }}
-          />
-          <Stack.Screen 
-            name="AdminCoffeeEdit" 
-            component={AdminCoffeeEditScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen 
-            name="AdminFeedback" 
-            component={AdminFeedbackScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen 
-            name="DeveloperScreen" 
-            component={DeveloperScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </FeedbackProvider>
+          >
+            <Stack.Screen 
+              name="MainTabs" 
+              component={MainTabs} 
+            />
+            <Stack.Screen 
+              name="TastingFlow" 
+              component={TastingFlow} 
+              options={{
+                presentation: 'card',
+              }}
+            />
+            <Stack.Screen 
+              name="AdminDashboard" 
+              component={AdminDashboardScreen}
+              options={{
+                headerShown: true,
+                headerTitle: '관리자 대시보드',
+              }}
+            />
+            <Stack.Screen 
+              name="AdminCoffeeEdit" 
+              component={AdminCoffeeEditScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen 
+              name="AdminFeedback" 
+              component={AdminFeedbackScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen 
+              name="DeveloperScreen" 
+              component={DeveloperScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </FeedbackProvider>
+    </AchievementProvider>
+  </RealmProvider>
   );
 }
 

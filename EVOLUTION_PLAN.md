@@ -1,9 +1,14 @@
 # Coffee Tasting Journey - Evolution Plan
-## MVP v0.3.0 → Personal Taste, Shared Journey
+## MVP v0.3.0 → Personal Taste, Shared Journey (Mode-Based Development)
 
-### 🎯 핵심 철학 전환
+### 🎯 핵심 철학 전환 & Mode Strategy
 **From**: 단순 커피 일기 앱
 **To**: "Personal Taste, Shared Journey" - 개인의 고유한 취향 발견 + 커뮤니티와 함께하는 성장
+
+### 🍃 Cafe Mode vs 🔬 Lab Mode Development Strategy
+- **Phase 1 (Current)**: Cafe Mode MVP - 일반 커피 애호가 대상
+- **Phase 2**: Lab Mode 추가 - 전문가/바리스타 대상
+- **Phase 3**: Mode 통합 및 고도화
 
 ---
 

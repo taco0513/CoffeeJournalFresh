@@ -138,16 +138,6 @@ export const usePersonalTaste = () => {
 //     try {
 //       setLoading(true);
       
-//       // 게스트 모드인 경우 바로 더미 데이터 표시
-//       const isGuestMode = !currentUser || currentUser.username === 'Guest' || !userId;
-      
-//       if (isGuestMode) {
-//         setDailyInsight(getMockDailyInsight());
-//         setLearningPath(getMockLearningPath());
-//         setLoading(false);
-//         return;
-//       }
-      
 //       if (services?.coachService) {
 //         const [insight, path] = await Promise.all([
 //           services.coachService.getDailyInsight(userId),

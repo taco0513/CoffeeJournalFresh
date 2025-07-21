@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RealmService from '../services/realm/RealmService';
+import { AchievementSystem, UserAction } from '../services/AchievementSystem';
 
 export interface FlavorPath {
   level1?: string;
@@ -34,7 +35,7 @@ interface TastingState {
   
   updateField: (field: string, value: any) => void;
   setSelectedFlavors: (flavors: FlavorPath[]) => void;
-  saveTasting: () => void;
+  saveTasting: () => Promise<void>;
   calculateMatchScore: () => void;
   reset: () => void;
   updateSyncStatus: (status: Partial<SyncStatus>) => void;
@@ -44,6 +45,9 @@ interface TastingState {
   loadDraft: () => Promise<boolean>;
   clearDraft: () => Promise<void>;
   hasDraft: () => Promise<boolean>;
+  
+  // Achievement functionality
+  checkAchievements: (userId: string) => Promise<any[]>;
 }
 
 export const useTastingStore = create<TastingState>((set, get) => ({
@@ -100,7 +104,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     }, 500);
   },
 
-  saveTasting: () => {
+  saveTasting: async () => {
     const state = get();
     const {currentTasting, selectedFlavors} = state;
 
@@ -118,7 +122,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     // console.log('- selectedFlavors:', selectedFlavors);
     // console.log('- sensoryAttributes:', sensoryAttributes);
     try {
-      RealmService.getInstance().saveTasting({
+      const savedTasting = RealmService.getInstance().saveTasting({
         coffeeInfo: {
           cafeName: currentTasting.cafeName,
           roastery: currentTasting.roastery,
@@ -142,6 +146,8 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       // console.log('Tasting saved successfully');
       // 저장 후 점수 계산
       state.calculateMatchScore();
+      
+      return savedTasting;
     } catch (error) {
       // console.error('Error saving tasting:', error);
       throw error;
@@ -269,5 +275,61 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       selectedFlavors: [],
       matchScoreTotal: null,
     });
+  },
+
+  updateSyncStatus: (status: Partial<SyncStatus>) => {
+    set((state) => ({
+      syncStatus: { ...state.syncStatus, ...status },
+    }));
+  },
+
+  checkAchievements: async (userId: string) => {
+    if (!userId) return [];
+    
+    try {
+      const { currentTasting, selectedFlavors, matchScoreTotal } = get();
+      
+      // Create UserAction for achievement checking
+      const userAction: UserAction = {
+        type: 'tasting',
+        data: {
+          coffeeInfo: {
+            cafeName: currentTasting.cafeName,
+            roastery: currentTasting.roastery,
+            coffeeName: currentTasting.coffeeName,
+            origin: currentTasting.origin,
+            variety: currentTasting.variety,
+            process: currentTasting.process,
+            temperature: currentTasting.temperature || 'hot',
+          },
+          flavorNotes: selectedFlavors,
+          matchScore: matchScoreTotal || 0,
+          sensoryAttributes: {
+            body: currentTasting.body || 3,
+            acidity: currentTasting.acidity || 3,
+            sweetness: currentTasting.sweetness || 3,
+            finish: currentTasting.finish || 3,
+            mouthfeel: currentTasting.mouthfeel || 'Clean',
+          },
+          timestamp: new Date(),
+        },
+        timestamp: new Date(),
+      };
+
+      // Check for achievements
+      const realmService = RealmService.getInstance();
+      const achievementSystem = new AchievementSystem(realmService.getRealm());
+      await achievementSystem.initializeAchievements();
+      
+      const newAchievements = await achievementSystem.checkAndUpdateAchievements(
+        userId,
+        userAction
+      );
+
+      return newAchievements;
+    } catch (error) {
+      console.error('Error checking achievements:', error);
+      return [];
+    }
   },
 }));

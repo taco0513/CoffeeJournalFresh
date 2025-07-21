@@ -17,12 +17,16 @@ import { FONT_SIZE, TEXT_STYLES } from '../constants/typography';
 import RealmService from '../services/realm/RealmService';
 import tastingService from '../services/supabase/tastingService';
 import { ErrorHandler, NetworkUtils } from '../utils/errorHandler';
+import { useAchievementNotification } from '../contexts/AchievementContext';
+import { useUserStore } from '../stores/useUserStore';
 // import { ENABLE_SYNC } from '../../App';
 const ENABLE_SYNC = true; // Enable sync for now
 
 export default function ResultScreen({navigation}: any) {
-  const {currentTasting, matchScoreTotal, reset, saveTasting} = useTastingStore();
+  const {currentTasting, matchScoreTotal, reset, saveTasting, checkAchievements} = useTastingStore();
   const {showSuccessToast, showErrorToast} = useToastStore();
+  const { showMultipleAchievements } = useAchievementNotification();
+  const { currentUser } = useUserStore();
   const [isSaving, setIsSaving] = useState(false);
   const [comparison, setComparison] = useState<any>(null);
   const [similarCoffees, setSimilarCoffees] = useState<any[]>([]);
@@ -187,6 +191,19 @@ export default function ResultScreen({navigation}: any) {
           showErrorToast('오프라인 모드', '네트워크 연결이 없어 로컬에만 저장되었습니다.');
         }
         // Supabase 저장 실패는 무시하고 계속 진행
+      }
+      
+      // Check achievements after successful save
+      if (currentUser?.id) {
+        try {
+          const newAchievements = await checkAchievements(currentUser.id);
+          if (newAchievements.length > 0) {
+            // Show achievement notifications
+            showMultipleAchievements(newAchievements);
+          }
+        } catch (error) {
+          console.warn('Failed to check achievements:', error);
+        }
       }
       
       showSuccessToast('저장 완료', '테이스팅이 저장되었습니다');

@@ -52,12 +52,30 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
     try {
       setLoading(true);
       
-      
       const realmService = RealmService.getInstance();
+      
+      // Realm 초기화 확인
+      if (!realmService.isInitialized) {
+        console.log('⚠️ Realm not initialized in HistoryScreen, attempting to initialize...');
+        try {
+          await realmService.initialize();
+        } catch (initError) {
+          console.error('Failed to initialize Realm:', initError);
+        }
+      }
+      
       const tastings = realmService.getTastingRecords({ isDeleted: false });
-      setAllTastings(Array.from(tastings));
+      const tastingsArray = Array.from(tastings);
+      
+      console.log('📊 HistoryScreen data loaded:', {
+        isInitialized: realmService.isInitialized,
+        recordsCount: tastingsArray.length,
+        firstRecord: tastingsArray[0]?.coffeeInfo?.coffeeName
+      });
+      
+      setAllTastings(tastingsArray);
     } catch (error) {
-      // console.error('Failed to load data:', error);
+      console.error('Failed to load data:', error);
     } finally {
       setLoading(false);
     }

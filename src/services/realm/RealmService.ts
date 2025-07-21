@@ -10,6 +10,7 @@ import {
   ISensoryAttribute,
 } from './schemas';
 import { SelectedFlavors, SensoryAttributes } from '../../stores/tastingStore';
+import { RealmLogger, PerformanceTimer } from '../../utils/logger';
 
 class RealmService {
   private static instance: RealmService;
@@ -31,9 +32,16 @@ class RealmService {
 
   async initialize(): Promise<void> {
     try {
-      if (this.realm && !this.realm.isClosed) {
-        // console.log('Realm already initialized');
+      // If already initialized and realm is open, just return
+      if (this.initialized && this.realm && !this.realm.isClosed) {
+        RealmLogger.info('Realm already initialized and open');
         return;
+      }
+
+      // If realm exists but is closed, clean up
+      if (this.realm && this.realm.isClosed) {
+        this.realm = null;
+        this.initialized = false;
       }
 
       this.realm = await Realm.open({
@@ -50,7 +58,13 @@ class RealmService {
           const shouldCompact = totalSize > twentyFiveMB && usedSize / totalSize < 0.5;
           
           if (shouldCompact) {
-            // console.log(`Realm compaction triggered - Total: ${(totalSize/1024/1024).toFixed(2)}MB, Used: ${(usedSize/1024/1024).toFixed(2)}MB`);
+            RealmLogger.info('Realm compaction triggered', {
+              data: {
+                totalSizeMB: (totalSize/1024/1024).toFixed(2),
+                usedSizeMB: (usedSize/1024/1024).toFixed(2),
+                usagePercent: ((usedSize/totalSize) * 100).toFixed(1)
+              }
+            });
           }
           
           return shouldCompact;
@@ -58,16 +72,25 @@ class RealmService {
       });
       
       this.initialized = true;
-      // console.log('Realm initialized successfully');
-      // console.log('Realm path:', this.realm.path);
-    } catch (error) {
-      // console.error('Failed to initialize Realm:', error);
+      RealmLogger.info('Realm initialized successfully', {
+        data: { path: this.realm.path }
+      });
+    } catch (error: any) {
+      // Check if it's the "already opened" error
+      if (error.message?.includes('already opened on current thread') || 
+          error.message?.includes('already opened')) {
+        this.initialized = true;
+        console.log('✅ Realm already opened on current thread, marking as initialized');
+        return;
+      }
+      
+      console.error('❌ Failed to initialize Realm:', error);
       throw new Error(`Realm initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
   getRealm(): Realm {
-    if (!this.realm) {
+    if (!this.realm || this.realm.isClosed) {
       throw new Error('Realm not initialized. Call initialize() first.');
     }
     return this.realm;
@@ -506,7 +529,12 @@ class RealmService {
   }
 
   // Tasting Record Methods
-  createTastingRecord(data: Omit<ITastingRecord, 'id' | 'createdAt' | 'updatedAt'>): ITastingRecord {
+  async createTastingRecord(data: Omit<ITastingRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<ITastingRecord> {
+    // Ensure Realm is initialized
+    if (!this.isInitialized) {
+      await this.initialize();
+    }
+    
     const realm = this.getRealm();
     let record: ITastingRecord;
 
@@ -528,8 +556,9 @@ class RealmService {
     roastery?: string;
     minScore?: number;
   }): Realm.Results<ITastingRecord> {
-    const realm = this.getRealm();
-    let query = realm.objects<ITastingRecord>('TastingRecord');
+    try {
+      const realm = this.getRealm();
+      let query = realm.objects<ITastingRecord>('TastingRecord');
 
     if (filter) {
       const conditions: string[] = [];
@@ -553,6 +582,13 @@ class RealmService {
     }
 
     return query.sorted('createdAt', true);
+    } catch (error) {
+      RealmLogger.error('Failed to get tasting records', {
+        error: error instanceof Error ? error : new Error(String(error))
+      });
+      // Return empty results on error
+      return [] as any;
+    }
   }
 
   getTastingRecordById(id: string): ITastingRecord | null {

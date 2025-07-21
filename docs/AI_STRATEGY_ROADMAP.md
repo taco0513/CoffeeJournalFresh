@@ -1,7 +1,7 @@
-# Coffee Journal AI Strategy Roadmap
+# Coffee Journal AI Strategy Roadmap (Mode-Based Development)
 
 ## Executive Summary
-Coffee Journal은 단계적 AI 도입을 통해 정직하고 지속가능한 개인화 서비스를 제공합니다. MVP에서는 AI 용어를 제거하고 데이터 기반 통계에 집중하며, 충분한 데이터 확보 후 진정한 AI 기능을 도입합니다.
+Coffee Journal은 단계적 AI 도입을 통해 정직하고 지속가능한 개인화 서비스를 제공합니다. MVP에서는 🍃 Cafe Mode에 집중하여 AI 용어를 제거하고 데이터 기반 통계에 집중하며, Phase 2에서 🔬 Lab Mode와 함께 진정한 AI 기능을 도입합니다.
 
 ## 🎯 핵심 원칙
 
@@ -12,8 +12,8 @@ Coffee Journal은 단계적 AI 도입을 통해 정직하고 지속가능한 개
 
 ## 📊 3단계 AI 전략
 
-### Phase 1: Foundation (MVP ~ 6개월)
-**목표**: 데이터 수집 기반 구축 및 기본 통계 제공
+### Phase 1: Foundation 🍃 Cafe Mode (MVP ~ 6개월)
+**목표**: 데이터 수집 기반 구축 및 기본 통계 제공 (Cafe Mode 집중)
 
 #### 주요 기능
 ```typescript
@@ -38,8 +38,8 @@ interface BasicAnalytics {
 "더 많은 기록이 쌓이면 더 정확해져요"
 ```
 
-### Phase 2: Smart Patterns (6개월 ~ 1년)
-**목표**: 패턴 인식 및 기본 추천 시스템
+### Phase 2: Smart Patterns 🔬 Lab Mode (6개월 ~ 1년)  
+**목표**: 패턴 인식 및 기본 추천 시스템 + Lab Mode 전문가 기능 도입
 
 #### 필요 조건
 - 사용자 1,000명 이상
@@ -49,10 +49,16 @@ interface BasicAnalytics {
 #### 주요 기능
 ```typescript
 interface PatternRecognition {
+  // Cafe Mode 고도화
   tasteEvolution: TrendAnalysis;        // 취향 변화 추세
   seasonalPreferences: SeasonalPattern; // 계절별 선호도
   similarUserGroups: ClusteringResult;  // 비슷한 취향 그룹
   basicRecommendations: Coffee[];       // 기본 추천
+  
+  // Lab Mode 전문가 기능
+  blindTastingMode: BlindTastingConfig; // 블라인드 테이스팅
+  extractionLab: ExtractionAnalysis;    // 추출 실험실
+  professionalAnalysis: AdvancedMetrics; // 전문가급 분석
 }
 ```
 

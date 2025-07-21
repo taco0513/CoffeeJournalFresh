@@ -143,9 +143,9 @@ export async function addCoffeeToCatalog(coffee: Omit<CoffeeSearchResult, 'id' |
     // Get current user
     const { data: { user } } = await supabase.auth.getUser();
     
-    // Check if user is authenticated (not guest mode)
+    // Check if user is authenticated
     if (!user) {
-      // In guest mode or not authenticated
+      // Not authenticated
       throw new Error('로그인이 필요합니다. 커피를 추가하려면 회원가입 또는 로그인해주세요.');
     }
 

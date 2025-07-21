@@ -15,6 +15,9 @@ import { useUserStore } from '../stores/useUserStore';
 import RealmService from '../services/realm/RealmService';
 import { HIGConstants, HIGColors, commonButtonStyles } from '../styles/common';
 import AuthService from '../services/supabase/auth';
+import { AchievementSummaryCard } from '../components/achievements/AchievementSummaryCard';
+import { useAchievements } from '../hooks/useAchievements';
+import { useDevStore } from '../stores/useDevStore';
 
 // Tab navigation type definition
 type MainTabParamList = {
@@ -26,9 +29,18 @@ type MainTabParamList = {
 
 type ProfileScreenNavigationProp = BottomTabNavigationProp<MainTabParamList, 'Profile'>;
 
+interface MenuItem {
+  title: string;
+  subtitle?: string;
+  icon: string;
+  onPress: () => void;
+}
+
 const ProfileScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { currentUser, signOut } = useUserStore();
+  const { achievements, stats: achievementStats, getNextAchievement, isLoading: isLoadingAchievements, error: achievementError } = useAchievements();
+  const { isDeveloperMode, toggleDeveloperMode } = useDevStore();
   const [stats, setStats] = useState({
     joinedDaysAgo: 0,
     achievementCount: 0,
@@ -99,38 +111,50 @@ const ProfileScreen = () => {
 
 
   const menuItems = [
-    // Feature Backlog - Photo Gallery
-    // {
-    //   title: '사진 갤러리',
-    //   icon: '📸',
-    //   onPress: () => {
-    //     navigation.navigate('PhotoGallery' as never);
-    //   }
-    // },
-    // Feature Backlog - Settings
-    // {
-    //   title: '설정',
-    //   icon: '⚙️',
-    //   onPress: () => {
-    //     // 설정 화면으로 이동 (추후 구현)
-    //     Alert.alert('설정', '설정 화면은 추후 구현 예정입니다.');
-    //   }
-    // },
     {
-      title: '개발자 모드',
+      title: '설정',
+      subtitle: '앱 설정 및 환경설정',
       icon: '⚙️',
+      onPress: () => {
+        Alert.alert('설정', '설정 화면은 추후 구현 예정입니다.');
+      }
+    },
+    isDeveloperMode ? {
+      title: '개발자 모드',
+      subtitle: '디버깅 및 개발 도구',
+      icon: '🔧',
       onPress: () => {
         navigation.navigate('DeveloperScreen' as never);
       }
+    } : {
+      title: '개발자 모드 활성화',
+      subtitle: '개발자 도구 사용하기',
+      icon: '🔓',
+      onPress: () => {
+        Alert.alert(
+          '개발자 모드 활성화',
+          '개발자 모드를 활성화하시겠습니까?',
+          [
+            { text: '취소', style: 'cancel' },
+            { 
+              text: '활성화', 
+              onPress: () => {
+                toggleDeveloperMode();
+                Alert.alert('완료', '개발자 모드가 활성화되었습니다. 상단의 DEV 배지를 탭하여 비활성화할 수 있습니다.');
+              }
+            }
+          ]
+        );
+      }
     },
-    // Feature Backlog - Help
-    // {
-    //   title: '도움말',
-    //   icon: '❓',
-    //   onPress: () => {
-    //     Alert.alert('도움말', '도움말 화면은 추후 구현 예정입니다.');
-    //   }
-    // },
+    {
+      title: '도움말',
+      subtitle: '앱 사용법 및 FAQ',
+      icon: '❓',
+      onPress: () => {
+        Alert.alert('도움말', '도움말 화면은 추후 구현 예정입니다.');
+      }
+    },
   ];
 
   return (
@@ -161,27 +185,86 @@ const ProfileScreen = () => {
           <Text style={styles.email}>{currentUser?.email || 'user@example.com'}</Text>
         </View>
 
-        {/* 빠른 메뉴 */}
-        <View style={styles.quickMenuContainer}>
+        {/* 나의 업적 섹션 */}
+        <View style={styles.achievementSection}>
+          <Text style={styles.sectionTitle}>나의 업적</Text>
+          {achievementError ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>업적 시스템을 불러올 수 없습니다</Text>
+              <Text style={styles.errorSubtext}>{achievementError}</Text>
+            </View>
+          ) : isLoadingAchievements ? (
+            <View style={styles.loadingContainer}>
+              <Text style={styles.loadingText}>업적 정보 로딩 중...</Text>
+            </View>
+          ) : (
+            <>
+              {/* 업적 통계 카드들 */}
+              <View style={styles.achievementStatsGrid}>
+                <TouchableOpacity 
+                  style={styles.achievementStatCard}
+                  onPress={() => navigation.navigate('AchievementGallery' as never)}
+                >
+                  <Text style={styles.achievementStatNumber}>{achievementStats.unlockedAchievements}</Text>
+                  <Text style={styles.achievementStatLabel}>달성한 업적</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={styles.achievementStatCard}
+                  onPress={() => navigation.navigate('AchievementGallery' as never)}
+                >
+                  <Text style={styles.achievementStatNumber}>{Math.round((achievementStats.unlockedAchievements / Math.max(achievementStats.totalAchievements, 1)) * 100)}%</Text>
+                  <Text style={styles.achievementStatLabel}>완료율</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={styles.achievementStatCard}
+                  onPress={() => navigation.navigate('AchievementGallery' as never)}
+                >
+                  <Text style={styles.achievementStatNumber}>{achievementStats.totalPoints}</Text>
+                  <Text style={styles.achievementStatLabel}>포인트</Text>
+                </TouchableOpacity>
+              </View>
 
-          <TouchableOpacity 
-            style={styles.quickMenuItem}
-            onPress={() => Alert.alert('준비 중', '곧 추가될 예정입니다!')}
-          >
-            <View style={styles.quickMenuIconContainer}>
-              <Text style={styles.quickMenuIcon}>🏆</Text>
-            </View>
-            <View style={styles.quickMenuContent}>
-              <Text style={styles.quickMenuTitle}>나의 업적</Text>
-              <Text style={styles.quickMenuDescription}>획득한 배지와 마일스톤</Text>
-            </View>
-            <Text style={styles.quickMenuArrow}>→</Text>
-          </TouchableOpacity>
+              {/* 다음 목표 */}
+              {getNextAchievement() && (
+                <TouchableOpacity 
+                  style={styles.nextGoalCard}
+                  onPress={() => navigation.navigate('AchievementGallery' as never)}
+                >
+                  <View style={styles.nextGoalHeader}>
+                    <Text style={styles.nextGoalIcon}>🎯</Text>
+                    <Text style={styles.nextGoalTitle}>다음 목표</Text>
+                    <Text style={styles.nextGoalArrow}>›</Text>
+                  </View>
+                  <View style={styles.nextGoalContent}>
+                    <Text style={styles.nextGoalIcon}>{getNextAchievement()?.icon}</Text>
+                    <View style={styles.nextGoalInfo}>
+                      <Text style={styles.nextGoalName}>{getNextAchievement()?.title}</Text>
+                      <Text style={styles.nextGoalProgress}>
+                        {Math.round((getNextAchievement()?.progress || 0) * 100)}% 완료
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )}
+
+              {/* 전체 업적 보기 버튼 */}
+              <TouchableOpacity 
+                style={styles.viewAllAchievementsButton}
+                onPress={() => navigation.navigate('AchievementGallery' as never)}
+              >
+                <Text style={styles.viewAllAchievementsText}>전체 업적 보기</Text>
+                <Text style={styles.viewAllAchievementsArrow}>›</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
 
 
         {/* 메뉴 아이템 */}
         <View style={styles.menuContainer}>
+          <Text style={styles.sectionTitle}>앱 기능</Text>
           {menuItems.map((item, index) => (
             <TouchableOpacity
               key={index}
@@ -191,7 +274,12 @@ const ProfileScreen = () => {
               <View style={styles.menuIconContainer}>
                 <Text style={styles.menuIcon}>{item.icon}</Text>
               </View>
-              <Text style={styles.menuTitle}>{item.title}</Text>
+              <View style={styles.menuContent}>
+                <Text style={styles.menuTitle}>{item.title}</Text>
+                {item.subtitle && (
+                  <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
+                )}
+              </View>
               <Text style={styles.menuArrow}>›</Text>
             </TouchableOpacity>
           ))}
@@ -341,10 +429,116 @@ const styles = StyleSheet.create({
     color: HIGColors.label,
   },
   
-  // Quick Menu Styles
-  quickMenuContainer: {
+  // Achievement Styles
+  achievementSection: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_LG,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  achievementStatsGrid: {
+    flexDirection: 'row',
+    gap: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_LG,
+  },
+  achievementStatCard: {
+    flex: 1,
+    backgroundColor: HIGColors.white,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    padding: HIGConstants.SPACING_MD,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray6,
+    shadowColor: HIGColors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  achievementStatNumber: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: HIGColors.systemBlue,
+    marginBottom: 4,
+  },
+  achievementStatLabel: {
+    fontSize: 12,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+  },
+  nextGoalCard: {
+    backgroundColor: HIGColors.white,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    padding: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_MD,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray6,
+    shadowColor: HIGColors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  nextGoalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  nextGoalIcon: {
+    fontSize: 20,
+    marginRight: HIGConstants.SPACING_SM,
+  },
+  nextGoalTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  nextGoalArrow: {
+    fontSize: 20,
+    color: HIGColors.systemGray4,
+  },
+  nextGoalContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nextGoalInfo: {
+    flex: 1,
+    marginLeft: HIGConstants.SPACING_MD,
+  },
+  nextGoalName: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: HIGColors.label,
+    marginBottom: 2,
+  },
+  nextGoalProgress: {
+    fontSize: 13,
+    color: HIGColors.systemBlue,
+    fontWeight: '500',
+  },
+  viewAllAchievementsButton: {
+    backgroundColor: HIGColors.systemBlue,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    padding: HIGConstants.SPACING_MD,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  viewAllAchievementsText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.white,
+    marginRight: HIGConstants.SPACING_SM,
+  },
+  viewAllAchievementsArrow: {
+    fontSize: 16,
+    color: HIGColors.white,
+    fontWeight: '300',
   },
   quickMenuItem: {
     flexDirection: 'row',
@@ -398,27 +592,42 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    paddingVertical: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_LG,
     paddingHorizontal: HIGConstants.SPACING_LG,
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    marginBottom: HIGConstants.SPACING_SM,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    marginBottom: HIGConstants.SPACING_MD,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   menuIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: HIGColors.systemGray6,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: HIGConstants.SPACING_MD,
   },
   menuIcon: {
-    fontSize: 20,
+    fontSize: 22,
+  },
+  menuContent: {
+    flex: 1,
   },
   menuTitle: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 17,
+    fontWeight: '600',
     color: HIGColors.label,
+    marginBottom: 2,
+  },
+  menuSubtitle: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
   },
   menuArrow: {
     fontSize: 20,
@@ -435,6 +644,37 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  errorContainer: {
+    backgroundColor: HIGColors.white,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    padding: HIGConstants.SPACING_LG,
+    borderWidth: 1,
+    borderColor: HIGColors.systemRed,
+  },
+  errorText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.systemRed,
+    textAlign: 'center',
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  errorSubtext: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+  },
+  loadingContainer: {
+    backgroundColor: HIGColors.white,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    padding: HIGConstants.SPACING_LG,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray6,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
   },
 });
 

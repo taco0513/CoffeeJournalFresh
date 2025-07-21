@@ -23,6 +23,9 @@ export const HIGConstants = {
   BORDER_RADIUS: 8,
   BORDER_RADIUS_LARGE: 12,
   BORDER_RADIUS_LG: 16,
+  BORDER_RADIUS_SM: 4,
+  cornerRadiusSmall: 4,
+  cornerRadiusMedium: 12,
   
   // 간격
   SPACING_XS: 4,
@@ -36,11 +39,16 @@ export const HIGConstants = {
 const HIGColorsOriginal = {
   // System colors
   blue: '#007AFF',
+  systemBlue: '#007AFF',
   green: '#2E7D32',
+  systemGreen: '#34C759',
   red: '#FF3B30',
+  systemRed: '#FF3B30',
   orange: '#FF9500',
+  systemOrange: '#FF9500',
   yellow: '#FFCC00',
   purple: '#AF52DE',
+  systemPurple: '#AF52DE',
   pink: '#FF2D92',
   
   // Gray scale
@@ -48,14 +56,26 @@ const HIGColorsOriginal = {
   gray2: '#AEAEB2',
   gray3: '#C7C7CC',
   gray4: '#D1D1D6',
+  systemGray4: '#D1D1D6',
   gray5: '#E5E5EA',
+  systemGray5: '#E5E5EA',
   gray6: '#F2F2F7',
+  systemGray6: '#F2F2F7',
   
   // Additional colors
   white: '#FFFFFF',
   black: '#000000',
   accent: '#007AFF',
   brown: '#8B4513',
+  systemBrown: '#A2845E', // Coffee-themed brown color
+  
+  // Semantic colors
+  primary: '#007AFF',
+  success: '#34C759',
+  warning: '#FF9500', 
+  info: '#007AFF',
+  placeholderText: '#8E8E93',
+  disabled: '#8E8E93',
   
   // Label colors
   label: '#000000',

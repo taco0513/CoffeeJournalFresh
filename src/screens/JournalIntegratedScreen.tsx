@@ -12,14 +12,23 @@ import { useTranslation } from 'react-i18next';
 import { HIGConstants, HIGColors } from '../styles/common';
 import HistoryScreen from './HistoryScreen';
 import StatsScreen from './StatsScreen';
+import StatusBadge from '../components/StatusBadge';
 
 const { width } = Dimensions.get('window');
 
 type TabType = 'history' | 'stats';
 
-export default function JournalIntegratedScreen() {
+interface JournalIntegratedScreenProps {
+  route?: {
+    params?: {
+      initialTab?: TabType;
+    };
+  };
+}
+
+export default function JournalIntegratedScreen({ route }: JournalIntegratedScreenProps) {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<TabType>('history');
+  const [activeTab, setActiveTab] = useState<TabType>(route?.params?.initialTab || 'history');
 
   const renderTabButton = (tab: TabType, label: string) => {
     const isActive = activeTab === tab;
@@ -57,6 +66,7 @@ export default function JournalIntegratedScreen() {
             <Text style={styles.betaText}>BETA</Text>
           </View>
         </View>
+        <StatusBadge />
       </View>
 
       {/* Tab Navigation */}

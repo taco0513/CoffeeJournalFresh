@@ -1,6 +1,10 @@
-# 📚 Coffee Tasting Journey - 문서 가이드
+# 📚 Coffee Tasting Journey - 문서 가이드 (Mode-Based Development)
 
 이 폴더에는 Coffee Tasting Journey 프로젝트의 모든 상세 문서가 포함되어 있습니다.
+
+## 🍃 Mode Development Strategy
+- **Phase 1 (Current)**: 🍃 Cafe Mode MVP - 일반 커피 애호가 대상
+- **Phase 2**: 🔬 Lab Mode 추가 - 전문가/바리스타 대상
 
 ## 📋 문서 구조
 
@@ -11,8 +15,8 @@
 
 ### 04-06: 제품 기획
 - **04-product-architecture.md** - 제품 아키텍처 개요
-- **05-cafe-mode.md** - Café 모드 상세 기획
-- **06-lab-mode.md** - Lab 모드 상세 기획
+- **05-cafe-mode.md** - 🍃 Café 모드 상세 기획 (MVP Phase 1)
+- **06-lab-mode.md** - 🔬 Lab 모드 상세 기획 (Phase 2)
 
 ### 07: AI 및 데이터 분석
 - **07-ai-engine-data-analysis-01-nlp-coffee-language.md** - NLP 커피 언어 처리

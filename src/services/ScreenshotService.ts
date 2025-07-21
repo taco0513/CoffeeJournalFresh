@@ -10,7 +10,7 @@ export class ScreenshotService {
    * @returns Promise<string | null> - file path or null if failed
    */
   static async captureScreen(
-    viewShotRef: React.RefObject<ViewShot>,
+    viewShotRef: React.RefObject<ViewShot | null>,
     filename?: string
   ): Promise<string | null> {
     try {
@@ -58,7 +58,7 @@ export class ScreenshotService {
    * @param prefix Filename prefix
    */
   static async captureMultiple(
-    viewShotRef: React.RefObject<ViewShot>,
+    viewShotRef: React.RefObject<ViewShot | null>,
     count: number = 5,
     delay: number = 1000,
     prefix: string = 'auto'

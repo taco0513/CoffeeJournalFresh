@@ -2,6 +2,7 @@ import { supabase } from './client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ErrorHandler } from '../../utils/errorHandler';
 import NetworkUtils from '../../utils/NetworkUtils';
+import { AuthLogger, logError, PerformanceTimer } from '../../utils/logger';
 
 const AUTH_STORAGE_KEY = '@coffee_journal_auth';
 
@@ -46,7 +47,12 @@ class AuthService {
         {
           maxRetries: 2,
           onRetry: (attempt, error) => {
-            console.log(`[Auth] Retrying sign up (attempt ${attempt}):`, error.message);
+            AuthLogger.warn(`Retrying sign up (attempt ${attempt})`, {
+              function: 'signUp',
+              error,
+              attempt,
+              email
+            });
           }
         }
       );
