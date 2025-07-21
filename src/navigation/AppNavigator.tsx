@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -7,6 +7,7 @@ import AuthService from '../services/supabase/auth';
 import { useUserStore } from '../stores/useUserStore';
 import { HIGColors } from '../styles/common';
 import StatusBadge from '../components/StatusBadge';
+import ScreenContextService from '../services/ScreenContextService';
 
 // 화면 import
 import HomeScreen from '../screens/HomeScreen';
@@ -132,6 +133,7 @@ function TastingFlow() {
 function HistoryStack() {
   return (
     <Stack.Navigator
+      initialRouteName="HistoryMain"
       screenOptions={{
         headerShown: true,
         headerStyle: {
@@ -355,6 +357,12 @@ function MainTabs() {
             </View>
           ),
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            // Reset the Journal stack to HistoryMain when tab is pressed
+            navigation.navigate('Journal', { screen: 'HistoryMain' });
+          },
+        })}
       />
       {/* Feature Backlog - Community Tab */}
       {/* <Tab.Screen 
@@ -403,6 +411,7 @@ function AuthStack() {
 function AppNavigator() {
   // Skip authentication entirely - go directly to main app
   const { loadStoredUser } = useUserStore();
+  const navigationRef = useRef<any>(null);
   
   useEffect(() => {
     // Initialize app without authentication check
@@ -413,6 +422,11 @@ function AppNavigator() {
     try {
       // Load any stored user data if available
       await loadStoredUser();
+      
+      // Set navigation reference for ScreenContextService
+      if (navigationRef.current) {
+        ScreenContextService.setNavigationRef(navigationRef.current);
+      }
     } catch (error) {
       // Continue without stored data
     }
@@ -422,7 +436,13 @@ function AppNavigator() {
     <RealmProvider>
       <AchievementProvider>
         <FeedbackProvider>
-          <NavigationContainer>
+          <NavigationContainer 
+            ref={navigationRef}
+            onReady={() => {
+              // Set navigation reference when ready
+              ScreenContextService.setNavigationRef(navigationRef.current);
+            }}
+          >
           <Stack.Navigator 
             initialRouteName="MainTabs"
             screenOptions={{
