@@ -50,15 +50,16 @@ export default function SearchScreen() {
       const realmService = RealmService.getInstance();
       
       // Get all tastings
-      const tastings = realmService.getTastingRecords({ isDeleted: false });
-      setAllTastings(tastings);
+      const tastings = await realmService.getTastingRecords({ isDeleted: false });
+      const tastingsArray = Array.from(tastings);
+      setAllTastings(tastingsArray);
       
       // Extract unique values for filters
       const roasteries = new Set<string>();
       const cafes = new Set<string>();
       const flavors = new Set<string>();
       
-      tastings.forEach(tasting => {
+      tastingsArray.forEach(tasting => {
         if (tasting.roastery) roasteries.add(tasting.roastery);
         if (tasting.cafeName) cafes.add(tasting.cafeName);
         tasting.flavorNotes.forEach(note => {
