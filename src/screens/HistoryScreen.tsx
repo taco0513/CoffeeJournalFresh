@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   SectionList,
   ScrollView,
+  DeviceEventEmitter,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import RealmService from '../services/realm/RealmService';
@@ -41,9 +42,22 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
     loadData();
   }, []);
 
+  // Removed route params dependency - using DeviceEventEmitter instead
+
+  // Listen for mock data creation events
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener('mockDataCreated', () => {
+      console.log('🔄 HistoryScreen: Mock data created event received');
+      loadData();
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   // Refresh data when screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
+      console.log('🔄 HistoryScreen: Focus triggered refresh');
       loadData();
     }, [])
   );
@@ -72,7 +86,15 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
       console.log('📊 HistoryScreen data loaded:', {
         isInitialized: realmService.isInitialized,
         recordsCount: tastingsArray.length,
-        firstRecord: tastingsArray[0]?.coffeeName
+        firstRecord: tastingsArray[0]?.coffeeName,
+        timestamp: new Date().toISOString(),
+        allRecords: tastingsArray.map(t => ({
+          id: t.id,
+          coffeeName: t.coffeeName,
+          roastery: t.roastery,
+          isDeleted: t.isDeleted,
+          createdAt: t.createdAt?.toISOString()
+        }))
       });
       
       setAllTastings(tastingsArray);

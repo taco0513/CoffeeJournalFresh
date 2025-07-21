@@ -184,13 +184,15 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                   ]}
                   onPress={() => {
                     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                    // Toggle expansion for flavor selection
+                    const newExpandedState = selectedSubCategory === sub.name ? null : sub.name;
+                    setSelectedSubCategory(newExpandedState);
+                  }}
+                  onLongPress={() => {
+                    // Long press to select/deselect subcategory
+                    onSelectSubcategory(category, sub.name);
                     if (isSelected) {
-                      // If subcategory is already selected as level2, remove it
-                      onSelectSubcategory(category, sub.name);
-                    } else {
-                      // Toggle expansion and select subcategory
-                      setSelectedSubCategory(selectedSubCategory === sub.name ? null : sub.name);
-                      onSelectSubcategory(category, sub.name);
+                      setSelectedSubCategory(null);
                     }
                   }}
                 >
@@ -203,7 +205,6 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                   >
                     {sub.koreanName}
                   </Text>
-                  {isSelected && <Text style={styles.checkmark}>✓</Text>}
                 </TouchableOpacity>
               );
             })}
@@ -252,7 +253,6 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                       >
                         {flavor.koreanName}
                       </Text>
-                      {isSelected && <Text style={styles.checkmark}>✓</Text>}
                     </TouchableOpacity>
                   );
                 })}
@@ -815,9 +815,9 @@ const styles = StyleSheet.create({
     borderColor: HIGColors.systemGray4,
   },
   subCategoryChipSelected: {
-    backgroundColor: HIGColors.systemBlue,
+    backgroundColor: HIGColors.systemGray5,
     borderColor: HIGColors.systemBlue,
-    borderWidth: 2,
+    borderWidth: 1.5,
   },
   subCategoryText: {
     fontSize: 14,
@@ -825,7 +825,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   subCategoryTextSelected: {
-    color: '#FFFFFF',
+    color: HIGColors.systemBlue,
     fontWeight: '600',
   },
   subCategoryChipFullySelected: {

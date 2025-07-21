@@ -8,8 +8,9 @@ import {
   SafeAreaView,
   Switch,
   Alert,
+  DeviceEventEmitter,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
 import { HIGConstants, HIGColors } from '../styles/common';
@@ -329,32 +330,88 @@ const DeveloperScreen = () => {
         ];
 
         // Save all mock data
-        for (const data of mockData) {
-          await realmService.saveTasting({
-            coffeeInfo: {
-              cafeName: data.cafeName,
-              roastery: data.roastery,
-              coffeeName: data.coffeeName,
-              origin: data.origin,
-              variety: data.variety,
-              altitude: data.altitude,
-              process: data.process,
-              temperature: data.temperature,
-            },
-            roasterNotes: data.roasterNotes,
-            selectedFlavors: data.flavorNotes,
-            sensoryAttributes: data.sensoryAttribute,
-            matchScore: {
-              total: data.matchScoreTotal,
-              flavorScore: data.matchScoreFlavor,
-              sensoryScore: data.matchScoreSensory,
+        console.log('🎯 Starting mock data creation...');
+        let successCount = 0;
+        
+        for (const [index, data] of mockData.entries()) {
+          try {
+            console.log(`🔄 Creating tasting ${index + 1}/${mockData.length}: ${data.coffeeName}`);
+            
+            const tastingData = {
+              coffeeInfo: {
+                cafeName: data.cafeName,
+                roastery: data.roastery,
+                coffeeName: data.coffeeName,
+                origin: data.origin,
+                variety: data.variety,
+                altitude: data.altitude,
+                process: data.process,
+                temperature: data.temperature,
+              },
+              roasterNotes: data.roasterNotes,
+              selectedFlavors: data.flavorNotes,
+              sensoryAttributes: data.sensoryAttribute,
+              matchScore: {
+                total: data.matchScoreTotal,
+                flavorScore: data.matchScoreFlavor,
+                sensoryScore: data.matchScoreSensory,
+              }
+            };
+            
+            console.log('📋 Tasting data structure:', JSON.stringify(tastingData, null, 2));
+            
+            const result = await realmService.saveTasting(tastingData);
+            
+            if (result && result.id) {
+              successCount++;
+              console.log(`✅ Successfully created: ${data.coffeeName} (ID: ${result.id})`);
+            } else {
+              console.log(`⚠️ No result returned for: ${data.coffeeName}`);
             }
-          });
+          } catch (error) {
+            console.error(`❌ Failed to create ${data.coffeeName}:`, error);
+          }
         }
+        
+        console.log(`📊 Mock data creation completed: ${successCount}/${mockData.length} successful`);
+        
+        // Verify data was created
+        const verifyTastings = await realmService.getTastingRecords({ isDeleted: false });
+        console.log(`🔍 Verification: ${Array.from(verifyTastings).length} total records after creation`);
         
         // Update UI
         await loadDataCount();
-        Alert.alert('완료', '5개의 테스트 데이터가 추가되었습니다.');
+        
+        // Emit refresh event for all screens listening
+        DeviceEventEmitter.emit('mockDataCreated');
+        
+        Alert.alert(
+          '완료', 
+          '5개의 테스트 데이터가 추가되었습니다. Journal로 이동하시겠습니까?',
+          [
+            {
+              text: '나중에',
+              style: 'cancel'
+            },
+            {
+              text: 'Journal로 이동',
+              onPress: () => {
+                // Force navigation to Journal tab and refresh
+                navigation.dispatch(
+                  CommonActions.navigate({
+                    name: 'MainTabs',
+                    params: {
+                      screen: 'Journal',
+                      params: {
+                        screen: 'HistoryMain'
+                      }
+                    }
+                  })
+                );
+              }
+            }
+          ]
+        );
         
       } else {
         // Delete all data
