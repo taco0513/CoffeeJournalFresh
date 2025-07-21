@@ -11,10 +11,45 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
   onToggle,
   onSelectFlavor,
   selectedPaths,
+  searchQuery,
 }) => {
-  const checkIsSelected = (level1: string, level2: string, level3: string): boolean => {
-    return selectedPaths.some(
-      p => p.level1 === level1 && p.level2 === level2 && p.level3 === level3
+  const checkIsSelected = (level1: string, level2: string, level3?: string): boolean => {
+    if (level3) {
+      // Check for exact level 3 match
+      return selectedPaths.some(
+        p => p.level1 === level1 && p.level2 === level2 && p.level3 === level3
+      );
+    } else {
+      // Check for level 2 match (subcategory)
+      return selectedPaths.some(
+        p => p.level1 === level1 && p.level2 === level2 && !p.level3
+      );
+    }
+  };
+
+  const renderHighlightedText = (text: string, isSelected: boolean = false) => {
+    if (!searchQuery || searchQuery.trim() === '') {
+      return text;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const textLower = text.toLowerCase();
+    const index = textLower.indexOf(query);
+
+    if (index === -1) {
+      return text;
+    }
+
+    const before = text.substring(0, index);
+    const match = text.substring(index, index + searchQuery.length);
+    const after = text.substring(index + searchQuery.length);
+
+    return (
+      <>
+        {before}
+        <Text style={[styles.highlightedText, isSelected && styles.highlightedTextSelected]}>{match}</Text>
+        {after}
+      </>
     );
   };
 
@@ -46,12 +81,30 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
             <View key={sub.name} style={styles.subcategory}>
               <Text style={styles.subcategoryTitle}>{sub.koreanName}</Text>
               <View style={styles.flavorGrid}>
+                {/* Subcategory chip */}
+                <TouchableOpacity
+                  style={[
+                    styles.subcategoryChip,
+                    checkIsSelected(category.category, sub.name) && styles.subcategoryChipSelected
+                  ]}
+                  onPress={() => onSelectFlavor(category.category, sub.name, '')}
+                >
+                  <Text style={[
+                    styles.subcategoryChipText,
+                    checkIsSelected(category.category, sub.name) && styles.subcategoryChipTextSelected
+                  ]}>
+                    {renderHighlightedText(`${sub.koreanName} 전체`, checkIsSelected(category.category, sub.name))}
+                  </Text>
+                </TouchableOpacity>
+                
+                {/* Individual flavor chips */}
                 {sub.flavors.map(flavor => (
                   <FlavorChip
                     key={flavor.name}
                     flavor={flavor}
                     isSelected={checkIsSelected(category.category, sub.name, flavor.name)}
                     onPress={() => onSelectFlavor(category.category, sub.name, flavor.name)}
+                    searchQuery={searchQuery}
                   />
                 ))}
               </View>
@@ -123,8 +176,38 @@ const styles = StyleSheet.create({
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
   },
+  subcategoryChip: {
+    backgroundColor: HIGColors.systemGray5,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderRadius: 8,
+    marginRight: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_SM,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray4,
+  },
+  subcategoryChipSelected: {
+    backgroundColor: HIGColors.systemBlue,
+    borderColor: HIGColors.systemBlue,
+  },
+  subcategoryChipText: {
+    fontSize: 14,
+    color: HIGColors.label,
+    fontWeight: '500',
+  },
+  subcategoryChipTextSelected: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
   flavorGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  highlightedText: {
+    backgroundColor: HIGColors.yellow,
+    fontWeight: '700',
+  },
+  highlightedTextSelected: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
 });

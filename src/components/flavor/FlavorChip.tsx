@@ -1,9 +1,35 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { FlavorChipProps } from '../../types/flavor';
 
-export const FlavorChip: React.FC<FlavorChipProps> = ({ flavor, isSelected, onPress }) => {
+export const FlavorChip: React.FC<FlavorChipProps> = ({ flavor, isSelected, onPress, searchQuery }) => {
+  const renderHighlightedText = (text: string) => {
+    if (!searchQuery || searchQuery.trim() === '') {
+      return <Text style={[styles.flavorText, isSelected && styles.flavorTextSelected]}>{text}</Text>;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const textLower = text.toLowerCase();
+    const index = textLower.indexOf(query);
+
+    if (index === -1) {
+      return <Text style={[styles.flavorText, isSelected && styles.flavorTextSelected]}>{text}</Text>;
+    }
+
+    const before = text.substring(0, index);
+    const match = text.substring(index, index + searchQuery.length);
+    const after = text.substring(index + searchQuery.length);
+
+    return (
+      <Text style={[styles.flavorText, isSelected && styles.flavorTextSelected]}>
+        {before}
+        <Text style={[styles.highlightedText, isSelected && styles.highlightedTextSelected]}>{match}</Text>
+        {after}
+      </Text>
+    );
+  };
+
   return (
     <TouchableOpacity
       style={[
@@ -12,12 +38,7 @@ export const FlavorChip: React.FC<FlavorChipProps> = ({ flavor, isSelected, onPr
       ]}
       onPress={onPress}
     >
-      <Text style={[
-        styles.flavorText,
-        isSelected && styles.flavorTextSelected
-      ]}>
-        {flavor.koreanName}
-      </Text>
+      {renderHighlightedText(flavor.koreanName)}
     </TouchableOpacity>
   );
 };
@@ -41,5 +62,14 @@ const styles = StyleSheet.create({
   flavorTextSelected: {
     color: '#FFFFFF',
     fontWeight: '500',
+  },
+  highlightedText: {
+    backgroundColor: HIGColors.yellow,
+    color: HIGColors.label,
+    fontWeight: '600',
+  },
+  highlightedTextSelected: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    color: '#FFFFFF',
   },
 });

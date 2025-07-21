@@ -11,7 +11,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { useTastingStore } from '../../stores/tastingStore';
-import { FlavorPath } from '../../stores/tastingStore';
+import { FlavorPath } from '../../types/tasting';
 
 // Debug component to track renders
 const RenderCounter = ({ name }: { name: string }) => {
@@ -52,7 +52,7 @@ export default function UnifiedFlavorScreenDebug() {
 
   const handleSelectFlavor = (path: FlavorPath) => {
     console.log('[UnifiedFlavorScreenDebug] handleSelectFlavor called with:', path);
-    const newPaths = selectedPaths.filter(p => 
+    const newPaths = selectedPaths.filter((p: FlavorPath) => 
       !(p.level1 === path.level1 && p.level2 === path.level2 && p.level3 === path.level3)
     );
     
@@ -142,7 +142,7 @@ export default function UnifiedFlavorScreenDebug() {
                 <View style={styles.flavorContainer}>
                   {testFlavors[category.id]?.map(flavor => {
                     const isSelected = selectedPaths.some(
-                      p => p.level1 === category.id && p.level3 === flavor
+                      (p: FlavorPath) => p.level1 === category.id && p.level3 === flavor
                     );
                     
                     return (

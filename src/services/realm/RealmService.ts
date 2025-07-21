@@ -9,7 +9,7 @@ import {
   IFlavorNote,
   ISensoryAttribute,
 } from './schemas';
-import { SelectedFlavors, SensoryAttributes } from '../../stores/tastingStore';
+import { SelectedFlavors, SensoryAttributes } from '../../types/tasting';
 import { RealmLogger, PerformanceTimer } from '../../utils/logger';
 
 class RealmService {

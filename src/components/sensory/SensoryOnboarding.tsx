@@ -27,9 +27,9 @@ const SensoryOnboarding: React.FC<SensoryOnboardingProps> = ({
 
   const onboardingSteps = [
     {
-      title: '🇰🇷 한국식 커피 감각평가',
+      title: '☕ 커피 감각평가',
       subtitle: '더 친숙한 표현으로 커피를 평가해보세요',
-      description: '전문가들이 사용하는 한국어 감각평가 표현을 초보자도 쉽게 사용할 수 있도록 준비했어요.',
+      description: '전문가들이 사용하는 한국어 감각평가 표현을 쉽게 사용할 수 있도록 준비했어요.',
       highlight: '',
     },
     {
@@ -42,7 +42,7 @@ const SensoryOnboarding: React.FC<SensoryOnboardingProps> = ({
       title: '🎯 카테고리별 최대 3개까지',
       subtitle: '각 영역에서 느껴지는 특징을 골라주세요',
       description: '산미, 단맛, 쓴맛, 바디, 애프터, 밸런스 각 카테고리에서 최대 3개까지 선택할 수 있어요.',
-      highlight: '⭐ 표시는 초보자에게 추천하는 표현이에요',
+      highlight: '',
     },
     {
       title: '☕ 정답은 없어요',

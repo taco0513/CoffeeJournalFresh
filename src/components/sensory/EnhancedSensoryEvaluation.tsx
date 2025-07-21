@@ -187,7 +187,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
             {/* Guide text for multi-selection */}
             <View style={styles.guideTextContainer}>
               <Text style={styles.guideText}>
-                ⭐ 표시는 초보자 추천 • 최대 3개까지 선택 가능
+                최대 3개까지 선택 가능
               </Text>
             </View>
             <View style={styles.expressionsGrid}>
@@ -221,9 +221,6 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                     ]}>
                       {expression.korean}
                     </Text>
-                    {expression.beginner && (
-                      <Text style={styles.beginnerStar}>⭐</Text>
-                    )}
                     {isExpressionSelected(category.id, expression.id) && (
                       <Text style={styles.checkmark}>✓</Text>
                     )}
@@ -233,7 +230,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
             </View>
             {expressions.length === 0 && (
               <Text style={styles.noExpressionsText}>
-                {beginnerMode ? '초보자용 표현이 준비 중입니다' : '표현이 없습니다'}
+                표현이 준비 중입니다
               </Text>
             )}
             {selectedCount === 0 && expressions.length > 0 && (
@@ -262,7 +259,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        <Text style={styles.title}>한국식 감각 평가</Text>
+        <Text style={styles.title}>감각 평가</Text>
         <Text style={styles.subtitle}>
           커피에서 느껴지는 특징을 선택해주세요
         </Text>
@@ -316,14 +313,6 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
         {Object.values(koreanSensoryData).map(renderCategory)}
       </View>
 
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          {beginnerMode
-            ? '🌟 초보자에게 권장되는 표현들이 우선 표시됩니다'
-            : '🔍 모든 전문 표현들이 표시됩니다'
-          }
-        </Text>
-      </View>
     </ScrollView>
   );
 };
@@ -593,10 +582,6 @@ const styles = StyleSheet.create({
   expressionButtonTextDisabled: {
     color: '#BDBDBD',
   },
-  beginnerStar: {
-    fontSize: 12,
-    marginLeft: 4,
-  },
   checkmark: {
     fontSize: 12,
     color: '#FFFFFF',
@@ -625,17 +610,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // Footer
-  footer: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 14,
-    color: '#6C757D',
-    textAlign: 'center',
-    lineHeight: 20,
-  },
   noExpressionsText: {
     textAlign: 'center',
     color: '#6C757D',

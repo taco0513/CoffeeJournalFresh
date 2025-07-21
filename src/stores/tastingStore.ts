@@ -2,42 +2,13 @@ import {create} from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RealmService from '../services/realm/RealmService';
 import { AchievementSystem, UserAction } from '../services/AchievementSystem';
-
-export interface FlavorPath {
-  level1?: string;
-  level2?: string;
-  level3?: string;
-}
-
-export interface SyncStatus {
-  isOnline: boolean;
-  isSyncing: boolean;
-  lastSyncTime: Date | null;
-  pendingUploads: number;
-  error: string | null;
-}
-
-export interface SelectedFlavors extends FlavorPath {}
-
-export interface SensoryAttributes {
-  body: number;
-  acidity: number;
-  sweetness: number;
-  finish: number;
-  mouthfeel: string;
-  bitterness?: number;
-  balance?: number;
-}
-
-export interface SelectedSensoryExpression {
-  categoryId: string;
-  expressionId: string;
-  korean: string;
-  english: string;
-  emoji: string;
-  intensity: number;
-  selected: boolean;
-}
+import { 
+  FlavorPath, 
+  SyncStatus, 
+  SelectedFlavors, 
+  SensoryAttributes, 
+  SelectedSensoryExpression 
+} from '../types/tasting';
 
 interface TastingState {
   currentTasting: any;

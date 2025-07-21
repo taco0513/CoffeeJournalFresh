@@ -25,14 +25,15 @@ export interface TransformedCategory {
   subcategories: TransformedSubcategory[];
 }
 
-// Import FlavorPath from store
-import type { FlavorPath } from '../stores/tastingStore';
+// Import FlavorPath from tasting types
+import type { FlavorPath } from './tasting';
 
 // Props interfaces for extracted components
 export interface FlavorChipProps {
   flavor: TransformedFlavor;
   isSelected: boolean;
   onPress: () => void;
+  searchQuery?: string;
 }
 
 export interface FlavorCategoryProps {
@@ -42,6 +43,7 @@ export interface FlavorCategoryProps {
   onToggle: () => void;
   onSelectFlavor: (level1: string, level2: string, level3: string) => void;
   selectedPaths: FlavorPath[];
+  searchQuery?: string;
 }
 
 export interface SelectedFlavorsProps {
