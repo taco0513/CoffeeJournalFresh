@@ -26,10 +26,18 @@ React Native 0.80 coffee tasting app - 개인의 커피 취향을 발견하고 �
 - **기본 통계**: "나의 커피 기록", "발견한 로스터리" (matches Home screen)
 - **30일 인사이트**: "많이 마신 원산지", "많이 느낀 향미", "총 테이스팅" (30-day focused)
 
-## MVP Focus
+## MVP Focus (Updated 2025-07-22)
 - **Target**: 일반 커피 애호가 (Cafe Mode)
-- **Core**: 기본 테이스팅, 향미 선택, 개인 기록, 성취 시스템
+- **Core Features**: 
+  - ✅ 기본 테이스팅 워크플로우 (커피 정보 → 향미 선택 → 감각 평가 → 개인 노트 → 결과)
+  - ✅ Korean 감각 평가 시스템 (44개 표현, CATA 방법론)
+  - ✅ 기본 통계 및 기록 관리
+  - ✅ 성취 시스템 (백엔드 구현 완료)
+  - ✅ 사진 관리 시스템 (PhotoGallery, PhotoViewer, PhotoService 유지)
+  - ✅ 관리자 대시보드 (운영 필수 기능)
+  - ✅ 고급 분석/시각화 (personalTaste 컴포넌트 유지)
 - **UI**: 3-tab navigation (Home, Journal, Profile)
+- **Removed from MVP**: AI 코칭, OCR/사진 스캔, 소셜 기능, 국제화, 데이터 내보내기
 
 ## Key Architecture
 ```
@@ -103,14 +111,24 @@ bridgeDebugger.printRecentCalls()  # Debug bridge errors
 - ✅ **Feature Backlog Migration** (2025-07-22): Moved non-MVP features to organized backlog (182→164 files, 10% reduction)
 - ✅ **Metro Bundler Fix** (2025-07-22): Fixed script URL error, Metro running on correct port 8081
 - ✅ **Bridge Error Resolution** (2025-07-22): Fixed TastingFlowBridge onRequestCategoryPreferencing error with enhanced bridge debugger
+- ✅ **MVP Documentation Complete** (2025-07-22): Created MVP_STATUS.md with 95% completion status
+- ✅ **Navigation Fixes** (2025-07-22): Fixed all OCR screen references, clean iOS build successful
 
-## Next Steps
+## Next Steps (MVP Ready)
 1. ✅ **Korean Sensory Evaluation** - COMPLETED (2025-07-22)
-2. **Result Visualization** - Display selected Korean expressions in results screen
-3. Configure Google OAuth credentials  
-4. **Achievement UI Implementation** - Ready for MVP (backend 90% complete)
-5. Beta test with real users
-6. A/B testing infrastructure
+2. ✅ **Feature Backlog Migration** - COMPLETED (2025-07-22) 
+3. ✅ **MVP Cleanup** - COMPLETED (182→164 files, 10% reduction)
+4. **MVP Launch Ready Tasks**:
+   - Configure Google OAuth credentials (optional - Apple Sign-In works)
+   - Achievement UI Implementation (backend ready)
+   - Result Visualization improvements
+   - Beta testing with real users
+   - Basic performance monitoring
+
+## Post-MVP Roadmap (Feature Backlog)
+- **Phase 2**: AI 코칭 시스템 (90% 완성), Photo OCR 기능
+- **Phase 3**: 소셜/커뮤니티 기능, 고급 성장 트래킹
+- **Phase 4**: 국제화, 전문가 도구
 
 ## Achievement System Status
 - ✅ **Backend**: Core system implemented with balanced point values

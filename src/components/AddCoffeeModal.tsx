@@ -86,8 +86,8 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
               text: '로그인하기', 
               onPress: () => {
                 onClose();
-                // Navigate to login screen
-                navigation.navigate('SignIn' as never);
+                // Navigate to profile screen (login is handled there)
+                navigation.navigate('Profile' as never);
               }
             }
           ]

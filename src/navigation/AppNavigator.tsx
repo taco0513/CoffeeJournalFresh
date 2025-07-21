@@ -86,7 +86,8 @@ function TastingFlow() {
         component={ResultScreen} 
         options={{title: 'Tasting Results'}}
       />
-      <Stack.Screen 
+      {/* OCR Screens moved to feature_backlog */}
+      {/* <Stack.Screen 
         name="OCRScan" 
         component={OCRScanScreen} 
         options={{title: 'Scan Coffee Label'}}
@@ -95,7 +96,7 @@ function TastingFlow() {
         name="OCRResult" 
         component={OCRResultScreen} 
         options={{title: 'OCR Results'}}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }

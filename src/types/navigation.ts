@@ -3,8 +3,8 @@ export type RootStackParamList = {
     HomeMain: undefined;
     ProfileMain: undefined;
     CoffeeInfo: { ocrText?: string } | undefined;
-    OCRScan: undefined;
-    OCRResult: { parsedInfo: any; rawTexts: string[] };
+    // OCRScan: undefined; // Moved to feature_backlog
+    // OCRResult: { parsedInfo: any; rawTexts: string[] }; // Moved to feature_backlog
     RoasterNotes: undefined;
     UnifiedFlavor: undefined;
     Sensory: undefined;
