@@ -184,15 +184,15 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                   ]}
                   onPress={() => {
                     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                    // Toggle expansion for flavor selection
-                    const newExpandedState = selectedSubCategory === sub.name ? null : sub.name;
-                    setSelectedSubCategory(newExpandedState);
-                  }}
-                  onLongPress={() => {
-                    // Long press to select/deselect subcategory
-                    onSelectSubcategory(category, sub.name);
                     if (isSelected) {
+                      // If subcategory is already selected, remove it
+                      onSelectSubcategory(category, sub.name);
                       setSelectedSubCategory(null);
+                    } else {
+                      // If not selected, select the subcategory
+                      onSelectSubcategory(category, sub.name);
+                      // Also expand to show flavors
+                      setSelectedSubCategory(sub.name);
                     }
                   }}
                 >

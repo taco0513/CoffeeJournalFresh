@@ -108,27 +108,52 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
   // Filter and group tastings
   const groupedTastings = useMemo(() => {
     try {
-      // Filter out invalid Realm objects first
+      console.log('🔄 Processing groupedTastings - input count:', allTastings.length);
+      
+      // Filter out invalid Realm objects with more flexible validation
       let results = allTastings.filter(tasting => {
         try {
-          // Check if object is still valid
-          return tasting && tasting.isValid && tasting.isValid() && tasting.coffeeName;
-        } catch {
+          const isValid = tasting && tasting.id && tasting.coffeeName;
+          if (!isValid) {
+            console.log('❌ Filtering out invalid tasting:', {
+              hasId: !!tasting?.id,
+              hasCoffeeName: !!tasting?.coffeeName,
+              tasting: tasting
+            });
+          }
+          return isValid;
+        } catch (error) {
+          console.log('❌ Error during validation:', error, tasting);
           return false;
         }
       });
       
+      console.log('✅ Valid tastings after filter:', results.length);
+      
       // Convert to plain objects to avoid Realm invalidation issues
-      results = results.map(tasting => ({
-        ...tasting,
-        id: tasting.id,
-        coffeeName: tasting.coffeeName,
-        roastery: tasting.roastery,
-        cafeName: tasting.cafeName,
-        origin: tasting.origin,
-        createdAt: new Date(tasting.createdAt),
-        matchScoreTotal: tasting.matchScoreTotal
-      }));
+      results = results.map((tasting, index) => {
+        try {
+          const plainObject = {
+            ...tasting,
+            id: tasting.id,
+            coffeeName: tasting.coffeeName,
+            roastery: tasting.roastery,
+            cafeName: tasting.cafeName,
+            origin: tasting.origin,
+            createdAt: new Date(tasting.createdAt),
+            matchScoreTotal: tasting.matchScoreTotal
+          };
+          console.log(`📋 Converted tasting ${index + 1}:`, {
+            id: plainObject.id,
+            coffeeName: plainObject.coffeeName,
+            roastery: plainObject.roastery
+          });
+          return plainObject;
+        } catch (error) {
+          console.error('❌ Error converting tasting to plain object:', error, tasting);
+          return tasting; // Return original if conversion fails
+        }
+      });
       
       // Apply search query
       if (searchQuery) {
@@ -181,6 +206,12 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
       grouped.push({ title: '이전', data: olderRecords });
     }
     
+    console.log('📊 Final grouped sections:', grouped.map(section => ({
+      title: section.title,
+      count: section.data.length,
+      firstItem: section.data[0]?.coffeeName
+    })));
+    
       return grouped;
     } catch (error) {
       console.error('Error grouping tastings:', error);
@@ -189,16 +220,26 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
   }, [allTastings, searchQuery, sortBy]);
 
   const renderTastingItem = ({ item }: { item: ITastingRecord }) => {
-    // Check if the item is still valid (not deleted from Realm)
-    if (!item || !item.isValid || !item.isValid()) {
+    // Debug: Log each item being rendered
+    console.log('🎨 Rendering tasting item:', {
+      id: item.id,
+      coffeeName: item.coffeeName,
+      roastery: item.roastery,
+      hasIsValid: typeof item.isValid,
+      isValidResult: item.isValid ? item.isValid() : 'no isValid method'
+    });
+    
+    // More flexible validity check - if it has the required properties, render it
+    if (!item || !item.id || !item.coffeeName) {
+      console.log('❌ Item invalid - missing basic properties:', item);
       return null;
     }
 
     try {
-      const formattedDate = item.createdAt.toLocaleDateString('ko-KR', { 
+      const formattedDate = item.createdAt ? item.createdAt.toLocaleDateString('ko-KR', { 
         month: 'long', 
         day: 'numeric' 
-      });
+      }) : '날짜 없음';
       
       return (
         <TouchableOpacity
@@ -214,19 +255,24 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
           <View style={styles.cardHeader}>
             <Text style={styles.coffeeName}>{item.coffeeName}</Text>
             <View style={[styles.matchScoreContainer, {
-              backgroundColor: item.matchScoreTotal >= 85 ? HIGColors.green : 
-                             item.matchScoreTotal >= 70 ? HIGColors.orange : HIGColors.red
+              backgroundColor: (item.matchScoreTotal || 0) >= 85 ? HIGColors.green : 
+                             (item.matchScoreTotal || 0) >= 70 ? HIGColors.orange : HIGColors.red
             }]}>
-              <Text style={styles.matchScore}>{item.matchScoreTotal}%</Text>
+              <Text style={styles.matchScore}>{item.matchScoreTotal || 0}%</Text>
             </View>
           </View>
-          <Text style={styles.roasterName}>{item.roastery}</Text>
+          <Text style={styles.roasterName}>{item.roastery || 'Unknown Roastery'}</Text>
           <Text style={styles.date}>{formattedDate}</Text>
         </TouchableOpacity>
       );
     } catch (error) {
-      console.error('Error rendering tasting item:', error);
-      return null;
+      console.error('Error rendering tasting item:', error, item);
+      return (
+        <View style={styles.tastingCard}>
+          <Text style={styles.coffeeName}>Error loading item</Text>
+          <Text style={styles.roasterName}>ID: {item.id}</Text>
+        </View>
+      );
     }
   };
 
