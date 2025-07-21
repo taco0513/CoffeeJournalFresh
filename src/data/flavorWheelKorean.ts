@@ -2,13 +2,13 @@ export const flavorWheelKorean = {
   level1: {
     'Fruity': '과일 향/프루티',
     'Sour/Fermented': '신맛/발효',
-    'Green/Vegetative': '초록/식물성',
-    'Other': '기타',
-    'Roasted': '로스팅',
-    'Spices': '향신료',
     'Nutty/Cocoa': '견과류/너티/코코아',
     'Sweet': '단맛',
-    'Floral': '꽃향기/플로럴'
+    'Floral': '꽃향기/플로럴',
+    'Green/Vegetative': '초록/식물성',
+    'Roasted': '로스팅',
+    'Spices': '향신료',
+    'Other': '기타'
   },
   
   level2: {

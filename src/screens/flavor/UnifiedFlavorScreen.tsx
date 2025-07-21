@@ -182,7 +182,7 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                   key={sub.name}
                   style={[
                     styles.subCategoryChip,
-                    expandedSubCategories.has(`${category}-${sub.name}`) && styles.subCategoryChipSelected,
+                    (expandedSubCategories.has(`${category}-${sub.name}`) || isSelected) && styles.subCategoryChipSelected,
                     isSelected && styles.subCategoryChipFullySelected,
                   ]}
                   onPress={() => {
@@ -205,7 +205,7 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                   <Text
                     style={[
                       styles.subCategoryText,
-                      expandedSubCategories.has(`${category}-${sub.name}`) && styles.subCategoryTextSelected,
+                      (expandedSubCategories.has(`${category}-${sub.name}`) || isSelected) && styles.subCategoryTextSelected,
                       isSelected && styles.subCategoryTextFullySelected,
                     ]}
                   >
@@ -317,6 +317,30 @@ export default function UnifiedFlavorScreen() {
 
   const selectedPaths = currentTasting.selectedFlavors || [];
 
+  // Clean up orphaned expanded subcategories (subcategories that are expanded but not selected)
+  useEffect(() => {
+    const selectedSubcategoryKeys = new Set(
+      selectedPaths
+        .filter(path => !path.level3) // Only subcategory selections
+        .map(path => `${path.level1}-${path.level2}`)
+    );
+    
+    setExpandedSubCategories(prev => {
+      const newSet = new Set(prev);
+      let hasChanges = false;
+      
+      // Remove expanded subcategories that are no longer selected
+      for (const key of newSet) {
+        if (!selectedSubcategoryKeys.has(key)) {
+          newSet.delete(key);
+          hasChanges = true;
+        }
+      }
+      
+      return hasChanges ? newSet : prev;
+    });
+  }, [selectedPaths]);
+
   // Handle subcategory (level2) selection
   const handleSelectSubcategory = useCallback((level1: string, level2: string) => {
     const currentPaths = [...selectedPaths];
@@ -379,8 +403,21 @@ export default function UnifiedFlavorScreen() {
 
   const handleRemoveFlavor = useCallback((index: number) => {
     const currentPaths = [...selectedPaths];
+    const removedPath = currentPaths[index];
     currentPaths.splice(index, 1);
     updateField('selectedFlavors', currentPaths);
+    
+    // If we removed a subcategory selection, also close the expanded subcategory
+    if (removedPath && !removedPath.level3) {
+      const subcategoryKey = `${removedPath.level1}-${removedPath.level2}`;
+      setExpandedSubCategories(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(subcategoryKey)) {
+          newSet.delete(subcategoryKey);
+        }
+        return newSet;
+      });
+    }
   }, [selectedPaths, updateField]);
 
   const toggleCategory = useCallback((category: string) => {
@@ -442,7 +479,6 @@ export default function UnifiedFlavorScreen() {
         <View style={styles.progressBar}>
           <View style={[styles.progressFill, { width: '33%' }]} />
         </View>
-        <Text style={styles.progressText}>2/6</Text>
       </View>
 
       {/* Guide Message */}
@@ -697,6 +733,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
     backgroundColor: HIGColors.systemGray6,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.systemGray4,
   },
   toggleAllButton: {
     fontSize: 13,
