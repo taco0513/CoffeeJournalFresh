@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import './src/utils/i18n';
+// import './src/utils/i18n'; // Moved to feature backlog
 import { StyleSheet, AppState } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 import { ErrorBoundary } from './src/components/ErrorBoundary';

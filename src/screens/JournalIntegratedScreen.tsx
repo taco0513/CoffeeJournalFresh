@@ -8,7 +8,7 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed - using static Korean strings
 import { HIGConstants, HIGColors } from '../styles/common';
 import HistoryScreen from './HistoryScreen';
 import StatsScreen from './StatsScreen';
@@ -27,7 +27,7 @@ interface JournalIntegratedScreenProps {
 }
 
 export default function JournalIntegratedScreen({ route }: JournalIntegratedScreenProps) {
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed - using static Korean strings
   const [activeTab, setActiveTab] = useState<TabType>(route?.params?.initialTab || 'history');
 
   const renderTabButton = (tab: TabType, label: string) => {

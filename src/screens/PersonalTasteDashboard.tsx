@@ -13,7 +13,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types/navigation';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed - using static Korean strings
 import { HIGConstants, HIGColors } from '../styles/common';
 import { 
   usePersonalTaste, 
@@ -30,7 +30,7 @@ import { PersonalTasteViewMode } from '../types/personalTaste';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function PersonalTasteDashboard() {
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed - using static Korean strings
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const scrollViewRef = useRef<ScrollView>(null);
   

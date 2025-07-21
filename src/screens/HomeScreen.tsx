@@ -10,7 +10,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed - using static Korean strings
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 import RealmService from '../services/realm/RealmService';
 import { useUserStore } from '../stores/useUserStore';
@@ -24,7 +24,7 @@ interface HomeScreenProps {
 }
 
 export default function HomeScreen({navigation}: HomeScreenProps) {
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed - using static Korean strings
   const { currentUser } = useUserStore();
   const { isDeveloperMode } = useDevStore();
   
