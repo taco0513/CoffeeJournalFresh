@@ -305,10 +305,162 @@ const TastingDetailScreen = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Content will be added here */}
-        <View style={styles.contentContainer}>
-          <Text style={styles.placeholderText}>테이스팅 상세 내용이 여기에 표시됩니다.</Text>
+        {/* Coffee Information */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>☕ 커피 정보</Text>
+          
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>커피명</Text>
+            <Text style={styles.infoValue}>{tastingRecord.coffeeName}</Text>
+          </View>
+          
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>로스터리</Text>
+            <Text style={styles.infoValue}>{tastingRecord.roastery}</Text>
+          </View>
+          
+          {tastingRecord.cafeName && (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>카페명</Text>
+              <Text style={styles.infoValue}>{tastingRecord.cafeName}</Text>
+            </View>
+          )}
+          
+          {tastingRecord.origin && (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>원산지</Text>
+              <Text style={styles.infoValue}>{tastingRecord.origin}</Text>
+            </View>
+          )}
+          
+          {tastingRecord.variety && (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>품종</Text>
+              <Text style={styles.infoValue}>{tastingRecord.variety}</Text>
+            </View>
+          )}
+          
+          {tastingRecord.altitude && (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>고도</Text>
+              <Text style={styles.infoValue}>{tastingRecord.altitude}</Text>
+            </View>
+          )}
+          
+          {tastingRecord.process && (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>가공법</Text>
+              <Text style={styles.infoValue}>{tastingRecord.process}</Text>
+            </View>
+          )}
+          
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>음용 온도</Text>
+            <Text style={styles.infoValue}>{tastingRecord.temperature === 'hot' ? '뜨거움' : '차가움'}</Text>
+          </View>
         </View>
+
+        {/* Match Score */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📊 매칭 스코어</Text>
+          <View style={styles.scoreContainer}>
+            <View style={styles.scoreItem}>
+              <Text style={styles.scoreLabel}>전체</Text>
+              <Text style={styles.scoreValue}>{tastingRecord.matchScoreTotal}점</Text>
+            </View>
+            <View style={styles.scoreItem}>
+              <Text style={styles.scoreLabel}>향미</Text>
+              <Text style={styles.scoreValue}>{tastingRecord.matchScoreFlavor}점</Text>
+            </View>
+            <View style={styles.scoreItem}>
+              <Text style={styles.scoreLabel}>감각</Text>
+              <Text style={styles.scoreValue}>{tastingRecord.matchScoreSensory}점</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Flavor Notes */}
+        {tastingRecord.flavorNotes && tastingRecord.flavorNotes.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>🌸 향미 노트</Text>
+            <View style={styles.flavorContainer}>
+              {tastingRecord.flavorNotes.map((note, index) => (
+                <View key={index} style={styles.flavorNote}>
+                  <Text style={styles.flavorText}>
+                    {note.koreanValue || note.value}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Sensory Attributes */}
+        {tastingRecord.sensoryAttribute && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>👅 감각 평가</Text>
+            
+            <View style={styles.sensoryRow}>
+              <Text style={styles.sensoryLabel}>바디</Text>
+              <Text style={styles.sensoryValue}>
+                {getSensoryDescription('body', tastingRecord.sensoryAttribute.body)}
+              </Text>
+            </View>
+            
+            <View style={styles.sensoryRow}>
+              <Text style={styles.sensoryLabel}>산미</Text>
+              <Text style={styles.sensoryValue}>
+                {getSensoryDescription('acidity', tastingRecord.sensoryAttribute.acidity)}
+              </Text>
+            </View>
+            
+            <View style={styles.sensoryRow}>
+              <Text style={styles.sensoryLabel}>단맛</Text>
+              <Text style={styles.sensoryValue}>
+                {getSensoryDescription('sweetness', tastingRecord.sensoryAttribute.sweetness)}
+              </Text>
+            </View>
+            
+            <View style={styles.sensoryRow}>
+              <Text style={styles.sensoryLabel}>여운</Text>
+              <Text style={styles.sensoryValue}>
+                {getSensoryDescription('finish', tastingRecord.sensoryAttribute.finish)}
+              </Text>
+            </View>
+            
+            <View style={styles.sensoryRow}>
+              <Text style={styles.sensoryLabel}>마우스필</Text>
+              <Text style={styles.sensoryValue}>
+                {getMouthfeelKorean(tastingRecord.sensoryAttribute.mouthfeel)}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {/* Roaster Notes */}
+        {tastingRecord.roasterNotes && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>📝 로스터 노트</Text>
+            {renderRoasterNotes(tastingRecord.roasterNotes)}
+          </View>
+        )}
+
+        {/* Date Information */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📅 기록 정보</Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>기록일시</Text>
+            <Text style={styles.infoValue}>{formatDate(tastingRecord.createdAt)}</Text>
+          </View>
+          {tastingRecord.updatedAt && tastingRecord.updatedAt !== tastingRecord.createdAt && (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>수정일시</Text>
+              <Text style={styles.infoValue}>{formatDate(tastingRecord.updatedAt)}</Text>
+            </View>
+          )}
+        </View>
+        
+        <View style={styles.bottomSpacer} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -365,6 +517,112 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
+  },
+  section: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: HIGConstants.SPACING_MD,
+    marginVertical: HIGConstants.SPACING_SM,
+    padding: HIGConstants.SPACING_MD,
+    borderRadius: 12,
+    borderWidth: 0.5,
+    borderColor: HIGColors.gray4,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_XS,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray5,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  infoLabel: {
+    fontSize: 16,
+    color: HIGColors.secondaryLabel,
+    fontWeight: '500',
+    flex: 1,
+  },
+  infoValue: {
+    fontSize: 16,
+    color: HIGColors.label,
+    fontWeight: '400',
+    flex: 2,
+    textAlign: 'right',
+  },
+  scoreContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  scoreItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  scoreLabel: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+    fontWeight: '500',
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  scoreValue: {
+    fontSize: 20,
+    color: HIGColors.blue,
+    fontWeight: '600',
+  },
+  flavorContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: HIGConstants.SPACING_SM,
+  },
+  flavorNote: {
+    backgroundColor: HIGColors.blue,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
+    borderRadius: 16,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  flavorText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  sensoryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray5,
+  },
+  sensoryLabel: {
+    fontSize: 16,
+    color: HIGColors.label,
+    fontWeight: '500',
+  },
+  sensoryValue: {
+    fontSize: 16,
+    color: HIGColors.secondaryLabel,
+    fontWeight: '400',
+  },
+  notesText: {
+    fontSize: 16,
+    color: HIGColors.label,
+    lineHeight: 24,
+  },
+  roasterDescription: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+    fontStyle: 'italic',
+    marginTop: HIGConstants.SPACING_SM,
+  },
+  bottomSpacer: {
+    height: HIGConstants.SPACING_XL,
   },
   errorContainer: {
     flex: 1,
