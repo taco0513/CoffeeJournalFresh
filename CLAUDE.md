@@ -5,7 +5,33 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
 
 ## Recent Progress (2025-07-21)
 
-### 🔧 Critical Bug Fixes & Stability Improvements (2025-07-21)
+### 🛠️ Navigation & UI Fixes (2025-07-21) - Session 2
+- ✅ **DraftRecoveryModal Navigation Fix**
+  - Fixed "Continue Tasting" button not navigating from home screen
+  - Changed navigation target from 'CoffeeInfo' to 'TastingFlow' in DraftRecoveryModal:src/components/tasting/DraftRecoveryModal.tsx:85
+  - Added proper navigation functionality with useNavigation hook
+  - Modal now correctly loads draft and navigates to tasting flow
+
+- ✅ **Korean Localization Complete**
+  - Translated DraftRecoveryModal to Korean:
+    - "Continue Your Coffee Log?" → "커피 기록을 계속하시겠어요?"
+    - "Continue Tasting" → "이어서 기록하기"
+    - "Start New" → "새로 시작하기"
+  - All modal text now displays in Korean for better user experience
+
+- ✅ **PersonalTasteDashboard Removal Cleanup**
+  - Removed PersonalTasteDashboard from navigation structure
+  - Screen was causing navigation errors after removal
+  - Profile tab now shows direct Profile screen without dashboard option
+  - Cleaned up navigation references in AppNavigator:src/navigation/AppNavigator.tsx
+
+- ⚠️ **Metro Bundler Connection Issue**
+  - User reported "No script URL provided" error
+  - Metro bundler restarted multiple times with cache clearing
+  - Simulator unable to connect to Metro on port 8081
+  - **Recommended Fix**: Restart simulator (Device → Restart) or rebuild from Xcode
+
+### 🔧 Critical Bug Fixes & Stability Improvements (2025-07-21) - Session 1
 - ✅ **Journal Navigation Restoration**
   - Fixed Journal tab button not responding issue
   - Added useFocusEffect to HistoryScreen for proper data refresh
@@ -29,6 +55,14 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
   - Added BetaFeedbackPrompt for contextual feedback collection
   - Enhanced shake-to-feedback with smart targeting in useShakeToFeedback:src/hooks/useShakeToFeedback.ts:25
   - Improved screenshot service for visual bug reporting
+
+- ✅ **Coffee Recording Flow v.통합.1 Implementation**
+  - Consolidated 3 flavor selection screens into UnifiedFlavorScreen:src/screens/flavor/UnifiedFlavorScreen.tsx
+  - Improved UI/UX with card-based design and better visual hierarchy
+  - Added accordion-style category expansion with color coding
+  - Implemented search functionality with Korean language support
+  - Fixed render errors in JournalIntegratedScreen with proper prop handling
+  - Created comprehensive documentation at /docs/COFFEE_RECORDING_FLOW_V1.md
 
 ## Recent Progress (2025-07-20)
 
@@ -484,7 +518,11 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
   - Added HIG constants file
   - Resolved Metro bundler connection issues
 
-### Key Files Modified
+### Key Files Modified (2025-07-21)
+- **src/components/tasting/DraftRecoveryModal.tsx**: Fixed navigation and added Korean translation
+- **src/navigation/AppNavigator.tsx**: Removed PersonalTasteDashboard references
+
+### Key Files Modified (2025-07-19)
 - **src/stores/useDevStore.ts**: New developer mode store with persistent settings
 - **src/screens/DeveloperScreen.tsx**: New comprehensive developer dashboard
 - **src/stores/useUserStore.ts**: Added setTestUser function for quick developer login
@@ -550,7 +588,10 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
   - Documentation created at `/docs/GOOGLE_OAUTH_SETUP.md`
   - Awaiting developer to add actual Google OAuth credentials
 - ✅ ~~112 TypeScript errors remain~~ **RESOLVED (2025-07-20)** → **0 TypeScript errors** ✨
-- Metro bundler occasionally loses connection (workaround: rebuild)
+- ⚠️ **Metro bundler connection issues** (2025-07-21)
+  - Simulator shows "No script URL provided" error
+  - Metro bundler runs but simulator cannot connect
+  - **Workaround**: Restart simulator or rebuild from Xcode with clean build
 
 ### Recent Fixes (2025-07-19)
 - ✅ **Build Error Fixed**: Resolved static class block issue in NetworkUtils.ts
