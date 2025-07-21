@@ -16,7 +16,7 @@ import {useTastingStore} from '../stores/tastingStore';
 import { useDevStore } from '../stores/useDevStore';
 import { AutocompleteInput } from '../components/common';
 import RealmService from '../services/realm/RealmService';
-import { parseCoffeeName } from '../utils/coffeeParser';
+// import { parseCoffeeName } from '../utils/coffeeParser'; // Moved to feature_backlog
 import { NavigationButton } from '../components/common';
 import { HIGConstants, HIGColors } from '../styles/common';
 import { searchRoasters, searchCoffees } from '../services/supabase/coffeeSearch';

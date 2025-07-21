@@ -10,9 +10,9 @@ import {
   Alert,
   RefreshControl,
 } from 'react-native';
-import { HIGColors, HIGConstants } from '@/styles/common';
-import { supabase } from '@/services/supabase/client';
-import { useUserStore } from '@/stores/useUserStore';
+import { HIGColors, HIGConstants } from '../../styles/common';
+import { supabase } from '../../services/supabase/client';
+import { useUserStore } from '../../stores/useUserStore';
 
 interface PendingCoffee {
   id: string;

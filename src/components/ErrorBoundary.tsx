@@ -8,7 +8,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { HIGColors, HIGConstants } from '@/constants/HIG';
+import { HIGColors, HIGConstants } from '../styles/common';
 import { performanceMonitor } from '../services/PerformanceMonitor';
 
 interface Props {

@@ -19,8 +19,8 @@ import UnifiedFlavorScreen from '../screens/flavor/UnifiedFlavorScreen';
 import SensoryScreen from '../screens/SensoryScreen';
 import PersonalCommentScreen from '../screens/PersonalCommentScreen';
 import ResultScreen from '../screens/ResultScreen';
-import OCRScanScreen from '../screens/OCRScanScreen';
-import OCRResultScreen from '../screens/OCRResultScreen';
+// import OCRScanScreen from '../screens/OCRScanScreen'; // Moved to feature_backlog
+// import OCRResultScreen from '../screens/OCRResultScreen'; // Moved to feature_backlog
 import SearchScreen from '../screens/SearchScreen';
 import TastingDetailScreen from '../screens/TastingDetailScreen';
 import DataTestScreen from '../screens/DataTestScreen';

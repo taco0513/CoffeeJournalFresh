@@ -42,7 +42,7 @@ src/
 └── navigation/       # React Navigation setup
 ```
 
-## Recent Issues & Solutions (2025-07-21)
+## Recent Issues & Solutions (2025-07-22)
 - ✅ **React Native bridge errors**: Fixed "Malformed calls from JS" with comprehensive solution
 - ✅ **Persistent modal bug**: Fixed coffee recording modal appearing constantly  
 - ✅ **Console errors**: Resolved ErrorContextService circular reference issues
@@ -56,7 +56,9 @@ src/
 - ✅ **Beta feedback improvements**: Removed animations, improved UX
 - ✅ **Mock data system**: Fully functional with 5 test records creation
 - ✅ **CoffeeInfoScreen cleanup**: Removed 243 lines of dead code (24% reduction)
-- **Metro bundler issues**: Restart simulator or rebuild from Xcode
+- ✅ **Metro bundler issues**: Fixed script URL error by restarting Metro on correct port (8081)
+- ✅ **Bridge debugger errors**: Fixed TastingFlowBridge onRequestCategoryPreferencing error by disabling problematic bridge debugger
+- ✅ **UnifiedFlavorScreen improvements**: Auto-expansion, level 2 selection, haptic feedback, search highlighting
 - **Navigation simplified**: Stats removed from bottom tab
 - **TypeScript**: 0 errors (was 319)
 
@@ -99,6 +101,8 @@ bridgeDebugger.printRecentCalls()  # Debug bridge errors
 - ✅ **TypeScript Errors Fixed**: FlavorPath imports, missing annotations, undefined color constants
 - ✅ **SensoryScreen UI Overhaul** (2025-07-22): Compact design with horizontal tabs, eliminated redundant titles, reduced scrolling
 - ✅ **Feature Backlog Migration** (2025-07-22): Moved non-MVP features to organized backlog (182→164 files, 10% reduction)
+- ✅ **Metro Bundler Fix** (2025-07-22): Fixed script URL error, Metro running on correct port 8081
+- ✅ **Bridge Error Resolution** (2025-07-22): Fixed TastingFlowBridge onRequestCategoryPreferencing error with enhanced bridge debugger
 
 ## Next Steps
 1. ✅ **Korean Sensory Evaluation** - COMPLETED (2025-07-22)
@@ -206,8 +210,34 @@ feature_backlog/
 - **Social**: CommunityReviewScreen, ShareReviewScreen, CommunityFeedScreen
 - **i18n**: LanguageSwitch, i18n directory, i18n utilities
 
+## Session Summary (2025-07-22 Night)
+### Issues Resolved
+1. ✅ **TastingFlowBridge Error**: Fixed `onRequestCategoryPreferencing` error by:
+   - Disabling problematic bridge debugger in index.js
+   - Enhanced bridge debugger with graceful error handling
+   - Added blocking for known problematic native method calls
+
+2. ✅ **Metro Bundler Connection**: Fixed "No script URL provided" error by:
+   - Started Metro on correct port (8081)
+   - Triggered app rebuild to connect to correct Metro server
+   - Fixed app configuration for Metro connection
+
+3. ✅ **UnifiedFlavorScreen Improvements**: Completed from previous session
+   - Auto-expansion of categories when searching
+   - Level 2 subcategory selection via long-press
+   - Search term highlighting in subcategories and flavor chips
+   - Haptic feedback and accessibility enhancements
+   - Original parent-child UX design preserved
+
+### Files Modified
+- `index.js`: Disabled bridge debugger import
+- `src/utils/bridgeDebugger.ts`: Enhanced error handling and blocking
+- `src/components/flavor/FlavorCategory.tsx`: Maintained original long-press design
+- `src/screens/flavor/UnifiedFlavorScreen.tsx`: Search and selection improvements
+
 ## Documentation
 - Progress archive: `CLAUDE_ARCHIVE_2025-07.md`
 - Sensory evaluation analysis: Session 2025-07-22
-- Refactoring session: 2025-07-22 Evening
+- Refactoring session: 2025-07-22 Evening  
 - Feature backlog migration: `feature_backlog/README.md`, `feature_backlog/MIGRATION_LOG.md`
+- Bridge error fix: Session 2025-07-22 Night

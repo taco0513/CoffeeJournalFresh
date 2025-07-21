@@ -11,8 +11,8 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { HIGColors, HIGConstants } from '@/styles/common';
-import { supabase } from '@/services/supabase/client';
+import { HIGColors, HIGConstants } from '../../styles/common';
+import { supabase } from '../../services/supabase/client';
 
 export const AdminCoffeeEditScreen = ({ navigation, route }: any) => {
   const { coffee } = route.params;
