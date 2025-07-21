@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
 import { HIGConstants, HIGColors } from '../styles/common';
 import { useDevStore } from '../stores/useDevStore';
@@ -30,7 +30,7 @@ const CategoryIcons = {
   data: '',
 };
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 const DeveloperScreen = () => {
   const navigation = useNavigation<NavigationProp>();

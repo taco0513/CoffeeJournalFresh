@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import RealmService from '../services/RealmService';
+import RealmService from '../services/realm/RealmService';
 
 interface RealmContextType {
   isReady: boolean;
-  realmService: typeof RealmService;
+  realmService: RealmService;
 }
 
 const RealmContext = createContext<RealmContextType | undefined>(undefined);
@@ -15,7 +15,8 @@ export const RealmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const initializeRealm = async () => {
       try {
         // console.log('Initializing Realm...');
-        await RealmService.initialize();
+        const instance = RealmService.getInstance();
+        await instance.initialize();
         // console.log('Realm initialized successfully');
         setIsReady(true);
       } catch (error) {
@@ -29,12 +30,12 @@ export const RealmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     initializeRealm();
 
     return () => {
-      RealmService.close();
+      RealmService.getInstance().close();
     };
   }, []);
 
   return (
-    <RealmContext.Provider value={{ isReady, realmService: RealmService }}>
+    <RealmContext.Provider value={{ isReady, realmService: RealmService.getInstance() }}>
       {children}
     </RealmContext.Provider>
   );
