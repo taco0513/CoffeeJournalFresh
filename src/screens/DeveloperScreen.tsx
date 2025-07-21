@@ -196,11 +196,12 @@ const DeveloperScreen = () => {
         
         console.log('✅ Realm is ready, proceeding to create mock data...');
 
-        // 5개의 간단한 Mock 데이터 - 최소한의 필수 필드만 사용
+        // 5개의 Mock 데이터 - ITastingRecord 인터페이스에 맞춘 구조
         const mockData = [
           {
             roastery: 'Blue Bottle',
             coffeeName: 'Three Africas',
+            origin: 'Ethiopia',
             temperature: 'hot' as const,
             matchScoreTotal: 85,
             matchScoreFlavor: 42,
@@ -214,11 +215,14 @@ const DeveloperScreen = () => {
               sweetness: 3,
               finish: 4,
               mouthfeel: 'Clean'
-            }
+            },
+            isSynced: false,
+            isDeleted: false
           },
           {
             roastery: 'Fritz',
             coffeeName: 'Colombia Geisha',
+            origin: 'Colombia',
             temperature: 'hot' as const,
             matchScoreTotal: 92,
             matchScoreFlavor: 46,
@@ -232,11 +236,14 @@ const DeveloperScreen = () => {
               sweetness: 4,
               finish: 5,
               mouthfeel: 'Juicy'
-            }
+            },
+            isSynced: false,
+            isDeleted: false
           },
           {
             roastery: 'Anthracite',
             coffeeName: 'Brazil Santos',
+            origin: 'Brazil',
             temperature: 'ice' as const,
             matchScoreTotal: 80,
             matchScoreFlavor: 40,
@@ -250,11 +257,14 @@ const DeveloperScreen = () => {
               sweetness: 4,
               finish: 3,
               mouthfeel: 'Creamy'
-            }
+            },
+            isSynced: false,
+            isDeleted: false
           },
           {
             roastery: 'Terarosa',
-            coffeeName: 'Guatemala',
+            coffeeName: 'Guatemala Huehuetenango',
+            origin: 'Guatemala',
             temperature: 'hot' as const,
             matchScoreTotal: 86,
             matchScoreFlavor: 43,
@@ -268,11 +278,14 @@ const DeveloperScreen = () => {
               sweetness: 4,
               finish: 4,
               mouthfeel: 'Silky'
-            }
+            },
+            isSynced: false,
+            isDeleted: false
           },
           {
-            roastery: 'Starbucks',
-            coffeeName: 'Pike Place',
+            roastery: 'Coffee Bean',
+            coffeeName: 'House Blend',
+            origin: 'Central America',
             temperature: 'hot' as const,
             matchScoreTotal: 75,
             matchScoreFlavor: 37,
@@ -286,63 +299,70 @@ const DeveloperScreen = () => {
               sweetness: 3,
               finish: 3,
               mouthfeel: 'Smooth'
-            }
+            },
+            isSynced: false,
+            isDeleted: false
           }
         ];
 
-        // 직접 realm.create 사용하여 mock 데이터 생성
+        // 단일 트랜잭션으로 mock 데이터 생성
         let savedCount = 0;
-        console.log('🔄 Starting to save mock data with direct realm.create...');
+        console.log('🔄 Starting to save mock data with single transaction...');
         
         try {
-          // Realm 초기화 확인 및 실행
-          console.log('🔍 Checking Realm initialization status...');
-          console.log('📊 isInitialized:', realmService.isInitialized);
+          // Realm 강제 재초기화
+          console.log('🔄 Force re-initializing Realm...');
+          await realmService.initialize();
+          console.log('✅ Realm initialized successfully');
           
-          if (!realmService.isInitialized) {
-            console.log('⚠️ Realm not initialized. Initializing...');
-            try {
-              await realmService.initialize();
-              console.log('✅ Realm initialized successfully');
-              console.log('📊 After init - isInitialized:', realmService.isInitialized);
-            } catch (initError) {
-              console.error('❌ Realm initialization failed:', initError);
-              throw initError;
+          // Realm 객체 직접 가져오기
+          const realm = realmService.getRealm();
+          console.log('✅ Got Realm instance');
+          
+          // 단일 트랜잭션으로 모든 레코드 생성
+          realm.write(() => {
+            console.log('🔄 Starting Realm write transaction...');
+            
+            for (let i = 0; i < mockData.length; i++) {
+              const data = mockData[i];
+              try {
+                console.log(`🔄 Creating record ${i + 1}/5 in transaction...`);
+                
+                const record = realm.create('TastingRecord', {
+                  id: `mock_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                  cafeName: data.cafeName || '',
+                  roastery: data.roastery,
+                  coffeeName: data.coffeeName,
+                  origin: data.origin || '',
+                  variety: data.variety || '',
+                  altitude: data.altitude || '',
+                  process: data.process || '',
+                  temperature: data.temperature,
+                  roasterNotes: data.roasterNotes || '',
+                  matchScoreTotal: data.matchScoreTotal,
+                  matchScoreFlavor: data.matchScoreFlavor,
+                  matchScoreSensory: data.matchScoreSensory,
+                  flavorNotes: data.flavorNotes,
+                  sensoryAttribute: data.sensoryAttribute,
+                  isSynced: false,
+                  isDeleted: false
+                });
+                
+                savedCount++;
+                console.log(`✅ Record ${i + 1}/5 created successfully`);
+              } catch (itemError: any) {
+                console.error(`❌ Failed to create record ${i + 1} in transaction:`);
+                console.error('Error message:', itemError?.message || 'Unknown error');
+                throw itemError; // 트랜잭션 전체를 롤백하기 위해 에러를 다시 던짐
+              }
             }
-          } else {
-            console.log('✅ Realm already initialized');
-          }
+            
+            console.log(`✅ All ${savedCount} records created in transaction`);
+          });
           
-          console.log('🔍 Using createTastingRecord method for each record...');
-          
-          // createTastingRecord 메서드를 사용하여 각 mock 데이터 저장
-          for (let i = 0; i < mockData.length; i++) {
-            const data = mockData[i];
-            try {
-              console.log(`🔄 Creating tasting record ${i + 1}/5 using createTastingRecord...`);
-              
-              const savedRecord = await realmService.createTastingRecord({
-                roastery: data.roastery,
-                coffeeName: data.coffeeName,
-                temperature: data.temperature,
-                matchScoreTotal: data.matchScoreTotal,
-                matchScoreFlavor: data.matchScoreFlavor,
-                matchScoreSensory: data.matchScoreSensory,
-                flavorNotes: data.flavorNotes,
-                sensoryAttribute: data.sensoryAttribute,
-                isSynced: false,
-                isDeleted: false
-              });
-              
-              savedCount++;
-              console.log(`✅ Created mock record ${savedCount}/5 - ID: ${savedRecord.id}`);
-              
-            } catch (itemError) {
-              console.error(`❌ Failed to create record ${i + 1}:`, itemError);
-            }
-          }
-          
-          console.log(`✅ Realm write transaction completed`);
+          console.log(`✅ Realm write transaction completed successfully`);
           
         } catch (realmError) {
           console.error('❌ Realm write operation failed:', realmError);
@@ -358,13 +378,20 @@ const DeveloperScreen = () => {
         }
         
         console.log(`📊 Save operation complete: ${savedCount}/${mockData.length} items saved`);
-
-        // 결과 확인 및 상태 업데이트 - 저장된 개수만 사용
-        const newTotalCount = mockDataCount + savedCount;
-        setMockDataCount(newTotalCount);
-        console.log(`📊 Mock data added: ${savedCount} saved, estimated total: ${newTotalCount}`);
         
-        const totalRecords = newTotalCount;
+        // 즉시 데이터베이스에서 레코드 수 확인
+        try {
+          const records = realmService.getTastingRecords();
+          const totalCount = records.length;
+          console.log(`🔍 Database verification: ${totalCount} total records found`);
+          setMockDataCount(totalCount);
+        } catch (verifyError) {
+          console.warn('⚠️ Could not verify record count:', verifyError);
+          // 검증 실패시에도 savedCount 기반으로 업데이트
+          const newTotalCount = mockDataCount + savedCount;
+          setMockDataCount(newTotalCount);
+        }
+        console.log(`📊 Mock data added: ${savedCount} saved, estimated total: ${newTotalCount}`);
         
         // 항상 5개가 추가되도록 보장
         const expectedCount = 5;
@@ -387,7 +414,7 @@ const DeveloperScreen = () => {
         
         Alert.alert(
           '완료', 
-          `${finalMessage}\n\n전체 기록: ${totalRecords}개`,
+          `${finalMessage}\n\n예상 전체 기록: ${newTotalCount}개`,
           [
             { 
               text: 'Journal로 이동', 
