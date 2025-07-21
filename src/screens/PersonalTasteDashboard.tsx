@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@/types/navigation';
+import { RootStackParamList } from '../types/navigation';
 // import { useTranslation } from 'react-i18next'; // Removed - using static Korean strings
 import { HIGConstants, HIGColors } from '../styles/common';
 import { 

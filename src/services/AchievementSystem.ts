@@ -1,5 +1,5 @@
 import Realm from 'realm';
-import { generateUUID } from '@/utils/uuid';
+import { generateUUID } from '../utils/uuid';
 import { supabase } from './supabase/client';
 
 // =============================================

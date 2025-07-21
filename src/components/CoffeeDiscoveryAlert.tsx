@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { HIGColors, HIGConstants } from '@/styles/common';
+import { HIGColors, HIGConstants } from '../styles/common';
 import LinearGradient from 'react-native-linear-gradient';
 
 interface CoffeeDiscoveryAlertProps {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { coffeeNotificationService, CoffeeApprovalNotification } from '@/services/supabase/coffeeNotifications';
-import { useUserStore } from '@/stores/useUserStore';
+import { coffeeNotificationService, CoffeeApprovalNotification } from '../services/supabase/coffeeNotifications';
+import { useUserStore } from '../stores/useUserStore';
 
 export const useCoffeeNotifications = () => {
   const [showApprovalAlert, setShowApprovalAlert] = useState(false);
