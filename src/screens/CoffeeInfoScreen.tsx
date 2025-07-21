@@ -471,22 +471,22 @@ const CoffeeInfoScreen = () => {
         delayMs={10000} // 10 seconds after entering screen
       />
       
-      {/* HIG 준수 네비게이션 바 */}
+      {/* Navigation Bar */}
       <View style={styles.navigationBar}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>커피 정보</Text>
-        <Text style={styles.progressIndicator}>1/6</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('UnifiedFlavor' as never)}>
+          <Text style={styles.skipButton}>건너뛰기</Text>
+        </TouchableOpacity>
       </View>
-      
-      {/* 진행 상태 바 */}
-      <View style={styles.progressBar}>
-        <View style={styles.progressFill} />
+
+      {/* Progress Bar */}
+      <View style={styles.progressContainer}>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: '17%' }]} />
+        </View>
       </View>
 
       {/* Developer Mode: Dummy Data Auto-fill Button */}
@@ -794,47 +794,42 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   navigationBar: {
-    height: HIGConstants.MIN_TOUCH_TARGET,
+    height: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray4,
+    borderBottomColor: HIGColors.systemGray4,
   },
   backButton: {
-    minWidth: HIGConstants.MIN_TOUCH_TARGET,
-    height: HIGConstants.MIN_TOUCH_TARGET,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-  backButtonText: {
-    fontSize: 17,
-    fontWeight: '400',
-    color: HIGColors.blue,
+    fontSize: 24,
+    color: HIGColors.systemBlue,
   },
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
   },
-  progressIndicator: {
+  skipButton: {
     fontSize: 15,
-    fontWeight: '400',
-    color: HIGColors.secondaryLabel,
-    minWidth: HIGConstants.MIN_TOUCH_TARGET,
-    textAlign: 'right',
+    color: HIGColors.systemBlue,
+  },
+  progressContainer: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_SM,
+    backgroundColor: '#FFFFFF',
   },
   progressBar: {
     height: 4,
-    backgroundColor: HIGColors.gray5,
+    backgroundColor: HIGColors.systemGray5,
+    borderRadius: 2,
+    overflow: 'hidden',
   },
   progressFill: {
-    height: 4,
-    width: '17%', // 1/6 = 17%
-    backgroundColor: HIGColors.blue,
-    borderRadius: 2,
+    height: '100%',
+    backgroundColor: HIGColors.systemBlue,
   },
   // Developer Mode Styles
   devModeSection: {
@@ -890,7 +885,7 @@ const styles = StyleSheet.create({
   input: {
     minHeight: 40,
     borderWidth: 1,
-    borderColor: HIGColors.gray4,
+    borderColor: HIGColors.systemGray4,
     borderRadius: HIGConstants.BORDER_RADIUS,
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: HIGConstants.SPACING_XS,
@@ -907,7 +902,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 36,
     borderWidth: 1,
-    borderColor: HIGColors.gray4,
+    borderColor: HIGColors.systemGray4,
     borderRadius: HIGConstants.BORDER_RADIUS,
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: HIGConstants.SPACING_XS,
@@ -915,8 +910,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tempButtonActive: {
-    backgroundColor: HIGColors.blue,
-    borderColor: HIGColors.blue,
+    backgroundColor: HIGColors.systemBlue,
+    borderColor: HIGColors.systemBlue,
   },
   tempButtonText: {
     fontSize: 17,
@@ -930,7 +925,7 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_MD,
     paddingTop: HIGConstants.SPACING_SM,
     borderTopWidth: 0.5,
-    borderTopColor: HIGColors.gray4,
+    borderTopColor: HIGColors.systemGray4,
     backgroundColor: '#FFFFFF',
   },
   hintText: {
@@ -944,7 +939,7 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.BORDER_RADIUS / 2,
     borderLeftWidth: 2,
-    borderLeftColor: HIGColors.blue,
+    borderLeftColor: HIGColors.systemBlue,
   },
   scanSection: {
     paddingHorizontal: HIGConstants.SPACING_LG,
@@ -975,7 +970,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 36,
     borderWidth: 1,
-    borderColor: HIGColors.gray4,
+    borderColor: HIGColors.systemGray4,
     borderRadius: HIGConstants.BORDER_RADIUS,
     paddingHorizontal: HIGConstants.SPACING_XS,
     paddingVertical: HIGConstants.SPACING_XS,
@@ -998,15 +993,15 @@ const styles = StyleSheet.create({
   guideSection: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_MD,
-    backgroundColor: '#F8F9FA',
-    borderBottomWidth: 1,
-    borderBottomColor: HIGColors.gray5,
+    backgroundColor: '#E3F2FD',
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.systemGray5,
   },
   guideText: {
     fontSize: 15,
-    color: HIGColors.secondaryLabel,
+    color: HIGColors.systemBlue,
     textAlign: 'center',
-    fontStyle: 'italic',
+    fontWeight: '500',
   },
 });
 
