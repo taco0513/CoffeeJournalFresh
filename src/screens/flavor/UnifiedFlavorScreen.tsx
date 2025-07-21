@@ -85,6 +85,7 @@ interface CategoryAccordionProps {
   expanded: boolean;
   onToggle: () => void;
   onSelectFlavor: (path: FlavorPath) => void;
+  onSelectSubcategory: (level1: string, level2: string) => void;
   selectedPaths: FlavorPath[];
   searchQuery: string;
 }
@@ -94,6 +95,7 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
   expanded,
   onToggle,
   onSelectFlavor,
+  onSelectSubcategory,
   selectedPaths,
   searchQuery,
 }) => {
@@ -118,6 +120,13 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
   const isFlavorSelected = (level1: string, level2: string, level3: string) => {
     return selectedPaths.some(
       path => path.level1 === level1 && path.level2 === level2 && path.level3 === level3
+    );
+  };
+
+  // Check if a subcategory (level2) is selected
+  const isSubcategorySelected = (level1: string, level2: string) => {
+    return selectedPaths.some(
+      path => path.level1 === level1 && path.level2 === level2 && !path.level3
     );
   };
 
@@ -163,28 +172,41 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
         <View style={styles.categoryExpandedContent}>
           {/* Subcategory chips */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.subCategoryScroll}>
-            {filteredSubCategories.map(sub => (
-              <TouchableOpacity
-                key={sub.name}
-                style={[
-                  styles.subCategoryChip,
-                  selectedSubCategory === sub.name && styles.subCategoryChipSelected,
-                ]}
-                onPress={() => {
-                  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                  setSelectedSubCategory(selectedSubCategory === sub.name ? null : sub.name);
-                }}
-              >
-                <Text
+            {filteredSubCategories.map(sub => {
+              const isSelected = isSubcategorySelected(category, sub.name);
+              return (
+                <TouchableOpacity
+                  key={sub.name}
                   style={[
-                    styles.subCategoryText,
-                    selectedSubCategory === sub.name && styles.subCategoryTextSelected,
+                    styles.subCategoryChip,
+                    selectedSubCategory === sub.name && styles.subCategoryChipSelected,
+                    isSelected && styles.subCategoryChipFullySelected,
                   ]}
+                  onPress={() => {
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                    if (isSelected) {
+                      // If subcategory is already selected as level2, remove it
+                      onSelectSubcategory(category, sub.name);
+                    } else {
+                      // Toggle expansion and select subcategory
+                      setSelectedSubCategory(selectedSubCategory === sub.name ? null : sub.name);
+                      onSelectSubcategory(category, sub.name);
+                    }
+                  }}
                 >
-                  {sub.koreanName}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    style={[
+                      styles.subCategoryText,
+                      selectedSubCategory === sub.name && styles.subCategoryTextSelected,
+                      isSelected && styles.subCategoryTextFullySelected,
+                    ]}
+                  >
+                    {sub.koreanName}
+                  </Text>
+                  {isSelected && <Text style={styles.checkmark}>✓</Text>}
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
 
           {/* Flavors grid */}
@@ -253,6 +275,39 @@ export default function UnifiedFlavorScreen() {
 
   const selectedPaths = currentTasting.selectedFlavors || [];
 
+  // Handle subcategory (level2) selection
+  const handleSelectSubcategory = useCallback((level1: string, level2: string) => {
+    const currentPaths = [...selectedPaths];
+    
+    // Check if this subcategory is already selected as level2
+    const existingSubcategoryIndex = currentPaths.findIndex(
+      p => p.level1 === level1 && p.level2 === level2 && !p.level3
+    );
+    
+    if (existingSubcategoryIndex >= 0) {
+      // Remove subcategory selection
+      currentPaths.splice(existingSubcategoryIndex, 1);
+    } else {
+      // Remove any specific flavors from this subcategory first
+      const filteredPaths = currentPaths.filter(
+        p => !(p.level1 === level1 && p.level2 === level2 && p.level3)
+      );
+      
+      // Add subcategory selection if under limit
+      if (filteredPaths.length < 5) {
+        filteredPaths.push({
+          level1,
+          level2,
+          level3: '', // Empty level3 indicates subcategory selection
+        });
+        updateField('selectedFlavors', filteredPaths);
+      }
+      return;
+    }
+    
+    updateField('selectedFlavors', currentPaths);
+  }, [selectedPaths, updateField]);
+
   const handleSelectFlavor = useCallback((path: FlavorPath) => {
     const currentPaths = [...selectedPaths];
     const existingIndex = currentPaths.findIndex(
@@ -263,8 +318,15 @@ export default function UnifiedFlavorScreen() {
       // Remove if already selected
       currentPaths.splice(existingIndex, 1);
     } else if (currentPaths.length < 5) {
-      // Add if under limit
-      currentPaths.push(path);
+      // Remove any subcategory selection from the same level2 first
+      const filteredPaths = currentPaths.filter(
+        p => !(p.level1 === path.level1 && p.level2 === path.level2 && !p.level3)
+      );
+      
+      // Add specific flavor selection
+      filteredPaths.push(path);
+      updateField('selectedFlavors', filteredPaths);
+      return;
     } else {
       // Show limit reached message - could add a toast or haptic feedback here
       return;
@@ -375,13 +437,30 @@ export default function UnifiedFlavorScreen() {
             {selectedPaths.map((path, index) => {
               const categoryData = flavorData.find(item => item.category === path.level1);
               const subcategoryData = categoryData?.subcategories.find(sub => sub.name === path.level2);
-              const flavorItem = subcategoryData?.flavors.find(f => f.name === path.level3);
-              const koreanName = flavorItem?.koreanName || path.level3;
+              
+              let displayName: string;
+              let isSubcategorySelection = false;
+              
+              if (!path.level3) {
+                // This is a subcategory (level2) selection
+                displayName = subcategoryData?.koreanName || path.level2;
+                isSubcategorySelection = true;
+              } else {
+                // This is a specific flavor (level3) selection
+                const flavorItem = subcategoryData?.flavors.find(f => f.name === path.level3);
+                displayName = flavorItem?.koreanName || path.level3;
+              }
               
               return (
-                <View key={index} style={styles.selectedChip}>
-                  <Text style={styles.selectedChipText} numberOfLines={1}>
-                    {koreanName}
+                <View key={index} style={[
+                  styles.selectedChip,
+                  isSubcategorySelection && styles.selectedSubcategoryChip
+                ]}>
+                  <Text style={[
+                    styles.selectedChipText,
+                    isSubcategorySelection && styles.selectedSubcategoryText
+                  ]} numberOfLines={1}>
+                    {displayName}
                   </Text>
                   <TouchableOpacity 
                     onPress={() => handleRemoveFlavor(index)}
@@ -417,6 +496,7 @@ export default function UnifiedFlavorScreen() {
             expanded={expandedCategories.includes(item.category)}
             onToggle={() => toggleCategory(item.category)}
             onSelectFlavor={handleSelectFlavor}
+            onSelectSubcategory={handleSelectSubcategory}
             selectedPaths={selectedPaths}
             searchQuery={searchQuery}
           />
@@ -602,6 +682,17 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     maxWidth: 100,
   },
+  selectedSubcategoryChip: {
+    backgroundColor: '#E3F2FD',
+    borderColor: HIGColors.systemBlue,
+    borderWidth: 1.5,
+  },
+  selectedSubcategoryText: {
+    fontSize: 14,
+    color: HIGColors.systemBlue,
+    fontWeight: '600',
+    maxWidth: 100,
+  },
   removeButton: {
     marginLeft: HIGConstants.SPACING_XS,
     padding: HIGConstants.SPACING_XS,
@@ -736,6 +827,17 @@ const styles = StyleSheet.create({
   subCategoryTextSelected: {
     color: '#FFFFFF',
     fontWeight: '600',
+  },
+  subCategoryChipFullySelected: {
+    backgroundColor: HIGColors.systemBlue,
+    borderColor: HIGColors.systemBlue,
+    borderWidth: 2,
+    shadowOpacity: 0.15,
+    elevation: 3,
+  },
+  subCategoryTextFullySelected: {
+    color: '#FFFFFF',
+    fontWeight: '700',
   },
   flavorGrid: {
     paddingHorizontal: HIGConstants.SPACING_LG,
