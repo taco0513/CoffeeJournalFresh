@@ -736,8 +736,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   categoryContainer: {
-    marginHorizontal: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_MD,
+    marginHorizontal: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   categoryCard: {
     backgroundColor: '#FFFFFF',
@@ -764,7 +764,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
   },
   categoryLeft: {
     flex: 1,
@@ -774,19 +774,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryEmoji: {
-    fontSize: 24,
+    fontSize: 20,
     marginRight: HIGConstants.SPACING_SM,
   },
   categoryTitle: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
   },
   categorySubtext: {
-    fontSize: 14,
+    fontSize: 13,
     color: HIGColors.secondaryLabel,
-    marginTop: HIGConstants.SPACING_XS,
-    marginLeft: 32, // Align with title (emoji width + spacing)
+    marginTop: 2,
+    marginLeft: 28, // Align with title (emoji width + spacing)
   },
   categoryRight: {
     flexDirection: 'row',
@@ -795,17 +795,17 @@ const styles = StyleSheet.create({
   categoryBadge: {
     backgroundColor: HIGColors.systemGray5,
     paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: 2,
-    borderRadius: 10,
+    paddingVertical: 1,
+    borderRadius: 8,
     marginRight: HIGConstants.SPACING_SM,
   },
   categoryCount: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: HIGColors.label,
   },
   expandIcon: {
-    fontSize: 24,
+    fontSize: 20,
     color: HIGColors.tertiaryLabel,
     fontWeight: '300',
   },
@@ -814,21 +814,21 @@ const styles = StyleSheet.create({
   },
   categoryExpandedContent: {
     backgroundColor: HIGColors.systemGray6,
-    paddingVertical: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
     marginTop: -HIGConstants.cornerRadiusMedium,
     borderBottomLeftRadius: HIGConstants.cornerRadiusMedium,
     borderBottomRightRadius: HIGConstants.cornerRadiusMedium,
   },
   subCategoryScroll: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   subCategoryChip: {
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: 16,
-    marginRight: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
+    borderRadius: 14,
+    marginRight: HIGConstants.SPACING_XS,
     borderWidth: 1,
     borderColor: HIGColors.systemGray4,
   },
@@ -838,7 +838,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
   },
   subCategoryText: {
-    fontSize: 14,
+    fontSize: 13,
     color: HIGColors.label,
     fontWeight: '500',
   },
@@ -858,14 +858,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   flavorGrid: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_MD,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   subcategoryLabel: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_XS,
   },
   flavorRow: {
     flexDirection: 'row',
@@ -873,11 +873,11 @@ const styles = StyleSheet.create({
   },
   flavorButton: {
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
     borderRadius: HIGConstants.cornerRadiusSmall,
-    marginRight: HIGConstants.SPACING_SM,
-    marginBottom: HIGConstants.SPACING_SM,
+    marginRight: HIGConstants.SPACING_XS,
+    marginBottom: HIGConstants.SPACING_XS,
     borderWidth: 1,
     borderColor: HIGColors.systemGray4,
     flexDirection: 'row',
@@ -900,7 +900,7 @@ const styles = StyleSheet.create({
     backgroundColor: HIGColors.systemGray6,
   },
   flavorText: {
-    fontSize: 14,
+    fontSize: 13,
     color: HIGColors.label,
     fontWeight: '500',
   },
