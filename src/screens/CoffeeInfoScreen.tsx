@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useTastingStore} from '../stores/tastingStore';
+import { useDevStore } from '../stores/useDevStore';
 import { AutocompleteInput } from '../components/common';
 // Feature Backlog - Photo feature
 // import PhotoPicker from '../components/PhotoPicker';
@@ -34,6 +35,7 @@ const CoffeeInfoScreen = () => {
   
   // Zustand store 사용
   const { currentTasting, updateField } = useTastingStore();
+  const { isDeveloperMode } = useDevStore();
   
   // 사진 상태 (Feature Backlog)
   // const [photoUri, setPhotoUri] = useState<string>(currentTasting.photoUri || '');
@@ -48,6 +50,56 @@ const CoffeeInfoScreen = () => {
   const [selectedCoffeeData, setSelectedCoffeeData] = useState<CoffeeSearchResult | null>(null);
   const [showAddCoffeeModal, setShowAddCoffeeModal] = useState(false);
   // const [showCafeSuggestions, setShowCafeSuggestions] = useState(false);
+
+  // Developer mode: Dummy data for quick testing
+  const dummyData = [
+    {
+      coffeeName: '에티오피아 예가체프',
+      roastery: '블루보틀',
+      cafeName: '블루보틀 카페',
+      temperature: 'hot' as const,
+      origin: '에티오피아',
+      variety: '헤이룸',
+      altitude: '1900m',
+      process: '워시드'
+    },
+    {
+      coffeeName: '과테말라 안티구아',
+      roastery: '스페셜티 로스터스',
+      cafeName: 'Home',
+      temperature: 'hot' as const,
+      origin: '과테말라',
+      variety: '부르봉',
+      altitude: '1400m', 
+      process: '허니'
+    },
+    {
+      coffeeName: '콜롬비아 후일라',
+      roastery: '프릳츠 커피',
+      cafeName: '프릳츠 매장',
+      temperature: 'ice' as const,
+      origin: '콜롬비아',
+      variety: '카스티요',
+      altitude: '1600m',
+      process: '내추럴'
+    }
+  ];
+
+  // Developer mode: Auto-fill function
+  const fillDummyData = () => {
+    const randomData = dummyData[Math.floor(Math.random() * dummyData.length)];
+    
+    updateField('coffeeName', randomData.coffeeName);
+    updateField('roastery', randomData.roastery);
+    updateField('cafeName', randomData.cafeName);
+    updateField('temperature', randomData.temperature);
+    updateField('origin', randomData.origin);
+    updateField('variety', randomData.variety);
+    updateField('altitude', randomData.altitude);
+    updateField('process', randomData.process);
+    
+    Alert.alert('개발자 모드', '더미 데이터가 입력되었습니다!');
+  };
   // const [showRoasterSuggestions, setShowRoasterSuggestions] = useState(false);
   // const [showCameraModal, setShowCameraModal] = useState(false);
   
@@ -437,6 +489,19 @@ const CoffeeInfoScreen = () => {
         <View style={styles.progressFill} />
       </View>
 
+      {/* Developer Mode: Dummy Data Auto-fill Button */}
+      {isDeveloperMode && (
+        <View style={styles.devModeSection}>
+          <TouchableOpacity 
+            style={styles.devButton}
+            onPress={fillDummyData}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.devButtonText}>🚀 더미 데이터 자동 입력</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}>
@@ -770,6 +835,32 @@ const styles = StyleSheet.create({
     width: '17%', // 1/6 = 17%
     backgroundColor: HIGColors.blue,
     borderRadius: 2,
+  },
+  // Developer Mode Styles
+  devModeSection: {
+    backgroundColor: '#FFF3E0',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderBottomWidth: 1,
+    borderBottomColor: '#FFE0B2',
+  },
+  devButton: {
+    backgroundColor: '#FF9800',
+    paddingVertical: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  devButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   scrollView: {
     flex: 1,
