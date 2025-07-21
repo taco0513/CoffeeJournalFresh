@@ -111,16 +111,12 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
         onPress={() => handleExpressionSelect(categoryId, expression)}
         activeOpacity={0.7}
       >
-        <Text style={styles.expressionEmoji}>{expression.emoji}</Text>
         <Text style={[
           styles.expressionButtonText,
           isSelected && styles.expressionButtonTextSelected
         ]}>
           {expression.korean}
         </Text>
-        {isSelected && (
-          <Text style={styles.checkmark}>✓</Text>
-        )}
       </TouchableOpacity>
     );
   };
@@ -213,7 +209,6 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                     activeOpacity={isDisabled ? 1 : 0.7}
                     disabled={isDisabled}
                   >
-                    <Text style={styles.expressionEmoji}>{expression.emoji}</Text>
                     <Text style={[
                       styles.expressionButtonText,
                       isExpressionSelected(category.id, expression.id) && styles.expressionButtonTextSelected,
@@ -221,9 +216,6 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                     ]}>
                       {expression.korean}
                     </Text>
-                    {isExpressionSelected(category.id, expression.id) && (
-                      <Text style={styles.checkmark}>✓</Text>
-                    )}
                   </TouchableOpacity>
                 );
               })}
@@ -293,7 +285,6 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                     onPress={() => handleExpressionSelect(item.categoryId, item.expression)}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.summaryItemEmoji}>{item?.expression?.emoji}</Text>
                     <Text style={styles.summaryItemText}>{item?.expression?.korean}</Text>
                     <Text style={styles.summaryItemRemove}>×</Text>
                   </TouchableOpacity>
@@ -381,21 +372,20 @@ const styles = StyleSheet.create({
   },
   summaryItem: {
     marginRight: 12,
-    padding: 8,
-    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
     borderWidth: 1,
     alignItems: 'center',
-    minWidth: 80,
-  },
-  summaryItemEmoji: {
-    fontSize: 16,
-    marginBottom: 4,
+    justifyContent: 'center',
+    minWidth: 60,
+    minHeight: 32,
   },
   summaryItemText: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 13,
+    fontWeight: '600',
     textAlign: 'center',
-    marginBottom: 4,
+    color: '#2C3E50',
   },
   summaryItemRemove: {
     position: 'absolute',
@@ -551,25 +541,22 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   expressionButton: {
-    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#F8F9FA',
     borderWidth: 1,
     borderColor: '#E9ECEF',
     borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     marginRight: 8,
     marginBottom: 8,
-  },
-  expressionEmoji: {
-    fontSize: 16,
-    marginRight: 6,
+    minHeight: 36,
   },
   expressionButtonText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#495057',
-    fontWeight: '500',
+    fontWeight: '600',
   },
   expressionButtonTextSelected: {
     color: '#FFFFFF',
@@ -581,12 +568,6 @@ const styles = StyleSheet.create({
   },
   expressionButtonTextDisabled: {
     color: '#BDBDBD',
-  },
-  checkmark: {
-    fontSize: 12,
-    color: '#FFFFFF',
-    marginLeft: 4,
-    fontWeight: '600',
   },
   guideTextContainer: {
     marginBottom: 12,

@@ -11,11 +11,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useTastingStore } from '../stores/tastingStore';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 import { 
-  EnhancedSensoryEvaluation, 
   SensoryOnboarding,
   MouthfeelButton,
   SliderSection
 } from '../components/sensory';
+import CompactSensoryEvaluation from '../components/sensory/CompactSensoryEvaluation';
 import { checkShouldShowOnboarding } from '../components/sensory/SensoryOnboarding';
 import { useSensoryState } from '../hooks/useSensoryState';
 import { MouthfeelType, SelectedSensoryExpression } from '../types/sensory';
@@ -113,38 +113,35 @@ const SensoryScreen = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* 제목 및 설명 */}
-        <View style={styles.headerSection}>
-          <Text style={styles.title}>감각 평가</Text>
-          <Text style={styles.subtitle}>입안의 느낌에 집중해보세요</Text>
-          <Text style={styles.guideMessage}>
-            ☕ 천천히 음미하며 각각의 요소를 느껴보세요
-          </Text>
-          
-          {/* Mode Toggle */}
+        {/* Simplified Mode Toggle */}
+        <View style={styles.modeToggleWrapper}>
           <View style={styles.modeToggleContainer}>
             <TouchableOpacity 
               style={[styles.modeButton, !showEnhanced && styles.modeButtonActive]}
               onPress={() => setShowEnhanced(false)}
+              activeOpacity={0.7}
             >
               <Text style={[styles.modeButtonText, !showEnhanced && styles.modeButtonTextActive]}>
                 기본 평가
               </Text>
+              {!showEnhanced && <View style={styles.activeIndicator} />}
             </TouchableOpacity>
             <TouchableOpacity 
               style={[styles.modeButton, showEnhanced && styles.modeButtonActive]}
               onPress={() => setShowEnhanced(true)}
+              activeOpacity={0.7}
             >
               <Text style={[styles.modeButtonText, showEnhanced && styles.modeButtonTextActive]}>
                 감각 평가
               </Text>
+              {showEnhanced && <View style={styles.activeIndicator} />}
             </TouchableOpacity>
           </View>
         </View>
 
         {showEnhanced ? (
           /* Enhanced Korean Sensory Evaluation */
-          <EnhancedSensoryEvaluation
+          <CompactSensoryEvaluation
             selectedExpressions={selectedSensoryExpressions.map(item => ({
               categoryId: item.categoryId,
               expression: {
@@ -158,7 +155,6 @@ const SensoryScreen = () => {
             }))}
             onExpressionChange={handleExpressionChange}
             beginnerMode={true}
-            showDescriptions={true}
           />
         ) : (
           /* Traditional Slider Evaluation */
@@ -298,33 +294,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingBottom: HIGConstants.SPACING_XL,
   },
-  headerSection: {
-    paddingTop: HIGConstants.SPACING_XL,
-    paddingBottom: HIGConstants.SPACING_LG,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: HIGColors.label,
-    textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  subtitle: {
-    fontSize: 17,
-    fontWeight: '400',
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  guideMessage: {
-    fontSize: 15,
-    fontWeight: '400',
-    color: HIGColors.blue,
-    textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_XL,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-  },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
@@ -347,52 +316,54 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   // Mode Toggle Styles
+  modeToggleWrapper: {
+    paddingVertical: HIGConstants.SPACING_MD,
+    alignItems: 'center',
+  },
   modeToggleContainer: {
     flexDirection: 'row',
     backgroundColor: HIGColors.systemGray6,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    padding: 2,
-    marginTop: HIGConstants.SPACING_MD,
-    alignSelf: 'center',
-  },
-  modeButton: {
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: HIGConstants.cornerRadiusSmall,
-    minWidth: 120,
-    alignItems: 'center',
-    position: 'relative',
-  },
-  recommendedBadge: {
-    position: 'absolute',
-    top: -8,
-    right: -8,
-    backgroundColor: HIGColors.systemGreen,
-    borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  recommendedBadgeText: {
-    fontSize: 10,
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  modeButtonActive: {
-    backgroundColor: HIGColors.systemBlue,
+    borderRadius: 12,
+    padding: 3,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
     elevation: 2,
   },
+  modeButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 9,
+    minWidth: 110,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  modeButtonActive: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  activeIndicator: {
+    position: 'absolute',
+    bottom: 4,
+    width: 30,
+    height: 3,
+    backgroundColor: HIGColors.systemBlue,
+    borderRadius: 2,
+  },
   modeButtonText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 15,
+    fontWeight: '600',
     color: HIGColors.secondaryLabel,
   },
   modeButtonTextActive: {
-    color: '#FFFFFF',
-    fontWeight: '600',
+    color: HIGColors.label,
+    fontWeight: '700',
   },
 });
 

@@ -1,0 +1,295 @@
+import React, { useState, useCallback, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+import {
+  koreanSensoryData,
+  getSensoryExpressionsByCategory,
+  SensoryExpression,
+} from '../../data/koreanSensoryData';
+
+const { width } = Dimensions.get('window');
+
+interface SelectedExpression {
+  categoryId: string;
+  expression: SensoryExpression;
+}
+
+interface CompactSensoryEvaluationProps {
+  selectedExpressions: SelectedExpression[];
+  onExpressionChange: (expressions: SelectedExpression[]) => void;
+  beginnerMode?: boolean;
+}
+
+const MAX_PER_CATEGORY = 3;
+
+const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
+  selectedExpressions,
+  onExpressionChange,
+  beginnerMode = true,
+}) => {
+  const [activeCategory, setActiveCategory] = useState('acidity');
+
+  const handleExpressionSelect = useCallback((
+    categoryId: string,
+    expression: SensoryExpression
+  ) => {
+    const existingIndex = selectedExpressions.findIndex(
+      item => item.categoryId === categoryId && item.expression.id === expression.id
+    );
+    const categorySelections = selectedExpressions.filter(
+      item => item.categoryId === categoryId
+    );
+
+    let newExpressions = [...selectedExpressions];
+
+    if (existingIndex >= 0) {
+      newExpressions.splice(existingIndex, 1);
+    } else {
+      if (categorySelections.length >= MAX_PER_CATEGORY) {
+        return;
+      }
+      newExpressions.push({ categoryId, expression });
+    }
+
+    onExpressionChange(newExpressions);
+  }, [selectedExpressions, onExpressionChange]);
+
+  const isExpressionSelected = useCallback((
+    categoryId: string,
+    expressionId: string
+  ): boolean => {
+    return selectedExpressions.some(
+      item => item.categoryId === categoryId && item.expression.id === expressionId
+    );
+  }, [selectedExpressions]);
+
+  const getSelectedCount = useCallback((categoryId: string): number => {
+    return selectedExpressions.filter(item => item.categoryId === categoryId).length;
+  }, [selectedExpressions]);
+
+  const categories = useMemo(() => Object.values(koreanSensoryData), []);
+  const activeExpressions = useMemo(
+    () => getSensoryExpressionsByCategory(activeCategory, beginnerMode),
+    [activeCategory, beginnerMode]
+  );
+
+  return (
+    <View style={styles.container}>
+      {/* Compact header */}
+      <View style={styles.header}>
+        <Text style={styles.title}>감각 평가</Text>
+        <Text style={styles.selectedCount}>
+          {selectedExpressions.length}개 선택됨
+        </Text>
+      </View>
+
+      {/* Horizontal category tabs */}
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        style={styles.categoryTabs}
+        contentContainerStyle={styles.categoryTabsContent}
+      >
+        {categories.map((category) => {
+          const isActive = category.id === activeCategory;
+          const count = getSelectedCount(category.id);
+          return (
+            <TouchableOpacity
+              key={category.id}
+              style={[
+                styles.categoryTab,
+                isActive && styles.categoryTabActive,
+                isActive && { borderColor: category.color }
+              ]}
+              onPress={() => setActiveCategory(category.id)}
+              activeOpacity={0.7}
+            >
+              <Text style={[
+                styles.categoryTabText,
+                isActive && styles.categoryTabTextActive,
+                isActive && { color: category.color }
+              ]}>
+                {category.nameKo}
+              </Text>
+              {count > 0 && (
+                <View style={[
+                  styles.categoryBadge,
+                  { backgroundColor: category.color }
+                ]}>
+                  <Text style={styles.categoryBadgeText}>{count}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+
+      {/* Expression grid */}
+      <ScrollView 
+        style={styles.expressionContainer}
+        contentContainerStyle={styles.expressionGrid}
+        showsVerticalScrollIndicator={false}
+      >
+        {activeExpressions.map((expression) => {
+          const category = koreanSensoryData[activeCategory];
+          const isSelected = isExpressionSelected(activeCategory, expression.id);
+          const categorySelections = selectedExpressions.filter(
+            item => item.categoryId === activeCategory
+          );
+          const isDisabled = categorySelections.length >= MAX_PER_CATEGORY && !isSelected;
+          
+          return (
+            <TouchableOpacity
+              key={expression.id}
+              style={[
+                styles.expressionButton,
+                isSelected && { 
+                  backgroundColor: category?.color || '#007AFF',
+                  borderColor: category?.color || '#007AFF',
+                },
+                isDisabled && styles.expressionButtonDisabled
+              ]}
+              onPress={() => !isDisabled && handleExpressionSelect(activeCategory, expression)}
+              activeOpacity={isDisabled ? 1 : 0.7}
+              disabled={isDisabled}
+            >
+              <Text style={[
+                styles.expressionText,
+                isSelected && styles.expressionTextSelected,
+                isDisabled && styles.expressionTextDisabled
+              ]}>
+                {expression.korean}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+
+      {/* Limit indicator */}
+      <View style={styles.footer}>
+        <Text style={styles.limitText}>
+          카테고리당 최대 3개까지 선택 가능
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  selectedCount: {
+    fontSize: 14,
+    color: '#666666',
+    fontWeight: '500',
+  },
+  categoryTabs: {
+    maxHeight: 44,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  categoryTabsContent: {
+    paddingHorizontal: 16,
+  },
+  categoryTab: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    marginHorizontal: 4,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  categoryTabActive: {
+    borderBottomWidth: 2,
+  },
+  categoryTabText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#8E8E93',
+  },
+  categoryTabTextActive: {
+    fontWeight: '700',
+  },
+  categoryBadge: {
+    marginLeft: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 10,
+    minWidth: 20,
+    alignItems: 'center',
+  },
+  categoryBadgeText: {
+    fontSize: 11,
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  expressionContainer: {
+    flex: 1,
+    padding: 12,
+  },
+  expressionGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  expressionButton: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    backgroundColor: '#F8F9FA',
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+    borderRadius: 16,
+    margin: 4,
+    minHeight: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  expressionText: {
+    fontSize: 14,
+    color: '#1A1A1A',
+    fontWeight: '500',
+  },
+  expressionTextSelected: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  expressionButtonDisabled: {
+    opacity: 0.3,
+  },
+  expressionTextDisabled: {
+    color: '#8E8E93',
+  },
+  footer: {
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+  },
+  limitText: {
+    fontSize: 12,
+    color: '#8E8E93',
+    textAlign: 'center',
+  },
+});
+
+export default CompactSensoryEvaluation;

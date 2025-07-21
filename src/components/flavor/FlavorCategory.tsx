@@ -13,6 +13,18 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
   selectedPaths,
   searchQuery,
 }) => {
+  const [expandedSubcategories, setExpandedSubcategories] = React.useState<string[]>([]);
+
+  const toggleSubcategory = (subcategoryName: string) => {
+    setExpandedSubcategories(prev => {
+      if (prev.includes(subcategoryName)) {
+        return prev.filter(name => name !== subcategoryName);
+      } else {
+        return [...prev, subcategoryName];
+      }
+    });
+  };
+
   const checkIsSelected = (level1: string, level2: string, level3?: string): boolean => {
     if (level3) {
       // Check for exact level 3 match
@@ -58,6 +70,10 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
       <TouchableOpacity
         style={styles.categoryHeader}
         onPress={onToggle}
+        accessible={true}
+        accessibilityLabel={`${category.koreanName} 카테고리, ${selectedCount}개 선택됨`}
+        accessibilityHint={`탭하여 ${isExpanded ? '접기' : '펼치기'}`}
+        accessibilityRole="button"
       >
         <View style={styles.categoryLeft}>
           <Text style={styles.categoryEmoji}>{category.emoji}</Text>
@@ -77,39 +93,68 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
 
       {isExpanded && (
         <View style={styles.subcategoryContainer}>
-          {category.subcategories.map(sub => (
-            <View key={sub.name} style={styles.subcategory}>
-              <Text style={styles.subcategoryTitle}>{sub.koreanName}</Text>
-              <View style={styles.flavorGrid}>
-                {/* Subcategory chip */}
+          {category.subcategories.map(sub => {
+            const isSubcategoryExpanded = expandedSubcategories.includes(sub.name);
+            const isSubcategorySelected = checkIsSelected(category.category, sub.name);
+            const hasSelectedFlavors = sub.flavors.some(flavor => 
+              checkIsSelected(category.category, sub.name, flavor.name)
+            );
+
+            return (
+              <View key={sub.name} style={styles.subcategory}>
                 <TouchableOpacity
                   style={[
-                    styles.subcategoryChip,
-                    checkIsSelected(category.category, sub.name) && styles.subcategoryChipSelected
+                    styles.subcategoryHeader,
+                    isSubcategorySelected && styles.subcategoryHeaderSelected,
+                    hasSelectedFlavors && !isSubcategorySelected && styles.subcategoryHeaderHasSelection
                   ]}
-                  onPress={() => onSelectFlavor(category.category, sub.name, '')}
+                  onPress={() => toggleSubcategory(sub.name)}
+                  onLongPress={() => onSelectFlavor(category.category, sub.name, '')}
+                  accessible={true}
+                  accessibilityLabel={`${sub.koreanName} 서브카테고리`}
+                  accessibilityHint={`탭하여 펼치기, 길게 눌러서 전체 선택`}
+                  accessibilityRole="button"
+                  accessibilityState={{ expanded: isSubcategoryExpanded, selected: isSubcategorySelected }}
                 >
+                  <View style={styles.subcategoryLeft}>
+                    <Text style={[
+                      styles.subcategoryTitle,
+                      isSubcategorySelected && styles.subcategoryTitleSelected
+                    ]}>
+                      {renderHighlightedText(sub.koreanName, isSubcategorySelected)}
+                    </Text>
+                    {(isSubcategorySelected || hasSelectedFlavors) && (
+                      <View style={styles.selectionBadge}>
+                        <Text style={styles.selectionBadgeText}>
+                          {isSubcategorySelected ? '전체' : `${sub.flavors.filter(f => checkIsSelected(category.category, sub.name, f.name)).length}`}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
                   <Text style={[
-                    styles.subcategoryChipText,
-                    checkIsSelected(category.category, sub.name) && styles.subcategoryChipTextSelected
+                    styles.expandIcon,
+                    isSubcategorySelected && styles.expandIconSelected
                   ]}>
-                    {renderHighlightedText(`${sub.koreanName} 전체`, checkIsSelected(category.category, sub.name))}
+                    {isSubcategoryExpanded ? '▼' : '▶'}
                   </Text>
                 </TouchableOpacity>
                 
-                {/* Individual flavor chips */}
-                {sub.flavors.map(flavor => (
-                  <FlavorChip
-                    key={flavor.name}
-                    flavor={flavor}
-                    isSelected={checkIsSelected(category.category, sub.name, flavor.name)}
-                    onPress={() => onSelectFlavor(category.category, sub.name, flavor.name)}
-                    searchQuery={searchQuery}
-                  />
-                ))}
+                {isSubcategoryExpanded && (
+                  <View style={styles.flavorGrid}>
+                    {sub.flavors.map(flavor => (
+                      <FlavorChip
+                        key={flavor.name}
+                        flavor={flavor}
+                        isSelected={checkIsSelected(category.category, sub.name, flavor.name)}
+                        onPress={() => onSelectFlavor(category.category, sub.name, flavor.name)}
+                        searchQuery={searchQuery}
+                      />
+                    ))}
+                  </View>
+                )}
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
       )}
     </View>
@@ -170,34 +215,92 @@ const styles = StyleSheet.create({
   subcategory: {
     marginBottom: HIGConstants.SPACING_MD,
   },
-  subcategoryTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  subcategoryChip: {
-    backgroundColor: HIGColors.systemGray5,
+  subcategoryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: HIGColors.systemGray6,
     paddingHorizontal: HIGConstants.SPACING_MD,
     paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: 8,
-    marginRight: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_SM,
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray4,
+    borderRadius: 10,
   },
-  subcategoryChipSelected: {
+  subcategoryHeaderSelected: {
+    backgroundColor: HIGColors.systemBlue,
+  },
+  subcategoryHeaderHasSelection: {
+    borderWidth: 1,
+    borderColor: HIGColors.systemBlue,
+  },
+  subcategoryCheckbox: {
+    paddingRight: HIGConstants.SPACING_SM,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: HIGColors.systemGray3,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxSelected: {
     backgroundColor: HIGColors.systemBlue,
     borderColor: HIGColors.systemBlue,
   },
-  subcategoryChipText: {
-    fontSize: 14,
-    color: HIGColors.label,
-    fontWeight: '500',
+  checkboxPartial: {
+    backgroundColor: '#FFFFFF',
+    borderColor: HIGColors.systemBlue,
   },
-  subcategoryChipTextSelected: {
+  checkboxCheckmark: {
     color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  checkboxPartialMark: {
+    width: 10,
+    height: 2,
+    backgroundColor: HIGColors.systemBlue,
+  },
+  subcategoryContent: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  subcategoryLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  subcategoryTitle: {
+    fontSize: 15,
     fontWeight: '600',
+    color: HIGColors.label,
+  },
+  subcategoryTitleSelected: {
+    color: '#FFFFFF',
+  },
+  selectionBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: 2,
+    borderRadius: 10,
+    marginLeft: HIGConstants.SPACING_SM,
+  },
+  selectionBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  expandIcon: {
+    fontSize: 12,
+    color: HIGColors.tertiaryLabel,
+    marginLeft: HIGConstants.SPACING_SM,
+  },
+  expandIconSelected: {
+    color: '#FFFFFF',
   },
   flavorGrid: {
     flexDirection: 'row',

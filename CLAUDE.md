@@ -97,6 +97,7 @@ bridgeDebugger.printRecentCalls()  # Debug bridge errors
 - ✅ Code cleanup: CoffeeInfoScreen (24% reduction), removed Feature Backlog code
 - ✅ **SensoryScreen Refactoring** (2025-07-22): Reduced from 473 to ~300 lines, extracted components, TypeScript fixes
 - ✅ **TypeScript Errors Fixed**: FlavorPath imports, missing annotations, undefined color constants
+- ✅ **Feature Backlog Migration** (2025-07-22): Moved non-MVP features to organized backlog (182→164 files, 10% reduction)
 
 ## Next Steps
 1. ✅ **Korean Sensory Evaluation** - COMPLETED (2025-07-22)
@@ -181,7 +182,29 @@ bridgeDebugger.printRecentCalls()  # Debug bridge errors
 - **Type Annotations**: Added missing type annotations for callbacks
 - **Import Errors**: Resolved SensoryOnboarding and SelectedSensoryExpression imports
 
+## Feature Backlog (2025-07-22)
+### MVP Cleanup Strategy
+- **Moved to Backlog**: AI coaching, OCR/Photo features, social community, internationalization
+- **Kept in MVP**: Photo management, admin dashboard, advanced analytics (per user request)  
+- **Completely Removed**: ExportService (data export functionality)
+- **Impact**: 182→164 files (10% reduction), ~2,500+ lines moved to organized backlog
+
+### Backlog Structure
+```
+feature_backlog/
+├── phase2_post_mvp/          # AI coaching (90% complete), Photo OCR
+├── phase3_growth/            # Social community features  
+└── phase4_professional/      # Internationalization
+```
+
+### Files Moved
+- **AI Coaching**: LiteAICoachService.ts (1,014 lines), FlavorLearningEngine.ts (771 lines), PersonalTasteAnalysisService.ts (786 lines)
+- **Photo OCR**: OCRScanScreen, OCRResultScreen, OCRService, parsing utilities
+- **Social**: CommunityReviewScreen, ShareReviewScreen, CommunityFeedScreen
+- **i18n**: LanguageSwitch, i18n directory, i18n utilities
+
 ## Documentation
 - Progress archive: `CLAUDE_ARCHIVE_2025-07.md`
 - Sensory evaluation analysis: Session 2025-07-22
 - Refactoring session: 2025-07-22 Evening
+- Feature backlog migration: `feature_backlog/README.md`, `feature_backlog/MIGRATION_LOG.md`

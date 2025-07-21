@@ -106,7 +106,7 @@ logAPICall(url, method, status, { responseTime: 150 });
 7. `src/services/LiteAICoachService.ts`
 8. `src/services/PersonalTasteAnalysisService.ts`
 9. `src/services/DataCollectionService.ts`
-10. `src/services/ExportService.ts`
+10. ~~`src/services/ExportService.ts`~~ (Removed - not MVP)
 
 ### Lower Priority Files (UI Components)
 11. `src/screens/HomeScreen.tsx`

@@ -8,6 +8,7 @@ import {
   Platform,
   TextInput,
 } from 'react-native';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { useNavigation } from '@react-navigation/native';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { useTastingStore } from '../../stores/tastingStore';
@@ -117,6 +118,12 @@ export default function UnifiedFlavorScreen() {
   }, [searchQuery, flavorData]);
 
   const handleSelectFlavor = useCallback((level1: string, level2: string, level3: string) => {
+    // Add haptic feedback
+    ReactNativeHapticFeedback.trigger('impactLight', {
+      enableVibrateFallback: true,
+      ignoreAndroidSystemSettings: false,
+    });
+    
     const currentPaths = [...selectedPaths];
     
     if (level3) {

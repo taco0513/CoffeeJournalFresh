@@ -37,6 +37,11 @@ export const FlavorChip: React.FC<FlavorChipProps> = ({ flavor, isSelected, onPr
         isSelected && styles.flavorChipSelected
       ]}
       onPress={onPress}
+      accessible={true}
+      accessibilityLabel={`${flavor.koreanName} 향미`}
+      accessibilityHint="탭하여 선택 또는 선택 해제"
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: isSelected }}
     >
       {renderHighlightedText(flavor.koreanName)}
     </TouchableOpacity>

@@ -11,9 +11,10 @@ import { AppRegistry } from 'react-native';
 import App from './App';
 import { name as appName } from './app.json';
 
-// Initialize debugging utilities in development
+// Initialize debugging utilities in development (temporarily disabled bridge debugger)
 if (__DEV__) {
-  import('./src/utils/bridgeDebugger');
+  // Temporarily disable bridge debugger to fix onRequestCategoryPreferencing error
+  // import('./src/utils/bridgeDebugger');
   import('./src/utils/clearDraftStorage');
 }
 

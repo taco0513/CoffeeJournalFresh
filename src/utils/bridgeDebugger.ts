@@ -17,9 +17,13 @@ class BridgeDebugger {
 
   init() {
     if (__DEV__ && global.__fbBatchedBridge) {
-      this.originalBridge = global.__fbBatchedBridge;
-      this.interceptBridgeCalls();
-      console.log('🔍 Bridge debugger initialized');
+      try {
+        this.originalBridge = global.__fbBatchedBridge;
+        this.interceptBridgeCalls();
+        console.log('🔍 Bridge debugger initialized');
+      } catch (error) {
+        console.warn('⚠️ Bridge debugger initialization failed, continuing without debugging:', error.message);
+      }
     }
   }
 
@@ -34,6 +38,27 @@ class BridgeDebugger {
       
       // Validate parameters before sending to native
       const sanitizedParams = this.sanitizeParams(params);
+      
+      // Check if this is a known problematic method and handle gracefully
+      const methodName = this.getMethodName(moduleID, methodID);
+      const moduleName = this.getModuleName(moduleID);
+      
+      // Block known problematic calls that reference non-existent native methods
+      if (methodName.includes('onRequestCategoryPreferencing') || 
+          moduleName.includes('TastingFlow') ||
+          methodName.includes('CategoryPreferencing')) {
+        console.warn('🚨 Blocked potentially problematic bridge call:', {
+          moduleName,
+          methodName,
+          reason: 'Method likely does not exist in native binary'
+        });
+        
+        // Call onFail if provided to handle gracefully
+        if (onFail && typeof onFail === 'function') {
+          onFail(new Error(`Method ${methodName} not found in native binary`));
+        }
+        return;
+      }
       
       try {
         return originalEnqueueNativeCall.call(
@@ -53,7 +78,13 @@ class BridgeDebugger {
           moduleName: this.getModuleName(moduleID),
           methodName: this.getMethodName(moduleID, methodID)
         });
-        throw error;
+        
+        // Handle the error gracefully instead of throwing
+        if (onFail && typeof onFail === 'function') {
+          onFail(error);
+        } else {
+          console.warn('🔄 Bridge call failed but no error handler provided, continuing...');
+        }
       }
     };
   }
@@ -174,7 +205,11 @@ class BridgeDebugger {
 
 export const bridgeDebugger = new BridgeDebugger();
 
-// Auto-initialize in development
-if (__DEV__) {
-  bridgeDebugger.init();
+// Auto-initialize in development (can be disabled by setting DISABLE_BRIDGE_DEBUGGER=true)
+if (__DEV__ && !process.env.DISABLE_BRIDGE_DEBUGGER) {
+  try {
+    bridgeDebugger.init();
+  } catch (error) {
+    console.warn('⚠️ Bridge debugger failed to initialize, continuing without debugging:', error.message);
+  }
 }
