@@ -217,69 +217,90 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
           </ScrollView>
 
           {/* Flavors grid for each expanded subcategory */}
-          {filteredSubCategories
-            .filter(sub => expandedSubCategories.has(`${category}-${sub.name}`))
-            .map(sub => {
+          {(() => {
+            const expandedSubs = filteredSubCategories.filter(sub => expandedSubCategories.has(`${category}-${sub.name}`));
+            
+            // Separate categories with and without flavors
+            const subsWithFlavors = [];
+            const subsWithoutFlavors = [];
+            
+            expandedSubs.forEach(sub => {
               const filteredFlavors = sub.flavors.filter(f =>
                 searchQuery
                   ? f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
                   : true
               );
-
-              return (
-                <View key={sub.name} style={styles.flavorGrid}>
-                  {filteredFlavors.length > 0 ? (
-                    <>
-                      <Text style={styles.subcategoryLabel}>{sub.koreanName} 세부 향미:</Text>
-                      <View style={styles.flavorRow}>
-                        {filteredFlavors.map(flavor => {
-                          const isSelected = isFlavorSelected(category, sub.name, flavor.name);
-                          const isDisabled = !isSelected && selectedPaths.length >= 5;
-                          return (
-                            <TouchableOpacity
-                              key={flavor.name}
+              
+              if (filteredFlavors.length > 0) {
+                subsWithFlavors.push({ sub, filteredFlavors });
+              } else {
+                subsWithoutFlavors.push(sub);
+              }
+            });
+            
+            return (
+              <>
+                {/* Render categories with flavors */}
+                {subsWithFlavors.map(({ sub, filteredFlavors }) => (
+                  <View key={sub.name} style={styles.flavorGrid}>
+                    <Text style={styles.subcategoryLabel}>{sub.koreanName} 세부 향미:</Text>
+                    <View style={styles.flavorRow}>
+                      {filteredFlavors.map(flavor => {
+                        const isSelected = isFlavorSelected(category, sub.name, flavor.name);
+                        const isDisabled = !isSelected && selectedPaths.length >= 5;
+                        return (
+                          <TouchableOpacity
+                            key={flavor.name}
+                            style={[
+                              styles.flavorButton,
+                              isSelected && styles.flavorButtonSelected,
+                              isDisabled && styles.flavorButtonDisabled,
+                            ]}
+                            onPress={() => {
+                              if (!isDisabled) {
+                                onSelectFlavor({
+                                  level1: category,
+                                  level2: sub.name,
+                                  level3: flavor.name,
+                                });
+                              }
+                            }}
+                            activeOpacity={isDisabled ? 1 : 0.7}
+                            disabled={isDisabled}
+                          >
+                            <Text
                               style={[
-                                styles.flavorButton,
-                                isSelected && styles.flavorButtonSelected,
-                                isDisabled && styles.flavorButtonDisabled,
+                                styles.flavorText,
+                                isSelected && styles.flavorTextSelected,
+                                isDisabled && styles.flavorTextDisabled,
                               ]}
-                              onPress={() => {
-                                if (!isDisabled) {
-                                  onSelectFlavor({
-                                    level1: category,
-                                    level2: sub.name,
-                                    level3: flavor.name,
-                                  });
-                                }
-                              }}
-                              activeOpacity={isDisabled ? 1 : 0.7}
-                              disabled={isDisabled}
                             >
-                              <Text
-                                style={[
-                                  styles.flavorText,
-                                  isSelected && styles.flavorTextSelected,
-                                  isDisabled && styles.flavorTextDisabled,
-                                ]}
-                              >
-                                {flavor.koreanName}
-                              </Text>
-                            </TouchableOpacity>
-                          );
-                        })}
-                      </View>
-                    </>
-                  ) : (
+                              {flavor.koreanName}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  </View>
+                ))}
+                
+                {/* Render combined message for categories without flavors */}
+                {subsWithoutFlavors.length > 0 && (
+                  <View style={styles.flavorGrid}>
                     <View style={styles.noFlavorContainer}>
                       <Text style={styles.noFlavorText}>
-                        '{sub.koreanName}'은 더 세부적인 향미로 나누어지지 않습니다
+                        {subsWithoutFlavors.length === 1 
+                          ? `'${subsWithoutFlavors[0].koreanName}'은 더 세부적인 향미가 없습니다.`
+                          : `'${subsWithoutFlavors.map(sub => sub.koreanName).join('\', \'')}'은 더 세부적인 향미가 없습니다.`
+                        }
                       </Text>
                     </View>
-                  )}
-                </View>
-              );
-            })}
+                  </View>
+                )}
+              </>
+            );
+          })()}
         </View>
       )}
     </View>
