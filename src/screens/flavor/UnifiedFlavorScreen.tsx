@@ -62,7 +62,7 @@ const transformFlavorData = () => {
         koreanName: translations[subcat] || subcat,
         flavors: flavors.map(flavor => ({
           name: flavor,
-          koreanName: translations[flavor] || flavor,
+          koreanName: flavor, // Korean flavors are already in Korean
         })),
       };
     });
@@ -88,6 +88,8 @@ interface CategoryAccordionProps {
   onSelectSubcategory: (level1: string, level2: string) => void;
   selectedPaths: FlavorPath[];
   searchQuery: string;
+  expandedSubCategories: Set<string>;
+  onToggleSubcategory: (subcategoryKey: string) => void;
 }
 
 const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
@@ -98,8 +100,10 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
   onSelectSubcategory,
   selectedPaths,
   searchQuery,
+  expandedSubCategories,
+  onToggleSubcategory,
 }) => {
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
+  const [expandedSubCategories, setExpandedSubCategories] = useState<Set<string>>(new Set());
   const categoryData = flavorData.find(item => item.category === category);
   const categoryColor = CATEGORY_COLORS[category] || HIGColors.systemGray4;
 
@@ -179,7 +183,7 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                   key={sub.name}
                   style={[
                     styles.subCategoryChip,
-                    selectedSubCategory === sub.name && styles.subCategoryChipSelected,
+                    expandedSubCategories.has(`${category}-${sub.name}`) && styles.subCategoryChipSelected,
                     isSelected && styles.subCategoryChipFullySelected,
                   ]}
                   onPress={() => {
@@ -187,19 +191,20 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                     if (isSelected) {
                       // If subcategory is already selected, remove it
                       onSelectSubcategory(category, sub.name);
-                      setSelectedSubCategory(null);
+                      // Also collapse it
+                      onToggleSubcategory(`${category}-${sub.name}`);
                     } else {
                       // If not selected, select the subcategory
                       onSelectSubcategory(category, sub.name);
                       // Also expand to show flavors
-                      setSelectedSubCategory(sub.name);
+                      onToggleSubcategory(`${category}-${sub.name}`);
                     }
                   }}
                 >
                   <Text
                     style={[
                       styles.subCategoryText,
-                      selectedSubCategory === sub.name && styles.subCategoryTextSelected,
+                      expandedSubCategories.has(`${category}-${sub.name}`) && styles.subCategoryTextSelected,
                       isSelected && styles.subCategoryTextFullySelected,
                     ]}
                   >
@@ -210,54 +215,57 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
             })}
           </ScrollView>
 
-          {/* Flavors grid */}
-          {selectedSubCategory && (
-            <View style={styles.flavorGrid}>
-              {filteredSubCategories
-                .find(sub => sub.name === selectedSubCategory)
-                ?.flavors.filter(f =>
-                  searchQuery
-                    ? f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                      f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
-                    : true
-                )
-                .map(flavor => {
-                  const isSelected = isFlavorSelected(category, selectedSubCategory, flavor.name);
-                  const isDisabled = !isSelected && selectedPaths.length >= 5;
-                  return (
-                    <TouchableOpacity
-                      key={flavor.name}
-                      style={[
-                        styles.flavorButton,
-                        isSelected && styles.flavorButtonSelected,
-                        isDisabled && styles.flavorButtonDisabled,
-                      ]}
-                      onPress={() => {
-                        if (!isDisabled) {
-                          onSelectFlavor({
-                            level1: category,
-                            level2: selectedSubCategory,
-                            level3: flavor.name,
-                          });
-                        }
-                      }}
-                      activeOpacity={isDisabled ? 1 : 0.7}
-                      disabled={isDisabled}
-                    >
-                      <Text
+          {/* Flavors grid for each expanded subcategory */}
+          {filteredSubCategories
+            .filter(sub => expandedSubCategories.has(`${category}-${sub.name}`))
+            .map(sub => (
+              <View key={sub.name} style={styles.flavorGrid}>
+                <Text style={styles.subcategoryLabel}>{sub.koreanName} 세부 향미:</Text>
+                <View style={styles.flavorRow}>
+                  {sub.flavors.filter(f =>
+                    searchQuery
+                      ? f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
+                      : true
+                  )
+                  .map(flavor => {
+                    const isSelected = isFlavorSelected(category, sub.name, flavor.name);
+                    const isDisabled = !isSelected && selectedPaths.length >= 5;
+                    return (
+                      <TouchableOpacity
+                        key={flavor.name}
                         style={[
-                          styles.flavorText,
-                          isSelected && styles.flavorTextSelected,
-                          isDisabled && styles.flavorTextDisabled,
+                          styles.flavorButton,
+                          isSelected && styles.flavorButtonSelected,
+                          isDisabled && styles.flavorButtonDisabled,
                         ]}
+                        onPress={() => {
+                          if (!isDisabled) {
+                            onSelectFlavor({
+                              level1: category,
+                              level2: sub.name,
+                              level3: flavor.name,
+                            });
+                          }
+                        }}
+                        activeOpacity={isDisabled ? 1 : 0.7}
+                        disabled={isDisabled}
                       >
-                        {flavor.koreanName}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-            </View>
-          )}
+                        <Text
+                          style={[
+                            styles.flavorText,
+                            isSelected && styles.flavorTextSelected,
+                            isDisabled && styles.flavorTextDisabled,
+                          ]}
+                        >
+                          {flavor.koreanName}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+            ))}
         </View>
       )}
     </View>
@@ -272,6 +280,7 @@ export default function UnifiedFlavorScreen() {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(
     flavorData.map(item => item.category)
   );
+  const [expandedSubCategories, setExpandedSubCategories] = useState<Set<string>>(new Set());
 
   const selectedPaths = currentTasting.selectedFlavors || [];
 
@@ -349,6 +358,19 @@ export default function UnifiedFlavorScreen() {
       } else {
         return [...prev, category];
       }
+    });
+  }, []);
+  
+  const toggleSubcategory = useCallback((subcategoryKey: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedSubCategories(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(subcategoryKey)) {
+        newSet.delete(subcategoryKey);
+      } else {
+        newSet.add(subcategoryKey);
+      }
+      return newSet;
     });
   }, []);
   
@@ -499,6 +521,8 @@ export default function UnifiedFlavorScreen() {
             onSelectSubcategory={handleSelectSubcategory}
             selectedPaths={selectedPaths}
             searchQuery={searchQuery}
+            expandedSubCategories={expandedSubCategories}
+            onToggleSubcategory={toggleSubcategory}
           />
         ))}
       </ScrollView>
@@ -841,6 +865,15 @@ const styles = StyleSheet.create({
   },
   flavorGrid: {
     paddingHorizontal: HIGConstants.SPACING_LG,
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  subcategoryLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  flavorRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
