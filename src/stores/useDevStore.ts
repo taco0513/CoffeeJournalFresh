@@ -13,7 +13,6 @@ interface DevState {
   showPerformanceMetrics: boolean;
   
   // Test data settings
-  enableMockData: boolean;
   skipAnimations: boolean;
   bypassLogin: boolean;
   
@@ -27,7 +26,6 @@ interface DevState {
   setNetworkLogs: (enable: boolean) => void;
   setRealmLogs: (enable: boolean) => void;
   setPerformanceMetrics: (show: boolean) => void;
-  setMockData: (enable: boolean) => void;
   setSkipAnimations: (skip: boolean) => void;
   setBypassLogin: (bypass: boolean) => void;
   setExperimentalFeatures: (enable: boolean) => void;
@@ -41,7 +39,6 @@ const initialState = {
   enableNetworkLogs: false,
   enableRealmLogs: false,
   showPerformanceMetrics: false,
-  enableMockData: false,
   skipAnimations: false,
   bypassLogin: false,
   enableExperimentalFeatures: false,
@@ -72,8 +69,7 @@ export const useDevStore = create<DevState>()(
       setNetworkLogs: (enable: boolean) => set({ enableNetworkLogs: enable }),
       setRealmLogs: (enable: boolean) => set({ enableRealmLogs: enable }),
       setPerformanceMetrics: (show: boolean) => set({ showPerformanceMetrics: show }),
-      setMockData: (enable: boolean) => set({ enableMockData: enable }),
-      setSkipAnimations: (skip: boolean) => set({ skipAnimations: skip }),
+          setSkipAnimations: (skip: boolean) => set({ skipAnimations: skip }),
       setBypassLogin: (bypass: boolean) => set({ bypassLogin: bypass }),
       setExperimentalFeatures: (enable: boolean) => set({ enableExperimentalFeatures: enable }),
       setBetaFeatures: (enable: boolean) => set({ enableBetaFeatures: enable }),

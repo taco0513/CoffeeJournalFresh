@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { useTastingStore } from '../../stores/tastingStore';
 import { flavorWheelKorean } from '../../data/flavorWheelKorean';
-import { FlavorPath } from '../../types/tasting';
+import { FlavorPath } from '../../stores/tastingStore';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -375,8 +375,8 @@ export default function UnifiedFlavorScreen() {
             {selectedPaths.map((path, index) => {
               const categoryData = flavorData.find(item => item.category === path.level1);
               const subcategoryData = categoryData?.subcategories.find(sub => sub.name === path.level2);
-              const flavorData = subcategoryData?.flavors.find(f => f.name === path.level3);
-              const koreanName = flavorData?.koreanName || path.level3;
+              const flavorItem = subcategoryData?.flavors.find(f => f.name === path.level3);
+              const koreanName = flavorItem?.koreanName || path.level3;
               
               return (
                 <View key={index} style={styles.selectedChip}>

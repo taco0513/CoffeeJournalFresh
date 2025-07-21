@@ -26,7 +26,7 @@ interface HomeScreenProps {
 export default function HomeScreen({navigation}: HomeScreenProps) {
   const { t } = useTranslation();
   const { currentUser } = useUserStore();
-  const { isDeveloperMode, enableMockData } = useDevStore();
+  const { isDeveloperMode } = useDevStore();
   
   
   const [recentTastings, setRecentTastings] = useState<ITastingRecord[]>([]);
@@ -54,91 +54,88 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
 
   const realmService = RealmService.getInstance();
 
+  // Initialize Realm on component mount
   useEffect(() => {
-    loadDashboardData();
-  }, [currentUser]);
-
-  // 컴포넌트 마운트 시에도 실행
-  useEffect(() => {
-    loadDashboardData();
+    const initializeAndLoad = async () => {
+      try {
+        if (!realmService.isInitialized) {
+          await realmService.initialize();
+        }
+        loadDashboardData();
+      } catch (error) {
+        console.error('Failed to initialize Realm:', error);
+        setError('데이터베이스 초기화에 실패했습니다.');
+        setIsLoading(false);
+      }
+    };
+    
+    initializeAndLoad();
   }, []);
+
+  // Reload data when user or developer mode changes
+  useEffect(() => {
+    if (realmService.isInitialized) {
+      loadDashboardData();
+    }
+  }, [currentUser, isDeveloperMode]);
 
   // 화면이 포커스될 때마다 데이터 새로고침
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      loadDashboardData();
+      if (realmService.isInitialized) {
+        loadDashboardData();
+      }
     });
 
     return unsubscribe;
   }, [navigation]);
-
-  // isDeveloperMode 또는 enableMockData가 변경될 때마다 데이터 새로고침
-  useEffect(() => {
-    loadDashboardData();
-  }, [isDeveloperMode, enableMockData]);
 
   const loadDashboardData = async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Ensure Realm is initialized before proceeding
+      // Check if Realm is initialized - don't try to initialize here
       if (!realmService.isInitialized) {
-        await realmService.initialize();
+        console.warn('Realm not initialized yet, skipping data load');
+        setIsLoading(false);
+        return;
       }
       
-      if (realmService.isInitialized) {
-        const realm = realmService.getRealm();
-        
-        // Only load data if developer mode is enabled (to block access to mock data for beta users)
-        // Beta users can see data if they have developer mode enabled
-        if (!isDeveloperMode) {
-          // No data for non-developer mode users
-          setRecentTastings([]);
-          setStats({
-            totalTastings: 0,
-            totalRoasteries: 0,
-            thisWeekTastings: 0,
-            avgScore: 0,
-            bestScore: 0,
-            newCoffeesThisMonth: 0,
-          });
-          setIsLoading(false);
-          return;
+      const realm = realmService.getRealm();
+      
+      // Load data normally - no more developer mode restriction
+      const allTastings = realm.objects<ITastingRecord>('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
+      
+      // 최근 3개 테이스팅
+      const recent = Array.from(allTastings.slice(0, 3)) as ITastingRecord[];
+      setRecentTastings(recent);
+      
+      // 통계 계산
+      const total = allTastings.length;
+      const thisWeek = getThisWeekTastings(allTastings);
+      const avgScore = total > 0 ? allTastings.reduce((sum, t) => sum + (t.matchScoreTotal || 0), 0) / total : 0;
+      const bestScore = total > 0 ? Math.max(...allTastings.map(t => t.matchScoreTotal || 0)) : 0;
+      
+      // 이번 달 새로운 커피 수 계산
+      const newCoffees = getNewCoffeesThisMonth(allTastings);
+      
+      // 총 로스터리 수 계산
+      const uniqueRoasteries = new Set();
+      allTastings.forEach(tasting => {
+        if (tasting.roastery) {
+          uniqueRoasteries.add(tasting.roastery);
         }
-        
-        const allTastings = realm.objects<ITastingRecord>('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
-        
-        // 최근 3개 테이스팅
-        const recent = Array.from(allTastings.slice(0, 3)) as ITastingRecord[];
-        setRecentTastings(recent);
-        
-        // 통계 계산
-        const total = allTastings.length;
-        const thisWeek = getThisWeekTastings(allTastings);
-        const avgScore = total > 0 ? allTastings.reduce((sum, t) => sum + (t.matchScoreTotal || 0), 0) / total : 0;
-        const bestScore = total > 0 ? Math.max(...allTastings.map(t => t.matchScoreTotal || 0)) : 0;
-        
-        // 이번 달 새로운 커피 수 계산
-        const newCoffees = getNewCoffeesThisMonth(allTastings);
-        
-        // 총 로스터리 수 계산
-        const uniqueRoasteries = new Set();
-        allTastings.forEach(tasting => {
-          if (tasting.roastery) {
-            uniqueRoasteries.add(tasting.roastery);
-          }
-        });
-        
-        setStats({
-          totalTastings: total,
-          totalRoasteries: uniqueRoasteries.size,
-          thisWeekTastings: thisWeek,
-          avgScore: Math.round(avgScore),
-          bestScore,
-          newCoffeesThisMonth: newCoffees,
-        });
-      }
+      });
+      
+      setStats({
+        totalTastings: total,
+        totalRoasteries: uniqueRoasteries.size,
+        thisWeekTastings: thisWeek,
+        avgScore: Math.round(avgScore),
+        bestScore,
+        newCoffeesThisMonth: newCoffees,
+      });
     } catch (error) {
       console.error('Error loading dashboard data:', error);
       setError('데이터를 불러오는 중 오류가 발생했습니다.');

@@ -16,7 +16,6 @@ import {
   LineChart,
 } from 'react-native-chart-kit';
 import { useUserStore } from '../stores/useUserStore';
-import { useDevStore } from '../stores/useDevStore';
 import { InsightCard } from '../components/stats/InsightCard';
 
 const screenWidth = Dimensions.get('window').width;
@@ -57,7 +56,6 @@ interface StatsScreenProps {
 const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
   const navigation = useNavigation();
   const { currentUser } = useUserStore();
-  const { isDeveloperMode } = useDevStore();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Statistics | null>(null);
   const [topRoasters, setTopRoasters] = useState<TopRoaster[]>([]);
@@ -107,17 +105,7 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
       ];
     }
     
-    // Only analyze data if developer mode is enabled (to block access to mock data)
-    if (!isDeveloperMode) {
-      // Return empty insights for non-developer mode users
-      return [
-        {
-          title: '개발자 모드 필요',
-          subtitle: '통계를 보려면 개발자 모드를 활성화하세요',
-          detail: 'Profile > 개발자 모드 > 개발자 모드 활성화',
-        }
-      ];
-    }
+    // Load insights normally
     
     // 실제 데이터 분석
     const realmService = RealmService.getInstance();
@@ -228,11 +216,7 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
 
   const loadTastingTrends = async (): Promise<TastingTrend[]> => {
     try {
-      // Only load trends if developer mode is enabled (to block access to mock data)
-      if (!isDeveloperMode) {
-        // Return empty trends for non-developer mode users
-        return [];
-      }
+      // Load trends normally
       
       const realmService = RealmService.getInstance();
       const tastings = realmService.getTastingRecords({ isDeleted: false });

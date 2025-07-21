@@ -332,7 +332,7 @@ const CoffeeInfoScreen = () => {
       }
       
       // Navigate to FlavorSelection screen (step 2)
-      navigation.navigate('UnifiedFlavorScreen' as never);
+      navigation.navigate('UnifiedFlavor' as never);
     }
   };
 

@@ -14,7 +14,6 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import RealmService from '../services/realm/RealmService';
 import { ITastingRecord } from '../services/realm/schemas';
-import { useDevStore } from '../stores/useDevStore';
 import { Colors } from '../constants/colors';
 import { Heading2, BodyText, Caption } from '../components/common';
 
@@ -30,7 +29,6 @@ interface FilterOptions {
 
 export default function SearchScreen() {
   const navigation = useNavigation();
-  const { isDeveloperMode } = useDevStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>({});
@@ -51,16 +49,7 @@ export default function SearchScreen() {
       setLoading(true);
       const realmService = RealmService.getInstance();
       
-      // Only load data if developer mode is enabled (to block access to mock data)
-      if (!isDeveloperMode) {
-        // No data for non-developer mode users
-        setAllTastings([]);
-        setAvailableRoasteries([]);
-        setAvailableCafes([]);
-        setAvailableFlavors([]);
-        setLoading(false);
-        return;
-      }
+      // Load data normally
       
       // Get all tastings
       const tastings = await realmService.getTastingRecords({ isDeleted: false });

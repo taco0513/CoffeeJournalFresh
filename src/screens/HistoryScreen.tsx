@@ -17,7 +17,6 @@ import { ITastingRecord } from '../services/realm/schemas';
 import { HIGConstants, HIGColors } from '../styles/common';
 
 import { useUserStore } from '../stores/useUserStore';
-import { useDevStore } from '../stores/useDevStore';
 import { SkeletonList } from '../components/common/SkeletonLoader';
 
 interface GroupedTastings {
@@ -32,7 +31,6 @@ interface HistoryScreenProps {
 export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps) {
   const navigation = useNavigation();
   const { currentUser } = useUserStore();
-  const { isDeveloperMode } = useDevStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [allTastings, setAllTastings] = useState<ITastingRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,13 +64,7 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
         }
       }
       
-      // Only load data if developer mode is enabled (to block access to mock data)
-      if (!isDeveloperMode) {
-        // No data for non-developer mode users
-        setAllTastings([]);
-        setLoading(false);
-        return;
-      }
+      // Load data normally
       
       const tastings = await realmService.getTastingRecords({ isDeleted: false });
       const tastingsArray = Array.from(tastings);
@@ -93,40 +85,61 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
 
   // Filter and group tastings
   const groupedTastings = useMemo(() => {
-    let results = [...allTastings];
-    
-    // Apply search query
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      results = results.filter(tasting => 
-        tasting.coffeeName.toLowerCase().includes(query) ||
-        tasting.roastery.toLowerCase().includes(query) ||
-        (tasting.cafeName && tasting.cafeName.toLowerCase().includes(query)) ||
-        (tasting.origin && tasting.origin.toLowerCase().includes(query))
-      );
-    }
-    
-    // Sort results
-    if (sortBy === 'date') {
-      results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-    } else {
-      results.sort((a, b) => b.matchScoreTotal - a.matchScoreTotal);
-    }
-    
-    // Group by date
-    const grouped: GroupedTastings[] = [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const weekAgo = new Date(today);
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    const monthAgo = new Date(today);
-    monthAgo.setMonth(monthAgo.getMonth() - 1);
-    
-    const todayRecords = results.filter(t => t.createdAt >= today);
-    const yesterdayRecords = results.filter(t => t.createdAt >= yesterday && t.createdAt < today);
-    const weekRecords = results.filter(t => t.createdAt >= weekAgo && t.createdAt < yesterday);
+    try {
+      // Filter out invalid Realm objects first
+      let results = allTastings.filter(tasting => {
+        try {
+          // Check if object is still valid
+          return tasting && tasting.isValid && tasting.isValid() && tasting.coffeeName;
+        } catch {
+          return false;
+        }
+      });
+      
+      // Convert to plain objects to avoid Realm invalidation issues
+      results = results.map(tasting => ({
+        ...tasting,
+        id: tasting.id,
+        coffeeName: tasting.coffeeName,
+        roastery: tasting.roastery,
+        cafeName: tasting.cafeName,
+        origin: tasting.origin,
+        createdAt: new Date(tasting.createdAt),
+        matchScoreTotal: tasting.matchScoreTotal
+      }));
+      
+      // Apply search query
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        results = results.filter(tasting => 
+          tasting.coffeeName.toLowerCase().includes(query) ||
+          tasting.roastery.toLowerCase().includes(query) ||
+          (tasting.cafeName && tasting.cafeName.toLowerCase().includes(query)) ||
+          (tasting.origin && tasting.origin.toLowerCase().includes(query))
+        );
+      }
+      
+      // Sort results
+      if (sortBy === 'date') {
+        results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      } else {
+        results.sort((a, b) => b.matchScoreTotal - a.matchScoreTotal);
+      }
+      
+      // Group by date
+      const grouped: GroupedTastings[] = [];
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const weekAgo = new Date(today);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      const monthAgo = new Date(today);
+      monthAgo.setMonth(monthAgo.getMonth() - 1);
+      
+      const todayRecords = results.filter(t => t.createdAt >= today);
+      const yesterdayRecords = results.filter(t => t.createdAt >= yesterday && t.createdAt < today);
+      const weekRecords = results.filter(t => t.createdAt >= weekAgo && t.createdAt < yesterday);
     const monthRecords = results.filter(t => t.createdAt >= monthAgo && t.createdAt < weekAgo);
     const olderRecords = results.filter(t => t.createdAt < monthAgo);
     
@@ -146,39 +159,53 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
       grouped.push({ title: '이전', data: olderRecords });
     }
     
-    return grouped;
+      return grouped;
+    } catch (error) {
+      console.error('Error grouping tastings:', error);
+      return [];
+    }
   }, [allTastings, searchQuery, sortBy]);
 
   const renderTastingItem = ({ item }: { item: ITastingRecord }) => {
-    const formattedDate = item.createdAt.toLocaleDateString('ko-KR', { 
-      month: 'long', 
-      day: 'numeric' 
-    });
-    
-    return (
-      <TouchableOpacity
-        style={styles.tastingCard}
-        onPress={() => {
-          navigation.navigate('TastingDetail', { 
-            tastingId: item.id,
-            tasting: item 
-          });
-        }}
-        activeOpacity={0.7}
-      >
-        <View style={styles.cardHeader}>
-          <Text style={styles.coffeeName}>{item.coffeeName}</Text>
-          <View style={[styles.matchScoreContainer, {
-            backgroundColor: item.matchScoreTotal >= 85 ? HIGColors.green : 
-                           item.matchScoreTotal >= 70 ? HIGColors.orange : HIGColors.red
-          }]}>
-            <Text style={styles.matchScore}>{item.matchScoreTotal}%</Text>
+    // Check if the item is still valid (not deleted from Realm)
+    if (!item || !item.isValid || !item.isValid()) {
+      return null;
+    }
+
+    try {
+      const formattedDate = item.createdAt.toLocaleDateString('ko-KR', { 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      
+      return (
+        <TouchableOpacity
+          style={styles.tastingCard}
+          onPress={() => {
+            navigation.navigate('TastingDetail', { 
+              tastingId: item.id,
+              tasting: item 
+            });
+          }}
+          activeOpacity={0.7}
+        >
+          <View style={styles.cardHeader}>
+            <Text style={styles.coffeeName}>{item.coffeeName}</Text>
+            <View style={[styles.matchScoreContainer, {
+              backgroundColor: item.matchScoreTotal >= 85 ? HIGColors.green : 
+                             item.matchScoreTotal >= 70 ? HIGColors.orange : HIGColors.red
+            }]}>
+              <Text style={styles.matchScore}>{item.matchScoreTotal}%</Text>
+            </View>
           </View>
-        </View>
-        <Text style={styles.roasterName}>{item.roastery}</Text>
-        <Text style={styles.date}>{formattedDate}</Text>
-      </TouchableOpacity>
-    );
+          <Text style={styles.roasterName}>{item.roastery}</Text>
+          <Text style={styles.date}>{formattedDate}</Text>
+        </TouchableOpacity>
+      );
+    } catch (error) {
+      console.error('Error rendering tasting item:', error);
+      return null;
+    }
   };
 
   const renderSectionHeader = ({ section }: { section: GroupedTastings }) => (

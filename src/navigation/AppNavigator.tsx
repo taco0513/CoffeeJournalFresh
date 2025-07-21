@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { Text, View, ActivityIndicator } from 'react-native';
-import AuthService from '../services/supabase/auth';
+import { Text, View } from 'react-native';
 import { useUserStore } from '../stores/useUserStore';
 import { HIGColors } from '../styles/common';
 import StatusBadge from '../components/StatusBadge';
@@ -12,13 +11,8 @@ import ScreenContextService from '../services/ScreenContextService';
 // 화면 import
 import HomeScreen from '../screens/HomeScreen';
 import CoffeeInfoScreen from '../screens/CoffeeInfoScreen';
-import HistoryScreen from '../screens/HistoryScreen';
-import StatsScreen from '../screens/StatsScreen';
 import JournalIntegratedScreen from '../screens/JournalIntegratedScreen';
 import RoasterNotesScreen from '../screens/RoasterNotesScreen';
-import FlavorLevel1Screen from '../screens/flavor/FlavorLevel1Screen';
-import FlavorLevel2Screen from '../screens/flavor/FlavorLevel2Screen';
-import FlavorLevel3Screen from '../screens/flavor/FlavorLevel3Screen';
 import UnifiedFlavorScreen from '../screens/flavor/UnifiedFlavorScreen';
 import SensoryScreen from '../screens/SensoryScreen';
 import PersonalCommentScreen from '../screens/PersonalCommentScreen';
@@ -29,20 +23,11 @@ import SearchScreen from '../screens/SearchScreen';
 import TastingDetailScreen from '../screens/TastingDetailScreen';
 import DataTestScreen from '../screens/DataTestScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-// Feature Backlog - Photo features
-// import PhotoGalleryScreen from '../screens/PhotoGalleryScreen';
-// import PhotoViewerScreen from '../screens/PhotoViewerScreen';
-import CommunityFeedScreen from '../screens/CommunityFeedScreen';
-import CommunityReviewScreen from '../screens/CommunityReviewScreen';
-import ShareReviewScreen from '../screens/ShareReviewScreen';
-import SignInScreen from '../screens/auth/SignInScreen';
-import SignUpScreen from '../screens/auth/SignUpScreen';
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
 import { AdminCoffeeEditScreen } from '../screens/admin/AdminCoffeeEditScreen';
 import DeveloperScreen from '../screens/DeveloperScreen';
 import AdminFeedbackScreen from '../screens/admin/AdminFeedbackScreen';
 import { FeedbackProvider } from '../components/feedback';
-import OnboardingScreen from '../screens/OnboardingScreen';
 import { AchievementGalleryScreen } from '../screens/AchievementGalleryScreen';
 import { AchievementProvider } from '../contexts/AchievementContext';
 import { RealmProvider } from '../contexts/RealmContext';
@@ -83,22 +68,6 @@ function TastingFlow() {
         name="UnifiedFlavor" 
         component={UnifiedFlavorScreen} 
         options={{title: 'Select Flavors'}}
-      />
-      {/* Legacy flavor screens - to be removed */}
-      <Stack.Screen 
-        name="FlavorLevel1" 
-        component={FlavorLevel1Screen} 
-        options={{title: 'Select Category'}}
-      />
-      <Stack.Screen 
-        name="FlavorLevel2" 
-        component={FlavorLevel2Screen} 
-        options={{title: 'Select Subcategory'}}
-      />
-      <Stack.Screen 
-        name="FlavorLevel3" 
-        component={FlavorLevel3Screen} 
-        options={{title: 'Select Flavor'}}
       />
       <Stack.Screen 
         name="Sensory" 
@@ -174,40 +143,6 @@ function HistoryStack() {
 
 // StatsStack 제거 - Stats 탭에서 직접 StatsScreen 사용
 
-// 커뮤니티 스택 네비게이터 (Feature Backlog)
-function CommunityStack() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#FFFFFF',
-        },
-        headerTintColor: HIGColors.label,
-        headerTitleStyle: {
-          fontWeight: 'bold',
-          color: HIGColors.label,
-        },
-        ...commonHeaderOptions,
-      }}
-    >
-      <Stack.Screen 
-        name="CommunityFeed" 
-        component={CommunityFeedScreen} 
-        options={{title: 'Community'}}
-      />
-      <Stack.Screen 
-        name="CommunityReview" 
-        component={CommunityReviewScreen} 
-        options={{title: 'Review Details'}}
-      />
-      <Stack.Screen 
-        name="ShareReview" 
-        component={ShareReviewScreen} 
-        options={{title: 'Share Review'}}
-      />
-    </Stack.Navigator>
-  );
-}
 
 // 프로필 스택 네비게이터
 function ProfileStack() {
@@ -394,19 +329,6 @@ function MainTabs() {
   );
 }
 
-// Auth Stack Navigator
-function AuthStack() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="SignIn" component={SignInScreen} />
-      <Stack.Screen name="SignUp" component={SignUpScreen} />
-    </Stack.Navigator>
-  );
-}
 
 function AppNavigator() {
   // Skip authentication entirely - go directly to main app

@@ -40,12 +40,10 @@ const DeveloperScreen = () => {
   const {
     isDeveloperMode,
     showDebugInfo,
-    enableMockData,
     skipAnimations,
     bypassLogin,
     toggleDeveloperMode,
     setDebugInfo,
-    setMockData,
     setSkipAnimations,
     setBypassLogin,
     resetAllSettings,
@@ -53,90 +51,38 @@ const DeveloperScreen = () => {
 
   // Developer mode controls access to all developer features
 
-  // 실제 데이터 개수를 추적하는 상태
+  // Track current data count
   const [mockDataCount, setMockDataCount] = React.useState(0);
-
-  // 간단한 상태 동기화 함수 - getTastingRecords 사용 안함
-  const syncMockDataState = async () => {
+  // Simple function to load current data count
+  const loadDataCount = async () => {
     try {
-      console.log(`🔄 Syncing mock data state - current count: ${mockDataCount}, toggle: ${enableMockData}`);
-      
-      // 현재 상태를 기반으로 토글과 개수가 일치하는지만 확인
-      const shouldEnableMockData = mockDataCount > 0;
-      if (enableMockData !== shouldEnableMockData) {
-        console.log(`🔄 Updating mock data toggle: ${enableMockData} → ${shouldEnableMockData}`);
-        setMockData(shouldEnableMockData);
+      const realmService = RealmService.getInstance();
+      if (!realmService.isInitialized) {
+        await realmService.initialize();
       }
+      const tastings = await realmService.getTastingRecords({ isDeleted: false });
+      const count = Array.from(tastings).length;
+      setMockDataCount(count);
+      return count;
     } catch (error) {
-      console.error('Error syncing mock data state:', error);
+      console.error('Error loading data count:', error);
+      return 0;
     }
   };
 
-  // 화면이 로드될 때 실제 데이터 카운트를 가져옴
+  // Load initial data count on mount
   React.useEffect(() => {
-    const loadMockDataCount = async () => {
-      // Always check data count, regardless of developer mode
-      try {
-        const realmService = RealmService.getInstance();
-        
-        // Realm 초기화 확인
-        if (!realmService.isInitialized) {
-          try {
-            await realmService.initialize();
-          } catch (initError: any) {
-            if (!initError.message?.includes('already opened')) {
-              console.error('Failed to initialize Realm for count:', initError);
-              // If can't initialize, ensure mock data is off
-              setMockData(false);
-              setMockDataCount(0);
-              return;
-            }
-          }
-        }
-        
-        // getTastingRecords를 사용하여 실제 카운트 가져오기
-        const tastings = await realmService.getTastingRecords({ isDeleted: false });
-        const count = Array.from(tastings).length;
-        
-        console.log(`📊 Developer screen loaded - found ${count} records in database`);
-        setMockDataCount(count);
-        
-        // Mock 데이터 토글 상태를 실제 데이터 존재 여부와 동기화
-        // If toggle is ON but no data exists, we have a mismatch
-        if (enableMockData && count === 0) {
-          console.log('📊 Toggle is ON but no data exists - syncing toggle to OFF');
-          // Turn off the toggle to match reality
-          setMockData(false);
-          // Show alert to user
-          Alert.alert(
-            'Mock 데이터 없음', 
-            'Mock 데이터 토글이 켜져 있지만 데이터가 없습니다. 토글을 다시 켜서 데이터를 생성하세요.',
-            [{ text: '확인' }]
-          );
-        } else {
-          // Otherwise, sync toggle with actual data state
-          setMockData(count > 0);
-        }
-      } catch (error) {
-        console.error('Error loading mock data count:', error);
-        // 에러 발생 시 안전한 기본값으로 설정
-        console.log('📊 Error occurred - setting safe defaults (0 records, toggle OFF)');
-        setMockData(false);
-        setMockDataCount(0);
-      }
-    };
-    
-    loadMockDataCount();
-  }, []); // Remove isDeveloperMode dependency to always run on mount
+    loadDataCount();
+  }, []);
 
-  // 화면이 포커스될 때는 간단한 상태 동기화만
+  // Refresh data count when screen focuses
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      syncMockDataState();
+      loadDataCount();
     });
     
     return unsubscribe;
-  }, [navigation, mockDataCount, enableMockData]);
+  }, [navigation]);
 
   const handleClearStorage = () => {
     Alert.alert(
@@ -201,9 +147,8 @@ const DeveloperScreen = () => {
                     realm.delete(tastings);
                   });
                   
-                  // Mock 데이터 카운트와 토글 상태도 리셋
-                  setMockDataCount(0);
-                  setMockData(false);
+                  // Update count
+                  await loadDataCount();
                   
                   console.log('✅ Mock data reset completed successfully');
                   Alert.alert('완료', 'Mock 데이터가 삭제되었습니다.');
@@ -227,50 +172,19 @@ const DeveloperScreen = () => {
 
 
   const handleMockDataToggle = async (enable: boolean) => {
-    console.log(`🔄 Mock data toggle requested: ${enable}`);
-    
-    // Restrict mock data access to developer mode users only
     if (!isDeveloperMode) {
-      Alert.alert('액세스 제한', '이 기능은 개발자 모드에서만 사용 가능합니다.');
       return;
     }
     
-    if (enable) {
-      // 즉시 토글 상태 업데이트 (사용자 피드백)
-      setMockData(true);
+    try {
+      const realmService = RealmService.getInstance();
+      if (!realmService.isInitialized) {
+        await realmService.initialize();
+      }
       
-      try {
-        const realmService = RealmService.getInstance();
-        
-        // Realm 초기화 확인
-        if (!realmService.isInitialized) {
-          try {
-            console.log('🔄 Initializing Realm for mock data...');
-            await realmService.initialize();
-            console.log('✅ Realm initialized for mock data');
-          } catch (initError: any) {
-            if (initError.message?.includes('already opened')) {
-              console.log('✅ Realm already opened, continuing...');
-            } else {
-              console.error('❌ Realm initialization failed:', initError);
-              setMockData(false); // 실패 시 토글 되돌리기
-              Alert.alert('오류', 'Realm 초기화에 실패했습니다.');
-              return;
-            }
-          }
-        }
-        
-        // Realm 상태 다시 확인
-        if (!realmService.isInitialized) {
-          console.error('❌ Realm is still not initialized');
-          setMockData(false);
-          Alert.alert('오류', 'Realm이 초기화되지 않았습니다.');
-          return;
-        }
-        
-        console.log('✅ Realm is ready, proceeding to create mock data...');
+      if (enable) {
+        // Create mock data
 
-        // 5개의 Mock 데이터 - ITastingRecord 인터페이스에 맞춘 구조
         const mockData = [
           {
             cafeName: 'Blue Bottle Oakland',
@@ -414,179 +328,51 @@ const DeveloperScreen = () => {
           }
         ];
 
-        // 단일 트랜잭션으로 mock 데이터 생성
-        let savedCount = 0;
-        console.log('🔄 Starting to save mock data with single transaction...');
-        
-        try {
-          // Realm 강제 재초기화 먼저 수행
-          console.log('🔄 Force re-initializing Realm before using saveTasting...');
-          await realmService.initialize();
-          console.log('✅ Realm initialized successfully');
-          
-          // saveTasting 메소드 사용 (안정적으로 작동하는 메소드)
-          console.log('🔄 Using saveTasting method for reliable data creation...');
-          
-          for (let i = 0; i < mockData.length; i++) {
-            const data = mockData[i];
-            try {
-              console.log(`🔄 Creating record ${i + 1}/5 using saveTasting...`);
-              
-              // saveTasting 메소드는 내부에서 Realm 초기화를 처리함
-              const savedRecord = await realmService.saveTasting({
-                coffeeInfo: {
-                  cafeName: data.cafeName,
-                  roastery: data.roastery,
-                  coffeeName: data.coffeeName,
-                  origin: data.origin,
-                  variety: data.variety,
-                  altitude: data.altitude,
-                  process: data.process,
-                  temperature: data.temperature,
-                },
-                roasterNotes: data.roasterNotes,
-                selectedFlavors: data.flavorNotes, // 이미 올바른 형식으로 준비됨
-                sensoryAttributes: data.sensoryAttribute,
-                matchScore: {
-                  total: data.matchScoreTotal,
-                  flavorScore: data.matchScoreFlavor,
-                  sensoryScore: data.matchScoreSensory,
-                }
-              });
-              
-              if (savedRecord && savedRecord.id) {
-                savedCount++;
-                console.log(`✅ Record ${i + 1}/5 created successfully - ID: ${savedRecord.id}`);
-              }
-              
-              // 작은 지연
-              await new Promise(resolve => setTimeout(resolve, 100));
-              
-            } catch (itemError: any) {
-              console.error(`❌ Failed to create record ${i + 1}:`);
-              console.error('Error message:', itemError?.message || 'Unknown error');
-              // 개별 레코드 실패시 계속 진행 (전체 중단 안함)
+        // Save all mock data
+        for (const data of mockData) {
+          await realmService.saveTasting({
+            coffeeInfo: {
+              cafeName: data.cafeName,
+              roastery: data.roastery,
+              coffeeName: data.coffeeName,
+              origin: data.origin,
+              variety: data.variety,
+              altitude: data.altitude,
+              process: data.process,
+              temperature: data.temperature,
+            },
+            roasterNotes: data.roasterNotes,
+            selectedFlavors: data.flavorNotes,
+            sensoryAttributes: data.sensoryAttribute,
+            matchScore: {
+              total: data.matchScoreTotal,
+              flavorScore: data.matchScoreFlavor,
+              sensoryScore: data.matchScoreSensory,
             }
-          }
-          
-          console.log(`✅ Mock data creation completed - ${savedCount}/${mockData.length} records created`);
-          
-        } catch (realmError) {
-          console.error('❌ Mock data creation failed:', realmError);
-          
-          // 실패한 경우 토글 상태를 되돌림
-          setMockData(false);
-          Alert.alert(
-            '오류',
-            'Mock 데이터 추가에 실패했습니다.',
-            [{ text: '확인' }]
-          );
-          return;
+          });
         }
         
-        console.log(`📊 Save operation complete: ${savedCount}/${mockData.length} items saved`);
+        // Update UI
+        await loadDataCount();
+        Alert.alert('완료', '5개의 테스트 데이터가 추가되었습니다.');
         
-        // 성공적으로 저장된 레코드 수를 기준으로 업데이트 (검증 단계 제거)
-        const newTotalCount = mockDataCount + savedCount;
-        setMockDataCount(newTotalCount);
-        console.log(`🔍 Mock data count updated: ${newTotalCount} total records`);
-        console.log(`📊 Mock data added: ${savedCount} saved, new total: ${newTotalCount}`);
+      } else {
+        // Delete all data
+        const realm = realmService.getRealm();
+        realm.write(() => {
+          const tastings = realm.objects('TastingRecord');
+          realm.delete(tastings);
+        });
         
-        // 항상 5개가 추가되도록 보장
-        const expectedCount = 5;
-        
-        if (savedCount < expectedCount) {
-          console.warn(`⚠️ Expected ${expectedCount} records, but only saved ${savedCount}`);
-        }
-        
-        // savedCount가 0이면 오류, 그 외에는 성공으로 처리
-        if (savedCount === 0) {
-          setMockData(false); // 토글 되돌리기
-          Alert.alert('오류', 'Mock 데이터 저장에 실패했습니다. 콘솔을 확인해주세요.');
-          return;
-        }
-        
-        // 성공적으로 저장되면 확인 Alert (5개 기본 보장)
-        const finalMessage = savedCount === expectedCount ? 
-          `${expectedCount}개의 테스트 데이터가 성공적으로 추가되었습니다!` :
-          `${savedCount}개의 테스트 데이터가 추가되었습니다. (일부 실패)`;
-        
-        Alert.alert(
-          '완료', 
-          `${finalMessage}\n\n전체 기록: ${newTotalCount}개`,
-          [
-            { 
-              text: 'Journal로 이동', 
-              onPress: () => {
-                // Navigate back to main tabs first, then to Journal
-                navigation.navigate('MainTabs', { screen: 'Journal' });
-              }
-            },
-            { 
-              text: 'Home으로 이동', 
-              onPress: () => {
-                // Navigate to Home to see the new data
-                navigation.navigate('MainTabs', { screen: 'Home' });
-              }
-            },
-            { text: '확인', style: 'default' }
-          ]
-        );
-
-      } catch (error: any) {
-        console.error('Mock data error:', error);
-        setMockData(false); // 실패 시 토글 되돌리기
-        Alert.alert('오류', '데이터 추가 중 오류가 발생했습니다.');
+        // Update UI
+        await loadDataCount();
+        Alert.alert('완료', '모든 데이터가 삭제되었습니다.');
       }
-    } else {
-      // 즉시 토글 상태 업데이트 (사용자 피드백)
-      setMockData(false);
-      
-      Alert.alert(
-        '데이터 삭제',
-        '모든 테스트 데이터를 삭제하시겠습니까?',
-        [
-          { 
-            text: '취소', 
-            style: 'cancel',
-            onPress: () => setMockData(true) // 취소 시 토글 되돌리기
-          },
-          {
-            text: '삭제',
-            style: 'destructive',
-            onPress: async () => {
-              try {
-                const realmService = RealmService.getInstance();
-                
-                if (!realmService.isInitialized) {
-                  try {
-                    await realmService.initialize();
-                  } catch (initError: any) {
-                    if (!initError.message?.includes('already opened')) {
-                      setMockData(true); // 실패 시 토글 되돌리기
-                      Alert.alert('오류', 'Realm 초기화에 실패했습니다.');
-                      return;
-                    }
-                  }
-                }
-
-                const realm = realmService.getRealm();
-                realm.write(() => {
-                  realm.deleteAll();
-                });
-
-                setMockDataCount(0);
-                Alert.alert('완료', '모든 데이터가 삭제되었습니다.');
-
-              } catch (error: any) {
-                console.error('Delete error:', error);
-                setMockData(true); // 실패 시 토글 되돌리기
-                Alert.alert('오류', '데이터 삭제 중 오류가 발생했습니다.');
-              }
-            }
-          }
-        ]
-      );
+    } catch (error) {
+      console.error('Mock data toggle error:', error);
+      Alert.alert('오류', '작업 중 오류가 발생했습니다.');
+      // Reset display to match actual state
+      await loadDataCount();
     }
   };
 
@@ -783,7 +569,6 @@ count={[showDebugInfo].filter(Boolean).length}
             title="테스트 설정"
             icon={CategoryIcons.test}
             count={[
-              ...(isDeveloperMode ? [enableMockData] : []), 
               skipAnimations, 
               bypassLogin
             ].filter(Boolean).length}
@@ -792,9 +577,9 @@ count={[showDebugInfo].filter(Boolean).length}
             {/* Mock data toggle - only in developer mode */}
             {isDeveloperMode ? (
               <SettingRow
-                title="Mock 데이터 적용"
-                description={`테스트 커피 기록 (현재: ${mockDataCount}개)`}
-                value={enableMockData}
+                title="Mock 데이터"
+                description={`현재 ${mockDataCount}개의 테스트 데이터`}
+                value={mockDataCount > 0}
                 onValueChange={handleMockDataToggle}
               />
             ) : (

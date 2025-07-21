@@ -7,9 +7,6 @@ export type RootStackParamList = {
     OCRResult: { parsedInfo: any; rawTexts: string[] };
     RoasterNotes: undefined;
     UnifiedFlavor: undefined;
-    FlavorLevel1: undefined;
-    FlavorLevel2: undefined;
-    FlavorLevel3: undefined;
     Sensory: undefined;
     PersonalComment: undefined;
     Result: undefined;
