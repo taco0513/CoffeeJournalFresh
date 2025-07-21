@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,23 +9,38 @@ import {
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { useNavigation } from '@react-navigation/native';
-import { useTastingStore } from '../stores/tastingStore';
+import { useTastingStore, SelectedSensoryExpression } from '../stores/tastingStore';
 import { NavigationButton } from '../components/common';
 import { HIGConstants, hitSlop, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
+import EnhancedSensoryEvaluation from '../components/sensory/EnhancedSensoryEvaluation';
+import { SensoryOnboarding, checkShouldShowOnboarding } from '../components/sensory/SensoryOnboarding';
 
 type MouthfeelType = 'Clean' | 'Creamy' | 'Juicy' | 'Silky';
 
 const SensoryScreen = () => {
   const navigation = useNavigation();
-  const { currentTasting, updateField, saveTasting } = useTastingStore();
+  const { currentTasting, updateField, selectedSensoryExpressions, setSelectedSensoryExpressions } = useTastingStore();
   
   const [body, setBody] = useState(currentTasting.body || 3);
   const [acidity, setAcidity] = useState(currentTasting.acidity || 3);
   const [sweetness, setSweetness] = useState(currentTasting.sweetness || 3);
   const [finish, setFinish] = useState(currentTasting.finish || 3);
+  const [bitterness, setBitterness] = useState(currentTasting.bitterness || 3);
+  const [balance, setBalance] = useState(currentTasting.balance || 3);
   const [mouthfeel, setMouthfeel] = useState<MouthfeelType>(
     currentTasting.mouthfeel || 'Clean'
   );
+  const [showEnhanced, setShowEnhanced] = useState(true); // Default to Korean expressions
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Check if onboarding should be shown
+  useEffect(() => {
+    if (showEnhanced) {
+      checkShouldShowOnboarding().then(shouldShow => {
+        setShowOnboarding(shouldShow);
+      });
+    }
+  }, [showEnhanced]);
 
   const mouthfeelOptions: MouthfeelType[] = ['Clean', 'Creamy', 'Juicy', 'Silky'];
 
@@ -63,11 +78,27 @@ const SensoryScreen = () => {
     updateField('acidity', acidity);
     updateField('sweetness', sweetness);
     updateField('finish', finish);
+    updateField('bitterness', bitterness);
+    updateField('balance', balance);
     updateField('mouthfeel', mouthfeel);
     
     // 개인 감상평 화면으로 이동
     navigation.navigate('PersonalComment');
   };
+
+  // Convert EnhancedSensoryEvaluation format to TastingStore format
+  const handleExpressionChange = useCallback((expressions: any[]) => {
+    const converted: SelectedSensoryExpression[] = expressions.map(item => ({
+      categoryId: item.categoryId,
+      expressionId: item.expression.id,
+      korean: item.expression.korean,
+      english: item.expression.english,
+      emoji: item.expression.emoji,
+      intensity: 3, // Default intensity since we removed user selection
+      selected: true,
+    }));
+    setSelectedSensoryExpressions(converted);
+  }, [setSelectedSensoryExpressions]);
 
   const renderSlider = (
     title: string,
@@ -129,23 +160,72 @@ const SensoryScreen = () => {
           <Text style={styles.guideMessage}>
             ☕ 천천히 음미하며 각각의 요소를 느껴보세요
           </Text>
-        </View>
-
-        {/* Sensory Attributes */}
-        {renderSlider('바디감', body, setBody, '가벼움', '무거움')}
-        {renderSlider('산미', acidity, setAcidity, '약함', '강함')}
-        {renderSlider('단맛', sweetness, setSweetness, '없음', '강함')}
-        {renderSlider('여운', finish, setFinish, '짧음', '길음')}
-
-        {/* Mouthfeel Section */}
-        <View style={styles.mouthfeelSection}>
-          <Text style={styles.sectionTitle}>입안 느낌</Text>
-          <View style={styles.mouthfeelContainer}>
-            {mouthfeelOptions.map((option) => (
-              <MouthfeelButton key={option} option={option} />
-            ))}
+          
+          {/* Mode Toggle */}
+          <View style={styles.modeToggleContainer}>
+            <TouchableOpacity 
+              style={[styles.modeButton, !showEnhanced && styles.modeButtonActive]}
+              onPress={() => setShowEnhanced(false)}
+            >
+              <Text style={[styles.modeButtonText, !showEnhanced && styles.modeButtonTextActive]}>
+                기본 평가
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.modeButton, showEnhanced && styles.modeButtonActive]}
+              onPress={() => setShowEnhanced(true)}
+            >
+              <Text style={[styles.modeButtonText, showEnhanced && styles.modeButtonTextActive]}>
+                한국식 표현 🇰🇷
+              </Text>
+              {showEnhanced && (
+                <View style={styles.recommendedBadge}>
+                  <Text style={styles.recommendedBadgeText}>추천</Text>
+                </View>
+              )}
+            </TouchableOpacity>
           </View>
         </View>
+
+        {showEnhanced ? (
+          /* Enhanced Korean Sensory Evaluation */
+          <EnhancedSensoryEvaluation
+            selectedExpressions={selectedSensoryExpressions.map(item => ({
+              categoryId: item.categoryId,
+              expression: {
+                id: item.expressionId,
+                korean: item.korean,
+                english: item.english,
+                emoji: item.emoji,
+                intensity: Math.min(3, Math.max(1, item.intensity - 2)) as 1 | 2 | 3,
+                beginner: true,
+              },
+            }))}
+            onExpressionChange={handleExpressionChange}
+            beginnerMode={true}
+            showDescriptions={true}
+          />
+        ) : (
+          /* Traditional Slider Evaluation */
+          <>
+            {renderSlider('바디감', body, setBody, '가벼움', '무거움')}
+            {renderSlider('산미', acidity, setAcidity, '약함', '강함')}
+            {renderSlider('단맛', sweetness, setSweetness, '없음', '강함')}
+            {renderSlider('쓴맛', bitterness, setBitterness, '약함', '강함')}
+            {renderSlider('여운', finish, setFinish, '짧음', '길음')}
+            {renderSlider('밸런스', balance, setBalance, '불균형', '조화로운')}
+
+            {/* Mouthfeel Section */}
+            <View style={styles.mouthfeelSection}>
+              <Text style={styles.sectionTitle}>입안 느낌</Text>
+              <View style={styles.mouthfeelContainer}>
+                {mouthfeelOptions.map((option) => (
+                  <MouthfeelButton key={option} option={option} />
+                ))}
+              </View>
+            </View>
+          </>
+        )}
 
         {/* 완료 버튼 */}
         <TouchableOpacity 
@@ -158,6 +238,12 @@ const SensoryScreen = () => {
           </Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Onboarding Modal */}
+      <SensoryOnboarding
+        visible={showOnboarding}
+        onComplete={() => setShowOnboarding(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -333,6 +419,54 @@ const styles = StyleSheet.create({
   },
   completeButtonText: {
     color: '#FFFFFF',
+  },
+  // Mode Toggle Styles
+  modeToggleContainer: {
+    flexDirection: 'row',
+    backgroundColor: HIGColors.systemGray6,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    padding: 2,
+    marginTop: HIGConstants.SPACING_MD,
+    alignSelf: 'center',
+  },
+  modeButton: {
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderRadius: HIGConstants.cornerRadiusSmall,
+    minWidth: 120,
+    alignItems: 'center',
+    position: 'relative',
+  },
+  recommendedBadge: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: HIGColors.systemGreen,
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  recommendedBadgeText: {
+    fontSize: 10,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  modeButtonActive: {
+    backgroundColor: HIGColors.systemBlue,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  modeButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: HIGColors.secondaryLabel,
+  },
+  modeButtonTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
 });
 

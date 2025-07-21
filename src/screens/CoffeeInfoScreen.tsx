@@ -755,17 +755,18 @@ const CoffeeInfoScreen = () => {
               </View>
           </View>
 
-          {/* 다음 버튼 */}
-          <View style={styles.bottomContainer}>
-            <NavigationButton
-              title="다음"
-              onPress={handleNext}
-              disabled={!isValid}
-              variant="primary"
-            />
-          </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Bottom Button */}
+      <View style={styles.bottomContainer}>
+        <NavigationButton
+          title="다음"
+          onPress={handleNext}
+          disabled={!isValid}
+          variant="primary"
+        />
+      </View>
       
       {/* Feature Backlog - 카메라 모달 */}
       {/* <CameraModal
@@ -862,7 +863,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: HIGConstants.SPACING_LG,
   },
   form: {
     paddingHorizontal: HIGConstants.SPACING_LG,
@@ -922,11 +922,10 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   bottomContainer: {
-    padding: HIGConstants.SPACING_MD,
-    paddingTop: HIGConstants.SPACING_SM,
+    padding: HIGConstants.SPACING_LG,
+    backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.systemGray4,
-    backgroundColor: '#FFFFFF',
   },
   hintText: {
     fontSize: 12,

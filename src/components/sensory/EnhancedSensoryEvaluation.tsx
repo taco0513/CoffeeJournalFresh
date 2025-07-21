@@ -20,7 +20,6 @@ const { width } = Dimensions.get('window');
 interface SelectedExpression {
   categoryId: string;
   expression: SensoryExpression;
-  intensity: number; // 1-5 scale for UI
 }
 
 interface EnhancedSensoryEvaluationProps {
@@ -28,7 +27,10 @@ interface EnhancedSensoryEvaluationProps {
   onExpressionChange: (expressions: SelectedExpression[]) => void;
   beginnerMode?: boolean;
   showDescriptions?: boolean;
+  maxPerCategory?: number;
 }
+
+const MAX_PER_CATEGORY = 3;
 
 const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
   selectedExpressions,
@@ -53,26 +55,29 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
 
   const handleExpressionSelect = useCallback((
     categoryId: string,
-    expression: SensoryExpression,
-    intensity: number
+    expression: SensoryExpression
   ) => {
     const existingIndex = selectedExpressions.findIndex(
       item => item.categoryId === categoryId && item.expression.id === expression.id
     );
+    const categorySelections = selectedExpressions.filter(
+      item => item.categoryId === categoryId
+    );
+    const maxSelectionsPerCategory = 3;
 
     let newExpressions = [...selectedExpressions];
 
     if (existingIndex >= 0) {
-      if (newExpressions[existingIndex].intensity === intensity) {
-        // Same intensity clicked - remove the expression
-        newExpressions.splice(existingIndex, 1);
-      } else {
-        // Different intensity - update it
-        newExpressions[existingIndex] = { categoryId, expression, intensity };
-      }
+      // Already selected - remove it
+      newExpressions.splice(existingIndex, 1);
     } else {
+      // Check if category limit reached
+      if (categorySelections.length >= maxSelectionsPerCategory) {
+        // Optionally show a message or haptic feedback
+        return;
+      }
       // New expression - add it
-      newExpressions.push({ categoryId, expression, intensity });
+      newExpressions.push({ categoryId, expression });
     }
 
     onExpressionChange(newExpressions);
@@ -80,109 +85,53 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
 
   const isExpressionSelected = useCallback((
     categoryId: string,
-    expressionId: string,
-    intensity: number
-  ): boolean => {
-    const selected = selectedExpressions.find(
-      item => item.categoryId === categoryId && item.expression.id === expressionId
-    );
-    return selected ? selected.intensity === intensity : false;
-  }, [selectedExpressions]);
-
-  const getSelectedIntensity = useCallback((
-    categoryId: string,
     expressionId: string
-  ): number | null => {
-    const selected = selectedExpressions.find(
+  ): boolean => {
+    return selectedExpressions.some(
       item => item.categoryId === categoryId && item.expression.id === expressionId
     );
-    return selected ? selected.intensity : null;
   }, [selectedExpressions]);
 
-  const renderStarRating = (
-    categoryId: string,
-    expression: SensoryExpression,
-    maxStars: number = 5
-  ) => {
-    const selectedIntensity = getSelectedIntensity(categoryId, expression.id);
-    
-    return (
-      <View style={styles.starContainer}>
-        {[1, 2, 3, 4, 5].map((star) => (
-          <TouchableOpacity
-            key={star}
-            style={[
-              styles.starButton,
-              star <= (selectedIntensity || 0) && styles.starButtonSelected,
-            ]}
-            onPress={() => handleExpressionSelect(categoryId, expression, star)}
-            activeOpacity={0.7}
-          >
-            <Text style={[
-              styles.starText,
-              star <= (selectedIntensity || 0) && styles.starTextSelected,
-            ]}>
-              ★
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    );
-  };
-
-  const renderExpressionCard = (
+  const renderExpressionButton = (
     categoryId: string,
     expression: SensoryExpression
   ) => {
-    const isSelected = getSelectedIntensity(categoryId, expression.id) !== null;
+    const isSelected = isExpressionSelected(categoryId, expression.id);
     const category = koreanSensoryData[categoryId];
-
+    
     return (
-      <View
-        key={expression.id}
+      <TouchableOpacity
         style={[
-          styles.expressionCard,
-          isSelected && { borderColor: category.color, backgroundColor: `${category.color}10` }
+          styles.expressionButton,
+          isSelected && { 
+            backgroundColor: category?.color || '#007AFF',
+            borderColor: category?.color || '#007AFF'
+          }
         ]}
+        onPress={() => handleExpressionSelect(categoryId, expression)}
+        activeOpacity={0.7}
       >
-        <View style={styles.expressionHeader}>
-          <View style={styles.expressionLabels}>
-            <Text style={styles.expressionEmoji}>{expression.emoji}</Text>
-            <View style={styles.expressionTexts}>
-              <Text style={[styles.expressionKorean, isSelected && { color: category.color }]}>
-                {expression.korean}
-              </Text>
-              <Text style={styles.expressionEnglish}>
-                {expression.english}
-              </Text>
-            </View>
-          </View>
-          
-          {beginnerMode && expression.beginner && (
-            <View style={styles.beginnerBadge}>
-              <Text style={styles.beginnerBadgeText}>초보자 추천</Text>
-            </View>
-          )}
-        </View>
-
-        {showDescriptions && expression.description && (
-          <Text style={styles.expressionDescription}>
-            {expression.description}
-          </Text>
+        <Text style={styles.expressionEmoji}>{expression.emoji}</Text>
+        <Text style={[
+          styles.expressionButtonText,
+          isSelected && styles.expressionButtonTextSelected
+        ]}>
+          {expression.korean}
+        </Text>
+        {isSelected && (
+          <Text style={styles.checkmark}>✓</Text>
         )}
-
-        <View style={styles.ratingSection}>
-          <Text style={styles.ratingLabel}>강도</Text>
-          {renderStarRating(categoryId, expression)}
-        </View>
-      </View>
+      </TouchableOpacity>
     );
   };
+
+  // Remove the old renderExpressionCard function - we'll use renderExpressionButton directly
 
   const renderCategory = (category: typeof koreanSensoryData[keyof typeof koreanSensoryData]) => {
     const isExpanded = expandedCategories.has(category.id);
     const expressions = getSensoryExpressionsByCategory(category.id, beginnerMode);
-    const selectedCount = selectedExpressions.filter(item => item.categoryId === category.id).length;
+    const selectedCount = selectedExpressions?.filter(item => item?.categoryId === category.id).length || 0;
+    const maxSelectionsPerCategory = 3;
 
     return (
       <View key={category.id} style={styles.categoryContainer}>
@@ -208,11 +157,16 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
           </View>
 
           <View style={styles.categoryHeaderRight}>
-            {selectedCount > 0 && (
-              <View style={[styles.selectionBadge, { backgroundColor: category.color }]}>
-                <Text style={styles.selectionBadgeText}>{selectedCount}</Text>
-              </View>
-            )}
+            <View style={[styles.selectionBadge, { 
+              backgroundColor: selectedCount > 0 ? category?.color || '#007AFF' : '#E0E0E0' 
+            }]}>
+              <Text style={[
+                styles.selectionBadgeText,
+                selectedCount === 0 && { color: '#666666' }
+              ]}>
+                {selectedCount}/{maxSelectionsPerCategory}
+              </Text>
+            </View>
             <Text style={[
               styles.expandIcon,
               { transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }
@@ -230,13 +184,64 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
 
         {isExpanded && (
           <View style={styles.expressionsContainer}>
-            {expressions.map((expression) =>
-              renderExpressionCard(category.id, expression)
-            )}
+            {/* Guide text for multi-selection */}
+            <View style={styles.guideTextContainer}>
+              <Text style={styles.guideText}>
+                ⭐ 표시는 초보자 추천 • 최대 3개까지 선택 가능
+              </Text>
+            </View>
+            <View style={styles.expressionsGrid}>
+              {expressions.map((expression) => {
+                const categorySelections = selectedExpressions.filter(
+                  item => item.categoryId === category.id
+                );
+                const isDisabled = categorySelections.length >= maxSelectionsPerCategory && 
+                  !isExpressionSelected(category.id, expression.id);
+                
+                return (
+                  <TouchableOpacity
+                    key={expression.id}
+                    style={[
+                      styles.expressionButton,
+                      isExpressionSelected(category.id, expression.id) && { 
+                        backgroundColor: category?.color || '#007AFF',
+                        borderColor: category?.color || '#007AFF'
+                      },
+                      isDisabled && styles.expressionButtonDisabled
+                    ]}
+                    onPress={() => !isDisabled && handleExpressionSelect(category.id, expression)}
+                    activeOpacity={isDisabled ? 1 : 0.7}
+                    disabled={isDisabled}
+                  >
+                    <Text style={styles.expressionEmoji}>{expression.emoji}</Text>
+                    <Text style={[
+                      styles.expressionButtonText,
+                      isExpressionSelected(category.id, expression.id) && styles.expressionButtonTextSelected,
+                      isDisabled && styles.expressionButtonTextDisabled
+                    ]}>
+                      {expression.korean}
+                    </Text>
+                    {expression.beginner && (
+                      <Text style={styles.beginnerStar}>⭐</Text>
+                    )}
+                    {isExpressionSelected(category.id, expression.id) && (
+                      <Text style={styles.checkmark}>✓</Text>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
             {expressions.length === 0 && (
               <Text style={styles.noExpressionsText}>
                 {beginnerMode ? '초보자용 표현이 준비 중입니다' : '표현이 없습니다'}
               </Text>
+            )}
+            {selectedCount === 0 && expressions.length > 0 && (
+              <View style={styles.emptyStateContainer}>
+                <Text style={styles.emptyStateText}>
+                  이 카테고리에서 느껴지는 특징을 선택해주세요
+                </Text>
+              </View>
             )}
           </View>
         )}
@@ -257,50 +262,54 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        <Text style={styles.title}>감각 평가</Text>
+        <Text style={styles.title}>한국식 감각 평가</Text>
         <Text style={styles.subtitle}>
-          {beginnerMode ? '초보자 친화적' : '전문가'} 모드
+          커피에서 느껴지는 특징을 선택해주세요
         </Text>
+        <View style={styles.headerGuide}>
+          <Text style={styles.headerGuideText}>
+            💡 각 카테고리별로 최대 3개까지 다중 선택 가능합니다
+          </Text>
+        </View>
       </View>
 
       {/* Selected Summary */}
-      {selectedExpressions.length > 0 && (
-        <View style={styles.summaryContainer}>
-          <Text style={styles.summaryTitle}>선택된 표현 ({selectedExpressions.length}개)</Text>
+      <View style={[
+        styles.summaryContainer,
+        selectedExpressions.length === 0 && styles.summaryContainerEmpty
+      ]}>
+        <Text style={styles.summaryTitle}>
+          선택된 표현 ({selectedExpressions.length}개)
+        </Text>
+        {selectedExpressions.length > 0 ? (
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.summaryItems}>
               {selectedExpressions.map((item, index) => {
-                const category = koreanSensoryData[item.categoryId];
+                const category = koreanSensoryData[item?.categoryId] || koreanSensoryData.acidity;
                 return (
-                  <View
-                    key={`${item.categoryId}-${item.expression.id}-${index}`}
+                  <TouchableOpacity
+                    key={`${item?.categoryId}-${item?.expression?.id}-${index}`}
                     style={[
                       styles.summaryItem,
                       { borderColor: category.color, backgroundColor: `${category.color}15` }
                     ]}
+                    onPress={() => handleExpressionSelect(item.categoryId, item.expression)}
+                    activeOpacity={0.7}
                   >
-                    <Text style={styles.summaryItemEmoji}>{item.expression.emoji}</Text>
-                    <Text style={styles.summaryItemText}>{item.expression.korean}</Text>
-                    <View style={styles.summaryStars}>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Text
-                          key={star}
-                          style={[
-                            styles.summaryStarText,
-                            { color: star <= item.intensity ? category.color : '#E0E0E0' }
-                          ]}
-                        >
-                          ★
-                        </Text>
-                      ))}
-                    </View>
-                  </View>
+                    <Text style={styles.summaryItemEmoji}>{item?.expression?.emoji}</Text>
+                    <Text style={styles.summaryItemText}>{item?.expression?.korean}</Text>
+                    <Text style={styles.summaryItemRemove}>×</Text>
+                  </TouchableOpacity>
                 );
               })}
             </View>
           </ScrollView>
-        </View>
-      )}
+        ) : (
+          <Text style={styles.summaryEmptyText}>
+            아직 선택된 표현이 없습니다. 아래 카테고리를 탭하여 시작하세요.
+          </Text>
+        )}
+      </View>
 
       {/* Category Sections */}
       <View style={styles.categoriesContainer}>
@@ -339,6 +348,19 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#7F8C8D',
+    marginBottom: 8,
+  },
+  headerGuide: {
+    backgroundColor: '#E3F2FD',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 8,
+  },
+  headerGuideText: {
+    fontSize: 14,
+    color: '#1976D2',
+    textAlign: 'center',
+    fontWeight: '500',
   },
 
   // Summary section
@@ -347,6 +369,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F9FA',
     borderBottomWidth: 1,
     borderBottomColor: '#E9ECEF',
+  },
+  summaryContainerEmpty: {
+    backgroundColor: '#FFF3E0',
+  },
+  summaryEmptyText: {
+    fontSize: 14,
+    color: '#F57C00',
+    textAlign: 'center',
+    marginTop: 8,
+    fontStyle: 'italic',
   },
   summaryTitle: {
     fontSize: 16,
@@ -376,12 +408,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 4,
   },
-  summaryStars: {
-    flexDirection: 'row',
-  },
-  summaryStarText: {
-    fontSize: 10,
-    marginHorizontal: 1,
+  summaryItemRemove: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#666666',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    textAlign: 'center',
+    lineHeight: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
 
   // Categories
@@ -431,12 +475,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectionBadge: {
-    minWidth: 24,
+    minWidth: 40,
     height: 24,
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
+    paddingHorizontal: 8,
   },
   selectionBadgeText: {
     color: '#FFFFFF',
@@ -479,10 +524,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
-  expressionEmoji: {
-    fontSize: 20,
-    marginRight: 8,
-  },
   expressionTexts: {
     flex: 1,
   },
@@ -514,33 +555,74 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
 
-  // Star Rating
-  ratingSection: {
+  // Expression Button
+  expressionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  expressionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: '#F8F9FA',
+    borderWidth: 1,
+    borderColor: '#E9ECEF',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginRight: 8,
+    marginBottom: 8,
   },
-  ratingLabel: {
+  expressionEmoji: {
+    fontSize: 16,
+    marginRight: 6,
+  },
+  expressionButtonText: {
     fontSize: 14,
     color: '#495057',
     fontWeight: '500',
   },
-  starContainer: {
-    flexDirection: 'row',
+  expressionButtonTextSelected: {
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
-  starButton: {
-    paddingHorizontal: 4,
-    paddingVertical: 4,
+  expressionButtonDisabled: {
+    opacity: 0.5,
+    backgroundColor: '#F5F5F5',
   },
-  starButtonSelected: {
-    backgroundColor: 'transparent',
+  expressionButtonTextDisabled: {
+    color: '#BDBDBD',
   },
-  starText: {
-    fontSize: 18,
-    color: '#E0E0E0',
+  beginnerStar: {
+    fontSize: 12,
+    marginLeft: 4,
   },
-  starTextSelected: {
-    color: '#FFC107',
+  checkmark: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    marginLeft: 4,
+    fontWeight: '600',
+  },
+  guideTextContainer: {
+    marginBottom: 12,
+  },
+  guideText: {
+    fontSize: 13,
+    color: '#666666',
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+  emptyStateContainer: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  emptyStateText: {
+    fontSize: 14,
+    color: '#6C757D',
+    textAlign: 'center',
   },
 
   // Footer

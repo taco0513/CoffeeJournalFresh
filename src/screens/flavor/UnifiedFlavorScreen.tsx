@@ -1,9 +1,8 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   TextInput,
@@ -126,11 +125,16 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
     );
   };
 
-  // Check if a subcategory (level2) is selected
+  // Check if a subcategory (level2) is selected directly OR has any selected flavors
   const isSubcategorySelected = (level1: string, level2: string) => {
     return selectedPaths.some(
-      path => path.level1 === level1 && path.level2 === level2 && !path.level3
+      path => path.level1 === level1 && path.level2 === level2 // This includes both direct subcategory selections and flavor selections
     );
+  };
+
+  // Get selected count for this category
+  const getCategorySelectedCount = () => {
+    return selectedPaths.filter(path => path.level1 === category).length;
   };
 
   // Get subcategory preview text
@@ -149,7 +153,7 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
         onPress={onToggle}
         activeOpacity={0.7}
       >
-        <View style={[styles.categoryColorBar, { backgroundColor: categoryColor }]} />
+        <View style={[styles.categoryColorBar, { backgroundColor: categoryColor }]} pointerEvents="none" />
         <View style={styles.categoryContent}>
           <View style={styles.categoryLeft}>
             <View style={styles.categoryTitleRow}>
@@ -161,6 +165,11 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
             )}
           </View>
           <View style={styles.categoryRight}>
+            {getCategorySelectedCount() > 0 && (
+              <View style={styles.categorySelectedBadge}>
+                <Text style={styles.categorySelectedCount}>{getCategorySelectedCount()}</Text>
+              </View>
+            )}
             <View style={styles.categoryBadge}>
               <Text style={styles.categoryCount}>{filteredSubCategories.length}</Text>
             </View>
@@ -173,28 +182,46 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
 
       {expanded && filteredSubCategories.length > 0 && (
         <View style={styles.categoryExpandedContent}>
+          {/* Multi-selection guide */}
+          <View style={styles.categoryGuide}>
+            <Text style={styles.categoryGuideText}>
+              💡 하위 카테고리를 탭하여 세부 향미를 선택하세요
+            </Text>
+          </View>
+          
           {/* Subcategory chips */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.subCategoryScroll}>
             {filteredSubCategories.map(sub => {
               const isSelected = isSubcategorySelected(category, sub.name);
+              const isDirectlySelected = selectedPaths.some(
+                path => path.level1 === category && path.level2 === sub.name && !path.level3
+              );
+              const hasSelectedFlavors = selectedPaths.some(
+                path => path.level1 === category && path.level2 === sub.name && path.level3
+              );
+              
               return (
                 <TouchableOpacity
                   key={sub.name}
                   style={[
                     styles.subCategoryChip,
-                    (expandedSubCategories.has(`${category}-${sub.name}`) || isSelected) && styles.subCategoryChipSelected,
-                    isSelected && styles.subCategoryChipFullySelected,
+                    expandedSubCategories.has(`${category}-${sub.name}`) && styles.subCategoryChipSelected,
+                    isDirectlySelected && styles.subCategoryChipFullySelected,
+                    hasSelectedFlavors && !isDirectlySelected && styles.subCategoryChipChildSelected,
                   ]}
                   onPress={() => {
                     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                    if (isSelected) {
-                      // If already selected, remove selection and collapse
+                    if (isDirectlySelected) {
+                      // If directly selected as subcategory, remove selection and collapse
                       onSelectSubcategory(category, sub.name);
                       // Also collapse the expanded content
                       const subcategoryKey = `${category}-${sub.name}`;
                       if (expandedSubCategories.has(subcategoryKey)) {
                         onToggleSubcategory(subcategoryKey);
                       }
+                    } else if (hasSelectedFlavors) {
+                      // If has selected flavors, just toggle expansion
+                      onToggleSubcategory(`${category}-${sub.name}`);
                     } else {
                       // If not selected, select the subcategory AND expand it
                       onSelectSubcategory(category, sub.name);
@@ -205,8 +232,9 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                   <Text
                     style={[
                       styles.subCategoryText,
-                      (expandedSubCategories.has(`${category}-${sub.name}`) || isSelected) && styles.subCategoryTextSelected,
-                      isSelected && styles.subCategoryTextFullySelected,
+                      expandedSubCategories.has(`${category}-${sub.name}`) && styles.subCategoryTextSelected,
+                      isDirectlySelected && styles.subCategoryTextFullySelected,
+                      hasSelectedFlavors && !isDirectlySelected && styles.subCategoryTextChildSelected,
                     ]}
                   >
                     {sub.koreanName}
@@ -317,29 +345,7 @@ export default function UnifiedFlavorScreen() {
 
   const selectedPaths = currentTasting.selectedFlavors || [];
 
-  // Clean up orphaned expanded subcategories (subcategories that are expanded but not selected)
-  useEffect(() => {
-    const selectedSubcategoryKeys = new Set(
-      selectedPaths
-        .filter(path => !path.level3) // Only subcategory selections
-        .map(path => `${path.level1}-${path.level2}`)
-    );
-    
-    setExpandedSubCategories(prev => {
-      const newSet = new Set(prev);
-      let hasChanges = false;
-      
-      // Remove expanded subcategories that are no longer selected
-      for (const key of newSet) {
-        if (!selectedSubcategoryKeys.has(key)) {
-          newSet.delete(key);
-          hasChanges = true;
-        }
-      }
-      
-      return hasChanges ? newSet : prev;
-    });
-  }, [selectedPaths]);
+  // Simply use expanded categories state without any complex logic
 
   // Handle subcategory (level2) selection
   const handleSelectSubcategory = useCallback((level1: string, level2: string) => {
@@ -372,7 +378,7 @@ export default function UnifiedFlavorScreen() {
     }
     
     updateField('selectedFlavors', currentPaths);
-  }, [selectedPaths, updateField]);
+  }, [updateField]);
 
   const handleSelectFlavor = useCallback((path: FlavorPath) => {
     const currentPaths = [...selectedPaths];
@@ -399,7 +405,7 @@ export default function UnifiedFlavorScreen() {
     }
 
     updateField('selectedFlavors', currentPaths);
-  }, [selectedPaths, updateField]);
+  }, [updateField]);
 
   const handleRemoveFlavor = useCallback((index: number) => {
     const currentPaths = [...selectedPaths];
@@ -418,7 +424,7 @@ export default function UnifiedFlavorScreen() {
         return newSet;
       });
     }
-  }, [selectedPaths, updateField]);
+  }, [updateField]);
 
   const toggleCategory = useCallback((category: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -446,12 +452,14 @@ export default function UnifiedFlavorScreen() {
   
   const toggleAllCategories = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    if (expandedCategories.length === flavorData.length) {
-      setExpandedCategories([]);
-    } else {
-      setExpandedCategories(flavorData.map(item => item.category));
-    }
-  }, [expandedCategories]);
+    setExpandedCategories(prev => {
+      if (prev.length === flavorData.length) {
+        return [];
+      } else {
+        return flavorData.map(item => item.category);
+      }
+    });
+  }, []);
 
   const handleNext = () => {
     navigation.navigate('Sensory' as never);
@@ -462,7 +470,7 @@ export default function UnifiedFlavorScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* Navigation Bar */}
       <View style={styles.navigationBar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -485,6 +493,9 @@ export default function UnifiedFlavorScreen() {
       <View style={styles.guideMessageContainer}>
         <Text style={styles.guideMessage}>
           🎯 커피에서 느껴지는 향과 맛을 선택해보세요
+        </Text>
+        <Text style={styles.guideSubMessage}>
+          💡 각 향미는 여러 개 선택 가능합니다 (최대 5개)
         </Text>
       </View>
 
@@ -513,11 +524,11 @@ export default function UnifiedFlavorScreen() {
           <Text style={styles.stickyHeaderTitle}>
             선택한 향미 ({selectedPaths.length}/5)
           </Text>
-          {selectedPaths.length > 0 && (
-            <TouchableOpacity onPress={() => updateField('selectedFlavors', [])}>
-              <Text style={styles.clearAllButton}>전체 삭제</Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity onPress={toggleAllCategories}>
+            <Text style={styles.toggleAllText}>
+              {expandedCategories.length === flavorData.length ? '모든 카테고리 닫기' : '모든 카테고리 열기'}
+            </Text>
+          </TouchableOpacity>
         </View>
         {selectedPaths.length > 0 ? (
           <ScrollView 
@@ -563,35 +574,84 @@ export default function UnifiedFlavorScreen() {
             })}
           </ScrollView>
         ) : (
-          <Text style={styles.emptyMessage}>최대 5개까지 선택 가능</Text>
+          <View style={styles.emptyStateContainer}>
+            <Text style={styles.emptyMessage}>
+              아직 선택된 향미가 없습니다
+            </Text>
+            <Text style={styles.emptySubMessage}>
+              아래 카테고리를 탭하여 시작하세요 ⬇️
+            </Text>
+          </View>
         )}
-      </View>
-      
-      {/* 안내 메시지 */}
-      <View style={styles.guideContainer}>
-        <TouchableOpacity onPress={toggleAllCategories}>
-          <Text style={styles.toggleAllButton}>
-            {expandedCategories.length === flavorData.length ? '모든 카테고리 닫기' : '모든 카테고리 열기'}
-          </Text>
-        </TouchableOpacity>
       </View>
 
       {/* Content */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {flavorData.map(item => (
-          <CategoryAccordion
-            key={item.category}
-            category={item.category}
-            expanded={expandedCategories.includes(item.category)}
-            onToggle={() => toggleCategory(item.category)}
-            onSelectFlavor={handleSelectFlavor}
-            onSelectSubcategory={handleSelectSubcategory}
-            selectedPaths={selectedPaths}
-            searchQuery={searchQuery}
-            expandedSubCategories={expandedSubCategories}
-            onToggleSubcategory={toggleSubcategory}
-          />
-        ))}
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}>
+        {(() => {
+          // Check if any categories have matching items when searching
+          const hasResults = !searchQuery || flavorData.some(item => {
+            const categoryData = flavorData.find(d => d.category === item.category);
+            if (!categoryData) return false;
+            
+            return categoryData.subcategories.some(sub =>
+              sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              sub.koreanName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              sub.flavors.some(f =>
+                f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+            );
+          });
+
+          if (!hasResults) {
+            return (
+              <View style={styles.noResultsContainer}>
+                <Text style={styles.noResultsEmoji}>🔍</Text>
+                <Text style={styles.noResultsText}>
+                  "{searchQuery}" 검색 결과가 없습니다
+                </Text>
+                <Text style={styles.noResultsSubtext}>
+                  다른 키워드로 검색해보세요
+                </Text>
+              </View>
+            );
+          }
+
+          return flavorData.map(item => {
+            // Check if category has search results
+            const hasSearchResults = !searchQuery || item.subcategories.some(sub =>
+              sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              sub.koreanName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              sub.flavors.some(f =>
+                f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+            );
+
+            if (!hasSearchResults) return null;
+
+            return (
+              <CategoryAccordion
+                key={item.category}
+                category={item.category}
+                expanded={searchQuery ? true : expandedCategories.includes(item.category)}
+                onToggle={() => {
+                  if (!searchQuery) {
+                    toggleCategory(item.category);
+                  }
+                }}
+                onSelectFlavor={handleSelectFlavor}
+                onSelectSubcategory={handleSelectSubcategory}
+                selectedPaths={selectedPaths}
+                searchQuery={searchQuery}
+                expandedSubCategories={expandedSubCategories}
+                onToggleSubcategory={toggleSubcategory}
+              />
+            );
+          }).filter(Boolean);
+        })()}
       </ScrollView>
 
       {/* Bottom Button */}
@@ -606,7 +666,7 @@ export default function UnifiedFlavorScreen() {
           </Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -614,6 +674,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    paddingTop: Platform.OS === 'ios' ? 47 : 0,
   },
   navigationBar: {
     height: 44,
@@ -669,6 +730,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '500',
   },
+  guideSubMessage: {
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    marginTop: 4,
+  },
   searchContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
@@ -677,9 +744,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: HIGColors.systemGray6,
-    borderRadius: HIGConstants.cornerRadiusMedium,
+    borderRadius: 12,
     paddingHorizontal: HIGConstants.SPACING_MD,
     height: 44,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray5,
   },
   searchIcon: {
     fontSize: 16,
@@ -701,6 +770,11 @@ const styles = StyleSheet.create({
     borderBottomColor: HIGColors.systemGray5,
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   stickyHeaderEmpty: {
     paddingBottom: HIGConstants.SPACING_XS,
@@ -716,30 +790,24 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: HIGColors.label,
   },
-  clearAllButton: {
+  toggleAllText: {
     fontSize: 14,
-    color: HIGColors.systemRed,
+    color: HIGColors.systemBlue,
     fontWeight: '500',
+  },
+  emptyStateContainer: {
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_SM,
   },
   emptyMessage: {
     fontSize: 14,
-    color: HIGColors.tertiaryLabel,
-    fontStyle: 'italic',
-  },
-  guideContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_SM,
-    backgroundColor: HIGColors.systemGray6,
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.systemGray4,
-  },
-  toggleAllButton: {
-    fontSize: 13,
-    color: HIGColors.systemBlue,
+    color: HIGColors.secondaryLabel,
     fontWeight: '500',
+  },
+  emptySubMessage: {
+    fontSize: 12,
+    color: HIGColors.tertiaryLabel,
+    marginTop: 4,
   },
   selectedScrollContent: {
     alignItems: 'center',
@@ -798,14 +866,12 @@ const styles = StyleSheet.create({
   },
   categoryContainer: {
     marginHorizontal: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_MD,
   },
   categoryCard: {
-    backgroundColor: 'transparent',
-    borderRadius: 0,
+    backgroundColor: '#FFFFFF',
+    borderRadius: HIGConstants.cornerRadiusLarge,
     overflow: 'visible',
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.systemGray5,
   },
   categoryCardExpanded: {
     backgroundColor: HIGColors.systemGray6,
@@ -816,8 +882,8 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     bottom: 0,
-    width: 3,
-    opacity: 0.6,
+    width: 4,
+    opacity: 0.8,
   },
   categoryContent: {
     flexDirection: 'row',
@@ -854,14 +920,26 @@ const styles = StyleSheet.create({
   categoryBadge: {
     backgroundColor: HIGColors.systemGray5,
     paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: 1,
-    borderRadius: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
     marginRight: HIGConstants.SPACING_SM,
   },
   categoryCount: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: HIGColors.label,
+  },
+  categorySelectedBadge: {
+    backgroundColor: HIGColors.systemBlue,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: 2,
+    borderRadius: 10,
+    marginRight: HIGConstants.SPACING_XS,
+  },
+  categorySelectedCount: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   expandIcon: {
     fontSize: 20,
@@ -872,11 +950,20 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '90deg' }],
   },
   categoryExpandedContent: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: HIGConstants.SPACING_XS,
+    backgroundColor: '#FAFAFA',
+    paddingVertical: HIGConstants.SPACING_SM,
     marginTop: 0,
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.systemGray5,
+    borderBottomLeftRadius: HIGConstants.cornerRadiusLarge,
+    borderBottomRightRadius: HIGConstants.cornerRadiusLarge,
+  },
+  categoryGuide: {
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingBottom: HIGConstants.SPACING_SM,
+  },
+  categoryGuideText: {
+    fontSize: 12,
+    color: HIGColors.secondaryLabel,
+    fontStyle: 'italic',
   },
   subCategoryScroll: {
     paddingHorizontal: HIGConstants.SPACING_MD,
@@ -911,6 +998,15 @@ const styles = StyleSheet.create({
   subCategoryTextFullySelected: {
     color: '#FFFFFF',
     fontWeight: '700',
+  },
+  subCategoryChipChildSelected: {
+    backgroundColor: '#E3F2FD', // Light blue background
+    borderWidth: 1.5,
+    borderColor: HIGColors.systemBlue,
+  },
+  subCategoryTextChildSelected: {
+    color: HIGColors.systemBlue,
+    fontWeight: '600',
   },
   flavorGrid: {
     paddingHorizontal: HIGConstants.SPACING_MD,
@@ -968,6 +1064,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.systemGray4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 5,
   },
   nextButton: {
     height: 48,
@@ -997,5 +1098,28 @@ const styles = StyleSheet.create({
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     fontStyle: 'italic',
+  },
+  noResultsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: HIGConstants.SPACING_XL * 4,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+  },
+  noResultsEmoji: {
+    fontSize: 48,
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  noResultsText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.label,
+    textAlign: 'center',
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  noResultsSubtext: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
   },
 });

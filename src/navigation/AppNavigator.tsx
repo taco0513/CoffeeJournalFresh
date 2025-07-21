@@ -13,7 +13,7 @@ import HomeScreen from '../screens/HomeScreen';
 import CoffeeInfoScreen from '../screens/CoffeeInfoScreen';
 import JournalIntegratedScreen from '../screens/JournalIntegratedScreen';
 import RoasterNotesScreen from '../screens/RoasterNotesScreen';
-import UnifiedFlavorScreen from '../screens/flavor/UnifiedFlavorScreen';
+import UnifiedFlavorScreen from '../screens/flavor/UnifiedFlavorScreenSimple';
 import SensoryScreen from '../screens/SensoryScreen';
 import PersonalCommentScreen from '../screens/PersonalCommentScreen';
 import ResultScreen from '../screens/ResultScreen';
