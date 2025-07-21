@@ -219,54 +219,67 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
           {/* Flavors grid for each expanded subcategory */}
           {filteredSubCategories
             .filter(sub => expandedSubCategories.has(`${category}-${sub.name}`))
-            .map(sub => (
-              <View key={sub.name} style={styles.flavorGrid}>
-                <Text style={styles.subcategoryLabel}>{sub.koreanName} 세부 향미:</Text>
-                <View style={styles.flavorRow}>
-                  {sub.flavors.filter(f =>
-                    searchQuery
-                      ? f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
-                      : true
-                  )
-                  .map(flavor => {
-                    const isSelected = isFlavorSelected(category, sub.name, flavor.name);
-                    const isDisabled = !isSelected && selectedPaths.length >= 5;
-                    return (
-                      <TouchableOpacity
-                        key={flavor.name}
-                        style={[
-                          styles.flavorButton,
-                          isSelected && styles.flavorButtonSelected,
-                          isDisabled && styles.flavorButtonDisabled,
-                        ]}
-                        onPress={() => {
-                          if (!isDisabled) {
-                            onSelectFlavor({
-                              level1: category,
-                              level2: sub.name,
-                              level3: flavor.name,
-                            });
-                          }
-                        }}
-                        activeOpacity={isDisabled ? 1 : 0.7}
-                        disabled={isDisabled}
-                      >
-                        <Text
-                          style={[
-                            styles.flavorText,
-                            isSelected && styles.flavorTextSelected,
-                            isDisabled && styles.flavorTextDisabled,
-                          ]}
-                        >
-                          {flavor.koreanName}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
+            .map(sub => {
+              const filteredFlavors = sub.flavors.filter(f =>
+                searchQuery
+                  ? f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
+                  : true
+              );
+
+              return (
+                <View key={sub.name} style={styles.flavorGrid}>
+                  {filteredFlavors.length > 0 ? (
+                    <>
+                      <Text style={styles.subcategoryLabel}>{sub.koreanName} 세부 향미:</Text>
+                      <View style={styles.flavorRow}>
+                        {filteredFlavors.map(flavor => {
+                          const isSelected = isFlavorSelected(category, sub.name, flavor.name);
+                          const isDisabled = !isSelected && selectedPaths.length >= 5;
+                          return (
+                            <TouchableOpacity
+                              key={flavor.name}
+                              style={[
+                                styles.flavorButton,
+                                isSelected && styles.flavorButtonSelected,
+                                isDisabled && styles.flavorButtonDisabled,
+                              ]}
+                              onPress={() => {
+                                if (!isDisabled) {
+                                  onSelectFlavor({
+                                    level1: category,
+                                    level2: sub.name,
+                                    level3: flavor.name,
+                                  });
+                                }
+                              }}
+                              activeOpacity={isDisabled ? 1 : 0.7}
+                              disabled={isDisabled}
+                            >
+                              <Text
+                                style={[
+                                  styles.flavorText,
+                                  isSelected && styles.flavorTextSelected,
+                                  isDisabled && styles.flavorTextDisabled,
+                                ]}
+                              >
+                                {flavor.koreanName}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+                    </>
+                  ) : (
+                    <View style={styles.noFlavorContainer}>
+                      <Text style={styles.noFlavorText}>
+                        '{sub.koreanName}'은 더 세부적인 향미로 나누어지지 않습니다
+                      </Text>
+                    </View>
+                  )}
                 </View>
-              </View>
-            ))}
+              );
+            })}
         </View>
       )}
     </View>
@@ -916,5 +929,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  noFlavorContainer: {
+    paddingVertical: HIGConstants.SPACING_MD,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    backgroundColor: HIGColors.systemGray6,
+    borderRadius: HIGConstants.cornerRadiusSmall,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noFlavorText: {
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
