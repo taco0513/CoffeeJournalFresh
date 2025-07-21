@@ -187,12 +187,19 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                   ]}
                   onPress={() => {
                     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                    // Just toggle expansion to show/hide level 3 flavors
-                    onToggleSubcategory(`${category}-${sub.name}`);
-                  }}
-                  onLongPress={() => {
-                    // Long press to add/remove subcategory as a selection (level 2)
-                    onSelectSubcategory(category, sub.name);
+                    if (isSelected) {
+                      // If already selected, remove selection and collapse
+                      onSelectSubcategory(category, sub.name);
+                      // Also collapse the expanded content
+                      const subcategoryKey = `${category}-${sub.name}`;
+                      if (expandedSubCategories.has(subcategoryKey)) {
+                        onToggleSubcategory(subcategoryKey);
+                      }
+                    } else {
+                      // If not selected, select the subcategory AND expand it
+                      onSelectSubcategory(category, sub.name);
+                      onToggleSubcategory(`${category}-${sub.name}`);
+                    }
                   }}
                 >
                   <Text
