@@ -12,11 +12,12 @@ import HomeScreen from '../screens/HomeScreenEnhanced';
 import CoffeeInfoScreen from '../screens/CoffeeInfoScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import StatsScreen from '../screens/StatsScreen';
-import PersonalTasteDashboard from '../screens/PersonalTasteDashboard';
+import JournalIntegratedScreen from '../screens/JournalIntegratedScreen';
 import RoasterNotesScreen from '../screens/RoasterNotesScreen';
 import FlavorLevel1Screen from '../screens/flavor/FlavorLevel1Screen';
 import FlavorLevel2Screen from '../screens/flavor/FlavorLevel2Screen';
 import FlavorLevel3Screen from '../screens/flavor/FlavorLevel3Screen';
+import UnifiedFlavorScreen from '../screens/flavor/UnifiedFlavorScreen';
 import SensoryScreen from '../screens/SensoryScreen';
 import PersonalCommentScreen from '../screens/PersonalCommentScreen';
 import ResultScreen from '../screens/ResultScreen';
@@ -66,6 +67,13 @@ function TastingFlow() {
         component={RoasterNotesScreen} 
         options={{title: 'Roaster Notes'}}
       />
+      {/* New unified flavor selection */}
+      <Stack.Screen 
+        name="UnifiedFlavor" 
+        component={UnifiedFlavorScreen} 
+        options={{title: 'Select Flavors'}}
+      />
+      {/* Legacy flavor screens - to be removed */}
       <Stack.Screen 
         name="FlavorLevel1" 
         component={FlavorLevel1Screen} 
@@ -120,7 +128,7 @@ function HistoryStack() {
     >
       <Stack.Screen 
         name="HistoryMain" 
-        component={HistoryScreen} 
+        component={JournalIntegratedScreen} 
         options={{title: 'Journal'}}
       />
       <Stack.Screen 
@@ -143,22 +151,7 @@ function HistoryStack() {
   );
 }
 
-// 통계 스택 네비게이터
-function StatsStack() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen 
-        name="StatsMain" 
-        component={StatsScreen} 
-        options={{title: 'Statistics'}}
-      />
-    </Stack.Navigator>
-  );
-}
+// StatsStack 제거 - Stats 탭에서 직접 StatsScreen 사용
 
 // 커뮤니티 스택 네비게이터 (Feature Backlog)
 function CommunityStack() {
@@ -246,11 +239,6 @@ function ProfileStack() {
         options={{title: 'Profile'}}
       />
       <Stack.Screen 
-        name="PersonalTasteDashboard" 
-        component={PersonalTasteDashboard} 
-        options={{title: 'Personal Taste Journey'}}
-      />
-      <Stack.Screen 
         name="PersonalTasteQuiz" 
         component={PersonalTasteQuizScreen} 
         options={{title: 'Flavor Quiz'}}
@@ -326,18 +314,6 @@ function MainTabs() {
           tabBarIcon: ({ color }) => (
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
               <Text style={{ fontSize: 24, color }}>📖</Text>
-            </View>
-          ),
-        }}
-      />
-      <Tab.Screen 
-        name="Stats" 
-        component={StatsStack} 
-        options={{
-          tabBarLabel: 'Stats',
-          tabBarIcon: ({ color }) => (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 24, color }}>📊</Text>
             </View>
           ),
         }}

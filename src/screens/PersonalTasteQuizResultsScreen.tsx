@@ -62,7 +62,7 @@ export const PersonalTasteQuizResultsScreen: React.FC<Props> = ({ navigation, ro
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.closeButton}
-          onPress={() => navigation.navigate('PersonalTasteDashboard')}
+          onPress={() => navigation.navigate('MainTabs', { screen: 'Journal' })}
         >
           <Icon name="close" size={24} color={HIGColors.label} />
         </TouchableOpacity>
@@ -146,7 +146,7 @@ export const PersonalTasteQuizResultsScreen: React.FC<Props> = ({ navigation, ro
         <View style={styles.actionsContainer}>
           <TouchableOpacity
             style={styles.primaryButton}
-            onPress={() => navigation.navigate('PersonalTasteDashboard')}
+            onPress={() => navigation.navigate('MainTabs', { screen: 'Journal' })}
           >
             <Icon name="bar-chart" size={20} color="#FFFFFF" />
             <Text style={styles.primaryButtonText}>View Dashboard</Text>

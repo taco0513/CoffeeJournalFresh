@@ -10,13 +10,24 @@ import {
   Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useUserStore } from '../stores/useUserStore';
 import RealmService from '../services/realm/RealmService';
 import { HIGConstants, HIGColors, commonButtonStyles } from '../styles/common';
 import AuthService from '../services/supabase/auth';
 
+// Tab navigation type definition
+type MainTabParamList = {
+  Home: undefined;
+  Journal: undefined;
+  Stats: undefined;
+  Profile: undefined;
+};
+
+type ProfileScreenNavigationProp = BottomTabNavigationProp<MainTabParamList, 'Profile'>;
+
 const ProfileScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { currentUser, signOut } = useUserStore();
   const [stats, setStats] = useState({
     joinedDaysAgo: 0,
@@ -152,33 +163,6 @@ const ProfileScreen = () => {
 
         {/* 빠른 메뉴 */}
         <View style={styles.quickMenuContainer}>
-          <TouchableOpacity 
-            style={styles.quickMenuItem}
-            onPress={() => navigation.navigate('Stats' as never)}
-          >
-            <View style={styles.quickMenuIconContainer}>
-              <Text style={styles.quickMenuIcon}>📊</Text>
-            </View>
-            <View style={styles.quickMenuContent}>
-              <Text style={styles.quickMenuTitle}>내 테이스팅 통계</Text>
-              <Text style={styles.quickMenuDescription}>상세한 분석과 차트 보기</Text>
-            </View>
-            <Text style={styles.quickMenuArrow}>→</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.quickMenuItem}
-            onPress={() => navigation.navigate('PersonalTasteDashboard' as never)}
-          >
-            <View style={styles.quickMenuIconContainer}>
-              <Text style={styles.quickMenuIcon}>🎯</Text>
-            </View>
-            <View style={styles.quickMenuContent}>
-              <Text style={styles.quickMenuTitle}>취향 분석</Text>
-              <Text style={styles.quickMenuDescription}>나만의 커피 DNA 확인</Text>
-            </View>
-            <Text style={styles.quickMenuArrow}>→</Text>
-          </TouchableOpacity>
 
           <TouchableOpacity 
             style={styles.quickMenuItem}

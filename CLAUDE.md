@@ -5,6 +5,57 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
 
 ## Recent Progress (2025-07-21)
 
+### 🎯 Journal Hub & Insights System (2025-07-21) - Session 4
+- ✅ **Navigation Architecture Overhaul**
+  - **Problem**: Stats page was accessible from 3 different places (Bottom Tab, Home, Profile)
+  - **Solution**: Consolidated all data views into single Journal hub
+  - Created JournalIntegratedScreen with tab navigation (기록 | 통계)
+  - Removed Stats from bottom tab (now only 3 tabs: Home, Journal, Profile)
+  - Fixed navigation type safety with proper TypeScript definitions
+
+- ✅ **Simple Insights Implementation**
+  - **Replaced**: Complex PersonalTasteDashboard with simple 30-day insights
+  - **Created**: InsightCard component for clean, readable insights
+  - **Added**: 4 key insights in StatsScreen:
+    - 🍓 가장 좋아한 향미 (Most liked flavor)
+    - ☕ 최애 원산지 (Favorite origin)
+    - ⏰ 커피 타임 (Coffee time pattern)
+    - 🎯 일관성 점수 (Consistency score)
+  - **Smart Feature**: Shows example insights with dummy data when no records exist
+  - **Location**: Journal → 통계 tab → scroll to "30일 인사이트" section
+
+- ✅ **UI/UX Improvements**
+  - Fixed duplicate navigation bars in Journal tabs
+  - Added hideNavBar prop to HistoryScreen and StatsScreen
+  - Cleaner single navigation bar with "My Coffee" title
+  - Better information architecture: all user data in one place
+
+- ✅ **Code Cleanup**
+  - Removed "더 자세한 분석 보기" button from StatsScreen
+  - Removed PersonalTasteDashboard from navigation routes
+  - Updated navigation references in PersonalTasteQuizResultsScreen
+  - Simplified user flow: less navigation complexity
+
+### 🏗️ Navigation Architecture Cleanup (2025-07-21) - Session 3
+- ✅ **PersonalTasteDashboard Integration Status**
+  - Screen exists and is fully functional with mock data for guest mode
+  - Comprehensive data visualization including FlavorRadarChart, TasteProfileCard, GrowthTimeline
+  - Multiple view modes: Dashboard, Analytics, Journey, Insights
+  - **Current Status**: Screen removed from ProfileStack navigation but code preserved
+  - **Reason**: Feature moved to future roadmap per AI strategy (Phase 3)
+  
+- ✅ **Navigation Structure Simplification**
+  - MainTabs now directly shows ProfileScreen without nested stack
+  - Removed ProfileStack entirely - Profile tab is now direct screen
+  - Cleaner navigation hierarchy with reduced complexity
+  - All other stacks (Home, TastingFlow, Community) remain as designed
+
+- ✅ **Unused Components & Features**
+  - PersonalTasteDashboard: Complete but not exposed in navigation (future feature)
+  - Coach components: Moved to Phase 3 roadmap
+  - Achievement system: Backend ready, UI implementation pending
+  - FlavorLearningEngine: Service complete, quiz UI pending implementation
+
 ### 🛠️ Navigation & UI Fixes (2025-07-21) - Session 2
 - ✅ **DraftRecoveryModal Navigation Fix**
   - Fixed "Continue Tasting" button not navigating from home screen
@@ -520,7 +571,12 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
 
 ### Key Files Modified (2025-07-21)
 - **src/components/tasting/DraftRecoveryModal.tsx**: Fixed navigation and added Korean translation
-- **src/navigation/AppNavigator.tsx**: Removed PersonalTasteDashboard references
+- **src/navigation/AppNavigator.tsx**: Removed PersonalTasteDashboard references, simplified ProfileStack
+- **src/screens/HistoryScreen.tsx**: Added useFocusEffect for proper data refresh on tab switch
+- **src/services/realm/RealmService.ts**: Fixed test data compatibility issues
+- **src/components/beta/FirstTimeUserFeedback.tsx**: New component for beta user onboarding
+- **src/components/beta/BetaFeedbackPrompt.tsx**: Context-aware feedback collection
+- **docs/DATA_COLLECTION_STRATEGY.md**: Comprehensive data collection plan for beta testing
 
 ### Key Files Modified (2025-07-19)
 - **src/stores/useDevStore.ts**: New developer mode store with persistent settings
@@ -592,6 +648,10 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
   - Simulator shows "No script URL provided" error
   - Metro bundler runs but simulator cannot connect
   - **Workaround**: Restart simulator or rebuild from Xcode with clean build
+- ✅ ~~Complex navigation structure~~ **RESOLVED (2025-07-21)**
+  - Simplified to 3 bottom tabs (Home, Journal, Profile)
+  - All user data consolidated in Journal hub
+  - Removed redundant navigation paths
 
 ### Recent Fixes (2025-07-19)
 - ✅ **Build Error Fixed**: Resolved static class block issue in NetworkUtils.ts
@@ -618,19 +678,24 @@ React Native 0.80 "Personal Taste, Shared Journey" coffee platform - 개인의 �
   - Consistent white backgrounds across auth and main application screens
   - Mock data includes: statistics, tasting records, roaster lists, flavor profiles
 
-### Next Steps - Personal Taste, Shared Journey Evolution
-1. **Phase 1 (Personal Taste 강화)**:
-   - 개인 취향 발견 대시보드 구현
-   - Taste DNA 알고리즘 개발
-   - 맛 표현 게임화 요소 추가
-2. **Phase 2 (Shared Journey 시작)**:
-   - 기본 커뮤니티 기능
-   - 취향 유사도 매칭 시스템
-   - 소셜 학습 도구
-3. **Technical Debt**:
-   - Google OAuth 설정 완료
-   - TypeScript 에러 정리
-   - 테스트 커버리지 확장
+### Next Steps - Immediate Priorities
+1. **Beta Testing & Data Collection**:
+   - Monitor user behavior analytics from beta users
+   - Collect feedback through beta testing infrastructure
+   - Analyze performance metrics and crash reports
+   - Iterate based on real user data
+   
+2. **Navigation & UI Polish**:
+   - Fix Metro bundler connection stability issues
+   - Implement remaining achievement UI components
+   - Complete PersonalTasteQuiz screen implementation
+   - Add more contextual BetaFeedbackPrompts
+   
+3. **Feature Completion**:
+   - Google OAuth credential configuration
+   - Implement A/B testing infrastructure (per DATA_COLLECTION_STRATEGY.md)
+   - Add more comprehensive error recovery mechanisms
+   - Enhance offline support and data sync
 
 ### Commands to Run
 ```bash
@@ -658,10 +723,11 @@ watchman watch-del-all
 - **Testing**: Ready for TestFlight deployment
 
 ### 📱 Mobile App Features
-- **📊 Analytics & Performance Monitoring**: Complete user behavior tracking and crash reporting ✨ **NEW**
+- **📊 Analytics & Performance Monitoring**: Complete user behavior tracking and crash reporting
+- **🎯 Simple Insights System**: 30-day insights replacing complex PersonalTasteDashboard ✨ **NEW**
+- **📱 Simplified Navigation**: 3-tab structure with Journal as data hub ✨ **NEW**
 - **Data-Driven Analytics**: Quality Score system, pattern recognition, honest statistics
 - **Personal Taste Discovery**: Interactive quiz system, preference tracking (no "AI" claims)
-- **Smart Recommendations**: Data-based suggestions without ML terminology
 - **Beta Feedback System**: Shake-to-feedback, floating button, comprehensive forms
 - **Apple Sign-In**: Ready for device testing
 - **Google Sign-In**: Implementation complete, awaiting OAuth credentials

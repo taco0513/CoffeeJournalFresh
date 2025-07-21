@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import {
   LineChart,
 } from 'react-native-chart-kit';
 import { useUserStore } from '../stores/useUserStore';
+import { InsightCard } from '../components/stats/InsightCard';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -48,7 +49,11 @@ interface TastingTrend {
   avgScore: number;
 }
 
-const StatsScreen = () => {
+interface StatsScreenProps {
+  hideNavBar?: boolean;
+}
+
+const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
   const navigation = useNavigation();
   const { currentUser } = useUserStore();
   const [loading, setLoading] = useState(true);
@@ -62,6 +67,182 @@ const StatsScreen = () => {
   useEffect(() => {
     loadStatistics();
   }, []);
+
+  // 30일 인사이트 생성 함수
+  const generateInsights = () => {
+    const insights = [];
+    
+    // 데이터가 없을 때 더미 데이터 표시
+    if (!stats || stats.totalTastings === 0) {
+      return [
+        {
+          icon: '🍓',
+          title: '가장 좋아한 향미',
+          value: '과일향',
+          detail: '예시) 15회 선택',
+          trend: 'up' as const,
+        },
+        {
+          icon: '☕',
+          title: '최애 원산지',
+          value: '에티오피아',
+          detail: '예시) 평균 88점',
+        },
+        {
+          icon: '⏰',
+          title: '커피 타임',
+          value: '오전형',
+          detail: '예시) 10시 피크',
+        },
+        {
+          icon: '🎯',
+          title: '일관성 점수',
+          value: '82%',
+          detail: '예시) 취향이 명확한 편입니다',
+        },
+      ];
+    }
+    
+    // 실제 데이터 분석
+    const realmService = RealmService.getInstance();
+    const recentTastings = realmService.getTastingRecords({ 
+      isDeleted: false,
+      startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30일 전
+    });
+
+    // 1. 가장 좋아한 향미
+    const flavorCounts = new Map<string, number>();
+    recentTastings.forEach(tasting => {
+      tasting.flavorNotes.forEach(flavor => {
+        flavorCounts.set(flavor, (flavorCounts.get(flavor) || 0) + 1);
+      });
+    });
+
+    let topFlavor = '';
+    let topFlavorCount = 0;
+    flavorCounts.forEach((count, flavor) => {
+      if (count > topFlavorCount) {
+        topFlavor = flavor;
+        topFlavorCount = count;
+      }
+    });
+
+    if (topFlavor) {
+      insights.push({
+        icon: '🍓',
+        title: '가장 좋아한 향미',
+        value: topFlavor,
+        detail: `${topFlavorCount}회 선택`,
+        trend: topFlavorCount > 10 ? 'up' : 'stable',
+      });
+    }
+
+    // 2. 최애 원산지
+    const topOrigins = new Map<string, { count: number; totalScore: number }>();
+    recentTastings.forEach(tasting => {
+      if (tasting.origin) {
+        const current = topOrigins.get(tasting.origin) || { count: 0, totalScore: 0 };
+        current.count++;
+        current.totalScore += tasting.matchScore || 0;
+        topOrigins.set(tasting.origin, current);
+      }
+    });
+
+    let bestOrigin = '';
+    let bestScore = 0;
+    topOrigins.forEach((data, origin) => {
+      const avgScore = data.totalScore / data.count;
+      if (avgScore > bestScore) {
+        bestOrigin = origin;
+        bestScore = avgScore;
+      }
+    });
+
+    if (bestOrigin) {
+      insights.push({
+        icon: '☕',
+        title: '최애 원산지',
+        value: bestOrigin,
+        detail: `평균 ${Math.round(bestScore)}점`,
+      });
+    }
+
+    // 3. 커피 타임
+    const timeDistribution = new Map<number, number>();
+    recentTastings.forEach(tasting => {
+      const hour = new Date(tasting.createdAt).getHours();
+      timeDistribution.set(hour, (timeDistribution.get(hour) || 0) + 1);
+    });
+
+    let peakHour = 0;
+    let peakCount = 0;
+    timeDistribution.forEach((count, hour) => {
+      if (count > peakCount) {
+        peakHour = hour;
+        peakCount = count;
+      }
+    });
+
+    if (peakHour > 0) {
+      const timeType = peakHour < 12 ? '오전형' : peakHour < 18 ? '오후형' : '저녁형';
+      insights.push({
+        icon: '⏰',
+        title: '커피 타임',
+        value: timeType,
+        detail: `${peakHour}시 피크`,
+      });
+    }
+
+    // 4. 일관성 점수
+    if (recentTastings.length > 5) {
+      const scores = recentTastings.map(t => t.matchScore || 0);
+      const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+      const variance = scores.reduce((sum, score) => sum + Math.pow(score - avgScore, 2), 0) / scores.length;
+      const consistency = Math.max(0, 100 - Math.sqrt(variance) * 2);
+
+      insights.push({
+        icon: '🎯',
+        title: '일관성 점수',
+        value: `${Math.round(consistency)}%`,
+        detail: consistency > 80 ? '취향이 명확한 편입니다' : '다양한 스타일을 탐험중',
+      });
+    }
+
+    // 최소 4개의 인사이트를 보장
+    while (insights.length < 4) {
+      if (!insights.find(i => i.title === '가장 좋아한 향미')) {
+        insights.push({
+          icon: '🍓',
+          title: '가장 좋아한 향미',
+          value: '더 많은 기록이 필요해요',
+          detail: '5개 이상 기록 후 확인 가능',
+        });
+      } else if (!insights.find(i => i.title === '최애 원산지')) {
+        insights.push({
+          icon: '☕',
+          title: '최애 원산지',
+          value: '더 많은 기록이 필요해요',
+          detail: '원산지 정보 입력 필요',
+        });
+      } else if (!insights.find(i => i.title === '커피 타임')) {
+        insights.push({
+          icon: '⏰',
+          title: '커피 타임',
+          value: '패턴 분석중',
+          detail: '더 많은 기록이 필요해요',
+        });
+      } else if (!insights.find(i => i.title === '일관성 점수')) {
+        insights.push({
+          icon: '🎯',
+          title: '일관성 점수',
+          value: '계산중',
+          detail: '5개 이상 기록 필요',
+        });
+      }
+    }
+
+    return insights;
+  };
 
   const loadTastingTrends = async (): Promise<TastingTrend[]> => {
     try {
@@ -144,6 +325,48 @@ const StatsScreen = () => {
     return (
       <SafeAreaView style={styles.container}>
         {/* Navigation Bar */}
+        {!hideNavBar && (
+          <View style={styles.navigationBar}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.navigationTitle}>통계</Text>
+              <View style={styles.betaBadge}>
+                <Text style={styles.betaText}>BETA</Text>
+              </View>
+            </View>
+            <View style={{ width: 80 }} />
+          </View>
+        )}
+
+        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyIcon}>📊</Text>
+            <Text style={styles.emptyText}>아직 테이스팅 기록이 없습니다</Text>
+            <Text style={styles.emptySubtext}>
+              첫 테이스팅을 기록하면 통계를 볼 수 있습니다
+            </Text>
+          </View>
+
+          {/* 30일 인사이트 섹션 - 예시 */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>30일 인사이트 (예시)</Text>
+            <Text style={styles.insightPreviewText}>
+              기록이 쌓이면 이런 인사이트를 볼 수 있어요!
+            </Text>
+            {generateInsights().map((insight, index) => (
+              <InsightCard key={index} {...insight} />
+            ))}
+          </View>
+
+          <View style={styles.bottomSpacer} />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Navigation Bar */}
+      {!hideNavBar && (
         <View style={styles.navigationBar}>
           <View style={styles.titleContainer}>
             <Text style={styles.navigationTitle}>통계</Text>
@@ -153,30 +376,7 @@ const StatsScreen = () => {
           </View>
           <View style={{ width: 80 }} />
         </View>
-
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyIcon}>📊</Text>
-          <Text style={styles.emptyText}>아직 테이스팅 기록이 없습니다</Text>
-          <Text style={styles.emptySubtext}>
-            첫 테이스팅을 기록하면 통계를 볼 수 있습니다
-          </Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* Navigation Bar */}
-      <View style={styles.navigationBar}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.navigationTitle}>통계</Text>
-          <View style={styles.betaBadge}>
-            <Text style={styles.betaText}>BETA</Text>
-          </View>
-        </View>
-        <View style={{ width: 80 }} />
-      </View>
+      )}
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
 
@@ -308,21 +508,13 @@ const StatsScreen = () => {
         )}
 
         {/* 더 보기 버튼 */}
+
+        {/* 30일 인사이트 섹션 */}
         <View style={styles.section}>
-          <TouchableOpacity 
-            style={styles.moreButton}
-            onPress={() => {
-              // 임시로 PersonalTasteDashboard로 이동 (추후 상세 분석 화면 구현 예정)
-              navigation.navigate('Profile', { 
-                screen: 'PersonalTasteDashboard' 
-              });
-            }}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.moreButtonText}>더 자세한 분석 보기</Text>
-            <Text style={styles.moreButtonSubtext}>감각평가, 맛프로필 차트 등</Text>
-            <Text style={styles.moreButtonArrow}>→</Text>
-          </TouchableOpacity>
+          <Text style={styles.sectionTitle}>30일 인사이트</Text>
+          {generateInsights().map((insight, index) => (
+            <InsightCard key={index} {...insight} />
+          ))}
         </View>
 
         <View style={styles.bottomSpacer} />
@@ -553,6 +745,12 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: HIGConstants.SPACING_XL * 2,
+  },
+  insightPreviewText: {
+    fontSize: 14,
+    color: HIGColors.tertiaryLabel,
+    marginBottom: HIGConstants.SPACING_LG,
+    textAlign: 'center',
   },
   chartCard: {
     backgroundColor: HIGColors.secondarySystemBackground,

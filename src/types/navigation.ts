@@ -6,6 +6,7 @@ export type RootStackParamList = {
     OCRScan: undefined;
     OCRResult: { parsedInfo: any; rawTexts: string[] };
     RoasterNotes: undefined;
+    UnifiedFlavor: undefined;
     FlavorLevel1: undefined;
     FlavorLevel2: undefined;
     FlavorLevel3: undefined;
@@ -27,4 +28,11 @@ export type RootStackParamList = {
     };
     DataTest: undefined;
     DeveloperScreen: undefined;
+  };
+
+// Main tab navigation
+export type MainTabParamList = {
+    Home: undefined;
+    Journal: undefined;
+    Profile: undefined;
   };

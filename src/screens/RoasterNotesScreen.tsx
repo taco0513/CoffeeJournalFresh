@@ -33,11 +33,11 @@ const RoasterNotesScreen = () => {
 
   const handleNext = () => {
     updateField('roasterNotes', notes);
-    navigation.navigate('FlavorLevel1' as never);
+    navigation.navigate('UnifiedFlavor' as never);
   };
 
   const handleSkip = () => {
-    navigation.navigate('FlavorLevel1' as never);
+    navigation.navigate('UnifiedFlavor' as never);
   };
 
   return (

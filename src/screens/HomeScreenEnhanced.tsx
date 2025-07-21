@@ -15,6 +15,9 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { CompositeNavigationProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 import RealmService from '../services/realm/RealmService';
 import { useUserStore } from '../stores/useUserStore';
@@ -24,9 +27,28 @@ import { useAnalytics } from '../hooks/useAnalytics';
 import { DraftRecoveryModal } from '../components/tasting/DraftRecoveryModal';
 // Guest mode disabled - removed mock data imports
 
+// Navigation type definitions
+type MainTabParamList = {
+  Home: undefined;
+  Journal: undefined;
+  Stats: undefined;
+  Profile: undefined;
+};
+
+type RootStackParamList = {
+  MainTabs: undefined;
+  TastingFlow: undefined;
+  // Add other stack screens as needed
+};
+
+type HomeScreenNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<MainTabParamList, 'Home'>,
+  StackNavigationProp<RootStackParamList>
+>;
+
 export default function HomeScreenEnhanced() {
   const { t } = useTranslation();
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<HomeScreenNavigationProp>();
   const { currentUser } = useUserStore();
   const { trackScreenView, trackButtonClick, trackFeatureUse } = useAnalytics();
   
@@ -142,10 +164,6 @@ export default function HomeScreenEnhanced() {
     navigation.navigate('Journal');
   };
 
-  const handleQuickStats = () => {
-    trackButtonClick('quick_stats_button', { source: 'home_screen' });
-    navigation.navigate('Stats');
-  };
 
   const handleTastingDetail = (tastingId: string) => {
     trackButtonClick('tasting_detail_button', { tastingId, source: 'home_recent_list' });

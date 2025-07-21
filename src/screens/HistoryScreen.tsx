@@ -24,7 +24,11 @@ interface GroupedTastings {
   data: ITastingRecord[];
 }
 
-export default function HistoryScreen() {
+interface HistoryScreenProps {
+  hideNavBar?: boolean;
+}
+
+export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps) {
   const navigation = useNavigation();
   const { currentUser } = useUserStore();
   const [searchQuery, setSearchQuery] = useState('');
@@ -180,15 +184,17 @@ export default function HistoryScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Navigation Bar */}
-      <View style={styles.navigationBar}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.navigationTitle}>테이스팅 기록</Text>
-          <View style={styles.betaBadge}>
-            <Text style={styles.betaText}>BETA</Text>
+      {!hideNavBar && (
+        <View style={styles.navigationBar}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.navigationTitle}>테이스팅 기록</Text>
+            <View style={styles.betaBadge}>
+              <Text style={styles.betaText}>BETA</Text>
+            </View>
           </View>
+          <View style={{ width: 80 }} />
         </View>
-        <View style={{ width: 80 }} />
-      </View>
+      )}
 
 
       <View style={styles.header}>
