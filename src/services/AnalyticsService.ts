@@ -48,6 +48,7 @@ class AnalyticsService {
   private screenStartTime: Date | null = null;
   private currentScreen: string | null = null;
   private readonly QUEUE_KEY = '@analytics_queue';
+  private isEnabled: boolean = true;
   private readonly SESSION_KEY = '@current_session';
   private readonly MAX_QUEUE_SIZE = 100;
   
@@ -257,6 +258,14 @@ class AnalyticsService {
 
   private async flushQueue(): Promise<void> {
     if (this.eventQueue.length === 0) return;
+    
+    // Check if analytics is enabled and user is authenticated
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session || !this.isEnabled) {
+      // Clear queue if no session
+      this.eventQueue = [];
+      return;
+    }
 
     try {
       const { error } = await supabase
@@ -264,7 +273,13 @@ class AnalyticsService {
         .insert(this.eventQueue);
 
       if (error) {
-        console.error('Analytics: Error sending events to server:', error);
+        // Only log if not a connection error or auth error
+        if (!error.message?.includes('Failed to fetch') && 
+            !error.message?.includes('JWT') &&
+            !error.message?.includes('auth') &&
+            !error.message?.includes('relation')) {
+          console.warn('Analytics: Error sending events to server:', error.message);
+        }
         // Keep events in queue for retry
         return;
       }

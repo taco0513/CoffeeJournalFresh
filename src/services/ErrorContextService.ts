@@ -51,9 +51,14 @@ class ErrorContextService {
   private readonly MAX_CONSOLE_LOGS = 20;
   private readonly MAX_ACTIONS = 10;
   private originalConsole: any = {};
+  private isInitialized: boolean = false;
 
   async initialize(): Promise<void> {
-    this.interceptConsole();
+    if (this.isInitialized) return;
+    
+    this.isInitialized = true;
+    // Temporarily disable console interception to prevent circular references
+    // this.interceptConsole();
     this.interceptNetworkRequests();
   }
 
@@ -69,18 +74,36 @@ class ErrorContextService {
     // Override console methods to capture logs
     const createInterceptor = (level: 'log' | 'warn' | 'error' | 'info') => {
       return (...args: any[]) => {
-        // Call original console method
-        this.originalConsole[level](...args);
+        // Guard against recursive calls
+        if (!this.originalConsole[level]) return;
         
-        // Store log for context
-        this.addConsoleLog({
-          level,
-          message: args.map(arg => 
-            typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
-          ).join(' '),
-          timestamp: new Date(),
-          args: args.length <= 5 ? args : args.slice(0, 5), // Limit args to prevent memory issues
-        });
+        // Call original console method
+        try {
+          this.originalConsole[level](...args);
+        } catch (e) {
+          // Fallback if there's an issue
+        }
+        
+        // Store log for context (avoid circular JSON)
+        try {
+          this.addConsoleLog({
+            level,
+            message: args.map(arg => {
+              if (typeof arg === 'object') {
+                try {
+                  return JSON.stringify(arg, null, 2);
+                } catch {
+                  return '[Circular Object]';
+                }
+              }
+              return String(arg);
+            }).join(' '),
+            timestamp: new Date(),
+            args: args.length <= 5 ? args : args.slice(0, 5), // Limit args to prevent memory issues
+          });
+        } catch (e) {
+          // Skip logging if there's an error
+        }
       };
     };
 

@@ -177,12 +177,34 @@ export const useTastingStore = create<TastingState>((set, get) => ({
   autoSave: async () => {
     try {
       const { currentTasting, selectedFlavors } = get();
-      const draftData = {
-        currentTasting,
-        selectedFlavors,
-        timestamp: new Date().toISOString(),
-      };
-      await AsyncStorage.setItem('@tasting_draft', JSON.stringify(draftData));
+      
+      // Only save if there's meaningful data (not just initial/empty state)
+      const hasSignificantData = 
+        currentTasting.cafeName?.trim() ||
+        currentTasting.roastery?.trim() ||
+        currentTasting.coffeeName?.trim() ||
+        currentTasting.origin?.trim() ||
+        currentTasting.variety?.trim() ||
+        currentTasting.process?.trim() ||
+        currentTasting.altitude?.trim() ||
+        currentTasting.roasterNotes?.trim() ||
+        currentTasting.personalComment?.trim() ||
+        selectedFlavors.length > 0 ||
+        // Check if sensory values have been modified from defaults
+        currentTasting.body !== 3 ||
+        currentTasting.acidity !== 3 ||
+        currentTasting.sweetness !== 3 ||
+        currentTasting.finish !== 3 ||
+        (currentTasting.mouthfeel && currentTasting.mouthfeel !== 'Clean');
+      
+      if (hasSignificantData) {
+        const draftData = {
+          currentTasting,
+          selectedFlavors,
+          timestamp: new Date().toISOString(),
+        };
+        await AsyncStorage.setItem('@tasting_draft', JSON.stringify(draftData));
+      }
     } catch (error) {
       console.error('Auto-save failed:', error);
     }
@@ -206,6 +228,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
   clearDraft: async () => {
     try {
       await AsyncStorage.removeItem('@tasting_draft');
+      console.log('Draft cleared successfully');
     } catch (error) {
       console.error('Clear draft failed:', error);
     }
@@ -221,11 +244,14 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     }
   },
 
-  reset: () =>
+  reset: () => {
+    // Clear any existing draft when resetting
+    get().clearDraft();
+    
     set({
       currentTasting: {
         cafeName: '',
-        roasterName: '',
+        roastery: '',
         coffeeName: '',
         origin: '',
         variety: '',
@@ -242,5 +268,6 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       },
       selectedFlavors: [],
       matchScoreTotal: null,
-    }),
+    });
+  },
 }));
