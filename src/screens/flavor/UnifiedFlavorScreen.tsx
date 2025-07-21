@@ -103,7 +103,6 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
   expandedSubCategories,
   onToggleSubcategory,
 }) => {
-  const [expandedSubCategories, setExpandedSubCategories] = useState<Set<string>>(new Set());
   const categoryData = flavorData.find(item => item.category === category);
   const categoryColor = CATEGORY_COLORS[category] || HIGColors.systemGray4;
 
