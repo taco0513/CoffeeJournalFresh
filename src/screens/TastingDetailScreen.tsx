@@ -307,62 +307,72 @@ const TastingDetailScreen = () => {
       >
         {/* Coffee Information */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>☕ 커피 정보</Text>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>커피 정보</Text>
+            {/* Temperature Badge */}
+            <View style={[
+              styles.temperatureIcon, 
+              tastingRecord.temperature === 'hot' ? styles.temperatureHot : styles.temperatureIce
+            ]}>
+              <Text style={[
+                styles.temperatureText,
+                tastingRecord.temperature === 'hot' ? styles.temperatureTextHot : styles.temperatureTextIce
+              ]}>
+                {tastingRecord.temperature === 'hot' ? 'Hot' : 'Ice'}
+              </Text>
+            </View>
+          </View>
           
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>커피명</Text>
             <Text style={styles.infoValue}>{tastingRecord.coffeeName}</Text>
           </View>
           
-          <View style={styles.infoRow}>
+          <View style={[styles.infoRow, !tastingRecord.cafeName && !tastingRecord.origin && !tastingRecord.variety && !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
             <Text style={styles.infoLabel}>로스터리</Text>
             <Text style={styles.infoValue}>{tastingRecord.roastery}</Text>
           </View>
           
           {tastingRecord.cafeName && (
-            <View style={styles.infoRow}>
+            <View style={[styles.infoRow, !tastingRecord.origin && !tastingRecord.variety && !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
               <Text style={styles.infoLabel}>카페명</Text>
               <Text style={styles.infoValue}>{tastingRecord.cafeName}</Text>
             </View>
           )}
           
           {tastingRecord.origin && (
-            <View style={styles.infoRow}>
+            <View style={[styles.infoRow, !tastingRecord.variety && !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
               <Text style={styles.infoLabel}>원산지</Text>
               <Text style={styles.infoValue}>{tastingRecord.origin}</Text>
             </View>
           )}
           
           {tastingRecord.variety && (
-            <View style={styles.infoRow}>
+            <View style={[styles.infoRow, !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
               <Text style={styles.infoLabel}>품종</Text>
               <Text style={styles.infoValue}>{tastingRecord.variety}</Text>
             </View>
           )}
           
           {tastingRecord.altitude && (
-            <View style={styles.infoRow}>
+            <View style={[styles.infoRow, !tastingRecord.process && styles.infoRowLast]}>
               <Text style={styles.infoLabel}>고도</Text>
               <Text style={styles.infoValue}>{tastingRecord.altitude}</Text>
             </View>
           )}
           
           {tastingRecord.process && (
-            <View style={styles.infoRow}>
+            <View style={[styles.infoRow, styles.infoRowLast]}>
               <Text style={styles.infoLabel}>가공법</Text>
               <Text style={styles.infoValue}>{tastingRecord.process}</Text>
             </View>
           )}
           
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>음용 온도</Text>
-            <Text style={styles.infoValue}>{tastingRecord.temperature === 'hot' ? '뜨거움' : '차가움'}</Text>
-          </View>
         </View>
 
         {/* Match Score */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📊 매칭 스코어</Text>
+          <Text style={styles.sectionTitle}>매칭 스코어</Text>
           <View style={styles.scoreContainer}>
             <View style={styles.scoreItem}>
               <Text style={styles.scoreLabel}>전체</Text>
@@ -382,7 +392,7 @@ const TastingDetailScreen = () => {
         {/* Flavor Notes */}
         {tastingRecord.flavorNotes && tastingRecord.flavorNotes.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>🌸 향미 노트</Text>
+            <Text style={styles.sectionTitle}>향미 노트</Text>
             <View style={styles.flavorContainer}>
               {tastingRecord.flavorNotes.map((note, index) => (
                 <View key={index} style={styles.flavorNote}>
@@ -398,7 +408,7 @@ const TastingDetailScreen = () => {
         {/* Sensory Attributes */}
         {tastingRecord.sensoryAttribute && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>👅 감각 평가</Text>
+            <Text style={styles.sectionTitle}>감각 평가</Text>
             
             <View style={styles.sensoryRow}>
               <Text style={styles.sensoryLabel}>바디</Text>
@@ -428,7 +438,7 @@ const TastingDetailScreen = () => {
               </Text>
             </View>
             
-            <View style={styles.sensoryRow}>
+            <View style={[styles.sensoryRow, styles.sensoryRowLast]}>
               <Text style={styles.sensoryLabel}>마우스필</Text>
               <Text style={styles.sensoryValue}>
                 {getMouthfeelKorean(tastingRecord.sensoryAttribute.mouthfeel)}
@@ -440,20 +450,20 @@ const TastingDetailScreen = () => {
         {/* Roaster Notes */}
         {tastingRecord.roasterNotes && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>📝 로스터 노트</Text>
+            <Text style={styles.sectionTitle}>로스터 노트</Text>
             {renderRoasterNotes(tastingRecord.roasterNotes)}
           </View>
         )}
 
         {/* Date Information */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📅 기록 정보</Text>
-          <View style={styles.infoRow}>
+          <Text style={styles.sectionTitle}>기록 정보</Text>
+          <View style={[styles.infoRow, !(tastingRecord.updatedAt && tastingRecord.updatedAt !== tastingRecord.createdAt) && styles.infoRowLast]}>
             <Text style={styles.infoLabel}>기록일시</Text>
             <Text style={styles.infoValue}>{formatDate(tastingRecord.createdAt)}</Text>
           </View>
           {tastingRecord.updatedAt && tastingRecord.updatedAt !== tastingRecord.createdAt && (
-            <View style={styles.infoRow}>
+            <View style={[styles.infoRow, styles.infoRowLast]}>
               <Text style={styles.infoLabel}>수정일시</Text>
               <Text style={styles.infoValue}>{formatDate(tastingRecord.updatedAt)}</Text>
             </View>
@@ -527,11 +537,40 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: HIGColors.gray4,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: HIGConstants.SPACING_MD,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_MD,
+  },
+  temperatureIcon: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  temperatureHot: {
+    backgroundColor: '#FFE5E5', // 따뜻한 연분홍
+    borderColor: '#FF6B6B', // 따뜻한 빨강
+  },
+  temperatureIce: {
+    backgroundColor: '#E5F3FF', // 차가운 연파랑
+    borderColor: '#4A90E2', // 차가운 파랑
+  },
+  temperatureText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  temperatureTextHot: {
+    color: '#D63031', // 따뜻한 빨강 텍스트
+  },
+  temperatureTextIce: {
+    color: '#0984e3', // 차가운 파랑 텍스트
   },
   infoRow: {
     flexDirection: 'row',
@@ -541,6 +580,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray5,
     marginBottom: HIGConstants.SPACING_XS,
+  },
+  infoRowLast: {
+    borderBottomWidth: 0,
+    borderBottomColor: 'transparent',
   },
   infoLabel: {
     fontSize: 16,
@@ -599,6 +642,10 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_SM,
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray5,
+  },
+  sensoryRowLast: {
+    borderBottomWidth: 0,
+    borderBottomColor: 'transparent',
   },
   sensoryLabel: {
     fontSize: 16,

@@ -291,8 +291,11 @@ const CoffeeInfoScreen = () => {
     }
   }, []);
   
-  // 필수 필드가 채워졌는지 확인 (간소화: 커피명만 필수)
-  const isValid = currentTasting.coffeeName && currentTasting.coffeeName.trim().length > 0;
+  // 필수 필드가 채워졌는지 확인 (커피명, 로스터리, 카페이름, 온도)
+  const isValid = currentTasting.coffeeName && currentTasting.coffeeName.trim().length > 0 &&
+                  currentTasting.roastery && currentTasting.roastery.trim().length > 0 &&
+                  currentTasting.cafeName && currentTasting.cafeName.trim().length > 0 &&
+                  currentTasting.temperature;
 
   // Parse coffee name and auto-fill fields
   const handleCoffeeNameParse = (coffeeName: string) => {
@@ -328,8 +331,8 @@ const CoffeeInfoScreen = () => {
         realmService.incrementRoasterVisit(currentTasting.roastery);
       }
       
-      // Navigate directly to RoasterNotes screen
-      navigation.navigate('RoasterNotes' as never);
+      // Navigate to FlavorSelection screen (step 2)
+      navigation.navigate('UnifiedFlavorScreen' as never);
     }
   };
 
@@ -426,7 +429,7 @@ const CoffeeInfoScreen = () => {
           <Text style={styles.backButtonText}>‹ 뒤로</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>커피 정보</Text>
-        <Text style={styles.progressIndicator}>2/7</Text>
+        <Text style={styles.progressIndicator}>1/6</Text>
       </View>
       
       {/* 진행 상태 바 */}
@@ -466,6 +469,13 @@ const CoffeeInfoScreen = () => {
             />
           </View> */}
 
+          {/* 가이드 메시지 */}
+          <View style={styles.guideSection}>
+            <Text style={styles.guideText}>
+              커피 봉투에 적힌 정보를 입력해주세요
+            </Text>
+          </View>
+
           {/* 입력 폼 */}
           <View style={styles.form}>
             {/* 카페 이름 */}
@@ -486,9 +496,9 @@ const CoffeeInfoScreen = () => {
                       updateField('roastery', item);
                     }
                   }}
-                  suggestions={cafeSuggestions}
-                  placeholder="예: 블루보틀"
-                  label="카페 이름"
+                  suggestions={['Home', ...cafeSuggestions]}
+                  placeholder="예: 블루보틀 (집에서는 'Home' 선택)"
+                  label="카페 이름 *"
                 />
               </View>
 
@@ -757,7 +767,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: 4,
-    width: '29%', // 2/7 = 29%
+    width: '17%', // 1/6 = 17%
     backgroundColor: HIGColors.blue,
     borderRadius: 2,
   },
@@ -893,6 +903,19 @@ const styles = StyleSheet.create({
   },
   roastButtonTextActive: {
     color: '#FFFFFF',
+  },
+  guideSection: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_MD,
+    backgroundColor: '#F8F9FA',
+    borderBottomWidth: 1,
+    borderBottomColor: HIGColors.gray5,
+  },
+  guideText: {
+    fontSize: 15,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
 

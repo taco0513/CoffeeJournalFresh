@@ -4,9 +4,10 @@ import RNShake from 'react-native-shake';
 import { useFeedbackStore } from '../stores/useFeedbackStore';
 import { useUserStore } from '../stores/useUserStore';
 import { FeedbackService } from '../services/FeedbackService';
+import ScreenContextService from '../services/ScreenContextService';
 
 export function useShakeToFeedback() {
-  const { showSmartFeedback, enableShakeToFeedback, setBetaStatus } = useFeedbackStore();
+  const { showSmartFeedback, enableShakeToFeedback, setBetaStatus, setScreenContext, setScreenshot } = useFeedbackStore();
   const { currentUser } = useUserStore();
   const isHandlingShake = useRef(false);
 
@@ -17,11 +18,24 @@ export function useShakeToFeedback() {
     FeedbackService.checkBetaStatus(currentUser.id).then(setBetaStatus);
 
     // Subscribe to shake event
-    const subscription = RNShake.addListener(() => {
+    const subscription = RNShake.addListener(async () => {
       // Prevent multiple triggers
       if (isHandlingShake.current) return;
       
       isHandlingShake.current = true;
+      
+      try {
+        // Capture screen context
+        const screenContext = await ScreenContextService.getCurrentContext();
+        if (screenContext) {
+          setScreenContext(screenContext);
+        }
+
+        // Auto-capture screenshot
+        await captureScreenOnShake();
+      } catch (error) {
+        console.error('Error capturing context on shake:', error);
+      }
       
       // Use smart feedback instead of regular feedback
       showSmartFeedback();
@@ -40,7 +54,29 @@ export function useShakeToFeedback() {
         RNShake.removeAllListeners();
       }
     };
-  }, [enableShakeToFeedback, currentUser?.id, showSmartFeedback, setBetaStatus]);
+  }, [enableShakeToFeedback, currentUser?.id, showSmartFeedback, setBetaStatus, setScreenContext, setScreenshot]);
+
+  const captureScreenOnShake = async () => {
+    try {
+      // Import ViewShot dynamically
+      const ViewShot = require('react-native-view-shot');
+      
+      // Capture the entire screen
+      const uri = await ViewShot.captureScreen({
+        format: 'jpg',
+        quality: 0.8,
+        result: 'tmpfile',
+      });
+      
+      if (uri) {
+        setScreenshot(uri);
+        console.log('Screen captured on shake:', uri);
+      }
+    } catch (error) {
+      console.log('Auto screenshot on shake failed:', error);
+      // Don't show error to user
+    }
+  };
 }
 
 // Hook to initialize shake detection when app starts

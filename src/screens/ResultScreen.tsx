@@ -22,6 +22,19 @@ import { useUserStore } from '../stores/useUserStore';
 // import { ENABLE_SYNC } from '../../App';
 const ENABLE_SYNC = true; // Enable sync for now
 
+// 격려 메시지 함수
+const getEncouragementMessage = (score: number): string => {
+  if (score < 50) {
+    return "사람마다 느끼는 맛이 달라요. 당신의 표현도 정답이에요!";
+  } else if (score < 75) {
+    return "좋은 시도예요! 점점 더 섬세하게 느끼고 계시네요!";
+  } else if (score < 90) {
+    return "훌륭해요! 🎉 감각이 정말 좋으세요!";
+  } else {
+    return "로스터와 비슷하게 느끼셨네요! 감각이 정말 좋으세요!";
+  }
+};
+
 export default function ResultScreen({navigation}: any) {
   const {currentTasting, matchScoreTotal, reset, saveTasting, checkAchievements} = useTastingStore();
   const {showSuccessToast, showErrorToast} = useToastStore();
@@ -283,12 +296,12 @@ export default function ResultScreen({navigation}: any) {
           <Text style={styles.backButtonText}>‹ 뒤로</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>결과</Text>
-        <View style={styles.navigationRight} />
+        <Text style={styles.progressIndicator}>6/6</Text>
       </View>
       
       {/* 진행 상태 바 */}
       <View style={styles.progressBar}>
-        <View style={styles.progressFill} />
+        <View style={[styles.progressFill, { width: '100%' }]} />
       </View>
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -296,11 +309,13 @@ export default function ResultScreen({navigation}: any) {
           <Text style={[styles.headerIcon, {fontSize: 48, color: Colors.SUCCESS_GREEN}]}>✅</Text>
           <Text style={styles.title}>테이스팅 완료!</Text>
           <Text style={styles.score}>{matchScoreTotal || 0}% 일치</Text>
+          <Text style={styles.encouragement}>
+            {getEncouragementMessage(matchScoreTotal || 0)}
+          </Text>
         </View>
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionIcon, {fontSize: 24, color: Colors.PRIMARY}]}>ℹ️</Text>
           <Text style={styles.sectionTitle}>커피 정보</Text>
         </View>
         <Text style={styles.info}>카페: {currentTasting.cafeName || '-'}</Text>
@@ -308,10 +323,18 @@ export default function ResultScreen({navigation}: any) {
         <Text style={styles.info}>커피: {currentTasting.coffeeName || '-'}</Text>
       </View>
 
+      {currentTasting.personalComment && (
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>내 노트</Text>
+          </View>
+          <Text style={styles.info}>{currentTasting.personalComment}</Text>
+        </View>
+      )}
+      
       {currentTasting.roasterNotes && (
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionIcon, {fontSize: 24, color: Colors.PRIMARY}]}>📄</Text>
             <Text style={styles.sectionTitle}>로스터 노트</Text>
           </View>
           <Text style={styles.info}>{currentTasting.roasterNotes}</Text>
@@ -321,7 +344,6 @@ export default function ResultScreen({navigation}: any) {
       {flavorList.length > 0 && (
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionIcon, {fontSize: 24, color: Colors.PRIMARY}]}>🍃</Text>
             <Text style={styles.sectionTitle}>내가 선택한 맛</Text>
           </View>
           {flavorList.map((flavor: string, index: number) => (
@@ -334,20 +356,18 @@ export default function ResultScreen({navigation}: any) {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionIcon, {fontSize: 24, color: Colors.PRIMARY}]}>📈</Text>
           <Text style={styles.sectionTitle}>감각 평가</Text>
         </View>
         <Text style={styles.info}>바디감: {currentTasting.body || 3}/5</Text>
         <Text style={styles.info}>산미: {currentTasting.acidity || 3}/5</Text>
         <Text style={styles.info}>단맛: {currentTasting.sweetness || 3}/5</Text>
         <Text style={styles.info}>여운: {currentTasting.finish || 3}/5</Text>
-        <Text style={styles.info}>입안 느낌: {currentTasting.mouthfeel || 'Clean'}</Text>
+        <Text style={[styles.info, styles.infoLast]}>입안 느낌: {currentTasting.mouthfeel || 'Clean'}</Text>
       </View>
 
       {/* 다른 사람들은? 섹션 - 항상 표시 */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionIcon, {fontSize: 24, color: Colors.PRIMARY}]}>👥</Text>
           <Text style={styles.sectionTitle}>다른 사람들은?</Text>
         </View>
         {isLoadingComparison ? (
@@ -439,7 +459,6 @@ export default function ResultScreen({navigation}: any) {
       {/* 비슷한 커피 추천 - 항상 표시 */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionIcon, {fontSize: 24, color: Colors.PRIMARY}]}>☕</Text>
           <Text style={styles.sectionTitle}>비슷한 커피 추천</Text>
         </View>
         <Text style={styles.comparisonSubtitle}>
@@ -546,14 +565,20 @@ const styles = StyleSheet.create({
   navigationRight: {
     minWidth: HIGConstants.MIN_TOUCH_TARGET,
   },
+  progressIndicator: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
+    minWidth: HIGConstants.MIN_TOUCH_TARGET,
+    textAlign: 'right',
+  },
   progressBar: {
     height: 4,
     backgroundColor: HIGColors.gray5,
   },
   progressFill: {
     height: 4,
-    width: '100%', // 6/6 = 100%
-    backgroundColor: HIGColors.green,
+    backgroundColor: HIGColors.blue,
   },
   scrollView: {
     flex: 1,
@@ -581,6 +606,15 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '700',
     color: HIGColors.green,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  encouragement: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    lineHeight: 24,
   },
   section: {
     backgroundColor: '#FFFFFF',
@@ -608,6 +642,9 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
+  },
+  infoLast: {
+    marginBottom: 0,
   },
   flavorItem: {
     fontSize: 15,

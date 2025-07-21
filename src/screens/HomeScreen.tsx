@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 import RealmService from '../services/realm/RealmService';
 import { useUserStore } from '../stores/useUserStore';
+import { useDevStore } from '../stores/useDevStore';
 import { ITastingRecord } from '../services/realm/schemas';
 import { useCoffeeNotifications } from '../hooks/useCoffeeNotifications';
 import { CoffeeDiscoveryAlert } from '../components/CoffeeDiscoveryAlert';
@@ -25,6 +26,7 @@ interface HomeScreenProps {
 export default function HomeScreen({navigation}: HomeScreenProps) {
   const { t } = useTranslation();
   const { currentUser } = useUserStore();
+  const { isDeveloperMode, enableMockData } = useDevStore();
   
   
   const [recentTastings, setRecentTastings] = useState<ITastingRecord[]>([]);
@@ -61,7 +63,19 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     loadDashboardData();
   }, []);
 
-  // 디버깅용 useEffect - 컴포넌트 마운트 시 실행
+  // 화면이 포커스될 때마다 데이터 새로고침
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadDashboardData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  // isDeveloperMode 또는 enableMockData가 변경될 때마다 데이터 새로고침
+  useEffect(() => {
+    loadDashboardData();
+  }, [isDeveloperMode, enableMockData]);
 
   const loadDashboardData = async () => {
     try {
@@ -75,6 +89,24 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       
       if (realmService.isInitialized) {
         const realm = realmService.getRealm();
+        
+        // Only load data if developer mode is enabled (to block access to mock data for beta users)
+        // Beta users can see data if they have developer mode enabled
+        if (!isDeveloperMode) {
+          // No data for non-developer mode users
+          setRecentTastings([]);
+          setStats({
+            totalTastings: 0,
+            totalRoasteries: 0,
+            thisWeekTastings: 0,
+            avgScore: 0,
+            bestScore: 0,
+            newCoffeesThisMonth: 0,
+          });
+          setIsLoading(false);
+          return;
+        }
+        
         const allTastings = realm.objects<ITastingRecord>('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
         
         // 최근 3개 테이스팅
@@ -150,7 +182,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
   };
 
   const handleTastingDetail = (tastingId: string) => {
-    navigation.navigate('Journal' as never, { screen: 'TastingDetail', params: { tastingId } } as never);
+    navigation.navigate('TastingDetail' as never, { tastingId } as never);
   };
 
   const renderRecentTasting = ({ item }: { item: ITastingRecord }) => {

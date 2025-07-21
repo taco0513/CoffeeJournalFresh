@@ -28,13 +28,15 @@ Coffee Journal의 TastingFlow는 사용자 타입과 전문성 수준에 따라 
     ↓
 "이 커피는 어떤 맛이지?"
     ↓
-간단한 정보 입력 (커피명, 로스터리)
+기본 정보 입력 (커피명, 로스터리, 카페, 온도)
     ↓
-직관적인 향미 선택 (5개 카테고리)
+향미 휠로 향미 선택 (최대 5개)
     ↓
-간단한 감각 평가 (Light/Medium/Full)
+슬라이더로 감각 평가 (body, acidity, sweetness, finish)
     ↓
-개인적 소감 기록
+개인 노트 작성
+    ↓
+로스터 노트와 비교
     ↓
 격려하는 결과 & 성장 추적
     ↓
@@ -82,13 +84,18 @@ SCA 표준 센서리 분석
 interface CafeInfo {
   coffeeName: string;        // 필수
   roastery: string;         // 필수
+  cafeName: string;         // 필수 ('Home' 선택 가능)
+  temperature: 'hot' | 'ice'; // 필수
   origin?: string;          // 선택
+  variety?: string;         // 선택
+  altitude?: string;        // 선택
+  process?: string;         // 선택
   roastLevel?: string;      // 선택
 }
 ```
 - **입력 시간**: 1-2분
 - **자동완성**: 기본 지원
-- **필수 필드**: 2개만
+- **필수 필드**: 4개 (커피명, 로스터리, 카페, 온도)
 
 #### 🔬 Lab Mode  
 ```typescript
@@ -110,9 +117,9 @@ interface LabInfo {
 ### 2. 향미 선택
 
 #### 🍃 Cafe Mode
-- **초보자**: 5개 대분류만 (Fruity, Nutty, etc.)
-- **중급자**: 기본 향미 휠 (2단계)
-- **최대 선택**: 3-5개
+- **향미 휠**: 기본 향미 휠 (2단계 선택)
+- **최대 선택**: 5개
+- **개인 라이브러리**: 즐겨 사용하는 향미 저장
 - **설명**: 친숙한 용어 사용
 
 #### 🔬 Lab Mode
@@ -125,10 +132,6 @@ interface LabInfo {
 
 #### 🍃 Cafe Mode
 ```typescript
-// 초보자
-presets: ['Light', 'Medium', 'Full']
-
-// 중급자  
 {
   body: [1-5, 0.5 step],
   acidity: [1-5, 0.5 step],
@@ -161,6 +164,8 @@ presets: ['Light', 'Medium', 'Full']
 interface CafeResult {
   personalScore: number;           // 개인 만족도
   roasterMatching?: number;        // 로스터 노트 일치도
+  roasterNotes?: string;           // 로스터 노트
+  personalNote?: string;           // 내 노트
   encouragement: string;           // "훌륭해요! 🎉"
   growthIndicator: string;         // 성장 지표
   suggestions: string[];           // 다음 추천
@@ -235,7 +240,7 @@ const suggestLabMode = (user: UserProgression) => {
 ## 💡 개발 전략
 
 ### Phase 1 (현재): Cafe Mode 완성
-1. **Core UX** 완벽 구현
+1. **Core UX** 완벽 구현 (중급자 수준 통일)
 2. **사용자 기반** 확보 (10,000+ 사용자)
 3. **데이터 수집** 및 패턴 분석
 4. **피드백 반영** 및 개선

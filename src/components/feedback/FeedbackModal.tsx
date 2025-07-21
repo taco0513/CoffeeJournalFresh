@@ -17,6 +17,7 @@ import { useFeedbackStore } from '../../stores/useFeedbackStore';
 import { useUserStore } from '../../stores/useUserStore';
 import { FeedbackCategory, FEEDBACK_CATEGORY_LABELS } from '../../types/feedback';
 import { FeedbackService } from '../../services/FeedbackService';
+import ScreenContextService from '../../services/ScreenContextService';
 import { HIGColors } from '../../constants/HIG';
 import { showSuccessToast, showErrorToast } from '../../utils/toast';
 
@@ -31,6 +32,7 @@ export const FeedbackModal: React.FC = () => {
     title,
     description,
     pendingScreenshot,
+    screenContext,
     submitStatus,
     errorMessage,
     setCategory,
@@ -180,7 +182,7 @@ export const FeedbackModal: React.FC = () => {
 
               {/* Screenshot */}
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>스크린샷 (선택사항)</Text>
+                <Text style={styles.sectionTitle}>스크린샷 {pendingScreenshot && '✓'}</Text>
                 {pendingScreenshot ? (
                   <View style={styles.screenshotContainer}>
                     <Image source={{ uri: pendingScreenshot }} style={styles.screenshot} />
@@ -203,6 +205,18 @@ export const FeedbackModal: React.FC = () => {
                   </TouchableOpacity>
                 )}
               </View>
+
+              {/* Screen Context Information */}
+              {screenContext && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>화면 정보 (자동 수집됨) ✓</Text>
+                  <View style={styles.contextContainer}>
+                    <Text style={styles.contextText}>
+                      {ScreenContextService.getContextSummary(screenContext)}
+                    </Text>
+                  </View>
+                </View>
+              )}
 
               {/* Error Message */}
               {errorMessage && (
@@ -421,5 +435,18 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  contextContainer: {
+    backgroundColor: HIGColors.systemGray6,
+    padding: 12,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: HIGColors.systemBlue,
+  },
+  contextText: {
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    lineHeight: 18,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
 });

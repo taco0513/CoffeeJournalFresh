@@ -200,26 +200,32 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                 )
                 .map(flavor => {
                   const isSelected = isFlavorSelected(category, selectedSubCategory, flavor.name);
+                  const isDisabled = !isSelected && selectedPaths.length >= 5;
                   return (
                     <TouchableOpacity
                       key={flavor.name}
                       style={[
                         styles.flavorButton,
                         isSelected && styles.flavorButtonSelected,
+                        isDisabled && styles.flavorButtonDisabled,
                       ]}
                       onPress={() => {
-                        onSelectFlavor({
-                          level1: category,
-                          level2: selectedSubCategory,
-                          level3: flavor.name,
-                        });
+                        if (!isDisabled) {
+                          onSelectFlavor({
+                            level1: category,
+                            level2: selectedSubCategory,
+                            level3: flavor.name,
+                          });
+                        }
                       }}
-                      activeOpacity={0.7}
+                      activeOpacity={isDisabled ? 1 : 0.7}
+                      disabled={isDisabled}
                     >
                       <Text
                         style={[
                           styles.flavorText,
                           isSelected && styles.flavorTextSelected,
+                          isDisabled && styles.flavorTextDisabled,
                         ]}
                       >
                         {flavor.koreanName}
@@ -240,7 +246,10 @@ export default function UnifiedFlavorScreen() {
   const navigation = useNavigation();
   const { currentTasting, updateField } = useTastingStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  // Cafe Mode: 모든 카테고리를 기본적으로 열어둠
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(
+    flavorData.map(item => item.category)
+  );
 
   const selectedPaths = currentTasting.selectedFlavors || [];
 
@@ -257,7 +266,7 @@ export default function UnifiedFlavorScreen() {
       // Add if under limit
       currentPaths.push(path);
     } else {
-      // Show limit reached message
+      // Show limit reached message - could add a toast or haptic feedback here
       return;
     }
 
@@ -272,13 +281,26 @@ export default function UnifiedFlavorScreen() {
 
   const toggleCategory = useCallback((category: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpandedCategory(expandedCategory === category ? null : category);
-  }, [expandedCategory]);
+    setExpandedCategories(prev => {
+      if (prev.includes(category)) {
+        return prev.filter(c => c !== category);
+      } else {
+        return [...prev, category];
+      }
+    });
+  }, []);
+  
+  const toggleAllCategories = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    if (expandedCategories.length === flavorData.length) {
+      setExpandedCategories([]);
+    } else {
+      setExpandedCategories(flavorData.map(item => item.category));
+    }
+  }, [expandedCategories]);
 
   const handleNext = () => {
-    if (selectedPaths.length > 0) {
-      navigation.navigate('Sensory' as never);
-    }
+    navigation.navigate('Sensory' as never);
   };
 
   const handleSkip = () => {
@@ -301,9 +323,16 @@ export default function UnifiedFlavorScreen() {
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: '57%' }]} />
+          <View style={[styles.progressFill, { width: '33%' }]} />
         </View>
-        <Text style={styles.progressText}>4/7</Text>
+        <Text style={styles.progressText}>2/6</Text>
+      </View>
+
+      {/* Guide Message */}
+      <View style={styles.guideMessageContainer}>
+        <Text style={styles.guideMessage}>
+          🎯 커피에서 느껴지는 향과 맛을 선택해보세요
+        </Text>
       </View>
 
       {/* Search Bar */}
@@ -325,9 +354,19 @@ export default function UnifiedFlavorScreen() {
         </View>
       </View>
 
-      {/* Selected Flavors */}
-      {selectedPaths.length > 0 && (
-        <View style={styles.selectedContainer}>
+      {/* Sticky Header - Selected Flavors */}
+      <View style={[styles.stickyHeader, selectedPaths.length === 0 && styles.stickyHeaderEmpty]}>
+        <View style={styles.stickyHeaderTop}>
+          <Text style={styles.stickyHeaderTitle}>
+            선택한 향미 ({selectedPaths.length}/5)
+          </Text>
+          {selectedPaths.length > 0 && (
+            <TouchableOpacity onPress={() => updateField('selectedFlavors', [])}>
+              <Text style={styles.clearAllButton}>전체 삭제</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        {selectedPaths.length > 0 ? (
           <ScrollView 
             horizontal 
             showsHorizontalScrollIndicator={false}
@@ -335,12 +374,14 @@ export default function UnifiedFlavorScreen() {
           >
             {selectedPaths.map((path, index) => {
               const categoryData = flavorData.find(item => item.category === path.level1);
-              const emoji = categoryData?.emoji || '☕';
+              const subcategoryData = categoryData?.subcategories.find(sub => sub.name === path.level2);
+              const flavorData = subcategoryData?.flavors.find(f => f.name === path.level3);
+              const koreanName = flavorData?.koreanName || path.level3;
+              
               return (
                 <View key={index} style={styles.selectedChip}>
-                  <Text style={styles.selectedChipEmoji}>{emoji}</Text>
                   <Text style={styles.selectedChipText} numberOfLines={1}>
-                    {path.level3}
+                    {koreanName}
                   </Text>
                   <TouchableOpacity 
                     onPress={() => handleRemoveFlavor(index)}
@@ -351,14 +392,21 @@ export default function UnifiedFlavorScreen() {
                 </View>
               );
             })}
-            {selectedPaths.length < 5 && (
-              <View style={styles.remainingChip}>
-                <Text style={styles.remainingText}>+{5 - selectedPaths.length}</Text>
-              </View>
-            )}
           </ScrollView>
-        </View>
-      )}
+        ) : (
+          <Text style={styles.emptyMessage}>처음 느껴지는 맛을 선택해보세요. 정답은 없어요!</Text>
+        )}
+      </View>
+      
+      {/* 안내 메시지 */}
+      <View style={styles.guideContainer}>
+        <Text style={styles.guideText}>최대 5개까지 선택 가능 • {selectedPaths.length}/5</Text>
+        <TouchableOpacity onPress={toggleAllCategories}>
+          <Text style={styles.toggleAllButton}>
+            {expandedCategories.length === flavorData.length ? '모든 카테고리 닫기' : '모든 카테고리 열기'}
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -366,7 +414,7 @@ export default function UnifiedFlavorScreen() {
           <CategoryAccordion
             key={item.category}
             category={item.category}
-            expanded={expandedCategory === item.category}
+            expanded={expandedCategories.includes(item.category)}
             onToggle={() => toggleCategory(item.category)}
             onSelectFlavor={handleSelectFlavor}
             selectedPaths={selectedPaths}
@@ -439,6 +487,17 @@ const styles = StyleSheet.create({
     color: HIGColors.secondaryLabel,
     marginTop: HIGConstants.SPACING_XS,
   },
+  guideMessageContainer: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_SM,
+    backgroundColor: '#E3F2FD',
+  },
+  guideMessage: {
+    fontSize: 15,
+    color: HIGColors.systemBlue,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
   searchContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
@@ -465,12 +524,53 @@ const styles = StyleSheet.create({
     color: HIGColors.tertiaryLabel,
     padding: HIGConstants.SPACING_XS,
   },
-  selectedContainer: {
+  stickyHeader: {
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: HIGColors.systemGray5,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_SM,
+  },
+  stickyHeaderEmpty: {
+    paddingBottom: HIGConstants.SPACING_XS,
+  },
+  stickyHeaderTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  stickyHeaderTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  clearAllButton: {
+    fontSize: 14,
+    color: HIGColors.systemRed,
+    fontWeight: '500',
+  },
+  emptyMessage: {
+    fontSize: 14,
+    color: HIGColors.tertiaryLabel,
+    fontStyle: 'italic',
+  },
+  guideContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
     backgroundColor: HIGColors.systemGray6,
-    borderBottomWidth: 1,
-    borderBottomColor: HIGColors.systemGray5,
+  },
+  guideText: {
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+  },
+  toggleAllButton: {
+    fontSize: 13,
+    color: HIGColors.systemBlue,
+    fontWeight: '500',
   },
   selectedScrollContent: {
     alignItems: 'center',
@@ -666,6 +766,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     elevation: 3,
   },
+  flavorButtonDisabled: {
+    opacity: 0.5,
+    backgroundColor: HIGColors.systemGray6,
+  },
   flavorText: {
     fontSize: 14,
     color: HIGColors.label,
@@ -674,6 +778,9 @@ const styles = StyleSheet.create({
   flavorTextSelected: {
     color: '#FFFFFF',
     fontWeight: '600',
+  },
+  flavorTextDisabled: {
+    color: HIGColors.tertiaryLabel,
   },
   checkmark: {
     fontSize: 14,

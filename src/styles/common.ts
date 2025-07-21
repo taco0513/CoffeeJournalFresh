@@ -321,6 +321,110 @@ export const shadowStyles = StyleSheet.create({
   }),
 });
 
+// 마스터 테이블 스타일 룰 (앱 전체 적용)
+export const commonTableStyles = StyleSheet.create({
+  // 기본 테이블 행
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray5,
+  },
+  
+  // 마지막 테이블 행 (하단 보더 제거)
+  tableRowLast: {
+    borderBottomWidth: 0,
+    borderBottomColor: 'transparent',
+  },
+  
+  // 정보 표시용 행 (세로 여백 작음)
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_XS,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray5,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  
+  // 마지막 정보 행
+  infoRowLast: {
+    borderBottomWidth: 0,
+    borderBottomColor: 'transparent',
+  },
+  
+  // 감각 평가용 행 (세로 여백 중간)
+  sensoryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray5,
+  },
+  
+  // 마지막 감각 평가 행
+  sensoryRowLast: {
+    borderBottomWidth: 0,
+    borderBottomColor: 'transparent',
+  },
+  
+  // 랭킹/순위 표시용 행
+  rankingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
+  },
+  
+  // 마지막 랭킹 행
+  rankingRowLast: {
+    borderBottomWidth: 0,
+    borderBottomColor: 'transparent',
+  },
+  
+  // 테이블 섹션 컨테이너
+  tableSection: {
+    backgroundColor: HIGColors.white,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_LG,
+    marginVertical: HIGConstants.SPACING_XS,
+    marginHorizontal: HIGConstants.SPACING_LG,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 1,
+        },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
+  
+  // 테이블 헤더
+  tableHeader: {
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  
+  // 테이블 제목
+  tableTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+});
+
 // 사용 예시 헬퍼
 export const createButtonStyle = (
   type: 'primary' | 'success' | 'danger' | 'secondary' | 'outline' = 'primary',

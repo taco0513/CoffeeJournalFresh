@@ -35,19 +35,19 @@ const PersonalCommentScreen = () => {
     updateField('personalComment', personalComment.trim());
     
     try {
-      saveTasting();
-      navigation.navigate('Result' as never);
+      // 로스터 노트 화면으로 이동
+      navigation.navigate('RoasterNotes' as never);
     } catch (error) {
       // console.error('Error saving tasting:', error);
-      // 에러가 발생해도 결과 화면으로 이동
-      navigation.navigate('Result' as never);
+      // 에러가 발생해도 다음 화면으로 이동
+      navigation.navigate('RoasterNotes' as never);
     }
   };
 
   const handleSkip = () => {
     // 빈 감상평으로 저장하고 다음 단계로
     updateField('personalComment', '');
-    navigation.navigate('Result' as never);
+    navigation.navigate('RoasterNotes' as never);
   };
 
   // 추천 문구들
@@ -82,8 +82,8 @@ const PersonalCommentScreen = () => {
         >
           <Text style={styles.backButtonText}>‹ 뒤로</Text>
         </TouchableOpacity>
-        <Text style={styles.navigationTitle}>개인 감상평</Text>
-        <Text style={styles.progressIndicator}>6/7</Text>
+        <Text style={styles.navigationTitle}>개인 노트</Text>
+        <Text style={styles.progressIndicator}>4/6</Text>
       </View>
 
       <KeyboardAvoidingView 
@@ -93,9 +93,12 @@ const PersonalCommentScreen = () => {
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>나만의 한줄 감상평</Text>
+              <Text style={styles.sectionTitle}>나만의 노트</Text>
               <Text style={styles.sectionDescription}>
-                이 커피에 대한 개인적인 느낌이나 인상을 자유롭게 적어주세요
+                오늘의 커피는 어떠셨나요?
+              </Text>
+              <Text style={styles.guideMessage}>
+                💭 맛, 향, 전반적인 느낌을 자유롭게 표현해보세요
               </Text>
               
               <View style={styles.inputContainer}>
@@ -212,6 +215,12 @@ const styles = StyleSheet.create({
   sectionDescription: {
     fontSize: 15,
     color: HIGColors.secondaryLabel,
+    lineHeight: 20,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  guideMessage: {
+    fontSize: 14,
+    color: HIGColors.blue,
     lineHeight: 20,
     marginBottom: HIGConstants.SPACING_MD,
   },

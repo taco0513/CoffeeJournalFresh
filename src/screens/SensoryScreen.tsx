@@ -109,7 +109,7 @@ const SensoryScreen = () => {
           <Text style={styles.backButtonText}>‹ 뒤로</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>감각 평가</Text>
-        <Text style={styles.progressIndicator}>5/7</Text>
+        <Text style={styles.progressIndicator}>3/6</Text>
       </View>
       
       {/* 진행 상태 바 */}
@@ -125,7 +125,10 @@ const SensoryScreen = () => {
         {/* 제목 및 설명 */}
         <View style={styles.headerSection}>
           <Text style={styles.title}>감각 평가</Text>
-          <Text style={styles.subtitle}>커피의 감각적 특성을 평가해주세요</Text>
+          <Text style={styles.subtitle}>입안의 느낌에 집중해보세요</Text>
+          <Text style={styles.guideMessage}>
+            ☕ 천천히 음미하며 각각의 요소를 느껴보세요
+          </Text>
         </View>
 
         {/* Sensory Attributes */}
@@ -203,7 +206,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: 4,
-    width: '83%', // 5/6 = 83%
+    width: '50%', // 3/6 = 50%
     backgroundColor: HIGColors.blue,
   },
   scrollView: {
@@ -230,7 +233,15 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  guideMessage: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.blue,
+    textAlign: 'center',
     marginBottom: HIGConstants.SPACING_XL,
+    paddingHorizontal: HIGConstants.SPACING_LG,
   },
   sliderSection: {
     marginBottom: HIGConstants.SPACING_XL,

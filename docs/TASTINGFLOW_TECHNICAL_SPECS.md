@@ -83,10 +83,10 @@ interface TastingSession {
   
   // Steps Data
   coffeeInfo: CoffeeInfo;
-  roasterNotes?: RoasterNotes;
   flavorSelection?: FlavorSelection;
   sensoryEvaluation?: SensoryEvaluation;
-  personalComment?: PersonalComment;
+  personalNote?: PersonalNote;
+  roasterNotes?: RoasterNotes;
   results?: TastingResults;
   
   // Metadata
@@ -105,10 +105,13 @@ interface TastingSession {
 interface CoffeeInfo {
   coffeeName: string;            // 필수
   roastery: string;              // 필수
+  cafeName: string;              // 필수 ('Home' 선택 가능)
+  temperature: 'hot' | 'ice';    // 필수
   origin?: string;               // 선택
+  variety?: string;              // 선택
+  altitude?: string;             // 선택
   process?: ProcessMethod;       // 선택
   roastLevel?: RoastLevel;       // 선택
-  brewMethod?: BrewMethod;       // 선택
   price?: number;                // 선택
   purchaseDate?: Date;           // 선택
   
@@ -124,11 +127,14 @@ interface CoffeeInfo {
   autoCompleted: string[];       // 자동완성된 필드들
 }
 
-// 3. FlavorSelection (3단계 - 핵심)
+// 3. FlavorSelection (2단계 - 핵심)
 interface FlavorSelection {
   selectedFlavors: SelectedFlavor[];
-  userLevel: 'beginner' | 'intermediate';
   selectionMethod: 'category' | 'wheel' | 'search';
+  
+  // UI 상태
+  expandedCategories: string[];   // 열려있는 카테고리들
+  searchQuery: string;            // 현재 검색어
   
   // 개인화
   newFlavorsDiscovered: string[];
@@ -140,6 +146,17 @@ interface FlavorSelection {
   selectionTime: number;
   hesitationFlavors: string[];   // 망설였던 향미들
   confidence: number;            // 1-5 자신감
+  selectionOrder: string[];      // 선택한 순서
+}
+
+// 3-1. SelectedFlavor 상세
+interface SelectedFlavor {
+  flavorId: string;
+  category: string;
+  subcategory: string;
+  name: string;
+  nameKo?: string;
+  selectedAt: Date;
 }
 
 // 4. 향미 마스터 데이터
@@ -181,7 +198,7 @@ CREATE TABLE user_profiles (
   -- Profile info
   display_name TEXT,
   avatar_url TEXT,
-  user_level TEXT DEFAULT 'beginner',
+  user_level TEXT DEFAULT 'intermediate',
   
   -- Preferences
   preferred_language TEXT DEFAULT 'ko',
@@ -192,7 +209,7 @@ CREATE TABLE user_profiles (
   total_flavors_used INTEGER DEFAULT 0,
   achievement_points INTEGER DEFAULT 0,
   
-  CONSTRAINT user_level_check CHECK (user_level IN ('beginner', 'intermediate', 'advanced'))
+  CONSTRAINT user_level_check CHECK (user_level IN ('intermediate', 'advanced'))
 );
 
 -- TastingSessions table

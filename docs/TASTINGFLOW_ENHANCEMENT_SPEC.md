@@ -48,43 +48,18 @@
 
 ### 3. Progressive Disclosure (점진적 공개)
 ```
-- 초보자: 간단하고 친절한 가이드
-- 중급자: 더 많은 옵션과 자유도
-- 전문가: 고급 기능과 비교 도구
+- 중급자 수준으로 통일된 인터페이스 제공
+- 모든 사용자가 동일한 기능 사용
+- 전문가 기능은 Lab Mode (Phase 2)로 분리
 ```
 
 ---
 
-## 사용자 경험 레벨
+## 사용자 경험 (중급자 수준 통일)
 
-### 🌱 Beginner (초보자)
+### 🌿 Unified Experience
 ```typescript
-interface BeginnerFeatures {
-  // 간소화된 향미 선택
-  simplifiedFlavors: {
-    categories: ['Fruity', 'Nutty', 'Chocolate', 'Floral', 'Other'],
-    maxFlavors: 3,
-    showDescriptions: true
-  },
-  
-  // 가이드 메시지
-  guides: {
-    coffeeInfo: "커피 봉투에 적힌 정보를 입력해주세요",
-    flavor: "처음 느껴지는 맛을 선택해보세요",
-    sensory: "입안의 느낌에 집중해보세요"
-  },
-  
-  // 프리셋 제공
-  sensoryPresets: ['Light', 'Medium', 'Full'],
-  
-  // 단순화된 결과
-  simpleResult: true
-}
-```
-
-### 🌿 Intermediate (중급자)
-```typescript
-interface IntermediateFeatures {
+interface UnifiedFeatures {
   // 전체 향미 휠
   fullFlavorWheel: true,
   maxFlavors: 5,
@@ -101,6 +76,13 @@ interface IntermediateFeatures {
   comparisons: {
     previousTastings: true,
     averageScores: false  // 개인 평균만
+  },
+  
+  // 가이드 메시지
+  guides: {
+    coffeeInfo: "커피 봉투에 적힌 정보를 입력해주세요",
+    flavor: "처음 느껴지는 맛을 선택해보세요. 정답은 없어요!",
+    sensory: "입안의 느낌에 집중해보세요"
   }
 }
 ```
@@ -158,11 +140,21 @@ FlavorWheel
 ### Smart Search (스마트 검색)
 ```typescript
 interface FlavorSearchProps {
+  // 실시간 검색
+  searchQuery: string;
+  debounceDelay: 300;  // 검색 디바운스 지연
+  
   // 자동완성
   autoComplete: {
     recentlyUsed: string[],
     contextual: string[],  // 같은 origin/process의 커피에서 발견된 향미
     phonetic: boolean      // 발음 기반 검색 (예: "베리" → "Berry")
+  },
+  
+  // 검색 결과 하이라이팅
+  highlighting: {
+    enabled: true,
+    highlightColor: '#FFE082'
   },
   
   // 향미 설명
@@ -220,10 +212,10 @@ interface TastingStep {
 
 const TASTING_STEPS: TastingStep[] = [
   { id: 'coffee-info', name: 'Coffee Info', status: StepStatus.REQUIRED },
+  { id: 'flavors', name: 'Flavor Selection', status: StepStatus.REQUIRED },
+  { id: 'sensory', name: 'Sensory Evaluation', status: StepStatus.REQUIRED },
+  { id: 'personal-note', name: 'Personal Note', status: StepStatus.OPTIONAL },
   { id: 'roaster-notes', name: 'Roaster Notes', status: StepStatus.OPTIONAL },
-  { id: 'flavors', name: 'Flavor Selection', status: StepStatus.OPTIONAL },
-  { id: 'sensory', name: 'Sensory Evaluation', status: StepStatus.OPTIONAL },
-  { id: 'comment', name: 'Personal Comment', status: StepStatus.OPTIONAL },
   { id: 'result', name: 'Result', status: StepStatus.REQUIRED }
 ];
 ```
@@ -235,7 +227,7 @@ interface LateAdditionFeature {
   editableAfterSave: {
     flavors: true,
     sensory: true,
-    comment: true,
+    personalNote: true,
     photos: true
   },
   
@@ -313,34 +305,7 @@ interface TastingAchievements {
 
 ## 프로토타입 구현 가이드
 
-### 1. User Level Selection
-```typescript
-// 첫 실행 시 레벨 선택
-const UserLevelSelection = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>당신의 커피 경험은?</Text>
-      
-      <TouchableOpacity onPress={() => selectLevel('beginner')}>
-        <Text>🌱 이제 막 시작했어요</Text>
-        <Text>간단한 가이드와 함께 시작하기</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity onPress={() => selectLevel('intermediate')}>
-        <Text>🌿 어느 정도 익숙해요</Text>
-        <Text>더 자세한 기록 남기기</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity onPress={() => selectLevel('expert')}>
-        <Text>🌳 전문가예요</Text>
-        <Text>모든 기능 사용하기</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-```
-
-### 2. Enhanced Progress Bar
+### 1. Enhanced Progress Bar
 ```typescript
 interface EnhancedProgressBarProps {
   steps: TastingStep[];
@@ -366,9 +331,9 @@ const EnhancedProgressBar = ({ steps, currentStep }: EnhancedProgressBarProps) =
 };
 ```
 
-### 3. Flavor Wheel Component
+### 2. Flavor Wheel Component
 ```typescript
-const FlavorWheel = ({ userLevel, onSelectFlavor }) => {
+const FlavorWheel = ({ onSelectFlavor }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   
@@ -396,7 +361,7 @@ const FlavorWheel = ({ userLevel, onSelectFlavor }) => {
 };
 ```
 
-### 4. Personal Flavor Library
+### 3. Personal Flavor Library
 ```typescript
 const PersonalFlavorLibrary = () => {
   const [bookmarkedFlavors, setBookmarkedFlavors] = useState([]);
@@ -426,10 +391,10 @@ const PersonalFlavorLibrary = () => {
 };
 ```
 
-### 5. Context-Aware Hints
+### 4. Context-Aware Hints
 ```typescript
-const ContextualHint = ({ screen, userLevel, tastingHistory }) => {
-  const hint = getContextualHint(screen, userLevel, tastingHistory);
+const ContextualHint = ({ screen, tastingHistory }) => {
+  const hint = getContextualHint(screen, tastingHistory);
   
   if (!hint) return null;
   
@@ -453,19 +418,19 @@ const ContextualHint = ({ screen, userLevel, tastingHistory }) => {
 
 웹 Claude에게 다음 기능들을 포함한 인터랙티브 프로토타입을 요청하세요:
 
-1. **User Level Selection UI**
-   - 3가지 레벨 선택 화면
-   - 각 레벨별 기능 미리보기
+1. **Unified Interface**
+   - 모든 사용자를 위한 통일된 인터페이스
+   - 중급자 수준의 기능 제공
 
 2. **Enhanced Progress Bar**
    - 필수/선택 단계 시각적 구분
    - 현재 위치 표시
    - 건너뛴 단계 표시
 
-3. **Flavor Selection Interfaces**
-   - Beginner: 5개 카테고리 간단 선택
-   - Intermediate: 플레이버 휠 UI
-   - Expert: 검색 기반 + 플레이버 휠
+3. **Flavor Selection Interface**
+   - 플레이버 휠 UI
+   - 2단계 선택 (카테고리 → 세부 향미)
+   - 최대 5개 선택
 
 4. **Personal Flavor Library**
    - 북마크 기능

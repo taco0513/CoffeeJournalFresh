@@ -359,7 +359,7 @@ function MainTabs() {
         }}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
-            // Reset the Journal stack to HistoryMain when tab is pressed
+            // Always navigate to HistoryMain when tab is pressed
             navigation.navigate('Journal', { screen: 'HistoryMain' });
           },
         })}
@@ -453,12 +453,16 @@ function AppNavigator() {
             <Stack.Screen 
               name="MainTabs" 
               component={MainTabs} 
+              options={{
+                headerShown: false,
+              }}
             />
             <Stack.Screen 
               name="TastingFlow" 
               component={TastingFlow} 
               options={{
                 presentation: 'card',
+                headerShown: false,
               }}
             />
             <Stack.Screen 
@@ -488,6 +492,23 @@ function AppNavigator() {
               component={DeveloperScreen}
               options={{
                 headerShown: false,
+              }}
+            />
+            <Stack.Screen 
+              name="TastingDetail" 
+              component={TastingDetailScreen}
+              options={{
+                headerShown: true,
+                title: 'Tasting Details',
+                headerStyle: {
+                  backgroundColor: '#FFFFFF',
+                },
+                headerTintColor: HIGColors.label,
+                headerTitleStyle: {
+                  fontWeight: '600',
+                  fontSize: 17,
+                },
+                ...commonHeaderOptions,
               }}
             />
           </Stack.Navigator>

@@ -184,17 +184,19 @@
 ## 🛠️ 7. Developer Mode Features 🔄 PENDING
 
 ### Access & Setup:
-- [ ] **Access**: Profile → 개발자 모드
+- [ ] **Access**: Profile → 개발자 모드 → 개발자 모드 활성화 토글
 - [ ] **Feature Toggles**: Debug settings, performance metrics
 - [ ] **Quick Login**: Bypass authentication for testing
 - [ ] **Test User**: Level 10, verified, moderator privileges
 
 ### Test Data Generation:
+- [ ] **Mock Data Access**: Only available when developer mode is enabled
 - [ ] **Coffee Tastings**: 15 comprehensive test records
 - [ ] **Premium Coffee Shops**: Blue Bottle, Fritz, Anthracite, etc.
 - [ ] **Diverse Chains**: Starbucks, Paul Bassett, Hollys, etc.
 - [ ] **Realistic Data**: Complete flavor profiles, match scores
 - [ ] **One-Click Addition**: Easy test data insertion
+- [ ] **Access Control**: Non-developer mode users see "개발자 모드를 활성화하세요" message
 
 ### Persistent Settings:
 - [ ] **AsyncStorage**: Settings survive app restarts

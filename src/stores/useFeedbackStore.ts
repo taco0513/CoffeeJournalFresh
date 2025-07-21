@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FeedbackService } from '../services/FeedbackService';
 import { FeedbackCategory } from '../types/feedback';
 import { errorContextService } from '../services/ErrorContextService';
+import { ScreenContext } from '../services/ScreenContextService';
 
 interface FeedbackStore {
   // State
@@ -11,6 +12,9 @@ interface FeedbackStore {
   pendingScreenshot: string | null;
   submitStatus: 'idle' | 'submitting' | 'success' | 'error';
   errorMessage: string | null;
+  
+  // Screen context
+  screenContext: ScreenContext | null;
   
   // Feedback form data
   category: FeedbackCategory | null;
@@ -27,6 +31,7 @@ interface FeedbackStore {
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
   setScreenshot: (uri: string | null) => void;
+  setScreenContext: (context: ScreenContext | null) => void;
   setBetaStatus: (status: boolean) => void;
   
   // Submit
@@ -47,6 +52,7 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
   pendingScreenshot: null,
   submitStatus: 'idle',
   errorMessage: null,
+  screenContext: null,
   category: null,
   rating: null,
   title: '',
@@ -76,14 +82,16 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
       // Smart suggestions based on context
       const suggestedCategory = errorContextService.suggestFeedbackCategory(context);
       const suggestedTitle = errorContextService.generateSmartTitle(context);
-      const suggestedDescription = errorContextService.generateSmartDescription(context);
       
-      // Auto-fill form with smart suggestions
+      // Don't auto-fill description since we now have separate screen context section
+      // Let user write their own feedback content
+      
+      // Auto-fill form with smart suggestions (excluding description)
       set({ 
         isVisible: true,
         category: suggestedCategory,
         title: suggestedTitle,
-        description: suggestedDescription,
+        description: '', // Keep description empty for user input
       });
     } catch (error) {
       console.error('Error generating smart feedback:', error);
@@ -99,6 +107,7 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
   setTitle: (title) => set({ title }),
   setDescription: (description) => set({ description }),
   setScreenshot: (uri) => set({ pendingScreenshot: uri }),
+  setScreenContext: (context) => set({ screenContext: context }),
   setBetaStatus: (status) => set({ isBetaUser: status }),
 
   submitFeedback: async (userId, userEmail, username) => {
@@ -115,6 +124,13 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
     set({ submitStatus: 'submitting', errorMessage: null });
 
     try {
+      // Combine screen context with error context
+      const errorContext = await errorContextService.getContextForFeedback();
+      const combinedContext = {
+        ...errorContext,
+        screenContext: state.screenContext,
+      };
+
       await FeedbackService.submitFeedback({
         category: state.category,
         rating: state.rating || undefined,
@@ -124,7 +140,7 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
         userId,
         userEmail,
         username,
-        context: await errorContextService.getContextForFeedback(),
+        context: combinedContext,
       });
 
       set({ 
@@ -150,6 +166,7 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
     title: '',
     description: '',
     pendingScreenshot: null,
+    screenContext: null,
     submitStatus: 'idle',
     errorMessage: null,
   }),

@@ -17,6 +17,7 @@ import { ITastingRecord } from '../services/realm/schemas';
 import { HIGConstants, HIGColors } from '../styles/common';
 
 import { useUserStore } from '../stores/useUserStore';
+import { useDevStore } from '../stores/useDevStore';
 import { SkeletonList } from '../components/common/SkeletonLoader';
 
 interface GroupedTastings {
@@ -31,6 +32,7 @@ interface HistoryScreenProps {
 export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps) {
   const navigation = useNavigation();
   const { currentUser } = useUserStore();
+  const { isDeveloperMode } = useDevStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [allTastings, setAllTastings] = useState<ITastingRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,6 +64,14 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
         } catch (initError) {
           console.error('Failed to initialize Realm:', initError);
         }
+      }
+      
+      // Only load data if developer mode is enabled (to block access to mock data)
+      if (!isDeveloperMode) {
+        // No data for non-developer mode users
+        setAllTastings([]);
+        setLoading(false);
+        return;
       }
       
       const tastings = await realmService.getTastingRecords({ isDeleted: false });

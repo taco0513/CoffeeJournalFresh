@@ -86,8 +86,8 @@ const SensoryEvaluation: React.FC<SensoryEvaluationProps> = ({
       <Text style={styles.title}>Sensory Evaluation</Text>
       <Text style={styles.subtitle}>감각 평가</Text>
 
-      {attributes.map((attr) => (
-        <View key={attr.key} style={styles.attributeContainer}>
+      {attributes.map((attr, index) => (
+        <View key={attr.key} style={[styles.attributeContainer, index === attributes.length - 1 && styles.attributeContainerLast]}>
           <View style={styles.labelContainer}>
             <Text style={styles.attributeLabel}>{attr.label}</Text>
             <Text style={styles.attributeLabelKo}>{attr.labelKo}</Text>
@@ -160,6 +160,10 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ECF0F1',
+  },
+  attributeContainerLast: {
+    borderBottomWidth: 0,
+    borderBottomColor: 'transparent',
   },
   labelContainer: {
     flexDirection: 'row',

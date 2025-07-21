@@ -33,11 +33,12 @@ const RoasterNotesScreen = () => {
 
   const handleNext = () => {
     updateField('roasterNotes', notes);
-    navigation.navigate('UnifiedFlavor' as never);
+    // 결과 화면으로 이동
+    navigation.navigate('Result' as never);
   };
 
   const handleSkip = () => {
-    navigation.navigate('UnifiedFlavor' as never);
+    navigation.navigate('Result' as never);
   };
 
   return (
@@ -64,15 +65,17 @@ const RoasterNotesScreen = () => {
         
         {/* 진행 상태 바 */}
         <View style={styles.progressBar}>
-          <View style={styles.progressFill} />
+          <View style={[styles.progressFill, { width: '83%' }]} />
         </View>
+        <Text style={styles.progressText}>5/6</Text>
 
         {/* 메인 콘텐츠 */}
         <View style={styles.content}>
           {/* 제목 및 설명 */}
           <View style={styles.headerSection}>
             <Text style={styles.title}>로스터의 컵 노트</Text>
-            <Text style={styles.subtitle}>로스터가 제공한 맛 설명을 입력하세요</Text>
+            <Text style={styles.subtitle}>로스터의 설명을 적어두면 나중에 비교해볼 수 있어요</Text>
+            <Text style={styles.guideMessage}>💡 커피 봉투나 카페 메뉴판의 설명을 참고하세요</Text>
           </View>
 
           {/* OCR 알림 */}
@@ -162,8 +165,13 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: 4,
-    width: '50%', // 3/6 = 50%
     backgroundColor: HIGColors.blue,
+  },
+  progressText: {
+    fontSize: 12,
+    color: HIGColors.secondaryLabel,
+    marginTop: HIGConstants.SPACING_XS,
+    paddingHorizontal: HIGConstants.SPACING_LG,
   },
   content: {
     flex: 1,
@@ -186,6 +194,14 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  guideMessage: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.blue,
+    textAlign: 'center',
+    marginTop: HIGConstants.SPACING_XS,
   },
   ocrNotice: {
     backgroundColor: HIGColors.blue,

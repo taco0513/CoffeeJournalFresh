@@ -37,7 +37,6 @@ interface CoffeeInfo {
   origin?: string;                // 원산지
   process?: string;               // 가공법
   roastLevel?: RoastLevel;        // 로스팅 레벨
-  brewMethod?: BrewMethod;        // 추출 방법
   purchaseDate?: Date;            // 구매일
   price?: number;                // 가격
   
@@ -56,17 +55,6 @@ enum RoastLevel {
   DARK = 'dark'
 }
 
-// 추출 방법 enum  
-enum BrewMethod {
-  ESPRESSO = 'espresso',
-  AMERICANO = 'americano',
-  DRIP = 'drip',
-  POUR_OVER = 'pour-over',
-  FRENCH_PRESS = 'french-press',
-  AEROPRESS = 'aeropress',
-  COLD_BREW = 'cold-brew',
-  MOKA_POT = 'moka-pot'
-}
 ```
 
 ### 검증 규칙
@@ -129,8 +117,7 @@ const validationRules = {
 ```
 ⚙️ 더 많은 옵션 [▲]
 ├─ 🍃 가공법: [Natural ▼]
-├─ 🔥 로스팅: [Medium ▼]  
-├─ ☕ 추출법: [드립 ▼]
+├─ 🔥 로스팅: [Medium ▼]
 ├─ 📅 구매일: [2025-07-21]
 └─ 💰 가격: [₩ 25,000]
 ```

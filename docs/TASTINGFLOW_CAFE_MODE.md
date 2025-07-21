@@ -30,14 +30,14 @@ Cafe Mode는 일반 커피 애호가를 대상으로 한 **간단하고 접근 �
 ```
 1. Coffee Info (필수)
    ↓
-2. Roaster Notes (선택)
+2. Flavor Selection (필수)
+   ↓
+3. Sensory Evaluation (필수)
+   ↓
+4. Personal Note (선택)
+   ↓
+5. Roaster Notes (선택)
    ↓  
-3. Flavor Selection (선택)
-   ↓
-4. Sensory Evaluation (선택)
-   ↓
-5. Personal Comment (선택)
-   ↓
 6. Result & Matching (필수)
 ```
 
@@ -51,83 +51,67 @@ Cafe Mode는 일반 커피 애호가를 대상으로 한 **간단하고 접근 �
 interface CoffeeInfo {
   coffeeName: string;          // 커피 이름
   roastery: string;           // 로스터리
+  cafeName: string;           // 카페 이름 (필수, 'Home' 선택 가능)
   origin?: string;            // 원산지 (선택)
+  variety?: string;           // 품종 (선택)
+  altitude?: string;          // 고도 (선택)
   process?: string;           // 가공법 (선택)
   roastLevel?: string;        // 로스팅 레벨 (선택)
-  brewMethod?: string;        // 추출 방법 (선택)
+  temperature: 'hot' | 'ice'; // 음용 온도 (필수)
 }
 ```
 
 **특징**:
 - 간단한 자동완성 기능
 - OCR 스캔 지원 (커피 봉투 촬영)
-- 필수 필드 최소화 (이름, 로스터리만)
+- 필수 필드: 커피 이름, 로스터리, 카페 이름, 음용 온도
+- 카페 이름에 'Home' 빠른 선택 버튼 제공
 
-#### 2. 📝 Roaster Notes (선택)
-**목적**: 로스터의 공식 테이스팅 노트 입력
-
-**기능**:
-- 자유 텍스트 입력
-- 나중에 개인 평가와 비교용
-- 건너뛰기 가능
-
-#### 3. 🎨 Flavor Selection (선택)
+#### 2. 🎨 Flavor Selection (필수)
 **목적**: 개인이 느낀 향미 선택
 
-**사용자 레벨별 차이**:
-
-##### 🌱 초보자 (Beginner)
-```typescript
-interface BeginnerFlavorSelection {
-  categories: ['Fruity', 'Nutty', 'Chocolate', 'Floral', 'Other'];
-  maxSelection: 3;
-  showDescriptions: true;
-  guides: "처음 느껴지는 맛을 선택해보세요";
-}
-```
-
-**UI**:
-- 5개 큰 카테고리 카드
-- 각 카테고리별 설명 포함
-- 최대 3개까지 선택
-
-##### 🌿 중급자 (Intermediate)
 ```typescript  
-interface IntermediateFlavorSelection {
+interface FlavorSelection {
   useFlavorWheel: true;
   maxSelection: 5;
   subcategories: true;
   personalLibrary: true;  // 즐겨 사용하는 향미
+  searchEnabled: true;    // 향미 검색 기능
+  allCategoriesExpanded: true; // Cafe Mode에서는 기본적으로 모든 카테고리 열림
 }
 ```
 
-**UI**:
+**화면 구성**:
+1. **진행 상황 표시**: 현재 3/6 단계 표시
+2. **선택된 향미 표시 (Sticky Header)**: 선택한 향미 실시간 표시 및 관리
+3. **안내 메시지**: "구체적인 향미를 찾아보세요" + 최대 5개 제한 안내
+4. **검색 기능**: 실시간 향미 검색
+5. **향미 카테고리**: 
+   - 주요 카테고리 (Fruity, Nutty, Sweet, Chocolate, Floral, Other 등)
+   - 서브카테고리 (Berry, Citrus, Dried Fruit 등)
+   - 구체적 향미 버튼들
+
+**UI 특징**:
 - 기본 향미 휠 인터페이스
 - 2단계 선택 (카테고리 → 세부 향미)
 - 개인 향미 라이브러리 접근
+- 최대 5개까지 선택 가능
+- 선택된 향미는 상단에 태그 형태로 표시
+- 카테고리 열림/닫힘 토글 기능
+- 검색을 통한 빠른 향미 찾기
 
-##### 🌳 Expert (Phase 2에서 Lab Mode로 이동)
-현재 Cafe Mode에서는 중급자 수준까지만 지원
+**상호작용**:
+- 향미 버튼 탭 시 선택/해제
+- 선택된 향미 태그의 × 버튼으로 개별 제거
+- "전체 삭제" 버튼으로 모든 선택 초기화
+- 최대 개수 도달 시 비활성화 처리
+- 햅틱 피드백 및 애니메이션 제공
 
-#### 4. 👅 Sensory Evaluation (선택)
+#### 3. 👅 Sensory Evaluation (필수)
 **목적**: 감각적 특성 평가
 
-**사용자 레벨별 차이**:
-
-##### 🌱 초보자
 ```typescript
-interface BeginnerSensory {
-  presets: ['Light', 'Medium', 'Full'];
-  description: "입안의 느낌을 선택해보세요";
-  optional: true;
-}
-```
-
-**UI**: 3개 프리셋 버튼으로 간단 선택
-
-##### 🌿 중급자  
-```typescript
-interface IntermediateSensory {
+interface SensoryEvaluation {
   attributes: {
     body: { range: [1, 5], step: 0.5 },
     acidity: { range: [1, 5], step: 0.5 },  
@@ -139,13 +123,22 @@ interface IntermediateSensory {
 
 **UI**: 슬라이더를 이용한 세부 조절
 
-#### 5. 💭 Personal Comment (선택)
+#### 4. 💭 Personal Note (선택)
 **목적**: 개인적인 소감이나 메모
 
 **기능**:
 - 자유 텍스트 입력
 - 음성 입력 지원 (Phase 2)
 - 사진 첨부 가능
+
+#### 5. 📝 Roaster Notes (선택)
+**목적**: 로스터의 공식 테이스팅 노트 입력
+
+**기능**:
+- 자유 텍스트 입력
+- Coffee Info에서 OCR 스캔 시 로스터 노트도 자동 인식 및 입력
+- 나중에 개인 평가와 비교용
+- 건너뛰기 가능
 
 #### 6. 📊 Result & Matching (필수)
 **목적**: 결과 확인 및 성장 추적
@@ -155,6 +148,8 @@ interface IntermediateSensory {
 interface CafeResult {
   personalScore: number;           // 개인 만족도
   roasterMatching?: number;        // 로스터 노트와의 일치도
+  roasterNotes?: string;           // 로스터 노트
+  personalNote?: string;           // 내 노트
   encouragement: string;           // 격려 메시지
   growthIndicator: string;         // 성장 지표
   suggestions: string[];           // 다음 추천사항
@@ -182,7 +177,7 @@ const cafeGuideMessages = {
   roasterNotes: "로스터의 설명을 적어두면 나중에 비교해볼 수 있어요",
   flavor: "처음 느껴지는 맛을 선택해보세요. 정답은 없어요!",
   sensory: "입안의 느낌에 집중해보세요",
-  comment: "오늘의 커피는 어떠셨나요?",
+  personalNote: "오늘의 커피는 어떠셨나요?",
   result: "당신만의 특별한 감각을 발견했어요!"
 };
 ```
@@ -206,13 +201,12 @@ const encouragementSystem = {
 ```typescript
 interface TastingState {
   currentStep: number;
-  userLevel: 'beginner' | 'intermediate';
   data: {
     coffeeInfo: CoffeeInfo;
     roasterNotes?: string;
     flavors?: string[];
     sensory?: SensoryData;  
-    comment?: string;
+    personalNote?: string;
   };
   progress: {
     completedSteps: number[];
@@ -233,9 +227,6 @@ class CafeTastingFlow {
   // 저장 & 복구
   saveDraft(): void;
   loadDraft(): TastingState | null;
-  
-  // 레벨별 UI 조정
-  getUIConfig(userLevel: UserLevel): UIConfig;
   
   // 결과 계산
   calculateResult(): CafeResult;

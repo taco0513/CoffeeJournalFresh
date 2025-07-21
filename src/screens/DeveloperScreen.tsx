@@ -51,6 +51,8 @@ const DeveloperScreen = () => {
     resetAllSettings,
   } = useDevStore();
 
+  // Developer mode controls access to all developer features
+
   // 실제 데이터 개수를 추적하는 상태
   const [mockDataCount, setMockDataCount] = React.useState(0);
 
@@ -70,11 +72,62 @@ const DeveloperScreen = () => {
     }
   };
 
-  // 화면이 로드될 때 기본 상태로 시작 (Realm 호출 없음)
+  // 화면이 로드될 때 실제 데이터 카운트를 가져옴
   React.useEffect(() => {
-    console.log('📊 Developer screen loaded - using default state (0 records, toggle OFF)');
-    // 기본값으로 시작: mockDataCount = 0, enableMockData = false
-  }, []);
+    const loadMockDataCount = async () => {
+      // Always check data count, regardless of developer mode
+      try {
+        const realmService = RealmService.getInstance();
+        
+        // Realm 초기화 확인
+        if (!realmService.isInitialized) {
+          try {
+            await realmService.initialize();
+          } catch (initError: any) {
+            if (!initError.message?.includes('already opened')) {
+              console.error('Failed to initialize Realm for count:', initError);
+              // If can't initialize, ensure mock data is off
+              setMockData(false);
+              setMockDataCount(0);
+              return;
+            }
+          }
+        }
+        
+        // getTastingRecords를 사용하여 실제 카운트 가져오기
+        const tastings = await realmService.getTastingRecords({ isDeleted: false });
+        const count = Array.from(tastings).length;
+        
+        console.log(`📊 Developer screen loaded - found ${count} records in database`);
+        setMockDataCount(count);
+        
+        // Mock 데이터 토글 상태를 실제 데이터 존재 여부와 동기화
+        // If toggle is ON but no data exists, we have a mismatch
+        if (enableMockData && count === 0) {
+          console.log('📊 Toggle is ON but no data exists - syncing toggle to OFF');
+          // Turn off the toggle to match reality
+          setMockData(false);
+          // Show alert to user
+          Alert.alert(
+            'Mock 데이터 없음', 
+            'Mock 데이터 토글이 켜져 있지만 데이터가 없습니다. 토글을 다시 켜서 데이터를 생성하세요.',
+            [{ text: '확인' }]
+          );
+        } else {
+          // Otherwise, sync toggle with actual data state
+          setMockData(count > 0);
+        }
+      } catch (error) {
+        console.error('Error loading mock data count:', error);
+        // 에러 발생 시 안전한 기본값으로 설정
+        console.log('📊 Error occurred - setting safe defaults (0 records, toggle OFF)');
+        setMockData(false);
+        setMockDataCount(0);
+      }
+    };
+    
+    loadMockDataCount();
+  }, []); // Remove isDeveloperMode dependency to always run on mount
 
   // 화면이 포커스될 때는 간단한 상태 동기화만
   React.useEffect(() => {
@@ -83,7 +136,7 @@ const DeveloperScreen = () => {
     });
     
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, mockDataCount, enableMockData]);
 
   const handleClearStorage = () => {
     Alert.alert(
@@ -138,11 +191,26 @@ const DeveloperScreen = () => {
               }
               
               if (realmService.isInitialized) {
-                const realm = realmService.getRealm();
-                realm.write(() => {
-                  realm.deleteAll();
-                });
-                Alert.alert('완료', 'Realm 데이터가 삭제되었습니다.');
+                try {
+                  const realm = realmService.getRealm();
+                  
+                  // 트랜잭션 내에서 안전하게 삭제
+                  realm.write(() => {
+                    // TastingRecord만 삭제 (다른 스키마에 영향 없도록)
+                    const tastings = realm.objects('TastingRecord');
+                    realm.delete(tastings);
+                  });
+                  
+                  // Mock 데이터 카운트와 토글 상태도 리셋
+                  setMockDataCount(0);
+                  setMockData(false);
+                  
+                  console.log('✅ Mock data reset completed successfully');
+                  Alert.alert('완료', 'Mock 데이터가 삭제되었습니다.');
+                } catch (deleteError) {
+                  console.error('❌ Error during realm delete transaction:', deleteError);
+                  Alert.alert('오류', '데이터 삭제 중 오류가 발생했습니다.');
+                }
               } else {
                 Alert.alert('오류', 'Realm이 초기화되지 않았습니다.');
               }
@@ -160,6 +228,12 @@ const DeveloperScreen = () => {
 
   const handleMockDataToggle = async (enable: boolean) => {
     console.log(`🔄 Mock data toggle requested: ${enable}`);
+    
+    // Restrict mock data access to developer mode users only
+    if (!isDeveloperMode) {
+      Alert.alert('액세스 제한', '이 기능은 개발자 모드에서만 사용 가능합니다.');
+      return;
+    }
     
     if (enable) {
       // 즉시 토글 상태 업데이트 (사용자 피드백)
@@ -212,7 +286,9 @@ const DeveloperScreen = () => {
             matchScoreFlavor: 42,
             matchScoreSensory: 43,
             flavorNotes: [
-              { level: 1, value: 'Fruity', koreanValue: '과일향' }
+              { level: 1, value: 'Fruity', koreanValue: '과일향' },
+              { level: 2, value: 'Berry', koreanValue: '베리류' },
+              { level: 3, value: 'Blueberry', koreanValue: '블루베리' }
             ],
             sensoryAttribute: {
               body: 3,
@@ -238,7 +314,9 @@ const DeveloperScreen = () => {
             matchScoreFlavor: 46,
             matchScoreSensory: 46,
             flavorNotes: [
-              { level: 1, value: 'Fruity', koreanValue: '과일향' }
+              { level: 1, value: 'Floral', koreanValue: '꽃향' },
+              { level: 2, value: 'White Floral', koreanValue: '흰 꽃' },
+              { level: 3, value: 'Jasmine', koreanValue: '자스민' }
             ],
             sensoryAttribute: {
               body: 4,
@@ -264,7 +342,9 @@ const DeveloperScreen = () => {
             matchScoreFlavor: 40,
             matchScoreSensory: 40,
             flavorNotes: [
-              { level: 1, value: 'Chocolate', koreanValue: '초콜릿' }
+              { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
+              { level: 2, value: 'Dark Chocolate', koreanValue: '다크 초콜릿' },
+              { level: 3, value: 'Bittersweet Chocolate', koreanValue: '쌉쌀한 초콜릿' }
             ],
             sensoryAttribute: {
               body: 5,
@@ -290,7 +370,9 @@ const DeveloperScreen = () => {
             matchScoreFlavor: 43,
             matchScoreSensory: 43,
             flavorNotes: [
-              { level: 1, value: 'Chocolate', koreanValue: '초콜릿' }
+              { level: 1, value: 'Fruity', koreanValue: '과일향' },
+              { level: 2, value: 'Citrus', koreanValue: '시트러스' },
+              { level: 3, value: 'Orange', koreanValue: '오렌지' }
             ],
             sensoryAttribute: {
               body: 4,
@@ -316,7 +398,9 @@ const DeveloperScreen = () => {
             matchScoreFlavor: 37,
             matchScoreSensory: 38,
             flavorNotes: [
-              { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류' }
+              { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류' },
+              { level: 2, value: 'Nutty', koreanValue: '견과' },
+              { level: 3, value: 'Hazelnut', koreanValue: '헤이즐넛' }
             ],
             sensoryAttribute: {
               body: 3,
@@ -403,9 +487,10 @@ const DeveloperScreen = () => {
         console.log(`📊 Save operation complete: ${savedCount}/${mockData.length} items saved`);
         
         // 성공적으로 저장된 레코드 수를 기준으로 업데이트 (검증 단계 제거)
-        setMockDataCount(mockDataCount + savedCount);
-        console.log(`🔍 Mock data count updated: ${mockDataCount + savedCount} total records`);
-        console.log(`📊 Mock data added: ${savedCount} saved, estimated total: ${mockDataCount}`);
+        const newTotalCount = mockDataCount + savedCount;
+        setMockDataCount(newTotalCount);
+        console.log(`🔍 Mock data count updated: ${newTotalCount} total records`);
+        console.log(`📊 Mock data added: ${savedCount} saved, new total: ${newTotalCount}`);
         
         // 항상 5개가 추가되도록 보장
         const expectedCount = 5;
@@ -428,11 +513,21 @@ const DeveloperScreen = () => {
         
         Alert.alert(
           '완료', 
-          `${finalMessage}\n\n전체 기록: ${mockDataCount}개`,
+          `${finalMessage}\n\n전체 기록: ${newTotalCount}개`,
           [
             { 
               text: 'Journal로 이동', 
-              onPress: () => navigation.navigate('Journal' as any)
+              onPress: () => {
+                // Navigate back to main tabs first, then to Journal
+                navigation.navigate('MainTabs', { screen: 'Journal' });
+              }
+            },
+            { 
+              text: 'Home으로 이동', 
+              onPress: () => {
+                // Navigate to Home to see the new data
+                navigation.navigate('MainTabs', { screen: 'Home' });
+              }
             },
             { text: '확인', style: 'default' }
           ]
@@ -502,14 +597,16 @@ const DeveloperScreen = () => {
     value, 
     onValueChange, 
     icon,
+    isLast = false,
   }: {
     title: string;
     description?: string;
     value?: boolean;
     onValueChange?: (value: boolean) => void;
     icon?: string;
+    isLast?: boolean;
   }) => (
-    <View style={styles.settingRow}>
+    <View style={[styles.settingRow, isLast && styles.settingRowLast]}>
       {icon && (
         <Text style={styles.settingIcon}>{icon}</Text>
       )}
@@ -675,6 +772,7 @@ count={[showDebugInfo].filter(Boolean).length}
               description="화면에 디버그 정보 오버레이 표시"
               value={showDebugInfo}
               onValueChange={setDebugInfo}
+              isLast={true}
             />
           </View>
         </View>
@@ -684,15 +782,29 @@ count={[showDebugInfo].filter(Boolean).length}
           <SectionHeader
             title="테스트 설정"
             icon={CategoryIcons.test}
-            count={[enableMockData, skipAnimations, bypassLogin].filter(Boolean).length}
+            count={[
+              ...(isDeveloperMode ? [enableMockData] : []), 
+              skipAnimations, 
+              bypassLogin
+            ].filter(Boolean).length}
           />
           <View style={styles.card}>
-            <SettingRow
-              title="Mock 데이터 적용"
-              description={`테스트 커피 기록 (현재: ${mockDataCount}개)`}
-              value={enableMockData}
-              onValueChange={handleMockDataToggle}
-            />
+            {/* Mock data toggle - only in developer mode */}
+            {isDeveloperMode ? (
+              <SettingRow
+                title="Mock 데이터 적용"
+                description={`테스트 커피 기록 (현재: ${mockDataCount}개)`}
+                value={enableMockData}
+                onValueChange={handleMockDataToggle}
+              />
+            ) : (
+              <View style={styles.restrictedFeature}>
+                <Text style={styles.restrictedTitle}>Mock 데이터</Text>
+                <Text style={styles.restrictedDescription}>
+                  개발자 모드를 활성화하세요
+                </Text>
+              </View>
+            )}
             <SettingRow
               title="애니메이션 건너뛰기"
               description="모든 애니메이션 비활성화"
@@ -704,6 +816,7 @@ count={[showDebugInfo].filter(Boolean).length}
               description="로그인 화면을 건너뛰고 바로 앱 진입"
               value={bypassLogin}
               onValueChange={setBypassLogin}
+              isLast={true}
             />
           </View>
         </View>
@@ -738,6 +851,7 @@ count={0}
               description="베타 테스터 전용 기능 활성화"
               value={isBetaUser}
               onValueChange={setBetaStatus}
+              isLast={true}
             />
             <ActionButton
               title="피드백 모달 열기"
@@ -778,6 +892,13 @@ count={0}
                 title="데이터 관리 화면"
                 onPress={() => navigation.navigate('DataTest')}
                 style={styles.actionButton}
+              />
+              <ActionButton
+                title="Mock 데이터 리셋"
+                onPress={handleClearRealmData}
+                style={styles.warningButton}
+                textStyle={styles.warningButtonText}
+                icon="🔄"
               />
             </View>
             
@@ -987,6 +1108,10 @@ const styles = StyleSheet.create({
     borderBottomColor: HIGColors.gray4,
     minHeight: 60,
   },
+  settingRowLast: {
+    borderBottomWidth: 0,
+    borderBottomColor: 'transparent',
+  },
   settingIcon: {
     fontSize: 20,
     marginRight: HIGConstants.SPACING_SM,
@@ -1112,6 +1237,23 @@ const styles = StyleSheet.create({
   },
   dangerTitle: {
     color: HIGColors.red,
+  },
+  restrictedFeature: {
+    padding: HIGConstants.SPACING_MD,
+    backgroundColor: HIGColors.systemGray6,
+    borderRadius: HIGConstants.BORDER_RADIUS_SM,
+    marginVertical: HIGConstants.SPACING_XS,
+    opacity: 0.6,
+  },
+  restrictedTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: HIGColors.secondaryLabel,
+    marginBottom: 2,
+  },
+  restrictedDescription: {
+    fontSize: 14,
+    color: HIGColors.tertiaryLabel,
   },
 });
 

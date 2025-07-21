@@ -16,6 +16,7 @@ import {
   LineChart,
 } from 'react-native-chart-kit';
 import { useUserStore } from '../stores/useUserStore';
+import { useDevStore } from '../stores/useDevStore';
 import { InsightCard } from '../components/stats/InsightCard';
 
 const screenWidth = Dimensions.get('window').width;
@@ -56,6 +57,7 @@ interface StatsScreenProps {
 const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
   const navigation = useNavigation();
   const { currentUser } = useUserStore();
+  const { isDeveloperMode } = useDevStore();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Statistics | null>(null);
   const [topRoasters, setTopRoasters] = useState<TopRoaster[]>([]);
@@ -102,6 +104,18 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
           value: '45잔',
           detail: '예시) 지난 30일간',
         },
+      ];
+    }
+    
+    // Only analyze data if developer mode is enabled (to block access to mock data)
+    if (!isDeveloperMode) {
+      // Return empty insights for non-developer mode users
+      return [
+        {
+          title: '개발자 모드 필요',
+          subtitle: '통계를 보려면 개발자 모드를 활성화하세요',
+          detail: 'Profile > 개발자 모드 > 개발자 모드 활성화',
+        }
       ];
     }
     
@@ -214,6 +228,12 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
 
   const loadTastingTrends = async (): Promise<TastingTrend[]> => {
     try {
+      // Only load trends if developer mode is enabled (to block access to mock data)
+      if (!isDeveloperMode) {
+        // Return empty trends for non-developer mode users
+        return [];
+      }
+      
       const realmService = RealmService.getInstance();
       const tastings = realmService.getTastingRecords({ isDeleted: false });
       
@@ -373,7 +393,7 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
             <Text style={styles.sectionTitle}>가장 많이 마신 로스터리</Text>
             <View style={styles.rankingCard}>
               {topRoasters.map((roaster, index) => (
-                <View key={roaster.name} style={styles.rankingItem}>
+                <View key={roaster.name} style={[styles.rankingItem, index === topRoasters.length - 1 && styles.rankingItemLast]}>
                   <View style={styles.rankingLeft}>
                     <Text style={styles.rankNumber}>{index + 1}</Text>
                     <View style={styles.rankingInfo}>
@@ -395,7 +415,7 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
             <Text style={styles.sectionTitle}>자주 방문한 카페</Text>
             <View style={styles.rankingCard}>
               {topCafes.map((cafe, index) => (
-                <View key={cafe.name} style={styles.rankingItem}>
+                <View key={cafe.name} style={[styles.rankingItem, index === topCafes.length - 1 && styles.rankingItemLast]}>
                   <View style={styles.rankingLeft}>
                     <Text style={styles.rankNumber}>{index + 1}</Text>
                     <View style={styles.rankingInfo}>
@@ -606,6 +626,10 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_SM,
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
+  },
+  rankingItemLast: {
+    borderBottomWidth: 0,
+    borderBottomColor: 'transparent',
   },
   rankingLeft: {
     flexDirection: 'row',

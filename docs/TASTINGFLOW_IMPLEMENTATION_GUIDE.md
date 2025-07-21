@@ -11,16 +11,14 @@ TastingFlow Cafe Mode의 6단계 구현을 위한 실무 가이드입니다. 각
 ## 📋 Implementation Priority Matrix
 
 ### P0 (Critical - MVP Core)
-1. **Step 1**: Coffee Info - 기본 정보 입력
-2. **Step 3**: Flavor Selection - 개인 취향 발견
-3. **Step 6**: Result Matching - 성장 추적
+1. **Step 1**: Coffee Info - 기본 정보 입력 (필수)
+2. **Step 2**: Flavor Selection - 개인 취향 발견 (필수)
+3. **Step 3**: Sensory Evaluation - 감각 평가 (필수)
+4. **Step 6**: Result Matching - 성장 추적 (필수)
 
 ### P1 (Important - MVP Enhancement) 
-4. **Step 4**: Sensory Evaluation - 감각 평가
-5. **Step 5**: Personal Comment - 개인 메모
-
-### P2 (Nice-to-have - Post-MVP)
-6. **Step 2**: Roaster Notes - 전문가 노트 비교
+5. **Step 4**: Personal Note - 개인 메모 (선택)
+6. **Step 5**: Roaster Notes - 전문가 노트 비교 (선택)
 
 ---
 
@@ -30,10 +28,10 @@ TastingFlow Cafe Mode의 6단계 구현을 위한 실무 가이드입니다. 각
 TastingFlow/
 ├── screens/
 │   ├── CoffeeInfoStep.tsx          # Step 1
-│   ├── RoasterNotesStep.tsx        # Step 2
-│   ├── FlavorSelectionStep.tsx     # Step 3
-│   ├── SensoryEvaluationStep.tsx   # Step 4
-│   ├── PersonalCommentStep.tsx     # Step 5
+│   ├── FlavorSelectionStep.tsx     # Step 2
+│   ├── SensoryEvaluationStep.tsx   # Step 3
+│   ├── PersonalNoteStep.tsx        # Step 4
+│   ├── RoasterNotesStep.tsx        # Step 5
 │   └── ResultMatchingStep.tsx      # Step 6
 ├── components/
 │   ├── common/
@@ -43,7 +41,8 @@ TastingFlow/
 │   ├── coffee-info/
 │   ├── flavor-selection/
 │   ├── sensory-evaluation/
-│   ├── personal-comment/
+│   ├── personal-note/
+│   ├── roaster-notes/
 │   └── result-matching/
 ├── services/
 │   ├── TastingFlowService.ts       # Core business logic
@@ -66,10 +65,10 @@ TastingFlow/
 interface TastingSession {
   id: string;
   coffeeInfo: CoffeeInfo;
-  roasterNotes?: RoasterNotes;
   flavorSelection?: FlavorSelection;
   sensoryEvaluation?: SensoryEvaluation;
-  personalComment?: PersonalComment;
+  personalNote?: PersonalNote;
+  roasterNotes?: RoasterNotes;
   results?: TastingResults;
   
   // 메타데이터
@@ -127,22 +126,57 @@ const CoffeeInfoStep: React.FC = () => {
 };
 ```
 
-### Week 5-6: Step 3 - Flavor Selection (P0)
+### Week 5-6: Step 2 - Flavor Selection (P0)
 ```typescript
 // FlavorSelection 구현 계획
 const flavorImplementation = {
   week5: [
-    "초보자 카테고리 UI (5개 카드)",
+    "향미 카테고리 구조 구현",
+    "카테고리 열림/닫힘 토글",
     "기본 선택/해제 로직",
-    "최대 3개 제한",
-    "선택 상태 저장"
+    "최대 5개 제한",
+    "선택된 향미 상단 표시 (Sticky Header)"
   ],
   week6: [
-    "중급자 향미 휠 (기본 버전)",
-    "검색 기능",
-    "개인 라이브러리 (기초)",
-    "레벨 전환 로직"
+    "실시간 검색 기능",
+    "개인 라이브러리 연동",
+    "애니메이션 및 햅틱 피드백",
+    "전체 삭제 기능",
+    "상태 저장 및 복구"
   ]
+};
+
+// 주요 컴포넌트 구조
+const FlavorSelectionStep: React.FC = () => {
+  const [selectedFlavors, setSelectedFlavors] = useState<SelectedFlavor[]>([]);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(
+    Object.keys(flavorCategories) // Cafe Mode: 모든 카테고리 기본 열림
+  );
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  return (
+    <StepContainer step={2} title="향미 선택">
+      <ProgressIndicator current={2} total={6} />
+      <SelectedFlavorsHeader 
+        flavors={selectedFlavors}
+        onRemove={handleRemoveFlavor}
+        onClearAll={handleClearAll}
+      />
+      <SearchBar 
+        value={searchQuery}
+        onChange={setSearchQuery}
+      />
+      <FlavorCategories
+        categories={flavorCategories}
+        expandedCategories={expandedCategories}
+        selectedFlavors={selectedFlavors}
+        onToggleCategory={toggleCategory}
+        onSelectFlavor={handleSelectFlavor}
+        maxSelection={5}
+      />
+      <NavigationButtons />
+    </StepContainer>
+  );
 };
 
 // 우선순위별 기능

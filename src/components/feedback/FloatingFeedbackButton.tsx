@@ -7,6 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useFeedbackStore } from '../../stores/useFeedbackStore';
+import ScreenContextService from '../../services/ScreenContextService';
 import { HIGColors } from '../../constants/HIG';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -14,17 +15,53 @@ const BUTTON_SIZE = 56;
 const SAFE_AREA = 20;
 
 export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible }) => {
-  const { showSmartFeedback } = useFeedbackStore();
+  const { showSmartFeedback, setScreenContext } = useFeedbackStore();
   const [expanded, setExpanded] = useState(false);
 
-  const handlePress = () => {
+  const handlePress = async () => {
     if (expanded) {
+      // Capture current screen context and screenshot before opening feedback
+      try {
+        const screenContext = await ScreenContextService.getCurrentContext();
+        if (screenContext) {
+          setScreenContext(screenContext);
+        }
+        
+        // Auto-capture screenshot of current screen
+        await captureCurrentScreen();
+      } catch (error) {
+        console.error('Error capturing screen context:', error);
+      }
+      
       showSmartFeedback();
       setExpanded(false);
     } else {
       setExpanded(true);
       // Auto collapse after 5 seconds
       setTimeout(() => setExpanded(false), 5000);
+    }
+  };
+
+  const captureCurrentScreen = async () => {
+    try {
+      // Import ViewShot dynamically to avoid issues
+      const ViewShot = require('react-native-view-shot');
+      
+      // Capture the entire screen
+      const uri = await ViewShot.captureScreen({
+        format: 'jpg',
+        quality: 0.8,
+        result: 'tmpfile',
+      });
+      
+      if (uri) {
+        const { setScreenshot } = useFeedbackStore.getState();
+        setScreenshot(uri);
+        console.log('Screen captured automatically:', uri);
+      }
+    } catch (error) {
+      console.log('Auto screenshot capture failed, will allow manual capture:', error);
+      // Don't show error to user, just log it
     }
   };
 
