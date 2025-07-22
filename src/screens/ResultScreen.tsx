@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView} from
 // SF Symbols 제거됨
 import {useTastingStore} from '../stores/tastingStore';
 import {useToastStore} from '../stores/toastStore';
+import { flavorWheelKorean } from '../data/flavorWheelKorean';
 import {
   commonLayoutStyles,
   hitSlop,
@@ -273,13 +274,18 @@ export default function ResultScreen({navigation}: any) {
     );
   }
 
+  // 한글 번역 함수
+  const getKoreanName = (englishName: string): string => {
+    return (flavorWheelKorean.translations as any)[englishName] || englishName;
+  };
+
   // 맛 노트 정리 - null 체크 추가
   const selectedFlavorNotes = currentTasting.selectedFlavors || [];
   const flavorList = selectedFlavorNotes.map((path: any) => {
     const parts = [];
-    if (path.level1) parts.push(path.level1);
-    if (path.level2) parts.push(path.level2);
-    if (path.level3) parts.push(path.level3);
+    if (path.level1) parts.push(getKoreanName(path.level1));
+    if (path.level2) parts.push(getKoreanName(path.level2));
+    if (path.level3) parts.push(path.level3); // level3는 이미 한글
     if (path.level4) parts.push(path.level4);
     return parts.join(' > ');
   });

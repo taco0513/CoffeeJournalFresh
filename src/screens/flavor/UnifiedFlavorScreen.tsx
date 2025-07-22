@@ -242,6 +242,19 @@ export default function UnifiedFlavorScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Progress Bar */}
+      <View style={styles.progressContainer}>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: '50%' }]} />
+        </View>
+      </View>
+
+      {/* Selected Flavors */}
+      <SelectedFlavors
+        selectedPaths={selectedPaths}
+        onRemove={handleRemoveFlavor}
+      />
+
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
@@ -271,12 +284,6 @@ export default function UnifiedFlavorScreen() {
           </Text>
         )}
       </View>
-
-      {/* Selected Flavors */}
-      <SelectedFlavors
-        selectedPaths={selectedPaths}
-        onRemove={handleRemoveFlavor}
-      />
 
       {/* Categories */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -355,12 +362,21 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: HIGColors.systemBlue,
   },
+  progressContainer: {
+    backgroundColor: '#FFFFFF',
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: HIGColors.systemGray5,
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: HIGColors.systemBlue,
+  },
   searchContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_SM,
-    backgroundColor: '#F8F9FA',
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.systemGray4,
+    paddingTop: HIGConstants.SPACING_LG,
+    paddingBottom: HIGConstants.SPACING_LG,
   },
   searchBar: {
     flexDirection: 'row',
@@ -395,9 +411,12 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingTop: HIGConstants.SPACING_SM,
   },
   bottomContainer: {
-    padding: HIGConstants.SPACING_LG,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingTop: HIGConstants.SPACING_MD,
+    paddingBottom: HIGConstants.SPACING_LG,
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.systemGray4,
   },

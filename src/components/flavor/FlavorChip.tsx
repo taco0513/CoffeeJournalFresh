@@ -51,8 +51,8 @@ export const FlavorChip: React.FC<FlavorChipProps> = ({ flavor, isSelected, onPr
 const styles = StyleSheet.create({
   flavorChip: {
     backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     borderRadius: 8,
     marginRight: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_SM,
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
   flavorText: {
     fontSize: 14,
     color: HIGColors.label,
+    fontWeight: '500',
   },
   flavorTextSelected: {
     color: '#FFFFFF',
@@ -76,5 +77,6 @@ const styles = StyleSheet.create({
   highlightedTextSelected: {
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     color: '#FFFFFF',
+    fontWeight: '600',
   },
 });

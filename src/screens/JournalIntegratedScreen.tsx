@@ -89,22 +89,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   navigationBar: {
+    height: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_SM,
     backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: HIGColors.gray6,
+    borderBottomWidth: 0.5,
+    borderBottomColor: HIGColors.gray4,
   },
   navContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   navTitle: {
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 17,
+    fontWeight: '600',
     color: HIGColors.label,
   },
   betaBadge: {

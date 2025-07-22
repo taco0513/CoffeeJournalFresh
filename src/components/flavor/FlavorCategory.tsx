@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { FlavorCategoryProps, FlavorPath } from '../../types/flavor';
 import { FlavorChip } from './FlavorChip';
@@ -32,9 +32,11 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
         p => p.level1 === level1 && p.level2 === level2 && p.level3 === level3
       );
     } else {
-      // Check for level 2 match (subcategory)
+      // Check for level 2 match (subcategory) OR if any level 3 from this subcategory is selected
       return selectedPaths.some(
         p => p.level1 === level1 && p.level2 === level2 && !p.level3
+      ) || selectedPaths.some(
+        p => p.level1 === level1 && p.level2 === level2 && p.level3
       );
     }
   };
@@ -92,70 +94,91 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
       </TouchableOpacity>
 
       {isExpanded && (
-        <View style={styles.subcategoryContainer}>
-          {category.subcategories.map(sub => {
-            const isSubcategoryExpanded = expandedSubcategories.includes(sub.name);
-            const isSubcategorySelected = checkIsSelected(category.category, sub.name);
-            const hasSelectedFlavors = sub.flavors.some(flavor => 
-              checkIsSelected(category.category, sub.name, flavor.name)
-            );
+        <>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.subcategoryGrid}
+            style={styles.subcategoryScrollView}
+          >
+              {category.subcategories.map(sub => {
+                const isSubcategorySelected = checkIsSelected(category.category, sub.name);
+                const hasSelectedFlavors = sub.flavors.some(flavor => 
+                  checkIsSelected(category.category, sub.name, flavor.name)
+                );
 
-            return (
-              <View key={sub.name} style={styles.subcategory}>
-                <TouchableOpacity
-                  style={[
-                    styles.subcategoryHeader,
-                    isSubcategorySelected && styles.subcategoryHeaderSelected,
-                    hasSelectedFlavors && !isSubcategorySelected && styles.subcategoryHeaderHasSelection
-                  ]}
-                  onPress={() => toggleSubcategory(sub.name)}
-                  onLongPress={() => onSelectFlavor(category.category, sub.name, '')}
-                  accessible={true}
-                  accessibilityLabel={`${sub.koreanName} 서브카테고리`}
-                  accessibilityHint={`탭하여 펼치기, 길게 눌러서 전체 선택`}
-                  accessibilityRole="button"
-                  accessibilityState={{ expanded: isSubcategoryExpanded, selected: isSubcategorySelected }}
-                >
-                  <View style={styles.subcategoryLeft}>
+                return (
+                  <TouchableOpacity
+                    key={sub.name}
+                    style={[
+                      styles.subcategoryHeader,
+                      isSubcategorySelected && styles.subcategoryHeaderSelected,
+                      hasSelectedFlavors && !isSubcategorySelected && styles.subcategoryHeaderHasSelection
+                    ]}
+                    onPress={() => onSelectFlavor(category.category, sub.name, '')}
+                    accessible={true}
+                    accessibilityLabel={`${sub.koreanName} 서브카테고리`}
+                    accessibilityHint={`탭하여 전체 선택`}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSubcategorySelected }}
+                  >
                     <Text style={[
                       styles.subcategoryTitle,
                       isSubcategorySelected && styles.subcategoryTitleSelected
                     ]}>
                       {renderHighlightedText(sub.koreanName, isSubcategorySelected)}
                     </Text>
-                    {(isSubcategorySelected || hasSelectedFlavors) && (
-                      <View style={styles.selectionBadge}>
-                        <Text style={styles.selectionBadgeText}>
-                          {isSubcategorySelected ? '전체' : `${sub.flavors.filter(f => checkIsSelected(category.category, sub.name, f.name)).length}`}
-                        </Text>
-                      </View>
+                    {hasSelectedFlavors && !isSubcategorySelected && (
+                      <Text style={styles.selectionBadgeText}>
+                        {sub.flavors.filter(f => checkIsSelected(category.category, sub.name, f.name)).length}
+                      </Text>
                     )}
+                  </TouchableOpacity>
+                );
+              })}
+          </ScrollView>
+          
+          <View style={styles.subcategoryContainer}>
+            <View style={styles.flavorGrid}>
+              {(() => {
+                const selectedSubcategories = category.subcategories.filter(sub => 
+                  checkIsSelected(category.category, sub.name)
+                );
+                const subcategoriesWithFlavors = selectedSubcategories.filter(sub => 
+                  sub.flavors && sub.flavors.length > 0
+                );
+                const subcategoriesWithoutFlavors = selectedSubcategories.filter(sub => 
+                  !sub.flavors || sub.flavors.length === 0
+                );
+
+                const flavorChips = subcategoriesWithFlavors.flatMap(sub =>
+                  sub.flavors.map(flavor => (
+                    <FlavorChip
+                      key={`${sub.name}-${flavor.name}`}
+                      flavor={flavor}
+                      isSelected={checkIsSelected(category.category, sub.name, flavor.name)}
+                      onPress={() => onSelectFlavor(category.category, sub.name, flavor.name)}
+                      searchQuery={searchQuery}
+                    />
+                  ))
+                );
+
+                const emptyMessage = subcategoriesWithoutFlavors.length > 0 && (
+                  <View key="empty-message" style={styles.emptyFlavorContainer}>
+                    <Text style={styles.emptyFlavorText}>
+                      {subcategoriesWithoutFlavors.length === 1 
+                        ? `'${subcategoriesWithoutFlavors[0].koreanName}'에 대한 세부 향미가 없습니다`
+                        : `'${subcategoriesWithoutFlavors.map(sub => sub.koreanName).join("', '")}'에 대한 세부 향미가 없습니다`
+                      }
+                    </Text>
                   </View>
-                  <Text style={[
-                    styles.expandIcon,
-                    isSubcategorySelected && styles.expandIconSelected
-                  ]}>
-                    {isSubcategoryExpanded ? '▼' : '▶'}
-                  </Text>
-                </TouchableOpacity>
-                
-                {isSubcategoryExpanded && (
-                  <View style={styles.flavorGrid}>
-                    {sub.flavors.map(flavor => (
-                      <FlavorChip
-                        key={flavor.name}
-                        flavor={flavor}
-                        isSelected={checkIsSelected(category.category, sub.name, flavor.name)}
-                        onPress={() => onSelectFlavor(category.category, sub.name, flavor.name)}
-                        searchQuery={searchQuery}
-                      />
-                    ))}
-                  </View>
-                )}
-              </View>
-            );
-          })}
-        </View>
+                );
+
+                return [...flavorChips, emptyMessage].filter(Boolean);
+              })()}
+            </View>
+          </View>
+        </>
       )}
     </View>
   );
@@ -209,8 +232,14 @@ const styles = StyleSheet.create({
     color: HIGColors.tertiaryLabel,
   },
   subcategoryContainer: {
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
+  },
+  subcategoryScrollView: {
+    marginHorizontal: -HIGConstants.SPACING_LG,
+    marginTop: HIGConstants.SPACING_SM,
+  },
+  subcategoryGrid: {
+    flexDirection: 'row',
+    paddingHorizontal: HIGConstants.SPACING_LG,
   },
   subcategory: {
     marginBottom: HIGConstants.SPACING_MD,
@@ -218,19 +247,21 @@ const styles = StyleSheet.create({
   subcategoryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    alignSelf: 'flex-start',
     backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    marginBottom: HIGConstants.SPACING_SM,
-    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: HIGConstants.SPACING_XS,
+    borderRadius: 8,
+    marginRight: HIGConstants.SPACING_SM,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray3,
   },
   subcategoryHeaderSelected: {
     backgroundColor: HIGColors.systemBlue,
   },
   subcategoryHeaderHasSelection: {
-    borderWidth: 1,
-    borderColor: HIGColors.systemBlue,
+    backgroundColor: HIGColors.systemGray6,
   },
   subcategoryCheckbox: {
     paddingRight: HIGConstants.SPACING_SM,
@@ -275,12 +306,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   subcategoryTitle: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '500',
     color: HIGColors.label,
   },
   subcategoryTitleSelected: {
     color: '#FFFFFF',
+    fontWeight: '500',
   },
   selectionBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -305,6 +337,7 @@ const styles = StyleSheet.create({
   flavorGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    marginTop: HIGConstants.SPACING_XS,
   },
   highlightedText: {
     backgroundColor: HIGColors.yellow,
@@ -312,5 +345,17 @@ const styles = StyleSheet.create({
   },
   highlightedTextSelected: {
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  emptyFlavorContainer: {
+    width: '100%',
+    paddingVertical: HIGConstants.SPACING_MD,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyFlavorText: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+    fontStyle: 'italic',
+    textAlign: 'center',
   },
 });

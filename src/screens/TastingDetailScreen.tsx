@@ -16,6 +16,7 @@ import { ITastingRecord } from '../services/realm/schemas';
 import RealmService from '../services/realm/RealmService';
 import { useToastStore } from '../stores/toastStore';
 import { useUserStore } from '../stores/useUserStore';
+import { flavorWheelKorean } from '../data/flavorWheelKorean';
 import {
   HIGColors,
   HIGConstants,
@@ -111,6 +112,11 @@ const TastingDetailScreen = () => {
             finish: record.sensoryAttribute.finish,
             mouthfeel: record.sensoryAttribute.mouthfeel,
           } : null,
+          selectedFlavorPaths: (record as any).selectedFlavorPaths ? Array.from((record as any).selectedFlavorPaths).map((path: any) => ({
+            level1: path.level1,
+            level2: path.level2,
+            level3: path.level3,
+          })) : [],
         };
         setTastingRecord(plainRecord);
       }
@@ -194,6 +200,11 @@ const TastingDetailScreen = () => {
       'Silky': '실키한'
     };
     return mapping[mouthfeel] || mouthfeel;
+  };
+
+  // 한글 번역 함수
+  const getKoreanName = (englishName: string): string => {
+    return (flavorWheelKorean.translations as any)[englishName] || englishName;
   };
 
   const getSensoryDescription = (attribute: string, value: number) => {
@@ -297,6 +308,17 @@ const TastingDetailScreen = () => {
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>테이스팅 상세</Text>
         <View style={styles.headerActions}>
+          <TouchableOpacity 
+            style={styles.deleteButton}
+            onPress={handleDelete}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="삭제"
+            accessibilityHint="이 테이스팅 기록을 삭제합니다"
+          >
+            <Text style={styles.deleteButtonText}>삭제</Text>
+          </TouchableOpacity>
         </View>
       </View>
       
@@ -389,10 +411,32 @@ const TastingDetailScreen = () => {
           </View>
         </View>
 
+        {/* My Selected Flavors */}
+        {tastingRecord.selectedFlavorPaths && tastingRecord.selectedFlavorPaths.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>내가 느낀 향미</Text>
+            <View style={styles.flavorContainer}>
+              {tastingRecord.selectedFlavorPaths.map((path: any, index: number) => {
+                const parts = [];
+                if (path.level1) parts.push(getKoreanName(path.level1));
+                if (path.level2) parts.push(getKoreanName(path.level2));
+                if (path.level3) parts.push(path.level3); // level3는 이미 한글
+                const flavorPath = parts.join(' > ');
+                
+                return (
+                  <View key={index} style={styles.myFlavorNote}>
+                    <Text style={styles.myFlavorText}>{flavorPath}</Text>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+        )}
+
         {/* Flavor Notes */}
         {tastingRecord.flavorNotes && tastingRecord.flavorNotes.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>향미 노트</Text>
+            <Text style={styles.sectionTitle}>로스터 향미 노트</Text>
             <View style={styles.flavorContainer}>
               {tastingRecord.flavorNotes.map((note, index) => (
                 <View key={index} style={styles.flavorNote}>
@@ -509,7 +553,16 @@ const styles = StyleSheet.create({
   },
   headerActions: {
     flex: 0,
-    width: 50,
+    minWidth: 50,
+    alignItems: 'flex-end',
+  },
+  deleteButton: {
+    padding: HIGConstants.SPACING_XS,
+  },
+  deleteButtonText: {
+    fontSize: 17,
+    color: HIGColors.red,
+    fontWeight: '400',
   },
   scrollView: {
     flex: 1,
@@ -631,6 +684,18 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_XS,
   },
   flavorText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  myFlavorNote: {
+    backgroundColor: HIGColors.systemGreen,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
+    borderRadius: 16,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  myFlavorText: {
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '500',

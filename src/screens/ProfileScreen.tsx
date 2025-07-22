@@ -18,6 +18,7 @@ import AuthService from '../services/supabase/auth';
 import { AchievementSummaryCard } from '../components/achievements/AchievementSummaryCard';
 import { useAchievements } from '../hooks/useAchievements';
 import { useDevStore } from '../stores/useDevStore';
+import StatusBadge from '../components/StatusBadge';
 
 // Tab navigation type definition
 type MainTabParamList = {
@@ -162,12 +163,12 @@ const ProfileScreen = () => {
       {/* Navigation Bar */}
       <View style={styles.navigationBar}>
         <View style={styles.titleContainer}>
-          <Text style={styles.navigationTitle}>프로필</Text>
+          <Text style={styles.navigationTitle}>Profile</Text>
           <View style={styles.betaBadge}>
             <Text style={styles.betaText}>BETA</Text>
           </View>
         </View>
-        <View style={{ width: 80 }} />
+        <StatusBadge />
       </View>
 
       <ScrollView style={styles.scrollView}>

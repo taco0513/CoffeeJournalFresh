@@ -152,7 +152,7 @@ function ProfileStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: true,
+        headerShown: false, // Disable stack headers to use custom headers
         headerStyle: {
           backgroundColor: '#FFFFFF',
         },
@@ -275,6 +275,7 @@ function MainTabs() {
         name="Home" 
         component={HomeScreen} 
         options={{
+          headerShown: false, // HomeScreen has its own navigation
           tabBarLabel: 'Home',
           tabBarIcon: ({ color }) => (
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
