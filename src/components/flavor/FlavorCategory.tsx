@@ -392,11 +392,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
-  expandIcon: {
-    fontSize: 12,
-    color: HIGColors.tertiaryLabel,
-    marginLeft: HIGConstants.SPACING_SM,
-  },
   expandIconSelected: {
     color: '#FFFFFF',
   },

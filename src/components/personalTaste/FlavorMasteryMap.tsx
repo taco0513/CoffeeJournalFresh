@@ -76,7 +76,7 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
       expert: '🏆',
       master: '👑',
     };
-    return emojiMap[level] || '🌱';
+    return emojiMap[level as keyof typeof emojiMap] || '🌱';
   };
 
   const getCategoryEmoji = (categoryName: string): string => {

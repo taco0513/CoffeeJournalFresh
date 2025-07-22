@@ -18,15 +18,23 @@ export const SelectedFlavors: React.FC<SelectedFlavorsProps> = ({ selectedPaths,
         {selectedPaths.length > 0 ? (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollView}>
             {selectedPaths.map((path, index) => (
-              <TouchableOpacity
+              <View
                 key={`${path.level1}-${path.level2}-${path.level3}-${index}`}
-                style={styles.selectedChip}
-                onPress={() => onRemove(path)}
+                style={styles.selectedChipContainer}
               >
-                <Text style={styles.selectedChipText}>
-                  {path.level3 ? path.level3 : getKoreanName(path.level2)}
-                </Text>
-              </TouchableOpacity>
+                <View style={styles.selectedChip}>
+                  <Text style={styles.selectedChipText}>
+                    {path.level3 ? path.level3 : getKoreanName(path.level2)}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => onRemove(path)}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <Text style={styles.removeButtonText}>×</Text>
+                </TouchableOpacity>
+              </View>
             ))}
           </ScrollView>
         ) : (
@@ -65,13 +73,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  selectedChipContainer: {
+    position: 'relative',
+    marginRight: HIGConstants.SPACING_MD,
+    alignSelf: 'center',
+  },
   selectedChip: {
     backgroundColor: HIGColors.systemBlue,
     paddingHorizontal: HIGConstants.SPACING_MD,
     paddingVertical: HIGConstants.SPACING_SM,
+    paddingRight: HIGConstants.SPACING_LG, // Extra padding for 'x' button
     borderRadius: 8,
-    marginRight: HIGConstants.SPACING_MD,
-    alignSelf: 'center',
+  },
+  removeButton: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: HIGColors.systemRed,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
+  },
+  removeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+    lineHeight: 14,
   },
   selectedChipText: {
     color: '#FFFFFF',
