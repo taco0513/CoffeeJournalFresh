@@ -1,0 +1,1 @@
+exports.id=63,exports.ids=[63],exports.modules={39727:()=>{},47990:()=>{},60654:(e,s,a)=>{"use strict";a.d(s,{supabase:()=>o});var r=a(69853),t=a(56841);let o=(0,r.createBrowserClient)(t.$W.supabase.url,t.$W.supabase.anonKey,{auth:{persistSession:!0,autoRefreshToken:!0,detectSessionInUrl:!0},global:{headers:{"X-Client-Name":"coffee-journal-admin","X-Client-Version":"1.0.0"}}})}};

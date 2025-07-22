@@ -1,0 +1,65 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-0c96bda28fe2bc3c.js",
+      "static/chunks/vendors-a643fb3631217cce.js",
+      "static/chunks/main-app-46a6fc3eb7a558c0.js",
+      "static/chunks/app/_not-found/page-748942d00e037e98.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-0c96bda28fe2bc3c.js",
+      "static/chunks/vendors-a643fb3631217cce.js",
+      "static/chunks/main-app-46a6fc3eb7a558c0.js",
+      "static/css/d770b1e16310cdcb.css",
+      "static/chunks/app/layout-e880dfcbab35958a.js"
+    ],
+    "/api/health/route": [
+      "static/chunks/webpack-0c96bda28fe2bc3c.js",
+      "static/chunks/vendors-a643fb3631217cce.js",
+      "static/chunks/main-app-46a6fc3eb7a558c0.js",
+      "static/chunks/app/api/health/route-6858c8cb00328978.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-0c96bda28fe2bc3c.js",
+      "static/chunks/vendors-a643fb3631217cce.js",
+      "static/chunks/main-app-46a6fc3eb7a558c0.js",
+      "static/chunks/app/page-0e31e4a1edf69574.js"
+    ],
+    "/login/page": [
+      "static/chunks/webpack-0c96bda28fe2bc3c.js",
+      "static/chunks/vendors-a643fb3631217cce.js",
+      "static/chunks/main-app-46a6fc3eb7a558c0.js",
+      "static/chunks/app/login/page-667c5ed602def4e0.js"
+    ],
+    "/dashboard/layout": [
+      "static/chunks/webpack-0c96bda28fe2bc3c.js",
+      "static/chunks/vendors-a643fb3631217cce.js",
+      "static/chunks/main-app-46a6fc3eb7a558c0.js",
+      "static/chunks/app/dashboard/layout-c85a122057a4c23c.js"
+    ],
+    "/dashboard/analytics/page": [
+      "static/chunks/webpack-0c96bda28fe2bc3c.js",
+      "static/chunks/vendors-a643fb3631217cce.js",
+      "static/chunks/main-app-46a6fc3eb7a558c0.js",
+      "static/chunks/app/dashboard/analytics/page-f8c9308cf2acea83.js"
+    ],
+    "/dashboard/coffee/page": [
+      "static/chunks/webpack-0c96bda28fe2bc3c.js",
+      "static/chunks/vendors-a643fb3631217cce.js",
+      "static/chunks/main-app-46a6fc3eb7a558c0.js",
+      "static/chunks/app/dashboard/coffee/page-68e89071a5d07cdb.js"
+    ],
+    "/dashboard/page": [
+      "static/chunks/webpack-0c96bda28fe2bc3c.js",
+      "static/chunks/vendors-a643fb3631217cce.js",
+      "static/chunks/main-app-46a6fc3eb7a558c0.js",
+      "static/chunks/app/dashboard/page-db6ed1cbb1d8aa90.js"
+    ],
+    "/dashboard/users/page": [
+      "static/chunks/webpack-0c96bda28fe2bc3c.js",
+      "static/chunks/vendors-a643fb3631217cce.js",
+      "static/chunks/main-app-46a6fc3eb7a558c0.js",
+      "static/chunks/app/dashboard/users/page-f2967ce03e3ef6fc.js"
+    ]
+  }
+}

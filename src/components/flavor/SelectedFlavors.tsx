@@ -14,9 +14,9 @@ export const SelectedFlavors: React.FC<SelectedFlavorsProps> = ({ selectedPaths,
       <Text style={styles.selectedTitle}>
         선택한 향미 ({selectedPaths.length}/5)
       </Text>
-      {selectedPaths.length > 0 ? (
-        <View style={styles.scrollContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <View style={styles.contentContainer}>
+        {selectedPaths.length > 0 ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollView}>
             {selectedPaths.map((path, index) => (
               <TouchableOpacity
                 key={`${path.level1}-${path.level2}-${path.level3}-${index}`}
@@ -29,10 +29,12 @@ export const SelectedFlavors: React.FC<SelectedFlavorsProps> = ({ selectedPaths,
               </TouchableOpacity>
             ))}
           </ScrollView>
-        </View>
-      ) : (
-        <Text style={styles.emptyMessage}>아직 선택된 향미가 없습니다</Text>
-      )}
+        ) : (
+          <View style={styles.emptyStateContainer}>
+            <Text style={styles.emptyMessage}>아직 선택된 향미가 없습니다</Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -43,6 +45,7 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 24,
     backgroundColor: '#F8F9FA',
+    minHeight: 120, // Fixed minimum height
   },
   selectedTitle: {
     fontSize: 16,
@@ -50,8 +53,17 @@ const styles = StyleSheet.create({
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
   },
-  scrollContainer: {
-    flexShrink: 1,
+  contentContainer: {
+    height: 40, // Fixed height for the content area
+    justifyContent: 'center',
+  },
+  scrollView: {
+    flexGrow: 0,
+  },
+  emptyStateContainer: {
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   selectedChip: {
     backgroundColor: HIGColors.systemBlue,
@@ -59,7 +71,7 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_SM,
     borderRadius: 8,
     marginRight: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_XS,
+    alignSelf: 'center',
   },
   selectedChipText: {
     color: '#FFFFFF',
@@ -70,6 +82,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-    marginTop: HIGConstants.SPACING_SM,
   },
 });
