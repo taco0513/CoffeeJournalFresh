@@ -141,21 +141,29 @@ const SensoryScreen = () => {
 
         {showEnhanced ? (
           /* Enhanced Korean Sensory Evaluation */
-          <CompactSensoryEvaluation
-            selectedExpressions={selectedSensoryExpressions.map(item => ({
-              categoryId: item.categoryId,
-              expression: {
-                id: item.expressionId,
-                korean: item.korean,
-                english: item.english,
-                emoji: item.emoji,
-                intensity: Math.min(3, Math.max(1, item.intensity - 2)) as 1 | 2 | 3,
-                beginner: true,
-              },
-            }))}
-            onExpressionChange={handleExpressionChange}
-            beginnerMode={true}
-          />
+          <>
+            <View style={styles.evaluationIntroContainer}>
+              <Text style={styles.evaluationIntroTitle}>맛의 언어로 표현해보세요</Text>
+              <Text style={styles.evaluationIntroSubtitle}>
+                이 커피에서 느껴지는 감각을 선택해주세요
+              </Text>
+            </View>
+            <CompactSensoryEvaluation
+              selectedExpressions={selectedSensoryExpressions.map(item => ({
+                categoryId: item.categoryId,
+                expression: {
+                  id: item.expressionId,
+                  korean: item.korean,
+                  english: item.english,
+                  emoji: item.emoji,
+                  intensity: Math.min(3, Math.max(1, item.intensity - 2)) as 1 | 2 | 3,
+                  beginner: true,
+                },
+              }))}
+              onExpressionChange={handleExpressionChange}
+              beginnerMode={true}
+            />
+          </>
         ) : (
           /* Traditional Slider Evaluation */
           <>
@@ -355,6 +363,26 @@ const styles = StyleSheet.create({
     height: 3,
     backgroundColor: HIGColors.systemBlue,
     borderRadius: 2,
+  },
+  evaluationIntroContainer: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingTop: HIGConstants.SPACING_MD,
+    paddingBottom: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+  },
+  evaluationIntroTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_SM,
+    textAlign: 'center',
+  },
+  evaluationIntroSubtitle: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    lineHeight: 22,
   },
   modeButtonText: {
     fontSize: 15,

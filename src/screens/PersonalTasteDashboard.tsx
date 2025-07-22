@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
 // import { useTranslation } from 'react-i18next'; // Removed - using static Korean strings
 import { HIGConstants, HIGColors } from '../styles/common';
@@ -31,7 +31,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function PersonalTasteDashboard() {
   // const { t } = useTranslation(); // Removed - using static Korean strings
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const scrollViewRef = useRef<ScrollView>(null);
   
   const [viewMode, setViewMode] = useState<PersonalTasteViewMode>(
@@ -219,7 +219,7 @@ export default function PersonalTasteDashboard() {
               {/* Personal Stats Grid */}
               <PersonalStatsGrid
                 stats={{
-                  totalTastings: tastePattern.growthTrend.weeklyProgress || 0,
+                  totalTastings: tastePattern.growthTrend?.weeklyProgress || 0,
                   uniqueCoffees: 0, // TODO: Calculate from records
                   uniqueRoasters: 0, // TODO: Calculate from records
                   favoriteRoaster: 'Coming soon',
@@ -268,10 +268,10 @@ export default function PersonalTasteDashboard() {
               </View>
 
               {/* Taste Recommendations */}
-              {tastePattern.recommendations.length > 0 && (
+              {tastePattern.recommendations && tastePattern.recommendations.length > 0 && (
                 <View style={styles.recommendationsSection}>
                   <Text style={styles.sectionTitle}>맞춤 추천</Text>
-                  {tastePattern.recommendations.map((rec: string, index: number) => (
+                  {tastePattern.recommendations?.map((rec: string, index: number) => (
                     <View key={`rec-${index}`} style={styles.recommendationItem}>
                       <Text style={styles.recommendationIcon}>💡</Text>
                       <Text style={styles.recommendationText}>{rec}</Text>

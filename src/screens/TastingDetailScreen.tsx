@@ -220,7 +220,7 @@ const TastingDetailScreen = () => {
   const renderRoasterNotes = (notes: string) => {
     try {
       // Try to parse as JSON first
-      const parsed = JSON.parse(notes);
+      const parsed = JSON.parse(notes) as Record<string, any>;
       
       if (parsed.notes && Array.isArray(parsed.notes)) {
         // Handle structured roaster notes with flavor array

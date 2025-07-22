@@ -205,7 +205,7 @@ class PhotoService {
     } catch (error) {
       logError(error instanceof Error ? error : new Error(String(error)), {
         function: 'deletePhoto',
-        photoUri
+        photoPath
       }, 'photo');
       return false;
     }

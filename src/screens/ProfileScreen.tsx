@@ -62,8 +62,8 @@ const ProfileScreen = () => {
         const tastings = realm.objects('TastingRecord').filtered('isDeleted = false');
         
         // 가장 많이 방문한 로스터 찾기
-        const roasterCounts = {};
-        tastings.forEach(tasting => {
+        const roasterCounts: Record<string, number> = {};
+        tastings.forEach((tasting: any) => {
           const roaster = tasting.roastery;
           roasterCounts[roaster] = (roasterCounts[roaster] || 0) + 1;
         });
@@ -74,7 +74,7 @@ const ProfileScreen = () => {
 
         // 가입일부터 경과 일수 계산 (임시로 테이스팅 데이터 기준)
         const joinedDaysAgo = tastings.length > 0 
-          ? Math.floor((Date.now() - new Date(tastings[tastings.length - 1].createdAt).getTime()) / (1000 * 60 * 60 * 24))
+          ? Math.floor((Date.now() - new Date((tastings[tastings.length - 1] as any).createdAt).getTime()) / (1000 * 60 * 60 * 24))
           : 0;
 
         setStats({

@@ -261,7 +261,7 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
       <View style={styles.header}>
         <Text style={styles.totalMastery}>
           전체 마스터리: {Math.round(
-            masteryLevels.reduce((sum, m) => sum + m.score, 0) / 
+            masteryLevels.reduce((sum, m) => sum + (m.score ?? 0), 0) / 
             Math.max(masteryLevels.length, 1)
           )}%
         </Text>

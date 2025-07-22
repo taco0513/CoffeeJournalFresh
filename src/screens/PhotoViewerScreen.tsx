@@ -12,6 +12,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import PhotoService from '../services/PhotoService';
 import RealmService from '../services/realm/RealmService';
 import { HIGConstants, HIGColors } from '../styles/common';
@@ -33,7 +34,7 @@ interface RouteParams {
 }
 
 const PhotoViewerScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const route = useRoute();
   const { photoItem } = route.params as RouteParams;
   const [showControls, setShowControls] = useState(true);
@@ -68,7 +69,7 @@ const PhotoViewerScreen = () => {
           onPress: async () => {
             try {
               const realmService = RealmService.getInstance();
-              const tasting = realmService.getTastingRecord(photoItem.tastingId);
+              const tasting = await realmService.getTastingRecordById(photoItem.tastingId);
               
               if (tasting && tasting.photoUri) {
                 // Delete photo from local storage

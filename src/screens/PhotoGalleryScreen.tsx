@@ -12,10 +12,11 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import RealmService from '../services/realm/RealmService';
 import PhotoService from '../services/PhotoService';
 import { HIGConstants, HIGColors } from '../styles/common';
-import { TastingRecord } from '../services/realm/schemas';
+import { ITastingRecord } from '../services/realm/schemas';
 
 const { width } = Dimensions.get('window');
 const ITEM_SIZE = (width - HIGConstants.SPACING_LG * 3) / 2;
@@ -31,7 +32,7 @@ interface PhotoItem {
 }
 
 const PhotoGalleryScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -47,7 +48,8 @@ const PhotoGalleryScreen = () => {
       
       // Filter tastings with photos and create photo items
       const photoItems: PhotoItem[] = [];
-      for (const tasting of tastings) {
+      const tastingsArray = Array.from(tastings) as ITastingRecord[];
+      for (const tasting of tastingsArray) {
         if (tasting.photoUri) {
           photoItems.push({
             id: `${tasting.id}_photo`,
@@ -55,7 +57,7 @@ const PhotoGalleryScreen = () => {
             thumbnailUri: tasting.photoThumbnailUri,
             tastingId: tasting.id,
             coffeeName: tasting.coffeeName || '알 수 없음',
-            roasteryName: tasting.roasteryName || '알 수 없음',
+            roasteryName: tasting.roastery || '알 수 없음',
             createdAt: tasting.createdAt,
           });
         }
@@ -111,7 +113,7 @@ const PhotoGalleryScreen = () => {
           onPress: async () => {
             try {
               const realmService = RealmService.getInstance();
-              const tasting = realmService.getTastingRecord(item.tastingId);
+              const tasting = await realmService.getTastingRecordById(item.tastingId);
               
               if (tasting && tasting.photoUri) {
                 // Delete photo from local storage

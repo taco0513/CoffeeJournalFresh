@@ -12,6 +12,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import RealmService from '../services/realm/RealmService';
 import { ITastingRecord } from '../services/realm/schemas';
 import { Colors } from '../constants/colors';
@@ -28,7 +29,7 @@ interface FilterOptions {
 }
 
 export default function SearchScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>({});

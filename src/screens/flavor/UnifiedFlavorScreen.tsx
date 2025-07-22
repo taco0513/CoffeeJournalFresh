@@ -1,28 +1,25 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Platform,
   TextInput,
-  Dimensions,
+  LayoutAnimation,
+  Platform,
+  UIManager,
 } from 'react-native';
-import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { useNavigation } from '@react-navigation/native';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { useTastingStore } from '../../stores/tastingStore';
 import { flavorWheelKorean } from '../../data/flavorWheelKorean';
-import { FlavorPath } from '../../types/tasting';
-import { 
-  FlavorWheelData, 
-  TransformedCategory, 
-  TransformedSubcategory, 
-  TransformedFlavor 
-} from '../../types/flavor';
-import { FlavorCategory } from '../../components/flavor/FlavorCategory';
-import { SelectedFlavors } from '../../components/flavor/SelectedFlavors';
+import { FlavorPath } from '../../stores/tastingStore';
+
+// Enable LayoutAnimation on Android
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 // Category colors for visual distinction
 const CATEGORY_COLORS: Record<string, string> = {
@@ -50,19 +47,19 @@ const CATEGORY_EMOJIS: Record<string, string> = {
   'Other': '📦',
 };
 
-// Transform flavorWheelKorean data into the expected format with proper typing
-const transformFlavorData = (data: FlavorWheelData): TransformedCategory[] => {
-  const result: TransformedCategory[] = [];
-  const { level1, level2, level3, translations } = data;
+// Transform flavorWheelKorean data into the expected format
+const transformFlavorData = () => {
+  const result = [];
+  const { level1, level2, level3, translations } = flavorWheelKorean;
   
   for (const [category, koreanName] of Object.entries(level1)) {
-    const subcategories = (level2[category as keyof typeof level2] || []) as string[];
-    const subcategoryData: TransformedSubcategory[] = subcategories.map((subcat: string) => {
-      const flavors = (level3[subcat as keyof typeof level3] || []) as string[];
+    const subcategories = level2[category] || [];
+    const subcategoryData = subcategories.map(subcat => {
+      const flavors = level3[subcat] || [];
       return {
         name: subcat,
-        koreanName: translations[subcat as keyof typeof translations] || subcat,
-        flavors: flavors.map((flavor: string): TransformedFlavor => ({
+        koreanName: translations[subcat] || subcat,
+        flavors: flavors.map(flavor => ({
           name: flavor,
           koreanName: flavor, // Korean flavors are already in Korean
         })),
@@ -80,132 +77,357 @@ const transformFlavorData = (data: FlavorWheelData): TransformedCategory[] => {
   return result;
 };
 
-// Beginner-friendly flavors to show first
-const BEGINNER_CATEGORIES = ['Fruity', 'Sweet', 'Nutty/Cocoa'];
+const flavorData = transformFlavorData();
 
-// Flavor pairing suggestions
-const FLAVOR_PAIRINGS: Record<string, string[]> = {
-  '초콜릿': ['캐러멜', '견과류', '바닐라'],
-  '베리류': ['초콜릿', '꽃향', '와인'],
-  '시트러스': ['꽃향', '허브', '홍차'],
-  '캐러멜': ['초콜릿', '견과류', '황설탕'],
-  '꽃향': ['과일향', '허브', '홍차'],
-  '견과류': ['초콜릿', '캐러멜', '향신료'],
+interface CategoryAccordionProps {
+  category: string;
+  expanded: boolean;
+  onToggle: () => void;
+  onSelectFlavor: (path: FlavorPath) => void;
+  onSelectSubcategory: (level1: string, level2: string) => void;
+  selectedPaths: FlavorPath[];
+  searchQuery: string;
+  expandedSubCategories: Set<string>;
+  onToggleSubcategory: (subcategoryKey: string) => void;
+}
+
+const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
+  category,
+  expanded,
+  onToggle,
+  onSelectFlavor,
+  onSelectSubcategory,
+  selectedPaths,
+  searchQuery,
+  expandedSubCategories,
+  onToggleSubcategory,
+}) => {
+  const categoryData = flavorData.find(item => item.category === category);
+  const categoryColor = CATEGORY_COLORS[category] || HIGColors.systemGray4;
+
+  if (!categoryData) return null;
+
+  // Filter subcategories and flavors based on search
+  const filteredSubCategories = searchQuery
+    ? categoryData.subcategories.filter(sub =>
+        sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sub.koreanName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sub.flavors.some(f =>
+          f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      )
+    : categoryData.subcategories;
+
+  const isFlavorSelected = (level1: string, level2: string, level3: string) => {
+    return selectedPaths.some(
+      path => path.level1 === level1 && path.level2 === level2 && path.level3 === level3
+    );
+  };
+
+  // Check if a subcategory (level2) is selected directly OR has any selected flavors
+  const isSubcategorySelected = (level1: string, level2: string) => {
+    return selectedPaths.some(
+      path => path.level1 === level1 && path.level2 === level2 // This includes both direct subcategory selections and flavor selections
+    );
+  };
+
+  // Get selected count for this category
+  const getCategorySelectedCount = () => {
+    return selectedPaths.filter(path => path.level1 === category).length;
+  };
+
+  // Get subcategory preview text
+  const getSubcategoryPreview = () => {
+    const names = categoryData.subcategories.slice(0, 3).map(sub => sub.koreanName);
+    return names.join(', ') + (categoryData.subcategories.length > 3 ? ' 등' : '');
+  };
+
+  return (
+    <View style={styles.categoryContainer}>
+      <TouchableOpacity
+        style={[
+          styles.categoryCard,
+          expanded && styles.categoryCardExpanded,
+        ]}
+        onPress={onToggle}
+        activeOpacity={0.7}
+      >
+        <View style={[styles.categoryColorBar, { backgroundColor: categoryColor }]} pointerEvents="none" />
+        <View style={styles.categoryContent}>
+          <View style={styles.categoryLeft}>
+            <View style={styles.categoryTitleRow}>
+              <Text style={styles.categoryEmoji}>{categoryData.emoji}</Text>
+              <Text style={styles.categoryTitle}>{categoryData.koreanName}</Text>
+            </View>
+            {!expanded && (
+              <Text style={styles.categorySubtext}>{getSubcategoryPreview()}</Text>
+            )}
+          </View>
+          <View style={styles.categoryRight}>
+            {getCategorySelectedCount() > 0 && (
+              <View style={styles.categorySelectedBadge}>
+                <Text style={styles.categorySelectedCount}>{getCategorySelectedCount()}</Text>
+              </View>
+            )}
+            <View style={styles.categoryBadge}>
+              <Text style={styles.categoryCount}>{filteredSubCategories.length}</Text>
+            </View>
+            <Text style={[styles.expandIcon, expanded && styles.expandIconRotated]}>
+              ›
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      {expanded && filteredSubCategories.length > 0 && (
+        <View style={styles.categoryExpandedContent}>
+          {/* Multi-selection guide */}
+          <View style={styles.categoryGuide}>
+            <Text style={styles.categoryGuideText}>
+              💡 하위 카테고리를 탭하여 세부 향미를 선택하세요
+            </Text>
+          </View>
+          
+          {/* Subcategory chips */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.subCategoryScroll}>
+            {filteredSubCategories.map(sub => {
+              const isSelected = isSubcategorySelected(category, sub.name);
+              const isDirectlySelected = selectedPaths.some(
+                path => path.level1 === category && path.level2 === sub.name && !path.level3
+              );
+              const hasSelectedFlavors = selectedPaths.some(
+                path => path.level1 === category && path.level2 === sub.name && path.level3
+              );
+              
+              return (
+                <TouchableOpacity
+                  key={sub.name}
+                  style={[
+                    styles.subCategoryChip,
+                    expandedSubCategories.has(`${category}-${sub.name}`) && styles.subCategoryChipSelected,
+                    isDirectlySelected && styles.subCategoryChipFullySelected,
+                    hasSelectedFlavors && !isDirectlySelected && styles.subCategoryChipChildSelected,
+                  ]}
+                  onPress={() => {
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                    if (isDirectlySelected) {
+                      // If directly selected as subcategory, remove selection and collapse
+                      onSelectSubcategory(category, sub.name);
+                      // Also collapse the expanded content
+                      const subcategoryKey = `${category}-${sub.name}`;
+                      if (expandedSubCategories.has(subcategoryKey)) {
+                        onToggleSubcategory(subcategoryKey);
+                      }
+                    } else if (hasSelectedFlavors) {
+                      // If has selected flavors, just toggle expansion
+                      onToggleSubcategory(`${category}-${sub.name}`);
+                    } else {
+                      // If not selected, select the subcategory AND expand it
+                      onSelectSubcategory(category, sub.name);
+                      onToggleSubcategory(`${category}-${sub.name}`);
+                    }
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.subCategoryText,
+                      expandedSubCategories.has(`${category}-${sub.name}`) && styles.subCategoryTextSelected,
+                      isDirectlySelected && styles.subCategoryTextFullySelected,
+                      hasSelectedFlavors && !isDirectlySelected && styles.subCategoryTextChildSelected,
+                    ]}
+                  >
+                    {sub.koreanName}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+
+          {/* Flavors grid for each expanded subcategory */}
+          {(() => {
+            const expandedSubs = filteredSubCategories.filter(sub => expandedSubCategories.has(`${category}-${sub.name}`));
+            
+            // Separate categories with and without flavors
+            const subsWithFlavors = [];
+            const subsWithoutFlavors = [];
+            
+            expandedSubs.forEach(sub => {
+              const filteredFlavors = sub.flavors.filter(f =>
+                searchQuery
+                  ? f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
+                  : true
+              );
+              
+              if (filteredFlavors.length > 0) {
+                subsWithFlavors.push({ sub, filteredFlavors });
+              } else {
+                subsWithoutFlavors.push(sub);
+              }
+            });
+            
+            return (
+              <>
+                {/* Render categories with flavors */}
+                {subsWithFlavors.map(({ sub, filteredFlavors }) => (
+                  <View key={sub.name} style={styles.flavorGrid}>
+                    <Text style={styles.subcategoryLabel}>{sub.koreanName} 세부 향미:</Text>
+                    <View style={styles.flavorRow}>
+                      {filteredFlavors.map(flavor => {
+                        const isSelected = isFlavorSelected(category, sub.name, flavor.name);
+                        const isDisabled = !isSelected && selectedPaths.length >= 5;
+                        return (
+                          <TouchableOpacity
+                            key={flavor.name}
+                            style={[
+                              styles.flavorButton,
+                              isSelected && styles.flavorButtonSelected,
+                              isDisabled && styles.flavorButtonDisabled,
+                            ]}
+                            onPress={() => {
+                              if (!isDisabled) {
+                                onSelectFlavor({
+                                  level1: category,
+                                  level2: sub.name,
+                                  level3: flavor.name,
+                                });
+                              }
+                            }}
+                            activeOpacity={isDisabled ? 1 : 0.7}
+                            disabled={isDisabled}
+                          >
+                            <Text
+                              style={[
+                                styles.flavorText,
+                                isSelected && styles.flavorTextSelected,
+                                isDisabled && styles.flavorTextDisabled,
+                              ]}
+                            >
+                              {flavor.koreanName}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  </View>
+                ))}
+                
+                {/* Render combined message for categories without flavors */}
+                {subsWithoutFlavors.length > 0 && (
+                  <View style={styles.flavorGrid}>
+                    <View style={styles.noFlavorContainer}>
+                      <Text style={styles.noFlavorText}>
+                        {subsWithoutFlavors.length === 1 
+                          ? `'${subsWithoutFlavors[0].koreanName}'은 더 세부적인 향미가 없습니다.`
+                          : `'${subsWithoutFlavors.map(sub => sub.koreanName).join('\', \'')}'은 더 세부적인 향미가 없습니다.`
+                        }
+                      </Text>
+                    </View>
+                  </View>
+                )}
+              </>
+            );
+          })()}
+        </View>
+      )}
+    </View>
+  );
 };
 
 export default function UnifiedFlavorScreen() {
   const navigation = useNavigation();
   const { currentTasting, updateField } = useTastingStore();
-  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const [showAllCategories, setShowAllCategories] = useState(false);
-
-  // Memoize the transformed data to prevent recalculation on every render
-  const flavorData = useMemo(
-    () => transformFlavorData(flavorWheelKorean as FlavorWheelData),
-    []
-  );
+  // Cafe Mode: 초기에는 모든 카테고리를 닫아서 Level 1에 집중
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+  const [expandedSubCategories, setExpandedSubCategories] = useState<Set<string>>(new Set());
 
   const selectedPaths = currentTasting.selectedFlavors || [];
 
-  // Auto-expand categories that have search results
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      const categoriesWithResults = flavorData
-        .filter(item => {
-          return item.subcategories.some(sub =>
-            sub.name.toLowerCase().includes(query) ||
-            sub.koreanName.toLowerCase().includes(query) ||
-            sub.flavors.some(f =>
-              f.name.toLowerCase().includes(query) ||
-              f.koreanName.toLowerCase().includes(query)
-            )
-          );
-        })
-        .map(item => item.category);
+  // Simply use expanded categories state without any complex logic
 
-      setExpandedCategories(categoriesWithResults);
-    } else {
-      // When search is cleared, collapse all categories
-      setExpandedCategories([]);
-    }
-  }, [searchQuery, flavorData]);
-
-  const handleSelectFlavor = useCallback((level1: string, level2: string, level3: string) => {
-    // Add haptic feedback
-    ReactNativeHapticFeedback.trigger('impactLight', {
-      enableVibrateFallback: true,
-      ignoreAndroidSystemSettings: false,
-    });
-    
+  // Handle subcategory (level2) selection
+  const handleSelectSubcategory = useCallback((level1: string, level2: string) => {
     const currentPaths = [...selectedPaths];
     
-    if (level3) {
-      // Handle level 3 (specific flavor) selection
-      const path: FlavorPath = { level1, level2, level3 };
-      const existingIndex = currentPaths.findIndex(
-        (p: FlavorPath) => p.level1 === path.level1 && p.level2 === path.level2 && p.level3 === path.level3
-      );
-
-      if (existingIndex >= 0) {
-        currentPaths.splice(existingIndex, 1);
-      } else if (currentPaths.length < 5) {
-        // Remove any level 2 selection for this subcategory if selecting a specific flavor
-        const level2Index = currentPaths.findIndex(
-          p => p.level1 === level1 && p.level2 === level2 && !p.level3
-        );
-        if (level2Index >= 0) {
-          currentPaths.splice(level2Index, 1);
-        }
-        currentPaths.push(path);
-      }
+    // Check if this subcategory is already selected as level2
+    const existingSubcategoryIndex = currentPaths.findIndex(
+      p => p.level1 === level1 && p.level2 === level2 && !p.level3
+    );
+    
+    if (existingSubcategoryIndex >= 0) {
+      // Remove subcategory selection
+      currentPaths.splice(existingSubcategoryIndex, 1);
     } else {
-      // Handle level 2 (subcategory) selection
-      const path: FlavorPath = { level1, level2 };
-      const existingIndex = currentPaths.findIndex(
-        (p: FlavorPath) => p.level1 === path.level1 && p.level2 === path.level2 && !p.level3
+      // Remove any specific flavors from this subcategory first
+      const filteredPaths = currentPaths.filter(
+        p => !(p.level1 === level1 && p.level2 === level2 && p.level3)
       );
-
-      if (existingIndex >= 0) {
-        currentPaths.splice(existingIndex, 1);
-      } else if (currentPaths.length < 5) {
-        // Remove any level 3 selections for this subcategory if selecting the whole subcategory
-        const indicesToRemove: number[] = [];
-        currentPaths.forEach((p, index) => {
-          if (p.level1 === level1 && p.level2 === level2 && p.level3) {
-            indicesToRemove.push(index);
-          }
+      
+      // Add subcategory selection if under limit
+      if (filteredPaths.length < 5) {
+        filteredPaths.push({
+          level1,
+          level2,
+          level3: '', // Empty level3 indicates subcategory selection
         });
-        // Remove from end to start to maintain indices
-        indicesToRemove.reverse().forEach(index => {
-          currentPaths.splice(index, 1);
-        });
-        
-        currentPaths.push(path);
+        updateField('selectedFlavors', filteredPaths);
       }
+      return;
+    }
+    
+    updateField('selectedFlavors', currentPaths);
+  }, [updateField]);
+
+  const handleSelectFlavor = useCallback((path: FlavorPath) => {
+    const currentPaths = [...selectedPaths];
+    const existingIndex = currentPaths.findIndex(
+      p => p.level1 === path.level1 && p.level2 === path.level2 && p.level3 === path.level3
+    );
+
+    if (existingIndex >= 0) {
+      // Remove if already selected
+      currentPaths.splice(existingIndex, 1);
+    } else if (currentPaths.length < 5) {
+      // Remove any subcategory selection from the same level2 first
+      const filteredPaths = currentPaths.filter(
+        p => !(p.level1 === path.level1 && p.level2 === path.level2 && !p.level3)
+      );
+      
+      // Add specific flavor selection
+      filteredPaths.push(path);
+      updateField('selectedFlavors', filteredPaths);
+      return;
+    } else {
+      // Show limit reached message - could add a toast or haptic feedback here
+      return;
     }
 
     updateField('selectedFlavors', currentPaths);
-  }, [selectedPaths, updateField]);
+  }, [updateField]);
 
-  const handleRemoveFlavor = useCallback((path: FlavorPath) => {
-    const currentPaths = selectedPaths.filter(
-      (p: FlavorPath) => {
-        if (path.level3) {
-          // Remove specific level 3 flavor
-          return !(p.level1 === path.level1 && p.level2 === path.level2 && p.level3 === path.level3);
-        } else {
-          // Remove level 2 subcategory
-          return !(p.level1 === path.level1 && p.level2 === path.level2 && !p.level3);
-        }
-      }
-    );
+  const handleRemoveFlavor = useCallback((index: number) => {
+    const currentPaths = [...selectedPaths];
+    const removedPath = currentPaths[index];
+    currentPaths.splice(index, 1);
     updateField('selectedFlavors', currentPaths);
-  }, [selectedPaths, updateField]);
+    
+    // If we removed a subcategory selection, also close the expanded subcategory
+    if (removedPath && !removedPath.level3) {
+      const subcategoryKey = `${removedPath.level1}-${removedPath.level2}`;
+      setExpandedSubCategories(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(subcategoryKey)) {
+          newSet.delete(subcategoryKey);
+        }
+        return newSet;
+      });
+    }
+  }, [updateField]);
 
   const toggleCategory = useCallback((category: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpandedCategories(prev => {
       if (prev.includes(category)) {
         return prev.filter(c => c !== category);
@@ -214,110 +436,48 @@ export default function UnifiedFlavorScreen() {
       }
     });
   }, []);
+  
+  const toggleSubcategory = useCallback((subcategoryKey: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedSubCategories(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(subcategoryKey)) {
+        newSet.delete(subcategoryKey);
+      } else {
+        newSet.add(subcategoryKey);
+      }
+      return newSet;
+    });
+  }, []);
+  
+  const toggleAllCategories = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedCategories(prev => {
+      if (prev.length === flavorData.length) {
+        return [];
+      } else {
+        return flavorData.map(item => item.category);
+      }
+    });
+  }, []);
 
   const handleNext = () => {
     navigation.navigate('Sensory' as never);
   };
 
-  // Filter and organize data based on search query and progressive disclosure
-  const filteredData = useMemo(() => {
-    let data = flavorData;
-    
-    // Apply search filter if query exists
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      data = flavorData.filter(item => {
-        // Check if category matches
-        if (item.category.toLowerCase().includes(query) || 
-            item.koreanName.toLowerCase().includes(query)) {
-          return true;
-        }
-
-        // Check if any subcategory or flavor matches
-        return item.subcategories.some(sub =>
-          sub.name.toLowerCase().includes(query) ||
-          sub.koreanName.toLowerCase().includes(query) ||
-          sub.flavors.some(f =>
-            f.name.toLowerCase().includes(query) ||
-            f.koreanName.toLowerCase().includes(query)
-          )
-        );
-      });
-      return data;
-    }
-    
-    // Apply progressive disclosure when not searching
-    if (!showAllCategories) {
-      // Show beginner categories first
-      const beginnerData = data.filter(item => BEGINNER_CATEGORIES.includes(item.category));
-      const advancedData = data.filter(item => !BEGINNER_CATEGORIES.includes(item.category));
-      return beginnerData;
-    }
-    
-    return data;
-  }, [flavorData, searchQuery, showAllCategories]);
-  
-  // Get all categories for "show more" feature
-  const hasMoreCategories = useMemo(() => {
-    if (searchQuery.trim()) return false;
-    return !showAllCategories && flavorData.length > BEGINNER_CATEGORIES.length;
-  }, [searchQuery, showAllCategories]);
-
-  // Create floating counter component
-  const FloatingCounter = () => {
-    const progress = selectedPaths.length / 5;
-    const radius = 25;
-    const strokeWidth = 3;
-    const circumference = 2 * Math.PI * radius;
-    const strokeDashoffset = circumference - (progress * circumference);
-    
-    return (
-      <View style={styles.floatingCounter}>
-        <View style={styles.counterCircle}>
-          <Text style={styles.counterText}>{selectedPaths.length}/5</Text>
-        </View>
-        <View style={styles.progressRing}>
-          <View style={[styles.progressRingFill, { width: `${progress * 100}%` }]} />
-        </View>
-      </View>
-    );
+  const handleSkip = () => {
+    navigation.navigate('Sensory' as never);
   };
-  
-  // Get smart flavor suggestions based on current selections
-  const getFlavorSuggestions = () => {
-    const suggestions = new Set<string>();
-    
-    selectedPaths.forEach(path => {
-      const flavorKey = path.level3 || path.level2;
-      const pairings = FLAVOR_PAIRINGS[flavorKey];
-      if (pairings) {
-        pairings.forEach(pairing => suggestions.add(pairing));
-      }
-    });
-    
-    // Remove already selected flavors
-    selectedPaths.forEach((path: FlavorPath) => {
-      suggestions.delete(path.level3 || path.level2);
-    });
-    
-    return Array.from(suggestions).slice(0, 3); // Return top 3 suggestions
-  };
-  
-  const flavorSuggestions = selectedPaths.length > 0 ? getFlavorSuggestions() : [];
-  
-  // Get screen dimensions for responsive design
-  const { width: screenWidth } = Dimensions.get('window');
-  const isTablet = screenWidth >= 768;
 
   return (
-    <View style={[styles.container, isTablet && styles.containerTablet]}>
+    <View style={styles.container}>
       {/* Navigation Bar */}
       <View style={styles.navigationBar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>향미 선택</Text>
-        <TouchableOpacity onPress={handleNext}>
+        <TouchableOpacity onPress={handleSkip}>
           <Text style={styles.skipButton}>건너뛰기</Text>
         </TouchableOpacity>
       </View>
@@ -325,53 +485,19 @@ export default function UnifiedFlavorScreen() {
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: '50%' }]} />
+          <View style={[styles.progressFill, { width: '33%' }]} />
         </View>
       </View>
 
-      {/* Selected Flavors */}
-      <SelectedFlavors
-        selectedPaths={selectedPaths}
-        onRemove={handleRemoveFlavor}
-      />
-      
-      {/* Smart Suggestions */}
-      {flavorSuggestions.length > 0 && selectedPaths.length < 5 && (
-        <View style={styles.suggestionsContainer}>
-          <Text style={styles.suggestionsTitle}>어울리는 향미:</Text>
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.suggestionsList}
-          >
-            {flavorSuggestions.map((suggestion) => (
-              <TouchableOpacity
-                key={suggestion}
-                style={styles.suggestionPill}
-                onPress={() => {
-                  // Find the flavor in the data structure and add it
-                  flavorData.forEach(category => {
-                    category.subcategories.forEach(subcategory => {
-                      if (subcategory.koreanName === suggestion || subcategory.name === suggestion) {
-                        handleSelectFlavor(category.category, subcategory.name, '');
-                      } else {
-                        subcategory.flavors.forEach(flavor => {
-                          if (flavor.koreanName === suggestion) {
-                            handleSelectFlavor(category.category, subcategory.name, flavor.name);
-                          }
-                        });
-                      }
-                    });
-                  });
-                }}
-              >
-                <Text style={styles.suggestionPlusIcon}>+</Text>
-                <Text style={styles.suggestionText}>{suggestion}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      )}
+      {/* Guide Message */}
+      <View style={styles.guideMessageContainer}>
+        <Text style={styles.guideMessage}>
+          🎯 커피에서 느껴지는 향과 맛을 선택해보세요
+        </Text>
+        <Text style={styles.guideSubMessage}>
+          💡 각 향미는 여러 개 선택 가능합니다 (최대 5개)
+        </Text>
+      </View>
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
@@ -379,103 +505,154 @@ export default function UnifiedFlavorScreen() {
           <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
             style={styles.searchInput}
-            placeholder="향미 검색 (예: 초콜릿, chocolate)"
-            placeholderTextColor={HIGColors.tertiaryLabel}
+            placeholder="향미 검색..."
             value={searchQuery}
             onChangeText={setSearchQuery}
-            returnKeyType="search"
-            autoCapitalize="none"
-            autoCorrect={false}
-            onSubmitEditing={() => {
-              if (searchQuery.trim() && !recentSearches.includes(searchQuery.trim())) {
-                setRecentSearches(prev => [searchQuery.trim(), ...prev.slice(0, 2)]);
-              }
-            }}
+            placeholderTextColor={HIGColors.tertiaryLabel}
           />
-          {searchQuery.length > 0 && (
+          {searchQuery !== '' && (
             <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Text style={styles.clearButton}>✕</Text>
+              <Text style={styles.clearIcon}>✕</Text>
             </TouchableOpacity>
           )}
         </View>
-        
-        
-        {/* Recent Searches */}
-        {searchQuery.length === 0 && recentSearches.length > 0 && (
-          <View style={styles.recentSearchesContainer}>
-            <Text style={styles.recentTitle}>최근 검색:</Text>
-            <View style={styles.recentSearchesList}>
-              {recentSearches.map((term, index) => (
-                <TouchableOpacity
-                  key={`${term}-${index}`}
-                  style={styles.recentSearchPill}
-                  onPress={() => setSearchQuery(term)}
-                >
-                  <Text style={styles.recentSearchText}>{term}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        )}
-        
-        {searchQuery.length > 0 && filteredData.length > 0 && (
-          <Text style={styles.searchResultCount}>
-            {filteredData.reduce((count, cat) => 
-              count + cat.subcategories.reduce((subCount, sub) => 
-                subCount + sub.flavors.length, 0), 0
-            )}개의 향미를 찾았습니다
+      </View>
+
+      {/* Sticky Header - Selected Flavors */}
+      <View style={[styles.stickyHeader, selectedPaths.length === 0 && styles.stickyHeaderEmpty]}>
+        <View style={styles.stickyHeaderTop}>
+          <Text style={styles.stickyHeaderTitle}>
+            선택한 향미 ({selectedPaths.length}/5)
           </Text>
+          <TouchableOpacity onPress={toggleAllCategories}>
+            <Text style={styles.toggleAllText}>
+              {expandedCategories.length === flavorData.length ? '모든 카테고리 닫기' : '모든 카테고리 열기'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {selectedPaths.length > 0 ? (
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.selectedScrollContent}
+          >
+            {selectedPaths.map((path, index) => {
+              const categoryData = flavorData.find(item => item.category === path.level1);
+              const subcategoryData = categoryData?.subcategories.find(sub => sub.name === path.level2);
+              
+              let displayName: string;
+              let isSubcategorySelection = false;
+              
+              if (!path.level3) {
+                // This is a subcategory (level2) selection
+                displayName = subcategoryData?.koreanName || path.level2;
+                isSubcategorySelection = true;
+              } else {
+                // This is a specific flavor (level3) selection
+                const flavorItem = subcategoryData?.flavors.find(f => f.name === path.level3);
+                displayName = flavorItem?.koreanName || path.level3;
+              }
+              
+              return (
+                <TouchableOpacity 
+                  key={index} 
+                  style={[
+                    styles.selectedChip,
+                    isSubcategorySelection && styles.selectedSubcategoryChip
+                  ]}
+                  onPress={() => handleRemoveFlavor(index)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[
+                    styles.selectedChipText,
+                    isSubcategorySelection && styles.selectedSubcategoryText
+                  ]} numberOfLines={1}>
+                    {displayName}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        ) : (
+          <View style={styles.emptyStateContainer}>
+            <Text style={styles.emptyMessage}>
+              아직 선택된 향미가 없습니다
+            </Text>
+            <Text style={styles.emptySubMessage}>
+              아래 카테고리를 탭하여 시작하세요 ⬇️
+            </Text>
+          </View>
         )}
       </View>
 
-      {/* Categories */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {filteredData.length === 0 ? (
-          <View style={styles.noResultsContainer}>
-            <Text style={styles.noResultsEmoji}>🔍</Text>
-            <Text style={styles.noResultsText}>
-              "{searchQuery}" 검색 결과가 없습니다
-            </Text>
-            <Text style={styles.noResultsHint}>
-              다른 검색어로 시도해보세요
-            </Text>
-          </View>
-        ) : (
-          <>
-            {filteredData.map((item: TransformedCategory) => {
-              const isExpanded = expandedCategories.includes(item.category);
-              const selectedCount = selectedPaths.filter((p: FlavorPath) => p.level1 === item.category).length;
-
-              return (
-                <FlavorCategory
-                  key={item.category}
-                  category={item}
-                  isExpanded={isExpanded}
-                  selectedCount={selectedCount}
-                  onToggle={() => toggleCategory(item.category)}
-                  onSelectFlavor={handleSelectFlavor}
-                  selectedPaths={selectedPaths}
-                  searchQuery={searchQuery}
-                />
-              );
-            })}
+      {/* Content */}
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}>
+        {(() => {
+          // Check if any categories have matching items when searching
+          const hasResults = !searchQuery || flavorData.some(item => {
+            const categoryData = flavorData.find(d => d.category === item.category);
+            if (!categoryData) return false;
             
-            {/* Show More Button */}
-            {hasMoreCategories && (
-              <TouchableOpacity
-                style={styles.showMoreButton}
-                onPress={() => setShowAllCategories(true)}
-              >
-                <Text style={styles.showMoreText}>더 많은 향미 카테고리 보기 +</Text>
-                <Text style={styles.showMoreHint}>고급 사용자를 위한 추가 옵션</Text>
-              </TouchableOpacity>
-            )}
-          </>
-        )}
+            return categoryData.subcategories.some(sub =>
+              sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              sub.koreanName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              sub.flavors.some(f =>
+                f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+            );
+          });
+
+          if (!hasResults) {
+            return (
+              <View style={styles.noResultsContainer}>
+                <Text style={styles.noResultsEmoji}>🔍</Text>
+                <Text style={styles.noResultsText}>
+                  "{searchQuery}" 검색 결과가 없습니다
+                </Text>
+                <Text style={styles.noResultsSubtext}>
+                  다른 키워드로 검색해보세요
+                </Text>
+              </View>
+            );
+          }
+
+          return flavorData.map(item => {
+            // Check if category has search results
+            const hasSearchResults = !searchQuery || item.subcategories.some(sub =>
+              sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              sub.koreanName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              sub.flavors.some(f =>
+                f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+            );
+
+            if (!hasSearchResults) return null;
+
+            return (
+              <CategoryAccordion
+                key={item.category}
+                category={item.category}
+                expanded={searchQuery ? true : expandedCategories.includes(item.category)}
+                onToggle={() => {
+                  if (!searchQuery) {
+                    toggleCategory(item.category);
+                  }
+                }}
+                onSelectFlavor={handleSelectFlavor}
+                onSelectSubcategory={handleSelectSubcategory}
+                selectedPaths={selectedPaths}
+                searchQuery={searchQuery}
+                expandedSubCategories={expandedSubCategories}
+                onToggleSubcategory={toggleSubcategory}
+              />
+            );
+          }).filter(Boolean);
+        })()}
       </ScrollView>
-      
-      {/* Floating Selection Counter */}
-      {selectedPaths.length > 0 && <FloatingCounter />}
 
       {/* Bottom Button */}
       <View style={styles.bottomContainer}>
@@ -485,7 +662,7 @@ export default function UnifiedFlavorScreen() {
           disabled={selectedPaths.length === 0}
         >
           <Text style={styles.nextButtonText}>
-            {selectedPaths.length > 0 ? '다음' : '향미를 선택해주세요'}
+            {selectedPaths.length > 0 ? `${selectedPaths.length}개 선택 완료` : '향미를 선택해주세요'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -499,18 +676,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     paddingTop: Platform.OS === 'ios' ? 47 : 0,
   },
-  containerTablet: {
-    paddingHorizontal: 80,
-    maxWidth: 1024,
-    alignSelf: 'center',
-    width: '100%',
-  },
   navigationBar: {
     height: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.systemGray4,
   },
@@ -528,91 +700,380 @@ const styles = StyleSheet.create({
     color: HIGColors.systemBlue,
   },
   progressContainer: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_SM,
     backgroundColor: '#FFFFFF',
   },
   progressBar: {
     height: 4,
     backgroundColor: HIGColors.systemGray5,
+    borderRadius: 2,
+    overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
     backgroundColor: HIGColors.systemBlue,
   },
+  progressText: {
+    fontSize: 12,
+    color: HIGColors.secondaryLabel,
+    marginTop: HIGConstants.SPACING_XS,
+  },
+  guideMessageContainer: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_SM,
+    backgroundColor: '#E3F2FD',
+  },
+  guideMessage: {
+    fontSize: 15,
+    color: HIGColors.systemBlue,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  guideSubMessage: {
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    marginTop: 4,
+  },
   searchContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingTop: HIGConstants.SPACING_LG,
-    paddingBottom: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_SM,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    height: 36,
+    backgroundColor: HIGColors.systemGray6,
+    borderRadius: 12,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    height: 44,
     borderWidth: 1,
     borderColor: HIGColors.systemGray5,
   },
   searchIcon: {
     fontSize: 16,
-    marginRight: HIGConstants.SPACING_XS,
+    marginRight: HIGConstants.SPACING_SM,
   },
   searchInput: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 16,
     color: HIGColors.label,
-    paddingVertical: 0,
   },
-  clearButton: {
+  clearIcon: {
     fontSize: 18,
     color: HIGColors.tertiaryLabel,
-    paddingLeft: HIGConstants.SPACING_XS,
+    padding: HIGConstants.SPACING_XS,
   },
-  searchResultCount: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-    marginTop: HIGConstants.SPACING_XS,
-    textAlign: 'center',
+  stickyHeader: {
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: HIGColors.systemGray5,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_SM,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  recentSearchesContainer: {
-    marginTop: HIGConstants.SPACING_MD,
+  stickyHeaderEmpty: {
+    paddingBottom: HIGConstants.SPACING_XS,
   },
-  recentTitle: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  recentSearchesList: {
+  stickyHeaderTop: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: HIGConstants.SPACING_SM,
   },
-  recentSearchPill: {
-    backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginRight: HIGConstants.SPACING_SM,
-    marginBottom: HIGConstants.SPACING_XS,
+  stickyHeaderTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.label,
   },
-  recentSearchText: {
-    fontSize: 13,
+  toggleAllText: {
+    fontSize: 14,
     color: HIGColors.systemBlue,
+    fontWeight: '500',
+  },
+  emptyStateContainer: {
+    alignItems: 'center',
+    paddingVertical: HIGConstants.SPACING_SM,
+  },
+  emptyMessage: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+    fontWeight: '500',
+  },
+  emptySubMessage: {
+    fontSize: 12,
+    color: HIGColors.tertiaryLabel,
+    marginTop: 4,
+  },
+  selectedScrollContent: {
+    alignItems: 'center',
+  },
+  selectedChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderRadius: 20,
+    marginRight: HIGConstants.SPACING_SM,
+    borderWidth: 1,
+    borderColor: HIGColors.systemBlue,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  selectedChipEmoji: {
+    fontSize: 16,
+    marginRight: HIGConstants.SPACING_XS,
+  },
+  selectedChipText: {
+    fontSize: 14,
+    color: HIGColors.label,
+    fontWeight: '500',
+    maxWidth: 100,
+  },
+  selectedSubcategoryChip: {
+    backgroundColor: '#E3F2FD',
+    borderColor: HIGColors.systemBlue,
+    borderWidth: 1.5,
+  },
+  selectedSubcategoryText: {
+    fontSize: 14,
+    color: HIGColors.systemBlue,
+    fontWeight: '600',
+    maxWidth: 100,
+  },
+  remainingChip: {
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray4,
+    borderStyle: 'dashed',
+  },
+  remainingText: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
   },
   content: {
     flex: 1,
-    paddingTop: HIGConstants.SPACING_SM,
+  },
+  categoryContainer: {
+    marginHorizontal: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  categoryCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: HIGConstants.cornerRadiusLarge,
+    overflow: 'visible',
+  },
+  categoryCardExpanded: {
+    backgroundColor: HIGColors.systemGray6,
+    borderBottomColor: HIGColors.systemGray4,
+  },
+  categoryColorBar: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 4,
+    opacity: 0.8,
+  },
+  categoryContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+  },
+  categoryLeft: {
+    flex: 1,
+  },
+  categoryTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  categoryEmoji: {
+    fontSize: 20,
+    marginRight: HIGConstants.SPACING_SM,
+  },
+  categoryTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  categorySubtext: {
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    marginTop: 2,
+    marginLeft: 28, // Align with title (emoji width + spacing)
+  },
+  categoryRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  categoryBadge: {
+    backgroundColor: HIGColors.systemGray5,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: 2,
+    borderRadius: 10,
+    marginRight: HIGConstants.SPACING_SM,
+  },
+  categoryCount: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: HIGColors.label,
+  },
+  categorySelectedBadge: {
+    backgroundColor: HIGColors.systemBlue,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: 2,
+    borderRadius: 10,
+    marginRight: HIGConstants.SPACING_XS,
+  },
+  categorySelectedCount: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  expandIcon: {
+    fontSize: 20,
+    color: HIGColors.tertiaryLabel,
+    fontWeight: '300',
+  },
+  expandIconRotated: {
+    transform: [{ rotate: '90deg' }],
+  },
+  categoryExpandedContent: {
+    backgroundColor: '#FAFAFA',
+    paddingVertical: HIGConstants.SPACING_SM,
+    marginTop: 0,
+    borderBottomLeftRadius: HIGConstants.cornerRadiusLarge,
+    borderBottomRightRadius: HIGConstants.cornerRadiusLarge,
+  },
+  categoryGuide: {
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingBottom: HIGConstants.SPACING_SM,
+  },
+  categoryGuideText: {
+    fontSize: 12,
+    color: HIGColors.secondaryLabel,
+    fontStyle: 'italic',
+  },
+  subCategoryScroll: {
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  subCategoryChip: {
+    backgroundColor: HIGColors.systemGray6,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderRadius: 16,
+    marginRight: HIGConstants.SPACING_SM,
+    borderWidth: 0,
+    minHeight: 36,
+  },
+  subCategoryChipSelected: {
+    backgroundColor: HIGColors.systemBlue,
+    borderWidth: 0,
+  },
+  subCategoryText: {
+    fontSize: 14,
+    color: HIGColors.label,
+    fontWeight: '500',
+  },
+  subCategoryTextSelected: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  subCategoryChipFullySelected: {
+    backgroundColor: HIGColors.systemBlue,
+    borderWidth: 0,
+  },
+  subCategoryTextFullySelected: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  subCategoryChipChildSelected: {
+    backgroundColor: '#E3F2FD', // Light blue background
+    borderWidth: 1.5,
+    borderColor: HIGColors.systemBlue,
+  },
+  subCategoryTextChildSelected: {
+    color: HIGColors.systemBlue,
+    fontWeight: '600',
+  },
+  flavorGrid: {
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  subcategoryLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  flavorRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  flavorButton: {
+    backgroundColor: HIGColors.systemGray6,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderRadius: HIGConstants.cornerRadiusSmall,
+    marginRight: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_SM,
+    borderWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 36,
+  },
+  flavorButtonSelected: {
+    backgroundColor: HIGColors.systemBlue,
+    borderWidth: 0,
+  },
+  flavorButtonDisabled: {
+    opacity: 0.4,
+    backgroundColor: HIGColors.systemGray5,
+  },
+  flavorText: {
+    fontSize: 14,
+    color: HIGColors.label,
+    fontWeight: '500',
+  },
+  flavorTextSelected: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  flavorTextDisabled: {
+    color: HIGColors.tertiaryLabel,
+  },
+  checkmark: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    marginLeft: HIGConstants.SPACING_XS,
   },
   bottomContainer: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingTop: HIGConstants.SPACING_MD,
-    paddingBottom: HIGConstants.SPACING_LG,
+    padding: HIGConstants.SPACING_LG,
+    backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.systemGray4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 5,
   },
   nextButton: {
     height: 48,
     backgroundColor: HIGColors.systemBlue,
-    borderRadius: 12,
+    borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -624,10 +1085,26 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
+  noFlavorContainer: {
+    paddingVertical: HIGConstants.SPACING_MD,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    backgroundColor: HIGColors.systemGray6,
+    borderRadius: HIGConstants.cornerRadiusSmall,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noFlavorText: {
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
   noResultsContainer: {
     flex: 1,
-    paddingTop: 100,
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: HIGConstants.SPACING_XL * 4,
+    paddingHorizontal: HIGConstants.SPACING_LG,
   },
   noResultsEmoji: {
     fontSize: 48,
@@ -635,114 +1112,14 @@ const styles = StyleSheet.create({
   },
   noResultsText: {
     fontSize: 16,
+    fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
-    fontWeight: '600',
     marginBottom: HIGConstants.SPACING_SM,
   },
-  noResultsHint: {
+  noResultsSubtext: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
-  showMoreButton: {
-    marginHorizontal: HIGConstants.SPACING_LG,
-    marginVertical: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_LG,
-    alignItems: 'center',
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray5,
-    borderStyle: 'dashed',
-  },
-  showMoreText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.systemBlue,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  showMoreHint: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-  },
-  floatingCounter: {
-    position: 'absolute',
-    bottom: 90,
-    right: HIGConstants.SPACING_LG,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  counterCircle: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    backgroundColor: HIGColors.systemBlue,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  counterText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  progressRing: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    borderRadius: 30,
-    borderWidth: 3,
-    borderColor: HIGColors.systemGray5,
-  },
-  progressRingFill: {
-    position: 'absolute',
-    height: '100%',
-    borderRadius: 30,
-    backgroundColor: HIGColors.systemBlue,
-    opacity: 0.3,
-  },
-  suggestionsContainer: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingBottom: HIGConstants.SPACING_SM,
-  },
-  suggestionsTitle: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  suggestionsList: {
-    paddingRight: HIGConstants.SPACING_LG,
-  },
-  suggestionPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: 16,
-    marginRight: HIGConstants.SPACING_SM,
-    borderWidth: 1,
-    borderColor: HIGColors.systemBlue,
-    borderStyle: 'dashed',
-  },
-  suggestionPlusIcon: {
-    fontSize: 14,
-    color: HIGColors.systemBlue,
-    marginRight: HIGConstants.SPACING_XS,
-    fontWeight: '600',
-  },
-  suggestionText: {
-    fontSize: 14,
-    color: HIGColors.systemBlue,
-    fontWeight: '500',
   },
 });

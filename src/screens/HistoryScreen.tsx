@@ -13,6 +13,7 @@ import {
   DeviceEventEmitter,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import RealmService from '../services/realm/RealmService';
 import { ITastingRecord } from '../services/realm/schemas';
 import { HIGConstants, HIGColors } from '../styles/common';
@@ -30,7 +31,7 @@ interface HistoryScreenProps {
 }
 
 export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const { currentUser } = useUserStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [allTastings, setAllTastings] = useState<ITastingRecord[]>([]);

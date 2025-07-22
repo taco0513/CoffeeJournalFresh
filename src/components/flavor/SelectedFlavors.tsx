@@ -24,7 +24,7 @@ export const SelectedFlavors: React.FC<SelectedFlavorsProps> = ({ selectedPaths,
               >
                 <View style={styles.selectedChip}>
                   <Text style={styles.selectedChipText}>
-                    {path.level3 ? path.level3 : getKoreanName(path.level2)}
+                    {path.level3 ? path.level3 : getKoreanName(path.level2 || '')}
                   </Text>
                 </View>
                 <TouchableOpacity
@@ -50,24 +50,27 @@ export const SelectedFlavors: React.FC<SelectedFlavorsProps> = ({ selectedPaths,
 const styles = StyleSheet.create({
   selectedContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 24, // Further increased for remove button clearance
+    paddingBottom: 20, // Increased bottom padding too
     backgroundColor: '#F8F9FA',
-    minHeight: 96, // Adjusted height to prevent clipping
+    minHeight: 112, // Increased to prevent any clipping
+    overflow: 'visible', // Ensure overflow is visible
   },
   selectedTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_MD, // Increased margin
   },
   contentContainer: {
-    height: 40, // Fixed height for the content area
+    minHeight: 52, // Changed to minHeight and increased
     justifyContent: 'center',
     overflow: 'visible',
+    paddingTop: 4, // Add padding to push content down slightly
   },
   scrollView: {
     flexGrow: 0,
+    overflow: 'visible', // Ensure scroll view doesn't clip
   },
   emptyStateContainer: {
     height: '100%',
@@ -78,6 +81,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     marginRight: HIGConstants.SPACING_MD,
     alignSelf: 'center',
+    paddingTop: 4, // Add padding to account for negative positioned button
   },
   selectedChip: {
     backgroundColor: HIGColors.systemBlue,
@@ -88,8 +92,8 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     position: 'absolute',
-    top: -4,
-    right: -4,
+    top: -2, // Reduced negative positioning
+    right: -2, // Reduced negative positioning
     width: 18,
     height: 18,
     borderRadius: 9,
@@ -98,6 +102,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#FFFFFF',
+    zIndex: 1, // Ensure it's above other elements
   },
   removeButtonText: {
     color: '#FFFFFF',
