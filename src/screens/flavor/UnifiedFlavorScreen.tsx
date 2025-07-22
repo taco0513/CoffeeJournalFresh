@@ -80,14 +80,6 @@ const transformFlavorData = (data: FlavorWheelData): TransformedCategory[] => {
   return result;
 };
 
-// Popular flavors for quick filters
-const POPULAR_FLAVORS = [
-  { label: '과일향', icon: '🍓', query: '과일' },
-  { label: '초콜릿', icon: '🍫', query: '초콜릿' },
-  { label: '꽃향', icon: '🌸', query: '꽃' },
-  { label: '견과류', icon: '🥜', query: '견과' },
-];
-
 // Beginner-friendly flavors to show first
 const BEGINNER_CATEGORIES = ['Fruity', 'Sweet', 'Nutty/Cocoa'];
 
@@ -407,26 +399,6 @@ export default function UnifiedFlavorScreen() {
           )}
         </View>
         
-        {/* Quick Filters */}
-        {searchQuery.length === 0 && (
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            style={styles.quickFiltersContainer}
-            contentContainerStyle={styles.quickFiltersContent}
-          >
-            {POPULAR_FLAVORS.map((filter) => (
-              <TouchableOpacity
-                key={filter.query}
-                style={styles.quickFilterPill}
-                onPress={() => setSearchQuery(filter.query)}
-              >
-                <Text style={styles.quickFilterIcon}>{filter.icon}</Text>
-                <Text style={styles.quickFilterLabel}>{filter.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        )}
         
         {/* Recent Searches */}
         {searchQuery.length === 0 && recentSearches.length > 0 && (
@@ -601,33 +573,6 @@ const styles = StyleSheet.create({
     color: HIGColors.secondaryLabel,
     marginTop: HIGConstants.SPACING_XS,
     textAlign: 'center',
-  },
-  quickFiltersContainer: {
-    marginTop: HIGConstants.SPACING_SM,
-    marginHorizontal: -HIGConstants.SPACING_LG,
-  },
-  quickFiltersContent: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-  },
-  quickFilterPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: 16,
-    marginRight: HIGConstants.SPACING_SM,
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray5,
-  },
-  quickFilterIcon: {
-    fontSize: 16,
-    marginRight: HIGConstants.SPACING_XS,
-  },
-  quickFilterLabel: {
-    fontSize: 14,
-    color: HIGColors.label,
-    fontWeight: '500',
   },
   recentSearchesContainer: {
     marginTop: HIGConstants.SPACING_MD,

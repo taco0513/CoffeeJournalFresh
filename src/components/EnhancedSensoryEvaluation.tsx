@@ -212,7 +212,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
               {attr.nameKo}
             </Text>
             <Text style={[styles.scoreValue, { color: attr.color }]}>
-              {scores[attr.key].toFixed(1)}
+              {(scores[attr.key] ?? 0).toFixed(1)}
             </Text>
           </View>
           
@@ -325,7 +325,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                   <View key={attr.key} style={styles.summaryItem}>
                     <Text style={styles.summaryLabel}>{attr.nameKo}</Text>
                     <View style={[styles.summaryBar, { backgroundColor: attr.color }]}>
-                      <Text style={styles.summaryValue}>{scores[attr.key].toFixed(1)}</Text>
+                      <Text style={styles.summaryValue}>{(scores[attr.key] ?? 0).toFixed(1)}</Text>
                     </View>
                   </View>
                 ))}
