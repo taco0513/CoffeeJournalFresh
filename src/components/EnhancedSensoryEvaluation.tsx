@@ -158,7 +158,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
           </View>
         </View>
         <Text style={[styles.scoreValue, { color: attr.color }]}>
-          {scores[attr.key].toFixed(1)}
+          {(scores[attr.key] ?? 0).toFixed(1)}
         </Text>
       </View>
 
@@ -170,7 +170,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
           style={styles.slider}
           minimumValue={1}
           maximumValue={5}
-          value={scores[attr.key]}
+          value={scores[attr.key] ?? 0}
           onValueChange={(value: number) => onScoreChange(attr.key, value)}
           minimumTrackTintColor={attr.color}
           maximumTrackTintColor="#E0E0E0"
@@ -182,7 +182,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
 
       <View style={styles.scoreIndicator}>
         <Text style={[styles.scoreLabel, { color: attr.color }]}>
-          {getScoreLabelKo(scores[attr.key])} ({getScoreLabel(scores[attr.key])})
+          {getScoreLabelKo(scores[attr.key] ?? 0)} ({getScoreLabel(scores[attr.key] ?? 0)})
         </Text>
       </View>
     </View>

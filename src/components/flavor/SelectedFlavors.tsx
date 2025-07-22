@@ -42,16 +42,16 @@ export const SelectedFlavors: React.FC<SelectedFlavorsProps> = ({ selectedPaths,
 const styles = StyleSheet.create({
   selectedContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingTop: 24,
-    paddingBottom: 24,
+    paddingTop: 12,
+    paddingBottom: 12,
     backgroundColor: '#F8F9FA',
-    minHeight: 120, // Fixed minimum height
+    minHeight: 88, // Reduced height with less padding
   },
   selectedTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_SM,
   },
   contentContainer: {
     height: 40, // Fixed height for the content area
