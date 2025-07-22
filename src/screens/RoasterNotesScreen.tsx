@@ -19,7 +19,7 @@ const RoasterNotesScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { currentTasting, updateField } = useTastingStore();
-  const scannedRoasterNotes = route.params?.scannedRoasterNotes;
+  const scannedRoasterNotes = (route.params as any)?.scannedRoasterNotes;
   
   // 초기값으로 스캔된 노트 사용
   const [notes, setNotes] = useState(scannedRoasterNotes || currentTasting.roasterNotes || '');

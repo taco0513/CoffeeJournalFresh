@@ -24,6 +24,8 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
 }) => {
   const [expandedSubcategories, setExpandedSubcategories] = React.useState<string[]>([]);
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const isScrolling = useRef(false);
+  const scrollStartX = useRef(0);
   
   // Get screen dimensions for responsive design
   const { width: screenWidth } = Dimensions.get('window');
@@ -118,6 +120,19 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
             snapToAlignment="start"
             decelerationRate="fast"
             pagingEnabled={false}
+            onScrollBeginDrag={(e) => {
+              isScrolling.current = true;
+              scrollStartX.current = e.nativeEvent.contentOffset.x;
+            }}
+            onScrollEndDrag={() => {
+              setTimeout(() => {
+                isScrolling.current = false;
+              }, 100);
+            }}
+            onMomentumScrollEnd={() => {
+              isScrolling.current = false;
+            }}
+            scrollEventThrottle={16}
           >
               {category.subcategories.map(sub => {
                 const isSubcategorySelected = checkIsSelected(category.category, sub.name);
@@ -134,22 +149,28 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
                       hasSelectedFlavors && !isSubcategorySelected && styles.subcategoryHeaderHasSelection,
                       { transform: [{ scale: scaleAnim }] }
                     ]}
-                    onPressIn={() => {
-                      Animated.timing(scaleAnim, {
-                        toValue: 0.95,
-                        duration: 100,
-                        useNativeDriver: true,
-                      }).start();
+                    onPress={() => {
+                      if (!isScrolling.current) {
+                        // Animate press
+                        Animated.sequence([
+                          Animated.timing(scaleAnim, {
+                            toValue: 0.95,
+                            duration: 100,
+                            useNativeDriver: true,
+                          }),
+                          Animated.timing(scaleAnim, {
+                            toValue: 1,
+                            duration: 100,
+                            useNativeDriver: true,
+                          }),
+                        ]).start();
+                        
+                        ReactNativeHapticFeedback.trigger('impactLight');
+                        onSelectFlavor(category.category, sub.name, '');
+                      }
                     }}
-                    onPressOut={() => {
-                      Animated.timing(scaleAnim, {
-                        toValue: 1,
-                        duration: 100,
-                        useNativeDriver: true,
-                      }).start();
-                      ReactNativeHapticFeedback.trigger('impactLight');
-                      onSelectFlavor(category.category, sub.name, '');
-                    }}
+                    delayPressIn={0}
+                    activeOpacity={1}
                     accessible={true}
                     accessibilityLabel={`${sub.koreanName} 서브카테고리`}
                     accessibilityHint={isSubcategorySelected ? 
@@ -169,7 +190,7 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
                         {sub.flavors.filter(f => checkIsSelected(category.category, sub.name, f.name)).length}
                       </Text>
                     )}
-                  </TouchableOpacity>
+                  </AnimatedTouchableOpacity>
                 );
               })}
           </ScrollView>
@@ -297,7 +318,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginRight: SUBCATEGORY_PILL_MARGIN,
     borderWidth: 1,
-    borderColor: HIGColors.systemGray3,
+    borderColor: HIGColors.systemGray4,
     height: 36, // Medium size for subcategories
     minWidth: SUBCATEGORY_PILL_WIDTH,
     justifyContent: 'center',
@@ -316,7 +337,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: HIGColors.systemGray3,
+    borderColor: HIGColors.systemGray4,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',

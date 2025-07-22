@@ -24,6 +24,8 @@ export const HIGConstants = {
   BORDER_RADIUS_LARGE: 12,
   BORDER_RADIUS_LG: 16,
   BORDER_RADIUS_SM: 4,
+  RADIUS_MD: 12,
+  RADIUS_LG: 16,
   cornerRadiusSmall: 4,
   cornerRadiusMedium: 12,
   
@@ -33,6 +35,9 @@ export const HIGConstants = {
   SPACING_MD: 12,
   SPACING_LG: 16,
   SPACING_XL: 20,
+  
+  // HIT_SLOP for backward compatibility
+  HIT_SLOP: { top: 8, bottom: 8, left: 8, right: 8 },
 };
 
 // Original Apple HIG Color System
@@ -251,10 +256,6 @@ export const hitSlop = {
   // 매우 작은 요소용 터치 영역 확장
   tiny: { top: 16, bottom: 16, left: 16, right: 16 },
 };
-
-// Add HIT_SLOP constant for backward compatibility
-HIGConstants.HIT_SLOP = hitSlop.default;
-
 
 // 공통 레이아웃 스타일
 export const commonLayoutStyles = StyleSheet.create({

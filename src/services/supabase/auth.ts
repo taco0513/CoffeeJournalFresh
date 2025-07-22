@@ -58,7 +58,7 @@ class AuthService {
       );
       
       if (error) {
-        const authError = new Error(error.message);
+        const authError = new Error((error as any).message || 'Sign up failed');
         (authError as any).code = 'AUTH_ERROR';
         throw authError;
       }

@@ -150,8 +150,8 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       // 총 카페 수 계산
       const uniqueCafes = new Set();
       allTastings.forEach(tasting => {
-        if (tasting.cafe) {
-          uniqueCafes.add(tasting.cafe);
+        if (tasting.cafeName) {
+          uniqueCafes.add(tasting.cafeName);
         }
       });
       

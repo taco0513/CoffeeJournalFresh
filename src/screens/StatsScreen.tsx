@@ -220,7 +220,7 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
       // Load trends normally
       
       const realmService = RealmService.getInstance();
-      const tastings = realmService.getTastingRecords({ isDeleted: false });
+      const tastings = await realmService.getTastingRecords({ isDeleted: false });
       
       // Group by month for the last 6 months
       const monthData = new Map<string, { count: number; totalScore: number }>();

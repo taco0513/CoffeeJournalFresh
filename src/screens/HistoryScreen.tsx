@@ -224,9 +224,7 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
     console.log('🎨 Rendering tasting item:', {
       id: item.id,
       coffeeName: item.coffeeName,
-      roastery: item.roastery,
-      hasIsValid: typeof item.isValid,
-      isValidResult: item.isValid ? item.isValid() : 'no isValid method'
+      roastery: item.roastery
     });
     
     // More flexible validity check - if it has the required properties, render it
@@ -246,8 +244,7 @@ export default function HistoryScreen({ hideNavBar = false }: HistoryScreenProps
           style={styles.tastingCard}
           onPress={() => {
             navigation.navigate('TastingDetail', { 
-              tastingId: item.id,
-              tasting: item 
+              tastingId: item.id
             });
           }}
           activeOpacity={0.7}

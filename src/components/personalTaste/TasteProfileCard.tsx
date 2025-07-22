@@ -14,7 +14,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 interface TasteProfileCardProps {
   level: number;
   progress: ProgressData;
-  tasteType: TasteProfileType;
+  tasteType: string;
   onLevelTap?: () => void;
   style?: any;
 }
@@ -43,8 +43,8 @@ export const TasteProfileCard: React.FC<TasteProfileCardProps> = ({
     return levels[Math.min(Math.floor(level) - 1, levels.length - 1)] || 'Beginner';
   };
 
-  const getProfileEmoji = (tasteType: TasteProfileType): string => {
-    const emojiMap: Record<TasteProfileType, string> = {
+  const getProfileEmoji = (tasteType: string): string => {
+    const emojiMap: Record<string, string> = {
       'Fruity Explorer': '🍓',
       'Chocolate Lover': '🍫',
       'Floral Enthusiast': '🌸',
@@ -54,6 +54,10 @@ export const TasteProfileCard: React.FC<TasteProfileCardProps> = ({
       'Sweet Tooth': '🍯',
       'Acid Lover': '🍋',
       'Complex Connoisseur': '🎭',
+      'explorer': '🍓',
+      'traditionalist': '🍫',
+      'balanced': '⚖️',
+      'adventurous': '💪',
     };
     return emojiMap[tasteType] || '☕';
   };
@@ -79,7 +83,7 @@ export const TasteProfileCard: React.FC<TasteProfileCardProps> = ({
             <View style={styles.titleContainer}>
               <Text style={styles.tasteType}>{tasteType}</Text>
               <Text style={styles.description}>
-                {TASTE_PROFILE_DESCRIPTIONS[tasteType]}
+                {TASTE_PROFILE_DESCRIPTIONS[tasteType] || 'Discovering your unique coffee preferences'}
               </Text>
             </View>
           </View>

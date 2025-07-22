@@ -37,7 +37,7 @@ class DataCollectionService {
       }
 
       // 모든 비삭제 테이스팅 레코드 가져오기
-      const localTastings = realmService.getTastingRecords({ isDeleted: false });
+      const localTastings = await realmService.getTastingRecords({ isDeleted: false });
       
       if (localTastings.length === 0) {
         return {
@@ -163,7 +163,7 @@ class DataCollectionService {
       }
 
       // 날짜 범위로 필터링된 테이스팅 레코드 가져오기
-      const allTastings = realmService.getTastingRecords({ isDeleted: false });
+      const allTastings = await realmService.getTastingRecords({ isDeleted: false });
       const filteredTastings = allTastings.filter((tasting: ITastingRecord) => {
         const tastingDate = tasting.createdAt;
         return tastingDate >= startDate && tastingDate <= endDate;
@@ -211,7 +211,7 @@ class DataCollectionService {
         await realmService.initialize();
       }
 
-      const localTastings = realmService.getTastingRecords({ isDeleted: false });
+      const localTastings = await realmService.getTastingRecords({ isDeleted: false });
       
       // 마지막 수집 날짜는 별도 저장소에서 관리하거나 Supabase에서 조회
       // 여기서는 간단히 로컬 레코드 수만 반환

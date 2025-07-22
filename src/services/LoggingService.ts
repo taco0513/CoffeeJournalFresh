@@ -145,7 +145,7 @@ class LoggingService {
     // Send to Sentry in production
     if (!__DEV__ && context.error) {
       try {
-        SentryService.getInstance().captureException(context.error, {
+        SentryService.captureException(context.error, {
           tags: { category },
           extra: { message, context },
         });
@@ -164,7 +164,7 @@ class LoggingService {
     // Always send fatal errors to Sentry
     if (context.error) {
       try {
-        SentryService.getInstance().captureException(context.error, {
+        SentryService.captureException(context.error, {
           level: 'fatal',
           tags: { category },
           extra: { message, context },

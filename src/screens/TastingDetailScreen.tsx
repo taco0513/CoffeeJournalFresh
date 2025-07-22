@@ -748,6 +748,47 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_MD,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: HIGConstants.SPACING_MD,
+    fontSize: 16,
+    color: HIGColors.label,
+  },
+  roasterFlavorTags: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  roasterFlavorTag: {
+    backgroundColor: HIGColors.systemGray5,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
+    borderRadius: HIGConstants.RADIUS_MD,
+    marginRight: HIGConstants.SPACING_XS,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  roasterFlavorText: {
+    fontSize: 14,
+    color: HIGColors.label,
+  },
+  roasterNoteRow: {
+    flexDirection: 'row',
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  roasterNoteLabel: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+    flex: 0.3,
+  },
+  roasterNoteValue: {
+    fontSize: 14,
+    color: HIGColors.label,
+    flex: 0.7,
+  },
 });
 
 export default TastingDetailScreen;

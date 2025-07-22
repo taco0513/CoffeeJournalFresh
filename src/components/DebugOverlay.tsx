@@ -25,20 +25,24 @@ export const DebugOverlay: React.FC = () => {
   const [renderTime, setRenderTime] = useState(0);
 
   useEffect(() => {
-    const startTime = Date.now();
-    
-    // Get Realm record count
-    try {
-      const realmService = RealmService.getInstance();
-      if (realmService.isInitialized) {
-        const records = realmService.getTastingRecords({ isDeleted: false });
-        setRealmRecordCount(records.length);
+    const loadData = async () => {
+      const startTime = Date.now();
+      
+      // Get Realm record count
+      try {
+        const realmService = RealmService.getInstance();
+        if (realmService.isInitialized) {
+          const records = await realmService.getTastingRecords({ isDeleted: false });
+          setRealmRecordCount(records.length);
+        }
+      } catch (error) {
+        console.error('Failed to get realm records:', error);
       }
-    } catch (error) {
-      console.error('Failed to get realm records:', error);
-    }
+      
+      setRenderTime(Date.now() - startTime);
+    };
     
-    setRenderTime(Date.now() - startTime);
+    loadData();
   }, []);
 
   if (!showDebugInfo) return null;

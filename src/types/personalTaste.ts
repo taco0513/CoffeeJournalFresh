@@ -59,9 +59,13 @@ export interface GrowthMetrics {
   totalTastings: number;
   uniqueFlavors: number;
   vocabularySize: number;
+  vocabularyGrowth: number;
   weeklyProgress: number;
   monthlyGrowth: number;
   currentStreak: number;
+  accuracyImprovement: number;
+  flavorDiversityIndex: number;
+  consistencyScore: number;
   milestones: GrowthMilestone[];
 }
 
@@ -87,6 +91,12 @@ export interface MasteryLevel {
   progress: number;
   nextLevelThreshold: number;
   achievements: string[];
+  category?: string;
+  score?: number;
+  totalExposures?: number;
+  accuracyRate?: number;
+  nextMilestone?: string;
+  progressToNext?: number;
 }
 
 export interface FlavorIdentification {
@@ -304,7 +314,7 @@ export const ACHIEVEMENT_RARITY_COLORS = {
   legendary: '#FFD700',
 } as const;
 
-export const TASTE_PROFILE_DESCRIPTIONS = {
+export const TASTE_PROFILE_DESCRIPTIONS: Record<string, string> = {
   'Fruity Explorer': 'You have a refined palate for fruit-forward coffees',
   'Chocolate Lover': 'You appreciate rich, chocolatey notes in your coffee',
   'Floral Enthusiast': 'You enjoy delicate floral aromatics',
@@ -314,4 +324,8 @@ export const TASTE_PROFILE_DESCRIPTIONS = {
   'Sweet Tooth': 'You gravitate towards naturally sweet coffees',
   'Acid Lover': 'You appreciate bright, vibrant acidity',
   'Complex Connoisseur': 'You seek out complex, layered flavor profiles',
-} as const;
+  'explorer': 'You have a refined palate for fruit-forward coffees',
+  'traditionalist': 'You appreciate rich, chocolatey notes in your coffee',
+  'balanced': 'You prefer well-balanced, harmonious coffees',
+  'adventurous': 'You enjoy intense, bold coffee flavors',
+};
