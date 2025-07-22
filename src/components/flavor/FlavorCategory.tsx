@@ -1,8 +1,17 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useRef, useCallback } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated, Platform, Dimensions } from 'react-native';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { FlavorCategoryProps, FlavorPath } from '../../types/flavor';
 import { FlavorChip } from './FlavorChip';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+
+// Constants for improved visual hierarchy
+const SUBCATEGORY_PILL_WIDTH = 120;
+const SUBCATEGORY_PILL_MARGIN = 8;
+const SNAP_INTERVAL = SUBCATEGORY_PILL_WIDTH + SUBCATEGORY_PILL_MARGIN;
+
+// Create animated version of TouchableOpacity
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
   category,
@@ -14,6 +23,11 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
   searchQuery,
 }) => {
   const [expandedSubcategories, setExpandedSubcategories] = React.useState<string[]>([]);
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  
+  // Get screen dimensions for responsive design
+  const { width: screenWidth } = Dimensions.get('window');
+  const isTablet = screenWidth >= 768;
 
   const toggleSubcategory = (subcategoryName: string) => {
     setExpandedSubcategories(prev => {
@@ -100,6 +114,10 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.subcategoryGrid}
             style={styles.subcategoryScrollView}
+            snapToInterval={SNAP_INTERVAL}
+            snapToAlignment="start"
+            decelerationRate="fast"
+            pagingEnabled={false}
           >
               {category.subcategories.map(sub => {
                 const isSubcategorySelected = checkIsSelected(category.category, sub.name);
@@ -108,17 +126,35 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
                 );
 
                 return (
-                  <TouchableOpacity
+                  <AnimatedTouchableOpacity
                     key={sub.name}
                     style={[
                       styles.subcategoryHeader,
                       isSubcategorySelected && styles.subcategoryHeaderSelected,
-                      hasSelectedFlavors && !isSubcategorySelected && styles.subcategoryHeaderHasSelection
+                      hasSelectedFlavors && !isSubcategorySelected && styles.subcategoryHeaderHasSelection,
+                      { transform: [{ scale: scaleAnim }] }
                     ]}
-                    onPress={() => onSelectFlavor(category.category, sub.name, '')}
+                    onPressIn={() => {
+                      Animated.timing(scaleAnim, {
+                        toValue: 0.95,
+                        duration: 100,
+                        useNativeDriver: true,
+                      }).start();
+                    }}
+                    onPressOut={() => {
+                      Animated.timing(scaleAnim, {
+                        toValue: 1,
+                        duration: 100,
+                        useNativeDriver: true,
+                      }).start();
+                      ReactNativeHapticFeedback.trigger('impactLight');
+                      onSelectFlavor(category.category, sub.name, '');
+                    }}
                     accessible={true}
                     accessibilityLabel={`${sub.koreanName} 서브카테고리`}
-                    accessibilityHint={`탭하여 전체 선택`}
+                    accessibilityHint={isSubcategorySelected ? 
+                      `현재 선택됨. 두 번 탭하여 선택 해제` : 
+                      `두 번 탭하여 전체 선택`}
                     accessibilityRole="button"
                     accessibilityState={{ selected: isSubcategorySelected }}
                   >
@@ -139,7 +175,7 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
           </ScrollView>
           
           <View style={styles.subcategoryContainer}>
-            <View style={styles.flavorGrid}>
+            <View style={[styles.flavorGrid, isTablet && styles.flavorGridTablet]}>
               {(() => {
                 const selectedSubcategories = category.subcategories.filter(sub => 
                   checkIsSelected(category.category, sub.name)
@@ -197,6 +233,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_MD,
     backgroundColor: HIGColors.systemGray6,
     borderRadius: 12,
+    height: 56, // Enhanced visual hierarchy
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2, // Android shadow
   },
   categoryLeft: {
     flexDirection: 'row',
@@ -249,13 +291,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-start',
     backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     marginBottom: HIGConstants.SPACING_XS,
     borderRadius: 8,
-    marginRight: HIGConstants.SPACING_SM,
+    marginRight: SUBCATEGORY_PILL_MARGIN,
     borderWidth: 1,
     borderColor: HIGColors.systemGray3,
+    height: 36, // Medium size for subcategories
+    minWidth: SUBCATEGORY_PILL_WIDTH,
+    justifyContent: 'center',
   },
   subcategoryHeaderSelected: {
     backgroundColor: HIGColors.systemBlue,
@@ -338,6 +383,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: HIGConstants.SPACING_XS,
+  },
+  flavorGridTablet: {
+    justifyContent: 'flex-start',
+    paddingHorizontal: HIGConstants.SPACING_MD,
   },
   highlightedText: {
     backgroundColor: HIGColors.yellow,

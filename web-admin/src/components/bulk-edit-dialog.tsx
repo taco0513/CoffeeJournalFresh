@@ -125,14 +125,14 @@ export function BulkEditDialog({
             <Checkbox
               id="roastery"
               checked={fields.roastery.enabled}
-              onCheckedChange={(checked) => handleFieldToggle("roastery", checked as boolean)}
+              onCheckedChange={(checked: boolean) => handleFieldToggle("roastery", checked)}
             />
             <div className="flex-1 space-y-2">
               <Label htmlFor="roastery-input">로스터리</Label>
               <Input
                 id="roastery-input"
                 value={fields.roastery.value as string}
-                onChange={(e) => handleFieldChange("roastery", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange("roastery", e.target.value)}
                 disabled={!fields.roastery.enabled}
                 placeholder="로스터리명 입력"
               />
@@ -144,14 +144,14 @@ export function BulkEditDialog({
             <Checkbox
               id="origin"
               checked={fields.origin.enabled}
-              onCheckedChange={(checked) => handleFieldToggle("origin", checked as boolean)}
+              onCheckedChange={(checked: boolean) => handleFieldToggle("origin", checked)}
             />
             <div className="flex-1 space-y-2">
               <Label htmlFor="origin-input">원산지</Label>
               <Input
                 id="origin-input"
                 value={fields.origin.value as string}
-                onChange={(e) => handleFieldChange("origin", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange("origin", e.target.value)}
                 disabled={!fields.origin.enabled}
                 placeholder="원산지 입력"
               />
@@ -163,14 +163,14 @@ export function BulkEditDialog({
             <Checkbox
               id="region"
               checked={fields.region.enabled}
-              onCheckedChange={(checked) => handleFieldToggle("region", checked as boolean)}
+              onCheckedChange={(checked: boolean) => handleFieldToggle("region", checked)}
             />
             <div className="flex-1 space-y-2">
               <Label htmlFor="region-input">지역</Label>
               <Input
                 id="region-input"
                 value={fields.region.value as string}
-                onChange={(e) => handleFieldChange("region", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange("region", e.target.value)}
                 disabled={!fields.region.enabled}
                 placeholder="지역 입력"
               />
@@ -182,14 +182,14 @@ export function BulkEditDialog({
             <Checkbox
               id="variety"
               checked={fields.variety.enabled}
-              onCheckedChange={(checked) => handleFieldToggle("variety", checked as boolean)}
+              onCheckedChange={(checked: boolean) => handleFieldToggle("variety", checked)}
             />
             <div className="flex-1 space-y-2">
               <Label htmlFor="variety-input">품종</Label>
               <Input
                 id="variety-input"
                 value={fields.variety.value as string}
-                onChange={(e) => handleFieldChange("variety", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange("variety", e.target.value)}
                 disabled={!fields.variety.enabled}
                 placeholder="품종 입력"
               />

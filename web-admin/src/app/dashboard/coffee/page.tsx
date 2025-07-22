@@ -645,7 +645,7 @@ export default function CoffeeCatalogPage() {
                   <Input
                     id="roastery"
                     value={selectedCoffee.roastery}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setSelectedCoffee({ ...selectedCoffee, roastery: e.target.value })
                     }
                   />
@@ -655,7 +655,7 @@ export default function CoffeeCatalogPage() {
                   <Input
                     id="coffee_name"
                     value={selectedCoffee.coffee_name}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setSelectedCoffee({ ...selectedCoffee, coffee_name: e.target.value })
                     }
                   />
@@ -667,7 +667,7 @@ export default function CoffeeCatalogPage() {
                   <Input
                     id="origin"
                     value={selectedCoffee.origin || ""}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setSelectedCoffee({ ...selectedCoffee, origin: e.target.value })
                     }
                   />
@@ -677,7 +677,7 @@ export default function CoffeeCatalogPage() {
                   <Input
                     id="region"
                     value={selectedCoffee.region || ""}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setSelectedCoffee({ ...selectedCoffee, region: e.target.value })
                     }
                   />
@@ -689,7 +689,7 @@ export default function CoffeeCatalogPage() {
                   <Input
                     id="variety"
                     value={selectedCoffee.variety || ""}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setSelectedCoffee({ ...selectedCoffee, variety: e.target.value })
                     }
                   />
@@ -699,7 +699,7 @@ export default function CoffeeCatalogPage() {
                   <Input
                     id="process"
                     value={selectedCoffee.process || ""}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setSelectedCoffee({ ...selectedCoffee, process: e.target.value })
                     }
                   />
@@ -711,7 +711,7 @@ export default function CoffeeCatalogPage() {
                   <Input
                     id="altitude"
                     value={selectedCoffee.altitude || ""}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setSelectedCoffee({ ...selectedCoffee, altitude: e.target.value })
                     }
                   />
@@ -722,7 +722,7 @@ export default function CoffeeCatalogPage() {
                     id="harvest_year"
                     type="number"
                     value={selectedCoffee.harvest_year || ""}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setSelectedCoffee({
                         ...selectedCoffee,
                         harvest_year: e.target.value ? parseInt(e.target.value) : null,

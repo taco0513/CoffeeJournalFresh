@@ -127,7 +127,7 @@ export default function UsersPage() {
             <Input
               placeholder="사용자 검색..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
               className="pl-10 w-64"
             />
           </div>

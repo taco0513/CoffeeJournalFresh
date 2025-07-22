@@ -250,7 +250,7 @@ export const parseMLKitResult = (mlKitBlocks: any[]): ParsedCoffeeInfo => {
     if (block.text) {
       // 라인별로 분리
       const lines = block.text.split('\n');
-      lines.forEach(line => {
+      lines.forEach((line: string) => {
         const trimmed = line.trim();
         if (trimmed.length > 0) {
           texts.push(trimmed);

@@ -1,9 +1,15 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import React, { useRef } from 'react';
+import { TouchableOpacity, Text, StyleSheet, View, Animated, Dimensions } from 'react-native';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { FlavorChipProps } from '../../types/flavor';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 export const FlavorChip: React.FC<FlavorChipProps> = ({ flavor, isSelected, onPress, searchQuery }) => {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  
+  // Get screen dimensions for responsive design
+  const { width: screenWidth } = Dimensions.get('window');
+  const isTablet = screenWidth >= 768;
   const renderHighlightedText = (text: string) => {
     if (!searchQuery || searchQuery.trim() === '') {
       return <Text style={[styles.flavorText, isSelected && styles.flavorTextSelected]}>{text}</Text>;
@@ -31,34 +37,61 @@ export const FlavorChip: React.FC<FlavorChipProps> = ({ flavor, isSelected, onPr
   };
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.flavorChip,
-        isSelected && styles.flavorChipSelected
-      ]}
-      onPress={onPress}
-      accessible={true}
-      accessibilityLabel={`${flavor.koreanName} 향미`}
-      accessibilityHint="탭하여 선택 또는 선택 해제"
-      accessibilityRole="checkbox"
-      accessibilityState={{ checked: isSelected }}
-    >
-      {renderHighlightedText(flavor.koreanName)}
-    </TouchableOpacity>
+    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+      <TouchableOpacity
+        style={[
+          styles.flavorChip,
+          isSelected && styles.flavorChipSelected,
+          isTablet && styles.flavorChipTablet
+        ]}
+        onPressIn={() => {
+          Animated.timing(scaleAnim, {
+            toValue: 0.95,
+            duration: 100,
+            useNativeDriver: true,
+          }).start();
+        }}
+        onPressOut={() => {
+          Animated.timing(scaleAnim, {
+            toValue: 1,
+            duration: 100,
+            useNativeDriver: true,
+          }).start();
+          ReactNativeHapticFeedback.trigger('selection');
+          onPress();
+        }}
+        accessible={true}
+        accessibilityLabel={`${flavor.koreanName} 향미`}
+        accessibilityHint={isSelected ? "현재 선택됨. 두 번 탭하여 선택 해제" : "두 번 탭하여 선택"}
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: isSelected }}
+      >
+        {renderHighlightedText(flavor.koreanName)}
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   flavorChip: {
     backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 8,
     marginRight: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_SM,
+    height: 28, // Smallest for individual flavors
+    justifyContent: 'center',
   },
   flavorChipSelected: {
     backgroundColor: HIGColors.systemBlue,
+  },
+  flavorChipTablet: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    height: 32,
+    marginRight: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_MD,
   },
   flavorText: {
     fontSize: 14,

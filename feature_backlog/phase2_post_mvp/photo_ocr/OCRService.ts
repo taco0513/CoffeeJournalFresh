@@ -24,7 +24,7 @@ class OCRService {
       const result = await TextRecognition.recognize(imagePath);
       
       // Extract full text and blocks
-      const fullText = result.blocks.map(block => block.text).join('\n');
+      const fullText = result.blocks.map((block: any) => block.text).join('\n');
       
       return {
         text: fullText,

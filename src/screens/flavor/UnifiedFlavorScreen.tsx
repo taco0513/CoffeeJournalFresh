@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Platform,
   TextInput,
+  Dimensions,
 } from 'react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { useNavigation } from '@react-navigation/native';
@@ -79,11 +80,34 @@ const transformFlavorData = (data: FlavorWheelData): TransformedCategory[] => {
   return result;
 };
 
+// Popular flavors for quick filters
+const POPULAR_FLAVORS = [
+  { label: '과일향', icon: '🍓', query: '과일' },
+  { label: '초콜릿', icon: '🍫', query: '초콜릿' },
+  { label: '꽃향', icon: '🌸', query: '꽃' },
+  { label: '견과류', icon: '🥜', query: '견과' },
+];
+
+// Beginner-friendly flavors to show first
+const BEGINNER_CATEGORIES = ['Fruity', 'Sweet', 'Nutty/Cocoa'];
+
+// Flavor pairing suggestions
+const FLAVOR_PAIRINGS: Record<string, string[]> = {
+  '초콜릿': ['캐러멜', '견과류', '바닐라'],
+  '베리류': ['초콜릿', '꽃향', '와인'],
+  '시트러스': ['꽃향', '허브', '홍차'],
+  '캐러멜': ['초콜릿', '견과류', '황설탕'],
+  '꽃향': ['과일향', '허브', '홍차'],
+  '견과류': ['초콜릿', '캐러멜', '향신료'],
+};
+
 export default function UnifiedFlavorScreen() {
   const navigation = useNavigation();
   const { currentTasting, updateField } = useTastingStore();
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [showAllCategories, setShowAllCategories] = useState(false);
 
   // Memoize the transformed data to prevent recalculation on every render
   const flavorData = useMemo(
@@ -203,34 +227,98 @@ export default function UnifiedFlavorScreen() {
     navigation.navigate('Sensory' as never);
   };
 
-  // Filter data based on search query
+  // Filter and organize data based on search query and progressive disclosure
   const filteredData = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return flavorData;
+    let data = flavorData;
+    
+    // Apply search filter if query exists
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      data = flavorData.filter(item => {
+        // Check if category matches
+        if (item.category.toLowerCase().includes(query) || 
+            item.koreanName.toLowerCase().includes(query)) {
+          return true;
+        }
+
+        // Check if any subcategory or flavor matches
+        return item.subcategories.some(sub =>
+          sub.name.toLowerCase().includes(query) ||
+          sub.koreanName.toLowerCase().includes(query) ||
+          sub.flavors.some(f =>
+            f.name.toLowerCase().includes(query) ||
+            f.koreanName.toLowerCase().includes(query)
+          )
+        );
+      });
+      return data;
     }
+    
+    // Apply progressive disclosure when not searching
+    if (!showAllCategories) {
+      // Show beginner categories first
+      const beginnerData = data.filter(item => BEGINNER_CATEGORIES.includes(item.category));
+      const advancedData = data.filter(item => !BEGINNER_CATEGORIES.includes(item.category));
+      return beginnerData;
+    }
+    
+    return data;
+  }, [flavorData, searchQuery, showAllCategories]);
+  
+  // Get all categories for "show more" feature
+  const hasMoreCategories = useMemo(() => {
+    if (searchQuery.trim()) return false;
+    return !showAllCategories && flavorData.length > BEGINNER_CATEGORIES.length;
+  }, [searchQuery, showAllCategories]);
 
-    const query = searchQuery.toLowerCase();
-    return flavorData.filter(item => {
-      // Check if category matches
-      if (item.category.toLowerCase().includes(query) || 
-          item.koreanName.toLowerCase().includes(query)) {
-        return true;
+  // Create floating counter component
+  const FloatingCounter = () => {
+    const progress = selectedPaths.length / 5;
+    const radius = 25;
+    const strokeWidth = 3;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference - (progress * circumference);
+    
+    return (
+      <View style={styles.floatingCounter}>
+        <View style={styles.counterCircle}>
+          <Text style={styles.counterText}>{selectedPaths.length}/5</Text>
+        </View>
+        <View style={styles.progressRing}>
+          <View style={[styles.progressRingFill, { width: `${progress * 100}%` }]} />
+        </View>
+      </View>
+    );
+  };
+  
+  // Get smart flavor suggestions based on current selections
+  const getFlavorSuggestions = () => {
+    const suggestions = new Set<string>();
+    
+    selectedPaths.forEach(path => {
+      const flavorKey = path.level3 || path.level2;
+      const pairings = FLAVOR_PAIRINGS[flavorKey];
+      if (pairings) {
+        pairings.forEach(pairing => suggestions.add(pairing));
       }
-
-      // Check if any subcategory or flavor matches
-      return item.subcategories.some(sub =>
-        sub.name.toLowerCase().includes(query) ||
-        sub.koreanName.toLowerCase().includes(query) ||
-        sub.flavors.some(f =>
-          f.name.toLowerCase().includes(query) ||
-          f.koreanName.toLowerCase().includes(query)
-        )
-      );
     });
-  }, [flavorData, searchQuery]);
+    
+    // Remove already selected flavors
+    selectedPaths.forEach(path => {
+      suggestions.delete(path.level3 || path.level2);
+    });
+    
+    return Array.from(suggestions).slice(0, 3); // Return top 3 suggestions
+  };
+  
+  const flavorSuggestions = selectedPaths.length > 0 ? getFlavorSuggestions() : [];
+  
+  // Get screen dimensions for responsive design
+  const { width: screenWidth } = Dimensions.get('window');
+  const isTablet = screenWidth >= 768;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isTablet && styles.containerTablet]}>
       {/* Navigation Bar */}
       <View style={styles.navigationBar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -254,6 +342,44 @@ export default function UnifiedFlavorScreen() {
         selectedPaths={selectedPaths}
         onRemove={handleRemoveFlavor}
       />
+      
+      {/* Smart Suggestions */}
+      {flavorSuggestions.length > 0 && selectedPaths.length < 5 && (
+        <View style={styles.suggestionsContainer}>
+          <Text style={styles.suggestionsTitle}>어울리는 향미:</Text>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.suggestionsList}
+          >
+            {flavorSuggestions.map((suggestion) => (
+              <TouchableOpacity
+                key={suggestion}
+                style={styles.suggestionPill}
+                onPress={() => {
+                  // Find the flavor in the data structure and add it
+                  flavorData.forEach(category => {
+                    category.subcategories.forEach(subcategory => {
+                      if (subcategory.koreanName === suggestion || subcategory.name === suggestion) {
+                        handleSelectFlavor(category.category, subcategory.name, '');
+                      } else {
+                        subcategory.flavors.forEach(flavor => {
+                          if (flavor.koreanName === suggestion) {
+                            handleSelectFlavor(category.category, subcategory.name, flavor.name);
+                          }
+                        });
+                      }
+                    });
+                  });
+                }}
+              >
+                <Text style={styles.suggestionPlusIcon}>+</Text>
+                <Text style={styles.suggestionText}>{suggestion}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
@@ -268,6 +394,11 @@ export default function UnifiedFlavorScreen() {
             returnKeyType="search"
             autoCapitalize="none"
             autoCorrect={false}
+            onSubmitEditing={() => {
+              if (searchQuery.trim() && !recentSearches.includes(searchQuery.trim())) {
+                setRecentSearches(prev => [searchQuery.trim(), ...prev.slice(0, 2)]);
+              }
+            }}
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')}>
@@ -275,6 +406,46 @@ export default function UnifiedFlavorScreen() {
             </TouchableOpacity>
           )}
         </View>
+        
+        {/* Quick Filters */}
+        {searchQuery.length === 0 && (
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            style={styles.quickFiltersContainer}
+            contentContainerStyle={styles.quickFiltersContent}
+          >
+            {POPULAR_FLAVORS.map((filter) => (
+              <TouchableOpacity
+                key={filter.query}
+                style={styles.quickFilterPill}
+                onPress={() => setSearchQuery(filter.query)}
+              >
+                <Text style={styles.quickFilterIcon}>{filter.icon}</Text>
+                <Text style={styles.quickFilterLabel}>{filter.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
+        
+        {/* Recent Searches */}
+        {searchQuery.length === 0 && recentSearches.length > 0 && (
+          <View style={styles.recentSearchesContainer}>
+            <Text style={styles.recentTitle}>최근 검색:</Text>
+            <View style={styles.recentSearchesList}>
+              {recentSearches.map((term, index) => (
+                <TouchableOpacity
+                  key={`${term}-${index}`}
+                  style={styles.recentSearchPill}
+                  onPress={() => setSearchQuery(term)}
+                >
+                  <Text style={styles.recentSearchText}>{term}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        )}
+        
         {searchQuery.length > 0 && filteredData.length > 0 && (
           <Text style={styles.searchResultCount}>
             {filteredData.reduce((count, cat) => 
@@ -298,25 +469,41 @@ export default function UnifiedFlavorScreen() {
             </Text>
           </View>
         ) : (
-          filteredData.map((item: TransformedCategory) => {
-            const isExpanded = expandedCategories.includes(item.category);
-            const selectedCount = selectedPaths.filter((p: FlavorPath) => p.level1 === item.category).length;
+          <>
+            {filteredData.map((item: TransformedCategory) => {
+              const isExpanded = expandedCategories.includes(item.category);
+              const selectedCount = selectedPaths.filter((p: FlavorPath) => p.level1 === item.category).length;
 
-            return (
-              <FlavorCategory
-                key={item.category}
-                category={item}
-                isExpanded={isExpanded}
-                selectedCount={selectedCount}
-                onToggle={() => toggleCategory(item.category)}
-                onSelectFlavor={handleSelectFlavor}
-                selectedPaths={selectedPaths}
-                searchQuery={searchQuery}
-              />
-            );
-          })
+              return (
+                <FlavorCategory
+                  key={item.category}
+                  category={item}
+                  isExpanded={isExpanded}
+                  selectedCount={selectedCount}
+                  onToggle={() => toggleCategory(item.category)}
+                  onSelectFlavor={handleSelectFlavor}
+                  selectedPaths={selectedPaths}
+                  searchQuery={searchQuery}
+                />
+              );
+            })}
+            
+            {/* Show More Button */}
+            {hasMoreCategories && (
+              <TouchableOpacity
+                style={styles.showMoreButton}
+                onPress={() => setShowAllCategories(true)}
+              >
+                <Text style={styles.showMoreText}>더 많은 향미 카테고리 보기 +</Text>
+                <Text style={styles.showMoreHint}>고급 사용자를 위한 추가 옵션</Text>
+              </TouchableOpacity>
+            )}
+          </>
         )}
       </ScrollView>
+      
+      {/* Floating Selection Counter */}
+      {selectedPaths.length > 0 && <FloatingCounter />}
 
       {/* Bottom Button */}
       <View style={styles.bottomContainer}>
@@ -339,6 +526,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     paddingTop: Platform.OS === 'ios' ? 47 : 0,
+  },
+  containerTablet: {
+    paddingHorizontal: 80,
+    maxWidth: 1024,
+    alignSelf: 'center',
+    width: '100%',
   },
   navigationBar: {
     height: 44,
@@ -409,6 +602,57 @@ const styles = StyleSheet.create({
     marginTop: HIGConstants.SPACING_XS,
     textAlign: 'center',
   },
+  quickFiltersContainer: {
+    marginTop: HIGConstants.SPACING_SM,
+    marginHorizontal: -HIGConstants.SPACING_LG,
+  },
+  quickFiltersContent: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+  },
+  quickFilterPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: HIGColors.systemGray6,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderRadius: 16,
+    marginRight: HIGConstants.SPACING_SM,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray5,
+  },
+  quickFilterIcon: {
+    fontSize: 16,
+    marginRight: HIGConstants.SPACING_XS,
+  },
+  quickFilterLabel: {
+    fontSize: 14,
+    color: HIGColors.label,
+    fontWeight: '500',
+  },
+  recentSearchesContainer: {
+    marginTop: HIGConstants.SPACING_MD,
+  },
+  recentTitle: {
+    fontSize: 12,
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  recentSearchesList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  recentSearchPill: {
+    backgroundColor: HIGColors.systemGray6,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginRight: HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  recentSearchText: {
+    fontSize: 13,
+    color: HIGColors.systemBlue,
+  },
   content: {
     flex: 1,
     paddingTop: HIGConstants.SPACING_SM,
@@ -455,5 +699,105 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
+  },
+  showMoreButton: {
+    marginHorizontal: HIGConstants.SPACING_LG,
+    marginVertical: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+    backgroundColor: HIGColors.systemGray6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray5,
+    borderStyle: 'dashed',
+  },
+  showMoreText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.systemBlue,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  showMoreHint: {
+    fontSize: 12,
+    color: HIGColors.secondaryLabel,
+  },
+  floatingCounter: {
+    position: 'absolute',
+    bottom: 90,
+    right: HIGConstants.SPACING_LG,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  counterCircle: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: HIGColors.systemBlue,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  counterText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  progressRing: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderRadius: 30,
+    borderWidth: 3,
+    borderColor: HIGColors.systemGray5,
+  },
+  progressRingFill: {
+    position: 'absolute',
+    height: '100%',
+    borderRadius: 30,
+    backgroundColor: HIGColors.systemBlue,
+    opacity: 0.3,
+  },
+  suggestionsContainer: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingBottom: HIGConstants.SPACING_SM,
+  },
+  suggestionsTitle: {
+    fontSize: 12,
+    color: HIGColors.secondaryLabel,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  suggestionsList: {
+    paddingRight: HIGConstants.SPACING_LG,
+  },
+  suggestionPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: HIGColors.systemGray6,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: HIGConstants.SPACING_SM,
+    borderRadius: 16,
+    marginRight: HIGConstants.SPACING_SM,
+    borderWidth: 1,
+    borderColor: HIGColors.systemBlue,
+    borderStyle: 'dashed',
+  },
+  suggestionPlusIcon: {
+    fontSize: 14,
+    color: HIGColors.systemBlue,
+    marginRight: HIGConstants.SPACING_XS,
+    fontWeight: '600',
+  },
+  suggestionText: {
+    fontSize: 14,
+    color: HIGColors.systemBlue,
+    fontWeight: '500',
   },
 });

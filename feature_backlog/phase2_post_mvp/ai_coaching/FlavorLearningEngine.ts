@@ -744,7 +744,7 @@ export class FlavorLearningEngine {
         name: category,
         children: catData.subcategories.map(subcategory => ({
           name: subcategory,
-          children: (catData.specifics[subcategory] || []).map(specific => ({
+          children: (catData.specifics[subcategory] || []).map((specific: string) => ({
             name: specific,
             value: 1,
           })),

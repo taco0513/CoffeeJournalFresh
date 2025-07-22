@@ -157,7 +157,7 @@ export const CoachFeedbackModal: React.FC<CoachFeedbackModalProps> = ({
             {feedback.strengths.length > 0 && (
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>✨ Strengths</Text>
-                {feedback.strengths.map((strength, index) => (
+                {feedback.strengths.map((strength: string, index: number) => (
                   <View key={index} style={styles.bulletPoint}>
                     <Text style={styles.bullet}>•</Text>
                     <Text style={styles.bulletText}>{strength}</Text>
@@ -170,7 +170,7 @@ export const CoachFeedbackModal: React.FC<CoachFeedbackModalProps> = ({
             {feedback.improvements.length > 0 && (
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>🎯 Areas to Focus</Text>
-                {feedback.improvements.map((improvement, index) => (
+                {feedback.improvements.map((improvement: string, index: number) => (
                   <View key={index} style={styles.bulletPoint}>
                     <Text style={styles.bullet}>•</Text>
                     <Text style={styles.bulletText}>{improvement}</Text>
@@ -183,7 +183,7 @@ export const CoachFeedbackModal: React.FC<CoachFeedbackModalProps> = ({
             {feedback.tips.length > 0 && (
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>💡 Coach Tips</Text>
-                {feedback.tips.map((tip, index) => (
+                {feedback.tips.map((tip: any, index: number) => (
                   <CoachTipCard
                     key={tip.id}
                     tip={tip}

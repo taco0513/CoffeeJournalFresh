@@ -191,7 +191,7 @@ export class PersonalTasteAnalysisService {
         .sorted('createdAt', true);
 
       const weeklyRecords = recentRecords.filtered(
-        record => record.createdAt >= sevenDaysAgo
+        (record: any) => record.createdAt >= sevenDaysAgo
       );
 
       // Calculate vocabulary growth
