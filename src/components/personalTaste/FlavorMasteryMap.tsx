@@ -68,15 +68,26 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
     return HIGColors.gray;
   };
 
-  const getMasteryEmoji = (level: MasteryLevel['level']): string => {
-    const emojiMap = {
+  const getMasteryEmoji = (level: number | string): string => {
+    const emojiMap: Record<string, string> = {
       novice: '🌱',
       apprentice: '🌿',
       proficient: '🌳',
       expert: '🏆',
       master: '👑',
     };
-    return emojiMap[level as keyof typeof emojiMap] || '🌱';
+    
+    // Convert numeric level to string representation
+    let levelKey = typeof level === 'string' ? level : 'novice';
+    if (typeof level === 'number') {
+      if (level >= 5) levelKey = 'master';
+      else if (level >= 4) levelKey = 'expert';
+      else if (level >= 3) levelKey = 'proficient';
+      else if (level >= 2) levelKey = 'apprentice';
+      else levelKey = 'novice';
+    }
+    
+    return emojiMap[levelKey] || '🌱';
   };
 
   const getCategoryEmoji = (categoryName: string): string => {
@@ -181,7 +192,7 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
                     <View style={styles.statDivider} />
                     <View style={styles.statItem}>
                       <Text style={styles.statValue}>
-                        {Math.round(mastery.accuracyRate * 100)}%
+                        {Math.round((mastery.accuracyRate ?? 0) * 100)}%
                       </Text>
                       <Text style={styles.statLabel}>정확도</Text>
                     </View>
@@ -199,7 +210,7 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
                         style={[
                           styles.progressBarFill,
                           { 
-                            width: `${mastery.progressToNext * 100}%`,
+                            width: `${(mastery.progressToNext ?? 0) * 100}%`,
                             backgroundColor: color,
                           },
                         ]}

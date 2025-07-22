@@ -50,10 +50,10 @@ export const SelectedFlavors: React.FC<SelectedFlavorsProps> = ({ selectedPaths,
 const styles = StyleSheet.create({
   selectedContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingTop: 16,
+    paddingBottom: 16,
     backgroundColor: '#F8F9FA',
-    minHeight: 88, // Reduced height with less padding
+    minHeight: 96, // Adjusted height to prevent clipping
   },
   selectedTitle: {
     fontSize: 16,
@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     height: 40, // Fixed height for the content area
     justifyContent: 'center',
+    overflow: 'visible',
   },
   scrollView: {
     flexGrow: 0,
