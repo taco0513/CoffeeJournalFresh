@@ -176,13 +176,13 @@ export default function PersonalTasteDashboard() {
                 <View style={styles.insightsSection}>
                   <Text style={styles.sectionTitle}>데이터 인사이트</Text>
                   <View style={styles.insightsList}>
-                    {insights.strengths.map((strength, index) => (
+                    {insights.strengths.map((strength: string, index: number) => (
                       <View key={`strength-${index}`} style={styles.insightItem}>
                         <Text style={styles.insightIcon}>💪</Text>
                         <Text style={styles.insightText}>{strength}</Text>
                       </View>
                     ))}
-                    {insights.areasToExplore.slice(0, 2).map((area, index) => (
+                    {insights.areasToExplore.slice(0, 2).map((area: string, index: number) => (
                       <View key={`area-${index}`} style={styles.insightItem}>
                         <Text style={styles.insightIcon}>🎯</Text>
                         <Text style={styles.insightText}>{area}</Text>
@@ -241,12 +241,12 @@ export default function PersonalTasteDashboard() {
                 <Text style={styles.sectionTitle}>향미 선호도</Text>
                 <FlavorRadarChart
                   preferences={{
-                    fruity: tastePattern.dominantFlavors.find(f => f.category === 'fruity')?.preference || 0,
-                    floral: tastePattern.dominantFlavors.find(f => f.category === 'floral')?.preference || 0,
-                    sweet: tastePattern.dominantFlavors.find(f => f.category === 'sweet')?.preference || 0,
-                    nutty: tastePattern.dominantFlavors.find(f => f.category === 'nutty')?.preference || 0,
-                    chocolate: tastePattern.dominantFlavors.find(f => f.category === 'chocolate')?.preference || 0,
-                    spices: tastePattern.dominantFlavors.find(f => f.category === 'spices')?.preference || 0,
+                    fruity: tastePattern.dominantFlavors.find((f: { category: string; preference: number }) => f.category === 'fruity')?.preference || 0,
+                    floral: tastePattern.dominantFlavors.find((f: { category: string; preference: number }) => f.category === 'floral')?.preference || 0,
+                    sweet: tastePattern.dominantFlavors.find((f: { category: string; preference: number }) => f.category === 'sweet')?.preference || 0,
+                    nutty: tastePattern.dominantFlavors.find((f: { category: string; preference: number }) => f.category === 'nutty')?.preference || 0,
+                    chocolate: tastePattern.dominantFlavors.find((f: { category: string; preference: number }) => f.category === 'chocolate')?.preference || 0,
+                    spices: tastePattern.dominantFlavors.find((f: { category: string; preference: number }) => f.category === 'spices')?.preference || 0,
                   }}
                   interactive={true}
                 />
@@ -271,7 +271,7 @@ export default function PersonalTasteDashboard() {
               {tastePattern.recommendations.length > 0 && (
                 <View style={styles.recommendationsSection}>
                   <Text style={styles.sectionTitle}>맞춤 추천</Text>
-                  {tastePattern.recommendations.map((rec, index) => (
+                  {tastePattern.recommendations.map((rec: string, index: number) => (
                     <View key={`rec-${index}`} style={styles.recommendationItem}>
                       <Text style={styles.recommendationIcon}>💡</Text>
                       <Text style={styles.recommendationText}>{rec}</Text>
@@ -338,7 +338,7 @@ export default function PersonalTasteDashboard() {
               {insights?.recentDiscoveries && insights.recentDiscoveries.length > 0 && (
                 <View style={styles.discoveriesSection}>
                   <Text style={styles.sectionTitle}>최근 발견</Text>
-                  {insights.recentDiscoveries.map((discovery, index) => (
+                  {insights.recentDiscoveries.map((discovery: string, index: number) => (
                     <View key={index} style={styles.discoveryItem}>
                       <Text style={styles.discoveryIcon}>✨</Text>
                       <Text style={styles.discoveryText}>{discovery}</Text>

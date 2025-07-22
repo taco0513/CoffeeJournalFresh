@@ -37,7 +37,7 @@ export const initSentry = () => {
     ],
     
     // 민감 정보 필터링
-    beforeSend: (event, hint) => {
+    beforeSend: (event: Sentry.Event, hint: Sentry.EventHint) => {
       // 개발 환경에서는 모든 이벤트 전송
       if (__DEV__) {
         return event;
@@ -55,7 +55,7 @@ export const initSentry = () => {
       
       // breadcrumbs에서 민감 정보 필터링
       if (event.breadcrumbs) {
-        event.breadcrumbs = event.breadcrumbs.filter(crumb => {
+        event.breadcrumbs = event.breadcrumbs.filter((crumb: Sentry.Breadcrumb) => {
           const message = crumb.message?.toLowerCase() || '';
           return !message.includes('password') && 
                  !message.includes('token') &&
@@ -81,7 +81,7 @@ export const initSentry = () => {
     },
     
     // 브레드크럼 설정
-    beforeBreadcrumb: (breadcrumb) => {
+    beforeBreadcrumb: (breadcrumb: Sentry.Breadcrumb) => {
       // console 브레드크럼 필터링
       if (breadcrumb.category === 'console' && !__DEV__) {
         return null;
@@ -125,7 +125,7 @@ export const reportError = (error: Error, context?: Record<string, any>) => {
   console.error('[Sentry] reportError temporarily disabled:', error);
   return;
   
-  Sentry.withScope((scope) => {
+  Sentry.withScope((scope: Sentry.Scope) => {
     if (context) {
       scope.setContext('custom', context);
     }

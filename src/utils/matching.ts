@@ -117,16 +117,16 @@ const calculateFlavorMatch = (
   selectedFlavors.level3.forEach(() => maxPossibleScore += 4);
   selectedFlavors.level4.forEach(() => maxPossibleScore += 2);
   
-  selectedFlavors.level1.forEach(flavor => {
+  selectedFlavors.level1.forEach((flavor: string) => {
     if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 8;
   });
-  selectedFlavors.level2.forEach(flavor => {
+  selectedFlavors.level2.forEach((flavor: string) => {
     if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 6;
   });
-  selectedFlavors.level3.forEach(flavor => {
+  selectedFlavors.level3.forEach((flavor: string) => {
     if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 4;
   });
-  selectedFlavors.level4.forEach(flavor => {
+  selectedFlavors.level4.forEach((flavor: string) => {
     if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 2;
   });
   
@@ -248,7 +248,7 @@ const calculateSensoryMatch = (
   // Mouthfeel check
   const mouthfeelKeywords = sensoryKeywords.mouthfeel[sensoryAttributes.mouthfeel];
   if (mouthfeelKeywords) {
-    const hasKeyword = mouthfeelKeywords.some(keyword => 
+    const hasKeyword = mouthfeelKeywords.some((keyword: string) => 
       roasterNotesLower.includes(keyword.toLowerCase())
     );
     if (hasKeyword) matchCount += 2;

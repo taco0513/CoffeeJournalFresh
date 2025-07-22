@@ -8,13 +8,13 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import { ParsedCoffeeInfo } from '../services/OCRService';
+// import { ParsedCoffeeInfo } from '../services/OCRService'; // Moved to feature_backlog
 import { Colors } from '../constants/colors';
 
 interface CameraModalProps {
   visible: boolean;
   onClose: () => void;
-  onTextRecognized: (info: ParsedCoffeeInfo) => void;
+  onTextRecognized?: (info: any) => void; // OCR functionality moved to feature_backlog
 }
 
 const CameraModal: React.FC<CameraModalProps> = ({ visible, onClose }) => {

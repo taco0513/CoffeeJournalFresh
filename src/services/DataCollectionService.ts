@@ -164,7 +164,7 @@ class DataCollectionService {
 
       // 날짜 범위로 필터링된 테이스팅 레코드 가져오기
       const allTastings = realmService.getTastingRecords({ isDeleted: false });
-      const filteredTastings = allTastings.filter(tasting => {
+      const filteredTastings = allTastings.filter((tasting: ITastingRecord) => {
         const tastingDate = tasting.createdAt;
         return tastingDate >= startDate && tastingDate <= endDate;
       });

@@ -12,7 +12,7 @@ import {
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
-import { ITastingRecord } from '../services/realm/schemas';
+import { ITastingRecord, IFlavorNote } from '../services/realm/schemas';
 import RealmService from '../services/realm/RealmService';
 import { useToastStore } from '../stores/toastStore';
 import { useUserStore } from '../stores/useUserStore';
@@ -438,7 +438,7 @@ const TastingDetailScreen = () => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>로스터 향미 노트</Text>
             <View style={styles.flavorContainer}>
-              {tastingRecord.flavorNotes.map((note, index) => (
+              {tastingRecord.flavorNotes.map((note: IFlavorNote, index: number) => (
                 <View key={index} style={styles.flavorNote}>
                   <Text style={styles.flavorText}>
                     {note.koreanValue || note.value}

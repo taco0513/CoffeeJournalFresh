@@ -290,7 +290,7 @@ export default function CoffeeCatalogPage() {
           setSelectedCoffeeIds(new Set());
           fetchCoffees(); // Refresh to ensure consistency
         },
-        onError: (error) => {
+        onError: (error: Error) => {
           toast({
             title: "오류",
             description: "일괄 검증에 실패했습니다.",
@@ -524,7 +524,7 @@ export default function CoffeeCatalogPage() {
                   <TableCell>
                     <Checkbox
                       checked={selectedCoffeeIds.has(coffee.id)}
-                      onCheckedChange={(checked) => handleSelectCoffee(coffee.id, checked as boolean)}
+                      onCheckedChange={(checked: boolean) => handleSelectCoffee(coffee.id, checked)}
                       aria-label={`${coffee.coffee_name} 선택`}
                     />
                   </TableCell>

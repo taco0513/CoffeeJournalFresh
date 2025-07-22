@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import RealmService from '../services/realm/RealmService';
+import { ITastingRecord } from '../services/realm/schemas';
 import { HIGConstants, HIGColors } from '../styles/common';
 import {
   LineChart,
@@ -233,7 +234,7 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
       }
       
       // Count tastings by month
-      tastings.forEach(tasting => {
+      tastings.forEach((tasting: ITastingRecord) => {
         const date = new Date(tasting.createdAt);
         const key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
         const data = monthData.get(key);

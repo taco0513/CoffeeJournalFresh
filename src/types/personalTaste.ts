@@ -2,24 +2,100 @@
 // Personal Taste Discovery Types
 // =============================================
 
-// Re-export types from services
-export type {
-  TastePattern,
-  FlavorPreference,
-  TasteProfileType,
-  GrowthMetrics,
-  CoffeeRecommendation,
-  PersonalInsights,
-} from '@/services/PersonalTasteAnalysisService';
+// Re-export types from services - Moved to feature_backlog
+// export type {
+//   TastePattern,
+//   FlavorPreference,
+//   TasteProfileType,
+//   GrowthMetrics,
+//   CoffeeRecommendation,
+//   PersonalInsights,
+// } from '@/services/PersonalTasteAnalysisService';
 
-export type {
-  FlavorIdentification,
-  FlavorQuiz,
-  FlavorQuestion,
-  FlavorOption,
-  MasteryLevel,
-  LearningRecommendation,
-} from '@/services/FlavorLearningEngine';
+// export type {
+//   FlavorIdentification,
+//   FlavorQuiz,
+//   FlavorQuestion,
+//   FlavorOption,
+//   MasteryLevel,
+//   LearningRecommendation,
+// } from '@/services/FlavorLearningEngine';
+
+// MVP placeholder types
+export interface TastePattern {
+  userId?: string;
+  dominantCategories: string[];
+  preferredIntensity: number;
+  balancePreference: string;
+  uniqueDescriptors: string[];
+  dominantFlavors: Array<{
+    category: string;
+    preference: number;
+    frequency: number;
+    consistency: number;
+  }>;
+  tasteProfile: string;
+  growthTrend?: {
+    vocabularyGrowth: number;
+    accuracyImprovement: number;
+    flavorDiversityIndex: number;
+    consistencyScore: number;
+    weeklyProgress: number;
+  };
+  recommendations?: string[];
+  lastUpdated?: Date;
+}
+
+export interface FlavorPreference {
+  category: string;
+  subcategory: string;
+  frequency: number;
+  confidence: number;
+}
+
+export type TasteProfileType = 'explorer' | 'traditionalist' | 'balanced' | 'adventurous';
+
+export interface GrowthMetrics {
+  totalTastings: number;
+  uniqueFlavors: number;
+  vocabularySize: number;
+  weeklyProgress: number;
+  monthlyGrowth: number;
+  currentStreak: number;
+  milestones: GrowthMilestone[];
+}
+
+export interface CoffeeRecommendation {
+  roastery: string;
+  coffeeName: string;
+  origin: string;
+  process: string;
+  predictedMatch: number;
+  reason: string;
+  similarityScore: number;
+}
+
+export interface PersonalInsights {
+  strengths: string[];
+  areasToExplore: string[];
+  recentDiscoveries: string[];
+  tastingTips: string[];
+}
+
+export interface MasteryLevel {
+  level: number;
+  progress: number;
+  nextLevelThreshold: number;
+  achievements: string[];
+}
+
+export interface FlavorIdentification {
+  category: string;
+  subcategory?: string;
+  specificFlavor?: string;
+  confidence: number;
+  identified: boolean;
+}
 
 export type {
   Achievement,
@@ -99,8 +175,8 @@ export interface CoffeeInfo {
 
 // Additional types for UI components
 export interface PersonalDashboardData {
-  tastePattern: TastePattern;
-  growthMetrics: GrowthMetrics;
+  tastePattern: TastePattern | null;
+  growthMetrics: GrowthMetrics | null;
   recentAchievements: Achievement[];
   weeklyProgress: WeeklyProgressData;
   recommendations: CoffeeRecommendation[];

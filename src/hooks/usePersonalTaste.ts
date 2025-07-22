@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useUserStore } from '../stores/useUserStore';
 import { 
-  PersonalTasteAnalysisService,
-  FlavorLearningEngine,
+  // PersonalTasteAnalysisService, // Moved to feature_backlog
+  // FlavorLearningEngine, // Moved to feature_backlog
   AchievementSystem,
 } from '../services/personalTaste';
 import { AchievementType } from '../services/AchievementSystem';
@@ -47,13 +47,13 @@ export const usePersonalTaste = () => {
         return null;
       }
       const realm = realmService.getRealm();
-      const analysisService = new PersonalTasteAnalysisService(realm);
-      const learningEngine = new FlavorLearningEngine(realm);
+      // const analysisService = new PersonalTasteAnalysisService(realm); // Moved to feature_backlog
+      // const learningEngine = new FlavorLearningEngine(realm); // Moved to feature_backlog
       const achievementSystem = new AchievementSystem(realm);
 
       return {
-        analysisService,
-        learningEngine,
+        // analysisService, // Moved to feature_backlog
+        // learningEngine, // Moved to feature_backlog
         achievementSystem,
       };
     } catch (error) {
@@ -79,18 +79,24 @@ export const usePersonalTaste = () => {
         return;
       }
 
-      // 실제 분석 수행
-      const [pattern, growth, recs, personalInsights] = await Promise.all([
-        services.analysisService.analyzePersonalTastePattern(userId),
-        services.analysisService.trackTasteGrowth(userId),
-        services.analysisService.generatePersonalRecommendations(userId),
-        services.analysisService.getPersonalInsights(userId),
-      ]);
+      // 실제 분석 수행 - Moved to feature_backlog
+      // const [pattern, growth, recs, personalInsights] = await Promise.all([
+      //   services.analysisService.analyzePersonalTastePattern(userId),
+      //   services.analysisService.trackTasteGrowth(userId),
+      //   services.analysisService.generatePersonalRecommendations(userId),
+      //   services.analysisService.getPersonalInsights(userId),
+      // ]);
 
-      setTastePattern(pattern);
-      setGrowthMetrics(growth);
-      setRecommendations(recs);
-      setInsights(personalInsights);
+      // setTastePattern(pattern);
+      // setGrowthMetrics(growth);
+      // setRecommendations(recs);
+      // setInsights(personalInsights);
+      
+      // Use mock data for MVP
+      setTastePattern(getMockTastePattern());
+      setGrowthMetrics(getMockGrowthMetrics());
+      setRecommendations(getMockRecommendations());
+      setInsights(getMockPersonalInsights());
     } catch (err) {
       console.error('Error loading personal taste data:', err);
       // Fall back to mock data on error
@@ -264,7 +270,8 @@ export const useFlavorMastery = () => {
         return;
       }
       
-      const mastery = await services.learningEngine.getUserFlavorMasterySummary(userId);
+      // const mastery = await services.learningEngine.getUserFlavorMasterySummary(userId); // Moved to feature_backlog
+      const mastery = new Map(); // Return empty map for MVP
       setFlavorMastery(mastery);
     } catch (error) {
       console.error('Error loading flavor mastery:', error);
@@ -282,7 +289,8 @@ export const useFlavorMastery = () => {
       if (!userId || !services) return;
 
       try {
-        await services.learningEngine.updateFlavorProgress(userId, flavorIdentification);
+        // await services.learningEngine.updateFlavorProgress(userId, flavorIdentification); // Moved to feature_backlog
+        console.log('Flavor progress update skipped - feature moved to backlog');
         // Refresh mastery data
         await loadFlavorMastery();
       } catch (error) {

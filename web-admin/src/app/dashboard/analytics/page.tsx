@@ -180,7 +180,7 @@ export default function AnalyticsPage() {
       if (screensError) throw screensError;
 
       // Process popular screens
-      const screenCounts = screens.reduce((acc: Record<string, number>, item) => {
+      const screenCounts = screens.reduce((acc: Record<string, number>, item: { screen_name: string }) => {
         acc[item.screen_name] = (acc[item.screen_name] || 0) + 1;
         return acc;
       }, {});
@@ -198,14 +198,14 @@ export default function AnalyticsPage() {
 
       if (sessionsError) throw sessionsError;
 
-      const totalUsers = new Set(sessions.map(s => s.user_id).filter(Boolean)).size;
+      const totalUsers = new Set(sessions.map((s: any) => s.user_id).filter(Boolean)).size;
       const totalSessions = sessions.length;
       const avgSessionDuration = sessions
-        .filter(s => s.duration_ms)
-        .reduce((sum, s) => sum + (s.duration_ms || 0), 0) / 
-        sessions.filter(s => s.duration_ms).length || 0;
-      const totalErrors = sessions.reduce((sum, s) => sum + (s.error_count || 0), 0);
-      const crashRate = sessions.reduce((sum, s) => sum + (s.crash_count || 0), 0) / totalSessions * 100;
+        .filter((s: any) => s.duration_ms)
+        .reduce((sum: number, s: any) => sum + (s.duration_ms || 0), 0) / 
+        sessions.filter((s: any) => s.duration_ms).length || 0;
+      const totalErrors = sessions.reduce((sum: number, s: any) => sum + (s.error_count || 0), 0);
+      const crashRate = sessions.reduce((sum: number, s: any) => sum + (s.crash_count || 0), 0) / totalSessions * 100;
 
       setAnalyticsData(analytics || []);
       setPerformanceData(performance || []);

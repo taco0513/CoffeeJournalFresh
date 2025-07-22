@@ -47,12 +47,12 @@ class RealmService {
       this.realm = await Realm.open({
         schema: schemas,
         schemaVersion: 1,
-        migration: (oldRealm, newRealm) => {
+        migration: (oldRealm: Realm, newRealm: Realm) => {
           // Handle migrations here
           // Version 1: Initial schema
         },
         deleteRealmIfMigrationNeeded: __DEV__, // Only in development
-        shouldCompactOnLaunch: (totalSize, usedSize) => {
+        shouldCompactOnLaunch: (totalSize: number, usedSize: number) => {
           // Compact if the file is over 25MB in size and less than 50% 'used'
           const twentyFiveMB = 25 * 1024 * 1024;
           const shouldCompact = totalSize > twentyFiveMB && usedSize / totalSize < 0.5;
