@@ -18,32 +18,34 @@ export function useShakeToFeedback() {
     FeedbackService.checkBetaStatus(currentUser.id).then(setBetaStatus);
 
     // Subscribe to shake event
-    const subscription = RNShake.addListener(async () => {
-      // Prevent multiple triggers
-      if (isHandlingShake.current) return;
-      
-      isHandlingShake.current = true;
-      
-      try {
-        // Capture screen context
-        const screenContext = await ScreenContextService.getCurrentContext();
-        if (screenContext) {
-          setScreenContext(screenContext);
-        }
+    const subscription = RNShake.addListener(() => {
+      (async () => {
+        // Prevent multiple triggers
+        if (isHandlingShake.current) return;
+        
+        isHandlingShake.current = true;
+        
+        try {
+          // Capture screen context
+          const screenContext = await ScreenContextService.getCurrentContext();
+          if (screenContext) {
+            setScreenContext(screenContext);
+          }
 
-        // Auto-capture screenshot
-        await captureScreenOnShake();
-      } catch (error) {
-        console.error('Error capturing context on shake:', error);
-      }
-      
-      // Use smart feedback instead of regular feedback
-      showSmartFeedback();
-      
-      // Reset flag after a delay
-      setTimeout(() => {
-        isHandlingShake.current = false;
-      }, 1000);
+          // Auto-capture screenshot
+          await captureScreenOnShake();
+        } catch (error) {
+          console.error('Error capturing context on shake:', error);
+        }
+        
+        // Use smart feedback instead of regular feedback
+        showSmartFeedback();
+        
+        // Reset flag after a delay
+        setTimeout(() => {
+          isHandlingShake.current = false;
+        }, 1000);
+      })();
     });
 
     // Cleanup

@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   skipButtonText: {
     fontSize: 16,
-    color: HIGColors.systemGray1,
+    color: HIGColors.systemGray4,
     fontWeight: '500',
   },
   nextButton: {

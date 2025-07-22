@@ -223,7 +223,8 @@ const CoffeeInfoScreen = () => {
   // 컴포넌트 마운트 시 스마트 기본값 제공 - TEMPORARILY DISABLED
   /* useEffect(() => {
     if (currentTasting.coffeeName && !currentTasting.origin && !currentTasting.variety) {
-      const parsed = parseCoffeeName(currentTasting.coffeeName);
+      // const parsed = parseCoffeeName(currentTasting.coffeeName); // Moved to feature_backlog
+      const parsed = { origin: null, variety: null, process: null }; // MVP placeholder
       
       // Batch update to prevent multiple re-renders
       const updates: any = {};
@@ -246,7 +247,8 @@ const CoffeeInfoScreen = () => {
 
   // Parse coffee name and auto-fill fields
   const handleCoffeeNameParse = (coffeeName: string) => {
-    const parsed = parseCoffeeName(coffeeName);
+    // const parsed = parseCoffeeName(coffeeName); // Moved to feature_backlog
+    const parsed = { origin: null, variety: null, process: null }; // MVP placeholder
     
     // Only update fields that are currently empty
     const updates: any = { coffeeName };

@@ -296,7 +296,7 @@ export default function UnifiedFlavorScreen() {
     });
     
     // Remove already selected flavors
-    selectedPaths.forEach(path => {
+    selectedPaths.forEach((path: FlavorPath) => {
       suggestions.delete(path.level3 || path.level2);
     });
     
