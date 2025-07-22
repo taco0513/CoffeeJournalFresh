@@ -247,11 +247,23 @@ feature_backlog/
    - Haptic feedback and accessibility enhancements
    - Original parent-child UX design preserved
 
+4. ✅ **Header Title Size Consistency**: Fixed inconsistent header font sizes across screens
+   - JournalIntegratedScreen `navTitle`: fontSize 20 → 17, fontWeight '700' → '600'
+   - All screens now use consistent typography (17px, 600 weight)
+
+5. ✅ **Home Screen UI Improvements**: Enhanced layout and spacing
+   - Welcome message: Center-aligned with increased vertical padding (40px)
+   - Primary action button: Reduced size and margins for better screen fit
+   - Button height: 80/100/90 → 60/70/65 (responsive)
+   - Improved overall screen layout balance
+
 ### Files Modified
 - `index.js`: Disabled bridge debugger import
 - `src/utils/bridgeDebugger.ts`: Enhanced error handling and blocking
 - `src/components/flavor/FlavorCategory.tsx`: Maintained original long-press design
 - `src/screens/flavor/UnifiedFlavorScreen.tsx`: Search and selection improvements
+- `src/screens/JournalIntegratedScreen.tsx`: Fixed header title typography consistency
+- `src/screens/HomeScreen.tsx`: Welcome message centering and button size optimization
 
 ## Documentation
 - Progress archive: `CLAUDE_ARCHIVE_2025-07.md`
