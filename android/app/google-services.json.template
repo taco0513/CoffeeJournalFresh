@@ -1,15 +1,15 @@
 {
   "project_info": {
     "project_number": "YOUR_PROJECT_NUMBER",
-    "project_id": "coffee-journal-fresh",
-    "storage_bucket": "coffee-journal-fresh.appspot.com"
+    "project_id": "cupnote",
+    "storage_bucket": "cupnote.appspot.com"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:YOUR_PROJECT_NUMBER:android:YOUR_APP_ID",
         "android_client_info": {
-          "package_name": "com.brianjin.coffeejournalf"
+          "package_name": "com.cupnote.app"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.brianjin.coffeejournalf",
+            "package_name": "com.cupnote.app",
             "certificate_hash": "YOUR_SHA1_FINGERPRINT"
           }
         },
@@ -42,7 +42,7 @@
               "client_id": "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.brianjin.CoffeeJournalFresh"
+                "bundle_id": "com.cupnote.app"
               }
             }
           ]

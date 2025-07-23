@@ -1,12 +1,12 @@
-# Google Cloud Console Setup Guide - Coffee Journal Fresh
+# Google Cloud Console Setup Guide - CupNote
 
-This comprehensive guide will walk you through setting up Google OAuth for Coffee Journal Fresh with proper security configurations.
+This comprehensive guide will walk you through setting up Google OAuth for CupNote with proper security configurations.
 
 ## Prerequisites
 
 - Google account with access to Google Cloud Console
-- Coffee Journal Fresh project details:
-  - iOS Bundle ID: `com.brianjin.CoffeeJournalFresh`
+- CupNote project details:
+  - iOS Bundle ID: `com.cupnote.app`
   - Android Package Name: `com.brianjin.coffeejournalf`
   - Supabase Project URL: `https://YOUR_PROJECT.supabase.co`
 
@@ -19,7 +19,7 @@ This comprehensive guide will walk you through setting up Google OAuth for Coffe
 2. **Create New Project**
    - Click "Select a project" dropdown at the top
    - Click "New Project"
-   - Project name: `Coffee Journal Fresh`
+   - Project name: `CupNote`
    - Organization: Leave as default or select your organization
    - Location: Leave as default
    - Click "Create"
@@ -36,7 +36,7 @@ This comprehensive guide will walk you through setting up Google OAuth for Coffe
 
 2. **App Information**
    ```
-   App name: Coffee Journal Fresh
+   App name: CupNote
    User support email: [Your email]
    App logo: [Optional - upload coffee app icon]
    ```
@@ -98,8 +98,8 @@ This comprehensive guide will walk you through setting up Google OAuth for Coffe
 2. **Configure iOS Client**
    ```
    Application type: iOS
-   Name: Coffee Journal Fresh iOS
-   Bundle ID: com.brianjin.CoffeeJournalFresh
+   Name: CupNote iOS
+   Bundle ID: com.cupnote.app
    ```
 
 3. **Save iOS Client ID**
@@ -114,7 +114,7 @@ This comprehensive guide will walk you through setting up Google OAuth for Coffe
 2. **Configure Web Client**
    ```
    Application type: Web application
-   Name: Coffee Journal Fresh Web (Supabase)
+   Name: CupNote Web (Supabase)
    ```
 
 3. **Authorized Redirect URIs**
@@ -133,7 +133,7 @@ This comprehensive guide will walk you through setting up Google OAuth for Coffe
 1. **Create Android Client**
    ```
    Application type: Android
-   Name: Coffee Journal Fresh Android
+   Name: CupNote Android
    Package name: com.brianjin.coffeejournalf
    SHA-1 certificate fingerprint: [Generate from keystore]
    ```
@@ -176,7 +176,7 @@ This comprehensive guide will walk you through setting up Google OAuth for Coffe
    ```
 
 2. **Restrict by iOS Bundle ID**
-   - Add `com.brianjin.CoffeeJournalFresh`
+   - Add `com.cupnote.app`
 
 ### Enable Security Features
 

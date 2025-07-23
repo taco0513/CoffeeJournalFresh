@@ -387,7 +387,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       {/* 네비게이션 바 영역 */}
       <View style={styles.navigationBar}>
         <View style={styles.titleContainer}>
-          <Text style={styles.navigationTitle}>Coffee Journal</Text>
+          <Text style={styles.navigationTitle}>CupNote</Text>
           <View style={styles.betaBadge}>
             <Text style={styles.betaText}>BETA</Text>
           </View>

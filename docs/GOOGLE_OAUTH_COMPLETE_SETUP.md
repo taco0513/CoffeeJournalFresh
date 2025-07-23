@@ -1,8 +1,8 @@
 # Google OAuth Complete Setup Guide
 
-## Coffee Journal - Google 로그인 완전 설정 가이드
+## CupNote - Google 로그인 완전 설정 가이드
 
-이 문서는 Coffee Journal 앱에서 Google 로그인을 완전히 구성하기 위한 단계별 가이드입니다.
+이 문서는 CupNote 앱에서 Google 로그인을 완전히 구성하기 위한 단계별 가이드입니다.
 
 ---
 
@@ -22,7 +22,7 @@ Google OAuth 설정은 다음 단계로 구성됩니다:
 ### 1.1 프로젝트 생성
 1. [Google Cloud Console](https://console.cloud.google.com/) 접속
 2. 새 프로젝트 생성 또는 기존 프로젝트 선택
-   - 프로젝트 이름: `Coffee Journal`
+   - 프로젝트 이름: `CupNote`
    - 조직: 개인 또는 회사 조직
 
 ### 1.2 Google Sign-In API 활성화
@@ -37,9 +37,9 @@ Google OAuth 설정은 다음 단계로 구성됩니다:
    - **내부**: G Suite 조직 내부용
 3. 앱 정보 입력:
    ```
-   앱 이름: Coffee Journal
+   앱 이름: CupNote
    사용자 지원 이메일: [개발자 이메일]
-   앱 로고: [Coffee Journal 로고 업로드]
+   앱 로고: [CupNote 로고 업로드]
    승인된 도메인: 
    - yourdomain.com (웹사이트가 있는 경우)
    개발자 연락처: [개발자 이메일]
@@ -55,7 +55,7 @@ Google OAuth 설정은 다음 단계로 구성됩니다:
 3. 애플리케이션 유형: **iOS**
 4. 설정값 입력:
    ```
-   이름: Coffee Journal iOS
+   이름: CupNote iOS
    번들 ID: com.coffeejournal.fresh
    ```
 5. **생성** 클릭하여 클라이언트 ID 획득
@@ -64,7 +64,7 @@ Google OAuth 설정은 다음 단계로 구성됩니다:
 1. 애플리케이션 유형: **Android**
 2. 설정값 입력:
    ```
-   이름: Coffee Journal Android  
+   이름: CupNote Android  
    패키지 이름: com.coffeejournal.fresh
    SHA-1 인증서 지문: [키스토어에서 추출]
    ```
@@ -73,7 +73,7 @@ Google OAuth 설정은 다음 단계로 구성됩니다:
 1. 애플리케이션 유형: **웹 애플리케이션**
 2. 설정값 입력:
    ```
-   이름: Coffee Journal Web Admin
+   이름: CupNote Web Admin
    승인된 JavaScript 원본: 
    - http://localhost:3000 (개발용)
    - https://yourdomain.com (프로덕션용)
@@ -134,7 +134,7 @@ cd ios && pod install && cd ..
 ```
 
 ### 4.2 iOS 설정
-`ios/CoffeeJournalFresh/Info.plist`에 URL Scheme 추가:
+`ios/CupNote/Info.plist`에 URL Scheme 추가:
 ```xml
 <key>CFBundleURLTypes</key>
 <array>
@@ -408,4 +408,4 @@ GOOGLE_OAUTH_ANDROID_CLIENT_ID="your-android-client-id.apps.googleusercontent.co
 문제가 지속되면 다음을 확인하세요:
 - [Google Sign-In 공식 문서](https://developers.google.com/identity/sign-in/ios)
 - [React Native Google Sign-In 문서](https://github.com/react-native-google-signin/google-signin)
-- Coffee Journal 개발팀 연락: hello@zimojin.com
+- CupNote 개발팀 연락: hello@zimojin.com

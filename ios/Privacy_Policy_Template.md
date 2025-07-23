@@ -1,11 +1,11 @@
-# Coffee Journal Fresh - Privacy Policy
+# CupNote - Privacy Policy
 
 **Effective Date:** [DATE_TO_BE_SET]
 **Last Updated:** [DATE_TO_BE_SET]
 
 ## Introduction
 
-Coffee Journal Fresh ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Coffee Journal Fresh mobile application (the "App").
+CupNote ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our CupNote mobile application (the "App").
 
 By using our App, you consent to the data practices described in this Privacy Policy.
 
@@ -13,7 +13,7 @@ By using our App, you consent to the data practices described in this Privacy Po
 
 ### Information We DO NOT Collect
 
-Coffee Journal Fresh is designed with privacy-by-design principles. We do **NOT** collect, store, or transmit:
+CupNote is designed with privacy-by-design principles. We do **NOT** collect, store, or transmit:
 
 - Personal identification information (names, addresses, phone numbers)
 - Location data or GPS coordinates
@@ -124,7 +124,7 @@ We do **NOT**:
 
 ## Children's Privacy
 
-Coffee Journal Fresh is suitable for users of all ages (4+). However:
+CupNote is suitable for users of all ages (4+). However:
 
 - We do not knowingly collect personal information from children under 13
 - The app does not require any personal information to function
@@ -185,7 +185,7 @@ We encourage you to review this Privacy Policy periodically to stay informed abo
 If you have any questions about this Privacy Policy or our privacy practices, please contact us:
 
 **Email:** hello@zimojin.com
-**Subject Line:** Coffee Journal Fresh Privacy Policy
+**Subject Line:** CupNote Privacy Policy
 
 **Response Time:** We will respond to privacy inquiries within 48 hours.
 
@@ -242,7 +242,7 @@ We believe in complete transparency about our privacy practices:
 
 ---
 
-**Coffee Journal Fresh Development Team**
+**CupNote Development Team**
 *Building privacy-focused coffee experiences*
 
 **Document Version:** 1.0

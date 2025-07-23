@@ -8,7 +8,7 @@ The Google OAuth system is **fully implemented** and ready to use. Only OAuth cr
 
 ### 1. Google Cloud Console Setup
 1. Go to [Google Cloud Console](https://console.cloud.google.com)
-2. Create/select project: "CoffeeJournalFresh"
+2. Create/select project: "CupNote"
 3. Enable **Google Sign-In API**
 4. Create OAuth 2.0 credentials:
    - **iOS client**: For iOS app
@@ -22,7 +22,7 @@ GOOGLE_OAUTH_WEB_CLIENT_ID=your_web_client_id_here
 ```
 
 ### 3. iOS Configuration
-Update `ios/CoffeeJournalFresh/Info.plist`:
+Update `ios/CupNote/Info.plist`:
 ```xml
 <key>CFBundleURLTypes</key>
 <array>

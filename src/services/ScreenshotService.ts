@@ -31,10 +31,10 @@ export class ScreenshotService {
         ? RNFS.DocumentDirectoryPath 
         : RNFS.ExternalDirectoryPath;
       
-      const destinationPath = `${documentsPath}/CoffeeJournal_Screenshots/${finalFilename}`;
+      const destinationPath = `${documentsPath}/CupNote_Screenshots/${finalFilename}`;
 
       // Create directory if it doesn't exist
-      const dirPath = `${documentsPath}/CoffeeJournal_Screenshots`;
+      const dirPath = `${documentsPath}/CupNote_Screenshots`;
       const dirExists = await RNFS.exists(dirPath);
       if (!dirExists) {
         await RNFS.mkdir(dirPath);
@@ -92,7 +92,7 @@ export class ScreenshotService {
         ? RNFS.DocumentDirectoryPath 
         : RNFS.ExternalDirectoryPath;
       
-      const screenshotsPath = `${documentsPath}/CoffeeJournal_Screenshots`;
+      const screenshotsPath = `${documentsPath}/CupNote_Screenshots`;
       
       const exists = await RNFS.exists(screenshotsPath);
       if (!exists) {
@@ -119,7 +119,7 @@ export class ScreenshotService {
         ? RNFS.DocumentDirectoryPath 
         : RNFS.ExternalDirectoryPath;
       
-      const screenshotsPath = `${documentsPath}/CoffeeJournal_Screenshots`;
+      const screenshotsPath = `${documentsPath}/CupNote_Screenshots`;
       
       const exists = await RNFS.exists(screenshotsPath);
       if (exists) {
@@ -150,7 +150,7 @@ export class ScreenshotService {
   static showMultipleSaveSuccess(paths: string[]) {
     Alert.alert(
       '스크린샷 저장 완료',
-      `${paths.length}개의 스크린샷이 저장되었습니다.\n\n저장 위치:\nCoffeeJournal_Screenshots/`,
+      `${paths.length}개의 스크린샷이 저장되었습니다.\n\n저장 위치:\nCupNote_Screenshots/`,
       [{ text: '확인' }]
     );
   }

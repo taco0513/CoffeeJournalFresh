@@ -1,12 +1,12 @@
-# Coffee Journal Fresh - App Store Connect Metadata
+# CupNote - App Store Connect Metadata
 
 ## Basic App Information
 
 ### App Name
-**Coffee Journal Fresh**
+**CupNote**
 
 ### Bundle Identifier
-`com.brianjin.CoffeeJournalFresh`
+`com.cupnote.app`
 
 ### Subtitle
 **Personal Taste Discovery**

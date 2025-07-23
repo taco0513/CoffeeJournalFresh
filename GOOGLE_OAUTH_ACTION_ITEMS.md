@@ -4,11 +4,11 @@
 
 ### 1. Google Cloud Console (15 minutes)
 1. Go to https://console.cloud.google.com
-2. Create a new project called "Coffee Journal Fresh"
+2. Create a new project called "CupNote"
 3. Configure OAuth consent screen (External type)
 4. Enable "Google Sign-In API"
 5. Create **TWO** OAuth clients:
-   - **iOS client**: Bundle ID = `com.brianjin.CoffeeJournalFresh`
+   - **iOS client**: Bundle ID = `com.cupnote.app`
    - **Web client**: Redirect URI = `https://iyccdzymklcedzzikwhv.supabase.co/auth/v1/callback`
 
 ### 2. Copy Your Credentials
@@ -30,7 +30,7 @@ GOOGLE_OAUTH_WEB_CLIENT_ID=YOUR_WEB_CLIENT_ID_HERE
 3. Add your Web Client ID and Secret
 
 ### 5. Configure Xcode
-1. Open: `open ios/CoffeeJournalFresh.xcworkspace`
+1. Open: `open ios/CupNote.xcworkspace`
 2. Add User-Defined Setting: `GOOGLE_REVERSED_CLIENT_ID`
 3. Value: `com.googleusercontent.apps.[YOUR_IOS_CLIENT_NUMBER]`
 

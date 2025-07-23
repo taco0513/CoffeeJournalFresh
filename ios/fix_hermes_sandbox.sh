@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Fix for Xcode 16 sandbox issues with Hermes framework
-DERIVED_DATA=$(find ~/Library/Developer/Xcode/DerivedData -name "CoffeeJournalFresh-*" -type d | head -1)
+DERIVED_DATA=$(find ~/Library/Developer/Xcode/DerivedData -name "CupNote-*" -type d | head -1)
 
 if [ -z "$DERIVED_DATA" ]; then
     echo "DerivedData not found"
     exit 0  # Exit successfully to not break the build
 fi
 
-APP_FRAMEWORKS="$DERIVED_DATA/Build/Products/Debug-iphonesimulator/CoffeeJournalFresh.app/Frameworks"
-HERMES_SOURCE="/Users/zimo_mbp16_m1max/Projects/CoffeeJournalFresh/ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-simulator/hermes.framework"
+APP_FRAMEWORKS="$DERIVED_DATA/Build/Products/Debug-iphonesimulator/CupNote.app/Frameworks"
+HERMES_SOURCE="/Users/zimo_mbp16_m1max/Projects/CupNote/ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-simulator/hermes.framework"
 
 echo "Creating Frameworks directory..."
 mkdir -p "$APP_FRAMEWORKS" 2>/dev/null || true

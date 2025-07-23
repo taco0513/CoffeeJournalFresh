@@ -116,8 +116,8 @@ fi
 echo -e "${BLUE}🛡️  Security Configuration Validation${NC}"
 
 # Check iOS Info.plist for Google Sign-In URL scheme
-if [ -f "ios/CoffeeJournalFresh/Info.plist" ]; then
-    if grep -q "GOOGLE_REVERSED_CLIENT_ID" ios/CoffeeJournalFresh/Info.plist; then
+if [ -f "ios/CupNote/Info.plist" ]; then
+    if grep -q "GOOGLE_REVERSED_CLIENT_ID" ios/CupNote/Info.plist; then
         echo -e "${GREEN}✅ iOS Info.plist configured for Google Sign-In${NC}"
     else
         echo -e "${YELLOW}⚠️  iOS Info.plist missing Google Sign-In URL scheme${NC}"
@@ -175,11 +175,11 @@ fi
 echo -e "${BLUE}📱 Permissions Configuration Check${NC}"
 
 # Check iOS permissions
-if [ -f "ios/CoffeeJournalFresh/Info.plist" ]; then
+if [ -f "ios/CupNote/Info.plist" ]; then
     PERMISSIONS=("NSCameraUsageDescription" "NSPhotoLibraryUsageDescription")
     
     for permission in "${PERMISSIONS[@]}"; do
-        if grep -q "$permission" ios/CoffeeJournalFresh/Info.plist; then
+        if grep -q "$permission" ios/CupNote/Info.plist; then
             echo -e "${GREEN}✅ iOS permission configured: $permission${NC}"
         else
             echo -e "${YELLOW}⚠️  iOS permission missing: $permission${NC}"
@@ -191,8 +191,8 @@ fi
 echo -e "${BLUE}🌐 Network Security Configuration${NC}"
 
 # Check for ATS configuration
-if [ -f "ios/CoffeeJournalFresh/Info.plist" ]; then
-    if grep -q "NSAppTransportSecurity" ios/CoffeeJournalFresh/Info.plist; then
+if [ -f "ios/CupNote/Info.plist" ]; then
+    if grep -q "NSAppTransportSecurity" ios/CupNote/Info.plist; then
         echo -e "${GREEN}✅ iOS App Transport Security configured${NC}"
     else
         echo -e "${YELLOW}⚠️  iOS App Transport Security not configured${NC}"

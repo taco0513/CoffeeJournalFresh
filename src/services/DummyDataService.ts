@@ -92,12 +92,48 @@ const KOREAN_EXPRESSIONS = {
 const HOME_CAFE_EQUIPMENT = {
   grinders: [
     { brand: '1Zpresso', model: 'K-Plus' },
+    { brand: '1Zpresso', model: 'JX-Pro' },
     { brand: '커맨던트', model: 'C40' },
     { brand: '바라짜', model: 'Encore' },
+    { brand: '바라짜', model: 'Virtuoso+' },
     { brand: '펠로우', model: 'Ode' },
+    { brand: '윌파', model: 'SVART' },
+    { brand: '타임모어', model: 'C2' },
   ],
-  brewingMethods: ['V60', 'Chemex', 'Aeropress', 'French Press', 'Origami'],
-  filters: ['하리오 표백', '카페크 애비드', '칼리타 웨이브', '하리오 미표백'],
+  brewingMethods: ['V60', 'Chemex', 'Aeropress', 'French Press', 'Origami', 'Kalita Wave', 'Clever Dripper', 'Siphon'],
+  filters: ['하리오 표백', '카페크 애비드', '칼리타 웨이브', '하리오 미표백', 'Origami 원뿔형', 'Chemex 정사각형'],
+  waterTypes: ['삼다수', '에비앙', '볼빅', '아이시스', '정수기물', '수돗물(정수)', '백두산 천연수'],
+  pourPatterns: ['30-70-70-70', '40-60-60-60', '30-60-60-60-30', '전체 한번에', '3:30 투포', '4:6 방식'],
+};
+
+const SEARCH_FILTERS = {
+  roasteries: ROASTERS,
+  cafes: ['블루보틀 카페', '스타벅스', '앤트러사이트', '프릳츠 매장', '테라로사', '커피볶는곰', '센터커피'],
+  scoreRanges: ['4.0 이상', '3.5-4.0', '3.0-3.5', '전체'],
+  dateRanges: ['최근 1주일', '최근 1개월', '최근 3개월', '전체 기간'],
+};
+
+const ADMIN_DATA = {
+  feedbackTypes: ['UI/UX 개선', '기능 요청', '버그 신고', '성능 이슈', '기타'],
+  priorities: ['높음', '중간', '낮음'],
+  statuses: ['검토중', '진행중', '완료', '보류'],
+};
+
+const PROFILE_DATA = {
+  usernames: ['커피러버', '원두탐험가', '홈카페마스터', '라떼아티스트', '에스프레소킹'],
+  preferences: {
+    preferredRoastLevel: ROAST_LEVELS,
+    preferredOrigins: ORIGINS,
+    brewingExperience: ['초보자', '중급자', '상급자', '전문가'],
+    dailyCoffeeConsumption: ['1잔', '2-3잔', '4-5잔', '6잔 이상'],
+  },
+};
+
+const DEVELOPER_SETTINGS = {
+  mockDataEnabled: [true, false],
+  debugMode: [true, false],
+  performanceMonitoring: [true, false],
+  crashReporting: [true, false],
 };
 
 export class DummyDataService {
@@ -224,6 +260,135 @@ export class DummyDataService {
     store.updateField('roasterNotes', notes);
   }
 
+  // Search screen filters
+  static async fillSearchFilters() {
+    // Auto-fill search form with random filters
+    // Note: This would need to be implemented based on actual SearchScreen component structure
+    console.log('Filling search filters with dummy data');
+  }
+
+  // Admin coffee edit form
+  static async fillAdminEditForm() {
+    // Similar to fillCoffeeInfo but for admin edit interface
+    const randomIndex = Math.floor(Math.random() * COFFEE_NAMES.length);
+    
+    // This would fill admin form fields - implementation depends on actual admin form structure
+    console.log('Filling admin edit form:', {
+      roastery: ROASTERS[Math.floor(Math.random() * ROASTERS.length)],
+      coffeeName: COFFEE_NAMES[randomIndex],
+      origin: ORIGINS[Math.floor(Math.random() * ORIGINS.length)],
+      variety: VARIETIES[Math.floor(Math.random() * VARIETIES.length)],
+      process: PROCESSES[Math.floor(Math.random() * PROCESSES.length)],
+      roastLevel: ROAST_LEVELS[Math.floor(Math.random() * ROAST_LEVELS.length)],
+    });
+  }
+
+  // Auto-select tasting mode
+  static async autoSelectMode() {
+    const store = useTastingStore.getState();
+    // Randomly select between cafe and home_cafe mode, but prefer home_cafe for testing
+    const mode = Math.random() > 0.3 ? 'home_cafe' : 'cafe';
+    store.updateField('mode', mode);
+    console.log('Auto-selected mode:', mode);
+  }
+
+  // Profile setup data
+  static async fillProfileData() {
+    const username = PROFILE_DATA.usernames[Math.floor(Math.random() * PROFILE_DATA.usernames.length)];
+    const roastLevel = PROFILE_DATA.preferences.preferredRoastLevel[Math.floor(Math.random() * PROFILE_DATA.preferences.preferredRoastLevel.length)];
+    const origin = PROFILE_DATA.preferences.preferredOrigins[Math.floor(Math.random() * PROFILE_DATA.preferences.preferredOrigins.length)];
+    const experience = PROFILE_DATA.preferences.brewingExperience[Math.floor(Math.random() * PROFILE_DATA.preferences.brewingExperience.length)];
+    const consumption = PROFILE_DATA.preferences.dailyCoffeeConsumption[Math.floor(Math.random() * PROFILE_DATA.preferences.dailyCoffeeConsumption.length)];
+    
+    console.log('Filling profile data:', {
+      username,
+      preferredRoastLevel: roastLevel,
+      preferredOrigin: origin,
+      brewingExperience: experience,
+      dailyCoffeeConsumption: consumption,
+    });
+  }
+
+  // Admin feedback data
+  static async generateFeedbackData() {
+    const feedbackType = ADMIN_DATA.feedbackTypes[Math.floor(Math.random() * ADMIN_DATA.feedbackTypes.length)];
+    const priority = ADMIN_DATA.priorities[Math.floor(Math.random() * ADMIN_DATA.priorities.length)];
+    const status = ADMIN_DATA.statuses[Math.floor(Math.random() * ADMIN_DATA.statuses.length)];
+    
+    console.log('Generating admin feedback data:', {
+      type: feedbackType,
+      priority,
+      status,
+      description: '사용자가 제출한 피드백 내용입니다.',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  // Developer settings toggles
+  static async fillDeveloperSettings() {
+    console.log('Toggling developer settings:', {
+      mockDataEnabled: DEVELOPER_SETTINGS.mockDataEnabled[Math.floor(Math.random() * 2)],
+      debugMode: DEVELOPER_SETTINGS.debugMode[Math.floor(Math.random() * 2)],
+      performanceMonitoring: DEVELOPER_SETTINGS.performanceMonitoring[Math.floor(Math.random() * 2)],
+      crashReporting: DEVELOPER_SETTINGS.crashReporting[Math.floor(Math.random() * 2)],
+    });
+  }
+
+  // Enhanced HomeCafe data with more realistic details
+  static async fillEnhancedHomeCafeData() {
+    const store = useTastingStore.getState();
+    const grinder = HOME_CAFE_EQUIPMENT.grinders[Math.floor(Math.random() * HOME_CAFE_EQUIPMENT.grinders.length)];
+    const brewingMethod = HOME_CAFE_EQUIPMENT.brewingMethods[Math.floor(Math.random() * HOME_CAFE_EQUIPMENT.brewingMethods.length)];
+    const waterType = HOME_CAFE_EQUIPMENT.waterTypes[Math.floor(Math.random() * HOME_CAFE_EQUIPMENT.waterTypes.length)];
+    const pourPattern = HOME_CAFE_EQUIPMENT.pourPatterns[Math.floor(Math.random() * HOME_CAFE_EQUIPMENT.pourPatterns.length)];
+    
+    store.updateHomeCafeData({
+      equipment: {
+        grinder: {
+          brand: grinder.brand,
+          model: grinder.model,
+          setting: `${15 + Math.floor(Math.random() * 15)}`, // 15-30 range
+        },
+        brewingMethod,
+        filter: HOME_CAFE_EQUIPMENT.filters[Math.floor(Math.random() * HOME_CAFE_EQUIPMENT.filters.length)],
+        water: waterType,
+        other: brewingMethod === 'Siphon' ? '사이폰 전용 알코올 버너 사용' : '',
+      },
+      recipe: {
+        doseIn: 12 + Math.floor(Math.random() * 8), // 12-20g range
+        waterAmount: 200 + Math.floor(Math.random() * 100), // 200-300ml range
+        ratio: ['1:15', '1:16', '1:17'][Math.floor(Math.random() * 3)],
+        waterTemp: 85 + Math.floor(Math.random() * 10), // 85-95°C range
+        bloomTime: 20 + Math.floor(Math.random() * 25), // 20-45 seconds
+        totalBrewTime: 150 + Math.floor(Math.random() * 90), // 2:30-4:00 range
+        pourPattern,
+      },
+      notes: {
+        previousChange: [
+          '그라인더 세팅을 한 단계 굵게 조정',
+          '물 온도를 3도 낮춤',
+          '추출 시간을 30초 단축',
+          '새로운 원두로 교체',
+          '필터를 다른 브랜드로 변경',
+        ][Math.floor(Math.random() * 5)],
+        result: [
+          '산미가 더 밝고 깔끔해짐',
+          '바디감이 향상되고 균형이 좋아짐',
+          '쓴맛이 줄어들고 단맛이 강조됨',
+          '향미가 더 복잡하고 풍부해짐',
+          '전체적으로 부드러워지고 마시기 편해짐',
+        ][Math.floor(Math.random() * 5)],
+        nextExperiment: [
+          '추출 시간을 더 늘려서 테스트 예정',
+          '다른 물을 사용해서 비교해볼 예정',
+          '그라인더 세팅을 미세 조정할 계획',
+          '다른 필터로 실험해볼 예정',
+          '푸어 패턴을 바꿔서 테스트할 계획',
+        ][Math.floor(Math.random() * 5)],
+      },
+    });
+  }
+
   // Generate complete tasting record
   static async generateCompleteTastingRecord() {
     await this.fillCoffeeInfo();
@@ -233,10 +398,123 @@ export class DummyDataService {
     await this.fillPersonalComment();
     await this.fillRoasterNotes();
     
-    // If home cafe mode, add home cafe data
+    // If home cafe mode, add enhanced home cafe data
     const store = useTastingStore.getState();
     if (store.currentTasting.mode === 'home_cafe') {
-      await this.fillHomeCafeData();
+      await this.fillEnhancedHomeCafeData();
     }
+  }
+
+  // Auto-select functions for UI components
+  static async autoSelectDropdown(options: string[], defaultIndex?: number) {
+    const selectedIndex = defaultIndex ?? Math.floor(Math.random() * options.length);
+    return options[selectedIndex];
+  }
+
+  static async autoSelectRadioButton(options: string[], preferredOption?: string) {
+    if (preferredOption && options.includes(preferredOption)) {
+      return preferredOption;
+    }
+    return options[Math.floor(Math.random() * options.length)];
+  }
+
+  static async autoSelectCheckboxes(options: string[], minSelections = 1, maxSelections?: number) {
+    const maxSelect = maxSelections ?? Math.min(3, options.length);
+    const numSelections = minSelections + Math.floor(Math.random() * (maxSelect - minSelections + 1));
+    
+    const shuffled = [...options].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, numSelections);
+  }
+
+  static async autoFillSlider(min: number, max: number, preferredValue?: number) {
+    if (preferredValue !== undefined && preferredValue >= min && preferredValue <= max) {
+      return preferredValue;
+    }
+    return min + Math.floor(Math.random() * (max - min + 1));
+  }
+
+  // History screen search input
+  static async fillHistorySearch() {
+    const searchTerms = [
+      '에티오피아',
+      '콜롬비아',
+      '테라로사',
+      '브라질',
+      '케냐',
+      '게이샤',
+      '카라멜',
+      '과일향',
+      '산미',
+    ];
+    
+    const searchTerm = searchTerms[Math.floor(Math.random() * searchTerms.length)];
+    console.log('Filling history search with:', searchTerm);
+    return searchTerm;
+  }
+
+  // Onboarding screen auto-progression
+  static async progressOnboarding() {
+    console.log('Auto-progressing through onboarding for testing');
+    return {
+      currentStep: Math.floor(Math.random() * 4) + 1, // Steps 1-4
+      completed: Math.random() > 0.5,
+    };
+  }
+
+  // Achievement gallery sample data
+  static async generateSampleAchievements() {
+    const achievements = [
+      {
+        id: 'first_tasting',
+        title: '첫 테이스팅',
+        description: '첫 번째 커피 테이스팅을 완료했습니다',
+        progress: 1,
+        total: 1,
+        unlocked: true,
+      },
+      {
+        id: 'flavor_explorer',
+        title: '향미 탐험가',
+        description: '10가지 다른 향미를 발견했습니다',
+        progress: 7,
+        total: 10,
+        unlocked: false,
+      },
+      {
+        id: 'home_barista',
+        title: '홈 바리스타',
+        description: '홈카페 모드로 5번 기록했습니다',
+        progress: 3,
+        total: 5,
+        unlocked: false,
+      },
+    ];
+    
+    console.log('Generated sample achievements:', achievements.length);
+    return achievements;
+  }
+
+  // Statistics screen sample data
+  static async generateSampleStats() {
+    const stats = {
+      totalTastings: 47,
+      averageScore: 4.1,
+      favoriteOrigin: '에티오피아',
+      favoriteRoaster: '테라로사',
+      tastingStreak: 12,
+      weeklyAverage: 3.2,
+      monthlyTrend: '+15%',
+      topFlavors: ['과일향', '꽃향', '초콜릿'],
+      scoreDistribution: {
+        '5.0': 8,
+        '4.5-4.9': 15,
+        '4.0-4.4': 18,
+        '3.5-3.9': 6,
+        '3.0-3.4': 0,
+      },
+    };
+    
+    console.log('Generated sample statistics:', stats);
+    return stats;
   }
 }

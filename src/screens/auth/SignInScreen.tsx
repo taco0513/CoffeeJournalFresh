@@ -130,7 +130,7 @@ const SignInScreen = () => {
           {/* Logo/Title Section */}
           <View style={styles.headerSection}>
             <Text style={styles.logo}>☕</Text>
-            <Text style={styles.title}>Coffee Journal</Text>
+            <Text style={styles.title}>CupNote</Text>
             <Text style={styles.subtitle}>당신의 커피 여정을 기록하세요</Text>
           </View>
 

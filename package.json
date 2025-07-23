@@ -1,5 +1,5 @@
 {
-  "name": "CoffeeJournalFresh",
+  "name": "CupNote",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -14,7 +14,7 @@
     "postinstall": "cd ios && pod install && cd .. && ./scripts/fix-crash.sh",
     "fix-crash": "./scripts/fix-crash.sh",
     "setup-permissions": "./scripts/setup-google-oauth-ios.sh && ./scripts/setup-google-oauth-android.sh",
-    "build-release-ios": "cd ios && xcodebuild -workspace CoffeeJournalFresh.xcworkspace -scheme CoffeeJournalFresh -configuration Release -destination 'generic/platform=iOS' archive -archivePath build/CoffeeJournalFresh.xcarchive",
+    "build-release-ios": "cd ios && xcodebuild -workspace CupNote.xcworkspace -scheme CupNote -configuration Release -destination 'generic/platform=iOS' archive -archivePath build/CupNote.xcarchive",
     "build-release-android": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {

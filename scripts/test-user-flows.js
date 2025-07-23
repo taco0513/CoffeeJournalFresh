@@ -1,5 +1,5 @@
 /**
- * Critical User Flow Tests for Coffee Journal App
+ * Critical User Flow Tests for CupNote App
  * Run this script to verify all critical paths work correctly
  */
 
@@ -109,7 +109,7 @@ console.log("\n\n💡 Test Commands:");
 console.log("-".repeat(40));
 console.log("Build for testing:");
 console.log("  iOS: npm run ios");
-console.log("  iOS Release: cd ios && xcodebuild -scheme CoffeeJournalFresh -configuration Release");
+console.log("  iOS Release: cd ios && xcodebuild -scheme CupNote -configuration Release");
 console.log("\nRun type check:");
 console.log("  npm run tsc");
 console.log("\nRun linter:");

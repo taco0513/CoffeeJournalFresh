@@ -1,12 +1,12 @@
-# Coffee Journal Fresh - TestFlight Testing Guide
+# CupNote - TestFlight Testing Guide
 
 ## Welcome Beta Testers! ☕
 
-Thank you for joining the Coffee Journal Fresh beta testing program! Your feedback is invaluable in making this the best coffee companion app possible.
+Thank you for joining the CupNote beta testing program! Your feedback is invaluable in making this the best coffee companion app possible.
 
 ## 🎯 What We're Testing
 
-Coffee Journal Fresh v1.0 introduces revolutionary **Personal Taste Discovery** technology that learns your unique coffee preferences and provides personalized recommendations.
+CupNote v1.0 introduces revolutionary **Personal Taste Discovery** technology that learns your unique coffee preferences and provides personalized recommendations.
 
 ### Key Features to Test:
 1. **Personal Taste Analysis** - AI-powered flavor profiling
@@ -131,13 +131,13 @@ Coffee Journal Fresh v1.0 introduces revolutionary **Personal Taste Discovery** 
 ### How to Report:
 1. **TestFlight Feedback** (Preferred)
    - Open TestFlight app
-   - Find Coffee Journal Fresh
+   - Find CupNote
    - Tap "Send Beta Feedback"
    - Include screenshots if possible
 
 2. **Email Feedback**
    - Send to: hello@zimojin.com
-   - Subject: "Coffee Journal Fresh Beta Feedback"
+   - Subject: "CupNote Beta Feedback"
    - Include device model and iOS version
 
 3. **GitHub Issues** (For technical users)
@@ -256,7 +256,7 @@ We're especially interested in feedback about:
 
 ### Thank You Rewards:
 - **Exclusive beta tester achievement** in the final app
-- **Early access** to future Coffee Journal Fresh features
+- **Early access** to future CupNote features
 - **Credits in app acknowledgments** (optional, with permission)
 - **Special thanks** in release notes
 
@@ -283,11 +283,11 @@ Beta testers who provide exceptional feedback will receive:
 
 ## 🎉 Thank You!
 
-Your participation in this beta test is crucial to making Coffee Journal Fresh the best possible coffee companion app. Every bug report, feature suggestion, and piece of feedback helps us create something truly special for the coffee community.
+Your participation in this beta test is crucial to making CupNote the best possible coffee companion app. Every bug report, feature suggestion, and piece of feedback helps us create something truly special for the coffee community.
 
 Happy testing, and enjoy your coffee journey! ☕✨
 
 ---
 
-**Coffee Journal Fresh Beta Team**
+**CupNote Beta Team**
 *Building the future of personal coffee discovery*

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the implementation of an enhanced sensory evaluation system that combines Korean coffee expressions with a beginner-friendly interface for the CoffeeJournalFresh app.
+This document outlines the implementation of an enhanced sensory evaluation system that combines Korean coffee expressions with a beginner-friendly interface for the CupNote app.
 
 ## ✅ Completed Components
 

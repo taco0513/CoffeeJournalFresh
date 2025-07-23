@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "CoffeeJournalFresh.app"
-               BlueprintName = "CoffeeJournalFresh"
-               ReferencedContainer = "container:CoffeeJournalFresh.xcodeproj">
+               BuildableName = "CupNote.app"
+               BlueprintName = "CupNote"
+               ReferencedContainer = "container:CupNote.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "CoffeeJournalFreshTests.xctest"
-               BlueprintName = "CoffeeJournalFreshTests"
-               ReferencedContainer = "container:CoffeeJournalFresh.xcodeproj">
+               BuildableName = "CupNoteTests.xctest"
+               BlueprintName = "CupNoteTests"
+               ReferencedContainer = "container:CupNote.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -46,7 +46,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/zimo_mbp16_m1max/Projects/CoffeeJournalFresh/ios"
+      customWorkingDirectory = "/Users/zimo_mbp16_m1max/Projects/CoffeeJournalFresh-20250720-oauth-admin/ios"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "CoffeeJournalFresh.app"
-            BlueprintName = "CoffeeJournalFresh"
-            ReferencedContainer = "container:CoffeeJournalFresh.xcodeproj">
+            BuildableName = "CupNote.app"
+            BlueprintName = "CupNote"
+            ReferencedContainer = "container:CupNote.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -73,9 +73,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "CoffeeJournalFresh.app"
-            BlueprintName = "CoffeeJournalFresh"
-            ReferencedContainer = "container:CoffeeJournalFresh.xcodeproj">
+            BuildableName = "CupNote.app"
+            BlueprintName = "CupNote"
+            ReferencedContainer = "container:CupNote.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

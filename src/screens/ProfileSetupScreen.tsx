@@ -66,7 +66,7 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ onComplete }) =
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
-          <Text style={styles.title}>Welcome to Coffee Journal</Text>
+          <Text style={styles.title}>Welcome to CupNote</Text>
           <Text style={styles.subtitle}>커피 테이스팅 여정을 시작하세요</Text>
         </View>
 

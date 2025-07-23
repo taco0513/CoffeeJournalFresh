@@ -35,11 +35,17 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 4. **Cultural adaptation** with 44 Korean taste expressions
 5. **Achievement system** for habit formation
 
-## Current Focus (2025-07-24) - Code Quality Improvements Complete ✅
-- **Status**: 99% MVP Complete + Code Quality Enhancements Implemented
-- **Latest Achievement**: Comprehensive code quality improvements with 3 new services
+## Current Focus (2025-07-24) - App Registration Issue Resolved ✅
+- **Status**: 99% MVP Complete + Critical iOS Issue Fixed
+- **Latest Achievement**: ✅ **COMPLETELY RESOLVED** "CoffeeJournalFresh has not been registered" error
+- **App Registration Fix**: Full iOS configuration unified from CoffeeJournalFresh → CupNote
+- **Technical Resolution**: 
+  - **✅ Xcode Project Target**: Updated all 43 references to use "CupNote"
+  - **✅ Podfile Configuration**: Target changed from CoffeeJournalFresh to CupNote
+  - **✅ CocoaPods Integration**: Successfully regenerated with correct naming
+  - **✅ Build Pipeline**: DerivedData and build scripts now use CupNote consistently
+  - **✅ Bundle Identifiers**: Updated to com.cupnote.app across all platforms
 - **Quality Services**: MockDataService, AccessControlService, ErrorRecoveryService all active
-- **App Status**: Successfully launched and tested on iOS Simulator
 - **Completed Features**: 
   - Korean expressions fully integrated into TastingFlow
   - CATA (Check All That Apply) methodology per SCA 2024 standards
@@ -163,6 +169,11 @@ src/
   - Updated all callback dependencies to use safe version
   - Service calls and component imports fixed
   - Feature backlog and web-admin excluded from type checking
+- ✅ **iOS App Registration Issue RESOLVED** (2025-07-24): Fixed "CoffeeJournalFresh has not been registered" error
+  - Complete iOS configuration unified to use "CupNote" naming
+  - Xcode project target, schemes, and Podfile all updated consistently
+  - Build pipeline now properly recognizes CupNote as registered app name
+  - Bundle identifiers updated to com.cupnote.app across all platforms
 
 ## Commands
 ```bash
@@ -171,7 +182,7 @@ npm start
 npx react-native run-ios
 
 # Build for release
-cd ios && xcodebuild -workspace CoffeeJournalFresh.xcworkspace -scheme CoffeeJournalFresh -configuration Release
+cd ios && xcodebuild -workspace CupNote.xcworkspace -scheme CupNote -configuration Release
 
 # Development debugging (in simulator console)
 clearDraftStorage()        # Clear problematic draft data

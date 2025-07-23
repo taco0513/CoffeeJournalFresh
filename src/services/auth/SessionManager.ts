@@ -549,7 +549,7 @@ export class SessionManager {
       // This is a simple implementation - in production, you might want to use
       // device-specific identifiers like device ID, app version, etc.
       const fingerprint = [
-        'CoffeeJournalFresh',
+        'CupNote',
         '1.0.0', // App version
         Date.now().toString().substring(0, 10), // Day-level timestamp for some variability
       ].join('|');

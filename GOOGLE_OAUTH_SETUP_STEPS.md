@@ -1,4 +1,4 @@
-# Google OAuth Setup Steps - Coffee Journal Fresh
+# Google OAuth Setup Steps - CupNote
 
 ## Current Status ✅
 - ✅ Google Sign-In package installed (@react-native-google-signin/google-signin)
@@ -17,7 +17,7 @@
 
 2. **Create New Project**
    - Click "Select a project" → "New Project"
-   - Project name: `Coffee Journal Fresh`
+   - Project name: `CupNote`
    - Click "Create"
 
 3. **Configure OAuth Consent Screen**
@@ -25,7 +25,7 @@
    - Choose "External" user type
    - Fill in:
      ```
-     App name: Coffee Journal Fresh
+     App name: CupNote
      User support email: [Your email]
      Developer contact: [Your email]
      ```
@@ -42,15 +42,15 @@
    - Go to "APIs & Services" → "Credentials"
    - Click "Create Credentials" → "OAuth client ID"
    - Application type: **iOS**
-   - Name: `Coffee Journal Fresh iOS`
-   - Bundle ID: `com.brianjin.CoffeeJournalFresh`
+   - Name: `CupNote iOS`
+   - Bundle ID: `com.cupnote.app`
    - Click "Create"
    - **COPY THE CLIENT ID** (format: 123456789-xxxxx.apps.googleusercontent.com)
 
 6. **Create Web OAuth Client (for Supabase)**
    - Click "Create Credentials" → "OAuth client ID" again
    - Application type: **Web application**
-   - Name: `Coffee Journal Fresh Web`
+   - Name: `CupNote Web`
    - Authorized redirect URIs:
      ```
      https://iyccdzymklcedzzikwhv.supabase.co/auth/v1/callback
@@ -91,12 +91,12 @@ GOOGLE_OAUTH_WEB_CLIENT_ID=987654321-ghijkl.apps.googleusercontent.com
 
 1. **Open Xcode**
    ```bash
-   open ios/CoffeeJournalFresh.xcworkspace
+   open ios/CupNote.xcworkspace
    ```
 
 2. **Add GOOGLE_REVERSED_CLIENT_ID**
-   - Select "CoffeeJournalFresh" project in navigator
-   - Select "CoffeeJournalFresh" target
+   - Select "CupNote" project in navigator
+   - Select "CupNote" target
    - Go to "Build Settings" tab
    - Click "+" → "Add User-Defined Setting"
    - Name: `GOOGLE_REVERSED_CLIENT_ID`

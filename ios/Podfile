@@ -14,7 +14,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'CoffeeJournalFresh' do
+target 'CupNote' do
   config = use_native_modules!
   
 
@@ -25,6 +25,9 @@ target 'CoffeeJournalFresh' do
     :fabric_enabled => false,
     :new_arch_enabled => false
   )
+  
+  # Temporarily disable Google Sign-In to test app registration fix
+  pod 'RNGoogleSignin', :path => '../node_modules/@react-native-google-signin/google-signin', :modular_headers => true, :inhibit_warnings => true
   
 
   pre_install do |installer|

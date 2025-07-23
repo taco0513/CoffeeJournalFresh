@@ -23,7 +23,7 @@ export interface StorageResult {
  * Handles encrypted storage of sensitive data using iOS Keychain and Android Keystore
  */
 export class SecureStorage {
-  private static readonly DEFAULT_SERVICE = 'CoffeeJournalFresh';
+  private static readonly DEFAULT_SERVICE = 'CupNote';
   private static readonly ENCRYPTION_KEY_ID = 'CJF_DEVICE_KEY';
   private static encryptionKey: string | null = null;
   private static isInitialized = false;

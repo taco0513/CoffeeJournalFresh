@@ -59,19 +59,19 @@ function drawCoffeeIcon(ctx, size) {
     ctx.stroke();
   }
   
-  // Add text "CJ" at bottom
+  // Add text "CN" at bottom
   if (size >= 60) {
     ctx.fillStyle = '#FFFFFF';
     ctx.font = `bold ${size * 0.15}px Arial`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
-    ctx.fillText('CJ', size / 2, size * 0.95);
+    ctx.fillText('CN', size / 2, size * 0.95);
   }
 }
 
 // Generate icons
 async function generateIcons() {
-  const outputDir = path.join(__dirname, '../ios/CoffeeJournalFresh/Images.xcassets/AppIcon.appiconset');
+  const outputDir = path.join(__dirname, '../ios/CupNote/Images.xcassets/AppIcon.appiconset');
   
   for (const iconSpec of iosSizes) {
     const size = iconSpec.size * iconSpec.scale;

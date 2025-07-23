@@ -1,6 +1,6 @@
-# Coffee Journal Fresh v1.0 - TestFlight Release Notes
+# CupNote v1.0 - TestFlight Release Notes
 
-## Welcome to Coffee Journal Fresh Beta! ☕
+## Welcome to CupNote Beta! ☕
 
 **Build Version:** 1.0 (1)
 **Release Date:** July 2025
@@ -226,13 +226,13 @@ Native iOS features and optimizations:
 
 **TestFlight Feedback** *(Preferred)*
 1. Open TestFlight app
-2. Find Coffee Journal Fresh
+2. Find CupNote
 3. Tap "Send Beta Feedback"
 4. Include screenshots if helpful
 
 **Email Feedback**
 - **Address:** hello@zimojin.com
-- **Subject:** Coffee Journal Fresh Beta Feedback
+- **Subject:** CupNote Beta Feedback
 - **Response Time:** Within 24 hours
 
 **GitHub Issues** *(For Technical Users)*
@@ -250,7 +250,7 @@ Native iOS features and optimizations:
 
 ## 🎉 Thank You
 
-Your participation in this beta is invaluable in making Coffee Journal Fresh the best coffee companion app possible. Every bug report, feature suggestion, and piece of feedback helps us create something truly special for the coffee community.
+Your participation in this beta is invaluable in making CupNote the best coffee companion app possible. Every bug report, feature suggestion, and piece of feedback helps us create something truly special for the coffee community.
 
 We're building more than just an app - we're creating a platform that helps coffee enthusiasts discover, learn, and share their passion. Your insights directly shape this vision.
 
@@ -258,7 +258,7 @@ We're building more than just an app - we're creating a platform that helps coff
 
 ---
 
-**Coffee Journal Fresh Beta Team**
+**CupNote Beta Team**
 *Building the future of personal coffee discovery*
 
 **Build Information:**

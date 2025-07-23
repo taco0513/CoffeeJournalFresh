@@ -93,7 +93,7 @@ export class ErrorBoundary extends Component<Props, State> {
               <View style={styles.betaNotice}>
                 <Text style={styles.betaTitle}>베타 버전 안내</Text>
                 <Text style={styles.betaText}>
-                  현재 Coffee Journal은 베타 테스트 중입니다. 오류가 발생할 수 있으며, 
+                  현재 CupNote는 베타 테스트 중입니다. 오류가 발생할 수 있으며, 
                   피드백은 앱 개선에 큰 도움이 됩니다.
                 </Text>
               </View>

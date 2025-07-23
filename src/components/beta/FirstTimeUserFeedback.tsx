@@ -82,7 +82,7 @@ export const FirstTimeUserFeedback: React.FC = () => {
         >
           <View style={styles.header}>
             <Text style={styles.emoji}>👋</Text>
-            <Text style={styles.title}>Welcome to Coffee Journal Beta!</Text>
+            <Text style={styles.title}>Welcome to CupNote Beta!</Text>
           </View>
           
           <Text style={styles.message}>

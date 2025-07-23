@@ -1,11 +1,11 @@
 # Google OAuth Setup Guide
 
-This guide walks you through setting up Google Sign-In for the Coffee Journal Fresh app.
+This guide walks you through setting up Google Sign-In for the CupNote app.
 
 ## Prerequisites
 
 - Google Cloud Console account
-- iOS app bundle ID: `com.brianjin.CoffeeJournalFresh`
+- iOS app bundle ID: `com.cupnote.app`
 - Access to Supabase dashboard
 
 ## Step 1: Google Cloud Console Setup
@@ -25,8 +25,8 @@ This guide walks you through setting up Google Sign-In for the Coffee Journal Fr
 2. Click "Create Credentials" → "OAuth client ID"
 3. Select "iOS" as Application type
 4. Configure:
-   - Name: `Coffee Journal Fresh iOS`
-   - Bundle ID: `com.brianjin.CoffeeJournalFresh`
+   - Name: `CupNote iOS`
+   - Bundle ID: `com.cupnote.app`
 5. Click "Create" and save the iOS Client ID
 
 ### Create Web Application OAuth Client (Required for Supabase)
@@ -81,10 +81,10 @@ This guide walks you through setting up Google Sign-In for the Coffee Journal Fr
      <!-- Existing Apple Sign-In URL scheme -->
      <dict>
        <key>CFBundleURLName</key>
-       <string>com.brianjin.CoffeeJournalFresh</string>
+       <string>com.cupnote.app</string>
        <key>CFBundleURLSchemes</key>
        <array>
-         <string>com.brianjin.CoffeeJournalFresh</string>
+         <string>com.cupnote.app</string>
        </array>
      </dict>
      <!-- Add Google Sign-In URL scheme -->
