@@ -43,9 +43,57 @@ export default function ResultScreen({navigation}: any) {
   const { currentUser } = useUserStore();
   const [isSaving, setIsSaving] = useState(false);
   const [comparison, setComparison] = useState<any>(null);
-  const [similarCoffees, setSimilarCoffees] = useState<any[]>([]);
   const [isLoadingComparison, setIsLoadingComparison] = useState(false);
   const [isSaved, setIsSaved] = useState(false); // 저장 완료 상태 추가
+
+  // 자동 저장 실행
+  useEffect(() => {
+    const autoSave = async () => {
+      if (!isSaved && currentTasting) {
+        try {
+          // Realm에 저장
+          await saveTasting();
+          
+          // Supabase에도 저장 시도
+          try {
+            const tastingData = {
+              ...currentTasting,
+              id: `tasting_${Date.now()}`,
+              matchScore: matchScoreTotal || 0,
+            };
+            
+            if (ENABLE_SYNC) {
+              await tastingService.saveTasting(tastingData);
+            }
+          } catch (supabaseError: any) {
+            // Only show network error to user if it's a network issue
+            if (NetworkUtils.isNetworkError(supabaseError)) {
+              showErrorToast('오프라인 모드', '네트워크 연결이 없어 로컬에만 저장되었습니다.');
+            }
+          }
+          
+          // Check achievements after successful save
+          if (currentUser?.id) {
+            try {
+              const newAchievements = await checkAchievements(currentUser.id);
+              if (newAchievements.length > 0) {
+                showMultipleAchievements(newAchievements);
+              }
+            } catch (error) {
+              console.warn('Failed to check achievements:', error);
+            }
+          }
+          
+          showSuccessToast('저장 완료', '테이스팅이 자동으로 저장되었습니다');
+          setIsSaved(true);
+        } catch (error: any) {
+          ErrorHandler.handle(error, '테이스팅 자동 저장');
+        }
+      }
+    };
+    
+    autoSave();
+  }, [isSaved, currentTasting, saveTasting, matchScoreTotal, checkAchievements, currentUser, showSuccessToast, showErrorToast, showMultipleAchievements]);
 
   // 비교 데이터 로드
   useEffect(() => {
@@ -71,12 +119,6 @@ export default function ResultScreen({navigation}: any) {
               currentTasting.roastery
             );
             
-            // console.log('☕ [ResultScreen] Supabase에서 비슷한 커피 데이터 조회 중...');
-            const supabaseSimilar = await tastingService.getSimilarCoffees(
-              currentTasting.coffeeName,
-              currentTasting.roastery,
-              currentTasting.origin
-            );
 
             if (supabaseComparison) {
               // console.log('✅ [ResultScreen] Supabase 비교 데이터 조회 성공:', {
@@ -85,8 +127,6 @@ export default function ResultScreen({navigation}: any) {
               //   popularFlavorsCount: supabaseComparison.popularFlavors?.length || 0
               // });
               setComparison(supabaseComparison);
-              setSimilarCoffees(supabaseSimilar || []);
-              // console.log('✅ [ResultScreen] 비슷한 커피 데이터:', supabaseSimilar?.length || 0, '개');
             } else {
               // console.log('⚠️ [ResultScreen] Supabase에 데이터 없음, Realm 데이터 사용');
               // Supabase에 데이터가 없으면 Realm 데이터 사용
@@ -98,17 +138,8 @@ export default function ResultScreen({navigation}: any) {
               );
               
               setComparison(comparisonData);
-              
-              const similarData = realmService.getSimilarCoffees(
-                currentTasting.coffeeName,
-                currentTasting.roastery,
-                currentTasting.origin
-              );
-              
-              setSimilarCoffees(similarData);
               // console.log('✅ [ResultScreen] Realm 데이터 로드 완료:', {
               //   comparison: comparisonData,
-              //   similarCount: similarData?.length || 0
               // });
             }
           } catch (error) {
@@ -122,13 +153,6 @@ export default function ResultScreen({navigation}: any) {
                 currentTasting.roastery
               );
               setComparison(comparisonData);
-              
-              const similarData = realmService.getSimilarCoffees(
-                currentTasting.coffeeName,
-                currentTasting.roastery,
-                currentTasting.origin
-              );
-              setSimilarCoffees(similarData);
               // console.log('✅ [ResultScreen] Realm 백업 데이터 로드 성공');
             } catch (realmError) {
               // console.error('❌ [ResultScreen] Realm 데이터 로드도 실패:', realmError);
@@ -143,19 +167,11 @@ export default function ResultScreen({navigation}: any) {
             currentTasting.roastery
           );
           setComparison(comparisonData);
-          
-          const similarData = realmService.getSimilarCoffees(
-            currentTasting.coffeeName,
-            currentTasting.roastery,
-            currentTasting.origin
-          );
-          setSimilarCoffees(similarData);
           // console.log('✅ [ResultScreen] Realm 데이터 로드 완료');
         }
       } catch (error) {
         // console.error('❌ [ResultScreen] 비교 데이터 로드 실패:', error);
         setComparison(null);
-        setSimilarCoffees([]);
       } finally {
         setIsLoadingComparison(false);
         // console.log('🏁 [ResultScreen] 비교 데이터 로드 완료');
@@ -164,83 +180,6 @@ export default function ResultScreen({navigation}: any) {
 
     loadComparisonData();
   }, [currentTasting?.coffeeName, currentTasting?.roastery, currentTasting?.origin]);
-
-  // 저장 버튼 핸들러
-  const handleSave = async () => {
-    if (isSaving) return; // 중복 저장 방지
-    
-    setIsSaving(true);
-    // console.log('💾 [ResultScreen] 저장 시작...');
-    try {
-      // Realm에 저장
-      // console.log('📱 [ResultScreen] Realm에 저장 중...');
-      await saveTasting();
-      // console.log('✅ [ResultScreen] Realm 저장 성공');
-      // Supabase에도 저장 시도
-      try {
-        const tastingData = {
-          ...currentTasting,
-          id: `tasting_${Date.now()}`,
-          matchScore: matchScoreTotal || 0,
-        };
-        
-        // console.log('☁️ [ResultScreen] Supabase에 저장 시도:', {
-        //   coffeeName: tastingData.coffeeName,
-        //   roastery: tastingData.roastery,
-        //   matchScore: tastingData.matchScore,
-        //   flavorCount: tastingData.selectedFlavors?.length || 0
-        // });
-        if (ENABLE_SYNC) {
-          await tastingService.saveTasting(tastingData);
-          // console.log('✅ [ResultScreen] Supabase 저장 성공!');
-        } else {
-          // console.log('⏸️ [ResultScreen] Supabase 동기화 비활성화됨');
-        }
-      } catch (supabaseError: any) {
-        // console.error('❌ [ResultScreen] Supabase 저장 실패 (진행에는 영향 없음):', {
-        //   error: supabaseError instanceof Error ? supabaseError.message : supabaseError,
-        //   stack: supabaseError instanceof Error ? supabaseError.stack : undefined
-        // });
-        // Only show network error to user if it's a network issue
-        if (NetworkUtils.isNetworkError(supabaseError)) {
-          showErrorToast('오프라인 모드', '네트워크 연결이 없어 로컬에만 저장되었습니다.');
-        }
-        // Supabase 저장 실패는 무시하고 계속 진행
-      }
-      
-      // Check achievements after successful save
-      if (currentUser?.id) {
-        try {
-          const newAchievements = await checkAchievements(currentUser.id);
-          if (newAchievements.length > 0) {
-            // Show achievement notifications
-            showMultipleAchievements(newAchievements);
-          }
-        } catch (error) {
-          console.warn('Failed to check achievements:', error);
-        }
-      }
-      
-      showSuccessToast('저장 완료', '테이스팅이 저장되었습니다');
-      // console.log('🎉 [ResultScreen] 전체 저장 프로세스 완료');
-      
-      // 2초 후 홈 화면으로 이동
-      setTimeout(() => {
-        reset();
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'MainTabs'}],
-        });
-      }, 2000);
-    } catch (error: any) {
-      // console.error('❌ [ResultScreen] Realm 저장 실패:', {
-      //   error: error instanceof Error ? error.message : error,
-      //   stack: error instanceof Error ? error.stack : undefined
-      // });
-      ErrorHandler.handle(error, '테이스팅 저장');
-      setIsSaving(false); // 실패 시 다시 저장 가능하도록
-    }
-  };
 
   const handleNewTasting = () => {
     reset();
@@ -295,7 +234,7 @@ export default function ResultScreen({navigation}: any) {
     <SafeAreaView style={styles.container}>
       {/* HIG 준수 네비게이션 바 */}
       <View style={styles.navigationBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={handleGoHome}>
           <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>결과</Text>
@@ -326,21 +265,19 @@ export default function ResultScreen({navigation}: any) {
         <Text style={styles.info}>커피: {currentTasting.coffeeName || '-'}</Text>
       </View>
 
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>로스터 노트</Text>
+        </View>
+        <Text style={styles.info}>{currentTasting.roasterNotes || '로스터 노트가 없습니다'}</Text>
+      </View>
+
       {currentTasting.personalComment && (
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>내 노트</Text>
           </View>
           <Text style={styles.info}>{currentTasting.personalComment}</Text>
-        </View>
-      )}
-      
-      {currentTasting.roasterNotes && (
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>로스터 노트</Text>
-          </View>
-          <Text style={styles.info}>{currentTasting.roasterNotes}</Text>
         </View>
       )}
 
@@ -458,78 +395,27 @@ export default function ResultScreen({navigation}: any) {
           </View>
         )}
       </View>
+      </ScrollView>
 
-      {/* 비슷한 커피 추천 - 항상 표시 */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>비슷한 커피 추천</Text>
-        </View>
-        <Text style={styles.comparisonSubtitle}>
-          {currentTasting.origin ? `같은 원산지 (${currentTasting.origin})` : `같은 로스터리 (${currentTasting.roastery})`}
-        </Text>
-        {similarCoffees && similarCoffees.length > 0 ? (
-          similarCoffees.map((coffee: any, index: number) => (
-            <View key={index} style={styles.similarCoffeeItem}>
-              <View style={styles.similarCoffeeInfo}>
-                <Text style={styles.similarCoffeeName}>{coffee.coffeeName}</Text>
-                <Text style={styles.similarCoffeeRoastery}>{coffee.roaster_name || coffee.roastery}</Text>
-                {coffee.origin && <Text style={styles.similarCoffeeOrigin}>{coffee.origin}</Text>}
-              </View>
-              <View style={styles.similarCoffeeScore}>
-                <Text style={styles.similarCoffeeScoreText}>{coffee.averageScore}%</Text>
-                <Text style={styles.similarCoffeeCount}>{coffee.tastingCount}회</Text>
-              </View>
-            </View>
-          ))
-        ) : (
-          <View style={styles.emptyComparisonContainer}>
-            <Text style={styles.emptyComparisonText}>
-              🔍 추천할 비슷한 커피를 찾을 수 없습니다
-            </Text>
-          </View>
-        )}
-      </View>
-
-        {/* 버튼 영역 */}
-        <View style={styles.buttonContainer}>
+      {/* Bottom Button - Sticky */}
+      <View style={styles.bottomContainer}>
+        <View style={styles.actionButtonGroup}>
           <TouchableOpacity 
-            style={[
-              commonButtonStyles.buttonSuccess, 
-              commonButtonStyles.buttonLarge, 
-              styles.saveButton,
-              isSaving && commonButtonStyles.buttonDisabled
-            ]}
-            onPress={handleSave}
-            disabled={isSaving}
+            style={[commonButtonStyles.buttonPrimary, styles.actionButton]}
+            onPress={handleNewTasting}
             activeOpacity={0.8}
           >
-            <Text style={[
-              commonTextStyles.buttonTextLarge, 
-              styles.saveButtonText,
-              isSaving && commonTextStyles.buttonTextDisabled
-            ]}>
-              {isSaving ? '저장 중...' : '저장하기'}
-            </Text>
+            <Text style={[commonTextStyles.buttonText, styles.actionButtonText]}>New Tasting</Text>
           </TouchableOpacity>
-          
-          <View style={styles.actionButtonGroup}>
-            <TouchableOpacity 
-              style={[commonButtonStyles.buttonPrimary, styles.actionButton]}
-              onPress={handleNewTasting}
-              activeOpacity={0.8}
-            >
-              <Text style={[commonTextStyles.buttonText, styles.actionButtonText]}>New Tasting</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[commonButtonStyles.buttonOutline, styles.actionButton]}
-              onPress={handleGoHome}
-              activeOpacity={0.8}
-            >
-              <Text style={[commonTextStyles.buttonTextOutline, styles.actionButtonText]}>Home</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity 
+            style={[commonButtonStyles.buttonOutline, styles.actionButton]}
+            onPress={handleGoHome}
+            activeOpacity={0.8}
+          >
+            <Text style={[commonTextStyles.buttonTextOutline, styles.actionButtonText]}>Home</Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -574,7 +460,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: HIGConstants.SPACING_XL,
+    paddingBottom: 100, // Space for sticky bottom button
   },
   header: {
     alignItems: 'center',
@@ -642,22 +528,16 @@ const styles = StyleSheet.create({
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
   },
-  buttonContainer: {
+  bottomContainer: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
-    borderTopColor: HIGColors.gray4,
-  },
-  saveButton: {
-    width: '100%',
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  saveButtonText: {
-    color: '#FFFFFF',
+    borderTopColor: HIGColors.systemGray4,
   },
   actionButtonGroup: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_SM,
+    width: '100%',
   },
   actionButton: {
     flex: 1,
@@ -774,46 +654,6 @@ const styles = StyleSheet.create({
     ...TEXT_STYLES.CAPTION,
     color: Colors.PRIMARY,
     fontWeight: 'normal',
-  },
-  // 비슷한 커피 추천 스타일
-  similarCoffeeItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  similarCoffeeInfo: {
-    flex: 1,
-  },
-  similarCoffeeName: {
-    ...TEXT_STYLES.BODY_SMALL,
-    fontWeight: '600',
-    color: Colors.TEXT_PRIMARY,
-    marginBottom: 2,
-  },
-  similarCoffeeRoastery: {
-    ...TEXT_STYLES.CAPTION,
-    color: Colors.TEXT_SECONDARY,
-    marginBottom: 2,
-  },
-  similarCoffeeOrigin: {
-    ...TEXT_STYLES.CAPTION,
-    color: Colors.TEXT_TERTIARY,
-  },
-  similarCoffeeScore: {
-    alignItems: 'flex-end',
-  },
-  similarCoffeeScoreText: {
-    ...TEXT_STYLES.BODY_SMALL,
-    fontWeight: 'bold',
-    color: Colors.SUCCESS_GREEN,
-  },
-  similarCoffeeCount: {
-    ...TEXT_STYLES.CAPTION,
-    color: Colors.TEXT_SECONDARY,
   },
   emptyComparisonContainer: {
     padding: 20,
