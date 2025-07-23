@@ -297,7 +297,17 @@ const CoffeeInfoScreen = () => {
       
       {/* Navigation Bar */}
       <View style={styles.navigationBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => {
+          // Check if we can go back, otherwise go to home
+          if (navigation.canGoBack()) {
+            navigation.goBack();
+          } else {
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'MainTabs'}],
+            });
+          }
+        }}>
           <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>커피 정보</Text>
