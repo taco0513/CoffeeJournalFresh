@@ -19,6 +19,7 @@ export type RootStackParamList = {
     Search: undefined;
     Export: undefined;
     PersonalTasteDashboard: undefined;
+    AchievementGallery: undefined;
     DataTest: undefined;
     DeveloperScreen: undefined;
   };

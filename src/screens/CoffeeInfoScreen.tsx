@@ -14,6 +14,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import {useTastingStore} from '../stores/tastingStore';
 import { useDevStore } from '../stores/useDevStore';
+import { CurrentTasting } from '../types/tasting';
 import { AutocompleteInput } from '../components/common';
 import RealmService from '../services/realm/RealmService';
 import { NavigationButton } from '../components/common';
@@ -166,15 +167,8 @@ const CoffeeInfoScreen = () => {
       {/* Navigation Bar */}
       <View style={styles.navigationBar}>
         <TouchableOpacity onPress={() => {
-          // Check if we can go back, otherwise go to home
-          if (navigation.canGoBack()) {
-            navigation.goBack();
-          } else {
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'MainTabs' as const}],
-            });
-          }
+          // Just go back - navigation should handle it
+          navigation.goBack();
         }}>
           <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>

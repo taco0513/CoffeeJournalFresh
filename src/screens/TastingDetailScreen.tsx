@@ -160,7 +160,7 @@ const TastingDetailScreen = () => {
               setIsDeleting(true);
               
               // 삭제 실행
-              const success = await RealmService.deleteTasting(tastingId);
+              const success = await RealmService.getInstance().deleteTasting(tastingId);
               
               if (success) {
                 showSuccessToast('삭제 완료', '테이스팅 기록이 삭제되었습니다');

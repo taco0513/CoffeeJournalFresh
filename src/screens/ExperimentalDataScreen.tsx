@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTastingStore } from '../stores/tastingStore';
+import { CurrentTasting } from '../types/tasting';
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 import { 
   MouthfeelButton,
@@ -33,7 +34,7 @@ const ExperimentalDataScreen = () => {
     finish: currentTasting.finish,
     bitterness: currentTasting.bitterness,
     balance: currentTasting.balance,
-    mouthfeel: currentTasting.mouthfeel || 'Clean',
+    mouthfeel: (currentTasting.mouthfeel as MouthfeelType) || 'Clean',
   });
 
   const mouthfeelOptions: MouthfeelType[] = useMemo(() => ['Clean', 'Creamy', 'Juicy', 'Silky'], []);
@@ -41,7 +42,7 @@ const ExperimentalDataScreen = () => {
   const handleComplete = useCallback(async () => {
     // Update all sensory fields in the store
     Object.entries(sensoryData).forEach(([key, value]) => {
-      updateField(key, value);
+      updateField(key as keyof CurrentTasting, value);
     });
     
     // Navigate to Korean sensory evaluation screen

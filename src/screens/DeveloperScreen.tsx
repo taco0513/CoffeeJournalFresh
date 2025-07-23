@@ -86,7 +86,7 @@ const DeveloperScreen = () => {
     const initializeScreen = async () => {
       try {
         // Initialize access control
-        const accessControl = AccessControlService.getInstance();
+        const accessControl = AccessControlService;
         await accessControl.initialize();
         
         const profile = accessControl.getCurrentUserProfile();

@@ -18,6 +18,7 @@ import { HIGConstants, HIGColors } from '../styles/common';
 // } from 'react-native-chart-kit';
 import { useUserStore } from '../stores/useUserStore';
 import { InsightCard } from '../components/stats/InsightCard';
+import RealmService from '../services/realm/RealmService';
 
 const screenWidth = Dimensions.get('window').width;
 

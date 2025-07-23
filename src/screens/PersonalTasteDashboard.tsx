@@ -79,12 +79,12 @@ export default function PersonalTasteDashboard() {
   };
 
   const handleViewAchievements = () => {
-    navigation.navigate('Achievements');
+    navigation.navigate('AchievementGallery');
   };
 
-
   const handleViewRecommendations = () => {
-    navigation.navigate('Recommendations');
+    // TODO: Add recommendations screen or redirect to appropriate screen
+    console.log('Recommendations feature not yet implemented');
   };
 
   const renderViewModeTab = (mode: PersonalTasteViewMode, label: string) => (

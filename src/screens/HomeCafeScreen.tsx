@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   nextButtonTextDisabled: {
-    color: HIGColors.systemGray2,
+    color: HIGColors.gray2,
   },
 });
 
