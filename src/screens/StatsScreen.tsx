@@ -13,9 +13,9 @@ import { useNavigation } from '@react-navigation/native';
 import { TastingService } from '../services/realm/TastingService';
 import { ITastingRecord } from '../services/realm/schemas';
 import { HIGConstants, HIGColors } from '../styles/common';
-import {
-  LineChart,
-} from 'react-native-chart-kit';
+// import {
+//   LineChart,
+// } from 'react-native-chart-kit';
 import { useUserStore } from '../stores/useUserStore';
 import { InsightCard } from '../components/stats/InsightCard';
 
@@ -457,8 +457,8 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
           </View>
         )}
 
-        {/* 테이스팅 트렌드 차트 */}
-        {tastingTrend.length > 0 && (
+        {/* 테이스팅 트렌드 차트 - Temporarily disabled due to missing react-native-chart-kit */}
+        {/* {tastingTrend.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>📈 테이스팅 트렌드</Text>
             <View style={styles.chartCard}>
@@ -494,7 +494,7 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
               />
             </View>
           </View>
-        )}
+        )} */}
 
         {/* 더 보기 버튼 */}
 
