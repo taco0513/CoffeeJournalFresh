@@ -50,6 +50,18 @@ target 'CoffeeJournalFresh' do
     # Apply fix immediately after react_native_post_install
     system("ruby fix_rct_provider.rb")
     
+    # Fix deployment targets for all pods
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+        
+        # Fix for AppAuth module issue
+        if target.name == 'AppAuth'
+          config.build_settings['DEFINES_MODULE'] = 'YES'
+        end
+      end
+    end
+    
     # Remove New Architecture flags to prevent crashes
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|

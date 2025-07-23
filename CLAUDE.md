@@ -24,21 +24,24 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 4. **Cultural adaptation** with 44 Korean taste expressions
 5. **Achievement system** for habit formation
 
-## Current Focus (2025-07-23) - Home Cafe Mode MVP Integration ✅
-- **Status**: 98% MVP Complete with Home Cafe Mode Successfully Integrated
-- **Latest Achievement**: Home Cafe Mode added to MVP based on market research
-- **Market Validation**: Korean home cafe market (20만+ users, 12.9B USD, 6.6% growth)
+## Current Focus (2025-07-23) - HomeCafe Backend Storage Complete ✅
+- **Status**: 99% MVP Complete - HomeCafe Backend Implementation Finished
+- **Latest Achievement**: Full HomeCafe data persistence to Realm + Supabase
+- **Backend Integration**: Complete data flow from UI → Store → Realm → Cloud
 - **Completed Features**: 
   - Korean expressions fully integrated into TastingFlow
   - CATA (Check All That Apply) methodology per SCA 2024 standards
   - 4-step onboarding system with AsyncStorage persistence
   - **✅ Home Cafe Mode**: Mode selection, equipment tracking, recipe management
+  - **✅ HomeCafe Data Storage**: Full backend persistence implementation
+  - **✅ Database Schema**: Realm + Supabase support for HomeCafe data
   - **✅ Dual User Paths**: Cafe visitors vs Home cafe enthusiasts
   - Market research and competitive analysis completed
 - **Key Technical Features**:
   - 44 Korean expressions across 6 categories
   - Multi-selection support (max 3 per category)
   - HomeCafeData interface with equipment, recipe, experiment notes
+  - Full data persistence (local + cloud sync)
   - Auto-calculating brew ratios (1:15, 1:16, etc.)
   - Conditional UI rendering based on selected mode
   - Professional UI with category-specific colors
@@ -298,7 +301,63 @@ feature_backlog/
 - **i18n**: LanguageSwitch, i18n directory, i18n utilities
 
 ## Session Summary (2025-07-23)
-### Achievement UI Implementation (Latest Session)
+### HomeCafe Data Storage Implementation (Latest Session) ✅
+**Status**: COMPLETED - Full backend implementation ready for testing
+
+**Implementation Details**:
+1. **Realm Schema Updates** (`src/services/realm/schemas.ts`):
+   - Added `mode: 'cafe' | 'home_cafe'` field
+   - Added `homeCafeData` as JSON string storage
+   - Added `selectedSensoryExpressions` for Korean sensory data
+
+2. **TastingService Updates** (`src/services/realm/TastingService.ts:201-204`):
+   - Modified saveTasting() to store HomeCafe data as JSON
+   - Full data serialization and persistence implemented
+
+3. **Supabase Migration** (`src/database/migrations/v0.7.0_homecafe_mode.sql`):
+   - Added `mode` column with check constraint
+   - Added `home_cafe_data` JSONB column for flexible storage
+   - Created view for HomeCafe statistics analysis
+   - Added indexes for query performance
+
+4. **Store Integration** (`src/stores/tastingStore.ts`):
+   - Updated to pass HomeCafe data during save operations
+   - Complete data flow: UI → Store → Realm → Supabase
+
+**Data Structure**:
+```javascript
+{
+  mode: 'home_cafe',
+  homeCafeData: {
+    equipment: {
+      grinder: { brand, model, setting },
+      brewingMethod: string,
+      filter: string,
+      other: string
+    },
+    recipe: {
+      doseIn: number,
+      waterAmount: number, 
+      ratio: string,
+      waterTemp: number,
+      bloomTime: number,
+      totalBrewTime: number,
+      pourPattern: string
+    },
+    notes: {
+      previousChange: string,
+      result: string,
+      nextExperiment: string
+    }
+  }
+}
+```
+
+**iOS Build Issues**: AppAuth module error prevents testing (Google Sign-In dependency)
+**Workaround**: Use Apple Sign-In for testing (already functional)
+**Next Steps**: Test HomeCafe data persistence once iOS build resolves
+
+### Previous Achievement UI Implementation
 1. ✅ **Achievement System Analysis**: 
    - Confirmed comprehensive backend implementation (AchievementSystem.ts)
    - 12 achievement categories with Korean localization
