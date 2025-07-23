@@ -1,195 +1,189 @@
-# ☕ Coffee Tasting Journey
+# CupNote 🌏☕
 
-> **"Personal Taste, Shared Journey"**  
-> **"개인의 고유한 커피 취향을 발견하고, 전문가·커뮤니티와 함께 나누며 성장하는 소셜 테이스팅 플랫폼"**
+> 나만의 커피 취향을 발견하는 가장 쉬운 방법
 
-### Core Philosophy: "Quality over Quantity"
-- **특별한 커피 경험만 기록** - 매일의 습관이 아닌, 기억하고 싶은 순간들
-- **부담 없는 사용** - 주 1-2회 스페셜티 커피 경험 중심
-- **개인 커피 아카이브** - 의미 있는 커피 여정의 큐레이션
+**글로벌 커피 저널 앱** - 한국 최초 개인 맞춤형 커피 감각 평가 앱. 44가지 한국어 표현으로 커피를 기록하고 나의 취향을 찾아가는 여정을 시작하세요.
 
-Coffee Tasting Journey는 개인의 고유한 미각과 표현을 존중하면서도, 전문가와 커뮤니티와 함께 체계적인 커피 테이스팅 능력과 감각 언어를 개발할 수 있는 소셜 러닝 플랫폼입니다.
+**Brand Identity**: "Your Coffee, Your Notes, Your Story"
 
-> 📱 **iOS**: ✅ v0.6.0 Production Ready - Complete analytics & performance monitoring  
-> 🤖 **Android**: 📅 Planned - After iOS feature completion  
-> ✅ **Latest Update**: July 20, 2025 - Analytics & Performance Monitoring System
+## 🎯 프로젝트 개요
 
-## 🚀 Current Status - MVP v0.6.0 ✅ PRODUCTION READY
+CupNote는 한국 스페셜티 커피 입문자와 홈카페족을 위한 글로벌 커피 저널 앱입니다. 복잡한 영어 표현 대신 친숙한 한국어로 커피의 맛과 향을 기록할 수 있습니다.
 
-### ✅ 완성된 핵심 기능
-- **📊 Analytics & Performance Monitoring**: 완전한 사용자 행동 추적 및 성능 모니터링 시스템 ✨ **NEW**
-- **커피 테이스팅 플로우**: 정보입력 → 향미선택(4단계) → 감각평가 → 결과
-- **🎯 Personal Taste Discovery**: 개인 맞춤 퀴즈, 취향 분석, 성장 추적
-- **🌐 Web Admin Dashboard**: 실시간 분석 차트 및 커피 카탈로그 관리
-- **Supabase 인증**: Apple Sign-In 구현 (실기기 전용) + Google Sign-In 준비
-- **로컬 데이터**: Realm DB 저장 + 오프라인 지원
-- **4개 탭 네비게이션**: 홈, 저널, 통계, 프로필
-- **Coffee-themed UI**: 커피 테마 디자인 시스템
-- **🔧 Developer Mode**: 완전한 테스트 도구 및 mock 데이터
-- **📱 Beta Feedback**: Shake-to-feedback 및 실시간 피드백 수집
-- **Enhanced Error Handling**: 크래시 리포팅 및 사용자 신고 기능
+**글로벌 진출 준비**: 미국 시장 동시 대응 완료
 
-## 🎯 다음 목표 - Phase 2 Development
+### 주요 특징
 
-### ✅ MVP v0.4.0 "Personal Taste Discovery" - COMPLETED
-- **✅ 개인 대시보드**: "나의 커피 여정" 섹션 - 주간/월간 하이라이트
-- **✅ Personal Taste Quiz**: 개인 맞춤 퀴즈 시스템 및 결과 분석
-- **✅ Achievement System**: 커피 탐험가 배지 및 성장 추적
+- 🇰🇷 **한국어 네이티브**: 44개 한국어 감각 표현 시스템
+- 🎯 **초보자 친화적**: 4단계 온보딩으로 쉽게 시작
+- 🏠 **듀얼 모드**: 카페 방문자 & 홈카페족 전용 모드
+- 🏆 **성취 시스템**: 게이미피케이션으로 재미있게 기록
+- 📊 **개인 통계**: 나의 커피 취향 분석 및 인사이트
+- 🆓 **무료 핵심 기능**: 기본 기능은 완전 무료
 
-### 🚀 Phase 2: Enhanced Analytics & Community (다음 단계)
-- **A/B Testing Framework**: 기능 개선을 위한 실험 환경
-- **Advanced Pattern Recognition**: 사용자 행동 패턴 분석
-- **Community Features**: 취향 유사도 매칭 및 소셜 학습
-- **취향 분석 엔진**: Taste DNA, 선호 패턴 분석
-- **학습 도구**: 플레이버 휠 탐험, 선택적 향미 학습
-- **성취 시스템**: 커피 탐험 마일스톤, 품질 중심 보상
-- **개인화 추천**: 취향 기반 다음 커피 제안
+## 📱 시장 현황 & 차별화
 
-### 🚀 향후 로드맵
-- **MVP v0.5.0** (3-4개월): Shared Journey - 커뮤니티 기능
-- **MVP v1.0.0** (6개월): 완전한 플랫폼 - Lab Pro 구독 + 원두 구독
+### 한국 커피 시장 (2024)
+- 전체 시장 규모: **17.2조원**
+- 스페셜티 커피: **1조원** (전체의 20%)
+- 커피 아울렛: **99,000개** (역대 최고)
+- 홈카페족: **20만+ 명**
 
-## 📱 Screenshots
+### 경쟁 앱 대비 우위
+| 기능 | CupNote | Bean Conqueror | iBrewCoffee | Tasting Grounds |
+|------|---------------------|----------------|-------------|-----------------|
+| 한국어 지원 | ✅ 네이티브 | ❌ | ❌ | ❌ |
+| 글로벌 지원 | ✅ 미국 진출 준비 | ⚪ 제한적 | ⚪ 제한적 | ⚪ 제한적 |
+| 가격 | 무료 | 무료 | $4.99 | 무료 |
+| 초보자 친화성 | ✅ 매우 높음 | ❌ 복잡함 | ⚪ 보통 | ⚪ 보통 |
+| 홈카페 모드 | ✅ 전용 모드 | ⚪ 일부 | ❌ | ❌ |
 
-*Coming soon...*
+## 🚀 시작하기
+
+### 필수 요구사항
+
+- Node.js 18+
+- React Native 0.80
+- iOS 13.0+ / Android 6.0+
+- Xcode 14+ (iOS 개발)
+- Android Studio (Android 개발)
+
+### 설치 방법
+
+```bash
+# 저장소 클론
+git clone https://github.com/your-username/CupNote.git
+cd CupNote
+
+# 의존성 설치
+npm install
+
+# iOS 의존성 설치 (Mac only)
+cd ios && pod install && cd ..
+
+# 개발 서버 실행
+npm start
+
+# iOS 실행
+npx react-native run-ios
+
+# Android 실행
+npx react-native run-android
+```
+
+### 환경 설정
+
+1. `.env.example`을 `.env`로 복사
+2. Supabase 프로젝트 생성 및 API 키 설정
+3. Google Sign-In 설정 (선택사항)
+
+```bash
+cp .env.example .env
+# .env 파일 편집하여 API 키 입력
+```
+
+## 🏗️ 프로젝트 구조
+
+```
+src/
+├── screens/          # 앱 화면 컴포넌트
+├── components/       # 재사용 가능한 컴포넌트
+├── services/         # 비즈니스 로직 & API
+├── stores/           # Zustand 상태 관리
+├── hooks/            # 커스텀 React 훅
+├── navigation/       # React Navigation 설정
+└── types/            # TypeScript 타입 정의
+```
+
+## 🎨 주요 기능
+
+### 1. 모드 선택
+- **카페 모드**: 간편한 카페 방문 기록
+- **홈카페 모드**: 상세한 추출 실험 기록
+
+### 2. 한국어 감각 평가 (SCA 2024 CATA)
+- 6개 카테고리: 산미, 단맛, 쓴맛, 바디, 애프터, 밸런스
+- 44개 한국어 표현 (싱그러운, 달콤한, 묵직한 등)
+- 카테고리별 최대 3개 선택
+
+### 3. 향미 선택 시스템
+- 3단계 향미 계층 구조
+- 시각적 향미 휠
+- 검색 및 필터링 기능
+
+### 4. 성취 시스템
+- 18개 성취 목표
+- 단계별 보상
+- 진행률 추적
 
 ## 🛠️ 기술 스택
 
-### 현재 (MVP v0.3.0)
-- **React Native 0.80** - 크로스 플랫폼 모바일 앱
-- **TypeScript** - 타입 안정성
-- **Realm DB** - 로컬 데이터 저장
-- **Supabase** - BaaS (인증, 데이터베이스)
-- **React Navigation** - 네비게이션
-- **Zustand** - 상태 관리
+- **Frontend**: React Native 0.80, TypeScript
+- **State Management**: Zustand
+- **Local DB**: Realm
+- **Backend**: Supabase
+- **Authentication**: Apple/Google Sign-In
+- **Analytics**: React Native Performance
 
-### 향후 확장 (v1.0.0+)
-- **Microservices** - 마이크로서비스 아키텍처
-- **AI/ML Pipeline** - NLP, 추천 엔진
-- **Redis** - 캐싱 및 세션 관리
-- **Docker** - 컨테이너화
+## 📊 개발 현황
 
-## 🚀 Getting Started
+### 현재 상태 (2025-07-24)
+- ✅ MVP 98% 완성
+- ✅ 홈카페 모드 백엔드 구현 완료
+- ✅ 한국어 감각 평가 시스템 구현
+- ✅ TypeScript 에러 해결 (319 → 193)
+- ✅ iOS 빌드 성공
 
-### Prerequisites
-- Node.js 18+
-- Xcode 15+
-- iOS Simulator or physical device
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/taco0513/CoffeeJournalFresh.git
-cd CoffeeJournalFresh
-
-# Install dependencies
-npm install
-
-# iOS setup
-cd ios && pod install && cd ..
-
-# Start Metro
-npm start
-
-# Run on iOS
-npm run ios
-# or for physical device
-npm run ios-device
-```
-
-## 📁 프로젝트 구조
-
-```
-CoffeeJournalFresh/
-├── src/
-│   ├── components/          # 재사용 가능한 UI 컴포넌트
-│   ├── screens/            # 화면 컴포넌트
-│   ├── navigation/         # 네비게이션 설정
-│   ├── services/           # 비즈니스 로직 및 API
-│   ├── stores/             # 상태 관리 (Zustand)
-│   ├── styles/             # 공통 스타일
-│   └── utils/              # 유틸리티 함수
-├── docs/                   # 프로젝트 문서
-├── ios/                    # iOS 네이티브 코드
-├── android/                # Android 네이티브 코드
-└── 주요 문서들
-    ├── MVP_ROADMAP.md
-    ├── MVP_v0.4.0_DETAILED.md
-    ├── EVOLUTION_PLAN.md
-    └── BRANCHING_STRATEGY.md
-```
-
-## 📚 주요 문서
-
-### 개발 로드맵
-- [**MVP_ROADMAP.md**](MVP_ROADMAP.md) - MVP 단계별 출시 전략
-- [**MVP_v0.4.0_DETAILED.md**](MVP_v0.4.0_DETAILED.md) - v0.4.0 상세 개발 계획
-- [**EVOLUTION_PLAN.md**](EVOLUTION_PLAN.md) - 점진적 진화 계획
-
-### 비전 및 전략
-- [**docs/01-vision-core-values.md**](docs/01-vision-core-values.md) - 비전과 핵심 가치
-- [**docs/02-market-analysis-business-model.md**](docs/02-market-analysis-business-model.md) - 시장 분석 및 비즈니스 모델
-- [**docs/03-target-user-analysis.md**](docs/03-target-user-analysis.md) - 타겟 사용자 분석
-
-### 기술 문서
-- [**docs/08-technical-architecture-01-microservices-architecture.md**](docs/08-technical-architecture-01-microservices-architecture.md) - 마이크로서비스 아키텍처
-- [**docs/07-ai-engine-data-analysis-02-recommendation-engine.md**](docs/07-ai-engine-data-analysis-02-recommendation-engine.md) - AI 추천 엔진
-- [**BRANCHING_STRATEGY.md**](BRANCHING_STRATEGY.md) - 개발 브랜치 전략
-
-## 🎯 핵심 지표
-
-### 현재 목표 (MVP v0.4.0)
-- **DAU**: 500명
-- **세션 시간**: 평균 8분 (현재 3분에서 향상)
-- **취향 발견률**: 80% (첫 달 내 선호 패턴 3개 이상 식별)
-- **7일 리텐션**: 40%
-- **30일 리텐션**: 20%
-
-## 🤝 개발 브랜치 전략
-
-### 브랜치 구조
-- **main**: 프로덕션 준비 코드
-- **stable-v0.3**: v0.3.0 안정 버전 보존
-- **dev-danang-250719**: 새로운 방향 개발 (현재 활성)
-
-### 브랜치 전환
-```bash
-# 안정 버전으로 돌아가기
-git checkout stable-v0.3
-
-# 새 개발 브랜치로 전환
-git checkout dev-danang-250719
-
-# 메인 브랜치로 전환
-git checkout main
-```
+### 다음 단계
+- [ ] 브랜드명 최종 결정
+- [ ] 프리미엄 구독 모델 구현
+- [ ] 베타 테스트 실시
+- [ ] 앱스토어 출시 준비
 
 ## 🤝 기여하기
 
-### 커밋 가이드라인
-```bash
-# 기능 추가
-feat: add personal taste dashboard
+프로젝트에 기여하고 싶으신가요? 환영합니다!
 
-# 버그 수정
-fix: resolve static class block build error
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-# 문서 업데이트
-docs: update roadmap with v0.4.0 details
-
-# 리팩토링
-refactor: improve tasting flow performance
+### 커밋 메시지 규칙
+```
+feat: 새로운 기능 추가
+fix: 버그 수정
+docs: 문서 수정
+style: 코드 포맷팅
+refactor: 코드 리팩토링
+test: 테스트 코드
+chore: 빌드 업무 수정
 ```
 
-## 📄 라이선스
+## 📝 라이선스
 
-MIT License
+이 프로젝트는 MIT 라이선스 하에 있습니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
+
+## 📚 관련 문서
+
+- [BMAD 분석 보고서](BMAD_ANALYSIS_REPORT.md)
+- [브랜드명 분석](BRAND_NAME_ANALYSIS.md)
+- [MVP 상태 보고서](MVP_STATUS.md)
+- [모드별 UX 제안](MODE_BASED_UX_PROPOSAL.md)
+
+## 👥 팀
+
+- **개발**: Coffee Journal Fresh Team
+- **디자인**: [디자이너 이름]
+- **기획**: [기획자 이름]
+
+## 📞 문의
+
+- Email: contact@coffeejournalfresh.com
+- Instagram: @coffeejournalfresh
+- Website: [준비중]
 
 ---
 
-## 🎉 특별 감사
-
-Coffee Tasting Journey는 커피를 사랑하는 모든 사람들, 전문 바리스타, 로스터, 그리고 커피 커뮤니티의 열정적인 지원으로 만들어지고 있습니다.
-
-**"Personal Taste, Shared Journey"** - 당신의 고유한 커피 여정이 여기서 시작됩니다! ☕✨
+Made with ❤️ for Korean Coffee Lovers

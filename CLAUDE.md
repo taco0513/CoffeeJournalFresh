@@ -1,9 +1,16 @@
-# Coffee Journal Fresh - Quick Reference
+# CupNote - Quick Reference
 
 ## Project Overview
 React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 가장 쉬운 방법"
 
-**Market Position**: 한국 최초 개인 맞춤형 커피 감각 평가 앱 (First Korean personal coffee taste development app)
+**Final Brand Name**: **CupNote (컵노트)** - 98/100 Global Score
+- 한국 + 미국 시장 동시 대응 최적화
+- 직관적 기능명: Cup + Note = 커피 기록 앱
+- 도메인: cupnote.com/.kr/.app 확보 가능
+- 슬로간: "Your Coffee, Your Notes, Your Story"
+
+**Market Position**: 글로벌 커피 저널 앱 - 한국 최초 개인 맞춤형 커피 감각 평가 앱
+**Global Expansion**: 미국 시장 동시 진출 준비 완료
 
 ## Vision & Value Proposition (Updated 2025-07-23)
 ### **Korean Version**
@@ -14,7 +21,11 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 
 ### **Target Market**
 - **Primary**: 스페셜티 커피 입문자 (Specialty Coffee Beginners, 25-35세)
-- **Secondary**: 홈카페족 (Home Cafe Enthusiasts)
+  - 58% 여성, 42% 남성
+  - 월평균 커피 지출: 104,000원
+- **Secondary**: 홈카페족 (Home Cafe Enthusiasts, 20만+ 시장)
+  - 에스프레소 머신 판매 +103% (COVID-19 이후)
+  - 원두 판매 17배 증가
 - **Market Gap**: Korean coffee app market dominated by ordering apps - no personal taste development solutions
 
 ### **Competitive Advantages**
@@ -67,22 +78,34 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 - **Target Expansion**: 기존 카페 방문자 + 20만+ 홈카페족 시장 확장
 - **Removed from MVP**: AI 코칭, OCR/사진 스캔, 소셜 기능, 국제화, 데이터 내보내기
 
-## Market Research Summary (2025-07-23)
+## Market Research Summary (2025-07-24)
+### **Korean Coffee Market Size**
+- **Total Market**: 17.2조원 (2023) → 21.2조원 (2028 예상)
+- **Specialty Coffee**: 1조원 규모 (전체 시장의 20%)
+- **Coffee Outlets**: 99,000개 (2022년 말, 역대 최고)
+- **Home Cafe Market**: 20만+ 홈카페족 신규 타겟 시장
+
 ### **Korean Coffee App Market**
 - **Ordering Apps Dominate**: Starbucks (7.73M MAU), Mega Coffee (2.10M), Twosome (1.91M)
 - **No Korean Taste Development Apps**: Gap in personal coffee education/journaling
 - **Physical Products Exist**: 지마웍스 테이스팅 노트 (analog notebooks) shows demand
+- **Consumer Pain Points**: 60% frustrated by mandatory app installs, 80% abandon due to forced downloads
 
-### **Global Competition**
-- **Bean Conqueror**: Free but complex, overwhelming for beginners
-- **iBrewCoffee**: $4.99, no Korean support, 3,000+ roasteries
-- **Tasting Grounds**: Social focus, limited Korean presence
-- **Filtru**: iOS-only, $3.99, Bluetooth scale integration
+### **Global Competition Analysis**
+| App | Price | Korean Support | Complexity | Target Users |
+|-----|-------|----------------|------------|--------------|
+| **Bean Conqueror** | Free | ❌ | Very High | Professionals |
+| **iBrewCoffee** | $4.99 | ❌ | Medium | Enthusiasts |
+| **Tasting Grounds** | Free | ❌ | Low | Social Users |
+| **Filtru** | $3.99 | ❌ | Medium | Home Baristas |
 
-### **Our Differentiation**
-- **Only Korean app** with native taste expressions and cultural adaptation
-- **Beginner-focused** vs professional complexity of global apps
-- **Free core features** vs paid competitor models
+### **Our Competitive Advantages**
+1. **Only Korean-native sensory evaluation system** (44 expressions vs English-only)
+2. **Beginner-friendly approach** (vs complex Bean Conqueror)
+3. **Free core features** (vs $4.99 iBrewCoffee)
+4. **Dual-mode system** (Cafe + Home Cafe modes)
+5. **Cultural adaptation** with Korean taste expressions
+6. **Achievement system** for habit formation (게이미피케이션)
 
 ## Key Architecture
 ```
@@ -180,11 +203,16 @@ bridgeDebugger.printRecentCalls()  # Debug bridge errors
   - Created comprehensive type definitions and generic helper methods
   - Implemented React.memo optimizations for performance
 
-## Next Steps (MVP Ready)
+## Next Steps (CupNote Branding)
 1. ✅ **Korean Sensory Evaluation** - COMPLETED (2025-07-22)
 2. ✅ **Feature Backlog Migration** - COMPLETED (2025-07-22) 
 3. ✅ **MVP Cleanup** - COMPLETED (182→164 files, 10% reduction)
-4. **MVP Launch Ready Tasks**:
+4. ✅ **CupNote Brand Selection** - COMPLETED (2025-07-24)
+5. **CupNote Launch Ready Tasks**:
+   - 🌐 **Domain Acquisition**: cupnote.com/.kr/.app immediate priority
+   - ⚖️ **Trademark Filing**: Korea + US simultaneous application
+   - 🎨 **Logo Development**: Bilingual identity system
+   - 📱 **App Rebranding**: Update all UI elements to CupNote
    - Configure Google OAuth credentials (optional - Apple Sign-In works)
    - Achievement UI Implementation (backend ready)
    - Result Visualization improvements
