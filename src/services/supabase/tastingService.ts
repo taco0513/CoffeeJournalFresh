@@ -24,6 +24,15 @@ export interface TastingRecord {
   
   // 매칭 점수
   match_score: number;
+  
+  // 모드
+  mode?: 'cafe' | 'home_cafe';
+  
+  // 홈카페 데이터
+  home_cafe_data?: any;
+  
+  // 선택된 감각 표현
+  selected_sensory_expressions?: any[];
 }
 
 export interface FlavorNote {
@@ -43,6 +52,8 @@ export interface SensoryAttribute {
   sweetness: number;
   finish: number;
   mouthfeel: string;
+  bitterness?: number;
+  balance?: number;
 }
 
 export interface CoffeeComparison {
@@ -75,6 +86,9 @@ class TastingService {
         roaster_notes: tasting.roasterNotes,
         personal_comment: tasting.personalComment,
         match_score: tasting.matchScoreTotal || tasting.matchScore || 0,
+        mode: tasting.mode,
+        home_cafe_data: tasting.homeCafeData,
+        selected_sensory_expressions: tasting.selectedSensoryExpressions,
         // user_id, created_at, updated_at는 Supabase가 자동 처리
       };
 

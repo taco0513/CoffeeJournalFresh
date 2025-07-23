@@ -183,7 +183,7 @@ export class TastingService {
             
             // Tasting notes
             roasterNotes: safeData.roasterNotes,
-            personalComment: safeData.personalComment,
+            personalComment: data.personalComment || '',
             
             // Match scores
             matchScoreTotal: safeData.matchScore.total,
@@ -194,8 +194,14 @@ export class TastingService {
             flavorNotes: flavorNotes,
             sensoryAttribute: sensoryAttribute,
             
-            // Sensory expressions (new field)
-            selectedSensoryExpressions: safeData.selectedSensoryExpressions,
+            // Sensory expressions (stored as JSON string)
+            selectedSensoryExpressions: JSON.stringify(safeData.selectedSensoryExpressions || []),
+            
+            // Mode
+            mode: data.mode || 'cafe',
+            
+            // Home Cafe Data (stored as JSON string)
+            homeCafeData: data.homeCafeData ? JSON.stringify(data.homeCafeData) : null,
             
             // Sync status
             isSynced: false,

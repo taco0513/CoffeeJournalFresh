@@ -13,6 +13,8 @@ export interface ISensoryAttribute {
   sweetness: number;
   finish: number;
   mouthfeel: 'Clean' | 'Creamy' | 'Juicy' | 'Silky';
+  bitterness?: number;
+  balance?: number;
 }
 
 export interface ITastingRecord {
@@ -30,7 +32,7 @@ export interface ITastingRecord {
   variety?: string;
   altitude?: string;
   process?: string;
-  temperature: 'hot' | 'ice';
+  temperature: 'hot' | 'ice' | 'cold';
   
   // Roaster Notes
   roasterNotes?: string;
@@ -54,6 +56,40 @@ export interface ITastingRecord {
   // Sync Status
   isSynced: boolean;
   isDeleted: boolean;
+  
+  // Mode
+  mode?: 'cafe' | 'home_cafe';
+  
+  // Home Cafe Data
+  homeCafeData?: {
+    equipment: {
+      grinder?: {
+        brand: string;
+        model?: string;
+        setting: string;
+      };
+      brewingMethod: string;
+      filter?: string;
+      other?: string;
+    };
+    recipe: {
+      doseIn: number;
+      waterAmount: number;
+      ratio: string;
+      waterTemp: number;
+      bloomTime?: number;
+      totalBrewTime: number;
+      pourPattern?: string;
+    };
+    notes?: {
+      previousChange?: string;
+      result?: string;
+      nextExperiment?: string;
+    };
+  };
+  
+  // Selected Sensory Expressions (Korean)
+  selectedSensoryExpressions?: any[];
 }
 
 export interface ICoffeeLibrary {
@@ -120,6 +156,8 @@ export const SensoryAttributeSchema: Realm.ObjectSchema = {
     sweetness: 'int',
     finish: 'int',
     mouthfeel: 'string',
+    bitterness: 'int?',
+    balance: 'int?',
   },
 };
 
@@ -168,6 +206,15 @@ export const TastingRecordSchema: Realm.ObjectSchema = {
     // Sync Status
     isSynced: { type: 'bool', default: false },
     isDeleted: { type: 'bool', default: false },
+    
+    // Mode
+    mode: { type: 'string?', default: 'cafe' },
+    
+    // Home Cafe Data (stored as JSON string)
+    homeCafeData: 'string?',
+    
+    // Selected Sensory Expressions (stored as JSON string)
+    selectedSensoryExpressions: 'string?',
   },
 };
 

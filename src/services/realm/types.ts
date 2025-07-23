@@ -30,6 +30,8 @@ export interface TastingData {
     flavorScore?: number;
     sensoryScore?: number;
   };
+  mode?: 'cafe' | 'home_cafe';
+  homeCafeData?: any;
 }
 
 export interface TastingFilter {

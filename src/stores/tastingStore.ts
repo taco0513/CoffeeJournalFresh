@@ -133,6 +133,9 @@ export const useTastingStore = create<TastingState>((set, get) => ({
           flavorScore: 0,
           sensoryScore: 0,
         },
+        personalComment: currentTasting.personalComment,
+        mode: currentTasting.mode,
+        homeCafeData: currentTasting.homeCafeData,
       });
 
       // 저장 후 점수 계산
