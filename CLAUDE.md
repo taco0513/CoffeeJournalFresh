@@ -118,7 +118,7 @@ src/
 └── navigation/       # React Navigation setup
 ```
 
-## Recent Issues & Solutions (2025-07-22-23)
+## Recent Issues & Solutions (2025-07-22-24)
 - ✅ **React Native bridge errors**: Fixed "Malformed calls from JS" with comprehensive solution
 - ✅ **Persistent modal bug**: Fixed coffee recording modal appearing constantly  
 - ✅ **Console errors**: Resolved ErrorContextService circular reference issues
@@ -149,6 +149,14 @@ src/
 - ✅ **App Stability**: Resolved runtime crashes, app running smoothly on iOS Simulator
 - ✅ **TypeScript Cleanup** (2025-07-24): Fixed critical TypeScript errors from 319+ to 193 errors (39% reduction)
   - Core screens and navigation now type-safe
+- ✅ **SensoryScreen Mode Fix** (2025-07-24): Fixed Cafe Mode showing Home Cafe Mode metric sliders via Metro cache reset
+- ✅ **FloatingDummyDataButton Enhancement** (2025-07-24): One-tap dummy data generation, removed duplicate buttons
+- ✅ **Realm Service Stability** (2025-07-24): Enhanced error handling and initialization safety
+- ✅ **UI Message Cleanup** (2025-07-24): Removed redundant messages for cleaner interface
+- ✅ **PerformanceMonitor Fix** (2025-07-24): Fixed "Error sending performance metrics" console error
+  - Added development mode detection to skip Supabase uploads
+  - Enhanced error handling with graceful fallback
+  - Prevents memory buildup from failed metric uploads
   - Service calls and component imports fixed
   - Feature backlog and web-admin excluded from type checking
 

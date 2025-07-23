@@ -281,18 +281,32 @@ class PerformanceMonitor {
     if (this.performanceQueue.length === 0) return;
 
     try {
+      // Check if we're in development mode - skip Supabase in dev
+      if (__DEV__) {
+        console.log('Performance metrics (dev mode):', {
+          count: this.performanceQueue.length,
+          metrics: this.performanceQueue.slice(0, 3), // Log first 3 for debugging
+        });
+        this.performanceQueue = [];
+        return;
+      }
+
       const { error } = await supabase
         .from('performance_metrics')
         .insert(this.performanceQueue);
 
       if (error) {
-        console.error('Error sending performance metrics:', error);
+        console.warn('Performance metrics table not available:', error.message);
+        // Clear queue to prevent memory buildup even if upload fails
+        this.performanceQueue = [];
         return;
       }
 
       this.performanceQueue = [];
     } catch (error) {
-      console.error('Error flushing performance queue:', error);
+      console.warn('Performance monitoring disabled:', error instanceof Error ? error.message : 'Unknown error');
+      // Clear queue to prevent memory buildup
+      this.performanceQueue = [];
     }
   }
 
