@@ -157,6 +157,10 @@ src/
   - Added development mode detection to skip Supabase uploads
   - Enhanced error handling with graceful fallback
   - Prevents memory buildup from failed metric uploads
+- ✅ **CompactSensoryEvaluation Fix** (2025-07-24): Fixed "Cannot read property 'length' of undefined" render error
+  - Added proper null checking with safeSelectedExpressions
+  - Made selectedExpressions prop optional with default empty array
+  - Updated all callback dependencies to use safe version
   - Service calls and component imports fixed
   - Feature backlog and web-admin excluded from type checking
 

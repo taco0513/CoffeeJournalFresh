@@ -21,7 +21,7 @@ interface SelectedExpression {
 }
 
 interface CompactSensoryEvaluationProps {
-  selectedExpressions: SelectedExpression[];
+  selectedExpressions?: SelectedExpression[];
   onExpressionChange: (expressions: SelectedExpression[]) => void;
   beginnerMode?: boolean;
 }
@@ -29,24 +29,27 @@ interface CompactSensoryEvaluationProps {
 const MAX_PER_CATEGORY = 3;
 
 const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
-  selectedExpressions,
+  selectedExpressions = [],
   onExpressionChange,
   beginnerMode = true,
 }) => {
   const [activeCategory, setActiveCategory] = useState('acidity');
 
+  // Ensure selectedExpressions is always an array
+  const safeSelectedExpressions = selectedExpressions || [];
+
   const handleExpressionSelect = useCallback((
     categoryId: string,
     expression: SensoryExpression
   ) => {
-    const existingIndex = selectedExpressions.findIndex(
+    const existingIndex = safeSelectedExpressions.findIndex(
       item => item.categoryId === categoryId && item.expression.id === expression.id
     );
-    const categorySelections = selectedExpressions.filter(
+    const categorySelections = safeSelectedExpressions.filter(
       item => item.categoryId === categoryId
     );
 
-    let newExpressions = [...selectedExpressions];
+    let newExpressions = [...safeSelectedExpressions];
 
     if (existingIndex >= 0) {
       newExpressions.splice(existingIndex, 1);
@@ -58,20 +61,20 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
     }
 
     onExpressionChange(newExpressions);
-  }, [selectedExpressions, onExpressionChange]);
+  }, [safeSelectedExpressions, onExpressionChange]);
 
   const isExpressionSelected = useCallback((
     categoryId: string,
     expressionId: string
   ): boolean => {
-    return selectedExpressions.some(
+    return safeSelectedExpressions.some(
       item => item.categoryId === categoryId && item.expression.id === expressionId
     );
-  }, [selectedExpressions]);
+  }, [safeSelectedExpressions]);
 
   const getSelectedCount = useCallback((categoryId: string): number => {
-    return selectedExpressions.filter(item => item.categoryId === categoryId).length;
-  }, [selectedExpressions]);
+    return safeSelectedExpressions.filter(item => item.categoryId === categoryId).length;
+  }, [safeSelectedExpressions]);
 
   const categories = useMemo(() => Object.values(koreanSensoryData), []);
   const activeExpressions = useMemo(
@@ -85,7 +88,7 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
       <View style={styles.header}>
         <Text style={styles.title}>감각 평가</Text>
         <Text style={styles.selectedCount}>
-          {selectedExpressions.length}개 선택됨
+          {safeSelectedExpressions.length}개 선택됨
         </Text>
       </View>
 
