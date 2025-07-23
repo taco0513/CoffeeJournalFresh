@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,60 +9,35 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTastingStore } from '../stores/tastingStore';
-import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
+import { HIGConstants, HIGColors } from '../styles/common';
 import { 
-  SensoryOnboarding,
-  MouthfeelButton,
-  SliderSection
+  SensoryOnboarding
 } from '../components/sensory';
 import CompactSensoryEvaluation from '../components/sensory/CompactSensoryEvaluation';
 import { checkShouldShowOnboarding } from '../components/sensory/SensoryOnboarding';
-import { useSensoryState } from '../hooks/useSensoryState';
-import { MouthfeelType, SelectedSensoryExpression } from '../types/sensory';
+import { SelectedSensoryExpression } from '../types/sensory';
 
 const SensoryScreen = () => {
   const navigation = useNavigation();
-  const { currentTasting, updateField, selectedSensoryExpressions, setSelectedSensoryExpressions } = useTastingStore();
+  const { selectedSensoryExpressions, setSelectedSensoryExpressions } = useTastingStore();
   
-  // Use custom hook for sensory state management
-  const {
-    sensoryData,
-    updateNumericValue,
-    setMouthfeel,
-  } = useSensoryState({
-    body: currentTasting.body,
-    acidity: currentTasting.acidity,
-    sweetness: currentTasting.sweetness,
-    finish: currentTasting.finish,
-    bitterness: currentTasting.bitterness,
-    balance: currentTasting.balance,
-    mouthfeel: currentTasting.mouthfeel || 'Clean',
-  });
+  // 카페 모드 전용 (홈카페는 별도 스크린 사용)
+  // Note: 홈카페 모드는 ExperimentalDataScreen + SensoryEvaluationScreen 사용
   
-  const [showEnhanced, setShowEnhanced] = useState(true); // Default to Korean expressions
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Check if onboarding should be shown
   useEffect(() => {
-    if (showEnhanced) {
-      checkShouldShowOnboarding().then(shouldShow => {
-        setShowOnboarding(shouldShow);
-      });
-    }
-  }, [showEnhanced]);
-
-  const mouthfeelOptions: MouthfeelType[] = useMemo(() => ['Clean', 'Creamy', 'Juicy', 'Silky'], []);
+    checkShouldShowOnboarding().then(shouldShow => {
+      setShowOnboarding(shouldShow);
+    });
+  }, []);
 
 
   const handleComplete = useCallback(async () => {
-    // Update all sensory fields in the store
-    Object.entries(sensoryData).forEach(([key, value]) => {
-      updateField(key, value);
-    });
-    
     // Navigate to personal comment screen
     navigation.navigate('PersonalComment' as never);
-  }, [sensoryData, updateField, navigation]);
+  }, [navigation]);
 
   // Convert EnhancedSensoryEvaluation format to TastingStore format
   const handleExpressionChange = useCallback((expressions: Array<{
@@ -112,7 +87,7 @@ const SensoryScreen = () => {
           커피에서 느껴지는 감각을 평가해보세요
         </Text>
         <Text style={styles.guideSubMessage}>
-          기본 평가와 감각 평가 중 선택할 수 있습니다
+          한국식 감각 표현으로 커피의 맛을 기록해보세요
         </Text>
       </View>
 
@@ -121,35 +96,7 @@ const SensoryScreen = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Simplified Mode Toggle */}
-        <View style={styles.modeToggleWrapper}>
-          <View style={styles.modeToggleContainer}>
-            <TouchableOpacity 
-              style={[styles.modeButton, !showEnhanced && styles.modeButtonActive]}
-              onPress={() => setShowEnhanced(false)}
-              activeOpacity={0.7}
-            >
-              <Text style={[styles.modeButtonText, !showEnhanced && styles.modeButtonTextActive]}>
-                기본 평가
-              </Text>
-              {!showEnhanced && <View style={styles.activeIndicator} />}
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.modeButton, showEnhanced && styles.modeButtonActive]}
-              onPress={() => setShowEnhanced(true)}
-              activeOpacity={0.7}
-            >
-              <Text style={[styles.modeButtonText, showEnhanced && styles.modeButtonTextActive]}>
-                감각 평가
-              </Text>
-              {showEnhanced && <View style={styles.activeIndicator} />}
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {showEnhanced ? (
-          /* Enhanced Korean Sensory Evaluation */
-          <>
+        {/* Cafe Mode: Only Korean Sensory Evaluation */}
             <View style={styles.evaluationIntroContainer}>
               <Text style={styles.evaluationIntroTitle}>맛의 언어로 표현해보세요</Text>
               <Text style={styles.evaluationIntroSubtitle}>
@@ -228,85 +175,8 @@ const SensoryScreen = () => {
               onExpressionChange={handleExpressionChange}
               beginnerMode={true}
             />
-          </>
-        ) : (
-          /* Traditional Slider Evaluation */
-          <>
-            <View style={styles.basicEvaluationIntro}>
-              <Text style={styles.basicEvaluationTitle}>커피의 강도를 평가해보세요</Text>
-              <Text style={styles.basicEvaluationSubtitle}>
-                각 항목을 1점(약함)에서 5점(강함)으로 평가해주세요
-              </Text>
-            </View>
-            
-            <View style={styles.sliderSectionContainer}>
-              <SliderSection
-                title="바디감"
-                value={sensoryData.body}
-                onValueChange={updateNumericValue('body')}
-                leftLabel="가벼움"
-                rightLabel="무거움"
-                description="입안에서 느껴지는 질감과 무게감, 묵직함을 말합니다"
-              />
-            <SliderSection
-              title="산미"
-              value={sensoryData.acidity}
-              onValueChange={updateNumericValue('acidity')}
-              leftLabel="약함"
-              rightLabel="강함"
-              description="과일이나 와인 같은 밝고 상큼한 신맛의 강도입니다"
-            />
-            <SliderSection
-              title="단맛"
-              value={sensoryData.sweetness}
-              onValueChange={updateNumericValue('sweetness')}
-              leftLabel="없음"
-              rightLabel="강함"
-              description="자연스러운 당도와 캐러멜, 초콜릿 같은 단맛의 정도입니다"
-            />
-            <SliderSection
-              title="쓴맛"
-              value={sensoryData.bitterness}
-              onValueChange={updateNumericValue('bitterness')}
-              leftLabel="약함"
-              rightLabel="강함"
-              description="다크 초콜릿이나 탄 맛 같은 쓴맛의 강도입니다"
-            />
-            <SliderSection
-              title="여운"
-              value={sensoryData.finish}
-              onValueChange={updateNumericValue('finish')}
-              leftLabel="짧음"
-              rightLabel="길음"
-              description="커피를 마신 후 입안에 남는 맛과 향의 지속 시간입니다"
-            />
-            <SliderSection
-              title="밸런스"
-              value={sensoryData.balance}
-              onValueChange={updateNumericValue('balance')}
-              leftLabel="불균형"
-              rightLabel="조화로운"
-              description="맛과 향의 전체적인 균형과 조화로움의 정도입니다"
-            />
-            </View>
-
-            {/* Mouthfeel Section */}
-            <View style={styles.mouthfeelSection}>
-              <Text style={styles.mouthfeelTitle}>입안 느낌</Text>
-              <Text style={styles.mouthfeelSubtitle}>가장 가까운 느낌을 선택해주세요</Text>
-              <View style={styles.mouthfeelContainer}>
-                {mouthfeelOptions.map((option) => (
-                  <MouthfeelButton 
-                    key={option} 
-                    option={option}
-                    isSelected={sensoryData.mouthfeel === option}
-                    onPress={() => setMouthfeel(option)}
-                  />
-                ))}
-              </View>
-            </View>
-          </>
-        )}
+        
+        {/* Note: Home Cafe mode uses separate ExperimentalDataScreen + SensoryEvaluationScreen */}
       </ScrollView>
 
       {/* Bottom Button */}
@@ -376,35 +246,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingBottom: HIGConstants.SPACING_XL,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  mouthfeelSection: {
-    marginTop: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_XL,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-  },
-  mouthfeelTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: HIGColors.label,
-    marginBottom: 2,
-  },
-  mouthfeelSubtitle: {
-    fontSize: 11,
-    fontWeight: '400',
-    color: HIGColors.tertiaryLabel,
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  mouthfeelContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: HIGConstants.SPACING_SM,
-  },
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
@@ -468,47 +309,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
   },
-  // Mode Toggle Styles
-  modeToggleWrapper: {
-    paddingVertical: HIGConstants.SPACING_MD,
-    alignItems: 'center',
-  },
-  modeToggleContainer: {
-    flexDirection: 'row',
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: 12,
-    padding: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  modeButton: {
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 9,
-    minWidth: 110,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  modeButtonActive: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  activeIndicator: {
-    position: 'absolute',
-    bottom: 4,
-    width: 30,
-    height: 3,
-    backgroundColor: HIGColors.systemBlue,
-    borderRadius: 2,
-  },
   evaluationIntroContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingTop: HIGConstants.SPACING_MD,
@@ -528,39 +328,6 @@ const styles = StyleSheet.create({
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     lineHeight: 22,
-  },
-  modeButtonText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: HIGColors.secondaryLabel,
-  },
-  modeButtonTextActive: {
-    color: HIGColors.label,
-    fontWeight: '700',
-  },
-  basicEvaluationIntro: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingTop: HIGConstants.SPACING_SM,
-    paddingBottom: HIGConstants.SPACING_MD,
-    alignItems: 'center',
-  },
-  basicEvaluationTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_XS,
-    textAlign: 'center',
-  },
-  basicEvaluationSubtitle: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  sliderSectionContainer: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingTop: HIGConstants.SPACING_SM,
   },
   guideMessageContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,

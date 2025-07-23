@@ -43,12 +43,23 @@ export default function UnifiedFlavorScreen() {
     toggleAllCategories,
   } = useFlavorSelection(selectedPaths, updateField as (field: string, value: any) => void);
 
+  // Check if this is home cafe mode (no cafeName)
+  const isHomeCafeMode = !currentTasting.cafeName;
+
   const handleNext = () => {
-    navigation.navigate('Sensory' as never);
+    if (isHomeCafeMode) {
+      navigation.navigate('ExperimentalData' as never);
+    } else {
+      navigation.navigate('Sensory' as never);
+    }
   };
 
   const handleSkip = () => {
-    navigation.navigate('Sensory' as never);
+    if (isHomeCafeMode) {
+      navigation.navigate('ExperimentalData' as never);
+    } else {
+      navigation.navigate('Sensory' as never);
+    }
   };
 
   return (
@@ -64,9 +75,9 @@ export default function UnifiedFlavorScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Progress Bar - Full width below header */}
+      {/* Progress Bar - Different progress for different modes */}
       <View style={styles.progressBar}>
-        <View style={[styles.progressFill, { width: '33%' }]} />
+        <View style={[styles.progressFill, { width: isHomeCafeMode ? '43%' : '33%' }]} />
       </View>
 
       {/* Guide Message */}

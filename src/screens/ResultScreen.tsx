@@ -218,10 +218,51 @@ export default function ResultScreen({navigation}: any) {
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>커피 정보</Text>
         </View>
-        <Text style={styles.info}>카페: {currentTasting.cafeName || '-'}</Text>
+        {currentTasting.mode === 'cafe' ? (
+          <Text style={styles.info}>카페: {currentTasting.cafeName || '-'}</Text>
+        ) : (
+          <Text style={styles.info}>추출 방식: 🏠 홈카페</Text>
+        )}
         <Text style={styles.info}>로스터리: {currentTasting.roastery || '-'}</Text>
         <Text style={styles.info}>커피: {currentTasting.coffeeName || '-'}</Text>
       </View>
+
+      {/* Home Cafe 모드일 때만 홈카페 정보 섹션 표시 */}
+      {currentTasting.mode === 'home_cafe' && currentTasting.homeCafeData && (
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>🏠 홈카페 정보</Text>
+          </View>
+          <Text style={styles.info}>
+            추출 도구: {currentTasting.homeCafeData.equipment.brewingMethod === 'V60' ? 'V60' :
+                       currentTasting.homeCafeData.equipment.brewingMethod === 'Chemex' ? '케멕스' :
+                       currentTasting.homeCafeData.equipment.brewingMethod === 'AeroPress' ? '에어로프레스' :
+                       currentTasting.homeCafeData.equipment.brewingMethod === 'FrenchPress' ? '프렌치프레스' :
+                       currentTasting.homeCafeData.equipment.brewingMethod === 'Espresso' ? '에스프레소' :
+                       currentTasting.homeCafeData.equipment.brewingMethod}
+          </Text>
+          {currentTasting.homeCafeData.equipment.grinder?.brand && (
+            <Text style={styles.info}>
+              그라인더: {currentTasting.homeCafeData.equipment.grinder.brand}
+              {currentTasting.homeCafeData.equipment.grinder.setting && 
+                ` (${currentTasting.homeCafeData.equipment.grinder.setting})`}
+            </Text>
+          )}
+          <Text style={styles.info}>
+            레시피: {currentTasting.homeCafeData.recipe.doseIn}g : {currentTasting.homeCafeData.recipe.waterAmount}g 
+            ({currentTasting.homeCafeData.recipe.ratio || '1:16'})
+          </Text>
+          {currentTasting.homeCafeData.recipe.waterTemp > 0 && (
+            <Text style={styles.info}>물온도: {currentTasting.homeCafeData.recipe.waterTemp}°C</Text>
+          )}
+          {currentTasting.homeCafeData.recipe.totalBrewTime > 0 && (
+            <Text style={styles.info}>추출시간: {Math.floor(currentTasting.homeCafeData.recipe.totalBrewTime / 60)}분 {currentTasting.homeCafeData.recipe.totalBrewTime % 60}초</Text>
+          )}
+          {currentTasting.homeCafeData.notes?.result && (
+            <Text style={styles.info}>실험 결과: {currentTasting.homeCafeData.notes.result}</Text>
+          )}
+        </View>
+      )}
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>

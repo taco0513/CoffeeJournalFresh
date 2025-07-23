@@ -28,6 +28,8 @@ export class StatisticsService {
     uniqueRoasteries: number;
     uniqueCafes: number;
     averageScore: number;
+    cafeCount: number;
+    homeCafeCount: number;
   } {
     const realm = this.baseService.getRealm();
     
@@ -37,11 +39,17 @@ export class StatisticsService {
     const roasteries = new Set<string>();
     const cafes = new Set<string>();
     let totalScore = 0;
+    let cafeCount = 0;
+    let homeCafeCount = 0;
     
     tastings.forEach(tasting => {
       roasteries.add(tasting.roastery);
       if (tasting.cafeName) {
         cafes.add(tasting.cafeName);
+        cafeCount++;
+      } else {
+        // cafeName이 없으면 홈카페로 간주
+        homeCafeCount++;
       }
       totalScore += tasting.matchScoreTotal || 0;
     });
@@ -51,6 +59,8 @@ export class StatisticsService {
       uniqueRoasteries: roasteries.size,
       uniqueCafes: cafes.size,
       averageScore: tastings.length > 0 ? totalScore / tastings.length : 0,
+      cafeCount,
+      homeCafeCount,
     };
   }
 

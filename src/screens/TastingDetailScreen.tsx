@@ -355,12 +355,18 @@ const TastingDetailScreen = () => {
             <Text style={styles.infoValue}>{tastingRecord.roastery}</Text>
           </View>
           
-          {tastingRecord.cafeName && (
+          {/* Mode-based display: Cafe name for cafe mode, brewing method for home cafe mode */}
+          {tastingRecord.mode === 'cafe' && tastingRecord.cafeName ? (
             <View style={[styles.infoRow, !tastingRecord.origin && !tastingRecord.variety && !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
               <Text style={styles.infoLabel}>카페명</Text>
               <Text style={styles.infoValue}>{tastingRecord.cafeName}</Text>
             </View>
-          )}
+          ) : tastingRecord.mode === 'home_cafe' ? (
+            <View style={[styles.infoRow, !tastingRecord.origin && !tastingRecord.variety && !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
+              <Text style={styles.infoLabel}>추출 방식</Text>
+              <Text style={styles.infoValue}>🏠 홈카페</Text>
+            </View>
+          ) : null}
           
           {tastingRecord.origin && (
             <View style={[styles.infoRow, !tastingRecord.variety && !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
@@ -496,6 +502,88 @@ const TastingDetailScreen = () => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>로스터 노트</Text>
             {renderRoasterNotes(tastingRecord.roasterNotes)}
+          </View>
+        )}
+
+        {/* Home Cafe Information - only show for home_cafe mode */}
+        {tastingRecord.mode === 'home_cafe' && tastingRecord.homeCafeData && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>🏠 홈카페 정보</Text>
+            
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>추출 도구</Text>
+              <Text style={styles.infoValue}>
+                {tastingRecord.homeCafeData.equipment.brewingMethod === 'V60' ? 'V60' :
+                 tastingRecord.homeCafeData.equipment.brewingMethod === 'Chemex' ? '케멕스' :
+                 tastingRecord.homeCafeData.equipment.brewingMethod === 'AeroPress' ? '에어로프레스' :
+                 tastingRecord.homeCafeData.equipment.brewingMethod === 'FrenchPress' ? '프렌치프레스' :
+                 tastingRecord.homeCafeData.equipment.brewingMethod === 'Espresso' ? '에스프레소' :
+                 tastingRecord.homeCafeData.equipment.brewingMethod}
+              </Text>
+            </View>
+
+            {tastingRecord.homeCafeData.equipment.grinder?.brand && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>그라인더</Text>
+                <Text style={styles.infoValue}>
+                  {tastingRecord.homeCafeData.equipment.grinder.brand}
+                  {tastingRecord.homeCafeData.equipment.grinder.setting && 
+                    ` (${tastingRecord.homeCafeData.equipment.grinder.setting})`}
+                </Text>
+              </View>
+            )}
+
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>레시피</Text>
+              <Text style={styles.infoValue}>
+                {tastingRecord.homeCafeData.recipe.doseIn}g : {tastingRecord.homeCafeData.recipe.waterAmount}g 
+                ({tastingRecord.homeCafeData.recipe.ratio || '1:16'})
+              </Text>
+            </View>
+
+            {tastingRecord.homeCafeData.recipe.waterTemp > 0 && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>물온도</Text>
+                <Text style={styles.infoValue}>{tastingRecord.homeCafeData.recipe.waterTemp}°C</Text>
+              </View>
+            )}
+
+            {tastingRecord.homeCafeData.recipe.bloomTime && tastingRecord.homeCafeData.recipe.bloomTime > 0 && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>블룸시간</Text>
+                <Text style={styles.infoValue}>{tastingRecord.homeCafeData.recipe.bloomTime}초</Text>
+              </View>
+            )}
+
+            {tastingRecord.homeCafeData.recipe.totalBrewTime > 0 && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>추출시간</Text>
+                <Text style={styles.infoValue}>
+                  {Math.floor(tastingRecord.homeCafeData.recipe.totalBrewTime / 60)}분 {tastingRecord.homeCafeData.recipe.totalBrewTime % 60}초
+                </Text>
+              </View>
+            )}
+
+            {tastingRecord.homeCafeData.notes?.previousChange && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>이전 변경</Text>
+                <Text style={styles.infoValue}>{tastingRecord.homeCafeData.notes.previousChange}</Text>
+              </View>
+            )}
+
+            {tastingRecord.homeCafeData.notes?.result && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>실험 결과</Text>
+                <Text style={styles.infoValue}>{tastingRecord.homeCafeData.notes.result}</Text>
+              </View>
+            )}
+
+            {tastingRecord.homeCafeData.notes?.nextExperiment && (
+              <View style={[styles.infoRow, styles.infoRowLast]}>
+                <Text style={styles.infoLabel}>다음 실험</Text>
+                <Text style={styles.infoValue}>{tastingRecord.homeCafeData.notes.nextExperiment}</Text>
+              </View>
+            )}
           </View>
         )}
 

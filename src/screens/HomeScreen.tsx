@@ -347,7 +347,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
   }, [realmService]);
 
   const handleNewTasting = () => {
-    navigation.navigate('TastingFlow' as never, { screen: 'CoffeeInfo' } as never);
+    navigation.navigate('TastingFlow' as never, { screen: 'ModeSelection' } as never);
   };
 
   const handleViewHistory = () => {

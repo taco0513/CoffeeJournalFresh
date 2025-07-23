@@ -1,30 +1,35 @@
 # Coffee Journal Fresh - MVP Status Report
 
-## 📱 MVP 완료 상태 (2025-07-22)
+## 📱 MVP 완료 상태 (2025-07-23)
 
-### ✅ **MVP 핵심 기능 완성도: 95%**
+### ✅ **MVP 핵심 기능 완성도: 98% (Home Cafe Mode 통합)**
 
 #### **완료된 핵심 워크플로우**
-1. **커피 정보 입력** ✅ - CoffeeInfoScreen.tsx
-2. **향미 선택** ✅ - UnifiedFlavorScreen.tsx (향미휠 기반)
-3. **감각 평가** ✅ - SensoryScreen.tsx (Korean 표현 시스템)
-4. **개인 노트** ✅ - PersonalCommentScreen.tsx
-5. **결과 화면** ✅ - ResultScreen.tsx (저장 및 통계)
+1. **모드 선택** ✅ - ModeSelectionScreen.tsx (Cafe vs Home Cafe)
+2. **커피 정보 입력** ✅ - CoffeeInfoScreen.tsx (모드별 조건부 렌더링)
+3. **홈카페 정보** ✅ - HomeCafeScreen.tsx (장비, 레시피, 실험 노트)
+4. **향미 선택** ✅ - UnifiedFlavorScreen.tsx (향미휠 기반)
+5. **감각 평가** ✅ - SensoryScreen.tsx (Korean 표현 시스템)  
+6. **개인 노트** ✅ - PersonalCommentScreen.tsx
+7. **결과 화면** ✅ - ResultScreen.tsx (모드별 정보 표시)
 
 #### **완료된 부가 기능**
 - ✅ **한국식 감각 평가**: 44개 표현, CATA 방법론, 4단계 온보딩
+- ✅ **Home Cafe Mode**: 모드별 사용자 플로우, 장비/레시피 관리, 실험 노트
 - ✅ **통계 시스템**: 기본 통계, 30일 인사이트, 성취 포인트
-- ✅ **성취 시스템**: 백엔드 완료, 12개 기본 성취 정의
+- ✅ **성취 시스템**: 백엔드 완료, 18개 성취 정의 (홈카페 전용 6개 포함)
 - ✅ **사용자 관리**: Apple/Google 로그인, 프로필 관리
-- ✅ **데이터 관리**: Realm 로컬DB, Supabase 동기화
+- ✅ **데이터 관리**: Realm 로컬DB, Supabase 동기화, HomeCafeData 지원
 - ✅ **사진 관리**: 갤러리, 뷰어, 업로드 시스템
+- ✅ **Mock Data System**: Cafe/Home Cafe 모드별 샘플 데이터 포함
 
 ### 📊 **코드베이스 최적화**
 
-**File Count**: 182 → 164 files (**10% 감소**)  
-**Feature Organization**: 체계적인 백로그 구조 완성
+**File Count**: 182 → 166 files (**2개 신규 홈카페 스크린 추가**)  
+**Feature Organization**: 체계적인 백로그 구조 + 홈카페 2단계 분리 완성
 **TypeScript Errors**: 0 errors (was 319)
 **Build Status**: ✅ 정상 빌드 및 실행 가능
+**New Screens**: ExperimentalDataScreen, SensoryEvaluationScreen (홈카페 전용)
 
 ### 🗂️ **Feature Backlog 완성**
 

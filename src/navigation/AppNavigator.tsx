@@ -17,6 +17,8 @@ import UnifiedFlavorScreen from '../screens/flavor/UnifiedFlavorScreen';
 // import UnifiedFlavorScreen from '../screens/flavor/TestScreen';
 // import UnifiedFlavorScreen from '../screens/flavor/MinimalTestScreen';
 import SensoryScreen from '../screens/SensoryScreen';
+import ExperimentalDataScreen from '../screens/ExperimentalDataScreen';
+import SensoryEvaluationScreen from '../screens/SensoryEvaluationScreen';
 import PersonalCommentScreen from '../screens/PersonalCommentScreen';
 import ResultScreen from '../screens/ResultScreen';
 // import OCRScanScreen from '../screens/OCRScanScreen'; // Moved to feature_backlog
@@ -34,6 +36,8 @@ import { AchievementGalleryScreen } from '../screens/AchievementGalleryScreen';
 import { AchievementProvider } from '../contexts/AchievementContext';
 import { RealmProvider } from '../contexts/RealmContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ModeSelectionScreen from '../screens/ModeSelectionScreen';
+import HomeCafeScreen from '../screens/HomeCafeScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -56,9 +60,19 @@ function TastingFlow() {
       }}
     >
       <Stack.Screen 
+        name="ModeSelection" 
+        component={ModeSelectionScreen} 
+        options={{title: 'Mode Selection'}}
+      />
+      <Stack.Screen 
         name="CoffeeInfo" 
         component={CoffeeInfoScreen} 
         options={{title: 'Coffee Info'}}
+      />
+      <Stack.Screen 
+        name="HomeCafe" 
+        component={HomeCafeScreen} 
+        options={{title: 'Home Cafe'}}
       />
       <Stack.Screen 
         name="RoasterNotes" 
@@ -74,6 +88,17 @@ function TastingFlow() {
       <Stack.Screen 
         name="Sensory" 
         component={SensoryScreen} 
+        options={{title: 'Sensory Evaluation'}}
+      />
+      {/* Home Cafe Mode: Separate screens for experimental data and sensory evaluation */}
+      <Stack.Screen 
+        name="ExperimentalData" 
+        component={ExperimentalDataScreen} 
+        options={{title: 'Experimental Data'}}
+      />
+      <Stack.Screen 
+        name="SensoryEvaluation" 
+        component={SensoryEvaluationScreen} 
         options={{title: 'Sensory Evaluation'}}
       />
       <Stack.Screen 

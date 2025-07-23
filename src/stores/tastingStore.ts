@@ -9,7 +9,9 @@ import {
   SensoryAttributes, 
   SelectedSensoryExpression,
   CurrentTasting,
-  Achievement
+  Achievement,
+  TastingMode,
+  HomeCafeData
 } from '../types/tasting';
 
 interface TastingState {
@@ -27,6 +29,10 @@ interface TastingState {
   reset: () => void;
   updateSyncStatus: (status: Partial<SyncStatus>) => void;
   
+  // Mode management
+  setTastingMode: (mode: TastingMode) => void;
+  updateHomeCafeData: (data: Partial<HomeCafeData>) => void;
+  
   // Auto-save functionality
   autoSave: () => Promise<void>;
   loadDraft: () => Promise<boolean>;
@@ -39,6 +45,7 @@ interface TastingState {
 
 export const useTastingStore = create<TastingState>((set, get) => ({
   currentTasting: {
+    mode: 'cafe',
     cafeName: '',
     roastery: '',
     coffeeName: '',
@@ -243,6 +250,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     
     set({
       currentTasting: {
+        mode: 'cafe',
         cafeName: '',
         roastery: '',
         coffeeName: '',
@@ -250,6 +258,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         variety: '',
         process: '',
         altitude: '',
+        roastLevel: '',
         temperature: 'hot',
         roasterNotes: '',
         body: 3,
@@ -265,6 +274,41 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       selectedSensoryExpressions: [],
       matchScoreTotal: null,
     });
+  },
+
+  setTastingMode: (mode: TastingMode) => {
+    set((state) => ({
+      currentTasting: {
+        ...state.currentTasting,
+        mode,
+        // Clear mode-specific data when switching
+        ...(mode === 'cafe' ? { homeCafeData: undefined } : { cafeName: '' }),
+      },
+    }));
+  },
+
+  updateHomeCafeData: (data: Partial<HomeCafeData>) => {
+    set((state) => ({
+      currentTasting: {
+        ...state.currentTasting,
+        homeCafeData: {
+          ...state.currentTasting.homeCafeData,
+          ...data,
+          equipment: {
+            ...state.currentTasting.homeCafeData?.equipment,
+            ...data.equipment,
+          },
+          recipe: {
+            ...state.currentTasting.homeCafeData?.recipe,
+            ...data.recipe,
+          },
+          notes: {
+            ...state.currentTasting.homeCafeData?.notes,
+            ...data.notes,
+          },
+        } as HomeCafeData,
+      },
+    }));
   },
 
   updateSyncStatus: (status: Partial<SyncStatus>) => {

@@ -104,10 +104,12 @@ const CoffeeInfoScreen = () => {
   
   
   
-  // 필수 필드가 채워졌는지 확인 (커피명, 로스터리, 카페이름, 온도)
+  // 필수 필드가 채워졌는지 확인 (커피명, 로스터리, 온도)
+  // Cafe 모드인 경우에만 카페이름도 필수
   const isValid = currentTasting.coffeeName && currentTasting.coffeeName.trim().length > 0 &&
                   currentTasting.roastery && currentTasting.roastery.trim().length > 0 &&
-                  currentTasting.cafeName && currentTasting.cafeName.trim().length > 0 &&
+                  (currentTasting.mode === 'home_cafe' || 
+                   (currentTasting.cafeName && currentTasting.cafeName.trim().length > 0)) &&
                   currentTasting.temperature;
 
   // Parse coffee name and auto-fill fields
@@ -143,8 +145,12 @@ const CoffeeInfoScreen = () => {
         realmService.incrementRoasterVisit(currentTasting.roastery);
       }
       
-      // Navigate to FlavorSelection screen (step 2)
-      navigation.navigate('UnifiedFlavor' as never);
+      // Navigate based on mode
+      if (currentTasting.mode === 'home_cafe') {
+        navigation.navigate('HomeCafe' as never);
+      } else {
+        navigation.navigate('UnifiedFlavor' as never);
+      }
     }
   };
 
@@ -173,7 +179,13 @@ const CoffeeInfoScreen = () => {
           <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>커피 정보</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('UnifiedFlavor' as never)}>
+        <TouchableOpacity onPress={() => {
+          if (currentTasting.mode === 'home_cafe') {
+            navigation.navigate('HomeCafe' as never);
+          } else {
+            navigation.navigate('UnifiedFlavor' as never);
+          }
+        }}>
           <Text style={styles.skipButton}>건너뛰기</Text>
         </TouchableOpacity>
       </View>
@@ -214,7 +226,8 @@ const CoffeeInfoScreen = () => {
 
           {/* 입력 폼 */}
           <View style={styles.form}>
-            {/* 카페 이름 */}
+            {/* 카페 이름 - Cafe 모드일 때만 표시 */}
+            {currentTasting.mode === 'cafe' && (
               <View style={[styles.inputGroup, { zIndex: cafeSuggestions.length > 0 && currentTasting.cafeName ? 10 : 1 }]}>
                 <AutocompleteInput
                   value={currentTasting.cafeName || ''}
@@ -237,6 +250,7 @@ const CoffeeInfoScreen = () => {
                   label="카페 이름 *"
                 />
               </View>
+            )}
 
               {/* 로스터리 (필수) */}
               <View style={[styles.inputGroup, { zIndex: roasterSuggestions.length > 0 && currentTasting.roastery ? 5 : 1 }]}>

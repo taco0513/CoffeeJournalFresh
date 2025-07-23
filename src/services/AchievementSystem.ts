@@ -338,6 +338,91 @@ const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress
     requirements: { type: 'coffee_discovery', value: 10 },
     rewards: { type: 'title', value: 'Coffee Pioneer' },
   },
+
+  // Home Cafe Achievements
+  home_cafe_starter: {
+    type: 'home_cafe_starter',
+    title: '🏠 홈카페 입문자',
+    description: '첫 홈카페 기록을 완성하세요',
+    icon: '🏠',
+    rarity: 'common',
+    category: AchievementType.FIRST_STEPS,
+    requirements: { 
+      type: 'home_cafe_tasting', 
+      value: 1 
+    },
+    rewards: { type: 'points', value: 20 },
+  },
+  home_barista: {
+    type: 'home_barista',
+    title: '☕ 꾸준한 바리스타',
+    description: '홈카페로 7일 연속 기록하기',
+    icon: '☕',
+    rarity: 'rare',
+    category: AchievementType.CONSISTENCY,
+    requirements: { 
+      type: 'home_cafe_streak', 
+      value: 7 
+    },
+    rewards: { type: 'badge', value: 'home_barista' },
+  },
+  recipe_experimenter: {
+    type: 'recipe_experimenter',
+    title: '🔬 실험가',
+    description: '같은 원두로 5번 다른 레시피 시도',
+    icon: '🔬',
+    rarity: 'rare',
+    category: AchievementType.HIDDEN,
+    requirements: { 
+      type: 'recipe_variations', 
+      value: 5 
+    },
+    rewards: { type: 'title', value: 'Recipe Experimenter' },
+  },
+  brewing_method_explorer: {
+    type: 'brewing_method_explorer',
+    title: '📚 학습자',
+    description: '3가지 이상 추출 방법 사용하기',
+    icon: '📚',
+    rarity: 'common',
+    category: AchievementType.FLAVOR_EXPLORER,
+    requirements: { 
+      type: 'brewing_methods', 
+      value: 3 
+    },
+    rewards: { type: 'points', value: 50 },
+  },
+  perfect_brew: {
+    type: 'perfect_brew',
+    title: '🎯 정확한 손맛',
+    description: '동일 레시피로 3회 연속 90% 이상 점수',
+    icon: '🎯',
+    rarity: 'epic',
+    category: AchievementType.TASTE_ACCURACY,
+    requirements: { 
+      type: 'consistent_recipe', 
+      value: 3,
+      additionalConditions: { minScore: 90 }
+    },
+    rewards: { type: 'title', value: 'Perfect Brewer' },
+  },
+  home_cafe_master: {
+    type: 'home_cafe_master',
+    title: '⭐ 홈카페 마스터',
+    description: '모든 홈카페 기본 뱃지 획득',
+    icon: '⭐',
+    rarity: 'legendary',
+    category: AchievementType.HIDDEN,
+    requirements: { 
+      type: 'home_cafe_badges', 
+      value: 5 
+    },
+    rewards: { 
+      type: 'title', 
+      value: 'Home Cafe Master',
+      additionalRewards: [{ type: 'points', value: 500 }]
+    },
+  },
 };
 
 // =============================================
@@ -1071,6 +1156,14 @@ export class AchievementSystem {
       flavor_explorer_bronze: '향미 탐험가로서의 여정이 시작되었습니다!',
       taste_master: '당신은 진정한 미각의 달인입니다!',
       perfect_match: '완벽합니다! 로스터와 같은 향미를 느끼셨네요!',
+      
+      // Home Cafe Achievement Messages
+      home_cafe_starter: '🏠 홈카페 여행의 시작을 축하합니다!',
+      home_barista: '☕ 집에서도 전문가 수준의 바리스타가 되셨네요!',
+      recipe_experimenter: '🔬 끊임없는 실험 정신이 놀랍습니다!',
+      brewing_method_explorer: '📚 다양한 추출 방법을 마스터하고 계시네요!',
+      perfect_brew: '🎯 완벽한 일관성! 진정한 홈카페 마스터입니다!',
+      home_cafe_master: '⭐ 축하합니다! 홈카페의 모든 것을 정복하셨습니다!',
     };
 
     return {

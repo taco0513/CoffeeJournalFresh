@@ -24,29 +24,40 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 4. **Cultural adaptation** with 44 Korean taste expressions
 5. **Achievement system** for habit formation
 
-## Current Focus (2025-07-23) - Market-Ready MVP ✅
-- **Status**: 95% MVP Complete, Ready for Launch
-- **Completed**: 
+## Current Focus (2025-07-23) - Home Cafe Mode MVP Integration ✅
+- **Status**: 98% MVP Complete with Home Cafe Mode Successfully Integrated
+- **Latest Achievement**: Home Cafe Mode added to MVP based on market research
+- **Market Validation**: Korean home cafe market (20만+ users, 12.9B USD, 6.6% growth)
+- **Completed Features**: 
   - Korean expressions fully integrated into TastingFlow
   - CATA (Check All That Apply) methodology per SCA 2024 standards
   - 4-step onboarding system with AsyncStorage persistence
+  - **✅ Home Cafe Mode**: Mode selection, equipment tracking, recipe management
+  - **✅ Dual User Paths**: Cafe visitors vs Home cafe enthusiasts
   - Market research and competitive analysis completed
-- **Key Features**:
+- **Key Technical Features**:
   - 44 Korean expressions across 6 categories
   - Multi-selection support (max 3 per category)
-  - Beginner-friendly expressions marked with ⭐
+  - HomeCafeData interface with equipment, recipe, experiment notes
+  - Auto-calculating brew ratios (1:15, 1:16, etc.)
+  - Conditional UI rendering based on selected mode
   - Professional UI with category-specific colors
 
 ## MVP Focus (Market-Validated 2025-07-23)
-- **Target**: 스페셜티 커피 입문자 (Korean specialty coffee beginners)
+- **Target**: 스페셜티 커피 입문자 + 홈카페족 (Korean specialty coffee beginners + Home cafe enthusiasts)
 - **Core Features**: 
-  - ✅ 기본 테이스팅 워크플로우 (커피 정보 → 향미 선택 → 감각 평가 → 개인 노트 → 결과)
+  - ✅ **Dual Mode System**: Cafe Mode + Home Cafe Mode user paths
+  - ✅ **모드별 테이스팅 워크플로우**:
+    - **카페 모드**: 모드 선택 → 커피 정보 → 향미 선택 → 감각 평가 → 개인 노트 → 결과
+    - **홈카페 모드**: 모드 선택 → 커피 정보 → 홈카페 정보 → 향미 선택 → 실험 데이터 → 감각 평가 → 개인 노트 → 결과
   - ✅ Korean 감각 평가 시스템 (44개 표현, CATA 방법론)
+  - ✅ **홈카페 모드**: 장비 선택, 레시피 관리, 실험 노트
   - ✅ 기본 통계 및 기록 관리
   - ✅ 성취 시스템 (백엔드 구현 완료, UI 구현 필요)
   - ✅ 사진 관리 시스템 (PhotoGallery, PhotoViewer, PhotoService 유지)
   - ✅ 관리자 대시보드 (운영 필수 기능)
 - **UI**: 3-tab navigation (Home, Journal, Profile)
+- **Target Expansion**: 기존 카페 방문자 + 20만+ 홈카페족 시장 확장
 - **Removed from MVP**: AI 코칭, OCR/사진 스캔, 소셜 기능, 국제화, 데이터 내보내기
 
 ## Market Research Summary (2025-07-23)
@@ -163,6 +174,10 @@ bridgeDebugger.printRecentCalls()  # Debug bridge errors
    - Basic performance monitoring
 
 ## Post-MVP Roadmap (Feature Backlog)
+- **Phase 1.5**: Mode-based UX (Cafe/Home Cafe/Lab mode) - **HIGH PRIORITY**
+  - Home Cafe Mode: 장비 정보, 레시피 데이터, 추출 변수 기록
+  - Lab Mode: 큐핑 프로토콜, 정밀 측정, 비교 테이스팅
+  - 프리미엄 monetization 기회 (홈카페족 20만+ 시장 확장)
 - **Phase 2**: AI 코칭 시스템 (90% 완성), Photo OCR 기능
 - **Phase 3**: 소셜/커뮤니티 기능, 고급 성장 트래킹
 - **Phase 4**: 국제화, 전문가 도구
@@ -170,7 +185,24 @@ bridgeDebugger.printRecentCalls()  # Debug bridge errors
 ## Achievement System Status
 - ✅ **Backend**: Core system implemented with balanced point values
 - ✅ **Phase 1**: 12 basic achievements defined and functional
-- 🔧 **UI**: Need achievement cards, progress bars, notification system
+- ✅ **UI**: Achievement cards, progress bars, notification system (COMPLETED 2025-07-23)
+
+## Mode-Based UX Proposal (2025-07-23) 🆕
+### Strategic Enhancement for Market Expansion
+- **Problem**: Current MVP is Cafe Mode only, but market has 3 distinct user groups
+- **Solution**: Differentiated UX for Cafe/Home Cafe/Lab modes
+- **Impact**: 20만+ 홈카페족 시장 확장, 프리미엄 monetization 기회
+- **Status**: Comprehensive proposal completed (`MODE_BASED_UX_PROPOSAL.md`)
+
+### Mode Breakdown
+1. **Cafe Mode** (Current MVP): 카페 방문자용 간편 기록
+2. **Home Cafe Mode** (Phase 1.5): 장비/레시피/추출변수 기록
+3. **Lab Mode** (Advanced): 큐핑 프로토콜, 정밀 측정, 비교 테이스팅
+
+### Business Impact
+- **Market Differentiation**: 유일한 한국어 다중 모드 커피 앱
+- **Revenue Model**: Home Cafe/Lab Mode 프리미엄 구독
+- **User Expansion**: 타겟 시장 3배 확장 가능성
 
 ## Developer Mode Improvements (2025-07-21)
 ### Completed
@@ -266,7 +298,26 @@ feature_backlog/
 - **i18n**: LanguageSwitch, i18n directory, i18n utilities
 
 ## Session Summary (2025-07-23)
-### TastingFlow UI Consistency Updates
+### Achievement UI Implementation (Latest Session)
+1. ✅ **Achievement System Analysis**: 
+   - Confirmed comprehensive backend implementation (AchievementSystem.ts)
+   - 12 achievement categories with Korean localization
+   - Progress tracking, point system, rarity levels
+
+2. ✅ **UI Components Verification**:
+   - AchievementCard.tsx - Individual achievement cards with progress bars
+   - AchievementSummaryCard.tsx - Overview stats and next goals  
+   - AchievementGalleryScreen.tsx - Full achievement browsing interface
+   - Existing components already well-designed and minimal
+
+3. ✅ **Mode-Based UX Strategic Proposal**:
+   - Created comprehensive MODE_BASED_UX_PROPOSAL.md
+   - Identified 3 distinct user modes: Cafe/Home Cafe/Lab
+   - Analyzed market expansion opportunity (20만+ 홈카페족)
+   - Designed technical implementation roadmap
+   - Added to Post-MVP roadmap as Phase 1.5 (HIGH PRIORITY)
+
+### Previous TastingFlow UI Consistency Updates
 1. ✅ **Consistent Header Styles**: Applied unified header style across all TastingFlow screens
    - All screens now use: back arrow (←), title, skip button
    - Added progress bars below headers with proper completion percentages

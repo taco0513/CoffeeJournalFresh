@@ -197,6 +197,7 @@ const DeveloperScreen = () => {
             altitude: '2000m',
             process: 'Natural',
             temperature: 'hot' as const,
+            mode: 'cafe' as const,
             roasterNotes: 'Bright and fruity with floral notes',
             matchScoreTotal: 85,
             matchScoreFlavor: 42,
@@ -217,7 +218,6 @@ const DeveloperScreen = () => {
             isDeleted: false
           },
           {
-            cafeName: 'Fritz Coffee Company',
             roastery: 'Fritz',
             coffeeName: 'Colombia Geisha',
             origin: 'Colombia',
@@ -225,6 +225,31 @@ const DeveloperScreen = () => {
             altitude: '1850m',
             process: 'Washed',
             temperature: 'hot' as const,
+            mode: 'home_cafe' as const,
+            homeCafeData: {
+              equipment: {
+                brewingMethod: 'V60' as const,
+                grinder: {
+                  brand: '커맨단테',
+                  model: 'C40',
+                  setting: '16클릭'
+                }
+              },
+              recipe: {
+                doseIn: 20,
+                waterAmount: 320,
+                ratio: '1:16',
+                waterTemp: 93,
+                bloomTime: 30,
+                totalBrewTime: 150,
+                pourPattern: '3번 나누어 붓기'
+              },
+              notes: {
+                previousChange: '그라인딩을 1클릭 더 굵게 조정',
+                result: '산미가 밝아지고 단맛이 더 선명해짐',
+                nextExperiment: '물온도를 2도 낮춰서 시도해보기'
+              }
+            },
             roasterNotes: 'Floral and tea-like with jasmine notes',
             matchScoreTotal: 92,
             matchScoreFlavor: 46,
@@ -253,6 +278,7 @@ const DeveloperScreen = () => {
             altitude: '1200m',
             process: 'Pulped Natural',
             temperature: 'cold' as const,
+            mode: 'cafe' as const,
             roasterNotes: 'Chocolatey and nutty with smooth body',
             matchScoreTotal: 80,
             matchScoreFlavor: 40,
@@ -273,7 +299,6 @@ const DeveloperScreen = () => {
             isDeleted: false
           },
           {
-            cafeName: 'Terarosa Coffee',
             roastery: 'Terarosa',
             coffeeName: 'Guatemala Huehuetenango',
             origin: 'Guatemala',
@@ -281,6 +306,28 @@ const DeveloperScreen = () => {
             altitude: '1900m',
             process: 'Washed',
             temperature: 'hot' as const,
+            mode: 'home_cafe' as const,
+            homeCafeData: {
+              equipment: {
+                brewingMethod: 'AeroPress' as const,
+                grinder: {
+                  brand: '타임모어',
+                  model: 'C2',
+                  setting: '15클릭'
+                }
+              },
+              recipe: {
+                doseIn: 18,
+                waterAmount: 250,
+                ratio: '1:14',
+                waterTemp: 90,
+                totalBrewTime: 90
+              },
+              notes: {
+                result: '균형잡힌 맛으로 만족스러움',
+                nextExperiment: '다음엔 더 긴 시간으로 추출해보기'
+              }
+            },
             roasterNotes: 'Balanced with chocolate and citrus notes',
             matchScoreTotal: 86,
             matchScoreFlavor: 43,
@@ -309,6 +356,7 @@ const DeveloperScreen = () => {
             altitude: '1400m',
             process: 'Mixed',
             temperature: 'hot' as const,
+            mode: 'cafe' as const,
             roasterNotes: 'Classic coffee with nutty undertones',
             matchScoreTotal: 75,
             matchScoreFlavor: 37,

@@ -25,6 +25,8 @@ interface Statistics {
   totalTastings: number;
   averageScore: number;
   firstTastingDays: number;
+  cafeCount?: number;
+  homeCafeCount?: number;
 }
 
 interface TopRoaster {
@@ -374,6 +376,43 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
               <Text style={styles.statLabel}>발견한 로스터리</Text>
             </View>
           </View>
+        </View>
+
+        {/* Home Cafe vs Cafe 모드 통계 */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>☕ 테이스팅 장소</Text>
+          <View style={styles.modeStatsContainer}>
+            <View style={styles.modeStatCard}>
+              <Text style={styles.modeIcon}>🏪</Text>
+              <Text style={styles.modeNumber}>{stats.cafeCount || 0}</Text>
+              <Text style={styles.modeLabel}>카페에서</Text>
+            </View>
+            <View style={styles.modeStatCard}>
+              <Text style={styles.modeIcon}>🏠</Text>
+              <Text style={styles.modeNumber}>{stats.homeCafeCount || 0}</Text>
+              <Text style={styles.modeLabel}>홈카페에서</Text>
+            </View>
+          </View>
+          {stats.totalTastings > 0 && (
+            <View style={styles.modePercentageContainer}>
+              <View style={styles.modePercentageBar}>
+                <View 
+                  style={[
+                    styles.modePercentageFill, 
+                    styles.cafePercentage,
+                    { width: `${((stats.cafeCount || 0) / stats.totalTastings) * 100}%` }
+                  ]} 
+                />
+                <View 
+                  style={[
+                    styles.modePercentageFill, 
+                    styles.homeCafePercentage,
+                    { width: `${((stats.homeCafeCount || 0) / stats.totalTastings) * 100}%` }
+                  ]} 
+                />
+              </View>
+            </View>
+          )}
         </View>
 
         {/* TOP 로스터리 */}
@@ -744,6 +783,59 @@ const styles = StyleSheet.create({
   moreButtonArrow: {
     fontSize: 20,
     color: HIGColors.blue,
+  },
+  modeStatsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    gap: HIGConstants.SPACING_LG,
+  },
+  modeStatCard: {
+    flex: 1,
+    backgroundColor: HIGColors.secondarySystemBackground,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    padding: HIGConstants.SPACING_LG,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  modeIcon: {
+    fontSize: 24,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  modeNumber: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  modeLabel: {
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  modePercentageContainer: {
+    marginTop: HIGConstants.SPACING_MD,
+    paddingHorizontal: HIGConstants.SPACING_SM,
+  },
+  modePercentageBar: {
+    height: 8,
+    backgroundColor: HIGColors.systemGray5,
+    borderRadius: 4,
+    overflow: 'hidden',
+    flexDirection: 'row',
+  },
+  modePercentageFill: {
+    height: '100%',
+  },
+  cafePercentage: {
+    backgroundColor: '#FF6B35', // Orange for cafe
+  },
+  homeCafePercentage: {
+    backgroundColor: '#4CAF50', // Green for home cafe
   },
 });
 
