@@ -55,7 +55,7 @@ export class BaseRealmService {
 
       this.initialized = true;
       
-      const duration = timer.stop();
+      const duration = timer.end();
       RealmLogger.info('realm', 'Realm initialized successfully', { duration });
       
       // Initialize indexes
@@ -65,7 +65,7 @@ export class BaseRealmService {
       this.scheduleCleanup();
       
     } catch (error) {
-      const duration = timer.stop();
+      const duration = timer.end();
       RealmLogger.error('realm', 'Failed to initialize Realm', { error, duration });
       throw error;
     }
