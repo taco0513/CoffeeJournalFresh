@@ -1,6 +1,6 @@
 import Config from 'react-native-config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Logger } from './LoggingService';
+import { Logger } from '../utils/logger';
 
 export enum UserRole {
   REGULAR = 'regular',
@@ -142,6 +142,7 @@ export class AccessControlService {
    * Get permissions matrix for a specific role
    */
   private getPermissionsForRole(role: UserRole): UserPermissions {
+    // Base permissions (all false except canUseApp)
     const basePermissions: UserPermissions = {
       canUseApp: true,
       canAccessBetaFeatures: false,
@@ -495,12 +496,12 @@ export class AccessControlService {
     const currentPermissions = this.currentUserProfile.permissions;
 
     // Check if permissions match the role
-    for (const [key, expectedValue] of Object.entries(expectedPermissions)) {
-      if (currentPermissions[key as keyof UserPermissions] !== expectedValue) {
+    for (const [key, expectedValue] of Object.entries(expectedPermissions) as Array<[keyof UserPermissions, boolean]>) {
+      if (currentPermissions[key] !== expectedValue) {
         Logger.warn('Permission mismatch detected', 'access_control', { 
           permission: key,
           expected: expectedValue,
-          actual: currentPermissions[key as keyof UserPermissions],
+          actual: currentPermissions[key],
           role: this.currentUserProfile.role
         });
         return false;

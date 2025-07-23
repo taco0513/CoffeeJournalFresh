@@ -1,9 +1,7 @@
 import { Platform, Alert } from 'react-native';
 import ViewShot from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
-import { LoggingService } from './LoggingService';
-
-const logger = LoggingService.getInstance();
+import { Logger } from '../utils/logger';
 
 export class ScreenshotService {
   /**
@@ -45,10 +43,10 @@ export class ScreenshotService {
       // Copy file to destination
       await RNFS.copyFile(uri, destinationPath);
 
-      logger.info('Screenshot saved', 'screenshot', { data: { path: destinationPath } });
+      Logger.info('Screenshot saved', 'screenshot', { data: { path: destinationPath } });
       return destinationPath;
     } catch (error) {
-      logger.error('Error capturing screenshot', 'screenshot', { error: error as Error });
+      Logger.error('Error capturing screenshot', 'screenshot', { error: error as Error });
       return null;
     }
   }
@@ -107,7 +105,7 @@ export class ScreenshotService {
         .map(file => file.path)
         .sort((a, b) => b.localeCompare(a)); // Latest first
     } catch (error) {
-      logger.error('Error getting saved screenshots', 'screenshot', { error: error as Error });
+      Logger.error('Error getting saved screenshots', 'screenshot', { error: error as Error });
       return [];
     }
   }
@@ -130,7 +128,7 @@ export class ScreenshotService {
       
       return true;
     } catch (error) {
-      logger.error('Error clearing screenshots', 'screenshot', { error: error as Error });
+      Logger.error('Error clearing screenshots', 'screenshot', { error: error as Error });
       return false;
     }
   }

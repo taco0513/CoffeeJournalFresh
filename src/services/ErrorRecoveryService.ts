@@ -1,3 +1,4 @@
+import type { NetInfoState } from '@react-native-community/netinfo';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RealmService from './realm/RealmService';
@@ -547,7 +548,10 @@ export class ErrorRecoveryService {
   private async getMemoryUsage(): Promise<number> {
     try {
       // This would require a native module in a real implementation
-      // For now, return a mock value
+      // For now, return a mock value based on JS heap usage if available
+      if (global.performance?.memory) {
+        return Math.round(global.performance.memory.usedJSHeapSize / 1024 / 1024); // MB
+      }
       return Math.floor(Math.random() * 100);
     } catch {
       return 0;
@@ -556,8 +560,8 @@ export class ErrorRecoveryService {
 
   private async getNetworkStatus(): Promise<boolean> {
     try {
-      const netInfo = await NetInfo.fetch();
-      return netInfo.isConnected || false;
+      const netInfo: NetInfoState = await NetInfo.fetch();
+      return netInfo.isConnected ?? false;
     } catch {
       return false;
     }

@@ -18,21 +18,20 @@ import { useDevStore } from '../stores/useDevStore';
 import { useUserStore } from '../stores/useUserStore';
 import { useFeedbackStore } from '../stores/useFeedbackStore';
 import RealmService from '../services/realm/RealmService';
-import { TastingData } from '../services/realm/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MockDataService, MockDataScenario } from '../services/MockDataService';
 import AccessControlService from '../services/AccessControlService';
 
-// Category Icons - Removed for MVP Beta clean design
+// Category Icons - Minimal icons for clean design
 const CategoryIcons = {
-  user: '',
-  debug: '',
-  test: '',
-  feature: '',
-  beta: '',
-  login: '',
-  data: '',
-};
+  user: '👤',
+  debug: '🔍',
+  test: '⚙️',
+  feature: '✨',
+  beta: 'β',
+  login: '🔑',
+  data: '📊',
+} as const;
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 

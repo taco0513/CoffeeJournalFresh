@@ -1,7 +1,5 @@
-import uuid from 'react-native-uuid';
 import { TastingData, HomeCafeData } from './realm/types';
 import { SelectedSensoryExpression } from '../types/tasting';
-import { IFlavorNote } from './realm/schemas';
 import RealmService from './realm/RealmService';
 import { RealmLogger } from '../utils/logger';
 
@@ -521,7 +519,7 @@ export class MockDataService {
         await realmService.initialize();
       }
 
-      realmService.clearAllTastings();
+      await realmService.clearAllTastings();
       
       RealmLogger.info('realm', 'Cleared all mock data successfully');
     } catch (error) {
@@ -537,28 +535,36 @@ export class MockDataService {
     try {
       // Check required fields
       if (!data.coffeeInfo?.roastery || !data.coffeeInfo?.coffeeName) {
+        RealmLogger.warn('Invalid coffee info', { roastery: data.coffeeInfo?.roastery, coffeeName: data.coffeeInfo?.coffeeName });
         return false;
       }
 
       // Check sensory attributes
       if (!data.sensoryAttributes?.body || !data.sensoryAttributes?.acidity) {
+        RealmLogger.warn('Invalid sensory attributes', { body: data.sensoryAttributes?.body, acidity: data.sensoryAttributes?.acidity });
         return false;
       }
 
       // Check match score
       if (!data.matchScore?.total || data.matchScore.total < 0 || data.matchScore.total > 100) {
+        RealmLogger.warn('Invalid match score', { total: data.matchScore?.total });
         return false;
       }
 
       // Check HomeCafe data if present
       if (data.mode === 'home_cafe' && data.homeCafeData) {
         if (!data.homeCafeData.equipment?.brewingMethod || !data.homeCafeData.recipe?.doseIn) {
+          RealmLogger.warn('Invalid HomeCafe data', { 
+            brewingMethod: data.homeCafeData.equipment?.brewingMethod, 
+            doseIn: data.homeCafeData.recipe?.doseIn 
+          });
           return false;
         }
       }
 
       return true;
     } catch (error) {
+      RealmLogger.error('Error validating mock data', { error });
       return false;
     }
   }
