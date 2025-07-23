@@ -399,6 +399,11 @@ Partially fixed TypeScript errors: 319 → 152 errors (52% reduction)
 - **Configuration**: Added to `~/.config/claude/claude_desktop_config.json`
 - **Benefits**: Real-time library docs, version-aware examples, no outdated APIs
 
+## Package Manager Strategy
+- **Primary**: npm (for stability, React Native compatibility, team consistency)
+- **Secondary**: Bun (for quick scripts, TypeScript execution, testing packages)
+- **Hybrid Approach**: Use npm for dependencies/builds, Bun for development utilities
+
 ## Documentation
 - Progress archive: `CLAUDE_ARCHIVE_2025-07.md`
 - Sensory evaluation analysis: Session 2025-07-22
