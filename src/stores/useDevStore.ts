@@ -77,7 +77,7 @@ export const useDevStore = create<DevState>()(
       resetAllSettings: () => set({ ...initialState }),
     }),
     {
-      name: 'coffee-journal-dev-storage',
+      name: 'cupnote-dev-storage',
       storage: createJSONStorage(() => AsyncStorage),
     }
   )

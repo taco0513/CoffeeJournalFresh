@@ -26,8 +26,7 @@ target 'CupNote' do
     :new_arch_enabled => false
   )
   
-  # Temporarily disable Google Sign-In to test app registration fix
-  pod 'RNGoogleSignin', :path => '../node_modules/@react-native-google-signin/google-signin', :modular_headers => true, :inhibit_warnings => true
+  # Google Sign-In temporarily disabled for app registration testing
   
 
   pre_install do |installer|

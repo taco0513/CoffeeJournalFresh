@@ -1,6 +1,6 @@
-# Coffee Journal Admin Dashboard
+# CupNote Admin Dashboard
 
-Web-based admin dashboard for Coffee Journal Fresh, built with Next.js and Supabase.
+Web-based admin dashboard for CupNote, built with Next.js and Supabase.
 
 ## Overview
 

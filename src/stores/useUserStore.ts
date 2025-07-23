@@ -43,7 +43,7 @@ interface UserStore {
   clearStoredUser: () => Promise<void>;
 }
 
-const STORAGE_KEY = '@coffee_journal_user';
+const STORAGE_KEY = '@cupnote_user';
 
 export const useUserStore = create<UserStore>((set, get) => ({
   currentUser: null,

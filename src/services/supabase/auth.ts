@@ -4,7 +4,7 @@ import { ErrorHandler } from '../../utils/errorHandler';
 import NetworkUtils from '../../utils/NetworkUtils';
 import { AuthLogger, logError, PerformanceTimer } from '../../utils/logger';
 
-const AUTH_STORAGE_KEY = '@coffee_journal_auth';
+const AUTH_STORAGE_KEY = '@cupnote_auth';
 
 export interface AuthUser {
   id: string;
@@ -209,7 +209,7 @@ class AuthService {
   async resetPassword(email: string): Promise<void> {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'coffeejournalapp://reset-password',
+        redirectTo: 'cupnote://reset-password',
       });
       
       if (error) throw error;

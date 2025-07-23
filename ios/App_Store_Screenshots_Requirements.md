@@ -1,4 +1,4 @@
-# Coffee Journal Fresh - App Store Screenshots Requirements
+# CupNote - App Store Screenshots Requirements
 
 ## Screenshot Specifications
 
@@ -120,7 +120,7 @@
 - **Size:** Large enough to read on small App Store previews
 
 ### Branding Elements
-- Coffee Journal Fresh logo prominently displayed
+- CupNote logo prominently displayed
 - Consistent color palette across all screenshots
 - Coffee-themed iconography and imagery
 - Premium, professional appearance

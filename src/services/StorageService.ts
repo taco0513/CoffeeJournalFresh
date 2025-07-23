@@ -3,9 +3,9 @@ import { TastingData } from '../types';
 import { Logger } from '../utils/logger';
 
 const STORAGE_KEYS = {
-  TASTINGS: '@coffee_journal_tastings',
-  CURRENT_TASTING: '@coffee_journal_current_tasting',
-  PREFERENCES: '@coffee_journal_preferences',
+  TASTINGS: '@cupnote_tastings',
+  CURRENT_TASTING: '@cupnote_current_tasting',
+  PREFERENCES: '@cupnote_preferences',
 } as const;
 
 export class StorageService {
