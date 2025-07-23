@@ -16,11 +16,11 @@ const HomeCafeScreen = () => {
   const { currentTasting } = useTastingStore();
 
   const handleNext = () => {
-    navigation.navigate('RoasterNotes' as never);
+    navigation.navigate('UnifiedFlavor' as never);
   };
 
   const handleSkip = () => {
-    navigation.navigate('RoasterNotes' as never);
+    navigation.navigate('UnifiedFlavor' as never);
   };
 
   // 필수 필드 검증
@@ -48,7 +48,7 @@ const HomeCafeScreen = () => {
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: '30%' }]} />
+          <View style={[styles.progressFill, { width: '29%' }]} />
         </View>
         <Text style={styles.progressText}>2/7</Text>
       </View>

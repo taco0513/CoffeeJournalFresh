@@ -17,7 +17,7 @@ const ModeSelectionScreen = () => {
 
   const handleModeSelect = (mode: TastingMode) => {
     setTastingMode(mode);
-    navigation.navigate('CoffeeInfoScreen' as never);
+    navigation.navigate('CoffeeInfo' as never);
   };
 
   const modes = [

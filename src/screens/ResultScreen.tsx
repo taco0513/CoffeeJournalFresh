@@ -18,6 +18,7 @@ import RealmService from '../services/realm/RealmService';
 import tastingService from '../services/supabase/tastingService';
 import { ErrorHandler, NetworkUtils } from '../utils/errorHandler';
 import { useAchievementNotification } from '../contexts/AchievementContext';
+import { performanceMonitor } from '../services/PerformanceMonitor';
 import { useUserStore } from '../stores/useUserStore';
 const ENABLE_SYNC = true; // Enable sync for now
 
@@ -46,6 +47,7 @@ export default function ResultScreen({navigation}: any) {
   useEffect(() => {
     const autoSave = async () => {
       if (!isSaved && currentTasting) {
+        const saveTimingId = performanceMonitor.startTiming('tasting_save');
         try {
           await saveTasting();
           
@@ -78,7 +80,17 @@ export default function ResultScreen({navigation}: any) {
           
           showSuccessToast('저장 완료', '테이스팅이 자동으로 저장되었습니다');
           setIsSaved(true);
+          
+          await performanceMonitor.endTiming(saveTimingId, 'tasting_save_success', {
+            mode: currentTasting.mode,
+            hasAchievements: currentUser?.id ? true : false,
+            syncEnabled: ENABLE_SYNC
+          });
         } catch (error: any) {
+          await performanceMonitor.endTiming(saveTimingId, 'tasting_save_error', {
+            mode: currentTasting.mode,
+            error: error.message
+          });
           ErrorHandler.handle(error, '테이스팅 자동 저장');
         }
       }
@@ -94,6 +106,8 @@ export default function ResultScreen({navigation}: any) {
       }
 
       setIsLoadingComparison(true);
+      const comparisonTimingId = performanceMonitor.startTiming('comparison_load');
+      
       try {
         if (ENABLE_SYNC) {
           try {
@@ -136,8 +150,18 @@ export default function ResultScreen({navigation}: any) {
         }
       } catch (error) {
         setComparison(null);
+        await performanceMonitor.endTiming(comparisonTimingId, 'comparison_load_error', {
+          coffee: currentTasting.coffeeName,
+          roastery: currentTasting.roastery,
+          error: (error as Error).message
+        });
       } finally {
         setIsLoadingComparison(false);
+        await performanceMonitor.endTiming(comparisonTimingId, 'comparison_load_complete', {
+          coffee: currentTasting.coffeeName,
+          roastery: currentTasting.roastery,
+          syncEnabled: ENABLE_SYNC
+        });
       }
     };
 
