@@ -208,7 +208,7 @@ export const TastingRecordSchema: Realm.ObjectSchema = {
     isDeleted: { type: 'bool', default: false },
     
     // Mode
-    mode: { type: 'string?', default: 'cafe' },
+    mode: { type: 'string', optional: true, default: 'cafe' },
     
     // Home Cafe Data (stored as JSON string)
     homeCafeData: 'string?',

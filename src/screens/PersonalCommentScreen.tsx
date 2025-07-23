@@ -169,9 +169,6 @@ const PersonalCommentScreen = () => {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>나만의 노트</Text>
               <Text style={styles.sectionDescription}>
-                오늘의 커피는 어떠셨나요?
-              </Text>
-              <Text style={styles.guideMessage}>
                 맛, 향, 전반적인 느낌을 자유롭게 표현해보세요
               </Text>
               
@@ -194,12 +191,16 @@ const PersonalCommentScreen = () => {
               </View>
             </View>
 
-            {/* 사용자 선택 요약 */}
-            <View style={styles.section}>
-              <Text style={styles.selectionsTitle}>오늘 선택한 표현들</Text>
-              
-              {/* 향미 */}
-              {userSelections.flavors.length > 0 && (
+            {/* 사용자 선택 요약 - Only show if there are selections */}
+            {(userSelections.flavors.length > 0 || 
+              Object.keys(userSelections.sensoryByCategory).length > 0 ||
+              Object.values(userSelections.ratings).some(score => score >= 4) ||
+              userSelections.mouthfeel) && (
+              <View style={styles.section}>
+                <Text style={styles.selectionsTitle}>오늘 선택한 표현들</Text>
+                
+                {/* 향미 */}
+                {userSelections.flavors.length > 0 && (
                 <View style={styles.selectionRow}>
                   <Text style={styles.selectionLabel}>향미</Text>
                   <View style={styles.selectionTags}>
@@ -270,7 +271,8 @@ const PersonalCommentScreen = () => {
                   </View>
                 </View>
               )}
-            </View>
+              </View>
+            )}
           </View>
         </ScrollView>
 
@@ -347,12 +349,6 @@ const styles = StyleSheet.create({
   sectionDescription: {
     fontSize: 15,
     color: HIGColors.secondaryLabel,
-    lineHeight: 20,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  guideMessage: {
-    fontSize: 14,
-    color: HIGColors.blue,
     lineHeight: 20,
     marginBottom: HIGConstants.SPACING_MD,
   },

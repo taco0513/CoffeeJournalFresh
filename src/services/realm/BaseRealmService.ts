@@ -65,17 +65,29 @@ export class BaseRealmService {
       this.scheduleCleanup();
       
     } catch (error) {
-      const duration = timer.end();
-      RealmLogger.error('realm', 'Failed to initialize Realm', { error, duration });
+      try {
+        const duration = timer.end();
+        RealmLogger.error('realm', 'Failed to initialize Realm', { error, duration });
+      } catch (timerError) {
+        console.error('Timer error during Realm initialization:', timerError);
+      }
+      console.error('Realm initialization failed:', error);
       throw error;
     }
   }
 
   getRealm(): Realm {
     if (!this.realm || this.realm.isClosed) {
-      throw new Error('Realm is not initialized or has been closed');
+      throw new Error('Realm is not initialized or has been closed. Call initialize() first.');
     }
     return this.realm;
+  }
+
+  async safeGetRealm(): Promise<Realm> {
+    if (!this.initialized || !this.realm || this.realm.isClosed) {
+      await this.initialize();
+    }
+    return this.getRealm();
   }
 
   get isInitialized(): boolean {

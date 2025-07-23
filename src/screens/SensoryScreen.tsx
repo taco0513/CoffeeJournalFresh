@@ -106,11 +106,11 @@ const SensoryScreen = () => {
             
             {/* Selected Sensory Preview */}
             <View style={styles.selectedPreviewContainer}>
-              {selectedSensoryExpressions.length > 0 ? (
+              {(selectedSensoryExpressions || []).length > 0 ? (
                 <View style={styles.selectedPreviewContent}>
                   {(() => {
                     // Group by category
-                    const groupedExpressions = selectedSensoryExpressions.reduce((acc, expr) => {
+                    const groupedExpressions = (selectedSensoryExpressions || []).reduce((acc, expr) => {
                       const category = expr.categoryId;
                       if (!acc[category]) {
                         acc[category] = [];
@@ -161,14 +161,14 @@ const SensoryScreen = () => {
             </View>
             
             <CompactSensoryEvaluation
-              selectedExpressions={selectedSensoryExpressions.map(item => ({
+              selectedExpressions={(selectedSensoryExpressions || []).map(item => ({
                 categoryId: item.categoryId,
                 expression: {
                   id: item.expressionId,
                   korean: item.korean,
                   english: item.english,
-                  emoji: item.emoji,
-                  intensity: Math.min(3, Math.max(1, item.intensity - 2)) as 1 | 2 | 3,
+                  emoji: item.emoji || '',
+                  intensity: 2 as 1 | 2 | 3, // Simplified - just use default intensity
                   beginner: true,
                 },
               }))}

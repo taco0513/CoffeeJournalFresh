@@ -369,7 +369,6 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     statLabelSize: isSmallScreen ? 11 : isLargeScreen ? 13 : 12,
     buttonHeight: isSmallScreen ? 60 : isLargeScreen ? 70 : 65, // 버튼 높이 감소
     buttonTitleSize: isSmallScreen ? 20 : isLargeScreen ? 24 : 22, // 제목 크기 증가
-    buttonSubtitleSize: isSmallScreen ? 15 : isLargeScreen ? 17 : 16, // 부제목 크기 증가
   }), [isSmallScreen, isLargeScreen]);
 
 
@@ -402,7 +401,6 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
           {/* 환영 메시지 */}
           <View style={styles.welcomeSection}>
             <Text style={styles.welcomeTitle}>안녕하세요, {currentUser?.username || 'User'}님!</Text>
-            <Text style={styles.welcomeSubtitle}>오늘도 좋은 커피 한 잔 어떠세요?</Text>
           </View>
 
           {/* Skeleton loading 상태 */}
@@ -531,8 +529,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
             accessibilityHint="탭하여 새로운 커피 테이스팅을 기록합니다"
             accessibilityRole="button"
           >
-            <Text style={[styles.primaryActionTitle, { fontSize: responsiveStyles.buttonTitleSize }]}>☕ 커피 기록하기</Text>
-            <Text style={[styles.primaryActionSubtitle, { fontSize: responsiveStyles.buttonSubtitleSize }]}>새로운 커피를 테이스팅해보세요</Text>
+            <Text style={[styles.primaryActionTitle, { fontSize: responsiveStyles.buttonTitleSize }]}>☕ 새로운 커피 기록하기</Text>
           </TouchableOpacity>
 
             </>
@@ -655,26 +652,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: HIGColors.white,
-    marginBottom: HIGConstants.SPACING_XS,
     letterSpacing: 0.3,
-  },
-  primaryActionSubtitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.9)',
-    textAlign: 'center',
-    lineHeight: 18,
   },
   welcomeTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  welcomeSubtitle: {
-    fontSize: 15,
-    fontWeight: '400',
-    color: HIGColors.secondaryLabel,
   },
   insightsSection: {
     marginBottom: HIGConstants.SPACING_SM,
