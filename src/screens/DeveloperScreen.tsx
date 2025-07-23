@@ -20,6 +20,8 @@ import { useFeedbackStore } from '../stores/useFeedbackStore';
 import RealmService from '../services/realm/RealmService';
 import { TastingData } from '../services/realm/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MockDataService, MockDataScenario } from '../services/MockDataService';
+import AccessControlService from '../services/AccessControlService';
 
 // Category Icons - Removed for MVP Beta clean design
 const CategoryIcons = {
@@ -55,6 +57,14 @@ const DeveloperScreen = () => {
 
   // Track current data count
   const [mockDataCount, setMockDataCount] = React.useState(0);
+  
+  // Access control
+  const [userRole, setUserRole] = React.useState('');
+  const [canAccessMockData, setCanAccessMockData] = React.useState(false);
+  
+  // Mock data scenarios
+  const [selectedScenario, setSelectedScenario] = React.useState<MockDataScenario>(MockDataScenario.INTERMEDIATE);
+  const [mockDataCount_input, setMockDataCount_input] = React.useState(5);
   // Simple function to load current data count
   const loadDataCount = async () => {
     try {
@@ -72,9 +82,28 @@ const DeveloperScreen = () => {
     }
   };
 
-  // Load initial data count on mount
+  // Initialize access control and load data count
   React.useEffect(() => {
-    loadDataCount();
+    const initializeScreen = async () => {
+      try {
+        // Initialize access control
+        const accessControl = AccessControlService.getInstance();
+        await accessControl.initialize();
+        
+        const profile = accessControl.getCurrentUserProfile();
+        if (profile) {
+          setUserRole(accessControl.getUserDisplayName());
+          setCanAccessMockData(accessControl.hasPermission('canAccessMockData'));
+        }
+        
+        // Load data count
+        await loadDataCount();
+      } catch (error) {
+        console.error('Failed to initialize developer screen:', error);
+      }
+    };
+    
+    initializeScreen();
   }, []);
 
   // Refresh data count when screen focuses
@@ -174,269 +203,38 @@ const DeveloperScreen = () => {
 
 
   const handleMockDataToggle = async (enable: boolean) => {
-    if (!isDeveloperMode) {
+    if (!canAccessMockData) {
+      Alert.alert('권한 없음', '개발자 권한이 필요합니다.');
       return;
     }
     
     try {
-      const realmService = RealmService.getInstance();
-      if (!realmService.isInitialized) {
-        await realmService.initialize();
-      }
-      
       if (enable) {
-        // Create mock data
-
-        const mockData = [
-          {
-            cafeName: 'Blue Bottle Oakland',
-            roastery: 'Blue Bottle',
-            coffeeName: 'Three Africas',
-            origin: 'Ethiopia',
-            variety: 'Heirloom',
-            altitude: '2000m',
-            process: 'Natural',
-            temperature: 'hot' as const,
-            mode: 'cafe' as const,
-            roasterNotes: 'Bright and fruity with floral notes',
-            matchScoreTotal: 85,
-            matchScoreFlavor: 42,
-            matchScoreSensory: 43,
-            flavorNotes: [
-              { level: 1, value: 'Fruity', koreanValue: '과일향' },
-              { level: 2, value: 'Berry', koreanValue: '베리류' },
-              { level: 3, value: 'Blueberry', koreanValue: '블루베리' }
-            ],
-            sensoryAttribute: {
-              body: 3,
-              acidity: 4,
-              sweetness: 3,
-              finish: 4,
-              mouthfeel: 'Clean'
-            },
-            isSynced: false,
-            isDeleted: false
-          },
-          {
-            roastery: 'Fritz',
-            coffeeName: 'Colombia Geisha',
-            origin: 'Colombia',
-            variety: 'Geisha',
-            altitude: '1850m',
-            process: 'Washed',
-            temperature: 'hot' as const,
-            mode: 'home_cafe' as const,
-            homeCafeData: {
-              equipment: {
-                brewingMethod: 'V60' as const,
-                grinder: {
-                  brand: '커맨단테',
-                  model: 'C40',
-                  setting: '16클릭'
-                }
-              },
-              recipe: {
-                doseIn: 20,
-                waterAmount: 320,
-                ratio: '1:16',
-                waterTemp: 93,
-                bloomTime: 30,
-                totalBrewTime: 150,
-                pourPattern: '3번 나누어 붓기'
-              },
-              notes: {
-                previousChange: '그라인딩을 1클릭 더 굵게 조정',
-                result: '산미가 밝아지고 단맛이 더 선명해짐',
-                nextExperiment: '물온도를 2도 낮춰서 시도해보기'
-              }
-            },
-            roasterNotes: 'Floral and tea-like with jasmine notes',
-            matchScoreTotal: 92,
-            matchScoreFlavor: 46,
-            matchScoreSensory: 46,
-            flavorNotes: [
-              { level: 1, value: 'Floral', koreanValue: '꽃향' },
-              { level: 2, value: 'White Floral', koreanValue: '흰 꽃' },
-              { level: 3, value: 'Jasmine', koreanValue: '자스민' }
-            ],
-            sensoryAttribute: {
-              body: 4,
-              acidity: 5,
-              sweetness: 4,
-              finish: 5,
-              mouthfeel: 'Juicy'
-            },
-            isSynced: false,
-            isDeleted: false
-          },
-          {
-            cafeName: 'Anthracite Coffee',
-            roastery: 'Anthracite',
-            coffeeName: 'Brazil Santos',
-            origin: 'Brazil',
-            variety: 'Bourbon',
-            altitude: '1200m',
-            process: 'Pulped Natural',
-            temperature: 'cold' as const,
-            mode: 'cafe' as const,
-            roasterNotes: 'Chocolatey and nutty with smooth body',
-            matchScoreTotal: 80,
-            matchScoreFlavor: 40,
-            matchScoreSensory: 40,
-            flavorNotes: [
-              { level: 1, value: 'Chocolate', koreanValue: '초콜릿' },
-              { level: 2, value: 'Dark Chocolate', koreanValue: '다크 초콜릿' },
-              { level: 3, value: 'Bittersweet Chocolate', koreanValue: '쌉쌀한 초콜릿' }
-            ],
-            sensoryAttribute: {
-              body: 5,
-              acidity: 2,
-              sweetness: 4,
-              finish: 3,
-              mouthfeel: 'Creamy'
-            },
-            isSynced: false,
-            isDeleted: false
-          },
-          {
-            roastery: 'Terarosa',
-            coffeeName: 'Guatemala Huehuetenango',
-            origin: 'Guatemala',
-            variety: 'Caturra',
-            altitude: '1900m',
-            process: 'Washed',
-            temperature: 'hot' as const,
-            mode: 'home_cafe' as const,
-            homeCafeData: {
-              equipment: {
-                brewingMethod: 'AeroPress' as const,
-                grinder: {
-                  brand: '타임모어',
-                  model: 'C2',
-                  setting: '15클릭'
-                }
-              },
-              recipe: {
-                doseIn: 18,
-                waterAmount: 250,
-                ratio: '1:14',
-                waterTemp: 90,
-                totalBrewTime: 90
-              },
-              notes: {
-                result: '균형잡힌 맛으로 만족스러움',
-                nextExperiment: '다음엔 더 긴 시간으로 추출해보기'
-              }
-            },
-            roasterNotes: 'Balanced with chocolate and citrus notes',
-            matchScoreTotal: 86,
-            matchScoreFlavor: 43,
-            matchScoreSensory: 43,
-            flavorNotes: [
-              { level: 1, value: 'Fruity', koreanValue: '과일향' },
-              { level: 2, value: 'Citrus', koreanValue: '시트러스' },
-              { level: 3, value: 'Orange', koreanValue: '오렌지' }
-            ],
-            sensoryAttribute: {
-              body: 4,
-              acidity: 3,
-              sweetness: 4,
-              finish: 4,
-              mouthfeel: 'Silky'
-            },
-            isSynced: false,
-            isDeleted: false
-          },
-          {
-            cafeName: 'The Coffee Bean & Tea Leaf',
-            roastery: 'Coffee Bean',
-            coffeeName: 'House Blend',
-            origin: 'Central America',
-            variety: 'Arabica Blend',
-            altitude: '1400m',
-            process: 'Mixed',
-            temperature: 'hot' as const,
-            mode: 'cafe' as const,
-            roasterNotes: 'Classic coffee with nutty undertones',
-            matchScoreTotal: 75,
-            matchScoreFlavor: 37,
-            matchScoreSensory: 38,
-            flavorNotes: [
-              { level: 1, value: 'Nutty/Cocoa', koreanValue: '견과류' },
-              { level: 2, value: 'Nutty', koreanValue: '견과' },
-              { level: 3, value: 'Hazelnut', koreanValue: '헤이즐넛' }
-            ],
-            sensoryAttribute: {
-              body: 3,
-              acidity: 2,
-              sweetness: 3,
-              finish: 3,
-              mouthfeel: 'Smooth'
-            },
-            isSynced: false,
-            isDeleted: false
-          }
-        ];
-
-        // Save all mock data
-        console.log('🎯 Starting mock data creation...');
-        let successCount = 0;
+        // Create mock data using new service
+        const successCount = await MockDataService.createMockData({
+          scenario: selectedScenario,
+          count: mockDataCount_input,
+          includeHomeCafe: true,
+          includePhotos: false
+        });
         
-        for (const [index, data] of mockData.entries()) {
-          try {
-            console.log(`🔄 Creating tasting ${index + 1}/${mockData.length}: ${data.coffeeName}`);
-            
-            const tastingData: TastingData = {
-              coffeeInfo: {
-                cafeName: data.cafeName,
-                roastery: data.roastery,
-                coffeeName: data.coffeeName,
-                origin: data.origin,
-                variety: data.variety,
-                altitude: data.altitude,
-                process: data.process,
-                temperature: data.temperature,
-              },
-              roasterNotes: data.roasterNotes,
-              selectedFlavors: data.flavorNotes,
-              sensoryAttributes: data.sensoryAttribute,
-              matchScore: {
-                total: data.matchScoreTotal,
-                flavorScore: data.matchScoreFlavor,
-                sensoryScore: data.matchScoreSensory,
-              }
-            };
-            
-            console.log('📋 Tasting data structure:', JSON.stringify(tastingData, null, 2));
-            
-            const result = await realmService.saveTasting(tastingData);
-            
-            if (result && result.id) {
-              successCount++;
-              console.log(`✅ Successfully created: ${data.coffeeName} (ID: ${result.id})`);
-            } else {
-              console.log(`⚠️ No result returned for: ${data.coffeeName}`);
-            }
-          } catch (error) {
-            console.error(`❌ Failed to create ${data.coffeeName}:`, error);
-          }
-        }
-        
-        console.log(`📊 Mock data creation completed: ${successCount}/${mockData.length} successful`);
-        
-        // Verify data was created
-        const verifyTastings = await realmService.getTastingRecords({ isDeleted: false });
-        console.log(`🔍 Verification: ${Array.from(verifyTastings).length} total records after creation`);
-        
-        // Update UI
+        // Update UI and show success message
         await loadDataCount();
         
         // Emit refresh event for all screens listening
         DeviceEventEmitter.emit('mockDataCreated');
         
+        const scenarioNames = {
+          [MockDataScenario.BEGINNER]: '초보자용',
+          [MockDataScenario.INTERMEDIATE]: '중급자용', 
+          [MockDataScenario.EXPERT]: '전문가용',
+          [MockDataScenario.HOME_CAFE_FOCUSED]: 'HomeCafe 중심',
+          [MockDataScenario.STATISTICS_TEST]: '통계 테스트용'
+        };
+        
         Alert.alert(
-          '완료', 
-          '5개의 테스트 데이터가 추가되었습니다. Journal로 이동하시겠습니까?',
+          '완료',
+          `${scenarioNames[selectedScenario]} ${successCount}개의 테스트 데이터가 추가되었습니다. Journal로 이동하시겠습니까?`,
           [
             {
               text: '나중에',
@@ -445,7 +243,6 @@ const DeveloperScreen = () => {
             {
               text: 'Journal로 이동',
               onPress: () => {
-                // Force navigation to Journal tab and refresh
                 navigation.dispatch(
                   CommonActions.navigate({
                     name: 'MainTabs',
@@ -463,16 +260,12 @@ const DeveloperScreen = () => {
         );
         
       } else {
-        // Delete all data
-        const realm = realmService.getRealm();
-        realm.write(() => {
-          const tastings = realm.objects('TastingRecord');
-          realm.delete(tastings);
-        });
+        // Delete all mock data using new service
+        await MockDataService.clearMockData();
         
         // Update UI
         await loadDataCount();
-        Alert.alert('완료', '모든 데이터가 삭제되었습니다.');
+        Alert.alert('완료', '모든 Mock 데이터가 삭제되었습니다.');
       }
     } catch (error) {
       console.error('Mock data toggle error:', error);
@@ -680,19 +473,84 @@ count={[showDebugInfo].filter(Boolean).length}
             ].filter(Boolean).length}
           />
           <View style={styles.card}>
-            {/* Mock data toggle - only in developer mode */}
-            {isDeveloperMode ? (
-              <SettingRow
-                title="Mock 데이터"
-                description={`현재 ${mockDataCount}개의 테스트 데이터`}
-                value={mockDataCount > 0}
-                onValueChange={handleMockDataToggle}
-              />
+            {/* Mock data toggle - access control based */}
+            {canAccessMockData ? (
+              <>
+                <SettingRow
+                  title="Mock 데이터"
+                  description={`현재 ${mockDataCount}개의 테스트 데이터 (${userRole})`}
+                  value={mockDataCount > 0}
+                  onValueChange={handleMockDataToggle}
+                />
+                
+                {/* Mock Data Configuration */}
+                <View style={styles.mockDataConfig}>
+                  <Text style={styles.configTitle}>Mock Data 설정</Text>
+                  
+                  {/* Scenario Selection */}
+                  <View style={styles.configRow}>
+                    <Text style={styles.configLabel}>시나리오:</Text>
+                    <View style={styles.scenarioButtons}>
+                      {Object.values(MockDataScenario).map((scenario) => {
+                        const scenarioNames = {
+                          [MockDataScenario.BEGINNER]: '초보자',
+                          [MockDataScenario.INTERMEDIATE]: '중급자', 
+                          [MockDataScenario.EXPERT]: '전문가',
+                          [MockDataScenario.HOME_CAFE_FOCUSED]: 'HomeCafe',
+                          [MockDataScenario.STATISTICS_TEST]: '통계용'
+                        };
+                        
+                        return (
+                          <TouchableOpacity
+                            key={scenario}
+                            style={[
+                              styles.scenarioButton,
+                              selectedScenario === scenario && styles.scenarioButtonSelected
+                            ]}
+                            onPress={() => setSelectedScenario(scenario)}
+                          >
+                            <Text style={[
+                              styles.scenarioButtonText,
+                              selectedScenario === scenario && styles.scenarioButtonTextSelected
+                            ]}>
+                              {scenarioNames[scenario]}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  </View>
+                  
+                  {/* Count Selection */}
+                  <View style={styles.configRow}>
+                    <Text style={styles.configLabel}>개수:</Text>
+                    <View style={styles.countButtons}>
+                      {[5, 10, 20, 50].map((count) => (
+                        <TouchableOpacity
+                          key={count}
+                          style={[
+                            styles.countButton,
+                            mockDataCount_input === count && styles.countButtonSelected
+                          ]}
+                          onPress={() => setMockDataCount_input(count)}
+                        >
+                          <Text style={[
+                            styles.countButtonText,
+                            mockDataCount_input === count && styles.countButtonTextSelected
+                          ]}>
+                            {count}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                </View>
+              </>
             ) : (
               <View style={styles.restrictedFeature}>
                 <Text style={styles.restrictedTitle}>Mock 데이터</Text>
                 <Text style={styles.restrictedDescription}>
-                  개발자 모드를 활성화하세요
+                  개발자 권한이 필요합니다 ({userRole})
                 </Text>
               </View>
             )}
@@ -1145,6 +1003,80 @@ const styles = StyleSheet.create({
   restrictedDescription: {
     fontSize: 14,
     color: HIGColors.tertiaryLabel,
+  },
+  
+  // Mock Data Configuration Styles
+  mockDataConfig: {
+    padding: HIGConstants.SPACING_MD,
+    backgroundColor: HIGColors.systemGray6,
+    marginTop: HIGConstants.SPACING_SM,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+  },
+  configTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  configRow: {
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  configLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_XS,
+  },
+  scenarioButtons: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: HIGConstants.SPACING_XS,
+  },
+  scenarioButton: {
+    paddingHorizontal: HIGConstants.SPACING_SM,
+    paddingVertical: HIGConstants.SPACING_XS,
+    borderRadius: HIGConstants.BORDER_RADIUS / 2,
+    backgroundColor: HIGColors.systemGray5,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray4,
+  },
+  scenarioButtonSelected: {
+    backgroundColor: HIGColors.blue,
+    borderColor: HIGColors.blue,
+  },
+  scenarioButtonText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: HIGColors.label,
+  },
+  scenarioButtonTextSelected: {
+    color: HIGColors.white,
+  },
+  countButtons: {
+    flexDirection: 'row',
+    gap: HIGConstants.SPACING_XS,
+  },
+  countButton: {
+    width: 40,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: HIGConstants.BORDER_RADIUS / 2,
+    backgroundColor: HIGColors.systemGray5,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray4,
+  },
+  countButtonSelected: {
+    backgroundColor: HIGColors.blue,
+    borderColor: HIGColors.blue,
+  },
+  countButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: HIGColors.label,
+  },
+  countButtonTextSelected: {
+    color: HIGColors.white,
   },
 });
 
