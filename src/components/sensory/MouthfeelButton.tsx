@@ -21,57 +21,37 @@ export const MouthfeelButton: React.FC<MouthfeelButtonProps> = ({ option, isSele
       >
         {option}
       </Text>
-      {isSelected && (
-        <Text style={styles.checkmark}>✓</Text>
-      )}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   mouthfeelButton: {
-    width: '48%',
-    minHeight: HIGConstants.MIN_TOUCH_TARGET,
-    backgroundColor: '#FFFFFF',
+    flex: 1,
+    minWidth: '45%',
+    minHeight: 40,
+    backgroundColor: '#F8F9FA',
     borderWidth: 1,
-    borderColor: HIGColors.gray4,
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    paddingVertical: HIGConstants.SPACING_MD,
+    borderColor: '#E5E5EA',
+    borderRadius: 10,
+    paddingVertical: HIGConstants.SPACING_SM,
     paddingHorizontal: HIGConstants.SPACING_SM,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: HIGConstants.SPACING_MD,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
   },
   selectedMouthfeel: {
-    backgroundColor: HIGColors.blue,
-    borderColor: HIGColors.blue,
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    backgroundColor: HIGColors.systemBlue,
+    borderColor: HIGColors.systemBlue,
+    borderWidth: 1.5,
   },
   mouthfeelText: {
-    fontSize: HIGConstants.FONT_SIZE_MEDIUM,
+    fontSize: 14,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
   },
   selectedMouthfeelText: {
     color: '#FFFFFF',
-  },
-  checkmark: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });

@@ -18,6 +18,7 @@ export interface SliderSectionProps {
   onValueChange: (value: number) => void;
   leftLabel: string;
   rightLabel: string;
+  description?: string;
 }
 
 export interface MouthfeelButtonProps {

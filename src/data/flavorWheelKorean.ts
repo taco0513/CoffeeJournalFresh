@@ -74,7 +74,7 @@ export const flavorWheelKorean = {
   translations: {
     // Level 2 한글 번역
     'Berry': '베리류/딸기류',
-    'Dried Fruit': '건조 과일',
+    'Dried Fruit': '건조과일',
     'Other Fruit': '기타 과일',
     'Citrus Fruit': '감귤 향/시트러스',
     'Sour': '신맛',

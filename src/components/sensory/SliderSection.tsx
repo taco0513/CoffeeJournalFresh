@@ -9,13 +9,18 @@ export const SliderSection = memo<SliderSectionProps>(({
   value, 
   onValueChange, 
   leftLabel, 
-  rightLabel 
+  rightLabel,
+  description
 }) => {
   return (
     <View style={styles.sliderSection}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <View style={styles.sliderContainer}>
-        <Text style={styles.sliderLabel}>{leftLabel}</Text>
+      <View style={styles.header}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        {description && (
+          <Text style={styles.description}>{description}</Text>
+        )}
+      </View>
+      <View style={styles.sliderWrapper}>
         <Slider
           style={styles.slider}
           minimumValue={1}
@@ -23,13 +28,15 @@ export const SliderSection = memo<SliderSectionProps>(({
           value={value}
           onValueChange={onValueChange}
           step={1}
-          minimumTrackTintColor={HIGColors.blue}
-          maximumTrackTintColor={HIGColors.gray4}
-          thumbTintColor={HIGColors.blue}
+          minimumTrackTintColor={HIGColors.systemBlue}
+          maximumTrackTintColor={HIGColors.systemGray5}
+          thumbTintColor={HIGColors.systemBlue}
         />
-        <Text style={styles.sliderLabel}>{rightLabel}</Text>
+        <View style={styles.labelContainer}>
+          <Text style={styles.sliderLabel}>{leftLabel}</Text>
+          <Text style={styles.sliderLabel}>{rightLabel}</Text>
+        </View>
       </View>
-      <Text style={styles.valueText}>{Math.round(value)}</Text>
     </View>
   );
 });
@@ -38,34 +45,41 @@ SliderSection.displayName = 'SliderSection';
 
 const styles = StyleSheet.create({
   sliderSection: {
-    marginBottom: HIGConstants.SPACING_XL,
+    marginBottom: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_SM,
+  },
+  header: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginBottom: HIGConstants.SPACING_SM,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '700',
     color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_MD,
+    marginBottom: 2,
   },
-  sliderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  sliderWrapper: {
+    paddingHorizontal: 0,
   },
   slider: {
-    flex: 1,
-    height: HIGConstants.MIN_TOUCH_TARGET,
-    marginHorizontal: HIGConstants.SPACING_MD,
+    height: 44,
+    marginHorizontal: 0,
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: -4,
   },
   sliderLabel: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-    width: 50,
-    textAlign: 'center',
+    fontSize: 11,
+    color: HIGColors.tertiaryLabel,
+    fontWeight: '400',
   },
-  valueText: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: HIGColors.blue,
-    textAlign: 'center',
-    marginTop: HIGConstants.SPACING_SM,
+  description: {
+    fontSize: 11,
+    lineHeight: 15,
+    color: HIGColors.tertiaryLabel,
+    marginTop: 0,
   },
 });

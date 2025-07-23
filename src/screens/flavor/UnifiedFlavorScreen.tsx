@@ -9,6 +9,7 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { HIGConstants, HIGColors } from '../../styles/common';
@@ -211,21 +212,21 @@ const CategoryAccordion: React.FC<CategoryAccordionProps> = ({
                   ]}
                   onPress={() => {
                     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                    const subcategoryKey = `${category}-${sub.name}`;
+                    
                     if (isDirectlySelected) {
-                      // If directly selected as subcategory, remove selection and collapse
+                      // Deselect subcategory and collapse
                       onSelectSubcategory(category, sub.name);
-                      // Also collapse the expanded content
-                      const subcategoryKey = `${category}-${sub.name}`;
                       if (expandedSubCategories.has(subcategoryKey)) {
                         onToggleSubcategory(subcategoryKey);
                       }
-                    } else if (hasSelectedFlavors) {
-                      // If has selected flavors, just toggle expansion
-                      onToggleSubcategory(`${category}-${sub.name}`);
                     } else {
-                      // If not selected, select the subcategory AND expand it
-                      onSelectSubcategory(category, sub.name);
-                      onToggleSubcategory(`${category}-${sub.name}`);
+                      // Toggle expansion
+                      onToggleSubcategory(subcategoryKey);
+                      // Auto-select if expanding and no child flavors selected
+                      if (!expandedSubCategories.has(subcategoryKey) && !hasSelectedFlavors) {
+                        onSelectSubcategory(category, sub.name);
+                      }
                     }
                   }}
                 >
@@ -345,8 +346,6 @@ export default function UnifiedFlavorScreen() {
 
   const selectedPaths = currentTasting.selectedFlavors || [];
 
-  // Simply use expanded categories state without any complex logic
-
   // Handle subcategory (level2) selection
   const handleSelectSubcategory = useCallback((level1: string, level2: string) => {
     const currentPaths = [...selectedPaths];
@@ -359,6 +358,7 @@ export default function UnifiedFlavorScreen() {
     if (existingSubcategoryIndex >= 0) {
       // Remove subcategory selection
       currentPaths.splice(existingSubcategoryIndex, 1);
+      updateField('selectedFlavors', currentPaths);
     } else {
       // Remove any specific flavors from this subcategory first
       const filteredPaths = currentPaths.filter(
@@ -374,11 +374,8 @@ export default function UnifiedFlavorScreen() {
         });
         updateField('selectedFlavors', filteredPaths);
       }
-      return;
     }
-    
-    updateField('selectedFlavors', currentPaths);
-  }, [updateField]);
+  }, [selectedPaths, updateField]);
 
   const handleSelectFlavor = useCallback((path: FlavorPath) => {
     const currentPaths = [...selectedPaths];
@@ -389,23 +386,22 @@ export default function UnifiedFlavorScreen() {
     if (existingIndex >= 0) {
       // Remove if already selected
       currentPaths.splice(existingIndex, 1);
+      updateField('selectedFlavors', currentPaths);
     } else if (currentPaths.length < 5) {
       // Remove any subcategory selection from the same level2 first
-      const filteredPaths = currentPaths.filter(
-        p => !(p.level1 === path.level1 && p.level2 === path.level2 && !p.level3)
+      const indexToRemove = currentPaths.findIndex(
+        p => p.level1 === path.level1 && p.level2 === path.level2 && !p.level3
       );
+      if (indexToRemove >= 0) {
+        currentPaths.splice(indexToRemove, 1);
+      }
       
       // Add specific flavor selection
-      filteredPaths.push(path);
-      updateField('selectedFlavors', filteredPaths);
-      return;
-    } else {
-      // Show limit reached message - could add a toast or haptic feedback here
-      return;
+      currentPaths.push(path);
+      updateField('selectedFlavors', currentPaths);
     }
-
-    updateField('selectedFlavors', currentPaths);
-  }, [updateField]);
+    // Limit reached - could add toast or haptic feedback here
+  }, [selectedPaths, updateField]);
 
   const handleRemoveFlavor = useCallback((index: number) => {
     const currentPaths = [...selectedPaths];
@@ -424,7 +420,7 @@ export default function UnifiedFlavorScreen() {
         return newSet;
       });
     }
-  }, [updateField]);
+  }, [selectedPaths, updateField]);
 
   const toggleCategory = useCallback((category: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -470,7 +466,7 @@ export default function UnifiedFlavorScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Navigation Bar */}
       <View style={styles.navigationBar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -482,11 +478,9 @@ export default function UnifiedFlavorScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Progress Bar */}
-      <View style={styles.progressContainer}>
-        <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: '33%' }]} />
-        </View>
+      {/* Progress Bar - Full width below header */}
+      <View style={styles.progressBar}>
+        <View style={[styles.progressFill, { width: '33%' }]} />
       </View>
 
       {/* Guide Message */}
@@ -554,22 +548,29 @@ export default function UnifiedFlavorScreen() {
               }
               
               return (
-                <TouchableOpacity 
+                <View 
                   key={index} 
                   style={[
                     styles.selectedChip,
                     isSubcategorySelection && styles.selectedSubcategoryChip
                   ]}
-                  onPress={() => handleRemoveFlavor(index)}
-                  activeOpacity={0.7}
                 >
-                  <Text style={[
-                    styles.selectedChipText,
-                    isSubcategorySelection && styles.selectedSubcategoryText
-                  ]} numberOfLines={1}>
-                    {displayName}
-                  </Text>
-                </TouchableOpacity>
+                  <View style={styles.chipTextContainer}>
+                    <Text style={[
+                      styles.selectedChipText,
+                      isSubcategorySelection && styles.selectedSubcategoryText
+                    ]} numberOfLines={1}>
+                      {displayName}
+                    </Text>
+                  </View>
+                  <TouchableOpacity 
+                    style={styles.chipRemoveButton}
+                    onPress={() => handleRemoveFlavor(index)}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  >
+                    <Text style={styles.chipRemoveButtonText}>×</Text>
+                  </TouchableOpacity>
+                </View>
               );
             })}
           </ScrollView>
@@ -587,7 +588,8 @@ export default function UnifiedFlavorScreen() {
 
       {/* Content */}
       <ScrollView 
-        style={styles.content} 
+        style={styles.content}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
         {(() => {
           // Check if any categories have matching items when searching
@@ -666,7 +668,7 @@ export default function UnifiedFlavorScreen() {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -674,7 +676,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    paddingTop: Platform.OS === 'ios' ? 47 : 0,
   },
   navigationBar: {
     height: 44,
@@ -699,25 +700,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: HIGColors.systemBlue,
   },
-  progressContainer: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_SM,
-    backgroundColor: '#FFFFFF',
-  },
   progressBar: {
-    height: 4,
+    height: 3,
     backgroundColor: HIGColors.systemGray5,
-    borderRadius: 2,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
     backgroundColor: HIGColors.systemBlue,
-  },
-  progressText: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-    marginTop: HIGConstants.SPACING_XS,
   },
   guideMessageContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
@@ -769,12 +759,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray5,
     paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_SM,
+    paddingTop: HIGConstants.SPACING_SM,
+    paddingBottom: HIGConstants.SPACING_MD,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
+    minHeight: 90,
   },
   stickyHeaderEmpty: {
     paddingBottom: HIGConstants.SPACING_XS,
@@ -811,15 +803,17 @@ const styles = StyleSheet.create({
   },
   selectedScrollContent: {
     alignItems: 'center',
+    paddingTop: 8, // Extra space for X buttons that extend above chips
+    paddingBottom: 4,
   },
   selectedChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    position: 'relative',
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_SM,
+    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingVertical: 10,
     borderRadius: 20,
-    marginRight: HIGConstants.SPACING_SM,
+    marginRight: HIGConstants.SPACING_MD,
+    marginVertical: 4,
     borderWidth: 1,
     borderColor: HIGColors.systemBlue,
     shadowColor: '#000',
@@ -827,16 +821,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
+    overflow: 'visible',
+    minHeight: 40,
+    minWidth: 70,
   },
-  selectedChipEmoji: {
-    fontSize: 16,
-    marginRight: HIGConstants.SPACING_XS,
+  chipTextContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   selectedChipText: {
     fontSize: 14,
     color: HIGColors.label,
     fontWeight: '500',
-    maxWidth: 100,
+    lineHeight: 20,
   },
   selectedSubcategoryChip: {
     backgroundColor: '#E3F2FD',
@@ -847,22 +845,39 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: HIGColors.systemBlue,
     fontWeight: '600',
-    maxWidth: 100,
+    lineHeight: 20,
   },
-  remainingChip: {
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray4,
-    borderStyle: 'dashed',
+  chipRemoveButton: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: HIGColors.systemRed,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
   },
-  remainingText: {
+  chipRemoveButtonText: {
+    color: '#FFFFFF',
     fontSize: 14,
-    color: HIGColors.secondaryLabel,
+    fontWeight: '700',
+    lineHeight: 16,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: HIGConstants.SPACING_MD,
   },
   categoryContainer: {
     marginHorizontal: HIGConstants.SPACING_MD,
@@ -1054,21 +1069,11 @@ const styles = StyleSheet.create({
   flavorTextDisabled: {
     color: HIGColors.tertiaryLabel,
   },
-  checkmark: {
-    fontSize: 14,
-    color: '#FFFFFF',
-    marginLeft: HIGConstants.SPACING_XS,
-  },
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.systemGray4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 5,
   },
   nextButton: {
     height: 48,

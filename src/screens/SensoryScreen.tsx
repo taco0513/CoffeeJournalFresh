@@ -90,22 +90,30 @@ const SensoryScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* HIG 준수 네비게이션 바 */}
+      {/* Navigation Bar */}
       <View style={styles.navigationBar}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>감각 평가</Text>
-        <Text style={styles.progressIndicator}>3/6</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('PersonalComment' as never)}>
+          <Text style={styles.skipButton}>건너뛰기</Text>
+        </TouchableOpacity>
       </View>
       
       {/* 진행 상태 바 */}
       <View style={styles.progressBar}>
         <View style={styles.progressFill} />
+      </View>
+
+      {/* Guide Message */}
+      <View style={styles.guideMessageContainer}>
+        <Text style={styles.guideMessage}>
+          커피에서 느껴지는 감각을 평가해보세요
+        </Text>
+        <Text style={styles.guideSubMessage}>
+          기본 평가와 감각 평가 중 선택할 수 있습니다
+        </Text>
       </View>
 
       <ScrollView 
@@ -148,6 +156,63 @@ const SensoryScreen = () => {
                 이 커피에서 느껴지는 감각을 선택해주세요
               </Text>
             </View>
+            
+            {/* Selected Sensory Preview */}
+            <View style={styles.selectedPreviewContainer}>
+              {selectedSensoryExpressions.length > 0 ? (
+                <View style={styles.selectedPreviewContent}>
+                  {(() => {
+                    // Group by category
+                    const groupedExpressions = selectedSensoryExpressions.reduce((acc, expr) => {
+                      const category = expr.categoryId;
+                      if (!acc[category]) {
+                        acc[category] = [];
+                      }
+                      acc[category].push(expr.korean);
+                      return acc;
+                    }, {} as Record<string, string[]>);
+                    
+                    // Format the display with category names
+                    const categoryNames: Record<string, string> = {
+                      acidity: '산미',
+                      sweetness: '단맛',
+                      bitterness: '쓴맛',
+                      body: '바디',
+                      aftertaste: '애프터',
+                      balance: '밸런스'
+                    };
+                    
+                    const categoryOrder = ['acidity', 'sweetness', 'bitterness', 'body', 'aftertaste', 'balance'];
+                    
+                    const filteredCategories = categoryOrder.filter(cat => groupedExpressions[cat]);
+                    
+                    return filteredCategories.map((category, index) => {
+                      const categoryName = categoryNames[category];
+                      const expressions = groupedExpressions[category].join(', ');
+                      const isLast = index === filteredCategories.length - 1;
+                      
+                      return (
+                        <View 
+                          key={category} 
+                          style={[
+                            styles.categoryGroup,
+                            isLast && styles.categoryGroupLast
+                          ]}
+                        >
+                          <Text style={styles.categoryLabel}>{categoryName}</Text>
+                          <Text style={styles.categoryExpressions}>{expressions}</Text>
+                        </View>
+                      );
+                    });
+                  })()}
+                </View>
+              ) : (
+                <Text style={styles.selectedPreviewPlaceholder}>
+                  —
+                </Text>
+              )}
+            </View>
+            
             <CompactSensoryEvaluation
               selectedExpressions={selectedSensoryExpressions.map(item => ({
                 categoryId: item.categoryId,
@@ -167,19 +232,29 @@ const SensoryScreen = () => {
         ) : (
           /* Traditional Slider Evaluation */
           <>
-            <SliderSection
-              title="바디감"
-              value={sensoryData.body}
-              onValueChange={updateNumericValue('body')}
-              leftLabel="가벼움"
-              rightLabel="무거움"
-            />
+            <View style={styles.basicEvaluationIntro}>
+              <Text style={styles.basicEvaluationTitle}>커피의 강도를 평가해보세요</Text>
+              <Text style={styles.basicEvaluationSubtitle}>
+                각 항목을 1점(약함)에서 5점(강함)으로 평가해주세요
+              </Text>
+            </View>
+            
+            <View style={styles.sliderSectionContainer}>
+              <SliderSection
+                title="바디감"
+                value={sensoryData.body}
+                onValueChange={updateNumericValue('body')}
+                leftLabel="가벼움"
+                rightLabel="무거움"
+                description="입안에서 느껴지는 질감과 무게감, 묵직함을 말합니다"
+              />
             <SliderSection
               title="산미"
               value={sensoryData.acidity}
               onValueChange={updateNumericValue('acidity')}
               leftLabel="약함"
               rightLabel="강함"
+              description="과일이나 와인 같은 밝고 상큼한 신맛의 강도입니다"
             />
             <SliderSection
               title="단맛"
@@ -187,6 +262,7 @@ const SensoryScreen = () => {
               onValueChange={updateNumericValue('sweetness')}
               leftLabel="없음"
               rightLabel="강함"
+              description="자연스러운 당도와 캐러멜, 초콜릿 같은 단맛의 정도입니다"
             />
             <SliderSection
               title="쓴맛"
@@ -194,6 +270,7 @@ const SensoryScreen = () => {
               onValueChange={updateNumericValue('bitterness')}
               leftLabel="약함"
               rightLabel="강함"
+              description="다크 초콜릿이나 탄 맛 같은 쓴맛의 강도입니다"
             />
             <SliderSection
               title="여운"
@@ -201,6 +278,7 @@ const SensoryScreen = () => {
               onValueChange={updateNumericValue('finish')}
               leftLabel="짧음"
               rightLabel="길음"
+              description="커피를 마신 후 입안에 남는 맛과 향의 지속 시간입니다"
             />
             <SliderSection
               title="밸런스"
@@ -208,11 +286,14 @@ const SensoryScreen = () => {
               onValueChange={updateNumericValue('balance')}
               leftLabel="불균형"
               rightLabel="조화로운"
+              description="맛과 향의 전체적인 균형과 조화로움의 정도입니다"
             />
+            </View>
 
             {/* Mouthfeel Section */}
             <View style={styles.mouthfeelSection}>
-              <Text style={styles.sectionTitle}>입안 느낌</Text>
+              <Text style={styles.mouthfeelTitle}>입안 느낌</Text>
+              <Text style={styles.mouthfeelSubtitle}>가장 가까운 느낌을 선택해주세요</Text>
               <View style={styles.mouthfeelContainer}>
                 {mouthfeelOptions.map((option) => (
                   <MouthfeelButton 
@@ -226,18 +307,20 @@ const SensoryScreen = () => {
             </View>
           </>
         )}
+      </ScrollView>
 
-        {/* 완료 버튼 */}
+      {/* Bottom Button */}
+      <View style={styles.bottomContainer}>
         <TouchableOpacity 
-          style={[commonButtonStyles.buttonSuccess, commonButtonStyles.buttonLarge, styles.completeButton]}
+          style={styles.nextButton}
           onPress={handleComplete}
           activeOpacity={0.8}
         >
-          <Text style={[commonTextStyles.buttonTextLarge, styles.completeButtonText]}>
+          <Text style={styles.nextButtonText}>
             평가 완료
           </Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
 
       {/* Onboarding Modal */}
       <SensoryOnboarding
@@ -254,46 +337,37 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   navigationBar: {
-    height: HIGConstants.MIN_TOUCH_TARGET,
+    height: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray4,
+    borderBottomColor: HIGColors.systemGray4,
   },
   backButton: {
-    minWidth: HIGConstants.MIN_TOUCH_TARGET,
-    height: HIGConstants.MIN_TOUCH_TARGET,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-  backButtonText: {
-    fontSize: 17,
-    fontWeight: '400',
-    color: HIGColors.blue,
+    fontSize: 24,
+    color: HIGColors.systemBlue,
   },
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
   },
-  progressIndicator: {
+  skipButton: {
     fontSize: 15,
-    fontWeight: '400',
-    color: HIGColors.secondaryLabel,
-    minWidth: HIGConstants.MIN_TOUCH_TARGET,
-    textAlign: 'right',
+    color: HIGColors.systemBlue,
   },
   progressBar: {
-    height: 4,
-    backgroundColor: HIGColors.gray5,
+    height: 3,
+    backgroundColor: HIGColors.systemGray5,
+    overflow: 'hidden',
   },
   progressFill: {
-    height: 4,
-    width: '50%', // 3/6 = 50%
-    backgroundColor: HIGColors.blue,
+    height: '100%',
+    width: '67%', // 4/6 = 67% (Sensory is 4th step)
+    backgroundColor: HIGColors.systemBlue,
   },
   scrollView: {
     flex: 1,
@@ -309,19 +383,90 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_MD,
   },
   mouthfeelSection: {
+    marginTop: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_XL,
+    paddingHorizontal: HIGConstants.SPACING_LG,
+  },
+  mouthfeelTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: HIGColors.label,
+    marginBottom: 2,
+  },
+  mouthfeelSubtitle: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: HIGColors.tertiaryLabel,
+    marginBottom: HIGConstants.SPACING_MD,
   },
   mouthfeelContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    gap: HIGConstants.SPACING_SM,
   },
-  completeButton: {
-    width: '100%',
-    marginTop: HIGConstants.SPACING_LG,
+  bottomContainer: {
+    padding: HIGConstants.SPACING_LG,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 0.5,
+    borderTopColor: HIGColors.systemGray4,
   },
-  completeButtonText: {
+  nextButton: {
+    height: 48,
+    backgroundColor: HIGColors.systemBlue,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  nextButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
     color: '#FFFFFF',
+  },
+  selectedPreviewContainer: {
+    backgroundColor: '#FAFAFA',
+    padding: HIGConstants.SPACING_MD,
+    marginTop: HIGConstants.SPACING_MD,
+    marginBottom: HIGConstants.SPACING_MD,
+    borderRadius: 8,
+    minHeight: 60,
+    justifyContent: 'center',
+  },
+  selectedPreviewContent: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+  },
+  categoryGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: HIGConstants.SPACING_LG,
+    paddingRight: HIGConstants.SPACING_LG,
+    borderRightWidth: 1,
+    borderRightColor: HIGColors.systemGray4,
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  categoryGroupLast: {
+    borderRightWidth: 0,
+    paddingRight: 0,
+    marginRight: 0,
+  },
+  categoryLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: HIGColors.secondaryLabel,
+    marginRight: HIGConstants.SPACING_SM,
+  },
+  categoryExpressions: {
+    fontSize: 15,
+    color: HIGColors.label,
+    fontWeight: '500',
+  },
+  selectedPreviewPlaceholder: {
+    fontSize: 15,
+    color: HIGColors.tertiaryLabel,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
   // Mode Toggle Styles
   modeToggleWrapper: {
@@ -392,6 +537,47 @@ const styles = StyleSheet.create({
   modeButtonTextActive: {
     color: HIGColors.label,
     fontWeight: '700',
+  },
+  basicEvaluationIntro: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingTop: HIGConstants.SPACING_SM,
+    paddingBottom: HIGConstants.SPACING_MD,
+    alignItems: 'center',
+  },
+  basicEvaluationTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: HIGColors.label,
+    marginBottom: HIGConstants.SPACING_XS,
+    textAlign: 'center',
+  },
+  basicEvaluationSubtitle: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  sliderSectionContainer: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingTop: HIGConstants.SPACING_SM,
+  },
+  guideMessageContainer: {
+    paddingHorizontal: HIGConstants.SPACING_LG,
+    paddingVertical: HIGConstants.SPACING_SM,
+    backgroundColor: '#E3F2FD',
+  },
+  guideMessage: {
+    fontSize: 15,
+    color: HIGColors.systemBlue,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  guideSubMessage: {
+    fontSize: 13,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+    marginTop: 4,
   },
 });
 

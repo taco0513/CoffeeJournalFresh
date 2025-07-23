@@ -46,28 +46,19 @@ const RoasterNotesScreen = () => {
       <SafeAreaView style={styles.container}>
         {/* HIG 준수 네비게이션 바 */}
         <View style={styles.navigationBar}>
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Text style={styles.backButtonText}>‹ 뒤로</Text>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Text style={styles.backButton}>←</Text>
           </TouchableOpacity>
           <Text style={styles.navigationTitle}>로스터 노트</Text>
-          <TouchableOpacity 
-            style={styles.skipButton}
-            onPress={handleSkip}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Text style={styles.skipButtonText}>건너뛰기</Text>
+          <TouchableOpacity onPress={handleSkip}>
+            <Text style={styles.skipButton}>건너뛰기</Text>
           </TouchableOpacity>
         </View>
         
-        {/* 진행 상태 바 */}
+        {/* Progress Bar - Full width below header */}
         <View style={styles.progressBar}>
           <View style={[styles.progressFill, { width: '83%' }]} />
         </View>
-        <Text style={styles.progressText}>5/6</Text>
 
         {/* 메인 콘텐츠 */}
         <View style={styles.content}>
@@ -100,14 +91,16 @@ const RoasterNotesScreen = () => {
               textAlignVertical="top"
             />
           </View>
+        </View>
 
-          {/* 다음 버튼 */}
+        {/* Bottom Button */}
+        <View style={styles.bottomContainer}>
           <TouchableOpacity 
-            style={[commonButtonStyles.buttonPrimary, commonButtonStyles.buttonLarge, styles.nextButton]}
+            style={styles.nextButton}
             onPress={handleNext}
             activeOpacity={0.8}
           >
-            <Text style={[commonTextStyles.buttonTextLarge, styles.nextButtonText]}>
+            <Text style={styles.nextButtonText}>
               다음
             </Text>
           </TouchableOpacity>
@@ -123,25 +116,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   navigationBar: {
-    height: HIGConstants.MIN_TOUCH_TARGET,
+    height: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray4,
+    borderBottomColor: HIGColors.systemGray4,
   },
   backButton: {
-    minWidth: HIGConstants.MIN_TOUCH_TARGET,
-    height: HIGConstants.MIN_TOUCH_TARGET,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-  backButtonText: {
-    fontSize: 17,
-    fontWeight: '400',
-    color: HIGColors.blue,
+    fontSize: 24,
+    color: HIGColors.systemBlue,
   },
   navigationTitle: {
     fontSize: 17,
@@ -149,29 +135,17 @@ const styles = StyleSheet.create({
     color: HIGColors.label,
   },
   skipButton: {
-    minWidth: HIGConstants.MIN_TOUCH_TARGET,
-    height: HIGConstants.MIN_TOUCH_TARGET,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-  },
-  skipButtonText: {
     fontSize: 15,
-    fontWeight: '400',
-    color: HIGColors.blue,
+    color: HIGColors.systemBlue,
   },
   progressBar: {
-    height: 4,
-    backgroundColor: HIGColors.gray5,
+    height: 3,
+    backgroundColor: HIGColors.systemGray5,
+    overflow: 'hidden',
   },
   progressFill: {
-    height: 4,
-    backgroundColor: HIGColors.blue,
-  },
-  progressText: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-    marginTop: HIGConstants.SPACING_XS,
-    paddingHorizontal: HIGConstants.SPACING_LG,
+    height: '100%',
+    backgroundColor: HIGColors.systemBlue,
   },
   content: {
     flex: 1,
@@ -230,11 +204,22 @@ const styles = StyleSheet.create({
     minHeight: 200,
     backgroundColor: '#FFFFFF',
   },
+  bottomContainer: {
+    padding: HIGConstants.SPACING_LG,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 0.5,
+    borderTopColor: HIGColors.systemGray4,
+  },
   nextButton: {
-    width: '100%',
-    marginBottom: HIGConstants.SPACING_LG,
+    height: 48,
+    backgroundColor: HIGColors.systemBlue,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   nextButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
     color: '#FFFFFF',
   },
 });

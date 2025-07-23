@@ -90,12 +90,13 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
       </View>
 
       {/* Horizontal category tabs */}
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false}
-        style={styles.categoryTabs}
-        contentContainerStyle={styles.categoryTabsContent}
-      >
+      <View style={styles.categoryTabsWrapper}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          style={styles.categoryTabs}
+          contentContainerStyle={styles.categoryTabsContent}
+        >
         {categories.map((category) => {
           const isActive = category.id === activeCategory;
           const count = getSelectedCount(category.id);
@@ -105,7 +106,8 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
               style={[
                 styles.categoryTab,
                 isActive && styles.categoryTabActive,
-                isActive && { borderColor: category.color }
+                isActive && { borderColor: category.color },
+                count > 0 && styles.categoryTabWithSelection
               ]}
               onPress={() => setActiveCategory(category.id)}
               activeOpacity={0.7}
@@ -113,22 +115,20 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
               <Text style={[
                 styles.categoryTabText,
                 isActive && styles.categoryTabTextActive,
-                isActive && { color: category.color }
+                isActive && { color: category.color },
+                count > 0 && styles.categoryTabTextSelected
               ]}>
                 {category.nameKo}
               </Text>
-              {count > 0 && (
-                <View style={[
-                  styles.categoryBadge,
-                  { backgroundColor: category.color }
-                ]}>
-                  <Text style={styles.categoryBadgeText}>{count}</Text>
-                </View>
-              )}
             </TouchableOpacity>
           );
         })}
-      </ScrollView>
+        </ScrollView>
+        {/* 스크롤 가능 표시 */}
+        <View style={styles.scrollIndicator} pointerEvents="none">
+          <Text style={styles.scrollIndicatorText}>›</Text>
+        </View>
+      </View>
 
       {/* Expression grid */}
       <ScrollView 
@@ -203,6 +203,9 @@ const styles = StyleSheet.create({
     color: '#666666',
     fontWeight: '500',
   },
+  categoryTabsWrapper: {
+    position: 'relative',
+  },
   categoryTabs: {
     maxHeight: 44,
     borderBottomWidth: 1,
@@ -210,6 +213,22 @@ const styles = StyleSheet.create({
   },
   categoryTabsContent: {
     paddingHorizontal: 16,
+    paddingRight: 40, // 스크롤 인디케이터 공간
+  },
+  scrollIndicator: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollIndicatorText: {
+    fontSize: 24,
+    color: '#8E8E93',
+    fontWeight: '300',
   },
   categoryTab: {
     paddingHorizontal: 16,
@@ -219,9 +238,13 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
+    position: 'relative',
   },
   categoryTabActive: {
     borderBottomWidth: 2,
+  },
+  categoryTabSelected: {
+    borderRadius: 8,
   },
   categoryTabText: {
     fontSize: 15,
@@ -231,18 +254,11 @@ const styles = StyleSheet.create({
   categoryTabTextActive: {
     fontWeight: '700',
   },
-  categoryBadge: {
-    marginLeft: 6,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 10,
-    minWidth: 20,
-    alignItems: 'center',
+  categoryTabTextSelected: {
+    fontWeight: '800',
   },
-  categoryBadgeText: {
-    fontSize: 11,
-    color: '#FFFFFF',
-    fontWeight: '700',
+  categoryTabWithSelection: {
+    backgroundColor: '#F0F7FF',
   },
   expressionContainer: {
     flex: 1,

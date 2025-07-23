@@ -45,6 +45,7 @@ export default function ResultScreen({navigation}: any) {
   const [comparison, setComparison] = useState<any>(null);
   const [similarCoffees, setSimilarCoffees] = useState<any[]>([]);
   const [isLoadingComparison, setIsLoadingComparison] = useState(false);
+  const [isSaved, setIsSaved] = useState(false); // 저장 완료 상태 추가
 
   // 비교 데이터 로드
   useEffect(() => {
@@ -294,18 +295,14 @@ export default function ResultScreen({navigation}: any) {
     <SafeAreaView style={styles.container}>
       {/* HIG 준수 네비게이션 바 */}
       <View style={styles.navigationBar}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>결과</Text>
-        <Text style={styles.progressIndicator}>6/6</Text>
+        <View style={styles.rightSection} />
       </View>
       
-      {/* 진행 상태 바 */}
+      {/* Progress Bar - Full width below header */}
       <View style={styles.progressBar}>
         <View style={[styles.progressFill, { width: '100%' }]} />
       </View>
@@ -543,48 +540,35 @@ const styles = StyleSheet.create({
     backgroundColor: HIGColors.secondarySystemBackground,
   },
   navigationBar: {
-    height: HIGConstants.MIN_TOUCH_TARGET,
+    height: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray4,
+    borderBottomColor: HIGColors.systemGray4,
   },
   backButton: {
-    minWidth: HIGConstants.MIN_TOUCH_TARGET,
-    height: HIGConstants.MIN_TOUCH_TARGET,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-  backButtonText: {
-    fontSize: 17,
-    fontWeight: '400',
-    color: HIGColors.blue,
+    fontSize: 24,
+    color: HIGColors.systemBlue,
   },
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
   },
-  navigationRight: {
-    minWidth: HIGConstants.MIN_TOUCH_TARGET,
-  },
-  progressIndicator: {
-    fontSize: 15,
-    fontWeight: '400',
-    color: HIGColors.secondaryLabel,
-    minWidth: HIGConstants.MIN_TOUCH_TARGET,
-    textAlign: 'right',
+  rightSection: {
+    width: 24,
   },
   progressBar: {
-    height: 4,
-    backgroundColor: HIGColors.gray5,
+    height: 3,
+    backgroundColor: HIGColors.systemGray5,
+    overflow: 'hidden',
   },
   progressFill: {
-    height: 4,
-    backgroundColor: HIGColors.blue,
+    height: '100%',
+    backgroundColor: HIGColors.systemBlue,
   },
   scrollView: {
     flex: 1,

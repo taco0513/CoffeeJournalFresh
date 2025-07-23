@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTastingStore } from '../stores/tastingStore';
 import { NavigationButton } from '../components/common';
 import { HIGConstants, hitSlop, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
+import { flavorWheelKorean } from '../data/flavorWheelKorean';
 
 const PersonalCommentScreen = () => {
   const navigation = useNavigation();
@@ -50,40 +51,113 @@ const PersonalCommentScreen = () => {
     navigation.navigate('RoasterNotes' as never);
   };
 
-  // 추천 문구들
-  const suggestionPhrases = [
-    "향미가 인상적이었고",
-    "균형 잡힌 맛이었다",
-    "산미가 적당해서 좋았다",
-    "달콤한 뒷맛이 기억에 남는다",
-    "바디감이 풍부했다",
-    "깔끔한 마무리였다",
-    "복합적인 향미가 좋았다",
-    "부드러운 질감이었다"
-  ];
+  // 사용자가 선택한 내용 요약
+  const getUserSelections = () => {
+    const selections = {
+      flavors: [] as string[],
+      sensory: [] as string[],
+      sensoryByCategory: {} as Record<string, string[]>,
+      ratings: {} as Record<string, number>,
+      mouthfeel: ''
+    };
+    
+    // 향미 선택 (한글로 변환) - selectedFlavors 사용
+    console.log('Current selectedFlavors:', currentTasting.selectedFlavors);
+    if (currentTasting.selectedFlavors && currentTasting.selectedFlavors.length > 0) {
+      const { translations } = flavorWheelKorean;
+      
+      // 각 선택된 향미에 대해 처리
+      currentTasting.selectedFlavors.forEach((flavorPath: any) => {
+        if (flavorPath.level3) {
+          // Level 3는 이미 한글이므로 그대로 사용
+          selections.flavors.push(flavorPath.level3);
+        } else if (flavorPath.level2) {
+          // Level 2는 translations에서 한글 가져오기
+          const koreanName2 = translations[flavorPath.level2] || flavorPath.level2;
+          selections.flavors.push(koreanName2);
+        } else if (flavorPath.level1) {
+          // Level 1은 flavorWheelKorean.level1에서 한글 가져오기
+          const koreanName1 = flavorWheelKorean.level1[flavorPath.level1] || flavorPath.level1;
+          selections.flavors.push(koreanName1);
+        }
+      });
+    }
+    
+    // 감각 표현 (카테고리별로 그룹화)
+    const { selectedSensoryExpressions } = useTastingStore.getState();
+    if (selectedSensoryExpressions && selectedSensoryExpressions.length > 0) {
+      const categoryNames: Record<string, string> = {
+        acidity: '산미',
+        sweetness: '단맛',
+        bitterness: '쓴맛',
+        body: '바디',
+        aftertaste: '애프터',
+        balance: '밸런스'
+      };
+      
+      selectedSensoryExpressions.forEach(expr => {
+        if (expr.selected) {
+          selections.sensory.push(expr.korean);
+          
+          // 카테고리별로 그룹화
+          const categoryKorean = categoryNames[expr.categoryId] || expr.categoryId;
+          if (!selections.sensoryByCategory[categoryKorean]) {
+            selections.sensoryByCategory[categoryKorean] = [];
+          }
+          selections.sensoryByCategory[categoryKorean].push(expr.korean);
+        }
+      });
+    }
+    
+    // 기본 평가 점수
+    selections.ratings = {
+      '바디감': currentTasting.body,
+      '산미': currentTasting.acidity,
+      '단맛': currentTasting.sweetness,
+      '쓴맛': currentTasting.bitterness,
+      '여운': currentTasting.finish,
+      '밸런스': currentTasting.balance
+    };
+    
+    // 마우스필
+    selections.mouthfeel = currentTasting.mouthfeel || '';
+    
+    return selections;
+  };
+  
+  const userSelections = getUserSelections();
 
-  const addSuggestion = (phrase: string) => {
+  // 텍스트 추가 함수
+  const addTextToComment = (text: string) => {
     const currentText = personalComment.trim();
     if (currentText) {
-      setPersonalComment(currentText + (currentText.endsWith('.') ? ' ' : ', ') + phrase);
+      // 마지막 문자가 마침표인지 확인
+      if (currentText.endsWith('.')) {
+        setPersonalComment(currentText + ' ' + text);
+      } else {
+        setPersonalComment(currentText + ' ' + text);
+      }
     } else {
-      setPersonalComment(phrase);
+      setPersonalComment(text);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* HIG 준수 네비게이션 바 */}
+      {/* Navigation Bar */}
       <View style={styles.navigationBar}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Text style={styles.backButtonText}>‹ 뒤로</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>개인 노트</Text>
-        <Text style={styles.progressIndicator}>4/6</Text>
+        <TouchableOpacity onPress={handleSkip}>
+          <Text style={styles.skipButton}>건너뛰기</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Progress Bar - Full width below header */}
+      <View style={styles.progressBar}>
+        <View style={[styles.progressFill, { width: '83%' }]} />
       </View>
 
       <KeyboardAvoidingView 
@@ -98,7 +172,7 @@ const PersonalCommentScreen = () => {
                 오늘의 커피는 어떠셨나요?
               </Text>
               <Text style={styles.guideMessage}>
-                💭 맛, 향, 전반적인 느낌을 자유롭게 표현해보세요
+                맛, 향, 전반적인 느낌을 자유롭게 표현해보세요
               </Text>
               
               <View style={styles.inputContainer}>
@@ -120,40 +194,94 @@ const PersonalCommentScreen = () => {
               </View>
             </View>
 
-            {/* 추천 문구 */}
+            {/* 사용자 선택 요약 */}
             <View style={styles.section}>
-              <Text style={styles.suggestionsTitle}>💡 추천 표현</Text>
-              <Text style={styles.suggestionsDescription}>
-                탭하여 감상평에 추가할 수 있어요
-              </Text>
-              <View style={styles.suggestionTags}>
-                {suggestionPhrases.map((phrase, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.suggestionTag}
-                    onPress={() => addSuggestion(phrase)}
-                    hitSlop={hitSlop.small}
-                  >
-                    <Text style={styles.suggestionText}>{phrase}</Text>
-                  </TouchableOpacity>
-                ))}
+              <Text style={styles.selectionsTitle}>오늘 선택한 표현들</Text>
+              
+              {/* 향미 */}
+              {userSelections.flavors.length > 0 && (
+                <View style={styles.selectionRow}>
+                  <Text style={styles.selectionLabel}>향미</Text>
+                  <View style={styles.selectionTags}>
+                    {userSelections.flavors.map((flavor, index) => (
+                      <TouchableOpacity 
+                        key={index} 
+                        style={styles.selectionTag}
+                        onPress={() => addTextToComment(flavor)}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={styles.selectionText}>{flavor}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              )}
+              
+              {/* 감각 표현 (카테고리별로 표시) */}
+              {Object.entries(userSelections.sensoryByCategory).map(([category, expressions]) => (
+                <View key={category} style={styles.selectionRow}>
+                  <Text style={styles.selectionLabel}>{category}</Text>
+                  <View style={styles.selectionTags}>
+                    {expressions.map((expr, index) => (
+                      <TouchableOpacity 
+                        key={index} 
+                        style={styles.selectionTag}
+                        onPress={() => addTextToComment(expr)}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={styles.selectionText}>{expr}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              ))}
+              
+              {/* 주요 평가 (4점 이상만 표시) */}
+              <View style={styles.selectionRow}>
+                <Text style={styles.selectionLabel}>평가</Text>
+                <View style={styles.selectionTags}>
+                  {Object.entries(userSelections.ratings)
+                    .filter(([_, score]) => score >= 4)
+                    .map(([name, score], index) => (
+                      <TouchableOpacity 
+                        key={index} 
+                        style={styles.selectionTag}
+                        onPress={() => addTextToComment(`${name} ${score}/5`)}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={styles.selectionText}>{name} {score}/5</Text>
+                      </TouchableOpacity>
+                    ))}
+                </View>
               </View>
+              
+              {/* 마우스필 */}
+              {userSelections.mouthfeel && (
+                <View style={styles.selectionRow}>
+                  <Text style={styles.selectionLabel}>질감</Text>
+                  <View style={styles.selectionTags}>
+                    <TouchableOpacity 
+                      style={styles.selectionTag}
+                      onPress={() => addTextToComment(userSelections.mouthfeel)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.selectionText}>{userSelections.mouthfeel}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
             </View>
           </View>
         </ScrollView>
 
         {/* 버튼 영역 */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-            <Text style={styles.skipButtonText}>건너뛰기</Text>
-          </TouchableOpacity>
-          
-          <NavigationButton
-            title="완료"
-            onPress={handleNext}
-            variant="primary"
+        <View style={styles.bottomContainer}>
+          <TouchableOpacity
             style={styles.nextButton}
-          />
+            onPress={handleNext}
+          >
+            <Text style={styles.nextButtonText}>완료</Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -173,25 +301,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray4,
+    borderBottomColor: HIGColors.systemGray4,
   },
   backButton: {
-    paddingVertical: HIGConstants.SPACING_SM,
-  },
-  backButtonText: {
-    fontSize: 17,
-    color: HIGColors.blue,
-    fontWeight: '400',
+    fontSize: 24,
+    color: HIGColors.systemBlue,
   },
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
   },
-  progressIndicator: {
+  skipButton: {
     fontSize: 15,
-    color: HIGColors.secondaryLabel,
-    fontWeight: '500',
+    color: HIGColors.systemBlue,
+  },
+  progressBar: {
+    height: 3,
+    backgroundColor: HIGColors.systemGray5,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: HIGColors.systemBlue,
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -235,8 +367,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: HIGColors.label,
     lineHeight: 22,
-    minHeight: 120,
-    maxHeight: 160,
+    minHeight: 88,  // 4줄 높이 (22 * 4)
+    maxHeight: 88,  // 고정 높이
     textAlignVertical: 'top',
   },
   characterCount: {
@@ -245,62 +377,75 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginTop: HIGConstants.SPACING_XS,
   },
-  suggestionsTitle: {
+  selectionsTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  suggestionsDescription: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_MD,
   },
-  suggestionTags: {
+  selectionRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: HIGConstants.SPACING_MD,
+  },
+  selectionLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: HIGColors.secondaryLabel,
+    width: 50,
+    marginTop: 4,
+  },
+  selectionTags: {
+    flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: HIGConstants.SPACING_SM,
+    gap: HIGConstants.SPACING_XS,
   },
-  suggestionTag: {
-    backgroundColor: '#E3F2FD',
-    borderColor: '#2196F3',
-    borderWidth: 1,
+  selectionTag: {
+    backgroundColor: '#E8F0FE',
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#D2E3FC',
   },
-  suggestionText: {
+  selectionText: {
     fontSize: 14,
-    color: '#1976D2',
+    color: HIGColors.label,
     fontWeight: '500',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_MD,
+  bottomContainer: {
+    padding: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
-    borderTopColor: HIGColors.gray4,
-    gap: HIGConstants.SPACING_MD,
+    borderTopColor: HIGColors.systemGray4,
   },
-  skipButton: {
+  bottomSkipButton: {
     flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    height: 48,
+    borderRadius: HIGConstants.cornerRadiusMedium,
     backgroundColor: '#F8F8F8',
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: HIGColors.systemGray4,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  skipButtonText: {
+  bottomSkipButtonText: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     fontWeight: '500',
   },
   nextButton: {
-    flex: 2,
+    height: 48,
+    backgroundColor: HIGColors.systemBlue,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  nextButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
 

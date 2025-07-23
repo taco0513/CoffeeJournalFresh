@@ -38,6 +38,7 @@ const CoffeeInfoScreen = () => {
   const [varietySuggestions, setVarietySuggestions] = useState<string[]>([]);
   const [processSuggestions, setProcessSuggestions] = useState<string[]>([]);
   const [showAddCoffeeModal, setShowAddCoffeeModal] = useState(false);
+  const [showCoffeeDetails, setShowCoffeeDetails] = useState(false);
 
   // Developer mode: Dummy data for quick testing
   const dummyData = [
@@ -305,11 +306,9 @@ const CoffeeInfoScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Progress Bar */}
-      <View style={styles.progressContainer}>
-        <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: '17%' }]} />
-        </View>
+      {/* Progress Bar - Full width below header */}
+      <View style={styles.progressBar}>
+        <View style={[styles.progressFill, { width: '17%' }]} />
       </View>
 
       {/* Developer Mode: Dummy Data Auto-fill Button */}
@@ -442,83 +441,97 @@ const CoffeeInfoScreen = () => {
                   label="커피 이름 *"
                 />
               </View>
-              
-              <Text style={styles.hintText}>
-                💡 커피 이름을 입력하면 상세 정보를 자동으로 추천해드려요!
-              </Text>
 
-              {/* 생산지 */}
-              <View style={[styles.inputGroup, { zIndex: originSuggestions.length > 0 && currentTasting.origin ? 5 : 1 }]}>
-                <AutocompleteInput
-                  value={currentTasting.origin || ''}
-                  onChangeText={(text) => updateField('origin', text)}
-                  onSelect={(item) => updateField('origin', item)}
-                  suggestions={originSuggestions}
-                  placeholder="예: Ethiopia / Yirgacheffe"
-                  label="생산지"
-                />
-              </View>
-
-              {/* 품종 */}
-              <View style={[styles.inputGroup, { zIndex: varietySuggestions.length > 0 && currentTasting.variety ? 4 : 1 }]}>
-                <AutocompleteInput
-                  value={currentTasting.variety || ''}
-                  onChangeText={(text) => updateField('variety', text)}
-                  onSelect={(item) => updateField('variety', item)}
-                  suggestions={varietySuggestions}
-                  placeholder="예: Heirloom, Geisha"
-                  label="품종"
-                />
-              </View>
-
-              {/* 가공 방식 */}
-              <View style={[styles.inputGroup, { zIndex: processSuggestions.length > 0 && currentTasting.process ? 3 : 1 }]}>
-                <AutocompleteInput
-                  value={currentTasting.process || ''}
-                  onChangeText={(text) => updateField('process', text)}
-                  onSelect={(item) => updateField('process', item)}
-                  suggestions={processSuggestions}
-                  placeholder="예: Washed, Natural"
-                  label="가공 방식"
-                />
-              </View>
-
-              {/* 고도 */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>고도</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="예: 1,800-2,000m"
-                  placeholderTextColor="#CCCCCC"
-                  value={currentTasting.altitude}
-                  onChangeText={(text) => updateField('altitude', text)}
-                />
-              </View>
-
-              {/* 로스팅 레벨 */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>로스팅 레벨</Text>
-                <View style={styles.roastLevelButtons}>
-                  {roastLevelOptions.map((level) => (
-                    <TouchableOpacity
-                      key={level}
-                      style={[
-                        styles.roastButton,
-                        currentTasting.roastLevel === level && styles.roastButtonActive,
-                      ]}
-                      onPress={() => updateField('roastLevel', level)}>
-                      <Text style={[
-                        styles.roastButtonText,
-                        currentTasting.roastLevel === level && styles.roastButtonTextActive,
-                      ]}>
-                        {level === 'Light' ? '☕ Light' : 
-                         level === 'Medium' ? '🟤 Medium' : 
-                         '⚫ Dark'}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+              {/* Coffee Details Accordion */}
+              <TouchableOpacity 
+                style={styles.accordionHeader}
+                onPress={() => setShowCoffeeDetails(!showCoffeeDetails)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.accordionHeaderContent}>
+                  <Text style={styles.accordionTitle}>상세 정보</Text>
                 </View>
-              </View>
+                <Text style={[styles.accordionIcon, showCoffeeDetails && styles.accordionIconExpanded]}>
+                  ›
+                </Text>
+              </TouchableOpacity>
+
+              {showCoffeeDetails && (
+                <View style={styles.accordionContent}>
+                  {/* 생산지 */}
+                  <View style={[styles.inputGroup, { zIndex: originSuggestions.length > 0 && currentTasting.origin ? 5 : 1 }]}>
+                    <AutocompleteInput
+                      value={currentTasting.origin || ''}
+                      onChangeText={(text) => updateField('origin', text)}
+                      onSelect={(item) => updateField('origin', item)}
+                      suggestions={originSuggestions}
+                      placeholder="예: Ethiopia / Yirgacheffe"
+                      label="생산지"
+                    />
+                  </View>
+
+                  {/* 품종 */}
+                  <View style={[styles.inputGroup, { zIndex: varietySuggestions.length > 0 && currentTasting.variety ? 4 : 1 }]}>
+                    <AutocompleteInput
+                      value={currentTasting.variety || ''}
+                      onChangeText={(text) => updateField('variety', text)}
+                      onSelect={(item) => updateField('variety', item)}
+                      suggestions={varietySuggestions}
+                      placeholder="예: Heirloom, Geisha"
+                      label="품종"
+                    />
+                  </View>
+
+                  {/* 가공 방식 */}
+                  <View style={[styles.inputGroup, { zIndex: processSuggestions.length > 0 && currentTasting.process ? 3 : 1 }]}>
+                    <AutocompleteInput
+                      value={currentTasting.process || ''}
+                      onChangeText={(text) => updateField('process', text)}
+                      onSelect={(item) => updateField('process', item)}
+                      suggestions={processSuggestions}
+                      placeholder="예: Washed, Natural"
+                      label="가공 방식"
+                    />
+                  </View>
+
+                  {/* 고도 */}
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>고도</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="예: 1,800-2,000m"
+                      placeholderTextColor="#CCCCCC"
+                      value={currentTasting.altitude}
+                      onChangeText={(text) => updateField('altitude', text)}
+                    />
+                  </View>
+
+                  {/* 로스팅 레벨 */}
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>로스팅 레벨</Text>
+                    <View style={styles.roastLevelButtons}>
+                      {roastLevelOptions.map((level) => (
+                        <TouchableOpacity
+                          key={level}
+                          style={[
+                            styles.roastButton,
+                            currentTasting.roastLevel === level && styles.roastButtonActive,
+                          ]}
+                          onPress={() => updateField('roastLevel', currentTasting.roastLevel === level ? '' : level)}>
+                          <Text style={[
+                            styles.roastButtonText,
+                            currentTasting.roastLevel === level && styles.roastButtonTextActive,
+                          ]}>
+                            {level === 'Light' ? '☕ Light' : 
+                             level === 'Medium' ? '🟤 Medium' : 
+                             '⚫ Dark'}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                </View>
+              )}
 
               {/* 온도 선택 */}
               <View style={styles.inputGroup}>
@@ -529,7 +542,7 @@ const CoffeeInfoScreen = () => {
                       styles.tempButton,
                       currentTasting.temperature === 'hot' && styles.tempButtonActive,
                     ]}
-                    onPress={() => updateField('temperature', 'hot')}>
+                    onPress={() => updateField('temperature', currentTasting.temperature === 'hot' ? '' : 'hot')}>
                     <Text style={[
                       styles.tempButtonText,
                       currentTasting.temperature === 'hot' && styles.tempButtonTextActive,
@@ -542,7 +555,7 @@ const CoffeeInfoScreen = () => {
                       styles.tempButton,
                       currentTasting.temperature === 'ice' && styles.tempButtonActive,
                     ]}
-                    onPress={() => updateField('temperature', 'ice')}>
+                    onPress={() => updateField('temperature', currentTasting.temperature === 'ice' ? '' : 'ice')}>
                     <Text style={[
                       styles.tempButtonText,
                       currentTasting.temperature === 'ice' && styles.tempButtonTextActive,
@@ -559,12 +572,13 @@ const CoffeeInfoScreen = () => {
 
       {/* Bottom Button */}
       <View style={styles.bottomContainer}>
-        <NavigationButton
-          title="다음"
+        <TouchableOpacity
+          style={[styles.nextButton, !isValid && styles.nextButtonDisabled]}
           onPress={handleNext}
           disabled={!isValid}
-          variant="primary"
-        />
+        >
+          <Text style={styles.nextButtonText}>다음</Text>
+        </TouchableOpacity>
       </View>
       
       {/* 커피 추가 모달 */}
@@ -609,15 +623,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: HIGColors.systemBlue,
   },
-  progressContainer: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_SM,
-    backgroundColor: '#FFFFFF',
-  },
   progressBar: {
-    height: 4,
+    height: 3,
     backgroundColor: HIGColors.systemGray5,
-    borderRadius: 2,
     overflow: 'hidden',
   },
   progressFill: {
@@ -769,6 +777,64 @@ const styles = StyleSheet.create({
     color: HIGColors.systemBlue,
     textAlign: 'center',
     fontWeight: '500',
+  },
+  nextButton: {
+    height: 48,
+    backgroundColor: HIGColors.systemBlue,
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  nextButtonDisabled: {
+    backgroundColor: HIGColors.systemGray4,
+  },
+  nextButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  accordionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F8F9FA',
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    padding: HIGConstants.SPACING_MD,
+    marginVertical: HIGConstants.SPACING_SM,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray5,
+  },
+  accordionHeaderContent: {
+    flex: 1,
+  },
+  accordionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: HIGColors.label,
+    marginBottom: 4,
+  },
+  accordionSubtitle: {
+    fontSize: 14,
+    color: HIGColors.secondaryLabel,
+    lineHeight: 18,
+  },
+  accordionIcon: {
+    fontSize: 20,
+    color: HIGColors.tertiaryLabel,
+    marginLeft: HIGConstants.SPACING_SM,
+  },
+  accordionIconExpanded: {
+    transform: [{ rotate: '90deg' }],
+  },
+  accordionContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: HIGConstants.cornerRadiusMedium,
+    padding: HIGConstants.SPACING_MD,
+    marginTop: -HIGConstants.SPACING_SM,
+    marginBottom: HIGConstants.SPACING_MD,
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray5,
+    borderTopWidth: 0,
   },
 });
 
