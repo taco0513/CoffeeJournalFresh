@@ -6,7 +6,7 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 **Final Brand Name**: **CupNote (컵노트)** - 98/100 Global Score
 - 한국 + 미국 시장 동시 대응 최적화
 - 직관적 기능명: Cup + Note = 커피 기록 앱
-- 도메인: cupnote.com/.kr/.app 확보 가능
+- 도메인: cupnoteapp.com (1순위) | mycupnote.com (2순위) | cupnote.app (3순위)
 - 슬로간: "Your Coffee, Your Notes, Your Story"
 
 **Market Position**: 글로벌 커피 저널 앱 - 한국 최초 개인 맞춤형 커피 감각 평가 앱
@@ -36,6 +36,7 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 5. **Achievement system** for habit formation
 
 ## Current Focus (2025-07-24) - Complete CupNote Rebranding Finished ✅
+**Domain Strategy Update**: cupnote.com unavailable → cupnoteapp.com (recommended for MVP launch)
 - **Status**: 100% MVP Complete + Comprehensive Rebranding Completed
 - **Latest Achievement**: ✅ **MASTER REBRANDING COMPLETE** - All CoffeeJournalFresh references eliminated
 - **Comprehensive Review Results**: Deep scan found and fixed 50+ additional references
@@ -233,10 +234,10 @@ bridgeDebugger.printRecentCalls()  # Debug bridge errors
 3. ✅ **MVP Cleanup** - COMPLETED (182→164 files, 10% reduction)
 4. ✅ **CupNote Brand Selection** - COMPLETED (2025-07-24)
 5. **CupNote Launch Ready Tasks**:
-   - 🌐 **Domain Acquisition**: cupnote.com/.kr/.app immediate priority
+   - 🌐 **Domain Strategy**: cupnoteapp.com (1순위 권장) - 모바일 앱 정체성 명확화
    - ⚖️ **Trademark Filing**: Korea + US simultaneous application
    - 🎨 **Logo Development**: Bilingual identity system
-   - 📱 **App Rebranding**: Update all UI elements to CupNote
+   - ✅ **App Rebranding**: Complete - All UI elements updated to CupNote
    - Configure Google OAuth credentials (optional - Apple Sign-In works)
    - Achievement UI Implementation (backend ready)
    - Result Visualization improvements
