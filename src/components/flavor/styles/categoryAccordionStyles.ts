@@ -8,7 +8,7 @@ export const categoryAccordionStyles = StyleSheet.create({
   },
   categoryCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: HIGConstants.cornerRadiusLarge,
+    borderRadius: HIGConstants.cornerRadiusMedium,
     overflow: 'visible',
   },
   categoryCardExpanded: {
@@ -91,8 +91,8 @@ export const categoryAccordionStyles = StyleSheet.create({
     backgroundColor: '#FAFAFA',
     paddingVertical: HIGConstants.SPACING_SM,
     marginTop: 0,
-    borderBottomLeftRadius: HIGConstants.cornerRadiusLarge,
-    borderBottomRightRadius: HIGConstants.cornerRadiusLarge,
+    borderBottomLeftRadius: HIGConstants.cornerRadiusMedium,
+    borderBottomRightRadius: HIGConstants.cornerRadiusMedium,
   },
   categoryGuide: {
     paddingHorizontal: HIGConstants.SPACING_MD,

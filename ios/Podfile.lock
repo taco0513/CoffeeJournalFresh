@@ -2318,6 +2318,8 @@ PODS:
     - Yoga
   - RNLocalize (3.5.1):
     - React-Core
+  - RNPermissions (5.4.2):
+    - React-Core
   - RNReactNativeHapticFeedback (2.3.3):
     - boost
     - DoubleConversion
@@ -2529,6 +2531,7 @@ DEPENDENCIES:
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNLocalize (from `../node_modules/react-native-localize`)
+  - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNShare (from `../node_modules/react-native-share`)
@@ -2717,6 +2720,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNLocalize:
     :path: "../node_modules/react-native-localize"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
   RNReactNativeHapticFeedback:
     :path: "../node_modules/react-native-haptic-feedback"
   RNScreens:
@@ -2818,6 +2823,7 @@ SPEC CHECKSUMS:
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
   RNGestureHandler: 4e0ee6a1f04f5ac8d70c87d3c761d40a50964172
   RNLocalize: 60ebbb668e46d3b9f276aaf2db8ae5353b84e514
+  RNPermissions: 0b0cdb0dfcc2fabc136a3d596220cc3d91977d79
   RNReactNativeHapticFeedback: d5e78f6e98c30b0a097e1f2d4c3c9ee321520112
   RNScreens: 64b35b601916a7a61339a7cd6bd5db4ab218a1be
   RNShare: 96690f76fb95a291fca65b910378756f8a402512

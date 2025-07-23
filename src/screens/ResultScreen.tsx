@@ -69,7 +69,7 @@ export default function ResultScreen({navigation}: any) {
             try {
               const newAchievements = await checkAchievements(currentUser.id);
               if (newAchievements.length > 0) {
-                showMultipleAchievements(newAchievements);
+                showMultipleAchievements(newAchievements as any);
               }
             } catch (error) {
               console.warn('Failed to check achievements:', error);

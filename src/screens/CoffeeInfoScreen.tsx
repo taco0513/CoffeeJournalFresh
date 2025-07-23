@@ -65,7 +65,7 @@ const CoffeeInfoScreen = () => {
       coffeeName: '콜롬비아 후일라',
       roastery: '프릳츠 커피',
       cafeName: '프릳츠 매장',
-      temperature: 'ice' as const,
+      temperature: 'cold' as const,
       origin: '콜롬비아',
       variety: '카스티요',
       altitude: '1600m',
@@ -80,7 +80,7 @@ const CoffeeInfoScreen = () => {
     updateField('coffeeName', randomData.coffeeName);
     updateField('roastery', randomData.roastery);
     updateField('cafeName', randomData.cafeName);
-    updateField('temperature', randomData.temperature);
+    updateField('temperature', randomData.temperature as 'hot' | 'cold');
     updateField('origin', randomData.origin);
     updateField('variety', randomData.variety);
     updateField('altitude', randomData.altitude);
@@ -129,7 +129,7 @@ const CoffeeInfoScreen = () => {
     }
     
     Object.keys(updates).forEach(key => {
-      updateField(key, updates[key as keyof typeof updates]);
+      updateField(key as keyof CurrentTasting, updates[key as keyof typeof updates]);
     });
   };
 
@@ -166,7 +166,7 @@ const CoffeeInfoScreen = () => {
           } else {
             navigation.reset({
               index: 0,
-              routes: [{name: 'MainTabs'}],
+              routes: [{name: 'MainTabs' as const}],
             });
           }
         }}>
@@ -414,7 +414,7 @@ const CoffeeInfoScreen = () => {
                       styles.tempButton,
                       currentTasting.temperature === 'hot' && styles.tempButtonActive,
                     ]}
-                    onPress={() => updateField('temperature', currentTasting.temperature === 'hot' ? '' : 'hot')}>
+                    onPress={() => updateField('temperature', currentTasting.temperature === 'hot' ? 'cold' : 'hot')}>
                     <Text style={[
                       styles.tempButtonText,
                       currentTasting.temperature === 'hot' && styles.tempButtonTextActive,
@@ -425,12 +425,12 @@ const CoffeeInfoScreen = () => {
                   <TouchableOpacity
                     style={[
                       styles.tempButton,
-                      currentTasting.temperature === 'ice' && styles.tempButtonActive,
+                      currentTasting.temperature === 'cold' && styles.tempButtonActive,
                     ]}
-                    onPress={() => updateField('temperature', currentTasting.temperature === 'ice' ? '' : 'ice')}>
+                    onPress={() => updateField('temperature', currentTasting.temperature === 'cold' ? 'hot' : 'cold')}>
                     <Text style={[
                       styles.tempButtonText,
-                      currentTasting.temperature === 'ice' && styles.tempButtonTextActive,
+                      currentTasting.temperature === 'cold' && styles.tempButtonTextActive,
                     ]}>
                       🧊 Ice
                     </Text>

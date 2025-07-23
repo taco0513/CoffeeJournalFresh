@@ -86,7 +86,8 @@ const PhotoGalleryScreen = () => {
 
   const handlePhotoPress = (item: PhotoItem) => {
     // Navigate to full screen photo viewer
-    navigation.navigate('PhotoViewer' as never, { photoItem: item } as never);
+    // TODO: PhotoViewer screen needs to be implemented
+    // navigation.navigate('PhotoViewer', { photoItem: item });
   };
 
   const handlePhotoLongPress = (item: PhotoItem) => {
@@ -102,7 +103,7 @@ const PhotoGalleryScreen = () => {
   };
 
   const navigateToTasting = (tastingId: string) => {
-    navigation.navigate('TastingDetail' as never, { tastingId } as never);
+    navigation.navigate('TastingDetail', { tastingId });
   };
 
   const deletePhoto = async (item: PhotoItem) => {

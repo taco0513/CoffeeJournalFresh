@@ -3,6 +3,29 @@
  * Helps identify sources of "Malformed calls from JS" errors
  */
 
+// Debug configuration
+const DEBUG_ENABLED = __DEV__ && !process.env.DISABLE_BRIDGE_DEBUGGER;
+const LOG_PREFIX = '[BridgeDebugger]';
+
+// Debug logging wrapper
+const debugLog = (...args: any[]) => {
+  if (DEBUG_ENABLED) {
+    console.log(LOG_PREFIX, ...args);
+  }
+};
+
+const debugWarn = (...args: any[]) => {
+  if (DEBUG_ENABLED) {
+    console.warn(LOG_PREFIX, ...args);
+  }
+};
+
+const debugError = (...args: any[]) => {
+  if (DEBUG_ENABLED) {
+    console.error(LOG_PREFIX, ...args);
+  }
+};
+
 interface BridgeCall {
   moduleId: number;
   methodId: number;
@@ -23,13 +46,13 @@ class BridgeDebugger {
   private maxCalls = 50; // Keep last 50 calls for debugging
 
   init() {
-    if (__DEV__ && global.__fbBatchedBridge) {
+    if (__DEV__ && (global as any).__fbBatchedBridge) {
       try {
-        this.originalBridge = global.__fbBatchedBridge;
+        this.originalBridge = (global as any).__fbBatchedBridge;
         this.interceptBridgeCalls();
-        console.log('🔍 Bridge debugger initialized');
+        debugLog('🔍 Bridge debugger initialized');
       } catch (error) {
-        console.warn('⚠️ Bridge debugger initialization failed, continuing without debugging:', error.message);
+        debugWarn('⚠️ Bridge debugger initialization failed, continuing without debugging:', error.message);
       }
     }
   }
@@ -54,7 +77,7 @@ class BridgeDebugger {
       if (methodName.includes('onRequestCategoryPreferencing') || 
           moduleName.includes('TastingFlow') ||
           methodName.includes('CategoryPreferencing')) {
-        console.warn('🚨 Blocked potentially problematic bridge call:', {
+        debugWarn('🚨 Blocked potentially problematic bridge call:', {
           moduleName,
           methodName,
           reason: 'Method likely does not exist in native binary'
@@ -77,7 +100,7 @@ class BridgeDebugger {
           onSucc
         );
       } catch (error) {
-        console.error('🚨 Bridge call failed:', {
+        debugError('🚨 Bridge call failed:', {
           moduleID,
           methodID,
           params,
@@ -90,7 +113,7 @@ class BridgeDebugger {
         if (onFail && typeof onFail === 'function') {
           onFail(error);
         } else {
-          console.warn('🔄 Bridge call failed but no error handler provided, continuing...');
+          debugWarn('🔄 Bridge call failed but no error handler provided, continuing...');
         }
       }
     };
@@ -113,7 +136,7 @@ class BridgeDebugger {
 
     // Log potentially problematic calls
     if (this.hasProblematicParams(params)) {
-      console.warn('⚠️ Potentially problematic bridge call:', {
+      debugWarn('⚠️ Potentially problematic bridge call:', {
         module: this.getModuleName(moduleID),
         method: this.getMethodName(moduleID, methodID),
         params: this.analyzeParams(params)
@@ -132,7 +155,7 @@ class BridgeDebugger {
 
     if (typeof param === 'number') {
       if (isNaN(param) || !isFinite(param)) {
-        console.warn('🔧 Sanitized invalid number:', param, '→ 0');
+        debugWarn('🔧 Sanitized invalid number:', param, '→ 0');
         return 0;
       }
       return param;
@@ -202,21 +225,23 @@ class BridgeDebugger {
 
   printRecentCalls(count = 10) {
     const recent = this.getRecentCalls(count);
-    console.group('🔍 Recent Bridge Calls');
-    recent.forEach((call, index) => {
-      console.log(`${index + 1}. ${this.getModuleName(call.moduleId)}.${this.getMethodName(call.moduleId, call.methodId)}`, call.params);
-    });
-    console.groupEnd();
+    if (DEBUG_ENABLED) {
+      console.group(LOG_PREFIX + ' 🔍 Recent Bridge Calls');
+      recent.forEach((call, index) => {
+        console.log(`${index + 1}. ${this.getModuleName(call.moduleId)}.${this.getMethodName(call.moduleId, call.methodId)}`, call.params);
+      });
+      console.groupEnd();
+    }
   }
 }
 
 export const bridgeDebugger = new BridgeDebugger();
 
 // Auto-initialize in development (can be disabled by setting DISABLE_BRIDGE_DEBUGGER=true)
-if (__DEV__ && !process.env.DISABLE_BRIDGE_DEBUGGER) {
+if (DEBUG_ENABLED) {
   try {
     bridgeDebugger.init();
   } catch (error) {
-    console.warn('⚠️ Bridge debugger failed to initialize, continuing without debugging:', error.message);
+    debugWarn('⚠️ Bridge debugger failed to initialize, continuing without debugging:', error.message);
   }
 }

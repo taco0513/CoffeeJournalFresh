@@ -13,6 +13,26 @@ export const CAMERA_PERMISSION = Platform.select({
   android: PERMISSIONS.ANDROID.CAMERA,
 }) as Permission;
 
+export const LOCATION_PERMISSION = Platform.select({
+  ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+  android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+}) as Permission;
+
+export const PHOTO_LIBRARY_PERMISSION = Platform.select({
+  ios: PERMISSIONS.IOS.PHOTO_LIBRARY,
+  android: PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+}) as Permission;
+
+export const NOTIFICATION_PERMISSION = Platform.select({
+  ios: PERMISSIONS.IOS.NOTIFICATIONS,
+  android: PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
+}) as Permission;
+
+export const CONTACTS_PERMISSION = Platform.select({
+  ios: PERMISSIONS.IOS.CONTACTS,
+  android: PERMISSIONS.ANDROID.READ_CONTACTS,
+}) as Permission;
+
 export type PermissionStatus = 
   | 'unavailable'
   | 'denied'
@@ -184,8 +204,137 @@ export const openAppSettings = () => {
   }
 };
 
+// Generic permission checker
+export const checkPermission = async (permission: Permission): Promise<PermissionResult> => {
+  try {
+    const result = await check(permission);
+    
+    switch (result) {
+      case RESULTS.UNAVAILABLE:
+        return { status: 'unavailable', canAskAgain: false };
+      case RESULTS.DENIED:
+        return { status: 'denied', canAskAgain: true };
+      case RESULTS.LIMITED:
+        return { status: 'limited', canAskAgain: false };
+      case RESULTS.GRANTED:
+        return { status: 'granted', canAskAgain: false };
+      case RESULTS.BLOCKED:
+        return { status: 'blocked', canAskAgain: false };
+      default:
+        return { status: 'denied', canAskAgain: true };
+    }
+  } catch (error) {
+    return { status: 'denied', canAskAgain: true };
+  }
+};
+
+// Generic permission requester
+export const requestPermission = async (permission: Permission): Promise<PermissionResult> => {
+  try {
+    const result = await request(permission);
+    
+    switch (result) {
+      case RESULTS.UNAVAILABLE:
+        return { status: 'unavailable', canAskAgain: false };
+      case RESULTS.DENIED:
+        return { status: 'denied', canAskAgain: true };
+      case RESULTS.LIMITED:
+        return { status: 'limited', canAskAgain: false };
+      case RESULTS.GRANTED:
+        return { status: 'granted', canAskAgain: false };
+      case RESULTS.BLOCKED:
+        return { status: 'blocked', canAskAgain: false };
+      default:
+        return { status: 'denied', canAskAgain: true };
+    }
+  } catch (error) {
+    return { status: 'denied', canAskAgain: false };
+  }
+};
+
+// Location permission handler
+export const handleLocationPermission = async (): Promise<boolean> => {
+  const checkResult = await checkPermission(LOCATION_PERMISSION);
+  
+  if (checkResult.status === 'granted' || checkResult.status === 'limited') {
+    return true;
+  }
+  
+  if (checkResult.status === 'unavailable') {
+    Alert.alert(
+      '위치 서비스 사용 불가',
+      '이 기기에서는 위치 서비스를 사용할 수 없습니다.',
+      [{ text: '확인' }]
+    );
+    return false;
+  }
+  
+  if (checkResult.status === 'blocked' || !checkResult.canAskAgain) {
+    Alert.alert(
+      '위치 권한 필요',
+      '주변 카페를 찾기 위해 위치 권한이 필요합니다. 설정에서 위치 권한을 허용해주세요.',
+      [
+        { text: '취소', style: 'cancel' },
+        { text: '설정으로 이동', onPress: () => openSettings() },
+      ]
+    );
+    return false;
+  }
+  
+  const requestResult = await requestPermission(LOCATION_PERMISSION);
+  return requestResult.status === 'granted' || requestResult.status === 'limited';
+};
+
+// Photo library permission handler
+export const handlePhotoLibraryPermission = async (): Promise<boolean> => {
+  const checkResult = await checkPermission(PHOTO_LIBRARY_PERMISSION);
+  
+  if (checkResult.status === 'granted' || checkResult.status === 'limited') {
+    return true;
+  }
+  
+  if (checkResult.status === 'blocked' || !checkResult.canAskAgain) {
+    Alert.alert(
+      '사진 라이브러리 권한 필요',
+      '커피 사진을 저장하기 위해 사진 라이브러리 권한이 필요합니다.',
+      [
+        { text: '취소', style: 'cancel' },
+        { text: '설정으로 이동', onPress: () => openSettings() },
+      ]
+    );
+    return false;
+  }
+  
+  const requestResult = await requestPermission(PHOTO_LIBRARY_PERMISSION);
+  return requestResult.status === 'granted' || requestResult.status === 'limited';
+};
+
+// Notification permission handler
+export const handleNotificationPermission = async (): Promise<boolean> => {
+  const checkResult = await checkPermission(NOTIFICATION_PERMISSION);
+  
+  if (checkResult.status === 'granted') {
+    return true;
+  }
+  
+  if (checkResult.status === 'blocked' || !checkResult.canAskAgain) {
+    Alert.alert(
+      '알림 권한 필요',
+      '커피 관련 알림을 받기 위해 알림 권한이 필요합니다.',
+      [
+        { text: '취소', style: 'cancel' },
+        { text: '설정으로 이동', onPress: () => openSettings() },
+      ]
+    );
+    return false;
+  }
+  
+  const requestResult = await requestPermission(NOTIFICATION_PERMISSION);
+  return requestResult.status === 'granted';
+};
+
 // Check if permission is permanently denied
-export const isPermissionPermanentlyDenied = async (): Promise<boolean> => {
-  const result = await checkCameraPermission();
+export const isPermissionPermanentlyDenied = async (permission: Permission = CAMERA_PERMISSION): Promise<boolean> => {
+  const result = await checkPermission(permission);
   return result.status === 'blocked' || (result.status === 'denied' && !result.canAskAgain);
 };

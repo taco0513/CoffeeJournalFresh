@@ -18,6 +18,7 @@ import { useDevStore } from '../stores/useDevStore';
 import { useUserStore } from '../stores/useUserStore';
 import { useFeedbackStore } from '../stores/useFeedbackStore';
 import RealmService from '../services/realm/RealmService';
+import { TastingData } from '../services/realm/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Category Icons - Removed for MVP Beta clean design
@@ -251,7 +252,7 @@ const DeveloperScreen = () => {
             variety: 'Bourbon',
             altitude: '1200m',
             process: 'Pulped Natural',
-            temperature: 'ice' as const,
+            temperature: 'cold' as const,
             roasterNotes: 'Chocolatey and nutty with smooth body',
             matchScoreTotal: 80,
             matchScoreFlavor: 40,
@@ -337,7 +338,7 @@ const DeveloperScreen = () => {
           try {
             console.log(`🔄 Creating tasting ${index + 1}/${mockData.length}: ${data.coffeeName}`);
             
-            const tastingData = {
+            const tastingData: TastingData = {
               coffeeInfo: {
                 cafeName: data.cafeName,
                 roastery: data.roastery,

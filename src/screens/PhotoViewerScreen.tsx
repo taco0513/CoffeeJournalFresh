@@ -95,7 +95,7 @@ const PhotoViewerScreen = () => {
   };
 
   const handleTastingPress = () => {
-    navigation.navigate('TastingDetail' as never, { tastingId: photoItem.tastingId } as never);
+    navigation.navigate('TastingDetail', { tastingId: photoItem.tastingId });
   };
 
   const toggleControls = () => {

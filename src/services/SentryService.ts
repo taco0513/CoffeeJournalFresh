@@ -1,8 +1,17 @@
 // Sentry stub - replace this when adding @sentry/react-native package
+// TODO: When implementing @sentry/react-native:
+// 1. Install package: bun add @sentry/react-native
+// 2. Run setup wizard: npx @sentry/wizard@latest -i reactNative
+// 3. Remove all console statements from this file
+// 4. Replace stub methods with actual Sentry SDK calls
+// 5. Update LoggingService to use real Sentry integration
+// 6. Add proper error boundaries and performance monitoring
+// 7. Configure source maps for production debugging
+
 import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
-const SENTRY_DSN = process.env.SENTRY_DSN || ''; // Add your Sentry DSN here
+const SENTRY_DSN = process.env.SENTRY_DSN || ''; // TODO: Add your Sentry DSN from https://sentry.io
 
 type SeverityLevel = 'fatal' | 'error' | 'warning' | 'log' | 'info' | 'debug';
 

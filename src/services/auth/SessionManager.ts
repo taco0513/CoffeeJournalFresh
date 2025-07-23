@@ -1,5 +1,5 @@
 import { AppState, AppStateStatus } from 'react-native';
-import { supabase } from '../supabase/supabase';
+import { supabase } from '../supabase/client';
 import { SecureStorage } from './SecureStorage';
 import { BiometricAuth } from './BiometricAuth';
 

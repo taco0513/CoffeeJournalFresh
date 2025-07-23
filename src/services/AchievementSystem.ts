@@ -1,6 +1,9 @@
 import Realm from 'realm';
 import { generateUUID } from '../utils/uuid';
 import { supabase } from './supabase/client';
+import { LoggingService } from './LoggingService';
+
+const logger = LoggingService.getInstance();
 
 // =============================================
 // Types and Interfaces
@@ -388,7 +391,7 @@ export class AchievementSystem {
         });
       });
     } catch (error) {
-      console.error('Error initializing achievements:', error);
+      logger.error('Error initializing achievements', 'achievement', { error: error as Error });
       throw error;
     }
   }
@@ -437,7 +440,7 @@ export class AchievementSystem {
 
       return unlockedAchievements;
     } catch (error) {
-      console.error('Error checking achievements:', error);
+      logger.error('Error checking achievements', 'achievement', { error: error as Error });
       throw error;
     }
   }
@@ -529,7 +532,7 @@ export class AchievementSystem {
         lastUpdated: new Date(),
       };
     } catch (error) {
-      console.error('Error calculating progress:', error);
+      logger.error('Error calculating progress', 'achievement', { error: error as Error });
       throw error;
     }
   }
@@ -578,7 +581,7 @@ export class AchievementSystem {
         return b.progress - a.progress;
       });
     } catch (error) {
-      console.error('Error getting user achievements:', error);
+      logger.error('Error getting user achievements', 'achievement', { error: error as Error });
       throw error;
     }
   }
@@ -665,7 +668,7 @@ export class AchievementSystem {
         categoryBreakdown,
       };
     } catch (error) {
-      console.error('Error getting achievement stats:', error);
+      logger.error('Error getting achievement stats', 'achievement', { error: error as Error });
       throw error;
     }
   }
@@ -1109,7 +1112,7 @@ export class AchievementSystem {
         }
       }
     } catch (error) {
-      console.error('Error syncing achievements:', error);
+      logger.error('Error syncing achievements', 'achievement', { error: error as Error });
       throw error;
     }
   }

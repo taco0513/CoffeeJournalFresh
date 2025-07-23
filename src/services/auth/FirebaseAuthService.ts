@@ -1,6 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { supabase } from '../supabase/supabase';
+import { supabase } from '../supabase/client';
 import { GoogleAuthConfig, isGoogleSignInConfigured } from '@/config/googleAuth';
 
 export interface FirebaseAuthResult {

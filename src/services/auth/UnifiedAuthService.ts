@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import appleAuth from '@invertase/react-native-apple-authentication';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import { supabase } from '../supabase/supabase';
+import { supabase } from '../supabase/client';
 import { GoogleAuthConfig, isGoogleSignInConfigured } from '@/config/googleAuth';
 import { SecureStorage } from './SecureStorage';
 import { BiometricAuth } from './BiometricAuth';

@@ -41,7 +41,7 @@ export default function UnifiedFlavorScreen() {
     toggleCategory,
     toggleSubcategory,
     toggleAllCategories,
-  } = useFlavorSelection(selectedPaths, updateField);
+  } = useFlavorSelection(selectedPaths, updateField as (field: string, value: any) => void);
 
   const handleNext = () => {
     navigation.navigate('Sensory' as never);

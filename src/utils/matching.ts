@@ -33,7 +33,7 @@ const getFlavorVariations = (flavor: string): string[] => {
   variations.add(flavor.toLowerCase());
   
   // Add Korean translation if exists
-  const koreanTerm = flavorWheelKorean.translations[flavor];
+  const koreanTerm = flavorWheelKorean.translations[flavor as keyof typeof flavorWheelKorean.translations];
   if (koreanTerm) {
     variations.add(koreanTerm.toLowerCase());
   }
@@ -42,7 +42,7 @@ const getFlavorVariations = (flavor: string): string[] => {
   Object.entries(flavorWheel).forEach(([parent, children]) => {
     if (Array.isArray(children) && children.includes(flavor)) {
       variations.add(parent.toLowerCase());
-      const parentKorean = flavorWheelKorean.level1[parent];
+      const parentKorean = flavorWheelKorean.level1[parent as keyof typeof flavorWheelKorean.level1];
       if (parentKorean) {
         variations.add(parentKorean.toLowerCase());
       }
@@ -54,7 +54,7 @@ const getFlavorVariations = (flavor: string): string[] => {
   if (Array.isArray(children)) {
     children.forEach(child => {
       variations.add(child.toLowerCase());
-      const childKorean = flavorWheelKorean.translations[child];
+      const childKorean = flavorWheelKorean.translations[child as keyof typeof flavorWheelKorean.translations];
       if (childKorean) {
         variations.add(childKorean.toLowerCase());
       }
@@ -246,7 +246,7 @@ const calculateSensoryMatch = (
   }
 
   // Mouthfeel check
-  const mouthfeelKeywords = sensoryKeywords.mouthfeel[sensoryAttributes.mouthfeel];
+  const mouthfeelKeywords = sensoryKeywords.mouthfeel[sensoryAttributes.mouthfeel as keyof typeof sensoryKeywords.mouthfeel];
   if (mouthfeelKeywords) {
     const hasKeyword = mouthfeelKeywords.some((keyword: string) => 
       roasterNotesLower.includes(keyword.toLowerCase())

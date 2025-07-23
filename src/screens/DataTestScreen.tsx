@@ -47,7 +47,8 @@ export default function DataTestScreen({ navigation }: any) {
 
   const handleDeleteTasting = async (tastingId: string) => {
     try {
-      const success = await RealmService.deleteTasting(tastingId);
+      await RealmService.deleteTasting(tastingId);
+      const success = true;
       if (success) {
         Alert.alert('Success', 'Tasting deleted');
         loadData(); // Reload data

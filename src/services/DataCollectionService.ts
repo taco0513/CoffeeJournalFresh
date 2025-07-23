@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase } from './supabase/client';
 import RealmService from './realm/RealmService';
 import { ITastingRecord } from './realm/schemas';
 

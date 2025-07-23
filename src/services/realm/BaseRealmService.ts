@@ -34,7 +34,7 @@ export class BaseRealmService {
         schema: schemas,
         schemaVersion: 2,
         deleteRealmIfMigrationNeeded: __DEV__,
-        migration: (oldRealm, newRealm) => {
+        migration: (oldRealm: Realm, newRealm: Realm) => {
           if (oldRealm.schemaVersion < 2) {
             const oldTastings = oldRealm.objects('TastingRecord');
             const newTastings = newRealm.objects('TastingRecord');

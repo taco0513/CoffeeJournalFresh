@@ -1,4 +1,4 @@
-import { supabase } from '@/services/supabase/supabase';
+import { supabase } from '../supabase/client';
 
 export enum Permission {
   // Profile permissions
@@ -35,6 +35,12 @@ export enum Permission {
   BETA_FEATURES = 'beta:features',
   DEVELOPER_MODE = 'developer:mode',
   EXPORT_DATA = 'export:data',
+  
+  // Enhanced permissions for coffee discovery
+  LOCATION_ACCESS = 'location:access',
+  PHOTO_SAVE = 'photo:save',
+  NOTIFICATIONS = 'notifications:receive',
+  SOCIAL_SHARING = 'social:sharing',
 }
 
 export interface UserRole {
@@ -292,6 +298,10 @@ export class PermissionService {
         Permission.BETA_FEATURES,
         Permission.DEVELOPER_MODE,
         Permission.EXPORT_DATA,
+        Permission.LOCATION_ACCESS,
+        Permission.PHOTO_SAVE,
+        Permission.NOTIFICATIONS,
+        Permission.SOCIAL_SHARING,
       ],
       moderator: [
         Permission.READ_PROFILE,
@@ -320,6 +330,10 @@ export class PermissionService {
         Permission.WRITE_COMMUNITY,
         Permission.BETA_FEATURES,
         Permission.EXPORT_DATA,
+        Permission.LOCATION_ACCESS,
+        Permission.PHOTO_SAVE,
+        Permission.NOTIFICATIONS,
+        Permission.SOCIAL_SHARING,
       ],
       user: [
         Permission.READ_PROFILE,
@@ -329,6 +343,10 @@ export class PermissionService {
         Permission.DELETE_TASTINGS,
         Permission.READ_COFFEE_CATALOG,
         Permission.READ_COMMUNITY,
+        Permission.LOCATION_ACCESS,
+        Permission.PHOTO_SAVE,
+        Permission.NOTIFICATIONS,
+        Permission.SOCIAL_SHARING,
       ],
     };
 

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { LayoutAnimation } from 'react-native';
-import { FlavorPath } from '../stores/tastingStore';
+import { FlavorPath } from '../types/tasting';
 import { transformFlavorData } from '../components/flavor/utils/flavorDataTransform';
 
 const flavorData = transformFlavorData();

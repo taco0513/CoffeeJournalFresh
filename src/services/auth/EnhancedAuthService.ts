@@ -1,4 +1,4 @@
-import { supabase } from '@/services/supabase/supabase';
+import { supabase } from '../supabase/client';
 import { GoogleAuthService } from '@/services/supabase/googleAuth';
 import { AppleAuthService } from '@/services/supabase/appleAuth';
 

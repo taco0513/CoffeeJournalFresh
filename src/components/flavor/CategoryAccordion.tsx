@@ -6,7 +6,7 @@ import {
   ScrollView,
   LayoutAnimation,
 } from 'react-native';
-import { FlavorPath } from '../../stores/tastingStore';
+import { FlavorPath } from '../../types/tasting';
 import { categoryAccordionStyles as styles } from './styles/categoryAccordionStyles';
 import { CATEGORY_COLORS } from './constants';
 import { transformFlavorData } from './utils/flavorDataTransform';
@@ -173,8 +173,8 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
           {(() => {
             const expandedSubs = filteredSubCategories.filter(sub => expandedSubCategories.has(`${category}-${sub.name}`));
             
-            const subsWithFlavors = [];
-            const subsWithoutFlavors = [];
+            const subsWithFlavors: Array<{sub: any, filteredFlavors: any[]}> = [];
+            const subsWithoutFlavors: any[] = [];
             
             expandedSubs.forEach(sub => {
               const filteredFlavors = sub.flavors.filter(f =>
@@ -197,7 +197,7 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
                   <View key={sub.name} style={styles.flavorGrid}>
                     <Text style={styles.subcategoryLabel}>{sub.koreanName} 세부 향미:</Text>
                     <View style={styles.flavorRow}>
-                      {filteredFlavors.map(flavor => {
+                      {filteredFlavors.map((flavor: any) => {
                         const isSelected = isFlavorSelected(category, sub.name, flavor.name);
                         const isDisabled = !isSelected && selectedPaths.length >= 5;
                         return (

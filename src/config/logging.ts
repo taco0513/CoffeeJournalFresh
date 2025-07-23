@@ -114,7 +114,7 @@ export const redactSensitiveData = <T>(data: T): T => {
   }
   
   if (Array.isArray(data)) {
-    return data.map(redactSensitiveData);
+    return data.map(redactSensitiveData) as T;
   }
   
   const redacted: Record<string, unknown> = {};

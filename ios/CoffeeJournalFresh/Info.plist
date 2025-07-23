@@ -50,12 +50,24 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app can add coffee tasting events to your calendar.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to camera to take photos of coffee bags and labels.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app can access your contacts to share coffee discoveries with friends.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app uses your location to discover nearby coffee shops and roasteries.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>This app uses your location to discover nearby coffee shops and roasteries.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app saves coffee photos to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to photo library to select coffee photos.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>This app can create reminders for coffee tastings and purchases.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>This app sends you notifications about new coffee discoveries and tasting reminders.</string>
 	<key>RCTNewArchEnabled</key>
 	<false/>
 	<key>UILaunchStoryboardName</key>

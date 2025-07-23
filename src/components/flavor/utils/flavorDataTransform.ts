@@ -25,13 +25,13 @@ export const transformFlavorData = (): CategoryData[] => {
   const { level1, level2, level3, translations } = flavorWheelKorean;
   
   for (const [category, koreanName] of Object.entries(level1)) {
-    const subcategories = level2[category] || [];
-    const subcategoryData = subcategories.map(subcat => {
-      const flavors = level3[subcat] || [];
+    const subcategories = level2[category as keyof typeof level2] || [];
+    const subcategoryData = subcategories.map((subcat: string) => {
+      const flavors = level3[subcat as keyof typeof level3] || [];
       return {
         name: subcat,
-        koreanName: translations[subcat] || subcat,
-        flavors: flavors.map(flavor => ({
+        koreanName: translations[subcat as keyof typeof translations] || subcat,
+        flavors: flavors.map((flavor: string) => ({
           name: flavor,
           koreanName: flavor, // Korean flavors are already in Korean
         })),

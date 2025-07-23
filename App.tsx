@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 // import './src/utils/i18n'; // Moved to feature backlog
-import { StyleSheet, AppState } from 'react-native';
+import { AppState } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { SentryService } from './src/services/SentryService';
@@ -59,11 +59,5 @@ function App(): React.JSX.Element {
     </ErrorBoundary>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;

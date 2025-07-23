@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { FlavorPath } from '../../stores/tastingStore';
+import { FlavorPath } from '../../types/tasting';
 import { selectedFlavorsHeaderStyles as styles } from './styles/selectedFlavorsHeaderStyles';
 import { transformFlavorData } from './utils/flavorDataTransform';
 
@@ -52,11 +52,11 @@ export const SelectedFlavorsHeader: React.FC<SelectedFlavorsHeaderProps> = React
             let isSubcategorySelection = false;
             
             if (!path.level3) {
-              displayName = subcategoryData?.koreanName || path.level2;
+              displayName = subcategoryData?.koreanName || path.level2 || '';
               isSubcategorySelection = true;
             } else {
               const flavorItem = subcategoryData?.flavors.find(f => f.name === path.level3);
-              displayName = flavorItem?.koreanName || path.level3;
+              displayName = flavorItem?.koreanName || path.level3 || '';
             }
             
             return (

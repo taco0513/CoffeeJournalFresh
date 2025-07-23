@@ -155,7 +155,7 @@ export default function SearchScreen() {
   const renderTastingItem = ({ item }: { item: ITastingRecord }) => (
     <TouchableOpacity
       style={styles.tastingCard}
-      onPress={() => navigation.navigate('TastingDetail' as never, { tastingId: item.id } as never)}
+      onPress={() => navigation.navigate('TastingDetail', { tastingId: item.id })}
     >
       <View style={styles.cardHeader}>
         <View style={styles.cardTitleContainer}>

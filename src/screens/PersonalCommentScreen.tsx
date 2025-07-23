@@ -73,11 +73,11 @@ const PersonalCommentScreen = () => {
           selections.flavors.push(flavorPath.level3);
         } else if (flavorPath.level2) {
           // Level 2는 translations에서 한글 가져오기
-          const koreanName2 = translations[flavorPath.level2] || flavorPath.level2;
+          const koreanName2 = translations[flavorPath.level2 as keyof typeof translations] || flavorPath.level2;
           selections.flavors.push(koreanName2);
         } else if (flavorPath.level1) {
           // Level 1은 flavorWheelKorean.level1에서 한글 가져오기
-          const koreanName1 = flavorWheelKorean.level1[flavorPath.level1] || flavorPath.level1;
+          const koreanName1 = flavorWheelKorean.level1[flavorPath.level1 as keyof typeof flavorWheelKorean.level1] || flavorPath.level1;
           selections.flavors.push(koreanName1);
         }
       });

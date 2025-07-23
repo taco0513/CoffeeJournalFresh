@@ -1,5 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TastingData } from '../types';
+import { LoggingService } from './LoggingService';
+
+const logger = LoggingService.getInstance();
 
 const STORAGE_KEYS = {
   TASTINGS: '@coffee_journal_tastings',
@@ -15,7 +18,7 @@ export class StorageService {
       const updatedData = [...existingData, tasting];
       await AsyncStorage.setItem(STORAGE_KEYS.TASTINGS, JSON.stringify(updatedData));
     } catch (error) {
-      // console.error('Error saving tasting:', error);
+      logger.error('Error saving tasting', 'storage', { error: error as Error });
       throw error;
     }
   }
@@ -26,7 +29,7 @@ export class StorageService {
       const data = await AsyncStorage.getItem(STORAGE_KEYS.TASTINGS);
       return data ? JSON.parse(data) : [];
     } catch (error) {
-      // console.error('Error getting tastings:', error);
+      logger.error('Error getting tastings', 'storage', { error: error as Error });
       return [];
     }
   }
@@ -39,7 +42,7 @@ export class StorageService {
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, limit);
     } catch (error) {
-      // console.error('Error getting recent tastings:', error);
+      logger.error('Error getting recent tastings', 'storage', { error: error as Error });
       return [];
     }
   }
@@ -51,7 +54,7 @@ export class StorageService {
       const updatedTastings = tastings.filter(t => t.id !== id);
       await AsyncStorage.setItem(STORAGE_KEYS.TASTINGS, JSON.stringify(updatedTastings));
     } catch (error) {
-      // console.error('Error deleting tasting:', error);
+      logger.error('Error deleting tasting', 'storage', { error: error as Error });
       throw error;
     }
   }
@@ -66,7 +69,7 @@ export class StorageService {
         await AsyncStorage.setItem(STORAGE_KEYS.TASTINGS, JSON.stringify(tastings));
       }
     } catch (error) {
-      // console.error('Error updating tasting:', error);
+      logger.error('Error updating tasting', 'storage', { error: error as Error });
       throw error;
     }
   }
@@ -76,7 +79,7 @@ export class StorageService {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.CURRENT_TASTING, JSON.stringify(data));
     } catch (error) {
-      // console.error('Error saving current tasting:', error);
+      logger.error('Error saving current tasting', 'storage', { error: error as Error });
       throw error;
     }
   }
@@ -87,7 +90,7 @@ export class StorageService {
       const data = await AsyncStorage.getItem(STORAGE_KEYS.CURRENT_TASTING);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      // console.error('Error getting current tasting:', error);
+      logger.error('Error getting current tasting', 'storage', { error: error as Error });
       return null;
     }
   }
@@ -97,7 +100,7 @@ export class StorageService {
     try {
       await AsyncStorage.removeItem(STORAGE_KEYS.CURRENT_TASTING);
     } catch (error) {
-      // console.error('Error clearing current tasting:', error);
+      logger.error('Error clearing current tasting', 'storage', { error: error as Error });
       throw error;
     }
   }
@@ -108,7 +111,7 @@ export class StorageService {
       const tastings = await this.getTastings();
       return JSON.stringify({ tastings, exportDate: new Date().toISOString() }, null, 2);
     } catch (error) {
-      // console.error('Error exporting data:', error);
+      logger.error('Error exporting data', 'storage', { error: error as Error });
       throw error;
     }
   }
@@ -121,7 +124,7 @@ export class StorageService {
         await AsyncStorage.setItem(STORAGE_KEYS.TASTINGS, JSON.stringify(tastings));
       }
     } catch (error) {
-      // console.error('Error importing data:', error);
+      logger.error('Error importing data', 'storage', { error: error as Error });
       throw error;
     }
   }
@@ -131,7 +134,7 @@ export class StorageService {
     try {
       await AsyncStorage.multiRemove(Object.values(STORAGE_KEYS));
     } catch (error) {
-      // console.error('Error clearing all data:', error);
+      logger.error('Error clearing all data', 'storage', { error: error as Error });
       throw error;
     }
   }
@@ -149,7 +152,7 @@ export class StorageService {
         storageSize: `${sizeInKB} KB`
       };
     } catch (error) {
-      // console.error('Error getting storage info:', error);
+      logger.error('Error getting storage info', 'storage', { error: error as Error });
       return { totalRecords: 0, storageSize: '0 KB' };
     }
   }

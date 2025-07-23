@@ -74,7 +74,8 @@ export default function PersonalTasteDashboard() {
   };
 
   const handleFlavorCategorySelect = (category: string) => {
-    navigation.navigate('FlavorCategoryDetail', { category });
+    // TODO: FlavorCategoryDetail screen needs to be implemented
+    // navigation.navigate('FlavorCategoryDetail', { category });
   };
 
   const handleViewAchievements = () => {
