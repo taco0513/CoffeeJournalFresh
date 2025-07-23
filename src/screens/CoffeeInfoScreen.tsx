@@ -16,7 +16,6 @@ import {useTastingStore} from '../stores/tastingStore';
 import { useDevStore } from '../stores/useDevStore';
 import { AutocompleteInput } from '../components/common';
 import RealmService from '../services/realm/RealmService';
-// import { parseCoffeeName } from '../utils/coffeeParser'; // Moved to feature_backlog
 import { NavigationButton } from '../components/common';
 import { HIGConstants, HIGColors } from '../styles/common';
 import { searchRoasters, searchCoffees } from '../services/supabase/coffeeSearch';
@@ -97,148 +96,13 @@ const CoffeeInfoScreen = () => {
   const roastLevelOptions = ['Light', 'Medium', 'Dark'];
 
 
-  // 카페 입력 변경 시 제안 목록 업데이트 - TEMPORARILY DISABLED
-  // useEffect(() => {
-  //   if (currentTasting.cafeName && currentTasting.cafeName.trim().length > 0) {
-  //     const suggestions = realmService.getCafeSuggestions(currentTasting.cafeName);
-  //     setCafeSuggestions(suggestions.map(cafe => cafe.name));
-  //   } else {
-  //     setCafeSuggestions([]);
-  //   }
-  // }, [currentTasting.cafeName]);
   
-  // 로스터 입력 변경 시 제안 목록 업데이트 (카페 기반 + Supabase) - TEMPORARILY DISABLED
-  /* useEffect(() => {
-    const fetchRoasterSuggestions = async () => {
-      const localSuggestions = [];
-      
-      if (currentTasting.cafeName) {
-        // If cafe is selected, show roasters from that cafe
-        const suggestions = realmService.getCafeRoasters(
-          currentTasting.cafeName,
-          currentTasting.roastery
-        );
-        localSuggestions.push(...suggestions);
-      } else if (currentTasting.roastery && currentTasting.roastery.trim().length > 0) {
-        // If no cafe selected, show all roaster suggestions
-        const suggestions = realmService.getRoasterSuggestions(currentTasting.roastery);
-        localSuggestions.push(...suggestions.map(roaster => roaster.name));
-      }
-      
-      // Fetch from Supabase if query is long enough
-      if (currentTasting.roastery && currentTasting.roastery.trim().length >= 1) {
-        const supabaseRoasters = await searchRoasters(currentTasting.roastery);
-        const supabaseNames = supabaseRoasters.map(r => r.name);
-        
-        // Combine local and Supabase suggestions, removing duplicates
-        const combined = [...new Set([...localSuggestions, ...supabaseNames])];
-        setRoasterSuggestions(combined.slice(0, 10));
-      } else {
-        setRoasterSuggestions(localSuggestions);
-      }
-    };
-    
-    fetchRoasterSuggestions();
-  }, [currentTasting.roastery, currentTasting.cafeName]); */
 
   
-  // 커피 이름 입력 변경 시 제안 목록 업데이트 (로스터리 기반 + Supabase) - TEMPORARILY DISABLED
-  /* useEffect(() => {
-    const fetchCoffeeSuggestions = async () => {
-      const localSuggestions = [];
-      
-      if (currentTasting.roastery) {
-        // If roastery is selected, show only coffees from that roastery
-        const suggestions = realmService.getRoasterCoffees(
-          currentTasting.roastery, 
-          currentTasting.coffeeName || ''
-        );
-        localSuggestions.push(...suggestions);
-        
-        // Fetch from Supabase
-        if (currentTasting.coffeeName && currentTasting.coffeeName.trim().length >= 1) {
-          const supabaseCoffees = await searchCoffees(currentTasting.roastery, currentTasting.coffeeName);
-          const supabaseNames = supabaseCoffees.map(c => c.coffee_name);
-          
-          // Combine local and Supabase suggestions, removing duplicates
-          const combined = [...new Set([...localSuggestions, ...supabaseNames])];
-          
-          // Add "Add new coffee" option at the end if roastery is selected
-          if (combined.length === 0 || !combined.some(name => 
-            name.toLowerCase() === currentTasting.coffeeName.toLowerCase()
-          )) {
-            combined.push(`+ "${currentTasting.coffeeName}" 새 커피 등록`);
-          }
-          
-          setCoffeeNameSuggestions(combined.slice(0, 11));
-        } else {
-          setCoffeeNameSuggestions(localSuggestions);
-        }
-      } else if (currentTasting.coffeeName && currentTasting.coffeeName.trim().length > 0) {
-        // If no roastery selected, show all coffee suggestions
-        const suggestions = realmService.getCoffeeNameSuggestions(currentTasting.coffeeName);
-        setCoffeeNameSuggestions(suggestions);
-      } else {
-        setCoffeeNameSuggestions([]);
-      }
-    };
-    
-    fetchCoffeeSuggestions();
-  }, [currentTasting.coffeeName, currentTasting.roastery]); */
   
-  // 생산지 입력 변경 시 제안 목록 업데이트 - TEMPORARILY DISABLED
-  /* useEffect(() => {
-    if (currentTasting.origin && currentTasting.origin.trim().length > 0) {
-      const suggestions = realmService.getOriginSuggestions(currentTasting.origin);
-      setOriginSuggestions(suggestions);
-    } else {
-      setOriginSuggestions([]);
-    }
-  }, [currentTasting.origin]); */
   
-  // 품종 입력 변경 시 제안 목록 업데이트 - TEMPORARILY DISABLED
-  /* useEffect(() => {
-    if (currentTasting.variety && currentTasting.variety.trim().length > 0) {
-      const suggestions = realmService.getVarietySuggestions(currentTasting.variety);
-      setVarietySuggestions(suggestions);
-    } else {
-      setVarietySuggestions([]);
-    }
-  }, [currentTasting.variety]); */
   
-  // 가공 방식 입력 변경 시 제안 목록 업데이트 - TEMPORARILY DISABLED
-  /* useEffect(() => {
-    if (currentTasting.process && currentTasting.process.trim().length > 0) {
-      const localSuggestions = realmService.getProcessSuggestions(currentTasting.process);
-      const combinedSuggestions = [
-        ...new Set([...localSuggestions, ...defaultProcessOptions.filter(option => 
-          option.toLowerCase().includes(currentTasting.process.toLowerCase())
-        )])
-      ];
-      setProcessSuggestions(combinedSuggestions);
-    } else {
-      setProcessSuggestions(defaultProcessOptions);
-    }
-  }, [currentTasting.process]); */
   
-  // 컴포넌트 마운트 시 스마트 기본값 제공 - TEMPORARILY DISABLED
-  /* useEffect(() => {
-    if (currentTasting.coffeeName && !currentTasting.origin && !currentTasting.variety) {
-      // const parsed = parseCoffeeName(currentTasting.coffeeName); // Moved to feature_backlog
-      const parsed = { origin: null, variety: null, process: null }; // MVP placeholder
-      
-      // Batch update to prevent multiple re-renders
-      const updates: any = {};
-      if (parsed.origin && !currentTasting.origin) updates.origin = parsed.origin;
-      if (parsed.variety && !currentTasting.variety) updates.variety = parsed.variety;
-      if (parsed.process && !currentTasting.process) updates.process = parsed.process;
-      
-      // Update all fields at once
-      Object.keys(updates).forEach(key => {
-        updateField(key, updates[key]);
-      });
-    }
-  }, []); */ // Only run on mount
   
   // 필수 필드가 채워졌는지 확인 (커피명, 로스터리, 카페이름, 온도)
   const isValid = currentTasting.coffeeName && currentTasting.coffeeName.trim().length > 0 &&
@@ -248,11 +112,9 @@ const CoffeeInfoScreen = () => {
 
   // Parse coffee name and auto-fill fields
   const handleCoffeeNameParse = (coffeeName: string) => {
-    // const parsed = parseCoffeeName(coffeeName); // Moved to feature_backlog
-    const parsed = { origin: null, variety: null, process: null }; // MVP placeholder
+    const parsed = { origin: null, variety: null, process: null };
     
-    // Only update fields that are currently empty
-    const updates: any = { coffeeName };
+    const updates: Record<string, string> = { coffeeName };
     
     if (parsed.origin && !currentTasting.origin) {
       updates.origin = parsed.origin;

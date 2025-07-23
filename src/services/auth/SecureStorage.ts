@@ -1,6 +1,7 @@
 import * as Keychain from 'react-native-keychain';
 import { Platform } from 'react-native';
 import CryptoJS from 'crypto-js';
+import DeviceInfo from 'react-native-device-info';
 
 export interface SecureStorageOptions {
   service?: string;
@@ -23,7 +24,8 @@ export interface StorageResult {
  */
 export class SecureStorage {
   private static readonly DEFAULT_SERVICE = 'CoffeeJournalFresh';
-  private static readonly ENCRYPTION_KEY = 'CJF_2024_SecureKey';
+  private static readonly ENCRYPTION_KEY_ID = 'CJF_DEVICE_KEY';
+  private static encryptionKey: string | null = null;
   private static isInitialized = false;
 
   /**
@@ -33,6 +35,9 @@ export class SecureStorage {
     try {
       if (this.isInitialized) return;
 
+      // Generate or retrieve device-specific encryption key
+      await this.initializeEncryptionKey();
+      
       // Test keychain access
       await this.testKeychainAccess();
       
@@ -332,6 +337,68 @@ export class SecureStorage {
   }
 
   /**
+   * Initialize device-specific encryption key
+   */
+  private static async initializeEncryptionKey(): Promise<void> {
+    try {
+      // Try to retrieve existing device key
+      const keychainOptions: Keychain.Options = {
+        service: this.DEFAULT_SERVICE,
+        accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+      };
+
+      const credentials = await Keychain.getInternetCredentials(
+        this.ENCRYPTION_KEY_ID, 
+        keychainOptions
+      );
+
+      if (credentials) {
+        this.encryptionKey = credentials.password;
+      } else {
+        // Generate new device-specific key
+        const deviceId = await DeviceInfo.getUniqueId();
+        const timestamp = Date.now().toString();
+        const randomBytes = this.generateRandomBytes(32);
+        
+        // Create composite key from multiple sources
+        const compositeKey = CryptoJS.SHA256(
+          `${deviceId}-${timestamp}-${randomBytes}`
+        ).toString();
+        
+        // Store the key securely
+        await Keychain.setInternetCredentials(
+          this.ENCRYPTION_KEY_ID,
+          this.ENCRYPTION_KEY_ID,
+          compositeKey,
+          keychainOptions
+        );
+        
+        this.encryptionKey = compositeKey;
+      }
+    } catch (error) {
+      console.error('Failed to initialize encryption key:', error);
+      // Fallback to a session-based key if keychain fails
+      const deviceId = await DeviceInfo.getUniqueId();
+      const sessionKey = CryptoJS.SHA256(
+        `${deviceId}-${Date.now()}-session`
+      ).toString();
+      this.encryptionKey = sessionKey;
+    }
+  }
+
+  /**
+   * Generate cryptographically secure random bytes
+   */
+  private static generateRandomBytes(length: number): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  /**
    * Test keychain access
    */
   private static async testKeychainAccess(): Promise<void> {
@@ -405,7 +472,10 @@ export class SecureStorage {
    */
   private static encrypt(data: string): string {
     try {
-      return CryptoJS.AES.encrypt(data, this.ENCRYPTION_KEY).toString();
+      if (!this.encryptionKey) {
+        throw new Error('Encryption key not initialized');
+      }
+      return CryptoJS.AES.encrypt(data, this.encryptionKey).toString();
     } catch (error) {
       console.error('Encryption failed:', error);
       // Return original data if encryption fails (fallback)
@@ -418,7 +488,10 @@ export class SecureStorage {
    */
   private static decrypt(encryptedData: string): string {
     try {
-      const bytes = CryptoJS.AES.decrypt(encryptedData, this.ENCRYPTION_KEY);
+      if (!this.encryptionKey) {
+        throw new Error('Encryption key not initialized');
+      }
+      const bytes = CryptoJS.AES.decrypt(encryptedData, this.encryptionKey);
       const decrypted = bytes.toString(CryptoJS.enc.Utf8);
       
       // If decryption fails, it might be unencrypted data (backward compatibility)

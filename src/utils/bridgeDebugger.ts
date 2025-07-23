@@ -6,13 +6,20 @@
 interface BridgeCall {
   moduleId: number;
   methodId: number;
-  params: any[];
+  params: unknown[];
   timestamp: number;
+}
+
+interface NativeBridge {
+  enqueueNativeCall: (moduleID: number, methodID: number, params: unknown[], onFail?: Function, onSucc?: Function) => void;
+  getCallableModule: (name: string) => { [key: string]: number } | null;
+  _remoteModuleTable: { [key: string]: { moduleID: number; methods: { [key: string]: number } } };
+  _remoteMethodTable: { [key: string]: string[] };
 }
 
 class BridgeDebugger {
   private calls: BridgeCall[] = [];
-  private originalBridge: any = null;
+  private originalBridge: NativeBridge | null = null;
   private maxCalls = 50; // Keep last 50 calls for debugging
 
   init() {
@@ -32,7 +39,7 @@ class BridgeDebugger {
 
     const originalEnqueueNativeCall = this.originalBridge.enqueueNativeCall;
     
-    this.originalBridge.enqueueNativeCall = (moduleID: number, methodID: number, params: any[], onFail?: Function, onSucc?: Function) => {
+    this.originalBridge.enqueueNativeCall = (moduleID: number, methodID: number, params: unknown[], onFail?: Function, onSucc?: Function) => {
       // Log the call
       this.logCall(moduleID, methodID, params);
       

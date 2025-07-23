@@ -76,7 +76,6 @@ class AuthService {
         email: data.user.email,
       };
     } catch (error: any) {
-      // console.error('Sign up error:', error);
       if (error.message?.includes('fetch')) {
         error.code = 'NETWORK_ERROR';
       }
@@ -120,7 +119,6 @@ class AuthService {
         email: data.user.email,
       };
     } catch (error) {
-      // console.error('Sign in error:', error);
       throw error;
     }
   }
@@ -136,7 +134,6 @@ class AuthService {
       // Clear auth state
       await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
     } catch (error) {
-      // console.error('Sign out error:', error);
       throw error;
     }
   }
@@ -155,7 +152,6 @@ class AuthService {
         email: user.email || undefined,
       };
     } catch (error) {
-      // console.error('Get current user error:', error);
       return null;
     }
   }
@@ -185,7 +181,6 @@ class AuthService {
       
       return user;
     } catch (error) {
-      // console.error('Restore session error:', error);
       return null;
     }
   }
@@ -219,7 +214,6 @@ class AuthService {
       
       if (error) throw error;
     } catch (error) {
-      // console.error('Reset password error:', error);
       throw error;
     }
   }
@@ -235,7 +229,6 @@ class AuthService {
       
       if (error) throw error;
     } catch (error) {
-      // console.error('Update password error:', error);
       throw error;
     }
   }
@@ -244,7 +237,6 @@ class AuthService {
     try {
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, userId);
     } catch (error) {
-      // console.error('Save auth state error:', error);
     }
   }
 }

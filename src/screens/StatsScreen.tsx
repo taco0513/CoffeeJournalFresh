@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import RealmService from '../services/realm/RealmService';
+import { TastingService } from '../services/realm/TastingService';
 import { ITastingRecord } from '../services/realm/schemas';
 import { HIGConstants, HIGColors } from '../styles/common';
 import {
@@ -109,9 +109,10 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
     // Load insights normally
     
     // 실제 데이터 분석
-    const realmService = RealmService.getInstance();
-    const allTastings = await realmService.getTastingRecords({ 
-      isDeleted: false
+    const tastingService = TastingService.getInstance();
+    const allTastings = await tastingService.getTastingRecords({ 
+      isDeleted: false,
+      limit: 1000
     });
     
     // 최근 30일 데이터로 필터링
@@ -219,8 +220,11 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
     try {
       // Load trends normally
       
-      const realmService = RealmService.getInstance();
-      const tastings = await realmService.getTastingRecords({ isDeleted: false });
+      const tastingService = TastingService.getInstance();
+      const tastings = await tastingService.getTastingRecords({ 
+        isDeleted: false,
+        limit: 1000
+      });
       
       // Group by month for the last 6 months
       const monthData = new Map<string, { count: number; totalScore: number }>();

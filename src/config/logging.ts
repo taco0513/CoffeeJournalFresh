@@ -108,7 +108,7 @@ export const SENSITIVE_PATTERNS = [
 ] as const;
 
 // Helper to redact sensitive information
-export const redactSensitiveData = (data: any): any => {
+export const redactSensitiveData = <T>(data: T): T => {
   if (typeof data !== 'object' || data === null) {
     return data;
   }
@@ -117,7 +117,7 @@ export const redactSensitiveData = (data: any): any => {
     return data.map(redactSensitiveData);
   }
   
-  const redacted: any = {};
+  const redacted: Record<string, unknown> = {};
   
   for (const [key, value] of Object.entries(data)) {
     const isSensitive = SENSITIVE_PATTERNS.some(pattern => pattern.test(key));
@@ -131,5 +131,5 @@ export const redactSensitiveData = (data: any): any => {
     }
   }
   
-  return redacted;
+  return redacted as T;
 };

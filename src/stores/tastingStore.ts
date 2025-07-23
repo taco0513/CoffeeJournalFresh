@@ -7,17 +7,19 @@ import {
   SyncStatus, 
   SelectedFlavors, 
   SensoryAttributes, 
-  SelectedSensoryExpression 
+  SelectedSensoryExpression,
+  CurrentTasting,
+  Achievement
 } from '../types/tasting';
 
 interface TastingState {
-  currentTasting: any;
+  currentTasting: CurrentTasting;
   selectedFlavors: FlavorPath[];
   selectedSensoryExpressions: SelectedSensoryExpression[];
   matchScoreTotal: number | null;
   syncStatus: SyncStatus;
   
-  updateField: (field: string, value: any) => void;
+  updateField: <K extends keyof CurrentTasting>(field: K, value: CurrentTasting[K]) => void;
   setSelectedFlavors: (flavors: FlavorPath[]) => void;
   setSelectedSensoryExpressions: (expressions: SelectedSensoryExpression[]) => void;
   saveTasting: () => Promise<void>;
@@ -32,7 +34,7 @@ interface TastingState {
   hasDraft: () => Promise<boolean>;
   
   // Achievement functionality
-  checkAchievements: (userId: string) => Promise<any[]>;
+  checkAchievements: (userId: string) => Promise<Achievement[]>;
 }
 
 export const useTastingStore = create<TastingState>((set, get) => ({
@@ -74,33 +76,18 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         [field]: value,
       },
     }));
-    
-    // Auto-save after field update - TEMPORARILY DISABLED
-    // setTimeout(() => {
-    //   get().autoSave();
-    // }, 500); // Debounce auto-save by 500ms
   },
 
   setSelectedFlavors: (flavors) => {
     set(() => ({
       selectedFlavors: flavors,
     }));
-    
-    // Auto-save after flavor selection - TEMPORARILY DISABLED
-    // setTimeout(() => {
-    //   get().autoSave();
-    // }, 500);
   },
 
   setSelectedSensoryExpressions: (expressions) => {
     set(() => ({
       selectedSensoryExpressions: expressions,
     }));
-    
-    // Auto-save after sensory expression selection - TEMPORARILY DISABLED
-    // setTimeout(() => {
-    //   get().autoSave();
-    // }, 500);
   },
 
   saveTasting: async () => {
@@ -118,10 +105,6 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       mouthfeel: currentTasting.mouthfeel || 'Clean',
     };
 
-    // console.log('Saving tasting data:');
-    // console.log('- currentTasting:', currentTasting);
-    // console.log('- selectedFlavors:', selectedFlavors);
-    // console.log('- sensoryAttributes:', sensoryAttributes);
     try {
       const savedTasting = RealmService.getInstance().saveTasting({
         coffeeInfo: {
@@ -145,13 +128,11 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         },
       });
 
-      // console.log('Tasting saved successfully');
       // 저장 후 점수 계산
       state.calculateMatchScore();
       
       return savedTasting;
     } catch (error) {
-      // console.error('Error saving tasting:', error);
       throw error;
     }
   },

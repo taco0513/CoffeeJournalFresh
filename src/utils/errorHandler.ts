@@ -3,7 +3,7 @@ import { Alert, Platform } from 'react-native';
 export interface AppError {
   message: string;
   code?: string;
-  details?: any;
+  details?: unknown;
 }
 
 export const ErrorMessages = {
@@ -18,7 +18,7 @@ export const ErrorMessages = {
 };
 
 export class ErrorHandler {
-  static handle(error: any, context?: string): void {
+  static handle(error: unknown, context?: string): void {
     const errorMessage = this.getErrorMessage(error);
     
     // Log error for debugging (in production, send to error tracking service)
@@ -30,34 +30,35 @@ export class ErrorHandler {
     this.showErrorAlert(errorMessage, context);
   }
   
-  static getErrorMessage(error: any): string {
+  static getErrorMessage(error: unknown): string {
+    const err = error as Error & { code?: string; source?: string };
     // Network errors
-    if (error?.message?.includes('Network') || error?.code === 'NETWORK_ERROR') {
+    if (err?.message?.includes('Network') || err?.code === 'NETWORK_ERROR') {
       return ErrorMessages.NETWORK_ERROR;
     }
     
     // Supabase errors
-    if (error?.message?.includes('Supabase') || error?.source === 'supabase') {
+    if (err?.message?.includes('Supabase') || err?.source === 'supabase') {
       return ErrorMessages.SUPABASE_ERROR;
     }
     
     // Auth errors
-    if (error?.code === 'AUTH_ERROR' || error?.message?.includes('authentication')) {
+    if (err?.code === 'AUTH_ERROR' || err?.message?.includes('authentication')) {
       return ErrorMessages.AUTH_ERROR;
     }
     
     // Realm errors
-    if (error?.message?.includes('Realm') || error?.source === 'realm') {
+    if (err?.message?.includes('Realm') || err?.source === 'realm') {
       return ErrorMessages.REALM_ERROR;
     }
     
     // Permission errors
-    if (error?.code === 'PERMISSION_DENIED') {
+    if (err?.code === 'PERMISSION_DENIED') {
       return ErrorMessages.PERMISSION_ERROR;
     }
     
     // Default error message
-    return error?.message || ErrorMessages.UNKNOWN_ERROR;
+    return err?.message || ErrorMessages.UNKNOWN_ERROR;
   }
   
   static showErrorAlert(message: string, context?: string): void {
@@ -91,13 +92,15 @@ export class ErrorHandler {
 
 // Network status utility
 export const NetworkUtils = {
-  isNetworkError(error: any): boolean {
-    const errorMessage = error?.message?.toLowerCase() || '';
+  isNetworkError(error: unknown): boolean {
+    const err = error as Error;
+    const errorMessage = err?.message?.toLowerCase() || '';
+    const errorWithCode = error as { code?: string };
     return (
       errorMessage.includes('network') ||
       errorMessage.includes('fetch') ||
-      error?.code === 'NETWORK_ERROR' ||
-      error?.code === 'ECONNABORTED'
+      errorWithCode?.code === 'NETWORK_ERROR' ||
+      errorWithCode?.code === 'ECONNABORTED'
     );
   },
   
@@ -106,7 +109,7 @@ export const NetworkUtils = {
     retries: number = 3,
     delay: number = 1000
   ): Promise<T> {
-    let lastError: any;
+    let lastError: unknown;
     
     for (let i = 0; i < retries; i++) {
       try {

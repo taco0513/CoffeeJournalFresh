@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import RealmService from '../services/realm/RealmService';
+import { TastingService } from '../services/realm/TastingService';
 import PhotoService from '../services/PhotoService';
 import { HIGConstants, HIGColors } from '../styles/common';
 import { ITastingRecord } from '../services/realm/schemas';
@@ -41,10 +41,14 @@ const PhotoGalleryScreen = () => {
     loadPhotos();
   }, []);
 
-  const loadPhotos = async () => {
+  const loadPhotos = async (limit = 50, offset = 0) => {
     try {
-      const realmService = RealmService.getInstance();
-      const tastings = realmService.getTastingRecords({ isDeleted: false });
+      const tastingService = TastingService.getInstance();
+      const tastings = await tastingService.getTastingRecords({ 
+        isDeleted: false,
+        limit,
+        offset
+      });
       
       // Filter tastings with photos and create photo items
       const photoItems: PhotoItem[] = [];
@@ -112,15 +116,15 @@ const PhotoGalleryScreen = () => {
           style: 'destructive', 
           onPress: async () => {
             try {
-              const realmService = RealmService.getInstance();
-              const tasting = await realmService.getTastingRecordById(item.tastingId);
+              const tastingService = TastingService.getInstance();
+              const tasting = await tastingService.getTastingRecordById(item.tastingId);
               
               if (tasting && tasting.photoUri) {
                 // Delete photo from local storage
                 await PhotoService.deletePhotoLocally(tasting.photoUri);
                 
                 // Update tasting record
-                await realmService.updateTastingRecord(item.tastingId, {
+                await tastingService.updateTastingRecord(item.tastingId, {
                   photoUri: undefined,
                   photoThumbnailUri: undefined,
                 });

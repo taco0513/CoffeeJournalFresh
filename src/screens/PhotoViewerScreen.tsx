@@ -14,7 +14,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import PhotoService from '../services/PhotoService';
-import RealmService from '../services/realm/RealmService';
+import { TastingService } from '../services/realm/TastingService';
 import { HIGConstants, HIGColors } from '../styles/common';
 
 const { width, height } = Dimensions.get('window');
@@ -68,15 +68,15 @@ const PhotoViewerScreen = () => {
           style: 'destructive', 
           onPress: async () => {
             try {
-              const realmService = RealmService.getInstance();
-              const tasting = await realmService.getTastingRecordById(photoItem.tastingId);
+              const tastingService = TastingService.getInstance();
+              const tasting = await tastingService.getTastingRecordById(photoItem.tastingId);
               
               if (tasting && tasting.photoUri) {
                 // Delete photo from local storage
                 await PhotoService.deletePhotoLocally(tasting.photoUri);
                 
                 // Update tasting record
-                await realmService.updateTastingRecord(photoItem.tastingId, {
+                await tastingService.updateTastingRecord(photoItem.tastingId, {
                   photoUri: undefined,
                   photoThumbnailUri: undefined,
                 });
