@@ -1,43 +1,70 @@
 # Coffee Journal Fresh - Quick Reference
 
 ## Project Overview
-React Native 0.80 coffee tasting app - 개인의 커피 취향을 발견하고 공유하는 플랫폼
+React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 가장 쉬운 방법"
 
-## Current Focus (2025-07-22) - Korean Sensory Evaluation System ✅
-- **Status**: Implementation completed with full integration
+**Market Position**: 한국 최초 개인 맞춤형 커피 감각 평가 앱 (First Korean personal coffee taste development app)
+
+## Vision & Value Proposition (Updated 2025-07-23)
+### **Korean Version**
+> "나만의 커피 취향을 발견하는 가장 쉬운 방법"
+> 
+> 한국인을 위한 44가지 맛 표현으로 커피를 기록하고,
+> 나의 취향을 찾아가는 개인 맞춤형 커피 저널 앱
+
+### **Target Market**
+- **Primary**: 스페셜티 커피 입문자 (Specialty Coffee Beginners, 25-35세)
+- **Secondary**: 홈카페족 (Home Cafe Enthusiasts)
+- **Market Gap**: Korean coffee app market dominated by ordering apps - no personal taste development solutions
+
+### **Competitive Advantages**
+1. **Only Korean-native sensory evaluation system** (vs English-only global apps)
+2. **Beginner-friendly approach** (vs complex professional tools like Bean Conqueror)
+3. **Free core features** (vs paid competitors like iBrewCoffee $4.99)
+4. **Cultural adaptation** with 44 Korean taste expressions
+5. **Achievement system** for habit formation
+
+## Current Focus (2025-07-23) - Market-Ready MVP ✅
+- **Status**: 95% MVP Complete, Ready for Launch
 - **Completed**: 
   - Korean expressions fully integrated into TastingFlow
   - CATA (Check All That Apply) methodology per SCA 2024 standards
   - 4-step onboarding system with AsyncStorage persistence
-  - Removed intensity ratings for simplified UX
+  - Market research and competitive analysis completed
 - **Key Features**:
   - 44 Korean expressions across 6 categories
   - Multi-selection support (max 3 per category)
   - Beginner-friendly expressions marked with ⭐
   - Professional UI with category-specific colors
 
-## Statistics System Updates (2025-07-21)
-### Home Screen Stats
-- "나의 커피 기록" (My Coffee Records) - Total tastings count
-- "발견한 로스터리" (Discovered Roasteries) - Unique roastery count
-- "나의 업적" (My Achievements) - Achievement points (reduced 10x for MVP balance)
-
-### Journal > Stats Tab
-- **기본 통계**: "나의 커피 기록", "발견한 로스터리" (matches Home screen)
-- **30일 인사이트**: "많이 마신 원산지", "많이 느낀 향미", "총 테이스팅" (30-day focused)
-
-## MVP Focus (Updated 2025-07-22)
-- **Target**: 일반 커피 애호가 (Cafe Mode)
+## MVP Focus (Market-Validated 2025-07-23)
+- **Target**: 스페셜티 커피 입문자 (Korean specialty coffee beginners)
 - **Core Features**: 
   - ✅ 기본 테이스팅 워크플로우 (커피 정보 → 향미 선택 → 감각 평가 → 개인 노트 → 결과)
   - ✅ Korean 감각 평가 시스템 (44개 표현, CATA 방법론)
   - ✅ 기본 통계 및 기록 관리
-  - ✅ 성취 시스템 (백엔드 구현 완료)
+  - ✅ 성취 시스템 (백엔드 구현 완료, UI 구현 필요)
   - ✅ 사진 관리 시스템 (PhotoGallery, PhotoViewer, PhotoService 유지)
   - ✅ 관리자 대시보드 (운영 필수 기능)
-  - ✅ 고급 분석/시각화 (personalTaste 컴포넌트 유지)
 - **UI**: 3-tab navigation (Home, Journal, Profile)
 - **Removed from MVP**: AI 코칭, OCR/사진 스캔, 소셜 기능, 국제화, 데이터 내보내기
+
+## Market Research Summary (2025-07-23)
+### **Korean Coffee App Market**
+- **Ordering Apps Dominate**: Starbucks (7.73M MAU), Mega Coffee (2.10M), Twosome (1.91M)
+- **No Korean Taste Development Apps**: Gap in personal coffee education/journaling
+- **Physical Products Exist**: 지마웍스 테이스팅 노트 (analog notebooks) shows demand
+
+### **Global Competition**
+- **Bean Conqueror**: Free but complex, overwhelming for beginners
+- **iBrewCoffee**: $4.99, no Korean support, 3,000+ roasteries
+- **Tasting Grounds**: Social focus, limited Korean presence
+- **Filtru**: iOS-only, $3.99, Bluetooth scale integration
+
+### **Our Differentiation**
+- **Only Korean app** with native taste expressions and cultural adaptation
+- **Beginner-focused** vs professional complexity of global apps
+- **Free core features** vs paid competitor models
 
 ## Key Architecture
 ```
