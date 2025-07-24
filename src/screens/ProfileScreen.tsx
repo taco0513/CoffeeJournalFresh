@@ -14,9 +14,8 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useUserStore } from '../stores/useUserStore';
 import RealmService from '../services/realm/RealmService';
 import { HIGConstants, HIGColors, commonButtonStyles } from '../styles/common';
+import { IOSColors, IOSLayout, IOSTypography, IOSSpacing, IOSShadows } from '../styles/ios-hig-2024';
 import AuthService from '../services/supabase/auth';
-import { AchievementSummaryCard } from '../components/achievements/AchievementSummaryCard';
-import { useAchievements } from '../hooks/useAchievements';
 import { useDevStore } from '../stores/useDevStore';
 import StatusBadge from '../components/StatusBadge';
 
@@ -24,7 +23,8 @@ import StatusBadge from '../components/StatusBadge';
 type MainTabParamList = {
   Home: undefined;
   Journal: undefined;
-  Stats: undefined;
+  AddCoffee: undefined;
+  Achievements: undefined;
   Profile: undefined;
 };
 
@@ -40,7 +40,6 @@ interface MenuItem {
 const ProfileScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { currentUser, signOut } = useUserStore();
-  const { achievements, stats: achievementStats, getNextAchievement, isLoading: isLoadingAchievements, error: achievementError } = useAchievements();
   const { isDeveloperMode, toggleDeveloperMode } = useDevStore();
   const [stats, setStats] = useState({
     joinedDaysAgo: 0,
@@ -186,81 +185,6 @@ const ProfileScreen = () => {
           <Text style={styles.email}>{currentUser?.email || 'user@example.com'}</Text>
         </View>
 
-        {/* 나의 업적 섹션 */}
-        <View style={styles.achievementSection}>
-          <Text style={styles.sectionTitle}>나의 업적</Text>
-          {achievementError ? (
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>업적 시스템을 불러올 수 없습니다</Text>
-              <Text style={styles.errorSubtext}>{achievementError}</Text>
-            </View>
-          ) : isLoadingAchievements ? (
-            <View style={styles.loadingContainer}>
-              <Text style={styles.loadingText}>업적 정보 로딩 중...</Text>
-            </View>
-          ) : (
-            <>
-              {/* 업적 통계 카드들 */}
-              <View style={styles.achievementStatsGrid}>
-                <TouchableOpacity 
-                  style={styles.achievementStatCard}
-                  onPress={() => navigation.navigate('AchievementGallery' as never)}
-                >
-                  <Text style={styles.achievementStatNumber}>{achievementStats.unlockedAchievements}</Text>
-                  <Text style={styles.achievementStatLabel}>달성한 업적</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={styles.achievementStatCard}
-                  onPress={() => navigation.navigate('AchievementGallery' as never)}
-                >
-                  <Text style={styles.achievementStatNumber}>{Math.round((achievementStats.unlockedAchievements / Math.max(achievementStats.totalAchievements, 1)) * 100)}%</Text>
-                  <Text style={styles.achievementStatLabel}>완료율</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={styles.achievementStatCard}
-                  onPress={() => navigation.navigate('AchievementGallery' as never)}
-                >
-                  <Text style={styles.achievementStatNumber}>{achievementStats.totalPoints}</Text>
-                  <Text style={styles.achievementStatLabel}>포인트</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* 다음 목표 */}
-              {getNextAchievement() && (
-                <TouchableOpacity 
-                  style={styles.nextGoalCard}
-                  onPress={() => navigation.navigate('AchievementGallery' as never)}
-                >
-                  <View style={styles.nextGoalHeader}>
-                    <Text style={styles.nextGoalIcon}>🎯</Text>
-                    <Text style={styles.nextGoalTitle}>다음 목표</Text>
-                    <Text style={styles.nextGoalArrow}>›</Text>
-                  </View>
-                  <View style={styles.nextGoalContent}>
-                    <Text style={styles.nextGoalIcon}>{getNextAchievement()?.icon}</Text>
-                    <View style={styles.nextGoalInfo}>
-                      <Text style={styles.nextGoalName}>{getNextAchievement()?.title}</Text>
-                      <Text style={styles.nextGoalProgress}>
-                        {Math.round((getNextAchievement()?.progress || 0) * 100)}% 완료
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              )}
-
-              {/* 전체 업적 보기 버튼 */}
-              <TouchableOpacity 
-                style={styles.viewAllAchievementsButton}
-                onPress={() => navigation.navigate('AchievementGallery' as never)}
-              >
-                <Text style={styles.viewAllAchievementsText}>전체 업적 보기</Text>
-                <Text style={styles.viewAllAchievementsArrow}>›</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
 
 
         {/* 메뉴 아이템 */}
@@ -303,38 +227,37 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: IOSColors.systemBackground,
   },
   navigationBar: {
-    height: 44,
+    height: IOSLayout.navBarHeight,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray4,
+    paddingHorizontal: IOSSpacing.screenPadding,
+    backgroundColor: IOSColors.systemBackground,
+    borderBottomWidth: IOSLayout.borderWidthThin,
+    borderBottomColor: IOSColors.separator,
   },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: IOSSpacing.xs,
   },
   navigationTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
+    ...IOSTypography.headline,
+    color: IOSColors.label,
   },
   betaBadge: {
-    backgroundColor: HIGColors.accent,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
+    backgroundColor: IOSColors.systemBlue,
+    paddingHorizontal: IOSSpacing.xs,
+    paddingVertical: IOSSpacing.xxxs,
+    borderRadius: IOSLayout.cornerRadiusSmall,
   },
   betaText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: HIGColors.white,
+    ...IOSTypography.caption2,
+    fontWeight: '700' as const,
+    color: IOSColors.systemBackground,
     letterSpacing: 0.5,
   },
   languageSwitch: {},
@@ -343,35 +266,34 @@ const styles = StyleSheet.create({
   },
   profileHeader: {
     alignItems: 'center',
-    paddingVertical: HIGConstants.SPACING_XL,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: '#FFFFFF',
+    paddingVertical: IOSSpacing.xl,
+    paddingHorizontal: IOSSpacing.screenPadding,
+    backgroundColor: IOSColors.systemBackground,
   },
   avatarContainer: {
-    marginBottom: HIGConstants.SPACING_MD,
+    marginBottom: IOSSpacing.md,
   },
   avatar: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: HIGColors.blue,
+    backgroundColor: IOSColors.systemBlue,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarText: {
     fontSize: 32,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: '600' as const,
+    color: IOSColors.systemBackground,
   },
   username: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_XS,
+    ...IOSTypography.title2,
+    color: IOSColors.label,
+    marginBottom: IOSSpacing.xxs,
   },
   email: {
-    fontSize: 16,
-    color: HIGColors.secondaryLabel,
+    ...IOSTypography.callout,
+    color: IOSColors.secondaryLabel,
   },
   statsContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
@@ -432,76 +354,66 @@ const styles = StyleSheet.create({
   
   // Achievement Styles
   achievementSection: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_LG,
+    paddingHorizontal: IOSSpacing.screenPadding,
+    marginBottom: IOSSpacing.lg,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_MD,
+    ...IOSTypography.title3,
+    color: IOSColors.label,
+    marginBottom: IOSSpacing.md,
   },
   achievementStatsGrid: {
     flexDirection: 'row',
-    gap: HIGConstants.SPACING_SM,
-    marginBottom: HIGConstants.SPACING_LG,
+    gap: IOSSpacing.sm,
+    marginBottom: IOSSpacing.lg,
   },
   achievementStatCard: {
     flex: 1,
-    backgroundColor: HIGColors.white,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    padding: HIGConstants.SPACING_MD,
+    backgroundColor: IOSColors.secondarySystemGroupedBackground,
+    borderRadius: IOSLayout.cornerRadiusMedium,
+    padding: IOSSpacing.md,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray6,
-    shadowColor: HIGColors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: IOSLayout.borderWidthThin,
+    borderColor: IOSColors.separator,
+    ...IOSShadows.small,
   },
   achievementStatNumber: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: HIGColors.systemBlue,
-    marginBottom: 4,
+    ...IOSTypography.title2,
+    fontWeight: '700' as const,
+    color: IOSColors.systemBlue,
+    marginBottom: IOSSpacing.xxs,
   },
   achievementStatLabel: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
+    ...IOSTypography.caption1,
+    color: IOSColors.secondaryLabel,
     textAlign: 'center',
   },
   nextGoalCard: {
-    backgroundColor: HIGColors.white,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    padding: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_MD,
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray6,
-    shadowColor: HIGColors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: IOSColors.secondarySystemGroupedBackground,
+    borderRadius: IOSLayout.cornerRadiusMedium,
+    padding: IOSSpacing.lg,
+    marginBottom: IOSSpacing.md,
+    borderWidth: IOSLayout.borderWidthThin,
+    borderColor: IOSColors.separator,
+    ...IOSShadows.small,
   },
   nextGoalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: HIGConstants.SPACING_MD,
+    marginBottom: IOSSpacing.md,
   },
   nextGoalIcon: {
-    fontSize: 20,
-    marginRight: HIGConstants.SPACING_SM,
+    fontSize: IOSLayout.iconSizeMedium,
+    marginRight: IOSSpacing.sm,
   },
   nextGoalTitle: {
     flex: 1,
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.label,
+    ...IOSTypography.headline,
+    color: IOSColors.label,
   },
   nextGoalArrow: {
-    fontSize: 20,
-    color: HIGColors.systemGray4,
+    fontSize: IOSLayout.iconSizeMedium,
+    color: IOSColors.tertiaryLabel,
   },
   nextGoalContent: {
     flexDirection: 'row',
@@ -509,37 +421,37 @@ const styles = StyleSheet.create({
   },
   nextGoalInfo: {
     flex: 1,
-    marginLeft: HIGConstants.SPACING_MD,
+    marginLeft: IOSSpacing.md,
   },
   nextGoalName: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: HIGColors.label,
-    marginBottom: 2,
+    ...IOSTypography.subheadline,
+    fontWeight: '500' as const,
+    color: IOSColors.label,
+    marginBottom: IOSSpacing.xxxs,
   },
   nextGoalProgress: {
-    fontSize: 13,
-    color: HIGColors.systemBlue,
-    fontWeight: '500',
+    ...IOSTypography.footnote,
+    color: IOSColors.systemBlue,
+    fontWeight: '500' as const,
   },
   viewAllAchievementsButton: {
-    backgroundColor: HIGColors.systemBlue,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    padding: HIGConstants.SPACING_MD,
+    backgroundColor: IOSColors.systemBlue,
+    borderRadius: IOSLayout.cornerRadiusMedium,
+    padding: IOSSpacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    ...IOSShadows.small,
   },
   viewAllAchievementsText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.white,
-    marginRight: HIGConstants.SPACING_SM,
+    ...IOSTypography.headline,
+    color: IOSColors.systemBackground,
+    marginRight: IOSSpacing.sm,
   },
   viewAllAchievementsArrow: {
-    fontSize: 16,
-    color: HIGColors.white,
-    fontWeight: '300',
+    ...IOSTypography.body,
+    color: IOSColors.systemBackground,
+    fontWeight: '300' as const,
   },
   quickMenuItem: {
     flexDirection: 'row',
@@ -586,95 +498,92 @@ const styles = StyleSheet.create({
   },
   
   menuContainer: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_LG,
+    paddingHorizontal: IOSSpacing.screenPadding,
+    marginBottom: IOSSpacing.lg,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    paddingVertical: HIGConstants.SPACING_LG,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    marginBottom: HIGConstants.SPACING_MD,
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: IOSColors.secondarySystemGroupedBackground,
+    paddingVertical: IOSSpacing.md,
+    paddingHorizontal: IOSSpacing.lg,
+    borderRadius: IOSLayout.cornerRadiusMedium,
+    marginBottom: IOSSpacing.sm,
+    borderWidth: IOSLayout.borderWidthThin,
+    borderColor: IOSColors.separator,
+    ...IOSShadows.small,
   },
   menuIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: HIGColors.systemGray6,
+    width: IOSLayout.minTouchTarget,
+    height: IOSLayout.minTouchTarget,
+    borderRadius: IOSLayout.minTouchTarget / 2,
+    backgroundColor: IOSColors.systemGray6,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: HIGConstants.SPACING_MD,
+    marginRight: IOSSpacing.md,
   },
   menuIcon: {
-    fontSize: 22,
+    fontSize: IOSLayout.iconSizeMedium,
   },
   menuContent: {
     flex: 1,
   },
   menuTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: 2,
+    ...IOSTypography.body,
+    fontWeight: '600' as const,
+    color: IOSColors.label,
+    marginBottom: IOSSpacing.xxxs,
   },
   menuSubtitle: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
+    ...IOSTypography.footnote,
+    color: IOSColors.secondaryLabel,
   },
   menuArrow: {
-    fontSize: 20,
-    color: HIGColors.tertiaryLabel,
+    fontSize: IOSLayout.iconSizeMedium,
+    color: IOSColors.tertiaryLabel,
   },
   signOutContainer: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingBottom: HIGConstants.SPACING_XL,
+    paddingHorizontal: IOSSpacing.screenPadding,
+    paddingBottom: IOSSpacing.xl,
   },
   signOutButton: {
-    backgroundColor: HIGColors.red,
+    backgroundColor: IOSColors.systemRed,
+    minHeight: IOSLayout.buttonHeightLarge,
+    borderRadius: IOSLayout.cornerRadiusMedium,
   },
   signOutText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    ...IOSTypography.body,
+    fontWeight: '600' as const,
+    color: IOSColors.systemBackground,
   },
   errorContainer: {
-    backgroundColor: HIGColors.white,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    padding: HIGConstants.SPACING_LG,
-    borderWidth: 1,
-    borderColor: HIGColors.systemRed,
+    backgroundColor: IOSColors.secondarySystemGroupedBackground,
+    borderRadius: IOSLayout.cornerRadiusMedium,
+    padding: IOSSpacing.lg,
+    borderWidth: IOSLayout.borderWidthThin,
+    borderColor: IOSColors.systemRed,
   },
   errorText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.systemRed,
+    ...IOSTypography.headline,
+    color: IOSColors.systemRed,
     textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: IOSSpacing.sm,
   },
   errorSubtext: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
+    ...IOSTypography.footnote,
+    color: IOSColors.secondaryLabel,
     textAlign: 'center',
   },
   loadingContainer: {
-    backgroundColor: HIGColors.white,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    padding: HIGConstants.SPACING_LG,
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray6,
+    backgroundColor: IOSColors.secondarySystemGroupedBackground,
+    borderRadius: IOSLayout.cornerRadiusMedium,
+    padding: IOSSpacing.lg,
+    borderWidth: IOSLayout.borderWidthThin,
+    borderColor: IOSColors.separator,
   },
   loadingText: {
-    fontSize: 16,
-    color: HIGColors.secondaryLabel,
+    ...IOSTypography.body,
+    color: IOSColors.secondaryLabel,
     textAlign: 'center',
   },
 });

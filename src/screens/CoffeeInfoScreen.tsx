@@ -60,7 +60,7 @@ const CoffeeInfoScreen = () => {
   // Cafe 모드인 경우에만 카페이름도 필수
   const isValid = currentTasting.coffeeName && currentTasting.coffeeName.trim().length > 0 &&
                   currentTasting.roastery && currentTasting.roastery.trim().length > 0 &&
-                  (currentTasting.mode === 'home_cafe' || 
+                  (currentTasting.mode !== 'cafe' || 
                    (currentTasting.cafeName && currentTasting.cafeName.trim().length > 0)) &&
                   currentTasting.temperature;
 
@@ -101,7 +101,7 @@ const CoffeeInfoScreen = () => {
       if (currentTasting.mode === 'home_cafe') {
         navigation.navigate('HomeCafe' as never);
       } else if (currentTasting.mode === 'lab') {
-        navigation.navigate('LabMode' as never);
+        navigation.navigate('ExperimentalData' as never);
       } else {
         navigation.navigate('UnifiedFlavor' as never);
       }

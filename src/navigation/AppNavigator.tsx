@@ -5,7 +5,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { Text, View } from 'react-native';
 import { useUserStore } from '../stores/useUserStore';
 import { HIGColors } from '../styles/common';
+import { IOSColors, IOSLayout, IOSTypography, IOSShadows } from '../styles/ios-hig-2024';
 import StatusBadge from '../components/StatusBadge';
+import { TabBarIcon } from '../components/TabBarIcon';
 import ScreenContextService from '../services/ScreenContextService';
 
 // 화면 import
@@ -260,40 +262,41 @@ function ProfileStack() {
   );
 }
 
+// 메인 탭 네비게이터 래퍼
+function MainTabsWrapper({ navigation: parentNavigation }) {
+  return <MainTabs parentNavigation={parentNavigation} />;
+}
+
 // 메인 탭 네비게이터
-function MainTabs() {
+function MainTabs({ parentNavigation }) {
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: IOSColors.systemBackground,
           elevation: 0,
           shadowOpacity: 0,
-          borderBottomWidth: 0.5,
-          borderBottomColor: '#E0E0E0',
+          borderBottomWidth: IOSLayout.borderWidthThin,
+          borderBottomColor: IOSColors.separator,
         },
-        headerTintColor: HIGColors.label,
-        headerTitleStyle: {
-          fontWeight: '600',
-          fontSize: 17,
-        },
+        headerTintColor: IOSColors.label,
+        headerTitleStyle: IOSTypography.headline,
         ...commonHeaderOptions,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#E0E0E0',
-          borderTopWidth: 0.5,
-          height: 88,
+          backgroundColor: IOSColors.systemBackground,
+          borderTopColor: IOSColors.separator,
+          borderTopWidth: IOSLayout.borderWidthThin,
+          height: IOSLayout.tabBarHeight + 34,
           paddingBottom: 8,
-          paddingTop: 8,
+          paddingTop: 4,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '600',
-          marginTop: 4,
+          ...IOSTypography.caption2,
+          fontSize: 10,
         },
-        tabBarActiveTintColor: HIGColors.blue,
-        tabBarInactiveTintColor: HIGColors.gray2,
+        tabBarActiveTintColor: IOSColors.systemBrown,
+        tabBarInactiveTintColor: IOSColors.secondaryLabel,
       }}
     >
       <Tab.Screen 
@@ -302,10 +305,8 @@ function MainTabs() {
         options={{
           headerShown: false, // HomeScreen has its own navigation
           tabBarLabel: 'Home',
-          tabBarIcon: ({ color }) => (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 24, color }}>🏠</Text>
-            </View>
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon name="home" focused={focused} />
           ),
         }}
       />
@@ -315,42 +316,67 @@ function MainTabs() {
         options={{
           headerShown: false, // HistoryStack has its own navigation
           tabBarLabel: 'Journal',
-          tabBarIcon: ({ color }) => (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 24, color }}>📖</Text>
-            </View>
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon name="journal" focused={focused} />
           ),
         }}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            // Always navigate to HistoryMain when tab is pressed
-            navigation.navigate('Journal', { screen: 'HistoryMain' });
-          },
-        })}
       />
-      {/* Feature Backlog - Community Tab */}
-      {/* <Tab.Screen 
-        name="Community" 
-        component={CommunityStack} 
+      <Tab.Screen 
+        name="AddCoffee" 
+        component={View} // Placeholder component
         options={{
-          tabBarLabel: 'Community',
-          tabBarIcon: ({ color }) => (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 24, color }}>👥</Text>
+          tabBarLabel: '',
+          tabBarIcon: ({ focused }) => (
+            <View style={{
+              position: 'absolute',
+              bottom: 0,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <View style={{
+                width: 56,
+                height: 56,
+                borderRadius: 28,
+                backgroundColor: IOSColors.systemBlue,
+                alignItems: 'center',
+                justifyContent: 'center',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}>
+                <Text style={{ fontSize: 32, color: '#FFF', fontWeight: '300' as const }}>+</Text>
+              </View>
             </View>
           ),
         }}
-      /> */}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            parentNavigation.navigate('TastingFlow', { screen: 'ModeSelection' });
+          },
+        }}
+      />
+      <Tab.Screen 
+        name="Achievements" 
+        component={AchievementGalleryScreen} 
+        options={{
+          headerShown: false,
+          tabBarLabel: '업적',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon name="achievements" focused={focused} />
+          ),
+        }}
+      />
       <Tab.Screen 
         name="Profile" 
         component={ProfileStack} 
         options={{
           headerShown: false, // ProfileStack has its own navigation
           tabBarLabel: 'Profile',
-          tabBarIcon: ({ color }) => (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 24, color }}>👤</Text>
-            </View>
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon name="profile" focused={focused} />
           ),
         }}
       />
@@ -403,7 +429,7 @@ function AppNavigator() {
           >
             <Stack.Screen 
               name="MainTabs" 
-              component={MainTabs} 
+              component={MainTabsWrapper} 
               options={{
                 headerShown: false,
               }}

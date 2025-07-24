@@ -29,7 +29,9 @@ export const AchievementSummaryCard: React.FC<AchievementSummaryCardProps> = ({
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <Text style={styles.icon}>🏆</Text>
+          <View style={styles.iconContainer}>
+            <Text style={styles.icon}>🏆</Text>
+          </View>
           <View style={styles.titleInfo}>
             <Text style={styles.title}>나의 업적</Text>
             <Text style={styles.subtitle}>커피 여정의 성과를 확인해보세요</Text>
@@ -63,9 +65,11 @@ export const AchievementSummaryCard: React.FC<AchievementSummaryCardProps> = ({
 
       {nextAchievement && (
         <View style={styles.nextAchievementSection}>
-          <Text style={styles.nextTitle}>🎯 다음 목표</Text>
+          <Text style={styles.nextTitle}>다음 목표</Text>
           <View style={styles.nextAchievementRow}>
-            <Text style={styles.nextIcon}>{nextAchievement.icon}</Text>
+            <View style={styles.nextIconContainer}>
+              <Text style={styles.nextIcon}>{nextAchievement.icon}</Text>
+            </View>
             <View style={styles.nextInfo}>
               <Text style={styles.nextAchievementTitle} numberOfLines={1}>
                 {nextAchievement.title}
@@ -106,9 +110,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
-  icon: {
-    fontSize: 32,
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: HIGColors.systemYellow + '20',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: HIGConstants.SPACING_MD,
+  },
+  icon: {
+    fontSize: 24,
   },
   titleInfo: {
     flex: 1,
@@ -174,9 +186,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  nextIcon: {
-    fontSize: 24,
+  nextIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: HIGColors.systemGray6,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: HIGConstants.SPACING_MD,
+  },
+  nextIcon: {
+    fontSize: 18,
   },
   nextInfo: {
     flex: 1,

@@ -45,6 +45,20 @@ export const HIGConstants = {
   SPACING_LG: 16,
   SPACING_XL: 20,
   
+  // Chip Constants (Design System)
+  CHIP_HEIGHT_SMALL: 32,
+  CHIP_HEIGHT_MEDIUM: 36,
+  CHIP_HEIGHT_LARGE: 40,
+  CHIP_BORDER_RADIUS_SMALL: 16,
+  CHIP_BORDER_RADIUS_MEDIUM: 18,
+  CHIP_BORDER_RADIUS_LARGE: 20,
+  CHIP_PADDING_H_SMALL: 12,
+  CHIP_PADDING_H_MEDIUM: 16,
+  CHIP_PADDING_H_LARGE: 18,
+  CHIP_PADDING_V_SMALL: 6,
+  CHIP_PADDING_V_MEDIUM: 8,
+  CHIP_PADDING_V_LARGE: 10,
+  
   // HIT_SLOP for backward compatibility
   HIT_SLOP: { top: 8, bottom: 8, left: 8, right: 8 },
 };

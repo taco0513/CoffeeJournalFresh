@@ -33,6 +33,7 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
   onExpressionChange,
   beginnerMode = true,
 }) => {
+  console.log('🚀 CompactSensoryEvaluation rendered with selectedExpressions:', selectedExpressions?.length || 0);
   const [activeCategory, setActiveCategory] = useState('acidity');
 
   // Ensure selectedExpressions is always an array
@@ -44,15 +45,14 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
   ) => {
     const currentExpressions = selectedExpressions || [];
     
-    // Find if this expression is already selected in this category
+    // Create unique identifier using Korean text + category (allows same Korean text in different categories)
+    const uniqueKey = `${expression.korean}_${categoryId}`;
+    
+    // Find if this exact expression+category combination is already selected
     const existingIndex = currentExpressions.findIndex(
       item => item.categoryId === categoryId && item.expression.id === expression.id
     );
     
-    // Check if this Korean expression is already selected in ANY category
-    const koreanAlreadySelected = currentExpressions.some(
-      item => item.expression.korean === expression.korean
-    );
     
     const categorySelections = currentExpressions.filter(
       item => item.categoryId === categoryId
@@ -67,11 +67,6 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
       // Attempting to select
       if (categorySelections.length >= MAX_PER_CATEGORY) {
         return; // Category limit reached
-      }
-      
-      // Prevent selecting if Korean expression already exists
-      if (koreanAlreadySelected) {
-        return; // Korean expression already selected in another category
       }
       
       // Add new selection
@@ -93,6 +88,8 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
   const getSelectedCount = useCallback((categoryId: string): number => {
     return safeSelectedExpressions.filter(item => item.categoryId === categoryId).length;
   }, [safeSelectedExpressions]);
+
+
 
   const categories = useMemo(() => Object.values(koreanSensoryData), []);
   const activeExpressions = useMemo(
@@ -164,42 +161,25 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
           );
           const isDisabled = categorySelections.length >= MAX_PER_CATEGORY && !isSelected;
           
-          // Check if this expression is selected in another category
-          const isGloballySelected = safeSelectedExpressions.some(
-            item => item.expression.korean === expression.korean && item.categoryId !== activeCategory
-          );
-          
           return (
             <TouchableOpacity
               key={expression.id}
               style={[
                 styles.expressionButton,
                 isSelected && styles.expressionButtonSelected,
-                isGloballySelected && styles.expressionButtonGloballySelected,
                 isDisabled && styles.expressionButtonDisabled
               ]}
               onPress={() => handleExpressionSelect(activeCategory, expression)}
-              activeOpacity={isDisabled || isGloballySelected ? 1 : 0.7}
-              disabled={isDisabled || isGloballySelected}
+              activeOpacity={isDisabled ? 1 : 0.7}
+              disabled={isDisabled}
             >
               <Text style={[
                 styles.expressionText,
                 isSelected && styles.expressionTextSelected,
-                isGloballySelected && styles.expressionTextGloballySelected,
                 isDisabled && styles.expressionTextDisabled
               ]}>
                 {expression.korean}
               </Text>
-              {isSelected && (
-                <View style={styles.checkmark}>
-                  <Text style={styles.checkmarkText}>✓</Text>
-                </View>
-              )}
-              {isGloballySelected && (
-                <View style={styles.globallySelectedOverlay}>
-                  <Text style={styles.globallySelectedText}>이미 선택됨</Text>
-                </View>
-              )}
             </TouchableOpacity>
           );
         })}
@@ -341,62 +321,11 @@ const styles = StyleSheet.create({
     color: '#8E8E93',
     textAlign: 'center',
   },
-  checkmark: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkmarkText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#007AFF',
-  },
   // New selected state styles
   expressionButtonSelected: {
     backgroundColor: '#007AFF',
     borderColor: '#007AFF',
-    borderWidth: 3,
-    transform: [{scale: 1.05}],
-    shadowColor: '#007AFF',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.4,
-    shadowRadius: 5,
-    elevation: 6,
-  },
-  expressionButtonGloballySelected: {
-    backgroundColor: '#F0F0F5',
-    borderColor: '#D1D1D6',
-    opacity: 0.6,
-  },
-  expressionTextGloballySelected: {
-    color: '#8E8E93',
-    textDecorationLine: 'line-through',
-  },
-  globallySelectedOverlay: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    left: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  globallySelectedText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#FF3B30',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
+    borderWidth: 1,
   },
 });
 

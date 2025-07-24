@@ -20,7 +20,17 @@ const PersonalCommentScreen = () => {
   const navigation = useNavigation();
   const { currentTasting, updateField, saveTasting } = useTastingStore();
   
-  const [personalComment, setPersonalComment] = useState(currentTasting.personalComment || '');
+  // Deduplicate any existing personalComment content on load
+  const deduplicateText = (text: string): string => {
+    if (!text) return text;
+    const words = text.split(' ').filter(word => word.trim() !== '');
+    const uniqueWords = [...new Set(words)];
+    return uniqueWords.join(' ');
+  };
+
+  const [personalComment, setPersonalComment] = useState(
+    deduplicateText(currentTasting.personalComment || '')
+  );
   const textInputRef = useRef<TextInput>(null);
 
   // 화면 포커스 시 입력 필드에 자동 포커스
@@ -83,8 +93,9 @@ const PersonalCommentScreen = () => {
       });
     }
     
-    // 감각 표현 (카테고리별로 그룹화)
+    // 감각 표현 (카테고리별로 그룹화) - Fixed deduplication
     const { selectedSensoryExpressions } = useTastingStore.getState();
+    console.log('🐛 PersonalCommentScreen selectedSensoryExpressions:', selectedSensoryExpressions?.map(e => ({ korean: e.korean, selected: e.selected, categoryId: e.categoryId })));
     if (selectedSensoryExpressions && selectedSensoryExpressions.length > 0) {
       const categoryNames: Record<string, string> = {
         acidity: '산미',
@@ -95,16 +106,25 @@ const PersonalCommentScreen = () => {
         balance: '밸런스'
       };
       
+      // Use Set with category tags to allow same Korean text in different categories
+      const addedExpressions = new Set<string>();
+      
       selectedSensoryExpressions.forEach(expr => {
         if (expr.selected) {
-          selections.sensory.push(expr.korean);
+          // Create unique key with category tag
+          const uniqueKey = `${expr.korean}_${expr.categoryId}`;
           
-          // 카테고리별로 그룹화
-          const categoryKorean = categoryNames[expr.categoryId] || expr.categoryId;
-          if (!selections.sensoryByCategory[categoryKorean]) {
-            selections.sensoryByCategory[categoryKorean] = [];
+          if (!addedExpressions.has(uniqueKey)) {
+            selections.sensory.push(expr.korean);
+            addedExpressions.add(uniqueKey);
+          
+            // 카테고리별로 그룹화
+            const categoryKorean = categoryNames[expr.categoryId] || expr.categoryId;
+            if (!selections.sensoryByCategory[categoryKorean]) {
+              selections.sensoryByCategory[categoryKorean] = [];
+            }
+            selections.sensoryByCategory[categoryKorean].push(expr.korean);
           }
-          selections.sensoryByCategory[categoryKorean].push(expr.korean);
         }
       });
     }
@@ -122,6 +142,9 @@ const PersonalCommentScreen = () => {
     // 마우스필
     selections.mouthfeel = currentTasting.mouthfeel || '';
     
+    console.log('🐛 PersonalCommentScreen final selections.sensory:', selections.sensory);
+    console.log('🐛 PersonalCommentScreen final selections.sensoryByCategory:', selections.sensoryByCategory);
+    
     return selections;
   };
   
@@ -129,7 +152,17 @@ const PersonalCommentScreen = () => {
 
   // 텍스트 추가 함수
   const addTextToComment = (text: string) => {
+    console.log('🐛 addTextToComment called with:', text);
+    console.log('🐛 current personalComment:', personalComment);
+    
     const currentText = personalComment.trim();
+    
+    // Prevent adding duplicate text
+    if (currentText.includes(text)) {
+      console.log('🐛 Text already exists, skipping:', text);
+      return;
+    }
+    
     if (currentText) {
       // 마지막 문자가 마침표인지 확인
       if (currentText.endsWith('.')) {
@@ -140,6 +173,8 @@ const PersonalCommentScreen = () => {
     } else {
       setPersonalComment(text);
     }
+    
+    console.log('🐛 personalComment after update will be:', currentText ? currentText + ' ' + text : text);
   };
 
   return (
@@ -191,7 +226,7 @@ const PersonalCommentScreen = () => {
               </View>
             </View>
 
-            {/* 사용자 선택 요약 - Only show if there are selections */}
+            {/* 사용자 선택 요약 - Only show if there are selections, exclude lab experiment data */}
             {(userSelections.flavors.length > 0 || 
               Object.keys(userSelections.sensoryByCategory).length > 0 ||
               Object.values(userSelections.ratings).some(score => score >= 4) ||
@@ -204,16 +239,28 @@ const PersonalCommentScreen = () => {
                 <View style={styles.selectionRow}>
                   <Text style={styles.selectionLabel}>향미</Text>
                   <View style={styles.selectionTags}>
-                    {userSelections.flavors.map((flavor, index) => (
-                      <TouchableOpacity 
-                        key={index} 
-                        style={styles.selectionTag}
-                        onPress={() => addTextToComment(flavor)}
-                        activeOpacity={0.7}
-                      >
-                        <Text style={styles.selectionText}>{flavor}</Text>
-                      </TouchableOpacity>
-                    ))}
+                    {userSelections.flavors.map((flavor, index) => {
+                      const isAlreadyInComment = personalComment.includes(flavor);
+                      return (
+                        <TouchableOpacity 
+                          key={index} 
+                          style={[
+                            styles.selectionTag,
+                            isAlreadyInComment && styles.selectionTagSelected
+                          ]}
+                          onPress={() => addTextToComment(flavor)}
+                          activeOpacity={isAlreadyInComment ? 1 : 0.7}
+                          disabled={isAlreadyInComment}
+                        >
+                          <Text style={[
+                            styles.selectionText,
+                            isAlreadyInComment && styles.selectionTextSelected
+                          ]}>
+                            {flavor}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
                   </View>
                 </View>
               )}
@@ -223,50 +270,86 @@ const PersonalCommentScreen = () => {
                 <View key={category} style={styles.selectionRow}>
                   <Text style={styles.selectionLabel}>{category}</Text>
                   <View style={styles.selectionTags}>
-                    {expressions.map((expr, index) => (
-                      <TouchableOpacity 
-                        key={index} 
-                        style={styles.selectionTag}
-                        onPress={() => addTextToComment(expr)}
-                        activeOpacity={0.7}
-                      >
-                        <Text style={styles.selectionText}>{expr}</Text>
-                      </TouchableOpacity>
-                    ))}
+                    {expressions.map((expr, index) => {
+                      const isAlreadyInComment = personalComment.includes(expr);
+                      return (
+                        <TouchableOpacity 
+                          key={index} 
+                          style={[
+                            styles.selectionTag,
+                            isAlreadyInComment && styles.selectionTagSelected
+                          ]}
+                          onPress={() => addTextToComment(expr)}
+                          activeOpacity={isAlreadyInComment ? 1 : 0.7}
+                          disabled={isAlreadyInComment}
+                        >
+                          <Text style={[
+                            styles.selectionText,
+                            isAlreadyInComment && styles.selectionTextSelected
+                          ]}>
+                            {expr}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
                   </View>
                 </View>
               ))}
               
-              {/* 주요 평가 (4점 이상만 표시) */}
-              <View style={styles.selectionRow}>
-                <Text style={styles.selectionLabel}>평가</Text>
-                <View style={styles.selectionTags}>
-                  {Object.entries(userSelections.ratings)
-                    .filter(([_, score]) => score >= 4)
-                    .map(([name, score], index) => (
-                      <TouchableOpacity 
-                        key={index} 
-                        style={styles.selectionTag}
-                        onPress={() => addTextToComment(`${name} ${score}/5`)}
-                        activeOpacity={0.7}
-                      >
-                        <Text style={styles.selectionText}>{name} {score}/5</Text>
-                      </TouchableOpacity>
-                    ))}
+              {/* 주요 평가 (4점 이상만 표시) - 카페 모드에서만 표시 */}
+              {currentTasting.mode === 'cafe' && (
+                <View style={styles.selectionRow}>
+                  <Text style={styles.selectionLabel}>평가</Text>
+                  <View style={styles.selectionTags}>
+                    {Object.entries(userSelections.ratings)
+                      .filter(([_, score]) => score >= 4)
+                      .map(([name, score], index) => {
+                        const ratingText = `${name} ${score}/5`;
+                        const isAlreadyInComment = personalComment.includes(ratingText);
+                        return (
+                          <TouchableOpacity 
+                            key={index} 
+                            style={[
+                              styles.selectionTag,
+                              isAlreadyInComment && styles.selectionTagSelected
+                            ]}
+                            onPress={() => addTextToComment(ratingText)}
+                            activeOpacity={isAlreadyInComment ? 1 : 0.7}
+                            disabled={isAlreadyInComment}
+                          >
+                            <Text style={[
+                              styles.selectionText,
+                              isAlreadyInComment && styles.selectionTextSelected
+                            ]}>
+                              {ratingText}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                  </View>
                 </View>
-              </View>
+              )}
               
-              {/* 마우스필 */}
-              {userSelections.mouthfeel && (
+              {/* 마우스필 - 카페 모드에서만 표시 */}
+              {currentTasting.mode === 'cafe' && userSelections.mouthfeel && (
                 <View style={styles.selectionRow}>
                   <Text style={styles.selectionLabel}>질감</Text>
                   <View style={styles.selectionTags}>
                     <TouchableOpacity 
-                      style={styles.selectionTag}
+                      style={[
+                        styles.selectionTag,
+                        personalComment.includes(userSelections.mouthfeel) && styles.selectionTagSelected
+                      ]}
                       onPress={() => addTextToComment(userSelections.mouthfeel)}
-                      activeOpacity={0.7}
+                      activeOpacity={personalComment.includes(userSelections.mouthfeel) ? 1 : 0.7}
+                      disabled={personalComment.includes(userSelections.mouthfeel)}
                     >
-                      <Text style={styles.selectionText}>{userSelections.mouthfeel}</Text>
+                      <Text style={[
+                        styles.selectionText,
+                        personalComment.includes(userSelections.mouthfeel) && styles.selectionTextSelected
+                      ]}>
+                        {userSelections.mouthfeel}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -404,11 +487,27 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#D2E3FC',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  selectionTagSelected: {
+    backgroundColor: HIGColors.systemBlue,
+    borderColor: HIGColors.systemBlue,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   selectionText: {
     fontSize: 14,
     color: HIGColors.label,
     fontWeight: '500',
+  },
+  selectionTextSelected: {
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,

@@ -96,20 +96,20 @@ export const useTastingStore = create<TastingState>((set, get) => ({
   },
 
   setSelectedSensoryExpressions: (expressions) => {
-    // Deduplicate based on Korean text to prevent same expression appearing multiple times
-    const seen = new Set<string>();
-    const deduped = expressions.filter(expr => {
-      // Use Korean text as unique identifier across all categories
-      const uniqueKey = expr.korean;
-      if (seen.has(uniqueKey)) {
+    // Use category tags to allow same Korean text in different categories
+    // Remove duplicates based on korean+categoryId combination
+    const seenExpressions = new Set<string>();
+    const uniqueExpressions = expressions.filter(expr => {
+      const uniqueKey = `${expr.korean}_${expr.categoryId}`;
+      if (seenExpressions.has(uniqueKey)) {
         return false;
       }
-      seen.add(uniqueKey);
+      seenExpressions.add(uniqueKey);
       return true;
     });
     
     set(() => ({
-      selectedSensoryExpressions: deduped,
+      selectedSensoryExpressions: uniqueExpressions,
     }));
   },
 

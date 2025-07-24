@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { HIGColors, HIGConstants } from '../../styles/common';
+import { IOSColors, IOSLayout, IOSTypography, IOSSpacing, IOSShadows } from '../../styles/ios-hig-2024';
 import { ProgressBar } from './ProgressBar';
+import { CircularProgress } from './CircularProgress';
 import { Achievement, ProgressData } from '../../services/AchievementSystem';
 
 interface AchievementCardProps {
@@ -28,15 +30,15 @@ export const AchievementCard: React.FC<AchievementCardProps> = ({
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
       case 'common':
-        return HIGColors.systemGray4;
+        return IOSColors.systemGray3;
       case 'rare':
-        return HIGColors.systemBlue;
+        return IOSColors.systemBlue;
       case 'epic':
-        return HIGColors.systemPurple;
+        return IOSColors.systemPurple;
       case 'legendary':
-        return HIGColors.systemOrange;
+        return IOSColors.systemOrange;
       default:
-        return HIGColors.systemGray4;
+        return IOSColors.systemGray3;
     }
   };
 
@@ -74,7 +76,10 @@ export const AchievementCard: React.FC<AchievementCardProps> = ({
 
       {/* Header Row */}
       <View style={styles.header}>
-        <View style={styles.iconContainer}>
+        <View style={[
+          styles.iconContainer,
+          { backgroundColor: getRarityColor(achievement.rarity) + '20' }
+        ]}>
           <Text style={[
             styles.icon,
             compact && styles.compactIcon,
@@ -96,15 +101,16 @@ export const AchievementCard: React.FC<AchievementCardProps> = ({
           {/* Rarity Indicator */}
           <View style={styles.rarityRow}>
             <View style={[
-              styles.rarityDot,
+              styles.rarityBadge,
               { backgroundColor: getRarityColor(achievement.rarity) }
-            ]} />
-            <Text style={[
-              styles.rarityText,
-              !isUnlocked && styles.lockedText
             ]}>
-              {achievement.rarity}
-            </Text>
+              <Text style={styles.rarityBadgeText}>
+                {achievement.rarity === 'common' ? '일반' :
+                 achievement.rarity === 'rare' ? '희귀' :
+                 achievement.rarity === 'epic' ? '서사' :
+                 achievement.rarity === 'legendary' ? '전설' : '일반'}
+              </Text>
+            </View>
           </View>
         </View>
 
@@ -131,25 +137,35 @@ export const AchievementCard: React.FC<AchievementCardProps> = ({
 
       {/* Progress Section */}
       {!isUnlocked && progress && (
-        <View style={styles.progressSection}>
-          <View style={styles.progressHeader}>
-            <Text style={styles.progressText}>
-              진행률: {Math.round(progressPercentage)}%
+        <View style={[
+          styles.progressSection,
+          compact && styles.progressSectionCompact
+        ]}>
+          <CircularProgress
+            size={compact ? 40 : 60}
+            strokeWidth={3}
+            progress={progressPercentage}
+            color={getRarityColor(achievement.rarity)}
+            backgroundColor={IOSColors.systemGray6}
+          >
+            <Text style={[
+              styles.circularProgressText,
+              compact && styles.circularProgressTextCompact
+            ]}>
+              {Math.round(progressPercentage)}%
             </Text>
-            {progress.estimatedTimeToComplete && (
+          </CircularProgress>
+          
+          <View style={styles.progressInfo}>
+            <Text style={styles.progressDetail}>
+              {progress.currentValue} / {progress.targetValue}
+            </Text>
+            {progress.estimatedTimeToComplete && !compact && (
               <Text style={styles.estimatedTime}>
                 약 {progress.estimatedTimeToComplete}일 남음
               </Text>
             )}
           </View>
-          <ProgressBar 
-            progress={progressPercentage / 100}
-            color={getRarityColor(achievement.rarity)}
-            height={compact ? 4 : 6}
-          />
-          <Text style={styles.progressDetail}>
-            {progress.currentValue} / {progress.targetValue}
-          </Text>
         </View>
       )}
 
@@ -157,7 +173,7 @@ export const AchievementCard: React.FC<AchievementCardProps> = ({
       {isUnlocked && achievement.unlockedAt && (
         <View style={styles.unlockSection}>
           <Text style={styles.unlockDate}>
-            🎉 {formatDate(achievement.unlockedAt)}에 달성
+            {formatDate(achievement.unlockedAt)}에 달성
           </Text>
         </View>
       )}
@@ -167,57 +183,57 @@ export const AchievementCard: React.FC<AchievementCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: HIGColors.white,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    padding: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_MD,
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray6,
-    shadowColor: HIGColors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: IOSColors.secondarySystemGroupedBackground,
+    borderRadius: IOSLayout.cornerRadiusMedium,
+    padding: IOSSpacing.lg,
+    marginBottom: IOSSpacing.md,
+    borderWidth: IOSLayout.borderWidthThin,
+    borderColor: IOSColors.separator,
+    ...IOSShadows.small,
   },
   compactContainer: {
-    padding: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_SM,
+    padding: IOSSpacing.md,
+    marginBottom: IOSSpacing.sm,
   },
   unlockedContainer: {
-    borderColor: HIGColors.systemGreen,
-    backgroundColor: '#F8FFF8',
+    borderColor: IOSColors.systemGreen,
   },
   lockedContainer: {
-    opacity: 0.7,
+    opacity: 0.8,
   },
   newBadge: {
     position: 'absolute',
     top: -8,
     right: -8,
-    backgroundColor: HIGColors.systemRed,
+    backgroundColor: IOSColors.systemRed,
     borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: IOSSpacing.xs,
+    paddingVertical: IOSSpacing.xxs,
     zIndex: 1,
   },
   newBadgeText: {
-    color: HIGColors.white,
-    fontSize: 10,
-    fontWeight: '700',
+    ...IOSTypography.caption2,
+    fontWeight: '700' as const,
+    color: IOSColors.systemBackground,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: IOSSpacing.sm,
   },
   iconContainer: {
-    marginRight: HIGConstants.SPACING_MD,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: IOSSpacing.md,
   },
   icon: {
-    fontSize: 40,
+    fontSize: IOSLayout.iconSizeLarge,
   },
   compactIcon: {
-    fontSize: 24,
+    fontSize: IOSLayout.iconSizeMedium,
   },
   lockedIcon: {
     opacity: 0.5,
@@ -226,78 +242,83 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: 4,
+    ...IOSTypography.headline,
+    color: IOSColors.label,
+    marginBottom: IOSSpacing.xxs,
   },
   compactTitle: {
-    fontSize: 15,
+    ...IOSTypography.subheadline,
   },
   rarityRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  rarityDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 6,
+  rarityBadge: {
+    paddingHorizontal: IOSSpacing.xs,
+    paddingVertical: IOSSpacing.xxxs,
+    borderRadius: IOSLayout.cornerRadiusSmall,
   },
-  rarityText: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-    textTransform: 'capitalize',
+  rarityBadgeText: {
+    ...IOSTypography.caption2,
+    fontWeight: '600' as const,
+    color: IOSColors.systemBackground,
   },
   rewardContainer: {
     alignItems: 'flex-end',
   },
   rewardText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: HIGColors.systemBlue,
+    ...IOSTypography.footnote,
+    fontWeight: '600' as const,
+    color: IOSColors.systemBlue,
   },
   description: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
+    ...IOSTypography.footnote,
+    color: IOSColors.secondaryLabel,
     lineHeight: 20,
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: IOSSpacing.sm,
   },
   progressSection: {
-    marginTop: HIGConstants.SPACING_SM,
-  },
-  progressHeader: {
+    marginTop: IOSSpacing.md,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 6,
+    gap: IOSSpacing.md,
   },
-  progressText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: HIGColors.label,
+  progressSectionCompact: {
+    marginTop: IOSSpacing.sm,
+    gap: IOSSpacing.sm,
+  },
+  progressInfo: {
+    flex: 1,
+  },
+  circularProgressText: {
+    ...IOSTypography.footnote,
+    fontWeight: '600' as const,
+    color: IOSColors.label,
+  },
+  circularProgressTextCompact: {
+    ...IOSTypography.caption2,
+    fontWeight: '600' as const,
   },
   estimatedTime: {
-    fontSize: 12,
-    color: HIGColors.tertiaryLabel,
+    ...IOSTypography.caption1,
+    color: IOSColors.tertiaryLabel,
+    marginTop: IOSSpacing.xxxs,
   },
   progressDetail: {
-    fontSize: 12,
-    color: HIGColors.tertiaryLabel,
-    marginTop: 4,
-    textAlign: 'center',
+    ...IOSTypography.footnote,
+    fontWeight: '500' as const,
+    color: IOSColors.secondaryLabel,
   },
   unlockSection: {
-    marginTop: HIGConstants.SPACING_SM,
-    padding: HIGConstants.SPACING_SM,
-    backgroundColor: HIGColors.systemGreen + '20',
-    borderRadius: HIGConstants.cornerRadiusSmall,
+    marginTop: IOSSpacing.sm,
+    paddingTop: IOSSpacing.sm,
+    borderTopWidth: IOSLayout.borderWidthThin,
+    borderTopColor: IOSColors.separator,
   },
   unlockDate: {
-    fontSize: 13,
-    color: HIGColors.systemGreen,
-    fontWeight: '500',
-    textAlign: 'center',
+    ...IOSTypography.caption1,
+    fontWeight: '500' as const,
+    color: IOSColors.secondaryLabel,
   },
   lockedText: {
     opacity: 0.6,

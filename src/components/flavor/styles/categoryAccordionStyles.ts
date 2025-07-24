@@ -109,12 +109,12 @@ export const categoryAccordionStyles = StyleSheet.create({
   },
   subCategoryChip: {
     backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 25, // Perfect pill shape
     marginRight: HIGConstants.SPACING_SM,
     borderWidth: 0,
-    minHeight: 36,
+    minHeight: 40,
   },
   subCategoryChipSelected: {
     backgroundColor: HIGColors.systemBlue,
@@ -162,15 +162,15 @@ export const categoryAccordionStyles = StyleSheet.create({
   },
   flavorButton: {
     backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: HIGConstants.cornerRadiusSmall,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 25, // Perfect pill shape
     marginRight: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_SM,
     borderWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 36,
+    minHeight: 36, // Match other flavor chips
   },
   flavorButtonSelected: {
     backgroundColor: HIGColors.systemBlue,

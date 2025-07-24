@@ -9,8 +9,10 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { HIGColors, HIGConstants } from '../styles/common';
+import { IOSColors, IOSLayout, IOSTypography, IOSSpacing, IOSShadows } from '../styles/ios-hig-2024';
 import { AchievementCard } from '../components/achievements/AchievementCard';
 import { useAchievements } from '../hooks/useAchievements';
+import StatusBadge from '../components/StatusBadge';
 import { AchievementType } from '../services/AchievementSystem';
 
 type FilterType = 'all' | 'unlocked' | 'locked' | AchievementType;
@@ -84,9 +86,7 @@ export const AchievementGalleryScreen: React.FC = () => {
   };
 
   const renderStatsHeader = () => (
-    <View style={styles.statsContainer}>
-      <Text style={styles.title}>나의 업적</Text>
-      
+    <View style={styles.statsContainer}>      
       <View style={styles.statsGrid}>
         <View style={styles.statCard}>
           <Text style={styles.statNumber}>{stats.unlockedAchievements}</Text>
@@ -192,6 +192,17 @@ export const AchievementGalleryScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Navigation Bar */}
+      <View style={styles.navigationBar}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.navigationTitle}>나의 업적</Text>
+          <View style={styles.betaBadge}>
+            <Text style={styles.betaText}>BETA</Text>
+          </View>
+        </View>
+        <StatusBadge />
+      </View>
+      
       <ScrollView
         style={styles.scrollView}
         refreshControl={
@@ -211,22 +222,52 @@ export const AchievementGalleryScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HIGColors.systemBackground,
+    backgroundColor: IOSColors.systemBackground,
+  },
+  navigationBar: {
+    height: IOSLayout.navBarHeight,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: IOSSpacing.screenPadding,
+    backgroundColor: IOSColors.systemBackground,
+    borderBottomWidth: IOSLayout.borderWidthThin,
+    borderBottomColor: IOSColors.separator,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: IOSSpacing.xs,
+  },
+  navigationTitle: {
+    ...IOSTypography.headline,
+    color: IOSColors.label,
+  },
+  betaBadge: {
+    backgroundColor: IOSColors.systemBlue,
+    paddingHorizontal: IOSSpacing.xs,
+    paddingVertical: IOSSpacing.xxxs,
+    borderRadius: IOSLayout.cornerRadiusSmall,
+  },
+  betaText: {
+    ...IOSTypography.caption2,
+    fontWeight: '700' as const,
+    color: IOSColors.systemBackground,
+    letterSpacing: 0.5,
   },
   scrollView: {
     flex: 1,
   },
   statsContainer: {
-    padding: HIGConstants.SPACING_LG,
-    backgroundColor: HIGColors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: HIGColors.systemGray6,
+    padding: IOSSpacing.lg,
+    backgroundColor: IOSColors.systemBackground,
+    borderBottomWidth: IOSLayout.borderWidthThin,
+    borderBottomColor: IOSColors.separator,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_LG,
+    ...IOSTypography.title1,
+    color: IOSColors.label,
+    marginBottom: IOSSpacing.lg,
     textAlign: 'center',
   },
   statsGrid: {

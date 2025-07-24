@@ -22,7 +22,7 @@ export interface SliderSectionProps {
 }
 
 export interface MouthfeelButtonProps {
-  option: MouthfeelType;
+  mouthfeel: MouthfeelType;
   isSelected: boolean;
   onPress: () => void;
 }

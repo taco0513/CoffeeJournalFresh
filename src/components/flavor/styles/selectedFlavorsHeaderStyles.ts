@@ -42,22 +42,17 @@ export const selectedFlavorsHeaderStyles = StyleSheet.create({
   },
   selectedChip: {
     position: 'relative',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginRight: HIGConstants.SPACING_MD,
+    backgroundColor: HIGColors.systemBlue,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 25, // Perfect pill shape - half of height
+    marginRight: HIGConstants.SPACING_SM,
     marginVertical: 4,
-    borderWidth: 1,
-    borderColor: HIGColors.systemBlue,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    borderWidth: 0, // Remove border for clean pill look
     overflow: 'visible',
-    minHeight: 40,
-    minWidth: 70,
+    height: 36, // Increased for better pill proportion
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   chipTextContainer: {
     flex: 1,
@@ -66,18 +61,20 @@ export const selectedFlavorsHeaderStyles = StyleSheet.create({
   },
   selectedChipText: {
     fontSize: 14,
-    color: HIGColors.label,
+    color: '#FFFFFF', // White text to match selected state
     fontWeight: '500',
     lineHeight: 20,
   },
   selectedSubcategoryChip: {
-    backgroundColor: '#E3F2FD',
-    borderColor: HIGColors.systemBlue,
-    borderWidth: 1.5,
+    backgroundColor: HIGColors.systemBlue, // Same blue as regular selected chips
+    borderWidth: 0, // Remove border for consistency
+    height: 40, // Slightly larger for subcategories
+    borderRadius: 25, // Perfect pill shape
+    paddingHorizontal: 18,
   },
   selectedSubcategoryText: {
     fontSize: 14,
-    color: HIGColors.systemBlue,
+    color: '#FFFFFF', // White text to match selected state
     fontWeight: '600',
     lineHeight: 20,
   },

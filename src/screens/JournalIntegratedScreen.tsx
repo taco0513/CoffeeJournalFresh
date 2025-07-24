@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 // import { useTranslation } from 'react-i18next'; // Removed - using static Korean strings
 import { HIGConstants, HIGColors } from '../styles/common';
+import { IOSColors, IOSLayout, IOSTypography, IOSSpacing, IOSShadows } from '../styles/ios-hig-2024';
 import HistoryScreen from './HistoryScreen';
 import StatsScreen from './StatsScreen';
 import StatusBadge from '../components/StatusBadge';
@@ -86,64 +87,63 @@ export default function JournalIntegratedScreen({ route }: JournalIntegratedScre
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: IOSColors.systemBackground,
   },
   navigationBar: {
-    height: 44,
+    height: IOSLayout.navBarHeight,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray4,
+    paddingHorizontal: IOSSpacing.screenPadding,
+    backgroundColor: IOSColors.systemBackground,
+    borderBottomWidth: IOSLayout.borderWidthThin,
+    borderBottomColor: IOSColors.separator,
   },
   navContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   navTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
+    ...IOSTypography.headline,
+    color: IOSColors.label,
   },
   betaBadge: {
-    marginLeft: HIGConstants.SPACING_XS,
-    backgroundColor: '#FF6B35',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    marginLeft: IOSSpacing.xs,
+    backgroundColor: IOSColors.systemBlue,
+    paddingHorizontal: IOSSpacing.xs,
+    paddingVertical: IOSSpacing.xxxs,
+    borderRadius: IOSLayout.cornerRadiusSmall,
   },
   betaText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    ...IOSTypography.caption2,
+    fontWeight: '700' as const,
+    color: IOSColors.systemBackground,
   },
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    borderBottomWidth: 1,
-    borderBottomColor: HIGColors.gray6,
+    backgroundColor: IOSColors.systemBackground,
+    paddingHorizontal: IOSSpacing.screenPadding,
+    borderBottomWidth: IOSLayout.borderWidthThin,
+    borderBottomColor: IOSColors.separator,
   },
   tabButton: {
     flex: 1,
-    paddingVertical: HIGConstants.SPACING_LG,
+    paddingVertical: IOSSpacing.md,
     alignItems: 'center',
     borderBottomWidth: 2,
     borderBottomColor: 'transparent',
   },
   activeTabButton: {
-    borderBottomColor: '#8B4513',
+    borderBottomColor: IOSColors.systemBrown,
   },
   tabText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: HIGColors.secondaryLabel,
+    ...IOSTypography.body,
+    fontWeight: '500' as const,
+    color: IOSColors.secondaryLabel,
   },
   activeTabText: {
-    color: '#8B4513',
-    fontWeight: '600',
+    color: IOSColors.systemBrown,
+    fontWeight: '600' as const,
   },
   contentContainer: {
     flex: 1,

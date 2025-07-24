@@ -43,22 +43,23 @@ export default function UnifiedFlavorScreen() {
     toggleAllCategories,
   } = useFlavorSelection(selectedPaths, updateField as (field: string, value: any) => void);
 
-  // Check if this is home cafe mode (no cafeName)
-  const isHomeCafeMode = !currentTasting.cafeName;
-
   const handleNext = () => {
-    if (isHomeCafeMode) {
+    // Navigate based on mode
+    if (currentTasting.mode === 'lab') {
       navigation.navigate('ExperimentalData' as never);
     } else {
-      navigation.navigate('Sensory' as never);
+      // For both cafe and home_cafe modes, go to sensory evaluation
+      navigation.navigate('SensoryEvaluation' as never);
     }
   };
 
   const handleSkip = () => {
-    if (isHomeCafeMode) {
+    // Navigate based on mode
+    if (currentTasting.mode === 'lab') {
       navigation.navigate('ExperimentalData' as never);
     } else {
-      navigation.navigate('Sensory' as never);
+      // For both cafe and home_cafe modes, go to sensory evaluation
+      navigation.navigate('SensoryEvaluation' as never);
     }
   };
 
@@ -77,7 +78,7 @@ export default function UnifiedFlavorScreen() {
 
       {/* Progress Bar - Different progress for different modes */}
       <View style={styles.progressBar}>
-        <View style={[styles.progressFill, { width: isHomeCafeMode ? '43%' : '33%' }]} />
+        <View style={[styles.progressFill, { width: currentTasting.mode === 'lab' ? '25%' : '43%' }]} />
       </View>
 
       {/* Guide Message */}

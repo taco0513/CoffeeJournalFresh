@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated, Platform, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { FlavorCategoryProps, FlavorPath } from '../../types/flavor';
 import { FlavorChip } from './FlavorChip';
@@ -9,9 +9,6 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 const SUBCATEGORY_PILL_WIDTH = 120;
 const SUBCATEGORY_PILL_MARGIN = 8;
 const SNAP_INTERVAL = SUBCATEGORY_PILL_WIDTH + SUBCATEGORY_PILL_MARGIN;
-
-// Create animated version of TouchableOpacity
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
   category,
@@ -23,7 +20,6 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
   searchQuery,
 }) => {
   const [expandedSubcategories, setExpandedSubcategories] = React.useState<string[]>([]);
-  const scaleAnim = useRef(new Animated.Value(1)).current;
   const isScrolling = useRef(false);
   const scrollStartX = useRef(0);
   
@@ -141,36 +137,20 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
                 );
 
                 return (
-                  <AnimatedTouchableOpacity
+                  <TouchableOpacity
                     key={sub.name}
                     style={[
                       styles.subcategoryHeader,
                       isSubcategorySelected && styles.subcategoryHeaderSelected,
                       hasSelectedFlavors && !isSubcategorySelected && styles.subcategoryHeaderHasSelection,
-                      { transform: [{ scale: scaleAnim }] }
                     ]}
                     onPress={() => {
                       if (!isScrolling.current) {
-                        // Animate press
-                        Animated.sequence([
-                          Animated.timing(scaleAnim, {
-                            toValue: 0.95,
-                            duration: 100,
-                            useNativeDriver: true,
-                          }),
-                          Animated.timing(scaleAnim, {
-                            toValue: 1,
-                            duration: 100,
-                            useNativeDriver: true,
-                          }),
-                        ]).start();
-                        
                         ReactNativeHapticFeedback.trigger('impactLight');
                         onSelectFlavor(category.category, sub.name, '');
                       }
                     }}
-                    delayPressIn={0}
-                    activeOpacity={1}
+                    activeOpacity={0.7}
                     accessible={true}
                     accessibilityLabel={`${sub.koreanName} 서브카테고리`}
                     accessibilityHint={isSubcategorySelected ? 
@@ -312,14 +292,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-start',
     backgroundColor: HIGColors.systemGray6,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
     marginBottom: HIGConstants.SPACING_XS,
-    borderRadius: 8,
+    borderRadius: 25, // Perfect pill shape - half of height
     marginRight: SUBCATEGORY_PILL_MARGIN,
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray4,
-    height: 36, // Medium size for subcategories
+    borderWidth: 0, // Remove border for clean pill look
+    height: 40, // Increased for better pill proportion
     minWidth: SUBCATEGORY_PILL_WIDTH,
     justifyContent: 'center',
   },

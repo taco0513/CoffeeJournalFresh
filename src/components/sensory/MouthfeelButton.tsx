@@ -3,7 +3,7 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { HIGConstants, HIGColors, hitSlop } from '../../styles/common';
 import { MouthfeelButtonProps } from '../../types/sensory';
 
-export const MouthfeelButton: React.FC<MouthfeelButtonProps> = ({ option, isSelected, onPress }) => {
+export const MouthfeelButton: React.FC<MouthfeelButtonProps> = ({ mouthfeel, isSelected, onPress }) => {
   return (
     <TouchableOpacity
       style={[
@@ -19,7 +19,7 @@ export const MouthfeelButton: React.FC<MouthfeelButtonProps> = ({ option, isSele
           isSelected && styles.selectedMouthfeelText,
         ]}
       >
-        {option}
+        {mouthfeel}
       </Text>
     </TouchableOpacity>
   );
@@ -27,25 +27,31 @@ export const MouthfeelButton: React.FC<MouthfeelButtonProps> = ({ option, isSele
 
 const styles = StyleSheet.create({
   mouthfeelButton: {
-    flex: 1,
-    minWidth: '45%',
-    minHeight: 40,
     backgroundColor: '#F8F9FA',
     borderWidth: 1,
     borderColor: '#E5E5EA',
-    borderRadius: 10,
-    paddingVertical: HIGConstants.SPACING_SM,
-    paddingHorizontal: HIGConstants.SPACING_SM,
+    borderRadius: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 8,
+    marginBottom: 8,
+    minHeight: 32,
   },
   selectedMouthfeel: {
     backgroundColor: HIGColors.systemBlue,
     borderColor: HIGColors.systemBlue,
-    borderWidth: 1.5,
+    borderWidth: 2,
+    transform: [{ scale: 1.05 }],
+    shadowColor: HIGColors.systemBlue,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
   },
   mouthfeelText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 // import { useTranslation } from 'react-i18next'; // Removed - using static Korean strings
 import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
+import { IOSColors, IOSLayout, IOSTypography, IOSSpacing, IOSShadows } from '../styles/ios-hig-2024';
 import RealmService from '../services/realm/RealmService';
 import { useUserStore } from '../stores/useUserStore';
 import { useDevStore } from '../stores/useDevStore';
@@ -346,9 +347,6 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     return insights.slice(0, 3); // 최대 3개만 반환
   }, [realmService]);
 
-  const handleNewTasting = () => {
-    navigation.navigate('TastingFlow' as never, { screen: 'ModeSelection' } as never);
-  };
 
   const handleViewHistory = () => {
     navigation.navigate('Journal' as never);
@@ -367,8 +365,6 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     statCardHeight: isSmallScreen ? 65 : isLargeScreen ? 85 : 75,
     statValueSize: isSmallScreen ? 20 : isLargeScreen ? 28 : 24,
     statLabelSize: isSmallScreen ? 11 : isLargeScreen ? 13 : 12,
-    buttonHeight: isSmallScreen ? 60 : isLargeScreen ? 70 : 65, // 버튼 높이 감소
-    buttonTitleSize: isSmallScreen ? 20 : isLargeScreen ? 24 : 22, // 제목 크기 증가
   }), [isSmallScreen, isLargeScreen]);
 
 
@@ -519,18 +515,6 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
             </View>
           )}
 
-          {/* 빠른 액션 버튼 - 맨 아래로 이동 */}
-          <TouchableOpacity 
-            style={[styles.primaryActionCard, { minHeight: responsiveStyles.buttonHeight }]}
-            onPress={handleNewTasting}
-            activeOpacity={0.7}
-            accessible={true}
-            accessibilityLabel="커피 기록하기"
-            accessibilityHint="탭하여 새로운 커피 테이스팅을 기록합니다"
-            accessibilityRole="button"
-          >
-            <Text style={[styles.primaryActionTitle, { fontSize: responsiveStyles.buttonTitleSize }]}>☕ 새로운 커피 기록하기</Text>
-          </TouchableOpacity>
 
             </>
           )}
@@ -561,23 +545,22 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: IOSSpacing.xs,
   },
   navigationTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
+    ...IOSTypography.headline,
+    color: IOSColors.label,
   },
   betaBadge: {
-    backgroundColor: HIGColors.accent,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
+    backgroundColor: IOSColors.systemBlue,
+    paddingHorizontal: IOSSpacing.xs,
+    paddingVertical: IOSSpacing.xxxs,
+    borderRadius: IOSLayout.cornerRadiusSmall,
   },
   betaText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: HIGColors.white,
+    ...IOSTypography.caption2,
+    fontWeight: '700' as const,
+    color: IOSColors.systemBackground,
     letterSpacing: 0.5,
   },
   languageSwitch: {
@@ -585,113 +568,75 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: HIGConstants.SPACING_MD,
+    paddingHorizontal: IOSSpacing.screenPadding,
   },
   welcomeSection: {
-    paddingTop: HIGConstants.SPACING_XL * 2,
-    paddingBottom: HIGConstants.SPACING_XL * 2,
+    paddingTop: IOSSpacing.xxxl,
+    paddingBottom: IOSSpacing.xxxl,
     alignItems: 'center',
   },
   statsOverview: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: HIGConstants.SPACING_MD,
+    marginBottom: IOSSpacing.md,
     paddingHorizontal: 0,
-    gap: HIGConstants.SPACING_SM,
+    gap: IOSSpacing.sm,
   },
   statCard: {
-    flex: 1, // 균등하게 3등분
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_MD,
+    flex: 1,
+    backgroundColor: IOSColors.secondarySystemGroupedBackground,
+    borderRadius: IOSLayout.cornerRadiusMedium,
+    padding: IOSSpacing.sm,
+    paddingVertical: IOSSpacing.md,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: '#F1F5F9',
+    ...IOSShadows.small,
     minHeight: 75,
   },
   statValue: {
-    fontSize: 24, // 크기 줄임
-    fontWeight: '700',
-    color: '#2563EB',
-    marginBottom: HIGConstants.SPACING_XS,
+    ...IOSTypography.title2,
+    color: IOSColors.systemBlue,
+    marginBottom: IOSSpacing.xxs,
   },
   statLabel: {
-    fontSize: 12, // 크기 줄임
-    fontWeight: '600',
-    color: HIGColors.label,
+    ...IOSTypography.caption1,
+    color: IOSColors.label,
     textAlign: 'center',
-    lineHeight: 16,
-  },
-  primaryActionCard: {
-    backgroundColor: HIGColors.blue,
-    borderRadius: 16,
-    paddingVertical: HIGConstants.SPACING_MD,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_MD,
-    marginHorizontal: 0,
-    marginTop: HIGConstants.SPACING_SM,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 70,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  primaryActionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: HIGColors.white,
-    letterSpacing: 0.3,
   },
   welcomeTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: HIGColors.label,
+    ...IOSTypography.title1,
+    color: IOSColors.label,
   },
   insightsSection: {
-    marginBottom: HIGConstants.SPACING_SM,
-    marginTop: HIGConstants.SPACING_SM,
+    marginBottom: IOSSpacing.sm,
+    marginTop: IOSSpacing.sm,
   },
   insightHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: IOSSpacing.sm,
   },
   insightIcon: {
-    fontSize: 20,
-    marginRight: HIGConstants.SPACING_SM,
+    fontSize: IOSLayout.iconSizeMedium,
+    marginRight: IOSSpacing.sm,
   },
   insightTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: HIGColors.label,
+    ...IOSTypography.headline,
+    color: IOSColors.label,
   },
   
   // Coffee Discovery Styles
   discoverySection: {
-    backgroundColor: '#F3E5F5',
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_LG,
-    borderWidth: 1,
-    borderColor: HIGColors.purple,
+    backgroundColor: IOSColors.systemPurple + '10',
+    borderRadius: IOSLayout.cornerRadiusMedium,
+    padding: IOSSpacing.md,
+    marginBottom: IOSSpacing.lg,
+    borderWidth: IOSLayout.borderWidthThin,
+    borderColor: IOSColors.systemPurple,
   },
   discoverySectionTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
+    ...IOSTypography.headline,
+    color: IOSColors.label,
+    marginBottom: IOSSpacing.sm,
   },
   discoveryStats: {
     flexDirection: 'row',
@@ -713,26 +658,19 @@ const styles = StyleSheet.create({
   
   // Admin Button
   adminButton: {
-    backgroundColor: '#FFF3E0',
-    borderRadius: 12,
-    padding: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_SM,
+    backgroundColor: IOSColors.systemOrange + '10',
+    borderRadius: IOSLayout.cornerRadiusMedium,
+    padding: IOSSpacing.md,
+    marginBottom: IOSSpacing.sm,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: HIGColors.orange,
-    shadowColor: HIGColors.orange,
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
+    borderWidth: IOSLayout.borderWidthThin,
+    borderColor: IOSColors.systemOrange,
+    ...IOSShadows.small,
   },
   adminButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: HIGColors.label,
+    ...IOSTypography.body,
+    fontWeight: '700' as const,
+    color: IOSColors.label,
     letterSpacing: 0.2,
   },
   
@@ -741,61 +679,61 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: HIGConstants.SPACING_XL * 3,
+    paddingVertical: IOSSpacing.xxxl * 2,
   },
   loadingText: {
-    fontSize: 16,
-    color: HIGColors.secondaryLabel,
-    marginTop: HIGConstants.SPACING_MD,
+    ...IOSTypography.body,
+    color: IOSColors.secondaryLabel,
+    marginTop: IOSSpacing.md,
   },
   errorContainer: {
-    backgroundColor: '#FEE',
-    borderRadius: 16,
-    padding: HIGConstants.SPACING_LG,
-    marginVertical: HIGConstants.SPACING_LG,
+    backgroundColor: IOSColors.systemRed + '10',
+    borderRadius: IOSLayout.cornerRadiusLarge,
+    padding: IOSSpacing.lg,
+    marginVertical: IOSSpacing.lg,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#FCC',
+    borderWidth: IOSLayout.borderWidthThin,
+    borderColor: IOSColors.systemRed + '20',
   },
   errorIcon: {
     fontSize: 48,
-    marginBottom: HIGConstants.SPACING_MD,
+    marginBottom: IOSSpacing.md,
   },
   errorText: {
-    fontSize: 16,
-    color: HIGColors.red,
+    ...IOSTypography.body,
+    color: IOSColors.systemRed,
     textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_LG,
+    marginBottom: IOSSpacing.lg,
   },
   retryButton: {
-    backgroundColor: HIGColors.red,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_MD,
-    borderRadius: HIGConstants.BORDER_RADIUS,
+    backgroundColor: IOSColors.systemRed,
+    paddingHorizontal: IOSSpacing.lg,
+    paddingVertical: IOSSpacing.md,
+    borderRadius: IOSLayout.cornerRadiusMedium,
   },
   retryButtonText: {
-    color: HIGColors.white,
-    fontSize: 15,
-    fontWeight: '600',
+    ...IOSTypography.subheadline,
+    fontWeight: '600' as const,
+    color: IOSColors.systemBackground,
   },
 
   // Skeleton Loading Styles
   skeletonCard: {
-    backgroundColor: '#F8F9FA',
-    borderColor: '#E9ECEF',
+    backgroundColor: IOSColors.systemGray6,
+    borderColor: IOSColors.systemGray5,
   },
   skeletonValue: {
     width: '50%',
     height: 20,
-    backgroundColor: '#E9ECEF',
-    borderRadius: 4,
-    marginBottom: HIGConstants.SPACING_XS,
+    backgroundColor: IOSColors.systemGray5,
+    borderRadius: IOSLayout.cornerRadiusSmall,
+    marginBottom: IOSSpacing.xxs,
   },
   skeletonLabel: {
     width: '70%',
     height: 12,
-    backgroundColor: '#E9ECEF',
-    borderRadius: 4,
+    backgroundColor: IOSColors.systemGray5,
+    borderRadius: IOSLayout.cornerRadiusSmall,
   },
   insightCard: {
     flexDirection: 'row',
