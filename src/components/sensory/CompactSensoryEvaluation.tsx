@@ -43,6 +43,12 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
     expression: SensoryExpression
   ) => {
     const currentExpressions = selectedExpressions || [];
+    
+    // Check if this exact expression (by korean text) is already selected anywhere
+    const globallySelected = currentExpressions.some(
+      item => item.expression.korean === expression.korean
+    );
+    
     const existingIndex = currentExpressions.findIndex(
       item => item.categoryId === categoryId && item.expression.id === expression.id
     );
@@ -53,10 +59,15 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
     let newExpressions = [...currentExpressions];
 
     if (existingIndex >= 0) {
+      // Deselecting - always allow
       newExpressions.splice(existingIndex, 1);
     } else {
+      // Selecting - check limits and global selection
       if (categorySelections.length >= MAX_PER_CATEGORY) {
-        return;
+        return; // Category limit reached
+      }
+      if (globallySelected) {
+        return; // Expression already selected in another category
       }
       newExpressions.push({ categoryId, expression });
     }
@@ -150,8 +161,22 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
           
           // Also check if this expression is selected in ANY category (global selection check)
           const isGloballySelected = safeSelectedExpressions.some(
-            item => item.expression.korean === expression.korean
+            item => item.expression.korean === expression.korean && item.categoryId !== activeCategory
           );
+          
+          // Debug logging
+          if (__DEV__ && expression.korean === '스모키한') {
+            console.log('스모키한 debug:', {
+              activeCategory,
+              isSelected,
+              isGloballySelected,
+              isDisabled,
+              safeSelectedExpressions: safeSelectedExpressions.map(item => ({
+                korean: item.expression.korean,
+                categoryId: item.categoryId
+              }))
+            });
+          }
           
           return (
             <TouchableOpacity
@@ -162,9 +187,17 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
                 isGloballySelected && !isSelected && styles.expressionButtonGloballySelected,
                 isDisabled && styles.expressionButtonDisabled
               ]}
-              onPress={() => !isDisabled && !isGloballySelected && handleExpressionSelect(activeCategory, expression)}
-              activeOpacity={(isDisabled || isGloballySelected) ? 1 : 0.7}
-              disabled={isDisabled || (isGloballySelected && !isSelected)}
+              onPress={() => {
+                if (isSelected) {
+                  // Always allow deselection
+                  handleExpressionSelect(activeCategory, expression);
+                } else if (!isDisabled && !isGloballySelected) {
+                  // Only allow selection if not disabled and not globally selected
+                  handleExpressionSelect(activeCategory, expression);
+                }
+              }}
+              activeOpacity={(isDisabled || (isGloballySelected && !isSelected)) ? 1 : 0.7}
+              disabled={isDisabled && !isSelected}
             >
               <Text style={[
                 styles.expressionText,
