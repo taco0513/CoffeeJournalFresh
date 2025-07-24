@@ -227,7 +227,9 @@ export class MockDataService {
    */
   private static generateHomeCafeData(count: number): TastingData[] {
     const data: TastingData[] = [];
-    const brewingMethods = ['V60', 'Chemex', 'French Press', 'AeroPress', 'Kalita Wave'];
+    const drippers = ['V60', 'KalitaWave', 'Origami', 'Chemex', 'FellowStagg'] as const;
+    const filters = ['bleached', 'natural', 'wave', 'chemex'] as const;
+    const pourTechniques = ['center', 'spiral', 'pulse', 'continuous'] as const;
     const grinders = [
       { brand: '커맨단테', model: 'C40' },
       { brand: '하리오', model: 'Mini Mill Slim' },
@@ -237,7 +239,7 @@ export class MockDataService {
 
     for (let i = 0; i < count; i++) {
       const grinder = grinders[i % grinders.length];
-      const brewingMethod = brewingMethods[i % brewingMethods.length];
+      const dripper = drippers[i % drippers.length];
       
       data.push({
         coffeeInfo: {
@@ -249,7 +251,7 @@ export class MockDataService {
           process: ['Washed', 'Natural', 'Honey'][i % 3],
           temperature: 'hot' as const
         },
-        roasterNotes: `홈카페 실험 #${i + 1} - ${brewingMethod} 추출법 테스트`,
+        roasterNotes: `홈카페 실험 #${i + 1} - ${dripper} 추출법 테스트`,
         selectedFlavors: [
           { level: 1, value: 'Fruity', koreanValue: '과일향' },
           { level: 2, value: 'Berry', koreanValue: '베리류' }
@@ -273,27 +275,38 @@ export class MockDataService {
         mode: 'home_cafe',
         homeCafeData: {
           equipment: {
-            brewingMethod: brewingMethod as any,
+            dripper: dripper as any,
+            dripperSize: dripper === 'V60' ? '02' : dripper === 'KalitaWave' ? '185' : undefined,
+            filter: filters[i % filters.length] as any,
             grinder: {
               brand: grinder.brand,
               model: grinder.model,
               setting: `${Math.floor(Math.random() * 20) + 10}클릭`
             },
-            filter: 'V60 필터 #01',
-            other: '구스넥 주전자, 디지털 저울'
+            server: '하리오 서버 600ml',
+            scale: 'Acaia Pearl',
+            kettle: '펠로우 스태그 EKG'
           },
           recipe: {
-            doseIn: Math.floor(Math.random() * 10) + 15, // 15-25g
-            waterAmount: Math.floor(Math.random() * 100) + 250, // 250-350ml
-            ratio: `1:${Math.floor(Math.random() * 5) + 14}`, // 1:14 to 1:18
-            waterTemp: Math.floor(Math.random() * 10) + 90, // 90-100°C
-            bloomTime: Math.floor(Math.random() * 20) + 30, // 30-50s
-            totalBrewTime: Math.floor(Math.random() * 60) + 120, // 2-3 minutes
-            pourPattern: ['한 번에 붓기', '3번 나누어 붓기', '5번 나누어 붓기'][i % 3]
+            doseIn: Math.floor(Math.random() * 5) + 15, // 15-20g
+            waterAmount: Math.floor(Math.random() * 50) + 240, // 240-290ml
+            ratio: `1:${Math.floor(Math.random() * 3) + 15}`, // 1:15 to 1:17
+            waterTemp: Math.floor(Math.random() * 5) + 91, // 91-95°C
+            bloomWater: 30 + Math.floor(Math.random() * 10), // 30-40g
+            bloomTime: 30 + Math.floor(Math.random() * 15), // 30-45s
+            bloomAgitation: Math.random() > 0.5,
+            pourTechnique: pourTechniques[i % pourTechniques.length] as any,
+            numberOfPours: Math.floor(Math.random() * 3) + 2, // 2-4 pours
+            totalBrewTime: Math.floor(Math.random() * 60) + 150, // 2.5-3.5 minutes
+            drawdownTime: Math.floor(Math.random() * 30) + 20, // 20-50s
+            agitation: ['none', 'swirl', 'stir'][i % 3] as any,
+            agitationTiming: '마지막 붓기 후'
           },
           notes: {
-            previousChange: `실험 ${i}: 그라인딩을 더 굵게 조정`,
-            result: '산미가 밝아지고 단맛이 더 선명해짐',
+            grindAdjustment: `${Math.floor(Math.random() * 3) + 1}클릭 더 굵게`,
+            channeling: Math.random() > 0.8,
+            mudBed: Math.random() > 0.9,
+            tasteResult: '산미가 밝아지고 단맛이 더 선명해짐',
             nextExperiment: '물온도를 2도 낮춰서 시도해보기'
           }
         }
@@ -444,29 +457,44 @@ export class MockDataService {
    * Generate expert-level HomeCafe data
    */
   private static generateExpertHomeCafeData(): HomeCafeData {
+    const expertDrippers = ['V60', 'Origami', 'April', 'Orea'] as const;
+    const expertTechniques = ['spiral', 'pulse', 'multiStage'] as const;
+    
     return {
       equipment: {
-        brewingMethod: 'V60' as any,
+        dripper: expertDrippers[Math.floor(Math.random() * expertDrippers.length)] as any,
+        dripperSize: '02',
+        filter: 'bleached' as any,
         grinder: {
-          brand: '펠로우',
-          model: 'Ode',
-          setting: '4.5'
+          brand: 'EK43',
+          model: 'Mahlkonig',
+          setting: '8.5'
         },
-        filter: 'V60 필터 #01 화이트',
-        other: '펠로우 스테그 주전자, 아카이아 루나 저울, 온도계'
+        server: 'Hario V60 Range Server',
+        scale: 'Acaia Lunar',
+        kettle: 'Fellow Stagg EKG Pro'
       },
       recipe: {
         doseIn: 20,
         waterAmount: 320,
         ratio: '1:16',
-        waterTemp: 92,
-        bloomTime: 30,
-        totalBrewTime: 150,
-        pourPattern: '5번 나누어 붓기 (센터 포어링)'
+        waterTemp: 93,
+        bloomWater: 40,
+        bloomTime: 45,
+        bloomAgitation: true,
+        pourTechnique: expertTechniques[Math.floor(Math.random() * expertTechniques.length)] as any,
+        numberOfPours: 5,
+        pourIntervals: [45, 30, 30, 30, 30],
+        totalBrewTime: 210,
+        drawdownTime: 25,
+        agitation: 'swirl' as any,
+        agitationTiming: '블룸 후, 마지막 붓기 후'
       },
       notes: {
-        previousChange: 'TDS 1.35에서 추출 수율 조정을 위해 그라인딩 미세 조정',
-        result: '향미의 복합성이 극대화되면서도 클린한 피니시 달성',
+        grindAdjustment: 'TDS 1.35 목표, 0.2 미세 조정',
+        channeling: false,
+        mudBed: false,
+        tasteResult: '향미의 복합성이 극대화되면서도 클린한 피니시 달성',
         nextExperiment: '물의 미네랄 함량 조정을 통한 산미 밸런스 최적화'
       }
     };

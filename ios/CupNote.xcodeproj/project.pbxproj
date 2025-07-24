@@ -281,7 +281,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n/Users/zimo_mbp16_m1max/Projects/CupNote/ios/fix_hermes_sandbox.sh\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n# Skipping fix_hermes_sandbox.sh - file not found\nexit 0\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

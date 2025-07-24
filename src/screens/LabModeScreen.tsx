@@ -9,9 +9,9 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useTastingStore } from '../stores/tastingStore';
 import { HIGColors, HIGConstants } from '../styles/common';
-import { HomeCafeSimpleForm } from '../components/HomeCafeSimpleForm';
+import { LabModeForm } from '../components/LabModeForm';
 
-const HomeCafeScreen = () => {
+const LabModeScreen = () => {
   const navigation = useNavigation();
   const { currentTasting } = useTastingStore();
 
@@ -23,11 +23,14 @@ const HomeCafeScreen = () => {
     navigation.navigate('UnifiedFlavor' as never);
   };
 
-  // 필수 필드 검증 - 간소화된 홈카페 모드
+  // 필수 필드 검증 - 랩 모드
   const isValid = 
-    currentTasting.simpleHomeCafeData?.dripper &&
-    (currentTasting.simpleHomeCafeData?.recipe.coffeeAmount || 0) > 0 &&
-    (currentTasting.simpleHomeCafeData?.recipe.waterAmount || 0) > 0;
+    currentTasting.labModeData?.equipment.dripper &&
+    currentTasting.labModeData?.equipment.filter &&
+    (currentTasting.labModeData?.recipe.doseIn || 0) > 0 &&
+    (currentTasting.labModeData?.recipe.waterAmount || 0) > 0 &&
+    (currentTasting.labModeData?.recipe.waterTemp || 0) > 0 &&
+    (currentTasting.labModeData?.recipe.totalBrewTime || 0) > 0;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -39,7 +42,7 @@ const HomeCafeScreen = () => {
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>홈카페 정보</Text>
+        <Text style={styles.headerTitle}>랩 모드</Text>
         <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
           <Text style={styles.skipText}>건너뛰기</Text>
         </TouchableOpacity>
@@ -56,13 +59,13 @@ const HomeCafeScreen = () => {
       {/* Content */}
       <View style={styles.content}>
         <View style={styles.titleSection}>
-          <Text style={styles.title}>🏠 간단 홈카페 기록</Text>
+          <Text style={styles.title}>🧪 전문가 수준 분석</Text>
           <Text style={styles.subtitle}>
-            5개 필드로 빠르게 기록해보세요
+            모든 추출 변수를 상세히 기록하고 분석해보세요
           </Text>
         </View>
 
-        <HomeCafeSimpleForm />
+        <LabModeForm />
       </View>
 
       {/* Bottom Button */}
@@ -194,4 +197,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeCafeScreen;
+export default LabModeScreen;

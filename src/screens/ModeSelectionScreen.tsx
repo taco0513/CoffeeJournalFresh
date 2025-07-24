@@ -25,7 +25,7 @@ const ModeSelectionScreen = () => {
       id: 'cafe' as TastingMode,
       title: '카페 모드',
       subtitle: '카페에서 마신 커피 기록',
-      description: '카페명, 가격, 분위기 등\n간편하게 기록하세요',
+      description: '카페명과 함께 커피 맛을\n간편하게 기록하세요',
       icon: '☕',
       color: HIGColors.systemBlue,
       popular: true,
@@ -33,11 +33,22 @@ const ModeSelectionScreen = () => {
     {
       id: 'home_cafe' as TastingMode,
       title: '홈카페 모드',
-      subtitle: '집에서 내린 커피 기록',
-      description: '장비, 레시피, 추출 변수를\n상세하게 기록하세요',
+      subtitle: '간단한 홈카페 기록',
+      description: '드리퍼, 레시피, 한줄평\n5개 필드로 간편하게',
       icon: '🏠',
       color: HIGColors.systemGreen,
       popular: false,
+      badge: '추천',
+    },
+    {
+      id: 'lab' as TastingMode,
+      title: '랩 모드',
+      subtitle: '전문가 수준 분석',
+      description: '블룸, 붓기 패턴, 채널링\n20개+ 필드 상세 기록',
+      icon: '🧪',
+      color: HIGColors.systemPurple,
+      popular: false,
+      badge: '고급',
     },
   ];
 
@@ -70,9 +81,14 @@ const ModeSelectionScreen = () => {
               onPress={() => handleModeSelect(mode.id)}
               activeOpacity={0.7}
             >
-              {mode.popular && (
-                <View style={styles.popularBadge}>
-                  <Text style={styles.popularText}>인기</Text>
+              {(mode.popular || mode.badge) && (
+                <View style={[styles.popularBadge, mode.badge && styles.recommendBadge]}>
+                  <Text style={[
+                    styles.popularText, 
+                    mode.badge === '고급' && styles.advancedText
+                  ]}>
+                    {mode.badge || '인기'}
+                  </Text>
                 </View>
               )}
               
@@ -182,6 +198,12 @@ const styles = StyleSheet.create({
     color: HIGColors.white,
     fontSize: 12,
     fontWeight: '700',
+  },
+  recommendBadge: {
+    backgroundColor: HIGColors.systemGreen,
+  },
+  advancedText: {
+    backgroundColor: HIGColors.systemPurple,
   },
   modeIcon: {
     marginRight: HIGConstants.SPACING_LG,

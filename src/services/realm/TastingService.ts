@@ -201,7 +201,9 @@ export class TastingService {
             mode: data.mode || 'cafe',
             
             // Home Cafe Data (stored as JSON string)
-            homeCafeData: data.homeCafeData ? JSON.stringify(data.homeCafeData) : null,
+            homeCafeData: data.homeCafeData ? JSON.stringify(data.homeCafeData) : 
+                         data.simpleHomeCafeData ? JSON.stringify(data.simpleHomeCafeData) :
+                         data.labModeData ? JSON.stringify(data.labModeData) : null,
             
             // Sync status
             isSynced: false,

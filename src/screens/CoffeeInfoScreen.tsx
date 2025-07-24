@@ -100,6 +100,8 @@ const CoffeeInfoScreen = () => {
       // Navigate based on mode
       if (currentTasting.mode === 'home_cafe') {
         navigation.navigate('HomeCafe' as never);
+      } else if (currentTasting.mode === 'lab') {
+        navigation.navigate('LabMode' as never);
       } else {
         navigation.navigate('UnifiedFlavor' as never);
       }

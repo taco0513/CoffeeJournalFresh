@@ -35,27 +35,33 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 4. **Cultural adaptation** with 44 Korean taste expressions
 5. **Achievement system** for habit formation
 
-## Current Focus (2025-07-24) - Complete CupNote Rebranding Finished ✅
-**Domain Strategy Update**: cupnote.com unavailable → cupnoteapp.com (recommended for MVP launch)
-- **Status**: 100% MVP Complete + Comprehensive Rebranding Completed
-- **Latest Achievement**: ✅ **MASTER REBRANDING COMPLETE** - All CoffeeJournalFresh references eliminated
-- **Comprehensive Review Results**: Deep scan found and fixed 50+ additional references
-- **Critical Fixes Applied**: 
-  - **✅ iOS Native Config**: Bundle ID com.brianjin.CupNote → com.cupnote.app in project.pbxproj & Info.plist
-  - **✅ Source Code Storage**: All AsyncStorage keys updated (@coffee_journal_* → @cupnote_*)
-  - **✅ Auth & Deep Links**: Auth storage & URL schemes updated (cupnote:// redirects)
-  - **✅ Privacy & Legal**: Contact email updated (privacy@cupnote.app)
-  - **✅ Documentation**: 20+ doc files updated, all user-facing content rebranded
-  - **✅ Bundle ID Unification**: Standardized to com.cupnote.app across all platforms
+## Current Focus (2025-07-24) - HomeCafe Mode (Pourover-Focused) ✅
+**Major Update**: HomeCafe mode now exclusively focused on **pourover brewing methods**
+- **Status**: 100% MVP Complete + Pourover-specific implementation
+- **Latest Achievement**: ✅ **HOMECAFE MODE COMPLETE** - Specialty coffee pourover focus
+- **HomeCafe Implementation**: 
+  - **✅ 10 Dripper Support**: V60, Kalita Wave, Origami, Chemex, Fellow Stagg, April, Orea, Flower Dripper, Blue Bottle, Timemore Crystal Eye
+  - **✅ Filter Types**: Bleached, Natural, Wave, Chemex, Metal, Cloth
+  - **✅ Pour Techniques**: Center, Spiral, Pulse, Continuous, Multi-stage
+  - **✅ Bloom Control**: Water amount, time, agitation options
+  - **✅ Advanced Recipe**: Dose, water, ratio, temperature, brew time, drawdown
+  - **✅ Experiment Notes**: Grind adjustment, channeling, mud bed, taste results
+  - **✅ Equipment Tracking**: Grinder, server, scale, kettle details
+- **Technical Updates**:
+  - New `HomeCafePouroverForm.tsx` component with comprehensive UI
+  - Updated TypeScript interfaces for pourover-specific data
+  - Enhanced Supabase migration v0.8.0 with pourover analytics views
+  - Dripper comparison and recipe optimization database functions
 - **Quality Services**: MockDataService, AccessControlService, ErrorRecoveryService all active
 - **Completed Features**: 
   - Korean expressions fully integrated into TastingFlow
   - CATA (Check All That Apply) methodology per SCA 2024 standards
   - 4-step onboarding system with AsyncStorage persistence
-  - **✅ Home Cafe Mode**: Mode selection, equipment tracking, recipe management
+  - **✅ HomeCafe Mode**: Dripper selection, detailed recipe tracking, experiment notes
   - **✅ HomeCafe Data Storage**: Full backend persistence implementation
   - **✅ Database Schema**: Realm + Supabase support for HomeCafe data
-  - **✅ Dual User Paths**: Cafe visitors vs Home cafe enthusiasts
+  - **✅ Dual User Paths**: Cafe visitors vs HomeCafe enthusiasts
+  - **🆕 HomeCafe Analytics**: Dripper comparison, recipe optimization views
   - **🆕 MockDataService**: 5 specialized testing scenarios (Beginner, Intermediate, Expert, HomeCafe, Statistics)
   - **🆕 AccessControlService**: Role-based permissions with auto-detection (4 roles, 16 permissions)
   - **🆕 ErrorRecoveryService**: Intelligent error handling with 7 recovery strategies
@@ -63,21 +69,25 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 - **Key Technical Features**:
   - 44 Korean expressions across 6 categories
   - Multi-selection support (max 3 per category)
-  - HomeCafeData interface with equipment, recipe, experiment notes
-  - Full data persistence (local + cloud sync)
-  - Auto-calculating brew ratios (1:15, 1:16, etc.)
+  - PouroverDripper type with 10 popular drippers
+  - FilterType, PourTechnique enums for type safety
+  - Comprehensive recipe tracking with bloom phase
+  - Experiment notes for iterative improvement
+  - Auto-calculating brew ratios
   - Conditional UI rendering based on selected mode
   - Professional UI with category-specific colors
 
 ## MVP Focus (Market-Validated 2025-07-23)
 - **Target**: 스페셜티 커피 입문자 + 홈카페족 (Korean specialty coffee beginners + Home cafe enthusiasts)
 - **Core Features**: 
-  - ✅ **Dual Mode System**: Cafe Mode + Home Cafe Mode user paths
+  - ✅ **3-Tier Mode System**: Cafe Mode + HomeCafe Mode (Simple) + Lab Mode (Advanced)
   - ✅ **모드별 테이스팅 워크플로우**:
     - **카페 모드**: 모드 선택 → 커피 정보 → 향미 선택 → 감각 평가 → 개인 노트 → 결과
-    - **홈카페 모드**: 모드 선택 → 커피 정보 → 홈카페 정보 → 향미 선택 → 실험 데이터 → 감각 평가 → 개인 노트 → 결과
+    - **홈카페 모드**: 모드 선택 → 커피 정보 → 간단 홈카페 정보 (5 필드) → 향미 선택 → 감각 평가 → 개인 노트 → 결과
+    - **랩 모드**: 모드 선택 → 커피 정보 → 상세 랩 정보 (20+ 필드) → 향미 선택 → 실험 데이터 → 감각 평가 → 개인 노트 → 결과
   - ✅ Korean 감각 평가 시스템 (44개 표현, CATA 방법론)
-  - ✅ **홈카페 모드**: 장비 선택, 레시피 관리, 실험 노트
+  - ✅ **홈카페 모드 (간소화)**: 4가지 드리퍼, 5개 필드로 간편 기록
+  - ✅ **랩 모드 (고급)**: 10가지 드리퍼, 20+ 필드로 전문가 수준 분석
   - ✅ 기본 통계 및 기록 관리
   - ✅ 성취 시스템 (백엔드 구현 완료, UI 구현 필요)
   - ✅ 사진 관리 시스템 (PhotoGallery, PhotoViewer, PhotoService 유지)
@@ -85,6 +95,7 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 - **UI**: 3-tab navigation (Home, Journal, Profile)
 - **Target Expansion**: 기존 카페 방문자 + 20만+ 홈카페족 시장 확장
 - **Removed from MVP**: AI 코칭, OCR/사진 스캔, 소셜 기능, 국제화, 데이터 내보내기
+- **Pourover Focus**: 에어로프레스, 프렌치프레스, 에스프레소 제외 - 오직 핸드드립 푸어오버만 (케멕스 포함)
 
 ## Market Research Summary (2025-07-24)
 ### **Korean Coffee Market Size**

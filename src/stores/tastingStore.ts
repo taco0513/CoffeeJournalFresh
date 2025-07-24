@@ -11,7 +11,9 @@ import {
   CurrentTasting,
   Achievement,
   TastingMode,
-  HomeCafeData
+  HomeCafeData,
+  SimpleHomeCafeData,
+  LabModeData
 } from '../types/tasting';
 
 interface TastingState {
@@ -31,7 +33,9 @@ interface TastingState {
   
   // Mode management
   setTastingMode: (mode: TastingMode) => void;
-  updateHomeCafeData: (data: Partial<HomeCafeData>) => void;
+  updateHomeCafeData: (data: Partial<HomeCafeData> | HomeCafeData) => void;
+  updateSimpleHomeCafeData: (data: Partial<SimpleHomeCafeData> | SimpleHomeCafeData) => void;
+  updateLabModeData: (data: Partial<LabModeData> | LabModeData) => void;
   
   // Auto-save functionality
   autoSave: () => Promise<void>;
@@ -136,6 +140,8 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         personalComment: currentTasting.personalComment,
         mode: currentTasting.mode,
         homeCafeData: currentTasting.homeCafeData,
+        simpleHomeCafeData: currentTasting.simpleHomeCafeData,
+        labModeData: currentTasting.labModeData,
       });
 
       // 저장 후 점수 계산
@@ -285,31 +291,46 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         ...state.currentTasting,
         mode,
         // Clear mode-specific data when switching
-        ...(mode === 'cafe' ? { homeCafeData: undefined } : { cafeName: '' }),
+        ...(mode === 'cafe' ? { 
+          homeCafeData: undefined, 
+          simpleHomeCafeData: undefined, 
+          labModeData: undefined 
+        } : {}),
+        ...(mode === 'home_cafe' ? { 
+          cafeName: '', 
+          labModeData: undefined 
+        } : {}),
+        ...(mode === 'lab' ? { 
+          cafeName: '', 
+          simpleHomeCafeData: undefined 
+        } : {}),
       },
     }));
   },
 
-  updateHomeCafeData: (data: Partial<HomeCafeData>) => {
+  updateHomeCafeData: (data: Partial<HomeCafeData> | HomeCafeData) => {
     set((state) => ({
       currentTasting: {
         ...state.currentTasting,
-        homeCafeData: {
-          ...state.currentTasting.homeCafeData,
-          ...data,
-          equipment: {
-            ...state.currentTasting.homeCafeData?.equipment,
-            ...data.equipment,
-          },
-          recipe: {
-            ...state.currentTasting.homeCafeData?.recipe,
-            ...data.recipe,
-          },
-          notes: {
-            ...state.currentTasting.homeCafeData?.notes,
-            ...data.notes,
-          },
-        } as HomeCafeData,
+        homeCafeData: data as HomeCafeData,
+      },
+    }));
+  },
+
+  updateSimpleHomeCafeData: (data: Partial<SimpleHomeCafeData> | SimpleHomeCafeData) => {
+    set((state) => ({
+      currentTasting: {
+        ...state.currentTasting,
+        simpleHomeCafeData: data as SimpleHomeCafeData,
+      },
+    }));
+  },
+
+  updateLabModeData: (data: Partial<LabModeData> | LabModeData) => {
+    set((state) => ({
+      currentTasting: {
+        ...state.currentTasting,
+        labModeData: data as LabModeData,
       },
     }));
   },
