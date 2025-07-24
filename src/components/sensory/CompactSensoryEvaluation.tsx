@@ -202,6 +202,11 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
                   <Text style={styles.checkmarkText}>✓</Text>
                 </View>
               )}
+              {isGloballySelected && !isSelected && (
+                <View style={styles.disabledOverlay}>
+                  <Text style={styles.disabledText}>이미 선택됨</Text>
+                </View>
+              )}
             </TouchableOpacity>
           );
         })}
@@ -381,6 +386,26 @@ const styles = StyleSheet.create({
     color: '#8E8E93',
     fontWeight: '400',
     textDecorationLine: 'line-through',
+  },
+  disabledOverlay: {
+    position: 'absolute',
+    top: -8,
+    left: -8,
+    right: -8,
+    bottom: -8,
+    backgroundColor: 'rgba(142, 142, 147, 0.1)',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  disabledText: {
+    fontSize: 10,
+    color: '#8E8E93',
+    fontWeight: '500',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    borderRadius: 4,
   },
 });
 

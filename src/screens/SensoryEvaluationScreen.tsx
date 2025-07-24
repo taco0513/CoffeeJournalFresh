@@ -60,8 +60,12 @@ const SensoryEvaluationScreen = () => {
       selected: true,
     }));
     
+    // Remove duplicates based on korean text before setting
+    const uniqueConverted = converted.filter((expr, index, self) => 
+      index === self.findIndex(e => e.korean === expr.korean)
+    );
     
-    setSelectedSensoryExpressions(converted);
+    setSelectedSensoryExpressions(uniqueConverted);
   }, [setSelectedSensoryExpressions]);
 
   return (
@@ -104,16 +108,17 @@ const SensoryEvaluationScreen = () => {
               nestedScrollEnabled={true}
             >
               {(() => {
-                // Group by category and remove duplicates
-                const groupedExpressions = selectedSensoryExpressions.reduce((acc, expr) => {
+                // Remove duplicates first, then group by category
+                const uniqueExpressions = selectedSensoryExpressions.filter((expr, index, self) => 
+                  index === self.findIndex(e => e.korean === expr.korean)
+                );
+                
+                const groupedExpressions = uniqueExpressions.reduce((acc, expr) => {
                   const category = expr.categoryId;
                   if (!acc[category]) {
                     acc[category] = [];
                   }
-                  // Only add if not already present (prevent duplicates)
-                  if (!acc[category].includes(expr.korean)) {
-                    acc[category].push(expr.korean);
-                  }
+                  acc[category].push(expr.korean);
                   return acc;
                 }, {} as Record<string, string[]>);
                 
@@ -145,7 +150,7 @@ const SensoryEvaluationScreen = () => {
                         </View>
                       ))}
                       <Text style={styles.previewCount}>
-                        총 {Object.values(groupedExpressions).flat().length}개 선택
+                        총 {uniqueExpressions.length}개 선택
                       </Text>
                     </View>
                   );
