@@ -1,4 +1,5 @@
 import Realm from 'realm';
+import { PersonalTasteSchemas } from '../../database/schemas/PersonalTasteSchemas';
 
 // TypeScript Types
 export interface IFlavorNote {
@@ -282,4 +283,5 @@ export const schemas = [
   CoffeeLibrarySchema,
   CafeInfoSchema,
   RoasterInfoSchema,
+  ...PersonalTasteSchemas, // Achievement schemas
 ];

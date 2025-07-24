@@ -74,7 +74,7 @@ export class AccessControlService {
       if (stored) {
         this.currentUserProfile = JSON.parse(stored);
         Logger.info('User profile loaded from storage', 'access_control', { 
-          role: this.currentUserProfile?.role 
+          data: { role: this.currentUserProfile?.role }
         });
       }
 
@@ -84,8 +84,7 @@ export class AccessControlService {
         this.currentUserProfile = this.createUserProfile(defaultRole);
         await this.saveUserProfile();
         Logger.info('Created new user profile', 'access_control', { 
-          role: defaultRole,
-          source: 'environment_default'
+          data: { role: defaultRole, source: 'environment_default' }
         });
       }
 
@@ -277,9 +276,7 @@ export class AccessControlService {
       // Validate role change
       if (!this.canChangeToRole(oldRole, newRole)) {
         Logger.warn('Role change denied', 'access_control', { 
-          from: oldRole, 
-          to: newRole, 
-          reason: 'insufficient_permissions' 
+          data: { from: oldRole, to: newRole, reason: 'insufficient_permissions' } 
         });
         return false;
       }
@@ -299,9 +296,7 @@ export class AccessControlService {
       await this.saveUserProfile();
 
       Logger.info('User role changed successfully', 'access_control', { 
-        from: oldRole, 
-        to: newRole, 
-        reason 
+        data: { from: oldRole, to: newRole, reason } 
       });
 
       return true;
@@ -371,8 +366,7 @@ export class AccessControlService {
       await this.saveUserProfile();
       
       Logger.info('Experimental feature enabled', 'access_control', { 
-        feature: featureName,
-        userRole: this.currentUserProfile.role
+        data: { feature: featureName, userRole: this.currentUserProfile.role }
       });
     }
 
@@ -395,8 +389,7 @@ export class AccessControlService {
       await this.saveUserProfile();
       
       Logger.info('Experimental feature disabled', 'access_control', { 
-        feature: featureName,
-        userRole: this.currentUserProfile.role
+        data: { feature: featureName, userRole: this.currentUserProfile.role }
       });
     }
 
@@ -477,7 +470,7 @@ export class AccessControlService {
       await this.initialize();
       
       Logger.info('User profile reset to default', 'access_control', { 
-        newRole: this.currentUserProfile?.role 
+        data: { newRole: this.currentUserProfile?.role } 
       });
     } catch (error) {
       Logger.error('Failed to reset user profile', 'access_control', { error });
@@ -499,10 +492,7 @@ export class AccessControlService {
     for (const [key, expectedValue] of Object.entries(expectedPermissions) as Array<[keyof UserPermissions, boolean]>) {
       if (currentPermissions[key] !== expectedValue) {
         Logger.warn('Permission mismatch detected', 'access_control', { 
-          permission: key,
-          expected: expectedValue,
-          actual: currentPermissions[key],
-          role: this.currentUserProfile.role
+          data: { permission: key, expected: expectedValue, actual: currentPermissions[key], role: this.currentUserProfile.role }
         });
         return false;
       }

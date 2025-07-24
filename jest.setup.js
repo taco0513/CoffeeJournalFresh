@@ -1,16 +1,13 @@
-import 'react-native-gesture-handler/jestSetup';
-
-// Mock react-native-reanimated
-jest.mock('react-native-reanimated', () => {
-  const Reanimated = require('react-native-reanimated/mock');
-  // The mock for `call` immediately calls the callback which is incorrect
-  // So we override it with a no-op
-  Reanimated.default.call = () => {};
-  return Reanimated;
+// Mock React Native components for testing
+jest.mock('react-native-gesture-handler', () => {
+  const RNGestureHandler = jest.requireActual('react-native-gesture-handler');
+  return {
+    ...RNGestureHandler,
+    TouchableOpacity: 'TouchableOpacity',
+    TouchableWithoutFeedback: 'TouchableWithoutFeedback',
+    GestureHandlerRootView: 'GestureHandlerRootView',
+  };
 });
-
-// Silence the warning: Animated: `useNativeDriver` is not supported
-jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
 // Mock AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () =>

@@ -8,7 +8,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   
   // Path mapping (same as tsconfig.json)
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   
@@ -16,6 +16,13 @@ module.exports = {
   testMatch: [
     '**/__tests__/**/*.(ts|tsx|js|jsx)',
     '**/*.(test|spec).(ts|tsx|js|jsx)',
+  ],
+  
+  // Exclude web-admin and feature_backlog from tests
+  testPathIgnorePatterns: [
+    '<rootDir>/web-admin/',
+    '<rootDir>/feature_backlog/',
+    '<rootDir>/node_modules/',
   ],
   
   // Coverage configuration
@@ -44,7 +51,7 @@ module.exports = {
   ],
   
   // Environment
-  testEnvironment: 'jsdom',
+  testEnvironment: 'node',
   
   // Clear mocks automatically
   clearMocks: true,

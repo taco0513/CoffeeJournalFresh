@@ -217,16 +217,16 @@ const styles = StyleSheet.create({
     borderBottomColor: HIGColors.systemGray4,
   },
   backButton: {
-    fontSize: 24,
+    fontSize: HIGConstants.FONT_SIZE_H2,
     color: HIGColors.systemBlue,
   },
   navigationTitle: {
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
   },
   skipButton: {
-    fontSize: 15,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.systemBlue,
   },
   progressBar: {
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nextButtonText: {
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: '#FFFFFF',
   },
@@ -294,18 +294,18 @@ const styles = StyleSheet.create({
     marginRight: 0,
   },
   categoryLabel: {
-    fontSize: 14,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     color: HIGColors.secondaryLabel,
     marginRight: HIGConstants.SPACING_SM,
   },
   categoryExpressions: {
-    fontSize: 15,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     fontWeight: '500',
   },
   selectedPreviewPlaceholder: {
-    fontSize: 15,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.tertiaryLabel,
     textAlign: 'center',
     fontStyle: 'italic',
@@ -316,13 +316,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#E3F2FD',
   },
   guideMessage: {
-    fontSize: 15,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.systemBlue,
     textAlign: 'center',
     fontWeight: '500',
   },
   guideSubMessage: {
-    fontSize: 13,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     marginTop: 4,

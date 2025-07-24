@@ -14,10 +14,19 @@ export const HIGConstants = {
   BUTTON_HEIGHT_MEDIUM: 44,
   BUTTON_HEIGHT_SMALL: 36,
   
-  // 폰트 크기
+  // 폰트 크기 (Typography Scale)
   FONT_SIZE_LARGE: 18,
   FONT_SIZE_MEDIUM: 16,
   FONT_SIZE_SMALL: 14,
+  
+  // Extended Typography Scale
+  FONT_SIZE_H1: 28,      // Page titles
+  FONT_SIZE_H2: 24,      // Section headers  
+  FONT_SIZE_H3: 20,      // Subsection headers
+  FONT_SIZE_TITLE: 17,   // Navigation titles
+  FONT_SIZE_BODY: 16,    // Body text
+  FONT_SIZE_CAPTION: 13, // Captions, labels
+  FONT_SIZE_FOOTNOTE: 12, // Fine print
   
   // 모서리 둥글기
   BORDER_RADIUS: 8,

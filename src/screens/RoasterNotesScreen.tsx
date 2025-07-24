@@ -126,16 +126,16 @@ const styles = StyleSheet.create({
     borderBottomColor: HIGColors.systemGray4,
   },
   backButton: {
-    fontSize: 24,
+    fontSize: HIGConstants.FONT_SIZE_H2,
     color: HIGColors.systemBlue,
   },
   navigationTitle: {
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
   },
   skipButton: {
-    fontSize: 15,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.systemBlue,
   },
   progressBar: {
@@ -157,21 +157,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: HIGConstants.FONT_SIZE_H1,
     fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_SM,
   },
   subtitle: {
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '400',
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_SM,
   },
   guideMessage: {
-    fontSize: 15,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '400',
     color: HIGColors.blue,
     textAlign: 'center',
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   ocrNoticeText: {
-    fontSize: 13,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '400',
     color: '#FFFFFF',
     textAlign: 'center',
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     borderColor: HIGColors.gray4,
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     color: '#000000',
     minHeight: 200,
     backgroundColor: '#FFFFFF',
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nextButtonText: {
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: '#FFFFFF',
   },

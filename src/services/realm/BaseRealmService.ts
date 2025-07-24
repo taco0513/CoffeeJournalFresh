@@ -32,7 +32,7 @@ export class BaseRealmService {
       
       this.realm = await Realm.open({
         schema: schemas,
-        schemaVersion: 2,
+        schemaVersion: 3, // Updated to include achievement schemas
         deleteRealmIfMigrationNeeded: __DEV__,
         migration: (oldRealm: Realm, newRealm: Realm) => {
           if (oldRealm.schemaVersion < 2) {

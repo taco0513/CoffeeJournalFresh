@@ -186,11 +186,11 @@ const styles = StyleSheet.create({
     borderBottomColor: HIGColors.systemGray4,
   },
   backButton: {
-    fontSize: 24,
+    fontSize: HIGConstants.FONT_SIZE_H2,
     color: HIGColors.systemBlue,
   },
   navigationTitle: {
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
   },
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_LG,
   },
   sectionTitle: {
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     borderColor: HIGColors.systemGreen,
   },
   statText: {
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
   },
@@ -235,29 +235,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   coffeeName: {
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
   },
   roasteryName: {
-    fontSize: 14,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: 2,
   },
   cafeText: {
-    fontSize: 14,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.tertiaryLabel,
     marginBottom: 2,
   },
   scoreText: {
-    fontSize: 14,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     color: HIGColors.systemBrown,
     marginBottom: 2,
   },
   dateText: {
-    fontSize: 12,
+    fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.tertiaryLabel,
   },
   deleteButton: {
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '500',
   },
   refreshButton: {
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   },
   refreshButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
   },
   clearButton: {
@@ -291,17 +291,17 @@ const styles = StyleSheet.create({
   },
   clearButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
   },
   loadingText: {
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.tertiaryLabel,
     textAlign: 'center',
     padding: HIGConstants.SPACING_LG,
   },
   emptyText: {
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.tertiaryLabel,
     textAlign: 'center',
     padding: 20,

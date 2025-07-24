@@ -160,16 +160,11 @@ const TastingDetailScreen = () => {
               setIsDeleting(true);
               
               // 삭제 실행
-              const success = await RealmService.getInstance().deleteTasting(tastingId);
+              await RealmService.getInstance().deleteTasting(tastingId);
               
-              if (success) {
-                showSuccessToast('삭제 완료', '테이스팅 기록이 삭제되었습니다');
-                // 삭제 성공 후 즉시 화면 이동
-                navigation.goBack();
-              } else {
-                showErrorToast('삭제 실패', '다시 시도해주세요');
-                setIsDeleting(false);
-              }
+              showSuccessToast('삭제 완료', '테이스팅 기록이 삭제되었습니다');
+              // 삭제 성공 후 즉시 화면 이동
+              navigation.goBack();
               
             } catch (error) {
               showErrorToast('삭제 실패', '다시 시도해주세요');

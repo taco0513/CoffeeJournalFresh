@@ -130,7 +130,10 @@ class SyncService {
       // 2. Supabase → 로컬 다운로드
       await this.downloadRemoteChanges();
 
-      // 3. 동기화 완료 처리
+      // 3. Achievement 데이터 동기화
+      await this.syncAchievements();
+
+      // 4. 동기화 완료 처리
       this.syncStatus.lastSyncTime = new Date();
       this.syncStatus.error = null;
       
@@ -600,6 +603,168 @@ class SyncService {
     // Zustand store는 직접 업데이트할 수 없으므로, 
     // 스토어에서 이 상태를 구독하도록 해야 함
     // 여기서는 단순히 콘솔 로그만 출력
+  }
+
+  /**
+   * Sync user achievements to Supabase
+   */
+  async syncAchievements(): Promise<void> {
+    try {
+      if (!this.syncStatus.isOnline) {
+        return;
+      }
+
+      const realmService = RealmService.getInstance();
+      const realm = realmService.getRealm();
+      
+      // Get unsynced achievements
+      const unsyncedAchievements = realm.objects('UserAchievement')
+        .filtered('isSynced == false');
+
+      if (unsyncedAchievements.length === 0) {
+        return;
+      }
+
+      for (const achievement of unsyncedAchievements) {
+        try {
+          const { error } = await supabase
+            .from('user_achievements')
+            .upsert({
+              id: achievement.id,
+              user_id: achievement.userId,
+              achievement_type: achievement.achievementType,
+              achievement_level: achievement.achievementLevel,
+              achievement_data: achievement.achievementData,
+              progress: achievement.progress,
+              unlocked_at: achievement.createdAt?.toISOString(),
+              created_at: achievement.createdAt?.toISOString(),
+              updated_at: achievement.updatedAt?.toISOString(),
+            }, {
+              onConflict: 'id'
+            });
+
+          if (error) {
+            throw error;
+          }
+
+          // Mark as synced
+          realm.write(() => {
+            achievement.isSynced = true;
+            achievement.syncedAt = new Date();
+          });
+
+        } catch (error) {
+          console.error('Failed to sync achievement:', achievement.id, error);
+        }
+      }
+
+      // Also sync flavor learning progress and taste profiles
+      await this.syncFlavorLearningProgress();
+      await this.syncTasteProfiles();
+
+    } catch (error) {
+      console.error('Achievement sync failed:', error);
+      this.syncStatus.error = 'Achievement sync failed';
+    }
+  }
+
+  /**
+   * Sync flavor learning progress
+   */
+  private async syncFlavorLearningProgress(): Promise<void> {
+    try {
+      const realmService = RealmService.getInstance();
+      const realm = realmService.getRealm();
+      
+      const unsyncedProgress = realm.objects('FlavorLearningProgress')
+        .filtered('isSynced == false');
+
+      for (const progress of unsyncedProgress) {
+        try {
+          const { error } = await supabase
+            .from('flavor_learning_progress')
+            .upsert({
+              id: progress.id,
+              user_id: progress.userId,
+              flavor_category: progress.flavorCategory,
+              specific_flavor: progress.specificFlavor,
+              correct_identifications: progress.correctIdentifications,
+              total_attempts: progress.totalAttempts,
+              confidence_level: progress.confidenceLevel,
+              learning_stage: progress.learningStage,
+              created_at: progress.createdAt?.toISOString(),
+              updated_at: progress.updatedAt?.toISOString(),
+            }, {
+              onConflict: 'id'
+            });
+
+          if (error) {
+            throw error;
+          }
+
+          realm.write(() => {
+            progress.isSynced = true;
+          });
+
+        } catch (error) {
+          console.error('Failed to sync flavor progress:', progress.id, error);
+        }
+      }
+    } catch (error) {
+      console.error('Flavor learning progress sync failed:', error);
+    }
+  }
+
+  /**
+   * Sync user taste profiles
+   */
+  private async syncTasteProfiles(): Promise<void> {
+    try {
+      const realmService = RealmService.getInstance();
+      const realm = realmService.getRealm();
+      
+      const unsyncedProfiles = realm.objects('UserTasteProfile')
+        .filtered('isSynced == false');
+
+      for (const profile of unsyncedProfiles) {
+        try {
+          const { error } = await supabase
+            .from('user_taste_profiles')
+            .upsert({
+              id: profile.id,
+              user_id: profile.userId,
+              flavor_preferences: profile.flavorPreferences,
+              sweetness_preference: profile.sweetnessPreference,
+              acidity_preference: profile.acidityPreference,
+              bitterness_preference: profile.bitternessPreference,
+              body_preference: profile.bodyPreference,
+              balance_preference: profile.balancePreference,
+              total_tastings: profile.totalTastings,
+              unique_flavors_tried: profile.uniqueFlavorsTried,
+              vocabulary_level: profile.vocabularyLevel,
+              taste_discovery_rate: profile.tasteDiscoveryRate,
+              last_analysis_at: profile.lastAnalysisAt?.toISOString(),
+              created_at: profile.createdAt?.toISOString(),
+              updated_at: profile.updatedAt?.toISOString(),
+            }, {
+              onConflict: 'id'
+            });
+
+          if (error) {
+            throw error;
+          }
+
+          realm.write(() => {
+            profile.isSynced = true;
+          });
+
+        } catch (error) {
+          console.error('Failed to sync taste profile:', profile.id, error);
+        }
+      }
+    } catch (error) {
+      console.error('Taste profile sync failed:', error);
+    }
   }
 
   // 정리

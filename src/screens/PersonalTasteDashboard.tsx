@@ -121,7 +121,7 @@ export default function PersonalTasteDashboard() {
           </Text>
           <TouchableOpacity
             style={styles.emptyStateButton}
-            onPress={() => navigation.navigate('HomeTab')}
+            onPress={() => navigation.navigate('Home')}
           >
             <Text style={styles.emptyStateButtonText}>첫 테이스팅 시작하기</Text>
           </TouchableOpacity>

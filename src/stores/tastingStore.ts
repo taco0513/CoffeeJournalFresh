@@ -159,6 +159,32 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       // 저장 후 점수 계산
       state.calculateMatchScore();
       
+      // Check achievements after saving
+      if (savedTasting && savedTasting.userId) {
+        try {
+          const achievementSystem = AchievementSystem.getInstance();
+          const action: UserAction = {
+            type: 'tasting',
+            data: {
+              tastingId: savedTasting.id,
+              flavors: selectedFlavors,
+              sensoryExpressions: selectedSensoryExpressions,
+              mode: currentTasting.mode,
+              coffeeInfo: {
+                roastery: currentTasting.roastery,
+                coffeeName: currentTasting.coffeeName,
+                origin: currentTasting.origin,
+              },
+            },
+            timestamp: new Date(),
+          };
+          await achievementSystem.checkAchievements(savedTasting.userId, action);
+        } catch (achievementError) {
+          console.error('Achievement check failed:', achievementError);
+          // Don't throw - achievement check failure shouldn't prevent tasting save
+        }
+      }
+      
       return savedTasting;
     } catch (error) {
       throw error;

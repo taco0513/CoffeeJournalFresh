@@ -10,6 +10,8 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage, isUSBetaMarket } from '../services/i18n';
 import { TastingService } from '../services/realm/TastingService';
 import { ITastingRecord } from '../services/realm/schemas';
 import { HIGConstants, HIGColors } from '../styles/common';
@@ -59,6 +61,7 @@ interface StatsScreenProps {
 
 const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const { currentUser } = useUserStore();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Statistics | null>(null);
@@ -278,7 +281,11 @@ const StatsScreen = ({ hideNavBar = false }: StatsScreenProps) => {
       // Load chart data
       const trends = await loadTastingTrends();
 
-      setStats(basicStats);
+      setStats({
+        ...basicStats,
+        firstTastingDays: 0, // Calculate if needed
+        cafeCount: basicStats.uniqueCafes,
+      });
       setTopRoasters(roasters);
       setTopCoffees(coffees);
       setTopCafes(cafes);
@@ -534,7 +541,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   navigationTitle: {
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
   },
@@ -545,7 +552,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   betaText: {
-    fontSize: 11,
+    fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     fontWeight: '700',
     color: HIGColors.white,
     letterSpacing: 0.5,
@@ -561,7 +568,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: HIGConstants.SPACING_MD,
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
   },
   emptyContainer: {
@@ -575,13 +582,13 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_MD,
   },
   emptyText: {
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
   },
   emptySubtext: {
-    fontSize: 15,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.tertiaryLabel,
     textAlign: 'center',
   },
@@ -591,13 +598,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: HIGConstants.FONT_SIZE_H1,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
   },
   headerSubtitle: {
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     color: HIGColors.secondaryLabel,
   },
   section: {
@@ -605,7 +612,7 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_XL,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
@@ -628,13 +635,13 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   statNumber: {
-    fontSize: 28,
+    fontSize: HIGConstants.FONT_SIZE_H1,
     fontWeight: '700',
     color: HIGColors.blue,
     marginBottom: HIGConstants.SPACING_XS,
   },
   statLabel: {
-    fontSize: 13,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
   },
@@ -666,7 +673,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   rankNumber: {
-    fontSize: 18,
+    fontSize: HIGConstants.FONT_SIZE_LARGE,
     fontWeight: '700',
     color: HIGColors.blue,
     width: 28,
@@ -676,7 +683,7 @@ const styles = StyleSheet.create({
     marginLeft: HIGConstants.SPACING_SM,
   },
   rankName: {
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
   },
@@ -686,12 +693,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   rankScore: {
-    fontSize: 13,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginTop: 2,
   },
   rankCount: {
-    fontSize: 15,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.blue,
   },
@@ -741,7 +748,7 @@ const styles = StyleSheet.create({
     height: HIGConstants.SPACING_XL * 2,
   },
   insightPreviewText: {
-    fontSize: 14,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.tertiaryLabel,
     marginBottom: HIGConstants.SPACING_LG,
     textAlign: 'center',
@@ -771,18 +778,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   moreButtonText: {
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.blue,
     marginBottom: HIGConstants.SPACING_XS,
   },
   moreButtonSubtext: {
-    fontSize: 14,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
   },
   moreButtonArrow: {
-    fontSize: 20,
+    fontSize: HIGConstants.FONT_SIZE_H3,
     color: HIGColors.blue,
   },
   modeStatsContainer: {
@@ -807,13 +814,13 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_XS,
   },
   modeNumber: {
-    fontSize: 24,
+    fontSize: HIGConstants.FONT_SIZE_H2,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
   },
   modeLabel: {
-    fontSize: 13,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     fontWeight: '500',

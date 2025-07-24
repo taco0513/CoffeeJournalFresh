@@ -704,7 +704,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: HIGConstants.SPACING_SM,
     padding: HIGConstants.SPACING_SM,
-    borderRadius: HIGConstants.BORDER_RADIUS_MD,
+    borderRadius: HIGConstants.RADIUS_MD,
     backgroundColor: HIGColors.secondarySystemBackground,
     borderWidth: 2,
     borderColor: 'transparent',

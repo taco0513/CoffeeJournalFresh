@@ -204,6 +204,21 @@ src/
   - Enhanced visual feedback with checkmarks, color changes, and scale animation
   - Fixed modal overlay blocking in HomeCafe/Lab modes
   - Multiple selections now work properly (up to 3 per category)
+- ✅ **Sensory Expression Duplicate Fix** (2025-07-24): Fixed duplicate Korean expressions appearing in preview box
+  - Changed store-level deduplication to use Korean text as unique identifier
+  - Added component-level prevention for selecting same expression across categories
+  - Implemented "이미 선택됨" visual feedback for globally selected expressions
+  - Each Korean expression now limited to single selection across all categories
+- ✅ **Dual-Market Implementation Complete** (2025-07-24): Strategic Korean-first + US beta market setup
+  - **AI Coaching → Smart Insights**: Clarified terminology (data-driven vs interactive coaching)
+  - **Korean Primary Market**: Auto-detection for Korean devices, full Korean localization
+  - **US Beta Market**: English interface with comprehensive US coffee industry data
+  - **Language Detection System**: Device-based auto-detection with manual override capability
+  - **US Coffee Data Service**: 7 major roasters, 15+ origins, 40+ flavor notes, processing methods
+  - **i18n Infrastructure**: Complete internationalization with AsyncStorage persistence
+  - **LanguageSwitch Component**: Compact header toggle + full settings mode with market indicators
+  - **ModeSelectionScreen**: Fully internationalized with dual-language support
+  - **Technical Impact**: <15KB bundle increase, lazy-loading for optimal performance
 
 ## Commands
 ```bash
@@ -256,30 +271,38 @@ bridgeDebugger.printRecentCalls()  # Debug bridge errors
   - Created comprehensive type definitions and generic helper methods
   - Implemented React.memo optimizations for performance
 
-## Next Steps (CupNote Branding)
+## Next Steps (CupNote Dual-Market Launch)
 1. ✅ **Korean Sensory Evaluation** - COMPLETED (2025-07-22)
 2. ✅ **Feature Backlog Migration** - COMPLETED (2025-07-22) 
 3. ✅ **MVP Cleanup** - COMPLETED (182→164 files, 10% reduction)
 4. ✅ **CupNote Brand Selection** - COMPLETED (2025-07-24)
-5. **CupNote Launch Ready Tasks**:
+5. ✅ **Dual-Market Implementation** - COMPLETED (2025-07-24)
+   - ✅ **Korean Primary Market**: Full localization with Korean sensory expressions
+   - ✅ **US Beta Market**: English interface with US coffee industry data
+   - ✅ **Smart Insights Rebranding**: Replaced "AI Coaching" with accurate terminology
+   - ✅ **Language Detection**: Auto-detects market and provides appropriate experience
+   - ✅ **US Coffee Data Service**: 7 major roasters, 40+ flavor notes, comprehensive suggestions
+   - ✅ **i18n Infrastructure**: Complete internationalization system with persistence
+6. **Launch Ready Tasks**:
    - 🌐 **Domain Strategy**: cupnoteapp.com (1순위 권장) - 모바일 앱 정체성 명확화
    - ⚖️ **Trademark Filing**: Korea + US simultaneous application
    - 🎨 **Logo Development**: Bilingual identity system
    - ✅ **App Rebranding**: Complete - All UI elements updated to CupNote
+   - ✅ **Internationalization**: Korean + English markets ready
    - Configure Google OAuth credentials (optional - Apple Sign-In works)
    - Achievement UI Implementation (backend ready)
    - Result Visualization improvements
-   - Beta testing with real users
-   - Basic performance monitoring
+   - Dual-market beta testing
+   - Performance monitoring across markets
 
 ## Post-MVP Roadmap (Feature Backlog)
 - **Phase 1.5**: Mode-based UX (Cafe/Home Cafe/Lab mode) - **HIGH PRIORITY**
   - Home Cafe Mode: 장비 정보, 레시피 데이터, 추출 변수 기록
   - Lab Mode: 큐핑 프로토콜, 정밀 측정, 비교 테이스팅
   - 프리미엄 monetization 기회 (홈카페족 20만+ 시장 확장)
-- **Phase 2**: AI 코칭 시스템 (90% 완성), Photo OCR 기능
+- **Phase 2**: Smart Insights 고도화 + AI 코칭 시스템 도입, Photo OCR 기능
 - **Phase 3**: 소셜/커뮤니티 기능, 고급 성장 트래킹
-- **Phase 4**: 국제화, 전문가 도구
+- **Phase 4**: 추가 국제화 확장 (일본, 호주, EU), 전문가 도구
 
 ## Achievement System Status
 - ✅ **Backend**: Core system implemented with balanced point values

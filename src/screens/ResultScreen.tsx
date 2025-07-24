@@ -258,12 +258,12 @@ export default function ResultScreen({navigation}: any) {
             <Text style={styles.sectionTitle}>🏠 홈카페 정보</Text>
           </View>
           <Text style={styles.info}>
-            추출 도구: {currentTasting.homeCafeData.equipment.brewingMethod === 'V60' ? 'V60' :
-                       currentTasting.homeCafeData.equipment.brewingMethod === 'Chemex' ? '케멕스' :
-                       currentTasting.homeCafeData.equipment.brewingMethod === 'AeroPress' ? '에어로프레스' :
-                       currentTasting.homeCafeData.equipment.brewingMethod === 'FrenchPress' ? '프렌치프레스' :
-                       currentTasting.homeCafeData.equipment.brewingMethod === 'Espresso' ? '에스프레소' :
-                       currentTasting.homeCafeData.equipment.brewingMethod}
+            추출 도구: {currentTasting.homeCafeData.equipment.dripper === 'V60' ? 'V60' :
+                       currentTasting.homeCafeData.equipment.dripper === 'Chemex' ? '케멕스' :
+                       currentTasting.homeCafeData.equipment.dripper === 'KalitaWave' ? '칼리타 웨이브' :
+                       currentTasting.homeCafeData.equipment.dripper === 'Origami' ? '오리가미' :
+                       currentTasting.homeCafeData.equipment.dripper === 'FellowStagg' ? '펠로우 스태그' :
+                       currentTasting.homeCafeData.equipment.dripper}
           </Text>
           {currentTasting.homeCafeData.equipment.grinder?.brand && (
             <Text style={styles.info}>
@@ -282,8 +282,8 @@ export default function ResultScreen({navigation}: any) {
           {currentTasting.homeCafeData.recipe.totalBrewTime > 0 && (
             <Text style={styles.info}>추출시간: {Math.floor(currentTasting.homeCafeData.recipe.totalBrewTime / 60)}분 {currentTasting.homeCafeData.recipe.totalBrewTime % 60}초</Text>
           )}
-          {currentTasting.homeCafeData.notes?.result && (
-            <Text style={styles.info}>실험 결과: {currentTasting.homeCafeData.notes.result}</Text>
+          {currentTasting.homeCafeData.notes?.tasteResult && (
+            <Text style={styles.info}>실험 결과: {currentTasting.homeCafeData.notes.tasteResult}</Text>
           )}
         </View>
       )}

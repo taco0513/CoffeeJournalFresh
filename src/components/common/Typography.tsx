@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TextProps, StyleSheet } from 'react-native';
-import { Colors } from '../../constants/colors';
+import { HIGColors, HIGConstants } from '../../styles/common';
 
 interface TypographyProps extends TextProps {
   color?: string;
@@ -27,7 +27,7 @@ interface TypographyProps extends TextProps {
  */
 
 export const Heading1: React.FC<TypographyProps> = ({ 
-  color = Colors.TEXT_PRIMARY, 
+  color = HIGColors.label, 
   style, 
   children, 
   allowFontScaling = true,
@@ -45,7 +45,7 @@ export const Heading1: React.FC<TypographyProps> = ({
 };
 
 export const Heading2: React.FC<TypographyProps> = ({ 
-  color = Colors.TEXT_PRIMARY, 
+  color = HIGColors.label, 
   style, 
   children, 
   allowFontScaling = true,
@@ -63,7 +63,7 @@ export const Heading2: React.FC<TypographyProps> = ({
 };
 
 export const Heading3: React.FC<TypographyProps> = ({ 
-  color = Colors.TEXT_PRIMARY, 
+  color = HIGColors.label, 
   style, 
   children, 
   allowFontScaling = true,
@@ -81,7 +81,7 @@ export const Heading3: React.FC<TypographyProps> = ({
 };
 
 export const BodyText: React.FC<TypographyProps> = ({ 
-  color = Colors.TEXT_PRIMARY, 
+  color = HIGColors.label, 
   style, 
   children, 
   allowFontScaling = true,
@@ -99,7 +99,7 @@ export const BodyText: React.FC<TypographyProps> = ({
 };
 
 export const Caption: React.FC<TypographyProps> = ({ 
-  color = Colors.TEXT_SECONDARY, 
+  color = HIGColors.secondaryLabel, 
   style, 
   children, 
   allowFontScaling = true,
@@ -118,27 +118,27 @@ export const Caption: React.FC<TypographyProps> = ({
 
 const styles = StyleSheet.create({
   heading1: {
-    fontSize: 28,
+    fontSize: HIGConstants.FONT_SIZE_H1,
     fontWeight: 'bold',
     lineHeight: 34,
   },
   heading2: {
-    fontSize: 24,
+    fontSize: HIGConstants.FONT_SIZE_H2,
     fontWeight: 'bold',
     lineHeight: 30,
   },
   heading3: {
-    fontSize: 20,
+    fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: 'bold',
     lineHeight: 26,
   },
   bodyText: {
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: 'normal',
     lineHeight: 22,
   },
   caption: {
-    fontSize: 14,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: 'normal',
     lineHeight: 18,
   },

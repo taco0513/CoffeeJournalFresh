@@ -7,12 +7,15 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { useTastingStore } from '../stores/tastingStore';
 import { HIGColors, HIGConstants } from '../styles/common';
 import { TastingMode } from '../types/tasting';
+import LanguageSwitch from '../components/LanguageSwitch';
 
 const ModeSelectionScreen = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const { setTastingMode } = useTastingStore();
 
   const handleModeSelect = (mode: TastingMode) => {
@@ -23,32 +26,32 @@ const ModeSelectionScreen = () => {
   const modes = [
     {
       id: 'cafe' as TastingMode,
-      title: '카페 모드',
-      subtitle: '카페에서 마신 커피 기록',
-      description: '카페명과 함께 커피 맛을\n간편하게 기록하세요',
+      title: t('cafeMode'),
+      subtitle: t('cafeModeDesc'),
+      description: t('cafeModeDesc'),
       icon: '☕',
       color: HIGColors.systemBlue,
       popular: true,
     },
     {
       id: 'home_cafe' as TastingMode,
-      title: '홈카페 모드',
-      subtitle: '간단한 홈카페 기록',
-      description: '드리퍼, 레시피, 한줄평\n5개 필드로 간편하게',
+      title: t('homeCafeMode'),
+      subtitle: t('homeCafeModeDesc'),
+      description: t('homeCafeModeDesc'),
       icon: '🏠',
       color: HIGColors.systemGreen,
       popular: false,
-      badge: '추천',
+      badge: t('comingSoon'),
     },
     {
       id: 'lab' as TastingMode,
-      title: '랩 모드',
-      subtitle: '전문가 수준 분석',
-      description: '블룸, 붓기 패턴, 채널링\n20개+ 필드 상세 기록',
+      title: t('labMode'),
+      subtitle: t('labModeDesc'),
+      description: t('labModeDesc'),
       icon: '🧪',
       color: HIGColors.systemPurple,
       popular: false,
-      badge: '고급',
+      badge: t('beta'),
     },
   ];
 
@@ -62,14 +65,15 @@ const ModeSelectionScreen = () => {
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>테이스팅 모드 선택</Text>
+        <Text style={styles.headerTitle}>{t('modeSelection')}</Text>
+        <LanguageSwitch compact style={styles.languageSwitch} />
       </View>
 
       <View style={styles.content}>
         {/* Title Section */}
         <View style={styles.titleSection}>
-          <Text style={styles.title}>어떤 방식으로{'\n'}커피를 기록하시나요?</Text>
-          <Text style={styles.subtitle}>언제든지 변경할 수 있습니다</Text>
+          <Text style={styles.title}>{t('howRecordCoffee', { defaultValue: '어떤 방식으로\n커피를 기록하시나요?' })}</Text>
+          <Text style={styles.subtitle}>{t('canChangeAnytime', { defaultValue: '언제든지 변경할 수 있습니다' })}</Text>
         </View>
 
         {/* Mode Options */}
@@ -112,7 +116,7 @@ const ModeSelectionScreen = () => {
         {/* Bottom Info */}
         <View style={styles.bottomInfo}>
           <Text style={styles.infoText}>
-            💡 모드는 테이스팅 중에도 언제든 변경 가능합니다
+            {t('modeChangeInfo', { defaultValue: '💡 모드는 테이스팅 중에도 언제든 변경 가능합니다' })}
           </Text>
         </View>
       </View>
@@ -137,13 +141,17 @@ const styles = StyleSheet.create({
     marginRight: HIGConstants.SPACING_MD,
   },
   backArrow: {
-    fontSize: 24,
+    fontSize: HIGConstants.FONT_SIZE_H2,
     color: HIGColors.systemBlue,
   },
   headerTitle: {
-    fontSize: 17,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
+    flex: 1,
+  },
+  languageSwitch: {
+    marginLeft: HIGConstants.SPACING_MD,
   },
   content: {
     flex: 1,
@@ -154,7 +162,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: HIGConstants.FONT_SIZE_H2,
     fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
@@ -162,7 +170,7 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_SM,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
   },
@@ -196,7 +204,7 @@ const styles = StyleSheet.create({
   },
   popularText: {
     color: HIGColors.white,
-    fontSize: 12,
+    fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     fontWeight: '700',
   },
   recommendBadge: {
@@ -215,19 +223,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   modeTitle: {
-    fontSize: 20,
+    fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: 4,
   },
   modeSubtitle: {
-    fontSize: 16,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '500',
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
   },
   modeDescription: {
-    fontSize: 14,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.tertiaryLabel,
     lineHeight: 20,
   },
@@ -235,7 +243,7 @@ const styles = StyleSheet.create({
     marginLeft: HIGConstants.SPACING_MD,
   },
   arrowText: {
-    fontSize: 24,
+    fontSize: HIGConstants.FONT_SIZE_H2,
     fontWeight: '300',
   },
   bottomInfo: {
@@ -243,7 +251,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   infoText: {
-    fontSize: 14,
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     lineHeight: 20,

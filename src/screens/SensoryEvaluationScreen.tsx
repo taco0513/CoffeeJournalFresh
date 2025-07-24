@@ -177,6 +177,7 @@ const SensoryEvaluationScreen = () => {
         {/* Show onboarding if needed */}
         {showOnboarding && (
           <SensoryOnboarding 
+            visible={showOnboarding}
             onComplete={() => setShowOnboarding(false)}
           />
         )}
@@ -192,7 +193,7 @@ const SensoryEvaluationScreen = () => {
               korean: item.korean,
               english: item.english,
               emoji: item.emoji || '',
-              intensity: item.intensity || 2,
+              intensity: (item.intensity || 2) as 1 | 2 | 3,
               beginner: true,
             },
           }))}
