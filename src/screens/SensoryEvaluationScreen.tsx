@@ -60,13 +60,16 @@ const SensoryEvaluationScreen = () => {
       selected: true,
     }));
     
-    // Remove duplicates based on korean text before setting
-    const uniqueConverted = converted.filter((expr, index, self) => 
-      index === self.findIndex(e => e.korean === expr.korean)
-    );
+    // Use Set for more robust deduplication based on korean text
+    const seenKorean = new Set<string>();
+    const uniqueConverted: SelectedSensoryExpression[] = [];
     
-    console.log('handleExpressionChange - before:', converted.map(e => e.korean));
-    console.log('handleExpressionChange - after dedup:', uniqueConverted.map(e => e.korean));
+    converted.forEach(expr => {
+      if (!seenKorean.has(expr.korean)) {
+        seenKorean.add(expr.korean);
+        uniqueConverted.push(expr);
+      }
+    });
     
     setSelectedSensoryExpressions(uniqueConverted);
   }, [setSelectedSensoryExpressions]);
@@ -111,14 +114,17 @@ const SensoryEvaluationScreen = () => {
               nestedScrollEnabled={true}
             >
               {(() => {
-                // Debug and remove duplicates first, then group by category
-                console.log('Raw selectedSensoryExpressions:', selectedSensoryExpressions.map(e => e.korean));
+                // Create a Set to track unique Korean expressions across ALL categories
+                const seenExpressions = new Set<string>();
+                const uniqueExpressions: typeof selectedSensoryExpressions = [];
                 
-                const uniqueExpressions = selectedSensoryExpressions.filter((expr, index, self) => 
-                  index === self.findIndex(e => e.korean === expr.korean)
-                );
-                
-                console.log('After deduplication:', uniqueExpressions.map(e => e.korean));
+                // Only add expressions we haven't seen before
+                selectedSensoryExpressions.forEach(expr => {
+                  if (!seenExpressions.has(expr.korean)) {
+                    seenExpressions.add(expr.korean);
+                    uniqueExpressions.push(expr);
+                  }
+                });
                 
                 const groupedExpressions = uniqueExpressions.reduce((acc, expr) => {
                   const category = expr.categoryId;

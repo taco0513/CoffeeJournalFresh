@@ -60,36 +60,22 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
 
     let newExpressions = [...currentExpressions];
 
-    console.log('handleExpressionSelect:', {
-      korean: expression.korean,
-      categoryId,
-      existingIndex,
-      globallySelected,
-      currentCount: currentExpressions.length,
-      categoryCount: categorySelections.length
-    });
-
     if (existingIndex >= 0) {
       // Deselecting - remove the existing selection
       newExpressions.splice(existingIndex, 1);
-      console.log('Deselecting:', expression.korean);
     } else {
       // Attempting to select
       if (categorySelections.length >= MAX_PER_CATEGORY) {
-        console.log('Category limit reached for:', categoryId);
         return; // Category limit reached
       }
       if (globallySelected) {
-        console.log('Already selected globally:', expression.korean);
         return; // Expression already selected somewhere else
       }
       
       // Add new selection
       newExpressions.push({ categoryId, expression });
-      console.log('Adding selection:', expression.korean);
     }
 
-    console.log('Final expressions:', newExpressions.map(e => e.expression.korean));
     onExpressionChange(newExpressions);
   }, [selectedExpressions, onExpressionChange]);
 
