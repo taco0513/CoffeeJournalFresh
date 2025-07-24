@@ -83,10 +83,10 @@ export default function UnifiedFlavorScreen() {
       {/* Guide Message */}
       <View style={styles.guideMessageContainer}>
         <Text style={styles.guideMessage}>
-          🎯 커피에서 느껴지는 향과 맛을 선택해보세요
+          향과 맛을 선택해보세요
         </Text>
         <Text style={styles.guideSubMessage}>
-          💡 각 향미는 여러 개 선택 가능합니다 (최대 5개)
+          커피에서 느껴지는 향미를 골라주세요 (최대 5개)
         </Text>
       </View>
 

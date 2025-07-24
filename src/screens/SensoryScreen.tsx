@@ -90,10 +90,10 @@ const SensoryScreen = () => {
       {/* Guide Message */}
       <View style={styles.guideMessageContainer}>
         <Text style={styles.guideMessage}>
-          커피에서 느껴지는 감각을 평가해보세요
+          맛의 언어로 표현해보세요
         </Text>
         <Text style={styles.guideSubMessage}>
-          한국식 감각 표현으로 커피의 맛을 기록해보세요
+          이 커피에서 느껴지는 감각을 선택해주세요
         </Text>
       </View>
 
@@ -103,12 +103,6 @@ const SensoryScreen = () => {
         showsVerticalScrollIndicator={false}
       >
         {/* Cafe Mode: Only Korean Sensory Evaluation */}
-            <View style={styles.evaluationIntroContainer}>
-              <Text style={styles.evaluationIntroTitle}>맛의 언어로 표현해보세요</Text>
-              <Text style={styles.evaluationIntroSubtitle}>
-                이 커피에서 느껴지는 감각을 선택해주세요
-              </Text>
-            </View>
             
             {/* Selected Sensory Preview */}
             <View style={styles.selectedPreviewContainer}>
@@ -276,7 +270,8 @@ const styles = StyleSheet.create({
     marginTop: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_MD,
     borderRadius: 8,
-    minHeight: 60,
+    minHeight: 80, // 최소 높이 증가
+    maxHeight: 180, // 최대 높이 확대
     justifyContent: 'center',
   },
   selectedPreviewContent: {
@@ -314,26 +309,6 @@ const styles = StyleSheet.create({
     color: HIGColors.tertiaryLabel,
     textAlign: 'center',
     fontStyle: 'italic',
-  },
-  evaluationIntroContainer: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingTop: HIGConstants.SPACING_MD,
-    paddingBottom: HIGConstants.SPACING_LG,
-    alignItems: 'center',
-  },
-  evaluationIntroTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
-    textAlign: 'center',
-  },
-  evaluationIntroSubtitle: {
-    fontSize: 15,
-    fontWeight: '400',
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-    lineHeight: 22,
   },
   guideMessageContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,

@@ -70,10 +70,10 @@ const ExperimentalDataScreen = () => {
       {/* Guide Message */}
       <View style={styles.guideMessageContainer}>
         <Text style={styles.guideMessage}>
-          🔬 실험 데이터를 기록해보세요
+          커피의 강도를 측정해보세요
         </Text>
         <Text style={styles.guideSubMessage}>
-          레시피 개선을 위한 정량적 측정 데이터입니다
+          각 항목을 1점(약함)에서 5점(강함)으로 평가해주세요
         </Text>
       </View>
 
@@ -82,12 +82,6 @@ const ExperimentalDataScreen = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.experimentalIntro}>
-          <Text style={styles.experimentalTitle}>커피의 강도를 측정해보세요</Text>
-          <Text style={styles.experimentalSubtitle}>
-            각 항목을 1점(약함)에서 5점(강함)으로 평가해주세요
-          </Text>
-        </View>
         
         <View style={styles.sliderSectionContainer}>
           <SliderSection
@@ -234,25 +228,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 100, // Space for bottom button
-  },
-  experimentalIntro: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_LG,
-    backgroundColor: '#FFFFFF',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  experimentalTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: HIGColors.label,
-    textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  experimentalSubtitle: {
-    fontSize: 15,
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-    lineHeight: 22,
   },
   sliderSectionContainer: {
     backgroundColor: '#FFFFFF',
