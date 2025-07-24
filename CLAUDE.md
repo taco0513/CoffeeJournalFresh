@@ -34,6 +34,7 @@ React Native 0.80 coffee tasting app - "나만의 커피 취향을 발견하는 
 3. **Free core features** (vs paid competitors like iBrewCoffee $4.99)
 4. **Cultural adaptation** with 44 Korean taste expressions
 5. **Achievement system** for habit formation
+6. **🔥 Real-time Market Intelligence** powered by Firecrawl MCP - industry-first integration
 
 ## Current Focus (2025-07-24) - HomeCafe Mode (Pourover-Focused) ✅
 **Major Update**: HomeCafe mode now exclusively focused on **pourover brewing methods**
@@ -219,6 +220,10 @@ src/
   - **LanguageSwitch Component**: Compact header toggle + full settings mode with market indicators
   - **ModeSelectionScreen**: Fully internationalized with dual-language support
   - **Technical Impact**: <15KB bundle increase, lazy-loading for optimal performance
+- ✅ **Claude CLI Settings Fix** (2025-07-24): Fixed invalid `mcpServers` field in settings.json
+  - Moved MCP server configuration to correct location (claude_desktop_config.json)
+  - Updated Firecrawl MCP server with proper API key
+  - Resolved diagnostic errors for clean CLI operation
 
 ## Commands
 ```bash

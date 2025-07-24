@@ -21,6 +21,7 @@ import RealmService from '../services/realm/RealmService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MockDataService, MockDataScenario } from '../services/MockDataService';
 import AccessControlService from '../services/AccessControlService';
+import { useFirecrawlDemo } from '../services/FirecrawlDemo';
 
 // Category Icons - Minimal icons for clean design
 const CategoryIcons = {
@@ -31,6 +32,7 @@ const CategoryIcons = {
   beta: 'β',
   login: '🔑',
   data: '📊',
+  firecrawl: '🔥',
 } as const;
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
@@ -40,6 +42,7 @@ const DeveloperScreen = () => {
   
   const { currentUser, setTestUser } = useUserStore();
   const { showFeedback, enableShakeToFeedback, toggleShakeToFeedback, isBetaUser, setBetaStatus } = useFeedbackStore();
+  const { runAllDemos } = useFirecrawlDemo();
   const {
     isDeveloperMode,
     showDebugInfo,
@@ -715,6 +718,138 @@ count={0}
             />
           </View>
         </View>
+
+        {/* Firecrawl Market Intelligence Demo */}
+        <View style={styles.section}>
+          <SectionHeader
+            title="🔥 Firecrawl 마켓 인텔리전스"
+            icon="🌐"
+            count={1}
+          />
+          <View style={styles.card}>
+            <Text style={styles.sectionDescription}>
+              실시간 커피 업계 데이터 수집 및 분석 시스템. 한국 + 미국 시장 동시 모니터링으로 CupNote의 경쟁력을 강화합니다.
+            </Text>
+            
+            {/* Demo Categories */}
+            <View style={styles.demoGrid}>
+              <TouchableOpacity 
+                style={styles.demoCard}
+                onPress={() => {
+                  Alert.alert(
+                    '🇰🇷 한국 로스터리 데이터',
+                    '• Coffee Libre, Anthracite 등 주요 로스터리\n• 실시간 제품 정보 및 가격\n• 한국어 맛 표현 데이터베이스\n• 트렌드 분석',
+                    [{ text: '확인' }]
+                  );
+                }}
+              >
+                <Text style={styles.demoCardIcon}>🇰🇷</Text>
+                <Text style={styles.demoCardTitle}>한국 시장</Text>
+                <Text style={styles.demoCardDesc}>로스터리 프로필</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.demoCard}
+                onPress={() => {
+                  Alert.alert(
+                    '🇺🇸 미국 커피 시장',
+                    '• Blue Bottle, Stumptown 등\n• 스페셜티 커피 트렌드\n• 가격 동향 분석\n• 신제품 모니터링',
+                    [{ text: '확인' }]
+                  );
+                }}
+              >
+                <Text style={styles.demoCardIcon}>🇺🇸</Text>
+                <Text style={styles.demoCardTitle}>미국 시장</Text>
+                <Text style={styles.demoCardDesc}>트렌드 분석</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.demoCard}
+                onPress={() => {
+                  Alert.alert(
+                    '🎯 경쟁사 분석',
+                    '• Bean Conqueror, Coffee Journal Pro\n• 앱스토어 데이터 모니터링\n• 기능 비교 분석\n• 시장 기회 식별',
+                    [{ text: '확인' }]
+                  );
+                }}
+              >
+                <Text style={styles.demoCardIcon}>🎯</Text>
+                <Text style={styles.demoCardTitle}>경쟁사 분석</Text>
+                <Text style={styles.demoCardDesc}>앱 마켓 인텔리전스</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.demoCard}
+                onPress={() => {
+                  Alert.alert(
+                    '📚 교육 콘텐츠',
+                    '• SCA 표준 및 가이드라인\n• 브루잉 기법 콘텐츠\n• 커피 뉴스 및 트렌드\n• 플레이버 휠 데이터',
+                    [{ text: '확인' }]
+                  );
+                }}
+              >
+                <Text style={styles.demoCardIcon}>📚</Text>
+                <Text style={styles.demoCardTitle}>교육 콘텐츠</Text>
+                <Text style={styles.demoCardDesc}>지식베이스 구축</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Demo Actions */}
+            <View style={styles.demoActions}>
+              <TouchableOpacity 
+                style={styles.primaryDemo}
+                onPress={async () => {
+                  Alert.alert(
+                    '🔥 Firecrawl 데모 실행',
+                    '전체 데모를 실행하시겠습니까?\n\n• 한국 + 미국 시장 데이터 수집\n• 경쟁사 앱 분석\n• 교육 콘텐츠 수집\n• 가격 모니터링\n\n실행 시간: 약 30초',
+                    [
+                      { text: '취소', style: 'cancel' },
+                      {
+                        text: '실행',
+                        onPress: async () => {
+                          try {
+                            console.log('🚀 Firecrawl Demo Starting...');
+                            Alert.alert('⏳ 데모 실행 중', 'Firecrawl로 실시간 데이터를 수집하고 있습니다...');
+                            
+                            const results = await runAllDemos();
+                            
+                            Alert.alert(
+                              '✅ 데모 완료!',
+                              `성공적으로 완료되었습니다!\n\n📊 결과:\n• 한국 로스터리: ${results.korean?.length || 0}개\n• 미국 로스터리: ${results.us?.totalRoasters || 0}개\n• 경쟁사 앱: ${results.competitors?.competitors?.length || 0}개\n• 교육 콘텐츠: ${results.educational?.totalArticles || 0}개\n\n콘솔에서 자세한 결과를 확인하세요.`
+                            );
+                          } catch (error) {
+                            console.error('Demo failed:', error);
+                            Alert.alert('❌ 데모 실패', '데모 실행 중 오류가 발생했습니다. 콘솔을 확인해주세요.');
+                          }
+                        }
+                      }
+                    ]
+                  );
+                }}
+              >
+                <Text style={styles.primaryDemoText}>🚀 전체 데모 실행</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.secondaryDemo}
+                onPress={() => {
+                  navigation.navigate('MarketIntelligenceScreen' as any);
+                }}
+              >
+                <Text style={styles.secondaryDemoText}>📊 마켓 인텔리전스 화면</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.firecrawlInfo}>
+              <Text style={styles.firecrawlInfoText}>
+                💡 Firecrawl MCP 서버가 설정되어 있어야 실제 데이터 수집이 가능합니다.
+              </Text>
+              <Text style={styles.firecrawlInfoText}>
+                🔧 ~/.config/claude/claude_desktop_config.json에서 API 키를 설정하세요.
+              </Text>
+            </View>
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -1082,6 +1217,76 @@ const styles = StyleSheet.create({
   },
   countButtonTextSelected: {
     color: HIGColors.white,
+  },
+  // Firecrawl Demo Styles
+  demoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginVertical: HIGConstants.SPACING_MD,
+  },
+  demoCard: {
+    width: '48%',
+    backgroundColor: HIGColors.secondarySystemBackground,
+    padding: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    marginBottom: HIGConstants.SPACING_SM,
+    alignItems: 'center',
+  },
+  demoCardIcon: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  demoCardTitle: {
+    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontWeight: '600',
+    color: HIGColors.label,
+    marginBottom: 4,
+  },
+  demoCardDesc: {
+    fontSize: HIGConstants.FONT_SIZE_CAPTION,
+    color: HIGColors.secondaryLabel,
+    textAlign: 'center',
+  },
+  demoActions: {
+    marginTop: HIGConstants.SPACING_LG,
+  },
+  primaryDemo: {
+    backgroundColor: HIGColors.systemBlue,
+    padding: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    alignItems: 'center',
+    marginBottom: HIGConstants.SPACING_SM,
+  },
+  primaryDemoText: {
+    color: HIGColors.white,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontWeight: '600',
+  },
+  secondaryDemo: {
+    backgroundColor: HIGColors.secondarySystemBackground,
+    padding: HIGConstants.SPACING_MD,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: HIGColors.systemGray4,
+  },
+  secondaryDemoText: {
+    color: HIGColors.systemBlue,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontWeight: '600',
+  },
+  firecrawlInfo: {
+    backgroundColor: HIGColors.systemBlue + '10',
+    padding: HIGConstants.SPACING_SM,
+    borderRadius: HIGConstants.BORDER_RADIUS,
+    marginTop: HIGConstants.SPACING_MD,
+  },
+  firecrawlInfoText: {
+    fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
+    color: HIGColors.systemBlue,
+    textAlign: 'center',
+    marginBottom: 4,
   },
 });
 

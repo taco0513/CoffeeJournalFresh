@@ -10,31 +10,31 @@ import StatusBadge from '../components/StatusBadge';
 import { TabBarIcon } from '../components/TabBarIcon';
 import ScreenContextService from '../services/ScreenContextService';
 
-// 화면 import - Tamagui optimized versions
-import HomeScreen from '../screens/HomeScreen.tamagui';
+// 화면 import - Tamagui optimized versions (only existing ones)
+import HomeScreen from '../screens/HomeScreen';
 import CoffeeInfoScreen from '../screens/CoffeeInfoScreen.tamagui';
-import JournalIntegratedScreen from '../screens/JournalIntegratedScreen.tamagui';
-import RoasterNotesScreen from '../screens/RoasterNotesScreen.tamagui';
+import JournalIntegratedScreen from '../screens/JournalIntegratedScreen';
+import RoasterNotesScreen from '../screens/RoasterNotesScreen';
 import UnifiedFlavorScreen from '../screens/flavor/UnifiedFlavorScreen.tamagui';
 // import UnifiedFlavorScreen from '../screens/flavor/TestScreen';
 // import UnifiedFlavorScreen from '../screens/flavor/MinimalTestScreen';
-import SensoryScreen from '../screens/SensoryScreen.tamagui';
-import ExperimentalDataScreen from '../screens/ExperimentalDataScreen.tamagui';
-import SensoryEvaluationScreen from '../screens/SensoryEvaluationScreen.tamagui';
-import PersonalCommentScreen from '../screens/PersonalCommentScreen.tamagui';
-import ResultScreen from '../screens/ResultScreen.tamagui';
+import SensoryScreen from '../screens/SensoryScreen';
+import ExperimentalDataScreen from '../screens/ExperimentalDataScreen';
+import SensoryEvaluationScreen from '../screens/SensoryEvaluationScreen';
+import PersonalCommentScreen from '../screens/PersonalCommentScreen';
+import ResultScreen from '../screens/ResultScreen';
 // import OCRScanScreen from '../screens/OCRScanScreen'; // Moved to feature_backlog
 // import OCRResultScreen from '../screens/OCRResultScreen'; // Moved to feature_backlog
-import SearchScreen from '../screens/SearchScreen.tamagui';
-import TastingDetailScreen from '../screens/TastingDetailScreen.tamagui';
+import SearchScreen from '../screens/SearchScreen';
+import TastingDetailScreen from '../screens/TastingDetailScreen';
 import DataTestScreen from '../screens/DataTestScreen';
-import ProfileScreen from '../screens/ProfileScreen.tamagui';
+import ProfileScreen from '../screens/ProfileScreen';
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
 import { AdminCoffeeEditScreen } from '../screens/admin/AdminCoffeeEditScreen';
 import DeveloperScreen from '../screens/DeveloperScreen';
 import AdminFeedbackScreen from '../screens/admin/AdminFeedbackScreen';
 import { FeedbackProvider } from '../components/feedback';
-import { AchievementGalleryScreen } from '../screens/AchievementGalleryScreen.tamagui';
+import { AchievementGalleryScreen } from '../screens/AchievementGalleryScreen';
 import { AchievementProvider } from '../contexts/AchievementContext';
 import { RealmProvider } from '../contexts/RealmContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';

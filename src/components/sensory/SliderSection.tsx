@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { SliderSectionProps } from '../../types/sensory';
 
@@ -60,17 +60,13 @@ export const SliderSection = memo<SliderSectionProps>(({
   
   const handleSegmentPress = (segmentValue: number) => {
     // Add haptic feedback for better interaction
-    if (Haptics?.impactAsync) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
+    ReactNativeHapticFeedback.trigger('impactLight');
     onValueChange(segmentValue);
     setShowSuggestion(false); // Hide suggestion after user interaction
   };
 
   const handleUseSuggestion = () => {
-    if (Haptics?.impactAsync) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
+    ReactNativeHapticFeedback.trigger('impactMedium');
     onValueChange(suggestion.value);
     setShowSuggestion(false);
   };
