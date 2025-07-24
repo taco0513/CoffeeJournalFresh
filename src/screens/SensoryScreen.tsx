@@ -19,19 +19,25 @@ import { SelectedSensoryExpression } from '../types/sensory';
 
 const SensoryScreen = () => {
   const navigation = useNavigation();
-  const { selectedSensoryExpressions, setSelectedSensoryExpressions } = useTastingStore();
+  const { selectedSensoryExpressions, setSelectedSensoryExpressions, currentTasting } = useTastingStore();
   
   // 카페 모드 전용 (홈카페는 별도 스크린 사용)
   // Note: 홈카페 모드는 ExperimentalDataScreen + SensoryEvaluationScreen 사용
   
   const [showOnboarding, setShowOnboarding] = useState(false);
 
-  // Check if onboarding should be shown
+  // Check if onboarding should be shown (only for cafe mode)
   useEffect(() => {
+    // 홈카페 모드일 때는 온보딩을 표시하지 않음
+    if (currentTasting.mode === 'home_cafe' || currentTasting.mode === 'lab') {
+      setShowOnboarding(false);
+      return;
+    }
+    
     checkShouldShowOnboarding().then(shouldShow => {
       setShowOnboarding(shouldShow);
     });
-  }, []);
+  }, [currentTasting.mode]);
 
 
   const handleComplete = useCallback(async () => {

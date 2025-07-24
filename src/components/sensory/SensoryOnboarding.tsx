@@ -84,8 +84,13 @@ const SensoryOnboarding: React.FC<SensoryOnboardingProps> = ({
       transparent
       animationType="fade"
       statusBarTranslucent
+      onRequestClose={onComplete}
     >
-      <View style={styles.overlay}>
+      <TouchableOpacity 
+        style={styles.overlay} 
+        activeOpacity={1}
+        onPress={handleSkip}
+      >
         <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
           <View style={styles.content}>
             <Text style={styles.title}>{currentStepData.title}</Text>
@@ -123,7 +128,7 @@ const SensoryOnboarding: React.FC<SensoryOnboardingProps> = ({
             </TouchableOpacity>
           </View>
         </Animated.View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 };
