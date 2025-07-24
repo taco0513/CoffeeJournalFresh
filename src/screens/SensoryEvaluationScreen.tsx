@@ -94,11 +94,6 @@ const SensoryEvaluationScreen = () => {
       <View style={styles.topSection}>
         {/* Selected Sensory Preview - Expanded */}
         <View style={styles.selectedPreviewContainer}>
-          {selectedSensoryExpressions.length > 10 && (
-            <View style={styles.scrollHint}>
-              <Text style={styles.scrollHintText}>스크롤해서 더 보기 ↕️</Text>
-            </View>
-          )}
           {selectedSensoryExpressions.length > 0 ? (
             <ScrollView 
               style={styles.selectedPreviewScroll}
@@ -107,13 +102,16 @@ const SensoryEvaluationScreen = () => {
               nestedScrollEnabled={true}
             >
               {(() => {
-                // Group by category
+                // Group by category and remove duplicates
                 const groupedExpressions = selectedSensoryExpressions.reduce((acc, expr) => {
                   const category = expr.categoryId;
                   if (!acc[category]) {
                     acc[category] = [];
                   }
-                  acc[category].push(expr.korean);
+                  // Only add if not already present (prevent duplicates)
+                  if (!acc[category].includes(expr.korean)) {
+                    acc[category].push(expr.korean);
+                  }
                   return acc;
                 }, {} as Record<string, string[]>);
                 
@@ -145,7 +143,7 @@ const SensoryEvaluationScreen = () => {
                         </View>
                       ))}
                       <Text style={styles.previewCount}>
-                        총 {selectedSensoryExpressions.length}개 선택
+                        총 {Object.values(groupedExpressions).flat().length}개 선택
                       </Text>
                     </View>
                   );
@@ -338,21 +336,6 @@ const styles = StyleSheet.create({
     color: HIGColors.systemBlue,
     fontWeight: '600',
     textAlign: 'right',
-  },
-  scrollHint: {
-    position: 'absolute',
-    top: 4,
-    right: 8,
-    zIndex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
-  scrollHintText: {
-    fontSize: 10,
-    color: HIGColors.systemBlue,
-    fontWeight: '500',
   },
   categoryGroup: {
     marginBottom: HIGConstants.SPACING_MD,

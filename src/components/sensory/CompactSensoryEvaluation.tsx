@@ -148,26 +148,28 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
           );
           const isDisabled = categorySelections.length >= MAX_PER_CATEGORY && !isSelected;
           
+          // Also check if this expression is selected in ANY category (global selection check)
+          const isGloballySelected = safeSelectedExpressions.some(
+            item => item.expression.korean === expression.korean
+          );
+          
           return (
             <TouchableOpacity
               key={expression.id}
               style={[
                 styles.expressionButton,
-                isSelected && { 
-                  backgroundColor: category?.color || '#007AFF',
-                  borderColor: category?.color || '#007AFF',
-                  borderWidth: 2,
-                  transform: [{scale: 1.02}],
-                },
+                isSelected && styles.expressionButtonSelected,
+                isGloballySelected && !isSelected && styles.expressionButtonGloballySelected,
                 isDisabled && styles.expressionButtonDisabled
               ]}
-              onPress={() => !isDisabled && handleExpressionSelect(activeCategory, expression)}
-              activeOpacity={isDisabled ? 1 : 0.7}
-              disabled={isDisabled}
+              onPress={() => !isDisabled && !isGloballySelected && handleExpressionSelect(activeCategory, expression)}
+              activeOpacity={(isDisabled || isGloballySelected) ? 1 : 0.7}
+              disabled={isDisabled || (isGloballySelected && !isSelected)}
             >
               <Text style={[
                 styles.expressionText,
                 isSelected && styles.expressionTextSelected,
+                isGloballySelected && !isSelected && styles.expressionTextGloballySelected,
                 isDisabled && styles.expressionTextDisabled
               ]}>
                 {expression.korean}
@@ -333,6 +335,29 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     color: '#007AFF',
+  },
+  // New selected state styles
+  expressionButtonSelected: {
+    backgroundColor: '#007AFF',
+    borderColor: '#007AFF',
+    borderWidth: 3,
+    transform: [{scale: 1.05}],
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    elevation: 6,
+  },
+  expressionButtonGloballySelected: {
+    backgroundColor: '#E5E5EA',
+    borderColor: '#D1D1D6',
+    borderWidth: 2,
+    opacity: 0.6,
+  },
+  expressionTextGloballySelected: {
+    color: '#8E8E93',
+    fontWeight: '400',
+    textDecorationLine: 'line-through',
   },
 });
 
