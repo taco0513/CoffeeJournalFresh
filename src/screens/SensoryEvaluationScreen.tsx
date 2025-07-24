@@ -1,15 +1,22 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { 
+  View, 
+  Text, 
+  ScrollView, 
+  Button, 
+  YStack, 
+  XStack, 
+  Card,
+  Separator,
+  H1,
+  H2,
+  H3,
+  Paragraph,
+  SizableText
+} from 'tamagui';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTastingStore } from '../stores/tastingStore';
-import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 import { SensoryOnboarding } from '../components/sensory';
 import CompactSensoryEvaluation from '../components/sensory/CompactSensoryEvaluation';
 import { checkShouldShowOnboarding } from '../components/sensory/SensoryOnboarding';
@@ -64,43 +71,78 @@ const SensoryEvaluationScreen = () => {
   }, [setSelectedSensoryExpressions]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View flex={1} backgroundColor="$backgroundSoft">
       {/* Navigation Bar */}
-      <View style={styles.navigationBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.navigationTitle}>감각 평가</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('PersonalComment' as never)}>
-          <Text style={styles.skipButton}>건너뛰기</Text>
-        </TouchableOpacity>
-      </View>
+      <XStack 
+        height={44}
+        paddingHorizontal="$6" 
+        alignItems="center" 
+        justifyContent="space-between"
+        backgroundColor="$background"
+        borderBottomWidth={0.5}
+        borderBottomColor="$borderColor"
+      >
+        <Button 
+          size="$3" 
+          variant="outlined" 
+          backgroundColor="transparent" 
+          borderWidth={0}
+          onPress={() => navigation.goBack()}
+        >
+          <Text color="$blue10" fontSize="$6">←</Text>
+        </Button>
+        <H3 color="$color">감각 평가</H3>
+        <Button 
+          size="$3" 
+          variant="outlined" 
+          backgroundColor="transparent" 
+          borderWidth={0}
+          onPress={() => navigation.navigate('PersonalComment' as never)}
+        >
+          <Text color="$blue10" fontSize="$4">건너뛰기</Text>
+        </Button>
+      </XStack>
       
       {/* Progress Bar */}
-      <View style={styles.progressBar}>
-        <View style={[styles.progressFill, { width: '71%' }]} />
+      <View height={3} backgroundColor="$gray5" overflow="hidden">
+        <View height="100%" width="71%" backgroundColor="$blue10" />
       </View>
 
       {/* Guide Message */}
-      <View style={styles.guideMessageContainer}>
-        <Text style={styles.guideMessage}>
+      <YStack 
+        paddingHorizontal="$6" 
+        paddingVertical="$4" 
+        backgroundColor="$background"
+      >
+        <SizableText size="$5" fontWeight="600" color="$color" textAlign="center" marginBottom="$2">
           맛의 언어로 표현해보세요
-        </Text>
-        <Text style={styles.guideSubMessage}>
+        </SizableText>
+        <SizableText size="$4" color="$colorPress" textAlign="center">
           이 커피에서 느껴지는 감각을 선택해주세요
-        </Text>
-      </View>
+        </SizableText>
+      </YStack>
 
       {/* Top Section: Preview Box - Takes remaining space */}
-      <View style={styles.topSection}>
+      <YStack flex={1} paddingBottom="$3">
         {/* Selected Sensory Preview - Expanded */}
-        <View style={styles.selectedPreviewContainer}>
+        <Card 
+          backgroundColor="$background" 
+          marginHorizontal="$6" 
+          marginTop="$3" 
+          padding="$6" 
+          borderRadius="$4" 
+          flex={1}
+          borderWidth={1} 
+          borderColor="$borderColor" 
+          elevate
+          animation="bouncy"
+          minHeight={160}
+        >
           {selectedSensoryExpressions.length > 0 ? (
             <ScrollView 
-              style={styles.selectedPreviewScroll}
-              contentContainerStyle={styles.selectedPreviewContent}
+              flex={1}
               showsVerticalScrollIndicator={true}
-              nestedScrollEnabled={true}
+              contentContainerStyle={{ paddingVertical: '$3', flexGrow: 1 }}
             >
               {(() => {
                 const groupedExpressions = selectedSensoryExpressions.reduce((acc, expr) => {
@@ -128,21 +170,37 @@ const SensoryEvaluationScreen = () => {
                 // Show more compact format when many selections
                 if (selectedSensoryExpressions.length > 9) {
                   return (
-                    <View style={styles.compactPreviewContent}>
+                    <YStack paddingVertical="$3">
                       {filteredCategories.map((cat) => (
-                        <View key={cat} style={styles.compactCategoryRow}>
-                          <Text style={styles.compactCategoryLabel}>
+                        <XStack key={cat} marginBottom="$3" alignItems="flex-start">
+                          <SizableText 
+                            size="$4" 
+                            fontWeight="600" 
+                            color="$colorPress" 
+                            marginRight="$3" 
+                            minWidth={50}
+                          >
                             {categoryNames[cat]}:
-                          </Text>
-                          <Text style={styles.compactCategoryExpressions}>
+                          </SizableText>
+                          <SizableText 
+                            size="$4" 
+                            color="$color" 
+                            lineHeight="$5" 
+                            flex={1}
+                          >
                             {groupedExpressions[cat].join(', ')}
-                          </Text>
-                        </View>
+                          </SizableText>
+                        </XStack>
                       ))}
-                      <Text style={styles.previewCount}>
+                      <SizableText 
+                        size="$3" 
+                        color="$blue10" 
+                        fontWeight="600" 
+                        textAlign="right"
+                      >
                         총 {selectedSensoryExpressions.length}개 선택
-                      </Text>
-                    </View>
+                      </SizableText>
+                    </YStack>
                   );
                 }
                 
@@ -153,26 +211,32 @@ const SensoryEvaluationScreen = () => {
                   const isLast = index === filteredCategories.length - 1;
                   
                   return (
-                    <View 
+                    <YStack 
                       key={category} 
-                      style={[
-                        styles.categoryGroup,
-                        isLast && styles.categoryGroupLast
-                      ]}
+                      marginBottom={isLast ? 0 : "$4"}
+                      paddingBottom={isLast ? 0 : "$4"}
+                      borderBottomWidth={isLast ? 0 : 1}
+                      borderBottomColor="$gray6"
                     >
-                      <Text style={styles.categoryLabel}>{categoryName}</Text>
-                      <Text style={styles.categoryExpressions}>{expressions}</Text>
-                    </View>
+                      <SizableText size="$5" fontWeight="700" color="$colorPress" marginBottom="$3">
+                        {categoryName}
+                      </SizableText>
+                      <SizableText size="$5" color="$color" lineHeight="$6" fontWeight="500">
+                        {expressions}
+                      </SizableText>
+                    </YStack>
                   );
                 });
               })()}
             </ScrollView>
           ) : (
-            <View style={styles.emptyPreviewContent}>
-              <Text style={styles.emptyPreviewText}>선택한 표현이 여기에 나타납니다</Text>
-            </View>
+            <YStack flex={1} justifyContent="center" alignItems="center">
+              <SizableText size="$5" color="$gray10" fontStyle="italic" textAlign="center">
+                선택한 표현이 여기에 나타납니다
+              </SizableText>
+            </YStack>
           )}
-        </View>
+        </Card>
 
         {/* Show onboarding if needed */}
         {showOnboarding && (
@@ -181,10 +245,16 @@ const SensoryEvaluationScreen = () => {
             onComplete={() => setShowOnboarding(false)}
           />
         )}
-      </View>
+      </YStack>
 
       {/* Bottom Section: Fixed Sensory Evaluation */}
-      <View style={styles.bottomSection}>
+      <YStack 
+        height={280} 
+        backgroundColor="$background" 
+        borderTopWidth={1} 
+        borderTopColor="$gray5" 
+        paddingTop="$3"
+      >
         <CompactSensoryEvaluation 
           selectedExpressions={(selectedSensoryExpressions || []).map(item => ({
             categoryId: item.categoryId,
@@ -200,21 +270,25 @@ const SensoryEvaluationScreen = () => {
           onExpressionChange={handleExpressionChange}
           beginnerMode={true}
         />
-      </View>
+      </YStack>
 
       {/* Bottom Button */}
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity 
-          style={[commonButtonStyles.buttonPrimary, styles.continueButton]}
+      <YStack 
+        padding="$6" 
+        backgroundColor="$background" 
+        borderTopWidth={0.5} 
+        borderTopColor="$borderColor"
+      >
+        <Button 
+          size="$5" 
+          theme="blue" 
           onPress={handleComplete}
-          activeOpacity={0.8}
+          animation="bouncy"
         >
-          <Text style={[commonTextStyles.buttonText, styles.continueButtonText]}>
-            다음 단계
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+          다음 단계
+        </Button>
+      </YStack>
+    </View>
   );
 };
 

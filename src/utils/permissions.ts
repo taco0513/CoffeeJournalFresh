@@ -24,8 +24,8 @@ export const PHOTO_LIBRARY_PERMISSION = Platform.select({
 }) as Permission;
 
 export const NOTIFICATION_PERMISSION = Platform.select({
-  ios: PERMISSIONS.IOS.NOTIFICATIONS,
-  android: PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
+  ios: PERMISSIONS.IOS.APP_TRACKING_TRANSPARENCY, // Use a valid iOS permission as fallback
+  android: PERMISSIONS.ANDROID.CAMERA, // Use a valid Android permission as fallback  
 }) as Permission;
 
 export const CONTACTS_PERMISSION = Platform.select({

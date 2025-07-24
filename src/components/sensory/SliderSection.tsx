@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Haptics } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { HIGConstants, HIGColors } from '../../styles/common';
 import { SliderSectionProps } from '../../types/sensory';
 

@@ -491,9 +491,9 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   tipItem: {
-    fontSize: HIGConstants.FONT_SIZE_CAPTION,
-    color: HIGColors.secondaryLabel,
-    lineHeight: 18,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 8,
   },
   
   // Modal Styles

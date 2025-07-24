@@ -1,5 +1,23 @@
-import * as Sentry from '@sentry/react-native';
+// import * as Sentry from '@sentry/react-native';
 import Config from 'react-native-config';
+
+// Mock Sentry types and functions for when Sentry is disabled
+type SentryEvent = any;
+type SentryEventHint = any;
+type SentryBreadcrumb = any;
+type SentryScope = any;
+type SeverityLevel = 'fatal' | 'error' | 'warning' | 'log' | 'info' | 'debug';
+
+const Sentry = {
+  init: () => {},
+  setUser: () => {},
+  captureException: () => {},
+  captureMessage: () => {},
+  withScope: (callback: (scope: any) => void) => callback({}),
+  startTransaction: () => ({ finish: () => {} }),
+  reactNativeTracingIntegration: () => ({}),
+  reactNavigationIntegration: () => ({}),
+};
 
 export const initSentry = () => {
   // Temporarily skip Sentry initialization due to build issues
@@ -37,7 +55,7 @@ export const initSentry = () => {
     ],
     
     // 민감 정보 필터링
-    beforeSend: (event: Sentry.Event, hint: Sentry.EventHint) => {
+    beforeSend: (event: SentryEvent, hint: SentryEventHint) => {
       // 개발 환경에서는 모든 이벤트 전송
       if (__DEV__) {
         return event;
@@ -55,7 +73,7 @@ export const initSentry = () => {
       
       // breadcrumbs에서 민감 정보 필터링
       if (event.breadcrumbs) {
-        event.breadcrumbs = event.breadcrumbs.filter((crumb: Sentry.Breadcrumb) => {
+        event.breadcrumbs = event.breadcrumbs.filter((crumb: SentryBreadcrumb) => {
           const message = crumb.message?.toLowerCase() || '';
           return !message.includes('password') && 
                  !message.includes('token') &&
@@ -81,7 +99,7 @@ export const initSentry = () => {
     },
     
     // 브레드크럼 설정
-    beforeBreadcrumb: (breadcrumb: Sentry.Breadcrumb) => {
+    beforeBreadcrumb: (breadcrumb: SentryBreadcrumb) => {
       // console 브레드크럼 필터링
       if (breadcrumb.category === 'console' && !__DEV__) {
         return null;
@@ -125,7 +143,7 @@ export const reportError = (error: Error, context?: Record<string, any>) => {
   console.error('[Sentry] reportError temporarily disabled:', error);
   return;
   
-  Sentry.withScope((scope: Sentry.Scope) => {
+  Sentry.withScope((scope: SentryScope) => {
     if (context) {
       scope.setContext('custom', context);
     }
@@ -139,7 +157,7 @@ export const startTransaction = (name: string, op: string) => {
 };
 
 // 커스텀 메시지 (디버깅용)
-export const logMessage = (message: string, level: Sentry.SeverityLevel = 'info') => {
+export const logMessage = (message: string, level: SeverityLevel = 'info') => {
   if (__DEV__) {
     console.log(`[Sentry ${level}]:`, message);
   }

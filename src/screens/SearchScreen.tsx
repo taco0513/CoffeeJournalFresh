@@ -1,22 +1,28 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-  Modal,
-  ScrollView,
-} from 'react-native';
+import { FlatList, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { 
+  View, 
+  Text, 
+  ScrollView, 
+  Button, 
+  YStack, 
+  XStack, 
+  Card,
+  Input,
+  Separator,
+  Spinner,
+  H1,
+  H2,
+  H3,
+  Paragraph,
+  SizableText,
+  Sheet
+} from 'tamagui';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import RealmService from '../services/realm/RealmService';
 import { ITastingRecord } from '../services/realm/schemas';
-import { Colors } from '../constants/colors';
-import { Heading2, BodyText, Caption } from '../components/common';
 
 interface FilterOptions {
   roastery?: string;
@@ -153,128 +159,182 @@ export default function SearchScreen() {
   }, [filters]);
 
   const renderTastingItem = ({ item }: { item: ITastingRecord }) => (
-    <TouchableOpacity
-      style={styles.tastingCard}
+    <Card
+      backgroundColor="$background"
+      borderRadius="$4"
+      padding="$4"
+      marginBottom="$3"
+      borderWidth={1}
+      borderColor="$borderColor"
+      elevate
+      animation="bouncy"
+      scale={0.9}
+      hoverStyle={{ scale: 0.925 }}
+      pressStyle={{ scale: 0.875 }}
       onPress={() => navigation.navigate('TastingDetail', { tastingId: item.id })}
     >
-      <View style={styles.cardHeader}>
-        <View style={styles.cardTitleContainer}>
-          <Text style={styles.coffeeName}>{item.coffeeName}</Text>
-          <Text style={styles.roastery}>{item.roastery}</Text>
-        </View>
-        <Text style={styles.matchScore}>{item.matchScoreTotal}%</Text>
-      </View>
+      <XStack justifyContent="space-between" alignItems="flex-start" marginBottom="$2">
+        <YStack flex={1} marginRight="$3">
+          <SizableText size="$5" fontWeight="600" color="$color" marginBottom="$1">
+            {item.coffeeName}
+          </SizableText>
+          <SizableText size="$3" color="$colorPress">
+            {item.roastery}
+          </SizableText>
+        </YStack>
+        <SizableText size="$7" fontWeight="700" color="$acidity">
+          {item.matchScoreTotal}%
+        </SizableText>
+      </XStack>
       
-      <View style={styles.cardDetails}>
+      <XStack gap="$3" marginBottom="$2">
         {item.cafeName && (
-          <Text style={styles.detailText}>📍 {item.cafeName}</Text>
+          <SizableText size="$3" color="$colorPress">📍 {item.cafeName}</SizableText>
         )}
-        <Text style={styles.detailText}>
+        <SizableText size="$3" color="$colorPress">
           📅 {item.createdAt.toLocaleDateString('ko-KR')}
-        </Text>
-      </View>
+        </SizableText>
+      </XStack>
       
       {item.flavorNotes.length > 0 && (
-        <View style={styles.flavorContainer}>
+        <XStack flexWrap="wrap" gap="$2" alignItems="center">
           {item.flavorNotes
             .filter(note => note.level === 1)
             .slice(0, 3)
             .map((note, index) => (
-              <View key={index} style={styles.flavorTag}>
-                <Text style={styles.flavorText}>{note.value}</Text>
+              <View 
+                key={index} 
+                backgroundColor="$backgroundHover" 
+                paddingHorizontal="$3" 
+                paddingVertical="$1" 
+                borderRadius="$3"
+              >
+                <SizableText size="$2" color="$colorPress">{note.value}</SizableText>
               </View>
             ))}
           {item.flavorNotes.filter(n => n.level === 1).length > 3 && (
-            <Text style={styles.moreText}>+{item.flavorNotes.filter(n => n.level === 1).length - 3}</Text>
+            <SizableText size="$2" color="$colorPress" marginLeft="$1">
+              +{item.flavorNotes.filter(n => n.level === 1).length - 3}
+            </SizableText>
           )}
-        </View>
+        </XStack>
       )}
-    </TouchableOpacity>
+    </Card>
   );
 
   const FilterModal = () => (
-    <Modal
-      visible={filterModalVisible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => setFilterModalVisible(false)}
+    <Sheet
+      modal
+      open={filterModalVisible}
+      onOpenChange={setFilterModalVisible}
+      snapPoints={[80]}
+      dismissOnSnapToBottom
     >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>필터</Text>
-            <TouchableOpacity onPress={() => setFilterModalVisible(false)}>
-              <Text style={styles.closeButton}>✕</Text>
-            </TouchableOpacity>
-          </View>
-          
-          <ScrollView style={styles.modalBody}>
+      <Sheet.Overlay
+        animation="lazy"
+        enterStyle={{ opacity: 0 }}
+        exitStyle={{ opacity: 0 }}
+      />
+      <Sheet.Handle />
+      <Sheet.Frame backgroundColor="$background" borderTopLeftRadius="$6" borderTopRightRadius="$6">
+        <XStack 
+          paddingHorizontal="$4" 
+          paddingVertical="$4" 
+          alignItems="center" 
+          justifyContent="space-between"
+          borderBottomWidth={1}
+          borderBottomColor="$borderColor"
+        >
+          <H3 color="$color">필터</H3>
+          <Button 
+            size="$3" 
+            variant="outlined" 
+            backgroundColor="transparent" 
+            borderWidth={0}
+            onPress={() => setFilterModalVisible(false)}
+          >
+            <SizableText size="$6" color="$colorPress">✕</SizableText>
+          </Button>
+        </XStack>
+        
+        <ScrollView padding="$4">
             {/* Roastery Filter */}
-            <View style={styles.filterSection}>
-              <Text style={styles.filterLabel}>로스터리</Text>
+            <YStack marginBottom="$6">
+              <SizableText size="$4" fontWeight="600" color="$color" marginBottom="$3">
+                로스터리
+              </SizableText>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {availableRoasteries.map(roastery => (
-                  <TouchableOpacity
-                    key={roastery}
-                    style={[
-                      styles.filterChip,
-                      filters.roastery === roastery && styles.filterChipActive
-                    ]}
-                    onPress={() => {
-                      setFilters(prev => ({
-                        ...prev,
-                        roastery: prev.roastery === roastery ? undefined : roastery
-                      }));
-                    }}
-                  >
-                    <Text style={[
-                      styles.filterChipText,
-                      filters.roastery === roastery && styles.filterChipTextActive
-                    ]}>
-                      {roastery}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                <XStack gap="$2">
+                  {availableRoasteries.map(roastery => (
+                    <Button
+                      key={roastery}
+                      size="$3"
+                      variant={filters.roastery === roastery ? undefined : "outlined"}
+                      backgroundColor={filters.roastery === roastery ? "$acidity" : "$backgroundHover"}
+                      borderColor={filters.roastery === roastery ? "$acidity" : "$borderColor"}
+                      onPress={() => {
+                        setFilters(prev => ({
+                          ...prev,
+                          roastery: prev.roastery === roastery ? undefined : roastery
+                        }));
+                      }}
+                    >
+                      <SizableText 
+                        size="$3" 
+                        color={filters.roastery === roastery ? "white" : "$colorPress"}
+                        fontWeight={filters.roastery === roastery ? "500" : "400"}
+                      >
+                        {roastery}
+                      </SizableText>
+                    </Button>
+                  ))}
+                </XStack>
               </ScrollView>
-            </View>
+            </YStack>
             
             {/* Cafe Filter */}
-            <View style={styles.filterSection}>
-              <Text style={styles.filterLabel}>카페</Text>
+            <YStack marginBottom="$6">
+              <SizableText size="$4" fontWeight="600" color="$color" marginBottom="$3">
+                카페
+              </SizableText>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {availableCafes.map(cafe => (
-                  <TouchableOpacity
-                    key={cafe}
-                    style={[
-                      styles.filterChip,
-                      filters.cafeName === cafe && styles.filterChipActive
-                    ]}
-                    onPress={() => {
-                      setFilters(prev => ({
-                        ...prev,
-                        cafeName: prev.cafeName === cafe ? undefined : cafe
-                      }));
-                    }}
-                  >
-                    <Text style={[
-                      styles.filterChipText,
-                      filters.cafeName === cafe && styles.filterChipTextActive
-                    ]}>
-                      {cafe}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                <XStack gap="$2">
+                  {availableCafes.map(cafe => (
+                    <Button
+                      key={cafe}
+                      size="$3"
+                      variant={filters.cafeName === cafe ? undefined : "outlined"}
+                      backgroundColor={filters.cafeName === cafe ? "$acidity" : "$backgroundHover"}
+                      borderColor={filters.cafeName === cafe ? "$acidity" : "$borderColor"}
+                      onPress={() => {
+                        setFilters(prev => ({
+                          ...prev,
+                          cafeName: prev.cafeName === cafe ? undefined : cafe
+                        }));
+                      }}
+                    >
+                      <SizableText 
+                        size="$3" 
+                        color={filters.cafeName === cafe ? "white" : "$colorPress"}
+                        fontWeight={filters.cafeName === cafe ? "500" : "400"}
+                      >
+                        {cafe}
+                      </SizableText>
+                    </Button>
+                  ))}
+                </XStack>
               </ScrollView>
-            </View>
+            </YStack>
             
             {/* Score Range Filter */}
-            <View style={styles.filterSection}>
-              <Text style={styles.filterLabel}>매칭 점수</Text>
-              <View style={styles.scoreRange}>
-                <TextInput
-                  style={styles.scoreInput}
+            <YStack marginBottom="$6">
+              <SizableText size="$4" fontWeight="600" color="$color" marginBottom="$3">
+                매칭 점수
+              </SizableText>
+              <XStack alignItems="center" gap="$3">
+                <Input
+                  flex={1}
                   placeholder="최소"
-                  placeholderTextColor="#CCCCCC"
                   value={filters.minScore?.toString() || ''}
                   onChangeText={(text) => {
                     const value = text ? parseInt(text) : undefined;
@@ -282,12 +342,15 @@ export default function SearchScreen() {
                   }}
                   keyboardType="numeric"
                   maxLength={3}
+                  backgroundColor="$backgroundHover"
+                  borderColor="$borderColor"
+                  fontSize="$4"
+                  textAlign="center"
                 />
-                <Text style={styles.scoreDash}>-</Text>
-                <TextInput
-                  style={styles.scoreInput}
+                <SizableText size="$4" color="$colorPress">-</SizableText>
+                <Input
+                  flex={1}
                   placeholder="최대"
-                  placeholderTextColor="#CCCCCC"
                   value={filters.maxScore?.toString() || ''}
                   onChangeText={(text) => {
                     const value = text ? parseInt(text) : undefined;
@@ -295,21 +358,27 @@ export default function SearchScreen() {
                   }}
                   keyboardType="numeric"
                   maxLength={3}
+                  backgroundColor="$backgroundHover"
+                  borderColor="$borderColor"
+                  fontSize="$4"
+                  textAlign="center"
                 />
-              </View>
-            </View>
+              </XStack>
+            </YStack>
             
             {/* Flavor Notes Filter */}
-            <View style={styles.filterSection}>
-              <Text style={styles.filterLabel}>맛 노트</Text>
-              <View style={styles.flavorGrid}>
+            <YStack marginBottom="$6">
+              <SizableText size="$4" fontWeight="600" color="$color" marginBottom="$3">
+                맛 노트
+              </SizableText>
+              <XStack flexWrap="wrap" gap="$2">
                 {availableFlavors.map(flavor => (
-                  <TouchableOpacity
+                  <Button
                     key={flavor}
-                    style={[
-                      styles.filterChip,
-                      filters.flavorNotes?.includes(flavor) && styles.filterChipActive
-                    ]}
+                    size="$3"
+                    variant={filters.flavorNotes?.includes(flavor) ? undefined : "outlined"}
+                    backgroundColor={filters.flavorNotes?.includes(flavor) ? "$acidity" : "$backgroundHover"}
+                    borderColor={filters.flavorNotes?.includes(flavor) ? "$acidity" : "$borderColor"}
                     onPress={() => {
                       setFilters(prev => {
                         const currentFlavors = prev.flavorNotes || [];
@@ -320,95 +389,145 @@ export default function SearchScreen() {
                       });
                     }}
                   >
-                    <Text style={[
-                      styles.filterChipText,
-                      filters.flavorNotes?.includes(flavor) && styles.filterChipTextActive
-                    ]}>
+                    <SizableText 
+                      size="$3" 
+                      color={filters.flavorNotes?.includes(flavor) ? "white" : "$colorPress"}
+                      fontWeight={filters.flavorNotes?.includes(flavor) ? "500" : "400"}
+                    >
                       {flavor}
-                    </Text>
-                  </TouchableOpacity>
+                    </SizableText>
+                  </Button>
                 ))}
-              </View>
-            </View>
+              </XStack>
+            </YStack>
           </ScrollView>
           
-          <View style={styles.modalFooter}>
-            <TouchableOpacity
-              style={styles.clearButton}
+          <XStack 
+            paddingHorizontal="$4" 
+            paddingVertical="$4" 
+            gap="$3" 
+            borderTopWidth={1} 
+            borderTopColor="$borderColor"
+          >
+            <Button
+              flex={1}
+              size="$4"
+              variant="outlined"
+              backgroundColor="$backgroundHover"
+              borderColor="$borderColor"
               onPress={() => setFilters({})}
             >
-              <Text style={styles.clearButtonText}>초기화</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.applyButton}
+              <SizableText size="$4" fontWeight="500" color="$colorPress">초기화</SizableText>
+            </Button>
+            <Button
+              flex={1}
+              size="$4"
+              theme="blue"
+              backgroundColor="$acidity"
               onPress={() => setFilterModalVisible(false)}
             >
-              <Text style={styles.applyButtonText}>적용</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
+              <SizableText size="$4" fontWeight="600" color="white">적용</SizableText>
+            </Button>
+          </XStack>
+        </Sheet.Frame>
+      </Sheet>
+    );
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color={Colors.GRADIENT_BROWN} />
-          <BodyText style={styles.loadingText}>데이터 로딩 중...</BodyText>
-        </View>
-      </SafeAreaView>
+      <View flex={1} backgroundColor="$backgroundSoft" alignItems="center" justifyContent="center">
+        <Spinner size="large" color="$acidity" />
+        <SizableText marginTop="$4" size="$4" color="$color">데이터 로딩 중...</SizableText>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Heading2>테이스팅 검색</Heading2>
-      </View>
+    <View flex={1} backgroundColor="$backgroundSoft">
+      <XStack padding="$4" paddingBottom="$3">
+        <H2 color="$color">테이스팅 검색</H2>
+      </XStack>
       
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBar}>
-          <Text style={styles.searchIcon}>🔍</Text>
-          <TextInput
-            style={styles.searchInput}
+      <XStack paddingHorizontal="$4" paddingBottom="$3" gap="$3">
+        <XStack 
+          flex={1} 
+          alignItems="center" 
+          backgroundColor="$background" 
+          borderRadius="$4" 
+          paddingHorizontal="$4"
+          borderWidth={1}
+          borderColor="$borderColor"
+          elevation={2}
+        >
+          <SizableText size="$5" marginRight="$3">🔍</SizableText>
+          <Input
+            flex={1}
             placeholder="커피명, 로스터리, 카페로 검색..."
-            placeholderTextColor="#CCCCCC"
             value={searchQuery}
             onChangeText={setSearchQuery}
+            borderWidth={0}
+            backgroundColor="transparent"
+            fontSize="$4"
           />
           {searchQuery !== '' && (
-            <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Text style={styles.clearIcon}>✕</Text>
-            </TouchableOpacity>
+            <Button 
+              size="$2" 
+              variant="outlined" 
+              backgroundColor="transparent" 
+              borderWidth={0}
+              onPress={() => setSearchQuery('')}
+            >
+              <SizableText size="$4" color="$colorPress">✕</SizableText>
+            </Button>
           )}
-        </View>
+        </XStack>
         
-        <TouchableOpacity
-          style={styles.filterButton}
+        <Button
+          size="$4"
+          variant="outlined"
+          backgroundColor="$background"
+          borderColor="$borderColor"
           onPress={() => setFilterModalVisible(true)}
+          position="relative"
         >
-          <Text style={styles.filterIcon}>⚙️</Text>
+          <SizableText size="$6">⚙️</SizableText>
           {activeFilterCount > 0 && (
-            <View style={styles.filterBadge}>
-              <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
+            <View 
+              position="absolute" 
+              top={4} 
+              right={4} 
+              backgroundColor="$acidity" 
+              borderRadius="$2" 
+              width={20} 
+              height={20} 
+              alignItems="center" 
+              justifyContent="center"
+            >
+              <SizableText color="white" size="$2" fontWeight="600">{activeFilterCount}</SizableText>
             </View>
           )}
-        </TouchableOpacity>
-      </View>
+        </Button>
+      </XStack>
       
       {(searchQuery !== '' || activeFilterCount > 0) && (
-        <TouchableOpacity style={styles.clearFiltersButton} onPress={clearFilters}>
-          <Text style={styles.clearFiltersText}>모든 필터 초기화</Text>
-        </TouchableOpacity>
+        <XStack paddingHorizontal="$4" paddingBottom="$3">
+          <Button 
+            size="$3" 
+            variant="outlined" 
+            backgroundColor="transparent" 
+            borderWidth={0}
+            onPress={clearFilters}
+          >
+            <SizableText color="$acidity" size="$3" fontWeight="500">모든 필터 초기화</SizableText>
+          </Button>
+        </XStack>
       )}
       
       <FlatList
         data={filteredTastings}
         renderItem={renderTastingItem}
         keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={{ padding: 16, paddingTop: 8 }}
         // 메모리 최적화 설정
         removeClippedSubviews={true}
         maxToRenderPerBatch={10}
@@ -421,313 +540,21 @@ export default function SearchScreen() {
           index,
         })}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>☕️</Text>
-            <BodyText style={styles.emptyText}>
+          <YStack alignItems="center" paddingTop="$15">
+            <SizableText size="8" marginBottom="$4">☕️</SizableText>
+            <SizableText size="$5" color="$colorPress" marginBottom="$2">
               검색 결과가 없습니다
-            </BodyText>
-            <Caption style={styles.emptySubtext}>
+            </SizableText>
+            <SizableText size="$3" color="$colorPress">
               다른 검색어나 필터를 시도해보세요
-            </Caption>
-          </View>
+            </SizableText>
+          </YStack>
         }
       />
       
       <FilterModal />
-    </SafeAreaView>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.BACKGROUND_GRAY,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    padding: 20,
-    paddingBottom: 10,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingBottom: 10,
-    gap: 10,
-  },
-  searchBar: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    shadowColor: Colors.SHADOW_BLACK,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  searchIcon: {
-    fontSize: 20,
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#000000',
-    paddingVertical: 14,
-  },
-  clearIcon: {
-    fontSize: 18,
-    color: Colors.TEXT_TERTIARY,
-    padding: 4,
-  },
-  filterButton: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: Colors.SHADOW_BLACK,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  filterIcon: {
-    fontSize: 24,
-  },
-  filterBadge: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: Colors.GRADIENT_BROWN,
-    borderRadius: 10,
-    width: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  filterBadgeText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  clearFiltersButton: {
-    marginHorizontal: 20,
-    marginBottom: 10,
-  },
-  clearFiltersText: {
-    color: Colors.GRADIENT_BROWN,
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  loadingText: {
-    marginTop: 12,
-    color: Colors.TEXT_SECONDARY,
-  },
-  listContent: {
-    padding: 20,
-    paddingTop: 10,
-  },
-  tastingCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: Colors.SHADOW_BLACK,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  cardTitleContainer: {
-    flex: 1,
-    marginRight: 10,
-  },
-  coffeeName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.TEXT_PRIMARY,
-    marginBottom: 2,
-  },
-  roastery: {
-    fontSize: 14,
-    color: Colors.TEXT_SECONDARY,
-  },
-  matchScore: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: Colors.GRADIENT_BROWN,
-  },
-  cardDetails: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 8,
-  },
-  detailText: {
-    fontSize: 14,
-    color: Colors.TEXT_SECONDARY,
-  },
-  flavorContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    alignItems: 'center',
-  },
-  flavorTag: {
-    backgroundColor: Colors.TAG_BACKGROUND,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  flavorText: {
-    fontSize: 12,
-    color: Colors.TEXT_TERTIARY,
-  },
-  moreText: {
-    fontSize: 12,
-    color: Colors.TEXT_SECONDARY,
-    marginLeft: 4,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingTop: 60,
-  },
-  emptyIcon: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
-  emptyText: {
-    fontSize: 18,
-    color: Colors.TEXT_SECONDARY,
-    marginBottom: 8,
-  },
-  emptySubtext: {
-    color: Colors.TEXT_TERTIARY,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: '80%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.BACKGROUND_GRAY,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: Colors.TEXT_PRIMARY,
-  },
-  closeButton: {
-    fontSize: 24,
-    color: Colors.TEXT_TERTIARY,
-    padding: 4,
-  },
-  modalBody: {
-    padding: 20,
-  },
-  filterSection: {
-    marginBottom: 24,
-  },
-  filterLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.TEXT_PRIMARY,
-    marginBottom: 12,
-  },
-  filterChip: {
-    backgroundColor: Colors.BACKGROUND_GRAY,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginRight: 8,
-  },
-  filterChipActive: {
-    backgroundColor: Colors.GRADIENT_BROWN,
-  },
-  filterChipText: {
-    fontSize: 14,
-    color: Colors.TEXT_SECONDARY,
-  },
-  filterChipTextActive: {
-    color: 'white',
-    fontWeight: '500',
-  },
-  flavorGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  scoreRange: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  scoreInput: {
-    flex: 1,
-    backgroundColor: Colors.BACKGROUND_GRAY,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 16,
-    color: '#000000',
-    textAlign: 'center',
-  },
-  scoreDash: {
-    fontSize: 16,
-    color: Colors.TEXT_SECONDARY,
-  },
-  modalFooter: {
-    flexDirection: 'row',
-    padding: 20,
-    gap: 12,
-    borderTopWidth: 1,
-    borderTopColor: Colors.BACKGROUND_GRAY,
-  },
-  clearButton: {
-    flex: 1,
-    backgroundColor: Colors.BACKGROUND_GRAY,
-    padding: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  clearButtonText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: Colors.TEXT_SECONDARY,
-  },
-  applyButton: {
-    flex: 1,
-    backgroundColor: Colors.GRADIENT_BROWN,
-    padding: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  applyButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: 'white',
-  },
-});
+// Styles migrated to Tamagui - no StyleSheet needed

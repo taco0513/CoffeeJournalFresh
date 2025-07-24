@@ -642,6 +642,12 @@ count={0}
                 style={styles.actionButton}
               />
               <ActionButton
+                title="Tamagui Design System 비교"
+                onPress={() => navigation.navigate('TamaguiComparison' as any)}
+                style={[styles.actionButton, { backgroundColor: '#9C27B0' }]}
+                icon="🎨"
+              />
+              <ActionButton
                 title="Mock 데이터 리셋"
                 onPress={handleClearRealmData}
                 style={styles.warningButton}

@@ -37,6 +37,7 @@ export const HIGConstants = {
   RADIUS_LG: 16,
   cornerRadiusSmall: 4,
   cornerRadiusMedium: 12,
+  cornerRadiusLarge: 16,
   
   // 간격
   SPACING_XS: 4,
@@ -75,14 +76,17 @@ const HIGColorsOriginal = {
   orange: '#FF9500',
   systemOrange: '#FF9500',
   yellow: '#FFCC00',
+  systemYellow: '#FFCC00',
   purple: '#AF52DE',
   systemPurple: '#AF52DE',
   pink: '#FF2D92',
   
   // Gray scale
   gray: '#8E8E93',
+  systemGray: '#8E8E93',
   gray2: '#AEAEB2',
   gray3: '#C7C7CC',
+  systemGray3: '#C7C7CC',
   gray4: '#D1D1D6',
   systemGray4: '#D1D1D6',
   gray5: '#E5E5EA',

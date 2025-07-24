@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   measurementInput: {
     height: 44,
     borderWidth: 1,
-    borderColor: HIGColors.separator,
+    borderColor: HIGColors.systemGray4,
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   textInput: {
     height: 44,
     borderWidth: 1,
-    borderColor: HIGColors.separator,
+    borderColor: HIGColors.systemGray4,
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
   agitationMethod: {
     padding: 16,
     borderWidth: 1,
-    borderColor: HIGColors.separator,
+    borderColor: HIGColors.systemGray4,
     borderRadius: 8,
     marginBottom: 8,
     backgroundColor: HIGColors.systemBackground,

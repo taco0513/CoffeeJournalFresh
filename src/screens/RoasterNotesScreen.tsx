@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  SafeAreaView,
-  Keyboard,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from 'react-native';
+import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { 
+  View, 
+  Text, 
+  ScrollView, 
+  Button, 
+  YStack, 
+  XStack, 
+  Card,
+  TextArea,
+  H1,
+  H2,
+  H3,
+  Paragraph,
+  SizableText
+} from 'tamagui';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTastingStore } from '../stores/tastingStore';
 import { NavigationButton } from '../components/common';
-import { Colors } from '../constants/colors';
-import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 
 const RoasterNotesScreen = () => {
   const navigation = useNavigation();
@@ -43,185 +48,112 @@ const RoasterNotesScreen = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={styles.container}>
-        {/* HIG 준수 네비게이션 바 */}
-        <View style={styles.navigationBar}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.backButton}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.navigationTitle}>로스터 노트</Text>
-          <TouchableOpacity onPress={handleSkip}>
-            <Text style={styles.skipButton}>건너뛰기</Text>
-          </TouchableOpacity>
-        </View>
+      <View flex={1} backgroundColor="$background">
+        {/* Navigation Bar */}
+        <XStack 
+          height={44}
+          paddingHorizontal="$6" 
+          alignItems="center" 
+          justifyContent="space-between"
+          backgroundColor="$background"
+          borderBottomWidth={0.5}
+          borderBottomColor="$borderColor"
+        >
+          <Button 
+            size="$3" 
+            variant="outlined" 
+            backgroundColor="transparent" 
+            borderWidth={0}
+            onPress={() => navigation.goBack()}
+          >
+            <Text color="$blue10" fontSize="$6">←</Text>
+          </Button>
+          <H3 color="$color">로스터 노트</H3>
+          <Button 
+            size="$3" 
+            variant="outlined" 
+            backgroundColor="transparent" 
+            borderWidth={0}
+            onPress={handleSkip}
+          >
+            <Text color="$blue10" fontSize="$4">건너뛰기</Text>
+          </Button>
+        </XStack>
         
-        {/* Progress Bar - Full width below header */}
-        <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: '83%' }]} />
+        {/* Progress Bar */}
+        <View height={3} backgroundColor="$gray5" overflow="hidden">
+          <View height="100%" width="83%" backgroundColor="$blue10" />
         </View>
 
-        {/* 메인 콘텐츠 */}
-        <View style={styles.content}>
-          {/* 제목 및 설명 */}
-          <View style={styles.headerSection}>
-            <Text style={styles.title}>로스터의 컵 노트</Text>
-            <Text style={styles.subtitle}>로스터의 설명을 적어두면 나중에 비교해볼 수 있어요</Text>
-            <Text style={styles.guideMessage}>💡 커피 봉투나 카페 메뉴판의 설명을 참고하세요</Text>
-          </View>
+        {/* Main Content */}
+        <ScrollView flex={1} paddingHorizontal="$6">
+          {/* Header Section */}
+          <YStack paddingTop="$8" paddingBottom="$6" alignItems="center">
+            <H1 fontWeight="700" color="$color" textAlign="center" marginBottom="$3">
+              로스터의 컵 노트
+            </H1>
+            <Paragraph size="$5" color="$colorPress" textAlign="center" marginBottom="$3">
+              로스터의 설명을 적어두면 나중에 비교해볼 수 있어요
+            </Paragraph>
+            <SizableText size="$4" color="$blue10" textAlign="center" marginTop="$2">
+              💡 커피 봉투나 카페 메뉴판의 설명을 참고하세요
+            </SizableText>
+          </YStack>
 
-          {/* OCR 알림 */}
+          {/* OCR Notice */}
           {scannedRoasterNotes && (
-            <View style={styles.ocrNotice}>
-              <Text style={styles.ocrNoticeText}>
+            <Card 
+              backgroundColor="$blue9" 
+              borderRadius="$4" 
+              padding="$3" 
+              marginBottom="$6" 
+              alignItems="center"
+            >
+              <SizableText size="$3" color="white" textAlign="center">
                 📷 OCR로 인식된 노트가 자동 입력되었습니다
-              </Text>
-            </View>
+              </SizableText>
+            </Card>
           )}
 
-          {/* 텍스트 입력 */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.notesInput}
-              multiline
-              numberOfLines={8}
-              placeholder="예: 블루베리, 다크 초콜릿, 꿀과 같은 단맛\n\n로스터가 제공한 맛 설명을 자유롭게 입력하세요. 이 정보는 나중에 여러분의 테이스팅 결과와 비교됩니다."
-              placeholderTextColor="#CCCCCC"
+          {/* Text Input */}
+          <YStack flex={1} marginBottom="$6">
+            <TextArea
+              borderWidth={1}
+              borderColor="$borderColor"
+              borderRadius="$4"
+              padding="$4"
+              fontSize="$5"
+              color="$color"
+              minHeight={200}
+              backgroundColor="$background"
+              placeholder="예: 블루베리, 다크 초콜릿, 꿀과 같은 단맛\n\n로스터가 제공한 맛 설명을 자유롭게 입력하세요.이 정보는 나중에 여러분의 테이스팅 결과와 비교됩니다."
               value={notes}
               onChangeText={setNotes}
-              textAlignVertical="top"
             />
-          </View>
-        </View>
+          </YStack>
+        </ScrollView>
 
         {/* Bottom Button */}
-        <View style={styles.bottomContainer}>
-          <TouchableOpacity 
-            style={styles.nextButton}
+        <YStack 
+          padding="$6" 
+          backgroundColor="$background" 
+          borderTopWidth={0.5} 
+          borderTopColor="$borderColor"
+        >
+          <Button 
+            size="$5" 
+            theme="blue" 
             onPress={handleNext}
-            activeOpacity={0.8}
+            animation="bouncy"
           >
-            <Text style={styles.nextButtonText}>
-              다음
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+            다음
+          </Button>
+        </YStack>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  navigationBar: {
-    height: 44,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.systemGray4,
-  },
-  backButton: {
-    fontSize: HIGConstants.FONT_SIZE_H2,
-    color: HIGColors.systemBlue,
-  },
-  navigationTitle: {
-    fontSize: HIGConstants.FONT_SIZE_TITLE,
-    fontWeight: '600',
-    color: HIGColors.label,
-  },
-  skipButton: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
-    color: HIGColors.systemBlue,
-  },
-  progressBar: {
-    height: 3,
-    backgroundColor: HIGColors.systemGray5,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: HIGColors.systemBlue,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-  },
-  headerSection: {
-    paddingTop: HIGConstants.SPACING_XL,
-    paddingBottom: HIGConstants.SPACING_LG,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: HIGConstants.FONT_SIZE_H1,
-    fontWeight: '700',
-    color: HIGColors.label,
-    textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  subtitle: {
-    fontSize: HIGConstants.FONT_SIZE_TITLE,
-    fontWeight: '400',
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  guideMessage: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
-    fontWeight: '400',
-    color: HIGColors.blue,
-    textAlign: 'center',
-    marginTop: HIGConstants.SPACING_XS,
-  },
-  ocrNotice: {
-    backgroundColor: HIGColors.blue,
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_SM,
-    marginBottom: HIGConstants.SPACING_LG,
-    alignItems: 'center',
-  },
-  ocrNoticeText: {
-    fontSize: HIGConstants.FONT_SIZE_CAPTION,
-    fontWeight: '400',
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  inputContainer: {
-    flex: 1,
-    marginBottom: HIGConstants.SPACING_LG,
-  },
-  notesInput: {
-    borderWidth: 1,
-    borderColor: HIGColors.gray4,
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    padding: HIGConstants.SPACING_MD,
-    fontSize: HIGConstants.FONT_SIZE_TITLE,
-    color: '#000000',
-    minHeight: 200,
-    backgroundColor: '#FFFFFF',
-  },
-  bottomContainer: {
-    padding: HIGConstants.SPACING_LG,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 0.5,
-    borderTopColor: HIGColors.systemGray4,
-  },
-  nextButton: {
-    height: 48,
-    backgroundColor: HIGColors.systemBlue,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  nextButtonText: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-});
+// Styles migrated to Tamagui - no StyleSheet needed
 
 export default RoasterNotesScreen;

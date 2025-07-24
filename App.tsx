@@ -10,6 +10,7 @@ import { analyticsService } from './src/services/AnalyticsService';
 import { errorContextService } from './src/services/ErrorContextService';
 import { FirstTimeUserFeedback } from './src/components/beta/FirstTimeUserFeedback';
 import { DebugOverlay } from './src/components/DebugOverlay';
+import { TamaguiProvider } from './src/providers/TamaguiProvider';
 
 // Initialize Sentry for crash reporting
 SentryService.initialize();
@@ -53,9 +54,11 @@ function App(): React.JSX.Element {
 
   return (
     <ErrorBoundary>
-      <AppNavigator />
-      <FirstTimeUserFeedback />
-      <DebugOverlay />
+      <TamaguiProvider>
+        <AppNavigator />
+        <FirstTimeUserFeedback />
+        <DebugOverlay />
+      </TamaguiProvider>
     </ErrorBoundary>
   );
 }

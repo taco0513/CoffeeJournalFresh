@@ -148,45 +148,59 @@ export const AchievementGalleryScreen: React.FC = () => {
   const renderAchievementsList = () => {
     if (filteredAchievements.length === 0) {
       return (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyIcon}>🎯</Text>
-          <Text style={styles.emptyTitle}>업적이 없습니다</Text>
-          <Text style={styles.emptySubtitle}>
+        <YStack 
+          alignItems="center" 
+          justifyContent="center" 
+          paddingVertical="$16" 
+          paddingHorizontal="$6"
+        >
+          <SizableText size="12" marginBottom="$6">🎯</SizableText>
+          <SizableText size="$5" fontWeight="600" color="$color" marginBottom="$3">
+            업적이 없습니다
+          </SizableText>
+          <SizableText size="$3" color="$colorPress" textAlign="center" lineHeight="$5">
             {selectedFilter === 'unlocked' 
               ? '아직 달성한 업적이 없습니다.\n커피 테이스팅을 시작해보세요!'
               : selectedFilter === 'locked'
               ? '진행 중인 업적이 없습니다.'
               : '이 카테고리에는 업적이 없습니다.'
             }
-          </Text>
-        </View>
+          </SizableText>
+        </YStack>
       );
     }
 
     return (
-      <View style={styles.achievementsList}>
+      <YStack padding="$6">
         {filteredAchievements.map((achievement) => (
           <AchievementCard
             key={achievement.id}
             achievement={achievement}
           />
         ))}
-      </View>
+      </YStack>
     );
   };
 
   if (error) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorIcon}>⚠️</Text>
-          <Text style={styles.errorTitle}>업적을 불러올 수 없습니다</Text>
-          <Text style={styles.errorMessage}>{error}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={handleRefresh}>
-            <Text style={styles.retryButtonText}>다시 시도</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <View flex={1} backgroundColor="$background" alignItems="center" justifyContent="center" paddingHorizontal="$6">
+        <SizableText size="12" marginBottom="$6">⚠️</SizableText>
+        <SizableText size="$5" fontWeight="600" color="$color" marginBottom="$3">
+          업적을 불러올 수 없습니다
+        </SizableText>
+        <SizableText size="$3" color="$colorPress" textAlign="center" marginBottom="$6">
+          {error}
+        </SizableText>
+        <Button 
+          size="$4" 
+          theme="blue" 
+          onPress={handleRefresh}
+          animation="bouncy"
+        >
+          다시 시도
+        </Button>
+      </View>
     );
   }
 
@@ -213,183 +227,10 @@ export const AchievementGalleryScreen: React.FC = () => {
         {renderFilterBar()}
         {renderAchievementsList()}
         
-        <View style={styles.bottomSpacer} />
+        <View height="$8" />
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: IOSColors.systemBackground,
-  },
-  navigationBar: {
-    height: IOSLayout.navBarHeight,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: IOSSpacing.screenPadding,
-    backgroundColor: IOSColors.systemBackground,
-    borderBottomWidth: IOSLayout.borderWidthThin,
-    borderBottomColor: IOSColors.separator,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: IOSSpacing.xs,
-  },
-  navigationTitle: {
-    ...IOSTypography.headline,
-    color: IOSColors.label,
-  },
-  betaBadge: {
-    backgroundColor: IOSColors.systemBlue,
-    paddingHorizontal: IOSSpacing.xs,
-    paddingVertical: IOSSpacing.xxxs,
-    borderRadius: IOSLayout.cornerRadiusSmall,
-  },
-  betaText: {
-    ...IOSTypography.caption2,
-    fontWeight: '700' as const,
-    color: IOSColors.systemBackground,
-    letterSpacing: 0.5,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  statsContainer: {
-    padding: IOSSpacing.lg,
-    backgroundColor: IOSColors.systemBackground,
-    borderBottomWidth: IOSLayout.borderWidthThin,
-    borderBottomColor: IOSColors.separator,
-  },
-  title: {
-    ...IOSTypography.title1,
-    color: IOSColors.label,
-    marginBottom: IOSSpacing.lg,
-    textAlign: 'center',
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: HIGConstants.SPACING_LG,
-  },
-  statCard: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: HIGColors.systemBlue,
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-  },
-  nextAchievementContainer: {
-    marginTop: HIGConstants.SPACING_MD,
-  },
-  nextAchievementTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  filterContainer: {
-    backgroundColor: HIGColors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: HIGColors.systemGray6,
-    paddingVertical: HIGConstants.SPACING_MD,
-  },
-  filterScrollContent: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    gap: HIGConstants.SPACING_SM,
-  },
-  filterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    backgroundColor: HIGColors.systemGray6,
-    gap: 6,
-  },
-  filterButtonActive: {
-    backgroundColor: HIGColors.systemBlue,
-  },
-  filterIcon: {
-    fontSize: 16,
-  },
-  filterText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: HIGColors.secondaryLabel,
-  },
-  filterTextActive: {
-    color: HIGColors.white,
-  },
-  achievementsList: {
-    padding: HIGConstants.SPACING_LG,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: HIGConstants.SPACING_XL * 2,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-  },
-  emptyIcon: {
-    fontSize: 48,
-    marginBottom: HIGConstants.SPACING_LG,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  emptySubtitle: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  errorContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: HIGConstants.SPACING_LG,
-  },
-  errorIcon: {
-    fontSize: 48,
-    marginBottom: HIGConstants.SPACING_LG,
-  },
-  errorTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  errorMessage: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_LG,
-  },
-  retryButton: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_MD,
-    backgroundColor: HIGColors.systemBlue,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-  },
-  retryButtonText: {
-    color: HIGColors.white,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  bottomSpacer: {
-    height: HIGConstants.SPACING_XL,
-  },
-});
+// Styles migrated to Tamagui - no StyleSheet needed

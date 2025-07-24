@@ -170,7 +170,7 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
                         {sub.flavors.filter(f => checkIsSelected(category.category, sub.name, f.name)).length}
                       </Text>
                     )}
-                  </AnimatedTouchableOpacity>
+                  </TouchableOpacity>
                 );
               })}
           </ScrollView>

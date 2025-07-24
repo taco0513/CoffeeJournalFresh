@@ -10,25 +10,25 @@ import StatusBadge from '../components/StatusBadge';
 import { TabBarIcon } from '../components/TabBarIcon';
 import ScreenContextService from '../services/ScreenContextService';
 
-// 화면 import
-import HomeScreen from '../screens/HomeScreen';
-import CoffeeInfoScreen from '../screens/CoffeeInfoScreen';
-import JournalIntegratedScreen from '../screens/JournalIntegratedScreen';
+// 화면 import - Tamagui optimized versions
+import HomeScreen from '../screens/HomeScreen.tamagui';
+import CoffeeInfoScreen from '../screens/CoffeeInfoScreen.tamagui';
+import JournalIntegratedScreen from '../screens/JournalIntegratedScreen.tamagui';
 import RoasterNotesScreen from '../screens/RoasterNotesScreen';
-import UnifiedFlavorScreen from '../screens/flavor/UnifiedFlavorScreen';
+import UnifiedFlavorScreen from '../screens/flavor/UnifiedFlavorScreen.tamagui';
 // import UnifiedFlavorScreen from '../screens/flavor/TestScreen';
 // import UnifiedFlavorScreen from '../screens/flavor/MinimalTestScreen';
-import SensoryScreen from '../screens/SensoryScreen';
+import SensoryScreen from '../screens/SensoryScreen.tamagui';
 import ExperimentalDataScreen from '../screens/ExperimentalDataScreen';
 import SensoryEvaluationScreen from '../screens/SensoryEvaluationScreen';
-import PersonalCommentScreen from '../screens/PersonalCommentScreen';
-import ResultScreen from '../screens/ResultScreen';
+import PersonalCommentScreen from '../screens/PersonalCommentScreen.tamagui';
+import ResultScreen from '../screens/ResultScreen.tamagui';
 // import OCRScanScreen from '../screens/OCRScanScreen'; // Moved to feature_backlog
 // import OCRResultScreen from '../screens/OCRResultScreen'; // Moved to feature_backlog
 import SearchScreen from '../screens/SearchScreen';
 import TastingDetailScreen from '../screens/TastingDetailScreen';
 import DataTestScreen from '../screens/DataTestScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import ProfileScreen from '../screens/ProfileScreen.tamagui';
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
 import { AdminCoffeeEditScreen } from '../screens/admin/AdminCoffeeEditScreen';
 import DeveloperScreen from '../screens/DeveloperScreen';
@@ -38,8 +38,10 @@ import { AchievementGalleryScreen } from '../screens/AchievementGalleryScreen';
 import { AchievementProvider } from '../contexts/AchievementContext';
 import { RealmProvider } from '../contexts/RealmContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ModeSelectionScreen from '../screens/ModeSelectionScreen';
-import HomeCafeScreen from '../screens/HomeCafeScreen';
+import ModeSelectionScreen from '../screens/ModeSelectionScreen.tamagui';
+import HomeCafeScreen from '../screens/HomeCafeScreenTamagui'; // Use Tamagui version
+import HomeCafeScreenTamagui from '../screens/HomeCafeScreenTamagui';
+import TamaguiComparisonScreen from '../screens/TamaguiComparisonScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -467,6 +469,20 @@ function AppNavigator() {
             <Stack.Screen 
               name="DeveloperScreen" 
               component={DeveloperScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen 
+              name="TamaguiComparison" 
+              component={TamaguiComparisonScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen 
+              name="HomeCafeScreenTamagui" 
+              component={HomeCafeScreenTamagui}
               options={{
                 headerShown: false,
               }}

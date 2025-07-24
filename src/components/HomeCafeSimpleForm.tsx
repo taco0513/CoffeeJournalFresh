@@ -13,12 +13,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTastingStore } from '../stores/tastingStore';
 import { HIGColors, HIGConstants } from '../styles/common';
 import { SimpleHomeCafeData, SimpleDripper } from '../types/tasting';
+import {
+  Card,
+  InputCard,
+  ResultCard,
+  Input,
+  NumberInput,
+  WheelPicker,
+  SegmentedPicker,
+  ButtonGroup,
+  createStyles,
+  useTheme,
+} from '../design-system';
 
 const HOMECAFE_RECIPE_KEY = '@homecafe_last_recipe';
 const MY_COFFEE_RECIPE_KEY = '@homecafe_my_coffee_recipe';
 
 export const HomeCafeSimpleForm = () => {
   const { currentTasting, updateSimpleHomeCafeData } = useTastingStore();
+  const theme = useTheme();
   
   const [formData, setFormData] = useState<SimpleHomeCafeData>({
     dripper: 'V60',
@@ -68,8 +81,6 @@ export const HomeCafeSimpleForm = () => {
       await AsyncStorage.setItem(MY_COFFEE_RECIPE_KEY, JSON.stringify(formData));
       setMyCoffeeRecipe(formData);
       console.log('☕ HomeCafe: My Coffee recipe saved:', formData);
-      // 사용자에게 저장되었다는 피드백 (간단한 alert 대신 나중에 toast로 대체 가능)
-      // Alert.alert('저장 완료', '나의 커피 레시피가 저장되었습니다.');
     } catch (error) {
       console.error('❌ HomeCafe: Failed to save My Coffee recipe:', error);
     }
@@ -149,51 +160,41 @@ export const HomeCafeSimpleForm = () => {
     updateSimpleHomeCafeData(updatedFormData);
     // 자동 저장
     saveRecipe(updatedFormData);
+    console.log(`📝 HomeCafe: Updated ${field}:`, value);
   };
 
-  const updateRecipeField = (field: keyof SimpleHomeCafeData['recipe'], value: number) => {
+  const handleCoffeeAmountChange = (coffeeAmount: number) => {
+    const waterAmount = Math.round(coffeeAmount * selectedRatio);
     const updatedFormData = {
       ...formData,
-      recipe: { ...formData.recipe, [field]: value }
+      recipe: {
+        ...formData.recipe,
+        coffeeAmount,
+        waterAmount,
+      },
     };
     setFormData(updatedFormData);
     updateSimpleHomeCafeData(updatedFormData);
     // 자동 저장
     saveRecipe(updatedFormData);
+    console.log('📝 HomeCafe: Updated coffee amount and auto-calculated water:', { coffeeAmount, waterAmount });
   };
 
-  // 비율 변경 시 물량 자동 계산
   const handleRatioChange = (ratio: number) => {
     setSelectedRatio(ratio);
-    const newWaterAmount = Math.round(formData.recipe.coffeeAmount * ratio);
+    const waterAmount = Math.round(formData.recipe.coffeeAmount * ratio);
     const updatedFormData = {
       ...formData,
-      recipe: { 
-        ...formData.recipe, 
-        waterAmount: newWaterAmount 
-      }
+      recipe: {
+        ...formData.recipe,
+        waterAmount,
+      },
     };
     setFormData(updatedFormData);
     updateSimpleHomeCafeData(updatedFormData);
     // 자동 저장
     saveRecipe(updatedFormData);
-  };
-
-  // 원두량 변경 시 비율에 맞춰 물량 자동 계산
-  const handleCoffeeAmountChange = (coffeeAmount: number) => {
-    const newWaterAmount = Math.round(coffeeAmount * selectedRatio);
-    const updatedFormData = {
-      ...formData,
-      recipe: { 
-        ...formData.recipe, 
-        coffeeAmount: coffeeAmount,
-        waterAmount: newWaterAmount 
-      }
-    };
-    setFormData(updatedFormData);
-    updateSimpleHomeCafeData(updatedFormData);
-    // 자동 저장
-    saveRecipe(updatedFormData);
+    console.log('📝 HomeCafe: Updated ratio and auto-calculated water:', { ratio, waterAmount });
   };
 
   const handleTimerStart = () => {
@@ -240,14 +241,14 @@ export const HomeCafeSimpleForm = () => {
   // 비율 옵션 생성 (1:15 ~ 1:18, 0.5 단위)
   const ratioOptions = [];
   for (let i = 15; i <= 18; i += 0.5) {
-    ratioOptions.push(i);
+    ratioOptions.push({ label: `1:${i}`, value: i });
   }
 
-  const drippers: { key: SimpleDripper; label: string; icon: string }[] = [
-    { key: 'V60', label: 'V60', icon: '🔻' },
-    { key: 'KalitaWave', label: '칼리타', icon: '〰️' },
-    { key: 'Chemex', label: '케멕스', icon: '⏳' },
-    { key: 'Other', label: '기타', icon: '☕' },
+  const drippers = [
+    { label: '🔻 V60', value: 'V60' },
+    { label: '〰️ 칼리타', value: 'KalitaWave' },
+    { label: '⏳ 케멕스', value: 'Chemex' },
+    { label: '☕ 기타', value: 'Other' },
   ];
 
   const basePresetRecipes = [
@@ -276,39 +277,31 @@ export const HomeCafeSimpleForm = () => {
     >
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* 드리퍼 선택 */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>드리퍼 선택</Text>
-          <View style={styles.dripperGrid}>
-            {drippers.map((dripper) => (
-              <TouchableOpacity
-                key={dripper.key}
-                style={[
-                  styles.dripperCard,
-                  formData.dripper === dripper.key && styles.dripperCardActive
-                ]}
-                onPress={() => updateField('dripper', dripper.key)}
-              >
-                <Text style={styles.dripperIcon}>{dripper.icon}</Text>
-                <Text style={[
-                  styles.dripperLabel,
-                  formData.dripper === dripper.key && styles.dripperLabelActive
-                ]}>
-                  {dripper.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        <InputCard 
+          title="드리퍼 선택"
+          description="사용할 드리퍼를 선택해주세요"
+          style={styles.section}
+        >
+          <SegmentedPicker
+            items={drippers}
+            selectedValue={formData.dripper}
+            onValueChange={(value) => updateField('dripper', value)}
+            columns={2}
+          />
+        </InputCard>
 
         {/* 프리셋 레시피 */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>빠른 레시피</Text>
+        <InputCard 
+          title="빠른 레시피"
+          description="자주 사용하는 레시피를 선택하세요"
+          style={styles.section}
+        >
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.presetContainer}>
               {/* 나의 커피 저장 버튼 (나의 커피가 없을 때만 표시) - 맨 앞에 위치 */}
               {!myCoffeeRecipe && (
                 <TouchableOpacity
-                  style={styles.saveMyCoffeeCard}
+                  style={[styles.presetCard, styles.saveMyCoffeeCard]}
                   activeOpacity={0.7}
                   onPress={saveMyCoffeeRecipe}
                 >
@@ -378,156 +371,117 @@ export const HomeCafeSimpleForm = () => {
               })}
             </View>
           </ScrollView>
-        </View>
+        </InputCard>
 
         {/* 기본 레시피 입력 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>레시피</Text>
-          
           {/* 원두량 입력 */}
-          <View style={styles.recipeInputCard}>
-            <View style={styles.recipeInputRow}>
-              <View style={styles.inputLabelContainer}>
-                <Text style={styles.inputLabel}>원두</Text>
-                <Text style={styles.inputDescription}>그램 단위로 입력</Text>
-              </View>
-              <View style={styles.inputWithUnit}>
-                <TextInput
-                  style={styles.primaryInput}
-                  value={formData.recipe.coffeeAmount.toString()}
-                  onChangeText={(text) => {
-                    const value = parseInt(text) || 0;
-                    handleCoffeeAmountChange(value);
-                  }}
-                  keyboardType="numeric"
-                  placeholder="15"
-                  placeholderTextColor={HIGColors.tertiaryLabel}
-                />
-                <Text style={styles.inputUnit}>g</Text>
-              </View>
-            </View>
-          </View>
+          <InputCard 
+            title="원두량"
+            description="그램 단위로 입력해주세요"
+            style={styles.recipeCard}
+          >
+            <NumberInput
+              value={formData.recipe.coffeeAmount}
+              onChangeValue={handleCoffeeAmountChange}
+              unit="g"
+              placeholder="15"
+              min={1}
+              max={50}
+            />
+          </InputCard>
 
           {/* 비율 선택 */}
-          <View style={styles.recipeInputCard}>
-            <View style={styles.ratioSection}>
-              <View style={styles.inputLabelContainer}>
-                <Text style={styles.inputLabel}>추출 비율</Text>
-                <Text style={styles.inputDescription}>커피:물 비율 선택</Text>
-              </View>
-              <View style={styles.ratioWheelContainer}>
-                <ScrollView 
-                  horizontal 
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.ratioWheel}
-                  snapToInterval={60}
-                  decelerationRate="fast"
-                >
-                  {ratioOptions.map((ratio) => {
-                    const isSelected = selectedRatio === ratio;
-                    return (
-                      <TouchableOpacity
-                        key={ratio}
-                        style={[
-                          styles.ratioChip,
-                          isSelected && styles.ratioChipSelected
-                        ]}
-                        onPress={() => handleRatioChange(ratio)}
-                      >
-                        <Text style={[
-                          styles.ratioChipText,
-                          isSelected && styles.ratioChipTextSelected
-                        ]}>
-                          1:{ratio}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </ScrollView>
-              </View>
-            </View>
-          </View>
+          <InputCard 
+            title="추출 비율"
+            description="커피:물 비율을 선택해주세요"
+            style={styles.recipeCard}
+          >
+            <WheelPicker
+              items={ratioOptions}
+              selectedValue={selectedRatio}
+              onValueChange={handleRatioChange}
+            />
+          </InputCard>
 
           {/* 물량 표시 (자동계산) */}
-          <View style={styles.recipeResultCard}>
-            <View style={styles.recipeInputRow}>
-              <View style={styles.inputLabelContainer}>
-                <Text style={styles.inputLabel}>물량</Text>
-                <Text style={styles.autoCalculationLabel}>✨ 자동 계산됨</Text>
-              </View>
-              <View style={styles.resultDisplay}>
-                <Text style={styles.resultValue}>{formData.recipe.waterAmount}</Text>
-                <Text style={styles.resultUnit}>ml</Text>
-              </View>
+          <ResultCard 
+            title="물량"
+            badge="✨ 자동 계산됨"
+            style={styles.recipeCard}
+          >
+            <View style={styles.resultDisplay}>
+              <Text style={styles.resultValue}>{formData.recipe.waterAmount}</Text>
+              <Text style={styles.resultUnit}>ml</Text>
             </View>
-            
-            {/* 계산 요약 */}
-            <View style={styles.calculationSummary}>
-              <Text style={styles.summaryText}>
-                {formData.recipe.coffeeAmount}g × {selectedRatio} = {formData.recipe.waterAmount}ml
-              </Text>
-            </View>
-          </View>
-
-          {/* 타이머 */}
-          <View style={styles.timerSection}>
-            {!isTimerRunning && lapTimes.length === 0 ? (
-              <TouchableOpacity 
-                style={styles.timerButton}
-                onPress={handleTimerStart}
-              >
-                <Text style={styles.timerIcon}>⏱️</Text>
-                <View>
-                  <Text style={styles.timerTitle}>타이머 시작</Text>
-                  <Text style={styles.timerTime}>
-                    {formatTime(formData.recipe.brewTime || 0)}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <View>
-                <View style={styles.timerDisplay}>
-                  <Text style={styles.timerIcon}>⏱️</Text>
-                  <Text style={styles.runningTime}>
-                    {formatTime(elapsedTime)}
-                  </Text>
-                </View>
-                
-                {/* Lap times */}
-                {lapTimes.length > 0 && (
-                  <View style={styles.lapTimesContainer}>
-                    {lapTimes.map((lap, index) => (
-                      <View key={index} style={styles.lapTimeRow}>
-                        <Text style={styles.lapLabel}>{lap.label}</Text>
-                        <Text style={styles.lapTime}>{formatTime(lap.time)}</Text>
-                      </View>
-                    ))}
-                  </View>
-                )}
-                
-                {/* Control buttons */}
-                <View style={styles.timerControls}>
-                  {isTimerRunning && (
-                    <TouchableOpacity
-                      style={[styles.controlButton, styles.lapButton]}
-                      onPress={handleLapTime}
-                    >
-                      <Text style={styles.controlButtonText}>추출타임</Text>
-                    </TouchableOpacity>
-                  )}
-                  <TouchableOpacity
-                    style={[styles.controlButton, styles.stopButton]}
-                    onPress={handleTimerStop}
-                  >
-                    <Text style={styles.controlButtonText}>
-                      {isTimerRunning ? '정지' : '완료'}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-          </View>
+            <Text style={styles.ratioDisplay}>
+              현재 비율: {calculateRatio()}
+            </Text>
+          </ResultCard>
         </View>
+
+        {/* 타이머 */}
+        <InputCard
+          title="추출 타이머"
+          description="추출 시간을 기록해보세요"
+          style={styles.section}
+        >
+          {!isTimerRunning && lapTimes.length === 0 ? (
+            <TouchableOpacity 
+              style={styles.timerButton}
+              onPress={handleTimerStart}
+            >
+              <Text style={styles.timerIcon}>⏱️</Text>
+              <View>
+                <Text style={styles.timerTitle}>타이머 시작</Text>
+                <Text style={styles.timerTime}>
+                  {formatTime(formData.recipe.brewTime || 0)}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <View>
+              <View style={styles.timerDisplay}>
+                <Text style={styles.timerIcon}>⏱️</Text>
+                <Text style={styles.runningTime}>
+                  {formatTime(elapsedTime)}
+                </Text>
+              </View>
+              
+              {/* Lap times */}
+              {lapTimes.length > 0 && (
+                <View style={styles.lapTimesContainer}>
+                  {lapTimes.map((lap, index) => (
+                    <View key={index} style={styles.lapTimeRow}>
+                      <Text style={styles.lapLabel}>{lap.label}</Text>
+                      <Text style={styles.lapTime}>{formatTime(lap.time)}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+              
+              {/* Control buttons */}
+              <View style={styles.timerControls}>
+                {isTimerRunning && (
+                  <TouchableOpacity
+                    style={[styles.controlButton, styles.lapButton]}
+                    onPress={handleLapTime}
+                  >
+                    <Text style={styles.controlButtonText}>추출타임</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  style={[styles.controlButton, styles.stopButton]}
+                  onPress={handleTimerStop}
+                >
+                  <Text style={styles.controlButtonText}>
+                    {isTimerRunning ? '정지' : '완료'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </InputCard>
 
         {/* 선택 입력 (고급 옵션) */}
         <TouchableOpacity 
@@ -540,68 +494,51 @@ export const HomeCafeSimpleForm = () => {
         </TouchableOpacity>
 
         {showAdvanced && (
-          <View style={styles.section}>
-            <View style={styles.advancedContainer}>
-              <View style={styles.tempContainer}>
-                <Text style={styles.tempLabel}>물 온도</Text>
-                <View style={styles.tempInputWrapper}>
-                  <TouchableOpacity
-                    style={styles.tempButton}
-                    onPress={() => updateField('waterTemp', (formData.waterTemp || 93) - 1)}
-                  >
-                    <Text style={styles.tempButtonText}>−</Text>
-                  </TouchableOpacity>
-                  <TextInput
-                    style={styles.tempInput}
-                    value={(formData.waterTemp || 93).toString()}
-                    onChangeText={(text) => {
-                      const value = parseInt(text) || 93;
-                      updateField('waterTemp', value);
-                    }}
-                    keyboardType="numeric"
-                  />
-                  <Text style={styles.tempUnit}>°C</Text>
-                  <TouchableOpacity
-                    style={styles.tempButton}
-                    onPress={() => updateField('waterTemp', (formData.waterTemp || 93) + 1)}
-                  >
-                    <Text style={styles.tempButtonText}>+</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.grindContainer}>
-                <Text style={styles.grindLabel}>그라인딩 메모</Text>
-                <TextInput
-                  style={styles.grindInput}
-                  value={formData.grindNote || ''}
-                  onChangeText={(text) => updateField('grindNote', text)}
-                  placeholder="예: 2클릭 더 굵게"
-                  placeholderTextColor={HIGColors.tertiaryLabel}
-                />
-              </View>
-            </View>
-          </View>
+          <InputCard
+            title="상세 설정"
+            description="물 온도와 추가 메모를 입력하세요"
+            style={styles.section}
+          >
+            <NumberInput
+              label="물 온도"
+              value={formData.waterTemp || 93}
+              onChangeValue={(value) => updateField('waterTemp', value)}
+              unit="°C"
+              min={80}
+              max={100}
+              step={1}
+            />
+            
+            <Input
+              label="그라인딩 메모"
+              value={formData.grindNote || ''}
+              onChangeText={(text) => updateField('grindNote', text)}
+              placeholder="예: 2클릭 더 굵게"
+              multiline
+            />
+          </InputCard>
         )}
 
         {/* 추출 노트 */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>추출 노트</Text>
-          <TextInput
-            style={styles.quickNoteInput}
-            value={formData.quickNote}
+        <InputCard
+          title="추출 노트"
+          description="오늘의 추출에 대한 메모를 남겨보세요 (선택사항)"
+          style={styles.section}
+        >
+          <Input
+            value={formData.quickNote || ''}
             onChangeText={(text) => updateField('quickNote', text)}
             placeholder="예: 블룸 30초, 첫 붓기 천천히, 다음엔 물온도 1도 낮춰보기"
-            placeholderTextColor={HIGColors.tertiaryLabel}
             multiline
+            variant="filled"
           />
-        </View>
+        </InputCard>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = createStyles((tokens) => ({
   container: {
     flex: 1,
   },
@@ -609,432 +546,191 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   section: {
-    backgroundColor: HIGColors.white,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_SM,
+    marginBottom: tokens.spacing.sm,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_MD,
+  recipeCard: {
+    marginBottom: tokens.spacing.sm,
   },
-  dripperGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: HIGConstants.SPACING_MD,
-  },
-  dripperCard: {
-    flex: 1,
-    minWidth: 70,
-    maxWidth: 85,
-    aspectRatio: 1,
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  dripperCardActive: {
-    borderColor: HIGColors.systemBlue,
-    backgroundColor: HIGColors.systemBlue + '10',
-  },
-  dripperIcon: {
-    fontSize: 28,
-    marginBottom: 4,
-  },
-  dripperLabel: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-    fontWeight: '500',
-  },
-  dripperLabelActive: {
-    color: HIGColors.systemBlue,
-    fontWeight: '700',
-  },
+  
+  // Preset recipe styles
   presetContainer: {
     flexDirection: 'row',
-    gap: HIGConstants.SPACING_SM,
+    paddingLeft: tokens.spacing.md,
   },
   presetCard: {
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    minWidth: 100,
-    borderWidth: 2,
-    borderColor: 'transparent',
+    backgroundColor: tokens.colors.background.primary,
+    borderWidth: 1,
+    borderColor: tokens.colors.border.light,
+    borderRadius: tokens.layout.radius.md,
+    padding: tokens.spacing.md,
+    marginRight: tokens.spacing.sm,
+    minWidth: 120,
+    alignItems: 'center',
   },
   presetCardSelected: {
-    backgroundColor: HIGColors.systemBlue + '10',
-    borderColor: HIGColors.systemBlue,
+    backgroundColor: tokens.colors.primary[50],
+    borderColor: tokens.colors.primary[500],
+  },
+  myCoffeeCard: {
+    borderStyle: 'dashed',
+    borderColor: tokens.colors.primary[300],
   },
   presetName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: 2,
+    fontSize: tokens.typography.fontSize.sm,
+    fontWeight: tokens.typography.fontWeight.semibold,
+    color: tokens.colors.text.primary,
+    textAlign: 'center',
+    marginBottom: 4,
   },
   presetNameSelected: {
-    color: HIGColors.systemBlue,
-    fontWeight: '700',
-  },
-  presetDetails: {
-    fontSize: 12,
-    color: HIGColors.secondaryLabel,
-  },
-  presetDetailsSelected: {
-    color: HIGColors.systemBlue,
-    fontWeight: '500',
-  },
-  // 나의 커피 관련 스타일
-  myCoffeeCard: {
-    backgroundColor: '#F0F8FF', // 연한 하늘색 배경
-    borderWidth: 2,
-    borderColor: '#4A90E2',
-    borderStyle: 'dashed', // 점선 테두리
+    color: tokens.colors.primary[700],
   },
   myCoffeeName: {
-    color: '#4A90E2',
-    fontWeight: '700',
+    color: tokens.colors.primary[600],
   },
-  myCoffeeDetails: {
-    color: '#4A90E2',
-    fontWeight: '500',
-  },
-  // 나의 커피 저장 버튼 스타일
-  saveMyCoffeeCard: {
-    backgroundColor: '#F8F8F8',
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    minWidth: 100,
-    borderWidth: 2,
-    borderColor: '#4A90E2',
-    borderStyle: 'dashed',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  saveMyCoffeeName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#4A90E2',
-    marginBottom: 2,
-  },
-  saveMyCoffeeDetails: {
-    fontSize: 12,
-    color: '#4A90E2',
-    fontWeight: '400',
-  },
-  // 컴팩트한 레시피 카드 레이아웃
-  recipeInputCard: {
-    backgroundColor: HIGColors.white,
-    borderRadius: HIGConstants.cornerRadiusSmall,
-    padding: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_SM,
-    borderWidth: 1,
-    borderColor: HIGColors.systemGray5,
-  },
-  recipeResultCard: {
-    backgroundColor: '#F8FBFF', // 더 연한 파란 배경
-    borderRadius: HIGConstants.cornerRadiusSmall,
-    padding: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_SM,
-    borderWidth: 1,
-    borderColor: '#E3F2FD',
-  },
-  recipeInputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  inputLabelContainer: {
-    flex: 1,
-  },
-  inputLabel: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: 1,
-  },
-  inputDescription: {
-    fontSize: 11,
-    color: HIGColors.tertiaryLabel,
-    fontWeight: '400',
-  },
-  autoCalculationLabel: {
-    fontSize: 11,
-    color: '#1976D2',
-    fontWeight: '500',
-  },
-  // 원두 입력 관련
-  inputWithUnit: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  primaryInput: {
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: HIGConstants.cornerRadiusSmall,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    fontSize: 18,
-    fontWeight: '600',
-    color: HIGColors.label,
-    minWidth: 60,
+  presetDetails: {
+    fontSize: tokens.typography.fontSize.xs,
+    color: tokens.colors.text.secondary,
     textAlign: 'center',
   },
-  inputUnit: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: HIGColors.secondaryLabel,
-    marginLeft: HIGConstants.SPACING_XS,
+  presetDetailsSelected: {
+    color: tokens.colors.primary[600],
   },
-  // 비율 섹션 - 컴팩트하게
-  ratioSection: {
-    gap: HIGConstants.SPACING_SM,
+  myCoffeeDetails: {
+    color: tokens.colors.primary[500],
   },
-  ratioWheelContainer: {
-    marginTop: HIGConstants.SPACING_XS,
+  saveMyCoffeeCard: {
+    borderStyle: 'dashed',
+    backgroundColor: tokens.colors.background.secondary,
   },
-  ratioWheel: {
-    paddingHorizontal: HIGConstants.SPACING_XS,
+  saveMyCoffeeName: {
+    fontSize: tokens.typography.fontSize.sm,
+    fontWeight: tokens.typography.fontWeight.semibold,
+    color: tokens.colors.text.primary,
+    textAlign: 'center',
+    marginBottom: 4,
   },
-  ratioChip: {
-    width: 56,
-    height: 32,
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: HIGConstants.cornerRadiusSmall,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 2,
-    borderWidth: 1,
-    borderColor: 'transparent',
+  saveMyCoffeeDetails: {
+    fontSize: tokens.typography.fontSize.xs,
+    color: tokens.colors.text.tertiary,
+    textAlign: 'center',
   },
-  ratioChipSelected: {
-    backgroundColor: HIGColors.systemBlue,
-    borderColor: HIGColors.systemBlue,
-  },
-  ratioChipText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: HIGColors.label,
-  },
-  ratioChipTextSelected: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  // 결과 표시 - 컴팩트하게
+  
+  // Result display styles
   resultDisplay: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: HIGConstants.cornerRadiusSmall,
-    borderWidth: 1,
-    borderColor: '#2196F3',
+    justifyContent: 'center',
+    marginBottom: tokens.spacing.sm,
   },
   resultValue: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1976D2',
+    fontSize: tokens.typography.fontSize['6xl'],
+    fontWeight: tokens.typography.fontWeight.bold,
+    color: tokens.colors.primary[600],
   },
   resultUnit: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#1976D2',
-    marginLeft: HIGConstants.SPACING_XS,
+    fontSize: tokens.typography.fontSize.lg,
+    fontWeight: tokens.typography.fontWeight.medium,
+    color: tokens.colors.text.secondary,
+    marginLeft: 4,
   },
-  // 계산 요약 - 간소화
-  calculationSummary: {
-    marginTop: HIGConstants.SPACING_XS,
-    paddingTop: HIGConstants.SPACING_XS,
-    borderTopWidth: 1,
-    borderTopColor: '#E3F2FD',
-    alignItems: 'center',
-  },
-  summaryText: {
-    fontSize: 11,
-    color: '#1976D2',
-    fontWeight: '400',
+  ratioDisplay: {
+    fontSize: tokens.typography.fontSize.sm,
+    color: tokens.colors.text.secondary,
     textAlign: 'center',
   },
-  ratioContainer: {
-    alignItems: 'center',
-    paddingTop: HIGConstants.SPACING_SM,
-    borderTopWidth: 1,
-    borderTopColor: HIGColors.systemGray5,
-  },
-  ratioText: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-    fontWeight: '500',
-  },
-  timerSection: {
-    marginTop: HIGConstants.SPACING_MD,
-  },
+  
+  // Timer styles
   timerButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    padding: HIGConstants.SPACING_MD,
-    gap: HIGConstants.SPACING_MD,
-  },
-  timerButtonActive: {
-    backgroundColor: HIGColors.systemGreen + '20',
+    backgroundColor: tokens.colors.primary[50],
+    borderRadius: tokens.layout.radius.md,
+    padding: tokens.spacing.md,
+    borderWidth: 1,
+    borderColor: tokens.colors.primary[200],
   },
   timerIcon: {
-    fontSize: 32,
+    fontSize: 24,
+    marginRight: tokens.spacing.md,
   },
   timerTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.label,
+    fontSize: tokens.typography.fontSize.base,
+    fontWeight: tokens.typography.fontWeight.semibold,
+    color: tokens.colors.text.primary,
   },
   timerTime: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: HIGColors.systemGreen,
+    fontSize: tokens.typography.fontSize.sm,
+    color: tokens.colors.text.secondary,
   },
   timerDisplay: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: HIGColors.systemGreen + '20',
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    padding: HIGConstants.SPACING_LG,
-    gap: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_MD,
+    marginBottom: tokens.spacing.md,
   },
   runningTime: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: HIGColors.systemGreen,
+    fontSize: tokens.typography.fontSize['6xl'],
+    fontWeight: tokens.typography.fontWeight.bold,
+    color: tokens.colors.primary[600],
+    marginLeft: tokens.spacing.sm,
   },
   lapTimesContainer: {
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: HIGConstants.cornerRadiusSmall,
-    padding: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_MD,
+    marginBottom: tokens.spacing.md,
   },
   lapTimeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderBottomWidth: 1,
-    borderBottomColor: HIGColors.systemGray5,
+    paddingVertical: 4,
+    borderBottomWidth: 0.5,
+    borderBottomColor: tokens.colors.border.light,
   },
   lapLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: HIGColors.secondaryLabel,
+    fontSize: tokens.typography.fontSize.sm,
+    color: tokens.colors.text.primary,
   },
   lapTime: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: HIGColors.label,
+    fontSize: tokens.typography.fontSize.sm,
+    fontWeight: tokens.typography.fontWeight.medium,
+    color: tokens.colors.primary[600],
   },
   timerControls: {
     flexDirection: 'row',
-    gap: HIGConstants.SPACING_SM,
+    gap: tokens.spacing.sm,
   },
   controlButton: {
     flex: 1,
-    paddingVertical: HIGConstants.SPACING_MD,
-    borderRadius: HIGConstants.cornerRadiusSmall,
+    paddingVertical: tokens.spacing.sm,
+    borderRadius: tokens.layout.radius.sm,
     alignItems: 'center',
   },
   lapButton: {
-    backgroundColor: HIGColors.systemBlue,
+    backgroundColor: tokens.colors.gray[100],
+    borderWidth: 1,
+    borderColor: tokens.colors.gray[300],
   },
   stopButton: {
-    backgroundColor: HIGColors.systemRed,
+    backgroundColor: tokens.colors.primary[500],
   },
   controlButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.white,
+    fontSize: tokens.typography.fontSize.sm,
+    fontWeight: tokens.typography.fontWeight.medium,
+    color: tokens.colors.text.primary,
   },
+  
+  // Advanced toggle
   advancedToggle: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_MD,
+    backgroundColor: tokens.colors.background.secondary,
+    paddingVertical: tokens.spacing.sm,
+    paddingHorizontal: tokens.spacing.lg,
+    alignItems: 'center',
+    marginBottom: tokens.spacing.sm,
   },
   advancedToggleText: {
-    fontSize: 16,
-    color: HIGColors.systemBlue,
-    fontWeight: '600',
+    fontSize: tokens.typography.fontSize.sm,
+    fontWeight: tokens.typography.fontWeight.medium,
+    color: tokens.colors.text.secondary,
   },
-  advancedContainer: {
-    gap: HIGConstants.SPACING_LG,
-  },
-  tempContainer: {
-    gap: HIGConstants.SPACING_SM,
-  },
-  tempLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.label,
-  },
-  tempInputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: HIGConstants.SPACING_SM,
-  },
-  tempButton: {
-    width: 36,
-    height: 36,
-    backgroundColor: HIGColors.systemGray5,
-    borderRadius: HIGConstants.cornerRadiusSmall,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tempButtonText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: HIGColors.label,
-  },
-  tempInput: {
-    backgroundColor: HIGColors.white,
-    borderRadius: HIGConstants.cornerRadiusSmall,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    fontSize: 18,
-    fontWeight: '600',
-    color: HIGColors.label,
-    minWidth: 50,
-    textAlign: 'center',
-  },
-  tempUnit: {
-    fontSize: 16,
-    color: HIGColors.secondaryLabel,
-  },
-  grindContainer: {
-    gap: HIGConstants.SPACING_SM,
-  },
-  grindLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.label,
-  },
-  grindInput: {
-    backgroundColor: HIGColors.white,
-    borderRadius: HIGConstants.cornerRadiusSmall,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_MD,
-    fontSize: 16,
-    color: HIGColors.label,
-  },
-  quickNoteInput: {
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_MD,
-    fontSize: 16,
-    color: HIGColors.label,
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-});
+}));
+
+export default HomeCafeSimpleForm;

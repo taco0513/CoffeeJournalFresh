@@ -62,19 +62,21 @@ export const getMockGrowthMetrics = (): GrowthMetrics => ({
 export const getMockRecommendations = (): CoffeeRecommendation[] => [
   {
     coffeeName: 'Ethiopia Yirgacheffe',
-    roasterName: 'Blue Bottle Coffee',
-    matchScore: 92,
-    flavorNotes: ['blueberry', 'lemon', 'floral'],
+    roastery: 'Blue Bottle Coffee',
+    origin: 'Ethiopia',
+    process: 'Washed',
+    predictedMatch: 92,
     reason: 'Based on your love for fruity and floral notes',
-    difficulty: 'intermediate',
+    similarityScore: 0.92,
   },
   {
     coffeeName: 'Colombia Geisha',
-    roasterName: 'Stumptown Coffee',
-    matchScore: 87,
-    flavorNotes: ['jasmine', 'peach', 'honey'],
+    roastery: 'Stumptown Coffee',
+    origin: 'Colombia',
+    process: 'Natural',
+    predictedMatch: 87,
     reason: 'Perfect balance of sweetness and acidity',
-    difficulty: 'advanced',
+    similarityScore: 0.87,
   },
 ];
 
@@ -138,7 +140,10 @@ export const getMockLearningPath = (): LearningPath => ({
 export const getMockMasteryLevels = (): MasteryLevel[] => [
   {
     category: 'chocolate',
-    level: 'expert',
+    level: 4,
+    progress: 85,
+    nextLevelThreshold: 100,
+    achievements: ['초콜릿 마스터', '전문가 수준'],
     score: 85,
     totalExposures: 120,
     correctIdentifications: 102,
@@ -149,7 +154,10 @@ export const getMockMasteryLevels = (): MasteryLevel[] => [
   },
   {
     category: 'fruity',
-    level: 'proficient',
+    level: 3,
+    progress: 65,
+    nextLevelThreshold: 80,
+    achievements: ['과일향 발견자'],
     score: 65,
     totalExposures: 80,
     correctIdentifications: 52,
@@ -160,7 +168,10 @@ export const getMockMasteryLevels = (): MasteryLevel[] => [
   },
   {
     category: 'floral',
-    level: 'apprentice',
+    level: 2,
+    progress: 40,
+    nextLevelThreshold: 60,
+    achievements: ['꽃향기 탐지기'],
     score: 40,
     totalExposures: 30,
     correctIdentifications: 12,
@@ -192,4 +203,4 @@ export const getMockProgressData = (): ProgressData => ({
   lastUpdated: new Date(),
 });
 
-export const getMockTasteProfileType = (): TasteProfileType => 'Chocolate Lover';
+export const getMockTasteProfileType = (): TasteProfileType => 'traditionalist';

@@ -29,7 +29,7 @@ export class NetworkUtils {
     // 네트워크 상태 모니터링 초기화
     NetInfo.addEventListener(state => {
       const wasOnline = this.isOnline;
-      this.isOnline = state.isConnected && state.isInternetReachable;
+      this.isOnline = Boolean(state.isConnected && state.isInternetReachable);
       
       if (wasOnline !== this.isOnline) {
         this.listeners.forEach(listener => listener(this.isOnline));
@@ -52,7 +52,7 @@ export class NetworkUtils {
   static async isConnected(): Promise<boolean> {
     this.initialize();
     const state = await NetInfo.fetch();
-    return state.isConnected && state.isInternetReachable;
+    return Boolean(state.isConnected && state.isInternetReachable);
   }
 
   /**
@@ -94,7 +94,7 @@ export class NetworkUtils {
       onRetry
     } = options;
 
-    let lastError: Error;
+    let lastError: Error = new Error('Unknown network error');
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {

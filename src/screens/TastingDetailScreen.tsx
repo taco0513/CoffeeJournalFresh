@@ -1,28 +1,31 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  Alert,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { Alert } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { 
+  View, 
+  Text, 
+  ScrollView, 
+  Button, 
+  YStack, 
+  XStack, 
+  Card,
+  Separator,
+  Spinner,
+  H1,
+  H2,
+  H3,
+  Paragraph,
+  SizableText
+} from 'tamagui';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../types/navigation';
 import { ITastingRecord, IFlavorNote } from '../services/realm/schemas';
 import RealmService from '../services/realm/RealmService';
 import { useToastStore } from '../stores/toastStore';
 import { useUserStore } from '../stores/useUserStore';
 import { flavorWheelKorean } from '../data/flavorWheelKorean';
-import {
-  HIGColors,
-  HIGConstants,
-} from '../styles/common';
 import { NavigationButton } from '../components/common';
-import { Colors } from '../constants/colors';
 
 // Navigation types
 type TastingDetailScreenRouteProp = RouteProp<RootStackParamList, 'TastingDetail'>;
@@ -220,32 +223,42 @@ const TastingDetailScreen = () => {
       if (parsed.notes && Array.isArray(parsed.notes)) {
         // Handle structured roaster notes with flavor array
         return (
-          <View>
-            <View style={styles.roasterFlavorTags}>
+          <YStack>
+            <XStack flexWrap="wrap" gap="$2" marginBottom="$3">
               {parsed.notes.map((note: string, index: number) => (
-                <View key={index} style={styles.roasterFlavorTag}>
-                  <Text style={styles.roasterFlavorText}>{note}</Text>
+                <View 
+                  key={index} 
+                  backgroundColor="$gray5" 
+                  paddingHorizontal="$3" 
+                  paddingVertical="$2" 
+                  borderRadius="$3" 
+                  marginRight="$2" 
+                  marginBottom="$2"
+                >
+                  <SizableText size="$3" color="$color">{note}</SizableText>
                 </View>
               ))}
-            </View>
+            </XStack>
             {parsed.description && (
-              <Text style={styles.roasterDescription}>{parsed.description}</Text>
+              <Paragraph size="$3" color="$colorPress" fontStyle="italic" marginTop="$3">
+                {parsed.description}
+              </Paragraph>
             )}
-          </View>
+          </YStack>
         );
       } else if (typeof parsed === 'object') {
         // Handle other JSON structures
         return (
-          <View>
+          <YStack>
             {Object.entries(parsed).map(([key, value], index) => (
-              <View key={index} style={styles.roasterNoteRow}>
-                <Text style={styles.roasterNoteLabel}>{key}:</Text>
-                <Text style={styles.roasterNoteValue}>
+              <XStack key={index} marginBottom="$2">
+                <SizableText size="$3" color="$colorPress" flex={0.3}>{key}:</SizableText>
+                <SizableText size="$3" color="$color" flex={0.7}>
                   {Array.isArray(value) ? value.join(', ') : String(value)}
-                </Text>
-              </View>
+                </SizableText>
+              </XStack>
             ))}
-          </View>
+          </YStack>
         );
       }
     } catch (error) {
@@ -253,170 +266,237 @@ const TastingDetailScreen = () => {
     }
     
     // Fallback to plain text display
-    return <Text style={styles.notesText}>{notes}</Text>;
+    return <Paragraph size="$4" color="$color" lineHeight="$6">{notes}</Paragraph>;
   };
 
   // Loading state
   if (loading || isDeleting) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#000000" />
-          <Text style={styles.loadingText}>
-            {isDeleting ? '삭제 중...' : '로딩 중...'}
-          </Text>
-        </View>
-      </SafeAreaView>
+      <View flex={1} backgroundColor="$background" alignItems="center" justifyContent="center">
+        <Spinner size="large" color="$color" />
+        <SizableText marginTop="$4" size="$4" color="$color">
+          {isDeleting ? '삭제 중...' : '로딩 중...'}
+        </SizableText>
+      </View>
     );
   }
 
   // Error state
   if (error || !tastingRecord) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error || '데이터를 불러올 수 없습니다.'}</Text>
-          <NavigationButton
-            title="다시 시도"
-            onPress={loadTastingData}
-            variant="primary"
-          />
-        </View>
-      </SafeAreaView>
+      <View flex={1} backgroundColor="$background" alignItems="center" justifyContent="center" padding="$6">
+        <SizableText size="$4" color="$red10" textAlign="center" marginBottom="$4">
+          {error || '데이터를 불러올 수 없습니다.'}
+        </SizableText>
+        <Button 
+          size="$4" 
+          theme="blue" 
+          onPress={loadTastingData}
+        >
+          다시 시도
+        </Button>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View flex={1} backgroundColor="$background">
       {/* Navigation Bar */}
-      <View style={styles.navigationBar}>
-        <TouchableOpacity 
-          style={styles.backButton}
+      <XStack 
+        paddingHorizontal="$4" 
+        paddingVertical="$3" 
+        alignItems="center" 
+        justifyContent="space-between"
+        backgroundColor="$background"
+        borderBottomWidth={0.5}
+        borderBottomColor="$borderColor"
+      >
+        <Button 
+          size="$3" 
+          variant="outlined" 
+          backgroundColor="transparent" 
+          borderWidth={0}
           onPress={() => navigation.goBack()}
-          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
           accessible={true}
-          accessibilityRole="button"
           accessibilityLabel="뒤로 가기"
-          accessibilityHint="이전 화면으로 돌아갑니다"
         >
-          <Text style={styles.backButtonText}>‹ 뒤로</Text>
-        </TouchableOpacity>
-        <Text style={styles.navigationTitle}>테이스팅 상세</Text>
-        <View style={styles.headerActions}>
-          <TouchableOpacity 
-            style={styles.deleteButton}
-            onPress={handleDelete}
-            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-            accessible={true}
-            accessibilityRole="button"
-            accessibilityLabel="삭제"
-            accessibilityHint="이 테이스팅 기록을 삭제합니다"
-          >
-            <Text style={styles.deleteButtonText}>삭제</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+          <Text color="$blue10" fontSize="$5" fontWeight="600">‹ 뒤로</Text>
+        </Button>
+        <H3 flex={1} textAlign="center" color="$color">테이스팅 상세</H3>
+        <Button 
+          size="$3" 
+          variant="outlined" 
+          backgroundColor="transparent" 
+          borderWidth={0}
+          onPress={handleDelete}
+          accessible={true}
+          accessibilityLabel="삭제"
+        >
+          <Text color="$red10" fontSize="$4">삭제</Text>
+        </Button>
+      </XStack>
       
       <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        flex={1}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: '$6' }}
       >
         {/* Coffee Information */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>커피 정보</Text>
+        <Card 
+          margin="$4" 
+          padding="$4" 
+          borderRadius="$4" 
+          backgroundColor="$background"
+          borderWidth={0.5}
+          borderColor="$borderColor"
+          elevate
+          animation="bouncy"
+          scale={0.9}
+          hoverStyle={{ scale: 0.925 }}
+          pressStyle={{ scale: 0.875 }}
+        >
+          <XStack alignItems="center" justifyContent="space-between" marginBottom="$4">
+            <H2 color="$color">커피 정보</H2>
             {/* Temperature Badge */}
-            <View style={[
-              styles.temperatureIcon, 
-              tastingRecord.temperature === 'hot' ? styles.temperatureHot : styles.temperatureIce
-            ]}>
-              <Text style={[
-                styles.temperatureText,
-                tastingRecord.temperature === 'hot' ? styles.temperatureTextHot : styles.temperatureTextIce
-              ]}>
+            <View 
+              paddingHorizontal="$3" 
+              paddingVertical="$2" 
+              borderRadius="$4" 
+              borderWidth={1}
+              backgroundColor={tastingRecord.temperature === 'hot' ? '$red2' : '$blue2'}
+              borderColor={tastingRecord.temperature === 'hot' ? '$red8' : '$blue8'}
+            >
+              <SizableText 
+                size="$2" 
+                fontWeight="600"
+                color={tastingRecord.temperature === 'hot' ? '$red11' : '$blue11'}
+              >
                 {tastingRecord.temperature === 'hot' ? 'Hot' : 'Ice'}
-              </Text>
+              </SizableText>
             </View>
-          </View>
+          </XStack>
           
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>커피명</Text>
-            <Text style={styles.infoValue}>{tastingRecord.coffeeName}</Text>
-          </View>
-          
-          <View style={[styles.infoRow, !tastingRecord.cafeName && !tastingRecord.origin && !tastingRecord.variety && !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
-            <Text style={styles.infoLabel}>로스터리</Text>
-            <Text style={styles.infoValue}>{tastingRecord.roastery}</Text>
-          </View>
+          <YStack space="$3">
+            <XStack justifyContent="space-between" alignItems="center">
+              <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>커피명</SizableText>
+              <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.coffeeName}</SizableText>
+            </XStack>
+            <Separator />
+            
+            <XStack justifyContent="space-between" alignItems="center">
+              <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>로스터리</SizableText>
+              <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.roastery}</SizableText>
+            </XStack>
+            <Separator />
           
           {/* Mode-based display: Cafe name for cafe mode, brewing method for home cafe mode */}
           {tastingRecord.mode === 'cafe' && tastingRecord.cafeName ? (
-            <View style={[styles.infoRow, !tastingRecord.origin && !tastingRecord.variety && !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
-              <Text style={styles.infoLabel}>카페명</Text>
-              <Text style={styles.infoValue}>{tastingRecord.cafeName}</Text>
-            </View>
+            <>
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>카페명</SizableText>
+                <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.cafeName}</SizableText>
+              </XStack>
+              <Separator />
+            </>
           ) : tastingRecord.mode === 'home_cafe' ? (
-            <View style={[styles.infoRow, !tastingRecord.origin && !tastingRecord.variety && !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
-              <Text style={styles.infoLabel}>추출 방식</Text>
-              <Text style={styles.infoValue}>🏠 홈카페</Text>
-            </View>
+            <>
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>추출 방식</SizableText>
+                <SizableText size="$4" color="$color" flex={2} textAlign="right">🏠 홈카페</SizableText>
+              </XStack>
+              <Separator />
+            </>
           ) : null}
           
           {tastingRecord.origin && (
-            <View style={[styles.infoRow, !tastingRecord.variety && !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
-              <Text style={styles.infoLabel}>원산지</Text>
-              <Text style={styles.infoValue}>{tastingRecord.origin}</Text>
-            </View>
+            <>
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>원산지</SizableText>
+                <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.origin}</SizableText>
+              </XStack>
+              <Separator />
+            </>
           )}
           
           {tastingRecord.variety && (
-            <View style={[styles.infoRow, !tastingRecord.altitude && !tastingRecord.process && styles.infoRowLast]}>
-              <Text style={styles.infoLabel}>품종</Text>
-              <Text style={styles.infoValue}>{tastingRecord.variety}</Text>
-            </View>
+            <>
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>품종</SizableText>
+                <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.variety}</SizableText>
+              </XStack>
+              <Separator />
+            </>
           )}
           
           {tastingRecord.altitude && (
-            <View style={[styles.infoRow, !tastingRecord.process && styles.infoRowLast]}>
-              <Text style={styles.infoLabel}>고도</Text>
-              <Text style={styles.infoValue}>{tastingRecord.altitude}</Text>
-            </View>
+            <>
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>고도</SizableText>
+                <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.altitude}</SizableText>
+              </XStack>
+              <Separator />
+            </>
           )}
           
           {tastingRecord.process && (
-            <View style={[styles.infoRow, styles.infoRowLast]}>
-              <Text style={styles.infoLabel}>가공법</Text>
-              <Text style={styles.infoValue}>{tastingRecord.process}</Text>
-            </View>
+            <>
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>가공법</SizableText>
+                <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.process}</SizableText>
+              </XStack>
+            </>
           )}
-          
-        </View>
+          </YStack>
+        </Card>
 
         {/* Match Score */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>매칭 스코어</Text>
-          <View style={styles.scoreContainer}>
-            <View style={styles.scoreItem}>
-              <Text style={styles.scoreLabel}>전체</Text>
-              <Text style={styles.scoreValue}>{tastingRecord.matchScoreTotal}점</Text>
-            </View>
-            <View style={styles.scoreItem}>
-              <Text style={styles.scoreLabel}>향미</Text>
-              <Text style={styles.scoreValue}>{tastingRecord.matchScoreFlavor}점</Text>
-            </View>
-            <View style={styles.scoreItem}>
-              <Text style={styles.scoreLabel}>감각</Text>
-              <Text style={styles.scoreValue}>{tastingRecord.matchScoreSensory}점</Text>
-            </View>
-          </View>
-        </View>
+        <Card 
+          margin="$4" 
+          padding="$4" 
+          borderRadius="$4" 
+          backgroundColor="$background"
+          borderWidth={0.5}
+          borderColor="$borderColor"
+          elevate
+          animation="bouncy"
+          scale={0.9}
+          hoverStyle={{ scale: 0.925 }}
+          pressStyle={{ scale: 0.875 }}
+        >
+          <H2 color="$color" marginBottom="$4">매칭 스코어</H2>
+          <XStack justifyContent="space-around" alignItems="center">
+            <YStack alignItems="center" flex={1}>
+              <SizableText size="$3" color="$colorPress" fontWeight="500" marginBottom="$2">전체</SizableText>
+              <SizableText size="$7" color="$blue10" fontWeight="600">{tastingRecord.matchScoreTotal}점</SizableText>
+            </YStack>
+            <YStack alignItems="center" flex={1}>
+              <SizableText size="$3" color="$colorPress" fontWeight="500" marginBottom="$2">향미</SizableText>
+              <SizableText size="$7" color="$blue10" fontWeight="600">{tastingRecord.matchScoreFlavor}점</SizableText>
+            </YStack>
+            <YStack alignItems="center" flex={1}>
+              <SizableText size="$3" color="$colorPress" fontWeight="500" marginBottom="$2">감각</SizableText>
+              <SizableText size="$7" color="$blue10" fontWeight="600">{tastingRecord.matchScoreSensory}점</SizableText>
+            </YStack>
+          </XStack>
+        </Card>
 
         {/* My Selected Flavors */}
         {tastingRecord.selectedFlavorPaths && tastingRecord.selectedFlavorPaths.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>내가 느낀 향미</Text>
-            <View style={styles.flavorContainer}>
+          <Card 
+            margin="$4" 
+            padding="$4" 
+            borderRadius="$4" 
+            backgroundColor="$background"
+            borderWidth={0.5}
+            borderColor="$borderColor"
+            elevate
+            animation="bouncy"
+            scale={0.9}
+            hoverStyle={{ scale: 0.925 }}
+            pressStyle={{ scale: 0.875 }}
+          >
+            <H2 color="$color" marginBottom="$4">내가 느낀 향미</H2>
+            <XStack flexWrap="wrap" gap="$2">
               {tastingRecord.selectedFlavorPaths.map((path: any, index: number) => {
                 const parts = [];
                 if (path.level1) parts.push(getKoreanName(path.level1));
@@ -425,85 +505,153 @@ const TastingDetailScreen = () => {
                 const flavorPath = parts.join(' > ');
                 
                 return (
-                  <View key={index} style={styles.myFlavorNote}>
-                    <Text style={styles.myFlavorText}>{flavorPath}</Text>
+                  <View 
+                    key={index} 
+                    backgroundColor="$green9" 
+                    paddingHorizontal="$3" 
+                    paddingVertical="$2" 
+                    borderRadius="$4" 
+                    marginBottom="$2"
+                  >
+                    <SizableText color="white" size="$3" fontWeight="500">{flavorPath}</SizableText>
                   </View>
                 );
               })}
-            </View>
-          </View>
+            </XStack>
+          </Card>
         )}
 
         {/* Flavor Notes */}
         {tastingRecord.flavorNotes && tastingRecord.flavorNotes.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>로스터 향미 노트</Text>
-            <View style={styles.flavorContainer}>
+          <Card 
+            margin="$4" 
+            padding="$4" 
+            borderRadius="$4" 
+            backgroundColor="$background"
+            borderWidth={0.5}
+            borderColor="$borderColor"
+            elevate
+            animation="bouncy"
+            scale={0.9}
+            hoverStyle={{ scale: 0.925 }}
+            pressStyle={{ scale: 0.875 }}
+          >
+            <H2 color="$color" marginBottom="$4">로스터 향미 노트</H2>
+            <XStack flexWrap="wrap" gap="$2">
               {tastingRecord.flavorNotes.map((note: IFlavorNote, index: number) => (
-                <View key={index} style={styles.flavorNote}>
-                  <Text style={styles.flavorText}>
+                <View 
+                  key={index} 
+                  backgroundColor="$blue9" 
+                  paddingHorizontal="$3" 
+                  paddingVertical="$2" 
+                  borderRadius="$4" 
+                  marginBottom="$2"
+                >
+                  <SizableText color="white" size="$3" fontWeight="500">
                     {note.koreanValue || note.value}
-                  </Text>
+                  </SizableText>
                 </View>
               ))}
-            </View>
-          </View>
+            </XStack>
+          </Card>
         )}
 
         {/* Sensory Attributes */}
         {tastingRecord.sensoryAttribute && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>감각 평가</Text>
+          <Card 
+            margin="$4" 
+            padding="$4" 
+            borderRadius="$4" 
+            backgroundColor="$background"
+            borderWidth={0.5}
+            borderColor="$borderColor"
+            elevate
+            animation="bouncy"
+            scale={0.9}
+            hoverStyle={{ scale: 0.925 }}
+            pressStyle={{ scale: 0.875 }}
+          >
+            <H2 color="$color" marginBottom="$4">사간 평가</H2>
             
-            <View style={styles.sensoryRow}>
-              <Text style={styles.sensoryLabel}>바디</Text>
-              <Text style={styles.sensoryValue}>
-                {getSensoryDescription('body', tastingRecord.sensoryAttribute.body)}
-              </Text>
-            </View>
-            
-            <View style={styles.sensoryRow}>
-              <Text style={styles.sensoryLabel}>산미</Text>
-              <Text style={styles.sensoryValue}>
-                {getSensoryDescription('acidity', tastingRecord.sensoryAttribute.acidity)}
-              </Text>
-            </View>
-            
-            <View style={styles.sensoryRow}>
-              <Text style={styles.sensoryLabel}>단맛</Text>
-              <Text style={styles.sensoryValue}>
-                {getSensoryDescription('sweetness', tastingRecord.sensoryAttribute.sweetness)}
-              </Text>
-            </View>
-            
-            <View style={styles.sensoryRow}>
-              <Text style={styles.sensoryLabel}>여운</Text>
-              <Text style={styles.sensoryValue}>
-                {getSensoryDescription('finish', tastingRecord.sensoryAttribute.finish)}
-              </Text>
-            </View>
-            
-            <View style={[styles.sensoryRow, styles.sensoryRowLast]}>
-              <Text style={styles.sensoryLabel}>마우스필</Text>
-              <Text style={styles.sensoryValue}>
-                {getMouthfeelKorean(tastingRecord.sensoryAttribute.mouthfeel)}
-              </Text>
-            </View>
-          </View>
+            <YStack space="$3">
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$color" fontWeight="500">바디</SizableText>
+                <SizableText size="$4" color="$colorPress">
+                  {getSensoryDescription('body', tastingRecord.sensoryAttribute.body)}
+                </SizableText>
+              </XStack>
+              <Separator />
+              
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$color" fontWeight="500">산미</SizableText>
+                <SizableText size="$4" color="$colorPress">
+                  {getSensoryDescription('acidity', tastingRecord.sensoryAttribute.acidity)}
+                </SizableText>
+              </XStack>
+              <Separator />
+              
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$color" fontWeight="500">단맛</SizableText>
+                <SizableText size="$4" color="$colorPress">
+                  {getSensoryDescription('sweetness', tastingRecord.sensoryAttribute.sweetness)}
+                </SizableText>
+              </XStack>
+              <Separator />
+              
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$color" fontWeight="500">여운</SizableText>
+                <SizableText size="$4" color="$colorPress">
+                  {getSensoryDescription('finish', tastingRecord.sensoryAttribute.finish)}
+                </SizableText>
+              </XStack>
+              <Separator />
+              
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$color" fontWeight="500">마우스필</SizableText>
+                <SizableText size="$4" color="$colorPress">
+                  {getMouthfeelKorean(tastingRecord.sensoryAttribute.mouthfeel)}
+                </SizableText>
+              </XStack>
+            </YStack>
+          </Card>
         )}
 
         {/* Roaster Notes */}
         {tastingRecord.roasterNotes && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>로스터 노트</Text>
+          <Card 
+            margin="$4" 
+            padding="$4" 
+            borderRadius="$4" 
+            backgroundColor="$background"
+            borderWidth={0.5}
+            borderColor="$borderColor"
+            elevate
+            animation="bouncy"
+            scale={0.9}
+            hoverStyle={{ scale: 0.925 }}
+            pressStyle={{ scale: 0.875 }}
+          >
+            <H2 color="$color" marginBottom="$4">로스터 노트</H2>
             {renderRoasterNotes(tastingRecord.roasterNotes)}
-          </View>
+          </Card>
         )}
 
         {/* Home Cafe Information - only show for home_cafe mode */}
         {tastingRecord.mode === 'home_cafe' && tastingRecord.homeCafeData && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>🏠 홈카페 정보</Text>
+          <Card 
+            margin="$4" 
+            padding="$4" 
+            borderRadius="$4" 
+            backgroundColor="$background"
+            borderWidth={0.5}
+            borderColor="$borderColor"
+            elevate
+            animation="bouncy"
+            scale={0.9}
+            hoverStyle={{ scale: 0.925 }}
+            pressStyle={{ scale: 0.875 }}
+          >
+            <H2 color="$color" marginBottom="$4">🏠 홈카페 정보</H2>
             
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>추출 도구</Text>
@@ -579,299 +727,45 @@ const TastingDetailScreen = () => {
                 <Text style={styles.infoValue}>{tastingRecord.homeCafeData.notes.nextExperiment}</Text>
               </View>
             )}
-          </View>
+          </Card>
         )}
 
         {/* Date Information */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>기록 정보</Text>
-          <View style={[styles.infoRow, !(tastingRecord.updatedAt && tastingRecord.updatedAt !== tastingRecord.createdAt) && styles.infoRowLast]}>
-            <Text style={styles.infoLabel}>기록일시</Text>
-            <Text style={styles.infoValue}>{formatDate(tastingRecord.createdAt)}</Text>
-          </View>
-          {tastingRecord.updatedAt && tastingRecord.updatedAt !== tastingRecord.createdAt && (
-            <View style={[styles.infoRow, styles.infoRowLast]}>
-              <Text style={styles.infoLabel}>수정일시</Text>
-              <Text style={styles.infoValue}>{formatDate(tastingRecord.updatedAt)}</Text>
-            </View>
-          )}
-        </View>
-        
-        <View style={styles.bottomSpacer} />
+        <Card 
+          margin="$4" 
+          padding="$4" 
+          borderRadius="$4" 
+          backgroundColor="$background"
+          borderWidth={0.5}
+          borderColor="$borderColor"
+          elevate
+          animation="bouncy"
+          scale={0.9}
+          hoverStyle={{ scale: 0.925 }}
+          pressStyle={{ scale: 0.875 }}
+        >
+          <H2 color="$color" marginBottom="$4">기록 정보</H2>
+          <YStack space="$3">
+            <XStack justifyContent="space-between" alignItems="center">
+              <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>기록일시</SizableText>
+              <SizableText size="$4" color="$color" flex={2} textAlign="right">{formatDate(tastingRecord.createdAt)}</SizableText>
+            </XStack>
+            {tastingRecord.updatedAt && tastingRecord.updatedAt !== tastingRecord.createdAt && (
+              <>
+                <Separator />
+                <XStack justifyContent="space-between" alignItems="center">
+                  <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>수정일시</SizableText>
+                  <SizableText size="$4" color="$color" flex={2} textAlign="right">{formatDate(tastingRecord.updatedAt)}</SizableText>
+                </XStack>
+              </>
+            )}
+          </YStack>
+        </Card>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  navigationBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    paddingVertical: HIGConstants.SPACING_SM,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray4,
-  },
-  backButton: {
-    padding: HIGConstants.SPACING_XS,
-    flex: 0,
-  },
-  backButtonText: {
-    fontSize: 18,
-    color: HIGColors.blue,
-    fontWeight: '600',
-  },
-  navigationTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
-    flex: 1,
-    textAlign: 'center',
-  },
-  headerActions: {
-    flex: 0,
-    minWidth: 50,
-    alignItems: 'flex-end',
-  },
-  deleteButton: {
-    padding: HIGConstants.SPACING_XS,
-  },
-  deleteButtonText: {
-    fontSize: 17,
-    color: HIGColors.red,
-    fontWeight: '400',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  contentContainer: {
-    padding: HIGConstants.SPACING_MD,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 200,
-  },
-  placeholderText: {
-    fontSize: 16,
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-  },
-  section: {
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: HIGConstants.SPACING_MD,
-    marginVertical: HIGConstants.SPACING_SM,
-    padding: HIGConstants.SPACING_MD,
-    borderRadius: 12,
-    borderWidth: 0.5,
-    borderColor: HIGColors.gray4,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: HIGColors.label,
-  },
-  temperatureIcon: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    borderWidth: 1,
-  },
-  temperatureHot: {
-    backgroundColor: '#FFE5E5', // 따뜻한 연분홍
-    borderColor: '#FF6B6B', // 따뜻한 빨강
-  },
-  temperatureIce: {
-    backgroundColor: '#E5F3FF', // 차가운 연파랑
-    borderColor: '#4A90E2', // 차가운 파랑
-  },
-  temperatureText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  temperatureTextHot: {
-    color: '#D63031', // 따뜻한 빨강 텍스트
-  },
-  temperatureTextIce: {
-    color: '#0984e3', // 차가운 파랑 텍스트
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: HIGConstants.SPACING_XS,
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray5,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  infoRowLast: {
-    borderBottomWidth: 0,
-    borderBottomColor: 'transparent',
-  },
-  infoLabel: {
-    fontSize: 16,
-    color: HIGColors.secondaryLabel,
-    fontWeight: '500',
-    flex: 1,
-  },
-  infoValue: {
-    fontSize: 16,
-    color: HIGColors.label,
-    fontWeight: '400',
-    flex: 2,
-    textAlign: 'right',
-  },
-  scoreContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  scoreItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  scoreLabel: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-    fontWeight: '500',
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  scoreValue: {
-    fontSize: 20,
-    color: HIGColors.blue,
-    fontWeight: '600',
-  },
-  flavorContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: HIGConstants.SPACING_SM,
-  },
-  flavorNote: {
-    backgroundColor: HIGColors.blue,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_XS,
-    borderRadius: 16,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  flavorText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  myFlavorNote: {
-    backgroundColor: HIGColors.systemGreen,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_XS,
-    borderRadius: 16,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  myFlavorText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  sensoryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: HIGConstants.SPACING_SM,
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray5,
-  },
-  sensoryRowLast: {
-    borderBottomWidth: 0,
-    borderBottomColor: 'transparent',
-  },
-  sensoryLabel: {
-    fontSize: 16,
-    color: HIGColors.label,
-    fontWeight: '500',
-  },
-  sensoryValue: {
-    fontSize: 16,
-    color: HIGColors.secondaryLabel,
-    fontWeight: '400',
-  },
-  notesText: {
-    fontSize: 16,
-    color: HIGColors.label,
-    lineHeight: 24,
-  },
-  roasterDescription: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-    fontStyle: 'italic',
-    marginTop: HIGConstants.SPACING_SM,
-  },
-  bottomSpacer: {
-    height: HIGConstants.SPACING_XL,
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: HIGConstants.SPACING_LG,
-  },
-  errorText: {
-    fontSize: 16,
-    color: HIGColors.red,
-    textAlign: 'center',
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: HIGConstants.SPACING_MD,
-    fontSize: 16,
-    color: HIGColors.label,
-  },
-  roasterFlavorTags: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  roasterFlavorTag: {
-    backgroundColor: HIGColors.systemGray5,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    paddingVertical: HIGConstants.SPACING_XS,
-    borderRadius: HIGConstants.RADIUS_MD,
-    marginRight: HIGConstants.SPACING_XS,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  roasterFlavorText: {
-    fontSize: 14,
-    color: HIGColors.label,
-  },
-  roasterNoteRow: {
-    flexDirection: 'row',
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  roasterNoteLabel: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-    flex: 0.3,
-  },
-  roasterNoteValue: {
-    fontSize: 14,
-    color: HIGColors.label,
-    flex: 0.7,
-  },
-});
+// Styles migrated to Tamagui - no StyleSheet needed
 
 export default TastingDetailScreen;

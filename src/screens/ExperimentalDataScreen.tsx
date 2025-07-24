@@ -1,16 +1,22 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { 
+  View, 
+  Text, 
+  ScrollView, 
+  Button, 
+  YStack, 
+  XStack, 
+  Card,
+  H1,
+  H2,
+  H3,
+  Paragraph,
+  SizableText
+} from 'tamagui';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTastingStore } from '../stores/tastingStore';
 import { CurrentTasting, LabModeData } from '../types/tasting';
-import { HIGConstants, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
 import { 
   MouthfeelButton,
   SliderSection
@@ -73,67 +79,127 @@ const ExperimentalDataScreen = () => {
   }, [sensoryData, updateField, navigation]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View flex={1} backgroundColor="$backgroundSoft">
       {/* Navigation Bar */}
-      <View style={styles.navigationBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.navigationTitle}>실험 데이터</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('SensoryEvaluation' as never)}>
-          <Text style={styles.skipButton}>건너뛰기</Text>
-        </TouchableOpacity>
-      </View>
+      <XStack 
+        height={44}
+        paddingHorizontal="$6" 
+        alignItems="center" 
+        justifyContent="space-between"
+        backgroundColor="$background"
+        borderBottomWidth={0.5}
+        borderBottomColor="$borderColor"
+      >
+        <Button 
+          size="$3" 
+          variant="outlined" 
+          backgroundColor="transparent" 
+          borderWidth={0}
+          onPress={() => navigation.goBack()}
+        >
+          <Text color="$blue10" fontSize="$6">←</Text>
+        </Button>
+        <H3 color="$color">실험 데이터</H3>
+        <Button 
+          size="$3" 
+          variant="outlined" 
+          backgroundColor="transparent" 
+          borderWidth={0}
+          onPress={() => navigation.navigate('SensoryEvaluation' as never)}
+        >
+          <Text color="$blue10" fontSize="$4">건너뛰기</Text>
+        </Button>
+      </XStack>
       
       {/* Progress Bar */}
-      <View style={styles.progressBar}>
-        <View style={[styles.progressFill, { width: '57%' }]} />
+      <View height={3} backgroundColor="$gray5" overflow="hidden">
+        <View height="100%" width="57%" backgroundColor="$blue10" />
       </View>
 
       {/* Tab Navigation */}
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'basic' && styles.tabActive]}
+      <XStack 
+        marginHorizontal="$6" 
+        marginTop="$4" 
+        backgroundColor="$gray6" 
+        borderRadius="$3" 
+        padding="$1"
+      >
+        <Button
+          flex={1}
+          size="$3"
+          variant={activeTab === 'basic' ? undefined : "outlined"}
+          backgroundColor={activeTab === 'basic' ? "$background" : "transparent"}
+          borderWidth={0}
+          borderRadius="$2"
+          marginHorizontal="$0.5"
           onPress={() => setActiveTab('basic')}
+          animation="bouncy"
+          shadowColor={activeTab === 'basic' ? "$shadowColor" : "transparent"}
+          shadowOffset={activeTab === 'basic' ? { width: 0, height: 1 } : { width: 0, height: 0 }}
+          shadowOpacity={activeTab === 'basic' ? 0.1 : 0}
+          shadowRadius={activeTab === 'basic' ? 3 : 0}
         >
-          <Text style={[styles.tabText, activeTab === 'basic' && styles.tabTextActive]}>
+          <SizableText 
+            size="$3" 
+            fontWeight={activeTab === 'basic' ? "600" : "500"}
+            color={activeTab === 'basic' ? "$color" : "$colorPress"}
+          >
             기본 평가
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'lab' && styles.tabActive]}
+          </SizableText>
+        </Button>
+        <Button
+          flex={1}
+          size="$3"
+          variant={activeTab === 'lab' ? undefined : "outlined"}
+          backgroundColor={activeTab === 'lab' ? "$background" : "transparent"}
+          borderWidth={0}
+          borderRadius="$2"
+          marginHorizontal="$0.5"
           onPress={() => setActiveTab('lab')}
+          animation="bouncy"
+          shadowColor={activeTab === 'lab' ? "$shadowColor" : "transparent"}
+          shadowOffset={activeTab === 'lab' ? { width: 0, height: 1 } : { width: 0, height: 0 }}
+          shadowOpacity={activeTab === 'lab' ? 0.1 : 0}
+          shadowRadius={activeTab === 'lab' ? 3 : 0}
         >
-          <Text style={[styles.tabText, activeTab === 'lab' && styles.tabTextActive]}>
+          <SizableText 
+            size="$3" 
+            fontWeight={activeTab === 'lab' ? "600" : "500"}
+            color={activeTab === 'lab' ? "$color" : "$colorPress"}
+          >
             전문 분석
-          </Text>
-        </TouchableOpacity>
-      </View>
+          </SizableText>
+        </Button>
+      </XStack>
 
       {/* Guide Message with Progress */}
-      <View style={styles.guideMessageContainer}>
-        <View style={styles.guideHeader}>
-          <View style={styles.guideTextContainer}>
-            <Text style={styles.guideMessage}>
+      <YStack 
+        paddingHorizontal="$6" 
+        paddingVertical="$4" 
+        backgroundColor="$background"
+      >
+        <XStack alignItems="center" justifyContent="space-between">
+          <YStack flex={1}>
+            <SizableText size="$4" fontWeight="600" color="$color" marginBottom="$2">
               {activeTab === 'basic' 
                 ? '커피의 강도를 측정해보세요' 
                 : '전문적인 분석 데이터를 기록하세요'
               }
-            </Text>
-            <Text style={styles.guideSubMessage}>
+            </SizableText>
+            <SizableText size="$3" color="$colorPress">
               {activeTab === 'basic'
                 ? `${progress.completed}/${progress.total} 항목 완료`
                 : 'TDS, 추출수율, 실험 변수를 정밀하게 기록할 수 있습니다'
               }
-            </Text>
-          </View>
-        </View>
-      </View>
+            </SizableText>
+          </YStack>
+        </XStack>
+      </YStack>
 
       {activeTab === 'basic' ? (
         <ScrollView 
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
+          flex={1}
+          contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
         >
         
@@ -191,15 +257,27 @@ const ExperimentalDataScreen = () => {
         />
 
         {/* Mouthfeel Section - Card Style */}
-        <View style={styles.mouthfeelCard}>
-          <View style={styles.mouthfeelHeader}>
-            <View style={styles.mouthfeelTitleRow}>
-              <Text style={styles.mouthfeelIcon}>👄</Text>
-              <Text style={styles.mouthfeelTitle}>입안 느낌</Text>
-            </View>
-            <Text style={styles.mouthfeelSubtitle}>가장 가까운 느낌을 선택해주세요</Text>
-          </View>
-          <View style={styles.mouthfeelContainer}>
+        <Card 
+          backgroundColor="$background" 
+          borderRadius="$4" 
+          marginHorizontal="$6" 
+          marginBottom="$4" 
+          padding="$4" 
+          borderWidth={1} 
+          borderColor="$borderColor" 
+          elevate 
+          animation="bouncy"
+        >
+          <YStack marginBottom="$3">
+            <XStack alignItems="center" marginBottom="$1">
+              <SizableText size="$5" marginRight="$2">👄</SizableText>
+              <SizableText size="$4" fontWeight="700" color="$color">입안 느낌</SizableText>
+            </XStack>
+            <SizableText size="$2" lineHeight="$4" color="$colorPress" marginTop="$1">
+              가장 가까운 느낌을 선택해주세요
+            </SizableText>
+          </YStack>
+          <XStack flexWrap="wrap" marginTop="$2">
             {mouthfeelOptions.map((option) => (
               <MouthfeelButton 
                 key={option} 
@@ -208,8 +286,8 @@ const ExperimentalDataScreen = () => {
                 onPress={() => setMouthfeel(option)}
               />
             ))}
-          </View>
-        </View>
+          </XStack>
+        </Card>
         </ScrollView>
       ) : (
         <LabModeDataEntry
@@ -219,196 +297,25 @@ const ExperimentalDataScreen = () => {
       )}
 
       {/* Bottom Button */}
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity 
-          style={[commonButtonStyles.buttonPrimary, styles.continueButton]}
+      <YStack 
+        padding="$6" 
+        backgroundColor="$background" 
+        borderTopWidth={0.5} 
+        borderTopColor="$borderColor"
+      >
+        <Button 
+          size="$5" 
+          theme="blue" 
           onPress={handleComplete}
-          activeOpacity={0.8}
+          animation="bouncy"
         >
-          <Text style={[commonTextStyles.buttonText, styles.continueButtonText]}>
-            다음 단계
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+          다음 단계
+        </Button>
+      </YStack>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: HIGColors.secondarySystemBackground,
-  },
-  navigationBar: {
-    height: 44,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.systemGray4,
-  },
-  backButton: {
-    fontSize: 24,
-    color: HIGColors.systemBlue,
-    fontWeight: '400',
-  },
-  navigationTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: HIGColors.label,
-  },
-  skipButton: {
-    fontSize: 17,
-    color: HIGColors.systemBlue,
-    fontWeight: '400',
-  },
-  progressBar: {
-    height: 3,
-    backgroundColor: HIGColors.systemGray5,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: HIGColors.systemBlue,
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    marginHorizontal: HIGConstants.SPACING_LG,
-    marginTop: HIGConstants.SPACING_MD,
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: 10,
-    padding: 2,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    marginHorizontal: 1,
-  },
-  tabActive: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  tabText: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: HIGColors.secondaryLabel,
-  },
-  tabTextActive: {
-    color: HIGColors.label,
-    fontWeight: '600',
-  },
-  guideMessageContainer: {
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_MD,
-    backgroundColor: '#FFFFFF',
-  },
-  guideHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  guideTextContainer: {
-    flex: 1,
-  },
-  guideMessage: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  guideSubMessage: {
-    fontSize: 14,
-    color: HIGColors.secondaryLabel,
-  },
-  motivationContainer: {
-    marginTop: HIGConstants.SPACING_SM,
-    backgroundColor: HIGColors.systemBlue + '10',
-    borderRadius: 8,
-    padding: HIGConstants.SPACING_SM,
-    borderLeftWidth: 3,
-    borderLeftColor: HIGColors.systemBlue,
-  },
-  motivationText: {
-    fontSize: 13,
-    color: HIGColors.systemBlue,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 100, // Space for bottom button
-  },
-  sliderSectionContainer: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    paddingVertical: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  mouthfeelCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginHorizontal: HIGConstants.SPACING_LG,
-    marginBottom: HIGConstants.SPACING_MD,
-    padding: HIGConstants.SPACING_MD,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  mouthfeelHeader: {
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  mouthfeelTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  mouthfeelIcon: {
-    fontSize: 20,
-    marginRight: 8,
-  },
-  mouthfeelTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: HIGColors.label,
-  },
-  mouthfeelSubtitle: {
-    fontSize: 12,
-    lineHeight: 16,
-    color: HIGColors.secondaryLabel,
-    marginTop: 2,
-  },
-  mouthfeelContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: HIGConstants.SPACING_XS,
-  },
-  bottomContainer: {
-    padding: HIGConstants.SPACING_LG,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 0.5,
-    borderTopColor: HIGColors.systemGray4,
-  },
-  continueButton: {
-    minHeight: HIGConstants.MIN_TOUCH_TARGET,
-  },
-  continueButtonText: {
-    fontSize: 17,
-    fontWeight: '600',
-  },
-});
+// Styles migrated to Tamagui - no StyleSheet needed
 
 export default ExperimentalDataScreen;
