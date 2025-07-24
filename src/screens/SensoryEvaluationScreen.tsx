@@ -65,6 +65,9 @@ const SensoryEvaluationScreen = () => {
       index === self.findIndex(e => e.korean === expr.korean)
     );
     
+    console.log('handleExpressionChange - before:', converted.map(e => e.korean));
+    console.log('handleExpressionChange - after dedup:', uniqueConverted.map(e => e.korean));
+    
     setSelectedSensoryExpressions(uniqueConverted);
   }, [setSelectedSensoryExpressions]);
 
@@ -108,10 +111,14 @@ const SensoryEvaluationScreen = () => {
               nestedScrollEnabled={true}
             >
               {(() => {
-                // Remove duplicates first, then group by category
+                // Debug and remove duplicates first, then group by category
+                console.log('Raw selectedSensoryExpressions:', selectedSensoryExpressions.map(e => e.korean));
+                
                 const uniqueExpressions = selectedSensoryExpressions.filter((expr, index, self) => 
                   index === self.findIndex(e => e.korean === expr.korean)
                 );
+                
+                console.log('After deduplication:', uniqueExpressions.map(e => e.korean));
                 
                 const groupedExpressions = uniqueExpressions.reduce((acc, expr) => {
                   const category = expr.categoryId;
