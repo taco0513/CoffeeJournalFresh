@@ -187,6 +187,17 @@ src/
   - Xcode project target, schemes, and Podfile all updated consistently
   - Build pipeline now properly recognizes CupNote as registered app name
   - Bundle identifiers updated to com.cupnote.app across all platforms
+- ✅ **HomeCafe Mode Timer & Recipe Fixes** (2025-07-24): Fixed preset recipe buttons and added stopwatch timer
+  - Fixed preset recipe button functionality in HomeCafeSimpleForm
+  - Added stopwatch timer with lap time recording (1차 추출(뜸), 2차 추출, etc.)
+  - Changed UI text: '랩 타임' → '추출타임', '오늘의 커피는...' → '추출 노트'
+  - Made extraction notes (추출 노트) optional instead of required
+- ✅ **Sensory Evaluation Multiple Selection Fix** (2025-07-24): Fixed HomeCafe mode sensory evaluation
+  - Fixed SensoryEvaluationScreen missing selectedExpressions prop
+  - Resolved single-selection-only issue preventing multiple expressions per category
+  - Enhanced visual feedback with checkmarks, color changes, and scale animation
+  - Fixed modal overlay blocking in HomeCafe/Lab modes
+  - Multiple selections now work properly (up to 3 per category)
 
 ## Commands
 ```bash

@@ -42,14 +42,15 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
     categoryId: string,
     expression: SensoryExpression
   ) => {
-    const existingIndex = safeSelectedExpressions.findIndex(
+    const currentExpressions = selectedExpressions || [];
+    const existingIndex = currentExpressions.findIndex(
       item => item.categoryId === categoryId && item.expression.id === expression.id
     );
-    const categorySelections = safeSelectedExpressions.filter(
+    const categorySelections = currentExpressions.filter(
       item => item.categoryId === categoryId
     );
 
-    let newExpressions = [...safeSelectedExpressions];
+    let newExpressions = [...currentExpressions];
 
     if (existingIndex >= 0) {
       newExpressions.splice(existingIndex, 1);
@@ -61,7 +62,7 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
     }
 
     onExpressionChange(newExpressions);
-  }, [safeSelectedExpressions, onExpressionChange]);
+  }, [selectedExpressions, onExpressionChange]);
 
   const isExpressionSelected = useCallback((
     categoryId: string,
@@ -142,7 +143,7 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
         {activeExpressions.map((expression) => {
           const category = koreanSensoryData[activeCategory];
           const isSelected = isExpressionSelected(activeCategory, expression.id);
-          const categorySelections = selectedExpressions.filter(
+          const categorySelections = safeSelectedExpressions.filter(
             item => item.categoryId === activeCategory
           );
           const isDisabled = categorySelections.length >= MAX_PER_CATEGORY && !isSelected;
@@ -155,6 +156,8 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
                 isSelected && { 
                   backgroundColor: category?.color || '#007AFF',
                   borderColor: category?.color || '#007AFF',
+                  borderWidth: 2,
+                  transform: [{scale: 1.02}],
                 },
                 isDisabled && styles.expressionButtonDisabled
               ]}
@@ -169,6 +172,11 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
               ]}>
                 {expression.korean}
               </Text>
+              {isSelected && (
+                <View style={styles.checkmark}>
+                  <Text style={styles.checkmarkText}>✓</Text>
+                </View>
+              )}
             </TouchableOpacity>
           );
         })}
@@ -282,6 +290,7 @@ const styles = StyleSheet.create({
     minHeight: 32,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
   },
   expressionText: {
     fontSize: 14,
@@ -308,6 +317,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#8E8E93',
     textAlign: 'center',
+  },
+  checkmark: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkmarkText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#007AFF',
   },
 });
 

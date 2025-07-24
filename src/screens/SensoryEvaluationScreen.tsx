@@ -17,16 +17,22 @@ import { SelectedSensoryExpression } from '../types/sensory';
 
 const SensoryEvaluationScreen = () => {
   const navigation = useNavigation();
-  const { selectedSensoryExpressions, setSelectedSensoryExpressions } = useTastingStore();
+  const { selectedSensoryExpressions, setSelectedSensoryExpressions, currentTasting } = useTastingStore();
   
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Check if onboarding should be shown
   useEffect(() => {
+    // 홈카페 모드일 때는 온보딩을 표시하지 않음
+    if (currentTasting.mode === 'home_cafe' || currentTasting.mode === 'lab') {
+      setShowOnboarding(false);
+      return;
+    }
+    
     checkShouldShowOnboarding().then(shouldShow => {
       setShowOnboarding(shouldShow);
     });
-  }, []);
+  }, [currentTasting.mode]);
 
   const handleComplete = useCallback(async () => {
     // Navigate to personal comment screen
@@ -162,6 +168,17 @@ const SensoryEvaluationScreen = () => {
         
         {/* Enhanced Sensory Evaluation Component */}
         <CompactSensoryEvaluation 
+          selectedExpressions={(selectedSensoryExpressions || []).map(item => ({
+            categoryId: item.categoryId,
+            expression: {
+              id: item.expressionId,
+              korean: item.korean,
+              english: item.english,
+              emoji: item.emoji || '',
+              intensity: item.intensity || 2,
+              beginner: true,
+            } as any,
+          }))}
           onExpressionChange={handleExpressionChange}
           beginnerMode={true}
         />

@@ -174,9 +174,9 @@ const SensoryScreen = () => {
                   korean: item.korean,
                   english: item.english,
                   emoji: item.emoji || '',
-                  intensity: 2 as 1 | 2 | 3, // Simplified - just use default intensity
+                  intensity: item.intensity || 2,
                   beginner: true,
-                },
+                } as any,
               }))}
               onExpressionChange={handleExpressionChange}
               beginnerMode={true}
