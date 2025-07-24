@@ -44,14 +44,16 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
   ) => {
     const currentExpressions = selectedExpressions || [];
     
-    // Check if this exact expression (by korean text) is already selected anywhere
+    // Find exact match in current category
+    const existingIndex = currentExpressions.findIndex(
+      item => item.categoryId === categoryId && item.expression.korean === expression.korean
+    );
+    
+    // Check if this expression is already selected in ANY category (including current)
     const globallySelected = currentExpressions.some(
       item => item.expression.korean === expression.korean
     );
     
-    const existingIndex = currentExpressions.findIndex(
-      item => item.categoryId === categoryId && item.expression.id === expression.id
-    );
     const categorySelections = currentExpressions.filter(
       item => item.categoryId === categoryId
     );
@@ -59,16 +61,18 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
     let newExpressions = [...currentExpressions];
 
     if (existingIndex >= 0) {
-      // Deselecting - always allow
+      // Deselecting - remove the existing selection
       newExpressions.splice(existingIndex, 1);
     } else {
-      // Selecting - check limits and global selection
+      // Attempting to select
       if (categorySelections.length >= MAX_PER_CATEGORY) {
         return; // Category limit reached
       }
       if (globallySelected) {
-        return; // Expression already selected in another category
+        return; // Expression already selected somewhere else
       }
+      
+      // Add new selection
       newExpressions.push({ categoryId, expression });
     }
 
@@ -153,7 +157,7 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
       >
         {activeExpressions.map((expression) => {
           const category = koreanSensoryData[activeCategory];
-          const isSelected = isExpressionSelected(activeCategory, expression.id);
+          const isSelected = isExpressionSelected(activeCategory, expression);
           const categorySelections = safeSelectedExpressions.filter(
             item => item.categoryId === activeCategory
           );
@@ -163,20 +167,6 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
           const isGloballySelected = safeSelectedExpressions.some(
             item => item.expression.korean === expression.korean && item.categoryId !== activeCategory
           );
-          
-          // Debug logging
-          if (__DEV__ && expression.korean === '스모키한') {
-            console.log('스모키한 debug:', {
-              activeCategory,
-              isSelected,
-              isGloballySelected,
-              isDisabled,
-              safeSelectedExpressions: safeSelectedExpressions.map(item => ({
-                korean: item.expression.korean,
-                categoryId: item.categoryId
-              }))
-            });
-          }
           
           return (
             <TouchableOpacity

@@ -60,21 +60,6 @@ const SensoryEvaluationScreen = () => {
       selected: true,
     }));
     
-    // Debug logging
-    if (__DEV__) {
-      console.log('handleExpressionChange:', {
-        input: expressions.map(item => ({
-          categoryId: item.categoryId,
-          korean: item.expression.korean,
-          id: item.expression.id
-        })),
-        converted: converted.map(item => ({
-          categoryId: item.categoryId,
-          korean: item.korean,
-          expressionId: item.expressionId
-        }))
-      });
-    }
     
     setSelectedSensoryExpressions(converted);
   }, [setSelectedSensoryExpressions]);
@@ -205,37 +190,17 @@ const SensoryEvaluationScreen = () => {
       {/* Bottom Section: Fixed Sensory Evaluation */}
       <View style={styles.bottomSection}>
         <CompactSensoryEvaluation 
-          selectedExpressions={(() => {
-            const mapped = (selectedSensoryExpressions || []).map(item => ({
-              categoryId: item.categoryId,
-              expression: {
-                id: item.expressionId,
-                korean: item.korean,
-                english: item.english,
-                emoji: item.emoji || '',
-                intensity: item.intensity || 2,
-                beginner: true,
-              },
-            }));
-            
-            // Debug logging
-            if (__DEV__) {
-              console.log('SensoryEvaluationScreen - selectedSensoryExpressions:', {
-                original: selectedSensoryExpressions?.map(item => ({
-                  categoryId: item.categoryId,
-                  korean: item.korean,
-                  expressionId: item.expressionId
-                })),
-                mapped: mapped.map(item => ({
-                  categoryId: item.categoryId,
-                  korean: item.expression.korean,
-                  id: item.expression.id
-                }))
-              });
-            }
-            
-            return mapped;
-          })()}
+          selectedExpressions={(selectedSensoryExpressions || []).map(item => ({
+            categoryId: item.categoryId,
+            expression: {
+              id: item.expressionId,
+              korean: item.korean,
+              english: item.english,
+              emoji: item.emoji || '',
+              intensity: item.intensity || 2,
+              beginner: true,
+            },
+          }))}
           onExpressionChange={handleExpressionChange}
           beginnerMode={true}
         />
