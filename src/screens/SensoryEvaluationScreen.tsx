@@ -39,7 +39,7 @@ const SensoryEvaluationScreen = () => {
     navigation.navigate('PersonalComment' as never);
   }, [navigation]);
 
-  // Convert EnhancedSensoryEvaluation format to TastingStore format
+  // Convert CompactSensoryEvaluation format to TastingStore format
   const handleExpressionChange = useCallback((expressions: Array<{
     categoryId: string;
     expression: {
@@ -56,22 +56,11 @@ const SensoryEvaluationScreen = () => {
       korean: item.expression.korean,
       english: item.expression.english,
       emoji: item.expression.emoji,
-      intensity: 3, // Default intensity since we removed user selection
+      intensity: 3, // Default intensity
       selected: true,
     }));
     
-    // Use Set for more robust deduplication based on korean text
-    const seenKorean = new Set<string>();
-    const uniqueConverted: SelectedSensoryExpression[] = [];
-    
-    converted.forEach(expr => {
-      if (!seenKorean.has(expr.korean)) {
-        seenKorean.add(expr.korean);
-        uniqueConverted.push(expr);
-      }
-    });
-    
-    setSelectedSensoryExpressions(uniqueConverted);
+    setSelectedSensoryExpressions(converted);
   }, [setSelectedSensoryExpressions]);
 
   return (
@@ -114,19 +103,7 @@ const SensoryEvaluationScreen = () => {
               nestedScrollEnabled={true}
             >
               {(() => {
-                // Create a Set to track unique Korean expressions across ALL categories
-                const seenExpressions = new Set<string>();
-                const uniqueExpressions: typeof selectedSensoryExpressions = [];
-                
-                // Only add expressions we haven't seen before
-                selectedSensoryExpressions.forEach(expr => {
-                  if (!seenExpressions.has(expr.korean)) {
-                    seenExpressions.add(expr.korean);
-                    uniqueExpressions.push(expr);
-                  }
-                });
-                
-                const groupedExpressions = uniqueExpressions.reduce((acc, expr) => {
+                const groupedExpressions = selectedSensoryExpressions.reduce((acc, expr) => {
                   const category = expr.categoryId;
                   if (!acc[category]) {
                     acc[category] = [];
@@ -152,7 +129,7 @@ const SensoryEvaluationScreen = () => {
                 if (selectedSensoryExpressions.length > 9) {
                   return (
                     <View style={styles.compactPreviewContent}>
-                      {filteredCategories.map((cat, index) => (
+                      {filteredCategories.map((cat) => (
                         <View key={cat} style={styles.compactCategoryRow}>
                           <Text style={styles.compactCategoryLabel}>
                             {categoryNames[cat]}:
@@ -163,7 +140,7 @@ const SensoryEvaluationScreen = () => {
                         </View>
                       ))}
                       <Text style={styles.previewCount}>
-                        총 {uniqueExpressions.length}개 선택
+                        총 {selectedSensoryExpressions.length}개 선택
                       </Text>
                     </View>
                   );

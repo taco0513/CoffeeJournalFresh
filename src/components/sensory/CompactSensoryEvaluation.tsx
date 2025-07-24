@@ -44,13 +44,13 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
   ) => {
     const currentExpressions = selectedExpressions || [];
     
-    // Find exact match in current category
+    // Find if this expression is already selected in this category
     const existingIndex = currentExpressions.findIndex(
-      item => item.categoryId === categoryId && item.expression.korean === expression.korean
+      item => item.categoryId === categoryId && item.expression.id === expression.id
     );
     
-    // Check if this expression is already selected in ANY category (including current)
-    const globallySelected = currentExpressions.some(
+    // Check if this Korean expression is already selected in ANY category
+    const koreanAlreadySelected = currentExpressions.some(
       item => item.expression.korean === expression.korean
     );
     
@@ -68,8 +68,10 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
       if (categorySelections.length >= MAX_PER_CATEGORY) {
         return; // Category limit reached
       }
-      if (globallySelected) {
-        return; // Expression already selected somewhere else
+      
+      // Prevent selecting if Korean expression already exists
+      if (koreanAlreadySelected) {
+        return; // Korean expression already selected in another category
       }
       
       // Add new selection
@@ -156,14 +158,13 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
         showsVerticalScrollIndicator={false}
       >
         {activeExpressions.map((expression) => {
-          const category = koreanSensoryData[activeCategory];
-          const isSelected = isExpressionSelected(activeCategory, expression);
+          const isSelected = isExpressionSelected(activeCategory, expression.id);
           const categorySelections = safeSelectedExpressions.filter(
             item => item.categoryId === activeCategory
           );
           const isDisabled = categorySelections.length >= MAX_PER_CATEGORY && !isSelected;
           
-          // Also check if this expression is selected in ANY category (global selection check)
+          // Check if this expression is selected in another category
           const isGloballySelected = safeSelectedExpressions.some(
             item => item.expression.korean === expression.korean && item.categoryId !== activeCategory
           );
@@ -174,25 +175,17 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
               style={[
                 styles.expressionButton,
                 isSelected && styles.expressionButtonSelected,
-                isGloballySelected && !isSelected && styles.expressionButtonGloballySelected,
+                isGloballySelected && styles.expressionButtonGloballySelected,
                 isDisabled && styles.expressionButtonDisabled
               ]}
-              onPress={() => {
-                if (isSelected) {
-                  // Always allow deselection
-                  handleExpressionSelect(activeCategory, expression);
-                } else if (!isDisabled && !isGloballySelected) {
-                  // Only allow selection if not disabled and not globally selected
-                  handleExpressionSelect(activeCategory, expression);
-                }
-              }}
-              activeOpacity={(isDisabled || (isGloballySelected && !isSelected)) ? 1 : 0.7}
-              disabled={isDisabled && !isSelected}
+              onPress={() => handleExpressionSelect(activeCategory, expression)}
+              activeOpacity={isDisabled || isGloballySelected ? 1 : 0.7}
+              disabled={isDisabled || isGloballySelected}
             >
               <Text style={[
                 styles.expressionText,
                 isSelected && styles.expressionTextSelected,
-                isGloballySelected && !isSelected && styles.expressionTextGloballySelected,
+                isGloballySelected && styles.expressionTextGloballySelected,
                 isDisabled && styles.expressionTextDisabled
               ]}>
                 {expression.korean}
@@ -202,9 +195,9 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
                   <Text style={styles.checkmarkText}>✓</Text>
                 </View>
               )}
-              {isGloballySelected && !isSelected && (
-                <View style={styles.disabledOverlay}>
-                  <Text style={styles.disabledText}>이미 선택됨</Text>
+              {isGloballySelected && (
+                <View style={styles.globallySelectedOverlay}>
+                  <Text style={styles.globallySelectedText}>이미 선택됨</Text>
                 </View>
               )}
             </TouchableOpacity>
@@ -377,35 +370,33 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   expressionButtonGloballySelected: {
-    backgroundColor: '#E5E5EA',
+    backgroundColor: '#F0F0F5',
     borderColor: '#D1D1D6',
-    borderWidth: 2,
     opacity: 0.6,
   },
   expressionTextGloballySelected: {
     color: '#8E8E93',
-    fontWeight: '400',
     textDecorationLine: 'line-through',
   },
-  disabledOverlay: {
+  globallySelectedOverlay: {
     position: 'absolute',
-    top: -8,
-    left: -8,
-    right: -8,
-    bottom: -8,
-    backgroundColor: 'rgba(142, 142, 147, 0.1)',
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  disabledText: {
+  globallySelectedText: {
     fontSize: 10,
-    color: '#8E8E93',
-    fontWeight: '500',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    borderRadius: 4,
+    fontWeight: '600',
+    color: '#FF3B30',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
   },
 });
 
