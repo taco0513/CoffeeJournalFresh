@@ -653,80 +653,102 @@ const TastingDetailScreen = () => {
           >
             <H2 color="$color" marginBottom="$4">🏠 홈카페 정보</H2>
             
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>추출 도구</Text>
-              <Text style={styles.infoValue}>
-                {tastingRecord.homeCafeData.equipment.brewingMethod === 'V60' ? 'V60' :
-                 tastingRecord.homeCafeData.equipment.brewingMethod === 'Chemex' ? '케멕스' :
-                 tastingRecord.homeCafeData.equipment.brewingMethod === 'AeroPress' ? '에어로프레스' :
-                 tastingRecord.homeCafeData.equipment.brewingMethod === 'FrenchPress' ? '프렌치프레스' :
-                 tastingRecord.homeCafeData.equipment.brewingMethod === 'Espresso' ? '에스프레소' :
-                 tastingRecord.homeCafeData.equipment.brewingMethod}
-              </Text>
-            </View>
+            <YStack space="$3">
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>추출 도구</SizableText>
+                <SizableText size="$4" color="$color" flex={2} textAlign="right">
+                  {tastingRecord.homeCafeData.equipment.brewingMethod === 'V60' ? 'V60' :
+                   tastingRecord.homeCafeData.equipment.brewingMethod === 'Chemex' ? '케멕스' :
+                   tastingRecord.homeCafeData.equipment.brewingMethod === 'AeroPress' ? '에어로프레스' :
+                   tastingRecord.homeCafeData.equipment.brewingMethod === 'FrenchPress' ? '프렌치프레스' :
+                   tastingRecord.homeCafeData.equipment.brewingMethod === 'Espresso' ? '에스프레소' :
+                   tastingRecord.homeCafeData.equipment.brewingMethod}
+                </SizableText>
+              </XStack>
+              <Separator />
 
-            {tastingRecord.homeCafeData.equipment.grinder?.brand && (
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>그라인더</Text>
-                <Text style={styles.infoValue}>
-                  {tastingRecord.homeCafeData.equipment.grinder.brand}
-                  {tastingRecord.homeCafeData.equipment.grinder.setting && 
-                    ` (${tastingRecord.homeCafeData.equipment.grinder.setting})`}
-                </Text>
-              </View>
-            )}
+              {tastingRecord.homeCafeData.equipment.grinder?.brand && (
+                <>
+                  <XStack justifyContent="space-between" alignItems="center">
+                    <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>그라인더</SizableText>
+                    <SizableText size="$4" color="$color" flex={2} textAlign="right">
+                      {tastingRecord.homeCafeData.equipment.grinder.brand}
+                      {tastingRecord.homeCafeData.equipment.grinder.setting && 
+                        ` (${tastingRecord.homeCafeData.equipment.grinder.setting})`}
+                    </SizableText>
+                  </XStack>
+                  <Separator />
+                </>
+              )}
 
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>레시피</Text>
-              <Text style={styles.infoValue}>
-                {tastingRecord.homeCafeData.recipe.doseIn}g : {tastingRecord.homeCafeData.recipe.waterAmount}g 
-                ({tastingRecord.homeCafeData.recipe.ratio || '1:16'})
-              </Text>
-            </View>
+              <XStack justifyContent="space-between" alignItems="center">
+                <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>레시피</SizableText>
+                <SizableText size="$4" color="$color" flex={2} textAlign="right">
+                  {tastingRecord.homeCafeData.recipe.doseIn}g : {tastingRecord.homeCafeData.recipe.waterAmount}g 
+                  ({tastingRecord.homeCafeData.recipe.ratio || '1:16'})
+                </SizableText>
+              </XStack>
+              <Separator />
 
-            {tastingRecord.homeCafeData.recipe.waterTemp > 0 && (
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>물온도</Text>
-                <Text style={styles.infoValue}>{tastingRecord.homeCafeData.recipe.waterTemp}°C</Text>
-              </View>
-            )}
+              {tastingRecord.homeCafeData.recipe.waterTemp > 0 && (
+                <>
+                  <XStack justifyContent="space-between" alignItems="center">
+                    <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>물온도</SizableText>
+                    <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.homeCafeData.recipe.waterTemp}°C</SizableText>
+                  </XStack>
+                  <Separator />
+                </>
+              )}
 
-            {tastingRecord.homeCafeData.recipe.bloomTime && tastingRecord.homeCafeData.recipe.bloomTime > 0 && (
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>블룸시간</Text>
-                <Text style={styles.infoValue}>{tastingRecord.homeCafeData.recipe.bloomTime}초</Text>
-              </View>
-            )}
+              {tastingRecord.homeCafeData.recipe.bloomTime && tastingRecord.homeCafeData.recipe.bloomTime > 0 && (
+                <>
+                  <XStack justifyContent="space-between" alignItems="center">
+                    <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>블룸시간</SizableText>
+                    <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.homeCafeData.recipe.bloomTime}초</SizableText>
+                  </XStack>
+                  <Separator />
+                </>
+              )}
 
-            {tastingRecord.homeCafeData.recipe.totalBrewTime > 0 && (
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>추출시간</Text>
-                <Text style={styles.infoValue}>
-                  {Math.floor(tastingRecord.homeCafeData.recipe.totalBrewTime / 60)}분 {tastingRecord.homeCafeData.recipe.totalBrewTime % 60}초
-                </Text>
-              </View>
-            )}
+              {tastingRecord.homeCafeData.recipe.totalBrewTime > 0 && (
+                <>
+                  <XStack justifyContent="space-between" alignItems="center">
+                    <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>추출시간</SizableText>
+                    <SizableText size="$4" color="$color" flex={2} textAlign="right">
+                      {Math.floor(tastingRecord.homeCafeData.recipe.totalBrewTime / 60)}분 {tastingRecord.homeCafeData.recipe.totalBrewTime % 60}초
+                    </SizableText>
+                  </XStack>
+                  <Separator />
+                </>
+              )}
 
-            {tastingRecord.homeCafeData.notes?.previousChange && (
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>이전 변경</Text>
-                <Text style={styles.infoValue}>{tastingRecord.homeCafeData.notes.previousChange}</Text>
-              </View>
-            )}
+              {tastingRecord.homeCafeData.notes?.previousChange && (
+                <>
+                  <XStack justifyContent="space-between" alignItems="center">
+                    <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>이전 변경</SizableText>
+                    <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.homeCafeData.notes.previousChange}</SizableText>
+                  </XStack>
+                  <Separator />
+                </>
+              )}
 
-            {tastingRecord.homeCafeData.notes?.result && (
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>실험 결과</Text>
-                <Text style={styles.infoValue}>{tastingRecord.homeCafeData.notes.result}</Text>
-              </View>
-            )}
+              {tastingRecord.homeCafeData.notes?.result && (
+                <>
+                  <XStack justifyContent="space-between" alignItems="center">
+                    <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>실험 결과</SizableText>
+                    <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.homeCafeData.notes.result}</SizableText>
+                  </XStack>
+                  <Separator />
+                </>
+              )}
 
-            {tastingRecord.homeCafeData.notes?.nextExperiment && (
-              <View style={[styles.infoRow, styles.infoRowLast]}>
-                <Text style={styles.infoLabel}>다음 실험</Text>
-                <Text style={styles.infoValue}>{tastingRecord.homeCafeData.notes.nextExperiment}</Text>
-              </View>
-            )}
+              {tastingRecord.homeCafeData.notes?.nextExperiment && (
+                <XStack justifyContent="space-between" alignItems="center">
+                  <SizableText size="$4" color="$colorPress" fontWeight="500" flex={1}>다음 실험</SizableText>
+                  <SizableText size="$4" color="$color" flex={2} textAlign="right">{tastingRecord.homeCafeData.notes.nextExperiment}</SizableText>
+                </XStack>
+              )}
+            </YStack>
           </Card>
         )}
 
