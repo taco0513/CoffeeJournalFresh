@@ -481,18 +481,23 @@ function AuthStack() {
 
 // 메인 네비게이터
 export default function AppNavigator() {
-  const { isInitialized, isAuthenticated } = useUserStore();
+  const { isAuthenticated, setTestUser } = useUserStore();
+  const isInitialized = true; // For now, assume it's initialized
   const navigationRef = useRef(null);
   const routeNameRef = useRef();
 
   useEffect(() => {
+    // 개발자 모드: 자동 테스트 사용자 로그인
+    if (__DEV__ && !isAuthenticated) {
+      setTestUser();
+    }
     // 네비게이션 상태 변경 추적
     return () => {};
   }, []);
 
   const onReady = () => {
     routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;
-    ScreenContextService.setCurrentScreen(routeNameRef.current || '');
+    // ScreenContextService.setCurrentScreen(routeNameRef.current || ''); // Disabled for now
   };
 
   const onStateChange = async () => {
@@ -501,7 +506,7 @@ export default function AppNavigator() {
 
     if (previousRouteName !== currentRouteName) {
       // 화면 전환 추적
-      ScreenContextService.setCurrentScreen(currentRouteName || '');
+      // ScreenContextService.setCurrentScreen(currentRouteName || ''); // Disabled for now
       
       // AsyncStorage에 마지막 방문 화면 저장 (선택사항)
       if (currentRouteName) {

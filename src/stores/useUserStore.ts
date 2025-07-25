@@ -227,7 +227,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
   setTestUser: () => {
     // 개발자 테스트용 로그인 바이패스
     const testUser: UserProfile = {
-      id: 'test-dev-user',
+      id: '00000000-0000-4000-8000-000000000001',
       username: 'Developer',
       email: 'dev@test.com',
       created_at: new Date().toISOString(),

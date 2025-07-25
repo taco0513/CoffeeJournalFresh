@@ -3,6 +3,7 @@
  * Measures and compares performance metrics before/after migration
  */
 
+import React from 'react';
 import { InteractionManager } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
