@@ -594,7 +594,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
                     animateOnly={['opacity', 'transform']}
                   >
                     <SectionTitle>통계 요약</SectionTitle>
-                    <PersonalStatsGrid />
+                    <PersonalStatsGrid stats={achievementStats} />
                   </StatsContainer>
                 </>
               )}
@@ -607,7 +607,14 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
                     animateOnly={['opacity', 'transform']}
                   >
                     <SectionTitle>향미 레이더</SectionTitle>
-                    <FlavorRadarChart />
+                    <FlavorRadarChart preferences={{
+                      fruity: 0,
+                      floral: 0,
+                      sweet: 0,
+                      nutty: 0,
+                      chocolate: 0,
+                      spices: 0
+                    }} />
                   </ChartContainer>
 
                   {/* Flavor Mastery Map */}
@@ -617,7 +624,8 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
                   >
                     <SectionTitle>향미 숙련도</SectionTitle>
                     <FlavorMasteryMap 
-                      flavorMastery={flavorMastery}
+                      categories={[]}
+                      masteryLevels={[]}
                       onCategorySelect={handleFlavorCategorySelect}
                     />
                   </ChartContainer>
@@ -635,22 +643,22 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
                       
                       {renderProgressIndicator(
                         '산미 선호도',
-                        tastePattern.preferences?.acidity || 0
+                        tastePattern?.preferredIntensity || 0
                       )}
                       
                       {renderProgressIndicator(
                         '단맛 선호도',
-                        tastePattern.preferences?.sweetness || 0
+                        tastePattern?.preferredIntensity || 0
                       )}
                       
                       {renderProgressIndicator(
                         '바디감 선호도',
-                        tastePattern.preferences?.body || 0
+                        tastePattern?.preferredIntensity || 0
                       )}
                       
                       {renderProgressIndicator(
                         '여운 선호도',
-                        tastePattern.preferences?.finish || 0
+                        tastePattern?.preferredIntensity || 0
                       )}
                     </YStack>
                   </SectionCard>
@@ -665,7 +673,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
                     animateOnly={['opacity', 'transform']}
                   >
                     <SectionTitle>성장 타임라인</SectionTitle>
-                    <GrowthTimeline />
+                    <GrowthTimeline milestones={[]} currentWeek={1} />
                   </ChartContainer>
 
                   {/* Achievement Progress */}

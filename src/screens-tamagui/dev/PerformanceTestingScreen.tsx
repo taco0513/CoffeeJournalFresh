@@ -14,13 +14,14 @@ import {
   useTheme,
 } from 'tamagui';
 import { RefreshControl, Alert } from 'react-native';
+// Using react-native-vector-icons instead of @tamagui/lucide-icons
+import Icon from 'react-native-vector-icons/Ionicons';
 import { 
   performanceTest, 
   runAutomatedPerformanceTests, 
   analyzeBundleSize,
   PerformanceComparison 
 } from '../../utils/performanceTestUtils';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function PerformanceTestingScreen() {
   const theme = useTheme();
@@ -115,19 +116,19 @@ export default function PerformanceTestingScreen() {
     const interactionImprovement = comp.improvement.interactionTime;
     
     return (
-      <Card key={comp.screenName} mb="$2" p="$3" bg="$background">
+      <Card key={comp.screenName} marginBottom="$2" padding="$3" backgroundColor="$background">
         <H3 size="$4" mb="$2">{comp.screenName}</H3>
         
         <YStack space="$2">
-          <XStack jc="space-between" ai="center">
+          <XStack justifyContent="space-between" alignItems="center">
             <Text size="$2" color="$color11">Render Time:</Text>
-            <XStack ai="center" space="$2">
+            <XStack alignItems="center" space="$2">
               <Text size="$2">{comp.legacy?.renderTime.toFixed(0)}ms → {comp.tamagui?.renderTime.toFixed(0)}ms</Text>
-              <XStack ai="center" space="$1">
+              <XStack alignItems="center" space="$1">
                 {renderImprovement > 0 ? (
-                  <Icon name="trending-up" size={16} color={theme.green10.get()} />
+                  <Icon name="trending-up" size={16} color={theme.green10?.val || '#00ff00'} />
                 ) : (
-                  <Icon name="trending-down" size={16} color={theme.red10.get()} />
+                  <Icon name="trending-down" size={16} color={theme.red10?.val || '#ff0000'} />
                 )}
                 <Text 
                   size="$2" 
@@ -140,15 +141,15 @@ export default function PerformanceTestingScreen() {
             </XStack>
           </XStack>
 
-          <XStack jc="space-between" ai="center">
+          <XStack justifyContent="space-between" alignItems="center">
             <Text size="$2" color="$color11">Interaction Time:</Text>
-            <XStack ai="center" space="$2">
+            <XStack alignItems="center" space="$2">
               <Text size="$2">{comp.legacy?.interactionTime.toFixed(0)}ms → {comp.tamagui?.interactionTime.toFixed(0)}ms</Text>
-              <XStack ai="center" space="$1">
+              <XStack alignItems="center" space="$1">
                 {interactionImprovement > 0 ? (
-                  <Icon name="trending-up" size={16} color={theme.green10.get()} />
+                  <Icon name="trending-up" size={16} color={theme.green10?.val || '#00ff00'} />
                 ) : (
-                  <Icon name="trending-down" size={16} color={theme.red10.get()} />
+                  <Icon name="trending-down" size={16} color={theme.red10?.val || '#ff0000'} />
                 )}
                 <Text 
                   size="$2" 
@@ -163,12 +164,12 @@ export default function PerformanceTestingScreen() {
 
           <Progress 
             value={Math.max(0, Math.min(100, renderImprovement))} 
-            h="$1"
-            mt="$2"
+            height="$1"
+            marginTop="$2"
           >
             <Progress.Indicator 
               animation="medium"
-              bg={renderImprovement > 0 ? '$green9' : '$red9'}
+              backgroundColor={renderImprovement > 0 ? '$green9' : '$red9'}
             />
           </Progress>
         </YStack>
@@ -196,7 +197,7 @@ export default function PerformanceTestingScreen() {
         <RefreshControl refreshing={isLoading} onRefresh={loadComparisons} />
       }
     >
-      <YStack f={1} p="$4" space="$4">
+      <YStack flex={1} padding="$4" space="$4">
         <YStack space="$2">
           <H2 size="$7">Performance Testing</H2>
           <Paragraph size="$2" color="$color11">
@@ -210,7 +211,7 @@ export default function PerformanceTestingScreen() {
             theme="blue" 
             onPress={runTests}
             disabled={isLoading}
-            icon={Activity}
+            icon={() => <Icon name="play-circle" size={18} color="#fff" />}
           >
             Run Tests
           </Button>
@@ -219,7 +220,7 @@ export default function PerformanceTestingScreen() {
             theme="red" 
             onPress={clearData}
             disabled={isLoading}
-            icon={X}
+            icon={() => <Icon name="close-circle" size={18} color="#fff" />}
           >
             Clear Data
           </Button>
@@ -227,17 +228,17 @@ export default function PerformanceTestingScreen() {
 
         {/* Summary Card */}
         {comparisons.length > 0 && (
-          <Card p="$4" bg="$background" borderWidth={1} borderColor="$borderColor">
+          <Card padding="$4" backgroundColor="$background" borderWidth={1} borderColor="$borderColor">
             <H3 size="$5" mb="$3">Overall Performance</H3>
             
             <YStack space="$3">
-              <XStack jc="space-between" ai="center">
+              <XStack justifyContent="space-between" alignItems="center">
                 <Text size="$3" fontWeight="500">Average Render Improvement</Text>
-                <XStack ai="center" space="$2">
+                <XStack alignItems="center" space="$2">
                   {averages.render > 0 ? (
-                    <Icon name="checkmark-circle" size={20} color={theme.green10.get()} />
+                    <Icon name="trending-up" size={20} color={theme.green10?.val || '#00ff00'} />
                   ) : (
-                    <Icon name="close-circle" size={20} color={theme.red10.get()} />
+                    <Icon name="close-circle" size={20} color={theme.red10?.val || '#ff0000'} />
                   )}
                   <Text 
                     size="$4" 
@@ -249,13 +250,13 @@ export default function PerformanceTestingScreen() {
                 </XStack>
               </XStack>
 
-              <XStack jc="space-between" ai="center">
+              <XStack justifyContent="space-between" alignItems="center">
                 <Text size="$3" fontWeight="500">Average Interaction Improvement</Text>
-                <XStack ai="center" space="$2">
+                <XStack alignItems="center" space="$2">
                   {averages.interaction > 0 ? (
-                    <Icon name="checkmark-circle" size={20} color={theme.green10.get()} />
+                    <Icon name="trending-up" size={20} color={theme.green10?.val || '#00ff00'} />
                   ) : (
-                    <Icon name="close-circle" size={20} color={theme.red10.get()} />
+                    <Icon name="close-circle" size={20} color={theme.red10?.val || '#ff0000'} />
                   )}
                   <Text 
                     size="$4" 
@@ -267,7 +268,7 @@ export default function PerformanceTestingScreen() {
                 </XStack>
               </XStack>
 
-              <XStack jc="space-between" ai="center">
+              <XStack justifyContent="space-between" alignItems="center">
                 <Text size="$3" fontWeight="500">Screens Tested</Text>
                 <Text size="$4" fontWeight="700">
                   {comparisons.length}
@@ -279,16 +280,16 @@ export default function PerformanceTestingScreen() {
 
         {/* Bundle Size Analysis */}
         {bundleAnalysis && (
-          <Card p="$4" bg="$background" borderWidth={1} borderColor="$borderColor">
-            <XStack ai="center" space="$2" mb="$3">
-              <Icon name="cube-outline" size={20} color={theme.color.get()} />
+          <Card padding="$4" backgroundColor="$background" borderWidth={1} borderColor="$borderColor">
+            <XStack alignItems="center" space="$2" marginBottom="$3">
+              <Text fontSize={20}>📦</Text>
               <H3 size="$5">Bundle Size Analysis</H3>
             </XStack>
             
             <YStack space="$3">
-              <XStack jc="space-between" ai="center">
+              <XStack justifyContent="space-between" alignItems="center">
                 <Text size="$3" fontWeight="500">Total Bundle Size</Text>
-                <XStack ai="center" space="$2">
+                <XStack alignItems="center" space="$2">
                   <Text size="$2" color="$color11">
                     {(bundleAnalysis.legacy.totalSize / 1024 / 1024).toFixed(1)}MB → {(bundleAnalysis.tamagui.totalSize / 1024 / 1024).toFixed(1)}MB
                   </Text>
@@ -302,14 +303,14 @@ export default function PerformanceTestingScreen() {
                 </XStack>
               </XStack>
 
-              <XStack jc="space-between" ai="center">
+              <XStack justifyContent="space-between" alignItems="center">
                 <Text size="$3" fontWeight="500">JavaScript Size</Text>
                 <Text size="$3" fontWeight="700" color="$green10">
                   -{bundleAnalysis.improvement.js}%
                 </Text>
               </XStack>
 
-              <XStack jc="space-between" ai="center">
+              <XStack justifyContent="space-between" alignItems="center">
                 <Text size="$3" fontWeight="500">Assets Size</Text>
                 <Text size="$3" fontWeight="700" color="$green10">
                   -{bundleAnalysis.improvement.assets}%
@@ -330,9 +331,9 @@ export default function PerformanceTestingScreen() {
 
         {/* Empty State */}
         {comparisons.length === 0 && !isLoading && (
-          <Card p="$6" bg="$background" ai="center" jc="center">
-            <Icon name="pulse" size={48} color={theme.color8.get()} style={{ marginBottom: 12 }} />
-            <Text size="$4" color="$color11" ta="center">
+          <Card padding="$6" backgroundColor="$background" alignItems="center" justifyContent="center">
+            <Text fontSize={48} marginBottom={12}>📊</Text>
+            <Text size="$4" color="$color11" textAlign="center">
               No performance data available yet.
               {'\n'}Run tests to start measuring performance.
             </Text>

@@ -254,8 +254,9 @@ const TastingDetailScreen = () => {
           temperature: record.temperature,
           personalComment: record.personalComment,
           mode: record.mode,
-          homeCafeData: record.homeCafeData ? JSON.parse(record.homeCafeData) : null,
-          selectedFlavorPaths: record.selectedFlavorPaths ? JSON.parse(record.selectedFlavorPaths) : [],
+          homeCafeData: record.homeCafeData ? 
+            (typeof record.homeCafeData === 'string' ? JSON.parse(record.homeCafeData) : record.homeCafeData) : null,
+          selectedFlavorPaths: record.flavorNotes || [],
           sensoryAttribute: record.sensoryAttribute ? {
             body: record.sensoryAttribute.body,
             acidity: record.sensoryAttribute.acidity,

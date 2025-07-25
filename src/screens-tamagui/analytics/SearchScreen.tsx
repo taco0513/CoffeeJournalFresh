@@ -87,7 +87,7 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
       
       const cafeNames = [...new Set(tastingArray
         .map(t => t.cafeName)
-        .filter(Boolean)
+        .filter(Boolean) as string[]
       )].sort();
       
       const flavorNotes = [...new Set(tastingArray

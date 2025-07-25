@@ -207,9 +207,9 @@ const CoffeeInfoScreenTamagui = () => {
       const cafes = [...new Set(tastingArray.map(t => t.cafeName).filter(Boolean))];
       const roasters = [...new Set(tastingArray.map(t => t.roastery).filter(Boolean))];
       const coffeeNames = [...new Set(tastingArray.map(t => t.coffeeName).filter(Boolean))];
-      const origins = [...new Set(tastingArray.map(t => t.origin).filter(Boolean)) as string[]];
-      const varieties = [...new Set(tastingArray.map(t => t.variety).filter(Boolean)) as string[]];
-      const processes = [...new Set(tastingArray.map(t => t.process).filter(Boolean)) as string[]];
+      const origins = Array.from(new Set(tastingArray.map(t => t.origin).filter(Boolean)));
+      const varieties = Array.from(new Set(tastingArray.map(t => t.variety).filter(Boolean)));
+      const processes = Array.from(new Set(tastingArray.map(t => t.process).filter(Boolean)));
 
       setCafeSuggestions(cafes);
       setRoasterSuggestions(roasters);

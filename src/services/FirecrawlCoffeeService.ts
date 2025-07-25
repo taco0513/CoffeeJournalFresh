@@ -290,11 +290,11 @@ export class FirecrawlCoffeeService {
   private async analyzeKoreanCoffeeApps(): Promise<CompetitorAnalysis[]> {
     return [
       {
-        appName: '커피 기록장',
+        appName: '커피 주문 앱 중심 (테이스팅 앱 없음)',
         platform: 'ios',
-        features: ['커피 기록', '맛 평가', '통계'],
-        userRating: 4.2,
-        downloadCount: '10K+',
+        features: ['주문', '결제', '멤버십'],
+        userRating: 0,
+        downloadCount: 'N/A - 시장 갭 확인됨',
         lastUpdated: new Date()
       }
     ];
@@ -305,9 +305,33 @@ export class FirecrawlCoffeeService {
       {
         appName: 'Bean Conqueror',
         platform: 'ios',
-        features: ['Coffee tracking', 'Brewing timer', 'Statistics'],
+        features: ['60+ brewing methods', 'Bluetooth scales', 'Open source'],
+        userRating: 4.9,
+        downloadCount: '127 reviews (고평점 소수)',
+        lastUpdated: new Date()
+      },
+      {
+        appName: 'iBrewCoffee',
+        platform: 'ios',
+        features: ['Freemium model', '60+ brewing methods', 'Cloud sync'],
+        userRating: 4.7,
+        downloadCount: '34 reviews',
+        lastUpdated: new Date()
+      },
+      {
+        appName: 'Tasting Grounds',
+        platform: 'ios',
+        features: ['Social features', 'Professional scoring', 'Community'],
         userRating: 4.8,
-        downloadCount: '50K+',
+        downloadCount: '46 reviews',
+        lastUpdated: new Date()
+      },
+      {
+        appName: 'Filtru',
+        platform: 'ios',
+        features: ['AR integration', '13 brewing methods', '17 Bluetooth scales'],
+        userRating: 4.8,
+        downloadCount: '3,600 reviews (최대 사용자층)',
         lastUpdated: new Date()
       }
     ];

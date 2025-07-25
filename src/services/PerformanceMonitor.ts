@@ -212,7 +212,7 @@ class PerformanceMonitor {
   private setupErrorHandlers(): void {
     // Handle unhandled promise rejections
     if (typeof global !== 'undefined') {
-      (global as any).addEventListener?.('unhandledrejection', (event: PromiseRejectionEvent) => {
+      (global as any).addEventListener?.('unhandledrejection', (event: any) => {
         console.error('Unhandled promise rejection:', event.reason);
         this.reportError(new Error(event.reason), 'unhandled_promise_rejection', 'high');
       });

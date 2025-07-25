@@ -90,7 +90,7 @@ export class AccessControlService {
 
       return this.currentUserProfile;
     } catch (error) {
-      Logger.error('Failed to initialize user profile', 'access_control', { error });
+      Logger.error('Failed to initialize user profile', 'access_control', error as Error);
       
       // Fallback to safe default
       const fallbackRole = __DEV__ ? UserRole.DEVELOPER : UserRole.REGULAR;
@@ -301,7 +301,7 @@ export class AccessControlService {
 
       return true;
     } catch (error) {
-      Logger.error('Failed to change user role', 'access_control', { error, newRole });
+      Logger.error('Failed to change user role', 'access_control', error as Error);
       return false;
     }
   }

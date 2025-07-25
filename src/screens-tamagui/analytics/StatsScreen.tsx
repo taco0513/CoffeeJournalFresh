@@ -21,7 +21,7 @@ import {
 } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { getCurrentLanguage, isUSBetaMarket } from '../../services/i18n';
+import { getCurrentLanguage, isUSBetaMarket } from '../../services/i18n/index';
 import { TastingService } from '../../services/realm/TastingService';
 import { ITastingRecord } from '../../services/realm/schemas';
 import { useUserStore } from '../../stores/useUserStore';
@@ -421,7 +421,14 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
 
   // 30일 인사이트 생성 함수
   const generateInsights = async () => {
-    const insights = [];
+    const insights: Array<{
+      type: string;
+      title: string;
+      value: number | string;
+      description: string;
+      icon: string;
+      color: string;
+    }> = [];
     
     // 데이터가 없을 때 더미 데이터 표시
     if (!stats || stats.totalTastings === 0) {

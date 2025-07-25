@@ -10,6 +10,7 @@ import { supabase } from '../services/supabase/client';
 interface UserStore {
   // Current user
   currentUser: UserProfile | null;
+  user: UserProfile | null; // Alias for compatibility
   isAuthenticated: boolean;
   isLoading: boolean;
   
@@ -47,6 +48,7 @@ const STORAGE_KEY = '@cupnote_user';
 
 export const useUserStore = create<UserStore>((set, get) => ({
   currentUser: null,
+  user: null, // Alias for compatibility
   isAuthenticated: false,
   isLoading: false,
   profileCache: new Map(),
@@ -125,7 +127,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
         updatedAt: new Date(),
       };
       
-      set({ currentUser: newUser, isAuthenticated: true, isLoading: false });
+      set({ currentUser: newUser, user: newUser, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
       
       // Set Sentry user context
@@ -194,7 +196,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
         updatedAt: new Date(userProfile.updated_at),
       };
       
-      set({ currentUser: user, isAuthenticated: true, isLoading: false });
+      set({ currentUser: user, user: user, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
       
       // Set Sentry user context
@@ -246,6 +248,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
     set({
       currentUser: testUser,
+      user: testUser, // Alias for compatibility
       isAuthenticated: true, // 개발자 모드에서는 인증된 상태
       isLoading: false,
     });
@@ -393,7 +396,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
         updatedAt: new Date(userProfile.updated_at),
       };
 
-      set({ currentUser: user, isAuthenticated: true, isLoading: false });
+      set({ currentUser: user, user: user, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
       
       // Set Sentry user context

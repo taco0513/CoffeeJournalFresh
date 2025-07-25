@@ -475,7 +475,7 @@ function AuthStack() {
 export default function AppNavigator() {
   const { isAuthenticated } = useUserStore();
   const navigationRef = useRef<any>(null);
-  const routeNameRef = useRef<string | undefined>();
+  const routeNameRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     // 네비게이션 상태 변경 추적
@@ -500,15 +500,6 @@ export default function AppNavigator() {
     } catch (error) {
       console.warn('Navigation ready error:', error);
     }
-  };
-
-  const getCurrentRoute = (state: any): any => {
-    if (!state) return null;
-    const route = state.routes?.[state.index];
-    if (route?.state) {
-      return getCurrentRoute(route.state);
-    }
-    return route;
   };
 
   const onStateChange = async () => {

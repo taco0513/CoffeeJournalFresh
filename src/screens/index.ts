@@ -15,25 +15,29 @@ export {
   ProfileScreen,
 } from '../screens-tamagui';
 
-// Screens without Tamagui versions yet
-export { default as RoasterNotesScreen } from './RoasterNotesScreen';
-export { default as ExperimentalDataScreen } from './ExperimentalDataScreen';
-export { default as SensoryEvaluationScreen } from './SensoryEvaluationScreen';
-export { default as SearchScreen } from './SearchScreen';
-export { default as TastingDetailScreen } from './TastingDetailScreen';
-export { default as DataTestScreen } from './DataTestScreen';
-export { default as OnboardingScreen } from './OnboardingScreen';
-export { default as DeveloperScreen } from './DeveloperScreen';
-export { default as MarketIntelligenceScreen } from './MarketIntelligenceScreen';
-export { default as AchievementGalleryScreen } from './AchievementGalleryScreen';
-export { default as HistoryScreen } from './HistoryScreen';
-export { default as StatsScreen } from './StatsScreen';
-export { default as LabModeScreen } from './LabModeScreen';
-export { default as EnhancedHomeCafeScreen } from './EnhancedHomeCafeScreen';
-export { default as PersonalTasteDashboard } from './PersonalTasteDashboard';
-export { default as PhotoGalleryScreen } from './PhotoGalleryScreen';
-export { default as PhotoViewerScreen } from './PhotoViewerScreen';
-export { default as ProfileSetupScreen } from './ProfileSetupScreen';
+// Re-export additional Tamagui screens
+export { 
+  RoasterNotesScreen,
+  SearchScreen,
+  TastingDetailScreen,
+  DataTestScreen,
+  OnboardingScreen,
+  DeveloperScreen,
+  MarketIntelligenceScreen,
+  AchievementGalleryScreen,
+  HistoryScreen,
+  StatsScreen,
+  LabModeScreen,
+  PersonalTasteDashboard,
+  PhotoGalleryScreen,
+  PhotoViewerScreen,
+  ProfileSetupScreen,
+} from '../screens-tamagui';
+
+// Enhanced screens from Tamagui
+export { ExperimentalDataScreen } from '../screens-tamagui/enhanced/ExperimentalDataScreen';
+export { SensoryEvaluationScreen } from '../screens-tamagui/enhanced/SensoryEvaluationScreen';
+export { EnhancedHomeCafeScreen } from '../screens-tamagui/enhanced/EnhancedHomeCafeScreen';
 
 // Admin screens
 export { AdminDashboardScreen } from './admin/AdminDashboardScreen';
@@ -44,6 +48,5 @@ export { default as AdminFeedbackScreen } from './admin/AdminFeedbackScreen';
 export { default as SignInScreen } from './auth/SignInScreen';
 export { default as SignUpScreen } from './auth/SignUpScreen';
 
-// Flavor screens
-export { default as UnifiedFlavorScreen } from './flavor/UnifiedFlavorScreen';
-export { default as UnifiedFlavorScreenDebug } from './flavor/UnifiedFlavorScreenDebug';
+// Re-export flavor screens from Tamagui
+export { UnifiedFlavorScreen } from '../screens-tamagui';

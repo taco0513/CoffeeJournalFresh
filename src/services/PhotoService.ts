@@ -76,7 +76,7 @@ class PhotoService {
         }
       }
       
-      const imageOptions = {
+      const imageOptions: any = {
         mediaType: options.mediaType || ('photo' as MediaType),
         quality: options.quality || 0.8,
         maxWidth: options.maxWidth || 1024,
@@ -120,7 +120,7 @@ class PhotoService {
    */
   private async openLibrary(options: PhotoOptions = {}): Promise<PhotoResult | null> {
     try {
-      const imageOptions = {
+      const imageOptions: any = {
         mediaType: options.mediaType || ('photo' as MediaType),
         quality: options.quality || 0.8,
         maxWidth: options.maxWidth || 1024,

@@ -95,11 +95,11 @@ export class TastingService {
             safeData.selectedFlavors.forEach((flavorPath) => {
               if (flavorPath && typeof flavorPath === 'object') {
                 // Handle test data format: { level, value, koreanValue }
-                if (flavorPath.level && flavorPath.value) {
+                if ((flavorPath as any).level && (flavorPath as any).value) {
                   flavorNotes.push({
-                    level: flavorPath.level,
-                    value: flavorPath.value,
-                    koreanValue: flavorPath.koreanValue,
+                    level: (flavorPath as any).level,
+                    value: (flavorPath as any).value,
+                    koreanValue: (flavorPath as any).koreanValue,
                   });
                 }
                 // Handle original format: { level1, level2, level3, level4 }
@@ -132,10 +132,10 @@ export class TastingService {
                   }
                   
                   // Level 4 flavor
-                  if (flavorPath.level4) {
+                  if ((flavorPath as any).level4) {
                     flavorNotes.push({
                       level: 4,
-                      value: flavorPath.level4,
+                      value: (flavorPath as any).level4,
                       koreanValue: undefined,
                     });
                   }
@@ -144,7 +144,7 @@ export class TastingService {
             });
           }
         } catch (flavorError) {
-          RealmLogger.error('realm', 'Error creating flavor notes', { error: flavorError });
+          RealmLogger.error('realm', 'Error creating flavor notes', flavorError as Error);
         }
         
         // Create sensory attribute with safe access
@@ -157,10 +157,10 @@ export class TastingService {
             finish: safeData.sensoryAttributes.finish || 3,
             bitterness: safeData.sensoryAttributes.bitterness || 3,
             balance: safeData.sensoryAttributes.balance || 3,
-            mouthfeel: safeData.sensoryAttributes.mouthfeel || 'Clean',
+            mouthfeel: (safeData.sensoryAttributes.mouthfeel || 'Clean') as 'Clean' | 'Creamy' | 'Juicy' | 'Silky',
           };
         } catch (sensoryError) {
-          RealmLogger.error('realm', 'Error creating sensory attributes', { error: sensoryError });
+          RealmLogger.error('realm', 'Error creating sensory attributes', sensoryError as Error);
           sensoryAttribute = defaultSensoryAttributes;
         }
         
@@ -195,15 +195,15 @@ export class TastingService {
             sensoryAttribute: sensoryAttribute,
             
             // Sensory expressions (stored as JSON string)
-            selectedSensoryExpressions: JSON.stringify(safeData.selectedSensoryExpressions || []),
+            selectedSensoryExpressions: JSON.stringify(safeData.selectedSensoryExpressions || []) as any,
             
             // Mode
             mode: data.mode || 'cafe',
             
             // Home Cafe Data (stored as JSON string)
             homeCafeData: data.homeCafeData ? JSON.stringify(data.homeCafeData) : 
-                         data.simpleHomeCafeData ? JSON.stringify(data.simpleHomeCafeData) :
-                         data.labModeData ? JSON.stringify(data.labModeData) : null,
+                         (data as any).simpleHomeCafeData ? JSON.stringify((data as any).simpleHomeCafeData) :
+                         (data as any).labModeData ? JSON.stringify((data as any).labModeData) : null,
             
             // Sync status
             isSynced: false,
@@ -238,7 +238,7 @@ export class TastingService {
           );
         } catch (updateError) {
           // Log error but don't fail the save operation
-          RealmLogger.error('realm', 'Failed to update related services after tasting save', { error: updateError });
+          RealmLogger.error('realm', 'Failed to update related services after tasting save', updateError as Error);
         }
       });
       
@@ -297,7 +297,7 @@ export class TastingService {
     }
     
     const sortedQuery = query.sorted('createdAt', true);
-    return this.baseService.paginateResults(sortedQuery, filter?.limit, filter?.offset) as Realm.Results<ITastingRecord>;
+    return this.baseService.paginateResults(sortedQuery, filter?.limit, filter?.offset) as any;
   }
 
   async getTastingRecordById(id: string): Promise<ITastingRecord | null> {
@@ -401,7 +401,7 @@ export class TastingService {
       // 안전하게 배열로 변환
       return Array.from(records).map(tasting => ({
         id: tasting.id,
-        cafeName: tasting.cafeName,
+        cafeName: tasting.cafeName || '',
         roastery: tasting.roastery,
         coffeeName: tasting.coffeeName,
         matchScoreTotal: tasting.matchScoreTotal,
@@ -413,7 +413,7 @@ export class TastingService {
   }
 
   // Sync-related methods
-  getUnsyncedRecords(): Realm.Results<ITastingRecord> {
+  getUnsyncedRecords(): any {
     const realm = this.baseService.getRealm();
     return realm.objects<ITastingRecord>('TastingRecord')
       .filtered('isSynced = false');
@@ -470,9 +470,11 @@ export class TastingService {
         
         if (coffeeMap.has(key)) {
           const existing = coffeeMap.get(key);
-          existing.tastingCount++;
-          if (tasting.createdAt > existing.lastTasted) {
-            existing.lastTasted = tasting.createdAt;
+          if (existing) {
+            existing.tastingCount++;
+            if (tasting.createdAt > existing.lastTasted) {
+              existing.lastTasted = tasting.createdAt;
+            }
           }
         } else {
           coffeeMap.set(key, {
@@ -493,7 +495,7 @@ export class TastingService {
       
       return results;
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to search coffees', { error });
+      RealmLogger.error('realm', 'Failed to search coffees', error as Error);
       return [];
     }
   }
@@ -537,7 +539,7 @@ export class TastingService {
         recentTastings,
       };
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get same coffee comparison', { error });
+      RealmLogger.error('realm', 'Failed to get same coffee comparison', error as Error);
       return null;
     }
   }
@@ -601,7 +603,7 @@ export class TastingService {
       
       return results;
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get similar coffees', { error });
+      RealmLogger.error('realm', 'Failed to get similar coffees', error as Error);
       return [];
     }
   }

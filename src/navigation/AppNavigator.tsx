@@ -484,7 +484,7 @@ export default function AppNavigator() {
   const { isAuthenticated } = useUserStore();
   const isInitialized = true; // For now, assume it's initialized
   const navigationRef = useRef<any>(null);
-  const routeNameRef = useRef<string | undefined>();
+  const routeNameRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     // 네비게이션 상태 변경 추적

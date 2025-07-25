@@ -22,6 +22,10 @@ export type RootStackParamList = {
     AchievementGallery: undefined;
     DataTest: undefined;
     DeveloperScreen: undefined;
+    MarketConfigurationTester: undefined;
+    PerformanceDashboard: undefined;
+    I18nValidation: undefined;
+    Testing: undefined;
   };
 
 // Main tab navigation

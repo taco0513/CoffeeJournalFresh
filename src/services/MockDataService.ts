@@ -74,7 +74,7 @@ export class MockDataService {
           temperature: ['hot', 'cold'][i % 2] as 'hot' | 'cold'
         },
         roasterNotes: `초보자를 위한 ${i + 1}번째 커피 테이스팅`,
-        selectedFlavors: beginnerFlavors.slice(0, Math.floor(Math.random() * 3) + 1),
+        selectedFlavors: beginnerFlavors.slice(0, Math.floor(Math.random() * 3) + 1) as any,
         selectedSensoryExpressions: this.generateBeginnerSensoryData(),
         sensoryAttributes: {
           body: Math.floor(Math.random() * 3) + 2, // 2-4 range
@@ -134,7 +134,7 @@ export class MockDataService {
           temperature: ['hot', 'cold'][i % 2] as 'hot' | 'cold'
         },
         roasterNotes: `중급자를 위한 스페셜티 커피 #${i + 1}. 복합적인 향미 프로필을 가진 커피`,
-        selectedFlavors: intermediateFlavors.slice(0, Math.floor(Math.random() * 5) + 2),
+        selectedFlavors: intermediateFlavors.slice(0, Math.floor(Math.random() * 5) + 2) as any,
         selectedSensoryExpressions: this.generateIntermediateSensoryData(),
         sensoryAttributes: {
           body: Math.floor(Math.random() * 5) + 1,
@@ -197,7 +197,7 @@ export class MockDataService {
           temperature: 'hot' as const
         },
         roasterNotes: `프리미엄 스페셜티 커피 #${i + 1}. 테루아의 특성과 가공법의 조화가 만들어낸 복합적 향미`,
-        selectedFlavors: expertFlavors.slice(0, Math.floor(Math.random() * 8) + 4),
+        selectedFlavors: expertFlavors.slice(0, Math.floor(Math.random() * 8) + 4) as any,
         selectedSensoryExpressions: this.generateExpertSensoryData(),
         sensoryAttributes: {
           body: Math.floor(Math.random() * 5) + 1,
@@ -255,7 +255,7 @@ export class MockDataService {
         selectedFlavors: [
           { level: 1, value: 'Fruity', koreanValue: '과일향' },
           { level: 2, value: 'Berry', koreanValue: '베리류' }
-        ],
+        ] as any,
         selectedSensoryExpressions: this.generateHomeCafeSensoryData(),
         sensoryAttributes: {
           body: Math.floor(Math.random() * 5) + 1,
@@ -348,7 +348,7 @@ export class MockDataService {
       { category: '바디', expression: '부드러운', isSelected: true }
     ];
     
-    return beginnerExpressions.slice(0, Math.floor(Math.random() * 2) + 1);
+    return beginnerExpressions.slice(0, Math.floor(Math.random() * 2) + 1) as any;
   }
 
   /**
@@ -363,7 +363,7 @@ export class MockDataService {
       { category: '애프터', expression: '길게 남는', isSelected: true }
     ];
     
-    return intermediateExpressions.slice(0, Math.floor(Math.random() * 3) + 2);
+    return intermediateExpressions.slice(0, Math.floor(Math.random() * 3) + 2) as any;
   }
 
   /**
@@ -379,7 +379,7 @@ export class MockDataService {
       { category: '밸런스', expression: '조화로운', isSelected: true }
     ];
     
-    return expertExpressions.slice(0, Math.floor(Math.random() * 4) + 3);
+    return expertExpressions.slice(0, Math.floor(Math.random() * 4) + 3) as any;
   }
 
   /**
@@ -392,7 +392,7 @@ export class MockDataService {
       { category: '바디', expression: '깔끔한', isSelected: true }
     ];
     
-    return homeCafeExpressions;
+    return homeCafeExpressions as any;
   }
 
   /**
@@ -523,11 +523,7 @@ export class MockDataService {
         }
       }
 
-      RealmLogger.info('realm', `Created ${successCount} mock tasting records`, { 
-        scenario: options.scenario,
-        requested: options.count,
-        created: successCount
-      });
+      RealmLogger.info('realm', `Created ${successCount} mock tasting records`);
 
       return successCount;
     } catch (error) {
@@ -569,23 +565,20 @@ export class MockDataService {
 
       // Check sensory attributes
       if (!data.sensoryAttributes?.body || !data.sensoryAttributes?.acidity) {
-        RealmLogger.warn('Invalid sensory attributes', { body: data.sensoryAttributes?.body, acidity: data.sensoryAttributes?.acidity });
+        RealmLogger.error('realm', 'Invalid sensory attributes', new Error('Invalid data'));
         return false;
       }
 
       // Check match score
       if (!data.matchScore?.total || data.matchScore.total < 0 || data.matchScore.total > 100) {
-        RealmLogger.warn('Invalid match score', { total: data.matchScore?.total });
+        RealmLogger.error('realm', 'Invalid match score', new Error('Invalid data'));
         return false;
       }
 
       // Check HomeCafe data if present
       if (data.mode === 'home_cafe' && data.homeCafeData) {
         if (!data.homeCafeData.equipment?.brewingMethod || !data.homeCafeData.recipe?.doseIn) {
-          RealmLogger.warn('Invalid HomeCafe data', { 
-            brewingMethod: data.homeCafeData.equipment?.brewingMethod, 
-            doseIn: data.homeCafeData.recipe?.doseIn 
-          });
+          RealmLogger.error('realm', 'Invalid HomeCafe data', new Error('Invalid data'));
           return false;
         }
       }

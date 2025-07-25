@@ -112,10 +112,7 @@ export class ErrorRecoveryService {
       await this.updateErrorPattern(errorType);
 
       // Log the error
-      Logger.error(`Error recovery initiated: ${errorType}`, 'error_recovery', {
-        error: error.message,
-        context: fullContext
-      });
+      Logger.error(`Error recovery initiated: ${errorType}`, 'error_recovery', error);
 
       // Execute recovery strategy
       this.recoveryInProgress.add(errorType);
@@ -123,19 +120,12 @@ export class ErrorRecoveryService {
       this.recoveryInProgress.delete(errorType);
 
       // Log the result
-      Logger.info(`Error recovery completed: ${result.success ? 'SUCCESS' : 'FAILED'}`, 'error_recovery', {
-        errorType,
-        strategy: result.strategy,
-        message: result.message
-      });
+      Logger.info(`Error recovery completed: ${result.success ? 'SUCCESS' : 'FAILED'} - ${errorType}`, 'error_recovery');
 
       return result;
 
     } catch (recoveryError) {
-      Logger.error('Error recovery failed', 'error_recovery', { 
-        originalError: error.message,
-        recoveryError: recoveryError instanceof Error ? recoveryError.message : recoveryError
-      });
+      Logger.error('Error recovery failed', 'error_recovery', recoveryError as Error);
 
       return {
         success: false,
@@ -259,7 +249,7 @@ export class ErrorRecoveryService {
         Logger.info('Attempting Realm reinitialization', 'error_recovery');
         
         const realmService = RealmService.getInstance();
-        await realmService.reinitialize();
+        await realmService.initialize();
         
         // Test the connection
         await realmService.getTastingRecords({ limit: 1 });
@@ -284,7 +274,7 @@ export class ErrorRecoveryService {
       };
 
     } catch (error) {
-      Logger.error('Realm recovery failed', 'error_recovery', { error });
+      Logger.error('Realm recovery failed', 'error_recovery', error as Error);
       
       return {
         success: false,
@@ -483,10 +473,10 @@ export class ErrorRecoveryService {
       // For bridge errors, we mostly log and continue
       // Critical bridge errors usually require app restart
       
-      SentryService.captureError(context.originalError, {
-        tags: { error_type: 'bridge_error' },
-        extra: { context }
-      });
+      // SentryService.captureError(context.originalError, {
+      //   tags: { error_type: 'bridge_error' },
+      //   extra: { context }
+      // });
 
       return {
         success: true,
@@ -598,7 +588,7 @@ export class ErrorRecoveryService {
 
       await this.saveErrorPatterns();
     } catch (error) {
-      Logger.error('Failed to update error pattern', 'error_recovery', { error, errorType });
+      Logger.error(`Failed to update error pattern for ${errorType}`, 'error_recovery', error as Error);
     }
   }
 
@@ -616,7 +606,7 @@ export class ErrorRecoveryService {
         });
       }
     } catch (error) {
-      Logger.error('Failed to load error patterns', 'error_recovery', { error });
+      Logger.error('Failed to load error patterns', 'error_recovery', error as Error);
     }
   }
 
@@ -628,7 +618,7 @@ export class ErrorRecoveryService {
       const patterns = Object.fromEntries(this.errorPatterns);
       await AsyncStorage.setItem(ERROR_PATTERNS_KEY, JSON.stringify(patterns));
     } catch (error) {
-      Logger.error('Failed to save error patterns', 'error_recovery', { error });
+      Logger.error('Failed to save error patterns', 'error_recovery', error as Error);
     }
   }
 
@@ -684,7 +674,7 @@ export class ErrorRecoveryService {
       await AsyncStorage.removeItem(ERROR_PATTERNS_KEY);
       Logger.info('Error patterns cleared', 'error_recovery');
     } catch (error) {
-      Logger.error('Failed to clear error patterns', 'error_recovery', { error });
+      Logger.error('Failed to clear error patterns', 'error_recovery', error as Error);
     }
   }
 }

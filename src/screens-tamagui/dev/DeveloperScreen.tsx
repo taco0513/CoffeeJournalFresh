@@ -10,7 +10,7 @@ import { useFeedbackStore } from '../../stores/useFeedbackStore';
 import RealmService from '../../services/realm/RealmService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MockDataService, MockDataScenario } from '../../services/MockDataService';
-import AccessControlService from '../../services/AccessControlService';
+import { AccessControlService } from '../../services/AccessControlService';
 import { useFirecrawlDemo } from '../../services/FirecrawlDemo';
 
 // Components
@@ -37,7 +37,7 @@ type NavigationProp = StackNavigationProp<RootStackParamList>;
 const DeveloperScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   
-  const { currentUser, setTestUser } = useUserStore();
+  const { user: currentUser } = useUserStore();
   const { showFeedback, enableShakeToFeedback, toggleShakeToFeedback, isBetaUser, setBetaStatus } = useFeedbackStore();
   const { runAllDemos } = useFirecrawlDemo();
   const {
@@ -83,11 +83,12 @@ const DeveloperScreen: React.FC = () => {
     const initializeAccessControl = async () => {
       try {
         const accessControl = AccessControlService.getInstance();
-        await accessControl.initialize(currentUser?.id || 'anonymous', isDeveloperMode);
+        await accessControl.initialize();
         
         const role = accessControl.getCurrentUserRole();
         setUserRole(role);
-        setCanAccessMockData(accessControl.canAccessMockData());
+        // Access control doesn't expose permissions directly, check role instead
+        setCanAccessMockData(role === 'developer' || role === 'admin');
       } catch (error) {
         console.error('Error initializing access control:', error);
       }
@@ -130,8 +131,7 @@ const DeveloperScreen: React.FC = () => {
 
   const createMockData = async () => {
     try {
-      const mockService = MockDataService.getInstance();
-      await mockService.createMockData(selectedScenario, 5);
+      await MockDataService.createMockData({ scenario: selectedScenario, count: 5 });
       
       await loadDataCount();
       Alert.alert('완료', '목 데이터가 생성되었습니다.');
@@ -160,7 +160,7 @@ const DeveloperScreen: React.FC = () => {
               if (!realmService.isInitialized) {
                 await realmService.initialize();
               }
-              await realmService.clearAllTastingRecords();
+              await realmService.clearAllTastings();
               await loadDataCount();
               Alert.alert('완료', '모든 데이터가 삭제되었습니다.');
               DeviceEventEmitter.emit('refreshData');
@@ -284,7 +284,7 @@ const DeveloperScreen: React.FC = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* User Info */}
           <UserInfoSection
-            userName={currentUser?.name || '개발자'}
+            userName={currentUser?.displayName || currentUser?.username || currentUser?.email?.split('@')[0] || '개발자'}
             userEmail={currentUser?.email || 'dev@cupnote.app'}
             isDeveloper={isDeveloperMode}
             isBetaUser={isBetaUser}
@@ -316,7 +316,6 @@ const DeveloperScreen: React.FC = () => {
             setBetaStatus={setBetaStatus}
             
             // Actions
-            setTestUser={setTestUser}
             showFeedback={showFeedback}
             clearData={clearData}
             exportLogs={exportLogs}

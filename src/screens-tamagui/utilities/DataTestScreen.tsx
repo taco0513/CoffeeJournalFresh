@@ -285,7 +285,11 @@ const DataTestScreen: React.FC<DataTestScreenProps & { navigation: any }> = ({ n
       
       // Get recent tastings
       const tastings = await RealmService.getRecentTastings(10);
-      setRecentTastings(tastings);
+      const formattedTastings = tastings.map(t => ({
+        ...t,
+        createdAt: t.createdAt.toISOString()
+      }));
+      setRecentTastings(formattedTastings);
       
       // Get statistics
       const realmService = RealmService.getInstance();
