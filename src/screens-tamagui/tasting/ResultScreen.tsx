@@ -16,6 +16,7 @@ import {
   useTheme,
   Spinner,
 } from 'tamagui';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTastingStore } from '../../stores/tastingStore';
 import { useToastStore } from '../../stores/toastStore';
 import { flavorWheelKorean } from '../../data/flavorWheelKorean';
@@ -31,6 +32,11 @@ import { FlavorNotesVisualization } from '../../components/results/FlavorNotesVi
 import { ProgressRing } from '../../components/charts/ProgressRing';
 
 const ENABLE_SYNC = true;
+
+interface ResultScreenProps {
+  navigation: any;
+  hideNavBar?: boolean;
+}
 
 // Styled components
 const Container = styled(YStack, {
@@ -137,8 +143,9 @@ const getEncouragementMessage = (score: number): string => {
   }
 };
 
-export default function ResultScreen({ navigation }: any) {
+export default function ResultScreen({ navigation, hideNavBar = false }: ResultScreenProps) {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const { currentTasting, matchScoreTotal, reset, saveTasting, checkAchievements, selectedSensoryExpressions } = useTastingStore();
   const { showSuccessToast, showErrorToast } = useToastStore();
   const { showMultipleAchievements } = useAchievementNotification();
@@ -320,13 +327,15 @@ export default function ResultScreen({ navigation }: any) {
   return (
     <Container>
       {/* Navigation Bar */}
-      <NavigationBar>
-        <Button unstyled onPress={handleGoHome} pressStyle={{ opacity: 0.7 }}>
-          <Text fontSize="$6" color="$cupBlue">←</Text>
-        </Button>
-        <Text fontSize="$4" fontWeight="600" color="$color">결과</Text>
-        <YStack width={24} />
-      </NavigationBar>
+      {!hideNavBar && (
+        <NavigationBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
+          <Button unstyled onPress={handleGoHome} pressStyle={{ opacity: 0.7 }}>
+            <Text fontSize="$6" color="$cupBlue">←</Text>
+          </Button>
+          <Text fontSize="$4" fontWeight="600" color="$color">결과</Text>
+          <YStack width={24} />
+        </NavigationBar>
+      )}
       
       {/* Progress Bar - Full */}
       <Progress value={100} backgroundColor="$gray4" height={3}>
@@ -566,7 +575,7 @@ export default function ResultScreen({ navigation }: any) {
                     </Text>
                     <XStack flexWrap="wrap" gap="$sm">
                       {comparison.popularFlavors.slice(0, 6).map((flavor: any, index: number) => (
-                        <FlavorTag key={index}>
+                        <FlavorTag key={`flavor-${index}-${flavor.value || 'unknown'}`}>
                           <Text fontSize="$2" color="$color" marginRight={6}>
                             {flavor.value}
                           </Text>

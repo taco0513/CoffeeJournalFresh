@@ -16,12 +16,14 @@ import { useNavigation } from '@react-navigation/native';
 import { HIGColors, HIGConstants, commonButtonStyles, commonTextStyles } from '../../styles/common';
 import AuthService from '../../services/supabase/auth';
 import { useUserStore } from '../../stores/useUserStore';
+import { useDevStore } from '../../stores/useDevStore';
 import { ErrorHandler } from '../../utils/errorHandler';
 import { validateGoogleConfig, isGoogleSignInConfigured } from '../../config/googleAuth';
 
 const SignInScreen = () => {
   const navigation = useNavigation();
-  const { signIn, signInWithApple, signInWithGoogle } = useUserStore();
+  const { signIn, signInWithApple, signInWithGoogle, setTestUser } = useUserStore();
+  const { bypassLogin, isDeveloperMode } = useDevStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,6 +31,17 @@ const SignInScreen = () => {
   const [googleSignInEnabled, setGoogleSignInEnabled] = useState(false);
 
   useEffect(() => {
+    // Check if bypass login is enabled in developer mode
+    if (isDeveloperMode && bypassLogin) {
+      // Set test user and automatically navigate to main app
+      setTestUser();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main' as never }],
+      });
+      return;
+    }
+
     // Check if Apple Sign-In is supported
     const checkAppleSignInSupport = async () => {
       try {
@@ -44,7 +57,7 @@ const SignInScreen = () => {
     
     // Check if Google Sign-In is configured
     setGoogleSignInEnabled(isGoogleSignInConfigured());
-  }, []);
+  }, [bypassLogin, isDeveloperMode, navigation]);
 
   const handleSignIn = async () => {
     if (!email.trim() || !password.trim()) {
@@ -60,7 +73,7 @@ const SignInScreen = () => {
       // Navigate to main app
       navigation.reset({
         index: 0,
-        routes: [{ name: 'MainTabs' as never }],
+        routes: [{ name: 'Main' as never }],
       });
     } catch (error: any) {
       // console.error('Sign in error:', error);
@@ -84,7 +97,7 @@ const SignInScreen = () => {
       await signInWithApple();
       navigation.reset({
         index: 0,
-        routes: [{ name: 'MainTabs' as never }],
+        routes: [{ name: 'Main' as never }],
       });
     } catch (error: any) {
       ErrorHandler.handle(error, 'Apple 로그인');
@@ -99,7 +112,7 @@ const SignInScreen = () => {
       await signInWithGoogle();
       navigation.reset({
         index: 0,
-        routes: [{ name: 'MainTabs' as never }],
+        routes: [{ name: 'Main' as never }],
       });
     } catch (error: any) {
       // Handle specific Google Sign-In errors
@@ -236,6 +249,39 @@ const SignInScreen = () => {
               </View>
             )}
 
+            {/* Developer Mode Login Bypass - Always show for development */}
+            <View style={styles.developerSection}>
+              <TouchableOpacity
+                style={[styles.socialButton, styles.developerButton]}
+                onPress={async () => {
+                  try {
+                    // Set test user for development
+                    await setTestUser();
+                    
+                    // Show success message
+                    Alert.alert(
+                      '✅ 개발자 로그인 성공!', 
+                      '테스트 계정으로 로그인되었습니다.\n\n이제 시뮬레이터를 새로고침 (Cmd+R)하면 메인 화면으로 이동합니다.',
+                      [
+                        {
+                          text: '확인',
+                          onPress: () => {
+                            console.log('Developer login completed. Please refresh the app (Cmd+R).');
+                          }
+                        }
+                      ]
+                    );
+                  } catch (error) {
+                    console.error('Developer login error:', error);
+                    Alert.alert('오류', '개발자 로그인에 실패했습니다.');
+                  }
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.socialButtonText}>🔧 개발자 로그인 패스</Text>
+              </TouchableOpacity>
+            </View>
+
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -368,6 +414,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: HIGColors.tertiaryLabel,
     fontStyle: 'italic',
+  },
+  developerSection: {
+    marginTop: HIGConstants.SPACING_MD,
+    paddingTop: HIGConstants.SPACING_MD,
+    borderTopWidth: 1,
+    borderTopColor: HIGColors.gray4,
+  },
+  developerButton: {
+    backgroundColor: '#FF9500',
+    borderColor: '#FF9500',
   },
 });
 

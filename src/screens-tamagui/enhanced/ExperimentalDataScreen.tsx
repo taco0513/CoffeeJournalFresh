@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { SafeAreaView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   View,
   Text,
@@ -287,6 +288,7 @@ export type ExperimentalDataScreenProps = GetProps<typeof Container>;
 const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
   const theme = useTheme();
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const { currentTasting, updateField } = useTastingStore();
   const [activeTab, setActiveTab] = useState<'basic' | 'lab'>('basic');
   
@@ -462,7 +464,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
     <Container>
       <SafeAreaView style={{ flex: 1 }}>
         {/* Navigation Bar */}
-        <NavigationBar>
+        <NavigationBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
           <BackButton unstyled onPress={() => navigation.goBack()}>
             <Text color="$cupBlue" fontSize="$6">←</Text>
           </BackButton>

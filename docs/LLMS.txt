@@ -1,0 +1,198 @@
+# LLMs.txt - Apple Human Interface Guidelines for CupNote
+
+This document contains comprehensive design guidelines and best practices from Apple's Human Interface Guidelines for use in developing the CupNote coffee journaling app.
+
+## Core Design Principles
+
+### Hierarchy
+Establish a clear visual hierarchy where controls and interface elements elevate and distinguish the content beneath them.
+
+### Harmony
+Align with the concentric design of the hardware and software to create harmony between interface elements, system experiences, and devices.
+
+### Consistency
+Adopt platform conventions to maintain a consistent design that continuously adapts across window sizes and displays.
+
+## Foundation: Accessibility
+
+Accessible user interfaces empower everyone to have a great experience with your app or game. An accessible interface is:
+- **Intuitive**: Uses familiar and consistent interactions that make tasks straightforward to perform
+- **Perceivable**: Doesn't rely on any single method to convey information
+- **Adaptable**: Adapts to how people want to use their device, supporting system accessibility features or letting people personalize settings
+
+### Vision
+- **Support larger text sizes**: Enable Dynamic Type and allow text enlargement by at least 200% (140% in watchOS)
+- **Meet color contrast standards**: Use WCAG Level AA guidelines (4.5:1 for text up to 17pt, 3:1 for 18pt+ or bold text)
+- **Use system-defined colors**: Automatically adapt to accessibility settings like Increase Contrast
+- **Convey information beyond color alone**: Use visual indicators like distinct shapes or icons in addition to color
+- **Support VoiceOver**: Provide comprehensive screen reader descriptions
+
+### Hearing
+- **Support text-based alternatives**: Provide captions, subtitles, audio descriptions, and transcripts
+- **Use haptics with audio cues**: Pair sound with matching haptic feedback for people who can't perceive audio
+- **Augment audio with visual cues**: Add visual indicators that point to important off-screen content
+
+### Mobility
+- **Offer sufficiently sized controls**: Meet minimum control sizes (iOS: 44x44pt default, 28x28pt minimum)
+- **Consider spacing between controls**: Add 12pt padding around bezeled elements, 24pt around non-bezeled elements
+- **Support simple gestures**: Use the simplest gesture possible for common interactions
+- **Offer alternatives to gestures**: Provide onscreen buttons for swipe-based actions
+- **Support Voice Control and Siri**: Enable voice-based interaction and automation
+
+### Speech
+- **Support keyboard navigation**: Enable Full Keyboard Access for complete app navigation
+- **Support Switch Control**: Allow control through separate hardware or sounds
+
+### Cognitive
+- **Keep actions simple and intuitive**: Use familiar, consistent interactions over custom gestures
+- **Minimize time-boxed elements**: Avoid auto-dismissing views; prefer explicit dismissal actions
+- **Consider difficulty accommodations**: Offer customizable difficulty levels in games
+- **Control audio/video playback**: Avoid autoplay; provide discoverable start/stop controls
+- **Optimize for Assistive Access**: Streamline interface and break complex workflows into single-interaction screens
+
+## Foundation: Color
+
+Judicious use of color can enhance communication, evoke your brand, provide visual continuity, communicate status and feedback, and help people understand information.
+
+### Best Practices
+- **Avoid using the same color for different meanings**: Use color consistently throughout your interface
+- **Support light and dark contexts**: Provide color variants for both appearance modes
+- **Test under various lighting conditions**: Colors appear different in bright vs. dim environments
+- **Test on different devices**: Consider True Tone displays and various color profiles
+- **Consider artwork and translucency effects**: Account for how background content affects nearby colors
+
+### Inclusive Color
+- **Don't rely solely on color**: Provide alternative ways to differentiate objects and communicate information
+- **Ensure sufficient contrast**: Avoid colors that make content hard to perceive
+- **Consider cultural perceptions**: Colors have different meanings across cultures
+
+### System Colors
+- **Use system colors when possible**: They automatically adapt to appearance changes and accessibility settings
+- **Don't hard-code system color values**: Use APIs to apply colors that may change between releases
+- **Respect semantic meanings**: Use dynamic system colors as intended (e.g., don't use separator color for text)
+
+### Color Management
+- **Apply color profiles to images**: Use sRGB for most displays, P3 for wide color displays
+- **Provide color space variations if necessary**: Create different versions for sRGB and P3 displays when needed
+
+## Foundation: Typography
+
+Typography helps display legible text, convey information hierarchy, communicate important content, and express your brand or style.
+
+### Ensuring Legibility
+- **Use appropriate font sizes**: Follow platform minimum sizes (iOS: 17pt default, 11pt minimum)
+- **Test legibility in different contexts**: Verify readability across platforms and conditions
+- **Avoid light font weights**: Prefer Regular, Medium, Semibold, or Bold over Ultralight, Thin, and Light
+
+### Conveying Hierarchy
+- **Adjust font weight, size, and color**: Emphasize important information while maintaining hierarchy during text size changes
+- **Minimize typeface variety**: Too many typefaces obscure hierarchy and hinder readability
+- **Prioritize important content**: When text size increases, focus on content people care about most
+
+### Using System Fonts
+- **San Francisco (SF)**: Sans serif family including SF Pro, SF Compact, SF Arabic, SF Armenian, SF Georgian, SF Hebrew, and SF Mono
+- **New York (NY)**: Serif typeface family designed to work alongside SF fonts
+- **Consider built-in text styles**: Use system-defined text styles for consistent hierarchy and Dynamic Type support
+- **Modify text styles when necessary**: Use symbolic traits like bold to create additional hierarchy levels
+
+### Supporting Dynamic Type
+- **Make layout adapt to all font sizes**: Ensure design scales properly and remains legible at all sizes
+- **Increase icon sizes with font size**: Scale meaningful interface icons alongside text
+- **Minimize text truncation**: Display useful text at large accessibility font sizes
+- **Consider layout adjustments**: Use stacked layouts for large font sizes in constrained contexts
+- **Maintain consistent hierarchy**: Keep primary elements positioned consistently regardless of font size
+
+### Platform-Specific Typography Guidelines
+- **iOS/iPadOS**: SF Pro system font, NY available, full Dynamic Type support
+- **macOS**: SF Pro system font, NY available with Mac Catalyst, no Dynamic Type
+- **visionOS**: SF Pro system font, prefer 2D text, maximize contrast, use billboarding for spatial text
+- **watchOS**: SF Compact system font, SF Compact Rounded for complications
+
+## iOS-Specific Design Guidelines
+
+### Device Characteristics and Patterns
+
+**Display:** iPhone has a medium-size, high-resolution display that requires careful consideration of visual hierarchy and content organization.
+
+**Ergonomics:** People generally hold their iPhone in one or both hands, switching between landscape and portrait orientations as needed. Viewing distance tends to be no more than a foot or two during interaction.
+
+**Inputs:** Multi-Touch gestures, virtual keyboards, and voice control enable actions and meaningful tasks while on the go. Consider integration with:
+- Personal data and device sensors (gyroscope and accelerometer)
+- Spatial interactions
+- Biometric authentication
+
+**App Interactions:** Usage patterns vary from quick minute-long checks (social media, data tracking, messaging) to extended hour-long sessions (web browsing, gaming, media consumption). People frequently switch between multiple open apps.
+
+**System Features:** iOS provides several key features for consistent user experiences:
+- Widgets for quick information access
+- Home Screen quick actions for immediate app functionality
+- Spotlight search integration
+- Shortcuts for workflow automation
+- Activity views for sharing and actions
+
+### iOS Best Practices
+
+**Focus and Clarity:**
+- Limit the number of onscreen controls to help people concentrate on primary tasks
+- Make secondary details and actions discoverable with minimal interaction
+- Prioritize content over chrome
+
+**Adaptive Design:**
+- Seamlessly adapt to appearance changes (device orientation, Dark Mode, Dynamic Type)
+- Let people choose configurations that work best for them
+- Support both light and dark appearance modes
+
+**Ergonomic Interactions:**
+- Design for comfortable reach zones - controls in middle or bottom areas are easier to access
+- Support swipe gestures for navigation (especially back navigation)
+- Consider one-handed use patterns
+- Implement list row actions for efficient interaction
+
+**Platform Integration:**
+- Request permission thoughtfully for platform capabilities
+- Integrate available information to enhance experience without requiring manual data entry
+- Support payments, biometric authentication, and location services where appropriate
+- Use system-provided components and patterns
+
+### User Interface Components
+- Use standard UI controls consistently across the app
+- Implement proper button styles and interaction states
+- Design effective navigation systems that feel native to iOS
+- Create intuitive input methods and forms that leverage iOS conventions
+
+## For CupNote Development
+
+This guidance should be applied when developing:
+- Coffee recording interface design
+- Navigation patterns between screens
+- Visual hierarchy in tasting note displays
+- Accessibility features for diverse users
+- Color schemes for different coffee data types
+- Icon design for coffee-related features
+- Layout adaptation across device sizes
+
+## Implementation Notes
+
+When implementing these guidelines in CupNote:
+1. Prioritize clarity and ease of use for coffee enthusiasts
+2. Ensure cultural appropriateness for Korean and international markets
+3. Maintain consistency with coffee industry conventions while following Apple standards
+4. Consider the sensory evaluation context and minimize visual distractions
+5. Support accessibility for users with different abilities and preferences
+
+## Additional Resources
+
+For complete guidelines and detailed specifications, refer to:
+- Apple Developer Documentation: Human Interface Guidelines
+- Platform-specific design resources
+- Accessibility guidelines and testing tools
+- Latest updates and platform changes
+
+---
+
+## Sources
+
+- Apple Human Interface Guidelines: https://developer.apple.com/design/human-interface-guidelines/
+- Designing for iOS: https://developer.apple.com/design/human-interface-guidelines/designing-for-ios/
+
+Generated for CupNote project documentation

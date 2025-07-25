@@ -34,6 +34,10 @@ import { NavigationButton } from '../../components-tamagui';
 type TastingDetailScreenRouteProp = RouteProp<RootStackParamList, 'TastingDetail'>;
 type TastingDetailScreenNavigationProp = StackNavigationProp<RootStackParamList, 'TastingDetail'>;
 
+interface TastingDetailScreenProps {
+  hideNavBar?: boolean;
+}
+
 // Styled Components
 const Container = styled(View, {
   name: 'TastingDetailContainer',
@@ -184,7 +188,7 @@ const DeleteButton = styled(Button, {
   },
 });
 
-const TastingDetailScreen = () => {
+const TastingDetailScreen: React.FC<TastingDetailScreenProps> = ({ hideNavBar = false }) => {
   const theme = useTheme();
   const navigation = useNavigation<TastingDetailScreenNavigationProp>();
   const route = useRoute<TastingDetailScreenRouteProp>();
@@ -336,7 +340,7 @@ const TastingDetailScreen = () => {
     const displayText = parts.join(' > ');
 
     return (
-      <FlavorChip key={index}>
+      <FlavorChip key={`flavor-${index}-${displayText}`}>
         <ChipText>{displayText}</ChipText>
       </FlavorChip>
     );
@@ -386,13 +390,15 @@ const TastingDetailScreen = () => {
   if (loading) {
     return (
       <Container>
-        <NavigationBar>
-          <Button unstyled onPress={() => navigation.goBack()} pressStyle={{ opacity: 0.7 }}>
-            <Text fontSize="$6" color="$cupBlue">←</Text>
-          </Button>
-          <Text fontSize="$4" fontWeight="600" color="$color">테이스팅 상세</Text>
-          <YStack width={24} />
-        </NavigationBar>
+        {!hideNavBar && (
+          <NavigationBar>
+            <Button unstyled onPress={() => navigation.goBack()} pressStyle={{ opacity: 0.7 }}>
+              <Text fontSize="$6" color="$cupBlue">←</Text>
+            </Button>
+            <Text fontSize="$4" fontWeight="600" color="$color">테이스팅 상세</Text>
+            <YStack width={24} />
+          </NavigationBar>
+        )}
         
         <LoadingContainer>
           <Spinner size="large" color="$cupBlue" />
@@ -405,13 +411,15 @@ const TastingDetailScreen = () => {
   if (error) {
     return (
       <Container>
-        <NavigationBar>
-          <Button unstyled onPress={() => navigation.goBack()} pressStyle={{ opacity: 0.7 }}>
-            <Text fontSize="$6" color="$cupBlue">←</Text>
-          </Button>
-          <Text fontSize="$4" fontWeight="600" color="$color">테이스팅 상세</Text>
-          <YStack width={24} />
-        </NavigationBar>
+        {!hideNavBar && (
+          <NavigationBar>
+            <Button unstyled onPress={() => navigation.goBack()} pressStyle={{ opacity: 0.7 }}>
+              <Text fontSize="$6" color="$cupBlue">←</Text>
+            </Button>
+            <Text fontSize="$4" fontWeight="600" color="$color">테이스팅 상세</Text>
+            <YStack width={24} />
+          </NavigationBar>
+        )}
         
         <ErrorContainer>
           <Text fontSize="$6" color="$red9">⚠️</Text>
@@ -437,13 +445,15 @@ const TastingDetailScreen = () => {
   if (!tastingRecord) {
     return (
       <Container>
-        <NavigationBar>
-          <Button unstyled onPress={() => navigation.goBack()} pressStyle={{ opacity: 0.7 }}>
-            <Text fontSize="$6" color="$cupBlue">←</Text>
-          </Button>
-          <Text fontSize="$4" fontWeight="600" color="$color">테이스팅 상세</Text>
-          <YStack width={24} />
-        </NavigationBar>
+        {!hideNavBar && (
+          <NavigationBar>
+            <Button unstyled onPress={() => navigation.goBack()} pressStyle={{ opacity: 0.7 }}>
+              <Text fontSize="$6" color="$cupBlue">←</Text>
+            </Button>
+            <Text fontSize="$4" fontWeight="600" color="$color">테이스팅 상세</Text>
+            <YStack width={24} />
+          </NavigationBar>
+        )}
         
         <ErrorContainer>
           <Text fontSize="$4" color="$gray11">테이스팅 기록을 찾을 수 없습니다.</Text>
@@ -455,19 +465,21 @@ const TastingDetailScreen = () => {
   return (
     <Container>
       {/* Navigation Bar */}
-      <NavigationBar>
-        <Button unstyled onPress={() => navigation.goBack()} pressStyle={{ opacity: 0.7 }}>
-          <Text fontSize="$6" color="$cupBlue">←</Text>
-        </Button>
-        <Text fontSize="$4" fontWeight="600" color="$color">테이스팅 상세</Text>
-        <Button unstyled onPress={handleDelete} disabled={isDeleting} pressStyle={{ opacity: 0.7 }}>
-          {isDeleting ? (
-            <Spinner size="small" color="$red9" />
-          ) : (
-            <Text fontSize="$4" color="$red9" fontWeight="500">삭제</Text>
-          )}
-        </Button>
-      </NavigationBar>
+      {!hideNavBar && (
+        <NavigationBar>
+          <Button unstyled onPress={() => navigation.goBack()} pressStyle={{ opacity: 0.7 }}>
+            <Text fontSize="$6" color="$cupBlue">←</Text>
+          </Button>
+          <Text fontSize="$4" fontWeight="600" color="$color">테이스팅 상세</Text>
+          <Button unstyled onPress={handleDelete} disabled={isDeleting} pressStyle={{ opacity: 0.7 }}>
+            {isDeleting ? (
+              <Spinner size="small" color="$red9" />
+            ) : (
+              <Text fontSize="$4" color="$red9" fontWeight="500">삭제</Text>
+            )}
+          </Button>
+        </NavigationBar>
+      )}
 
       <ScrollView flex={1} showsVerticalScrollIndicator={false}>
         <AnimatePresence>

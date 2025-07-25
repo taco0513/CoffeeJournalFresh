@@ -10,7 +10,6 @@ import {
 } from 'tamagui';
 import HistoryScreen from '../analytics/HistoryScreen';
 import StatsScreen from '../analytics/StatsScreen';
-import StatusBadge from '../../components/StatusBadge';
 import { useScreenPerformance } from '../../hooks/useScreenPerformance';
 
 const { width } = Dimensions.get('window');
@@ -31,43 +30,6 @@ const Container = styled(YStack, {
   backgroundColor: '$background',
 })
 
-const NavigationBar = styled(XStack, {
-  height: 44,
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingHorizontal: '$lg',
-  backgroundColor: '$background',
-  borderBottomWidth: 0.5,
-  borderBottomColor: '$borderColor',
-})
-
-const NavContent = styled(XStack, {
-  alignItems: 'center',
-  gap: '$xs',
-})
-
-const NavTitle = styled(Text, {
-  fontSize: 17,
-  fontWeight: '600',
-  color: '$color',
-  fontFamily: '$heading',
-})
-
-const BetaBadge = styled(XStack, {
-  backgroundColor: '$primary',
-  paddingHorizontal: '$xs',
-  paddingVertical: 2,
-  borderRadius: '$1',
-  alignItems: 'center',
-  justifyContent: 'center',
-})
-
-const BetaText = styled(Text, {
-  fontSize: 10,
-  fontWeight: '700',
-  color: 'white',
-  fontFamily: '$body',
-})
 
 const TabContainer = styled(XStack, {
   backgroundColor: '$background',
@@ -138,7 +100,7 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
     const isActive = activeTab === tab;
     return (
       <TabButton
-        key={tab}
+        key={`journal-tab-${tab}`}
         active={isActive}
         onPress={() => setActiveTab(tab)}
         animation="quick"
@@ -166,17 +128,6 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
     <Container>
       <SafeAreaView style={{ flex: 1 }}>
         <YStack flex={1}>
-          {/* Navigation Bar */}
-          <NavigationBar>
-            <NavContent>
-              <NavTitle>My Coffee</NavTitle>
-              <BetaBadge animation="lazy">
-                <BetaText>BETA</BetaText>
-              </BetaBadge>
-            </NavContent>
-            <StatusBadge />
-          </NavigationBar>
-
           {/* Tab Navigation */}
           <TabContainer>
             {renderTabButton('history', '기록')}
@@ -202,7 +153,7 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
           <ContentContainer>
             <AnimatePresence>
               <YStack
-                key={activeTab}
+                key={`content-${activeTab}`}
                 flex={1}
                 animation="lazy"
                 enterStyle={{

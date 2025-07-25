@@ -19,6 +19,19 @@ const StyledButton = styled(Button, {
     opacity: 0.8,
   },
   
+  // WCAG 2.4.7 Focus Visible - Enhanced accessibility
+  focusStyle: {
+    borderWidth: 3,
+    borderColor: '$focusRing',
+    shadowColor: '$focusRing',
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 0 },
+    outlineColor: '$focusRing',
+    outlineWidth: 2,
+    outlineOffset: 2,
+  },
+  
   variants: {
     variant: {
       primary: {

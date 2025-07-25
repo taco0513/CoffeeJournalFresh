@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   YStack,
   XStack,
@@ -212,6 +213,7 @@ const NextButtonText = styled(Text, {
 
 const PersonalCommentScreenTamagui = () => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const { currentTasting, updateField, saveTasting } = useTastingStore();
   
   // Deduplicate any existing personalComment content on load
@@ -357,7 +359,7 @@ const PersonalCommentScreenTamagui = () => {
       <SafeAreaView style={{ flex: 1 }}>
         <YStack flex={1}>
           {/* Navigation Bar */}
-          <HeaderBar>
+          <HeaderBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
             <BackButton onPress={() => navigation.goBack()}>←</BackButton>
             <HeaderTitle>개인 노트</HeaderTitle>
             <SkipButton onPress={handleSkip}>건너뛰기</SkipButton>

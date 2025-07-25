@@ -17,6 +17,7 @@ import {
 } from 'tamagui';
 import { Platform, UIManager } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTastingStore } from '../../../stores/tastingStore';
 import { useFlavorSelection } from '../../../hooks/useFlavorSelection';
 import { CategoryAccordion } from '../../../components/flavor/CategoryAccordion';
@@ -104,6 +105,7 @@ const NoResultsContainer = styled(YStack, {
 export default function UnifiedFlavorScreen() {
   const navigation = useNavigation();
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const { currentTasting, updateField } = useTastingStore();
   const selectedPaths = currentTasting.selectedFlavors || [];
 
@@ -161,7 +163,7 @@ export default function UnifiedFlavorScreen() {
   return (
     <Container>
       {/* Navigation Bar */}
-      <NavigationBar>
+      <NavigationBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
         <BackButton onPress={() => navigation.goBack()}>
           <Text fontSize="$6" color="$cupBlue">←</Text>
         </BackButton>
@@ -278,7 +280,7 @@ export default function UnifiedFlavorScreen() {
 
                 return (
                   <YStack
-                    key={item.category}
+                    key={`category-${item.category}-${index}`}
                     animation="lazy"
                     enterStyle={{
                       opacity: 0,

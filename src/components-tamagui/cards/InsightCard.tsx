@@ -4,12 +4,12 @@ import { Card, XStack, YStack, Text, styled } from 'tamagui';
 // Styled components
 const StyledCard = styled(Card, {
   name: 'InsightCard',
-  backgroundColor: '#FFF8F0',
+  backgroundColor: '$backgroundHover',
   borderRadius: '$4',
   padding: '$lg',
   marginBottom: '$md',
   borderWidth: 1,
-  borderColor: '#FFE5CC',
+  borderColor: '$borderColor',
   elevate: true,
   animation: 'lazy',
   
@@ -20,6 +20,19 @@ const StyledCard = styled(Card, {
   
   pressStyle: {
     scale: 0.99,
+    backgroundColor: '$backgroundPress',
+  },
+  
+  // WCAG 2.4.7 Focus Visible - Enhanced accessibility
+  focusStyle: {
+    borderWidth: 3,
+    borderColor: '$focusRing',
+    shadowColor: '$focusRing',
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    outlineColor: '$focusRing',
+    outlineWidth: 2,
+    outlineOffset: 2,
   },
 });
 
@@ -31,8 +44,8 @@ const IconText = styled(Text, {
 
 const TitleText = styled(Text, {
   name: 'TitleText',
-  fontSize: '$2', // 16px
-  color: '$gray11',
+  fontSize: '$3', // 16px - WCAG minimum
+  color: '$color',
   marginBottom: 4,
 });
 
@@ -50,13 +63,13 @@ const TrendIcon = styled(Text, {
   variants: {
     trend: {
       up: {
-        color: '$green9',
+        color: '$success', // WCAG compliant success color
       },
       down: {
-        color: '$red9',
+        color: '$error', // WCAG compliant error color
       },
       stable: {
-        color: '$gray9',
+        color: '$color',
       },
     },
   } as const,
@@ -64,8 +77,9 @@ const TrendIcon = styled(Text, {
 
 const DetailText = styled(Text, {
   name: 'DetailText',
-  fontSize: '$1', // 14px
-  color: '$gray10',
+  fontSize: '$2', // 16px - WCAG minimum
+  color: '$color',
+  opacity: 0.8,
   marginTop: 4,
 });
 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { SafeAreaView, DeviceEventEmitter, TouchableOpacity } from 'react-native';
+import { KeyGenerator } from '../../utils/KeyGenerator';
+import { DataLoadingService } from '../../services/DataLoadingService';
 import {
   View,
   Text,
@@ -367,7 +369,7 @@ const EmptySubtext = styled(Text, {
 
 export type HistoryScreenProps_Styled = GetProps<typeof Container>;
 
-const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = false }) => {
+const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true }) => {
   const theme = useTheme();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { currentUser } = useUserStore();
@@ -376,26 +378,43 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = false }) => 
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'date' | 'score'>('date');
 
+  // Consolidated data loading effect
   useEffect(() => {
-    loadData();
-  }, []);
+    let isActive = true;
+    
+    const managedLoadData = async () => {
+      if (!isActive) return;
+      
+      console.log('🔄 HistoryScreen: Loading data...');
+      await DataLoadingService.loadOnce(
+        'history-screen-data',
+        () => loadData(),
+        'HistoryScreen'
+      );
+    };
 
-  // Listen for mock data creation events
-  useEffect(() => {
+    managedLoadData();
+
+    // Listen for mock data creation events
     const subscription = DeviceEventEmitter.addListener('mockDataCreated', () => {
       console.log('🔄 HistoryScreen: Mock data created event received');
-      loadData();
+      if (isActive) managedLoadData();
     });
 
-    return () => subscription.remove();
+    return () => {
+      isActive = false;
+      subscription.remove();
+    };
   }, []);
 
-  // Refresh data when screen comes into focus
+  // Refresh data when screen comes into focus (but only if not currently loading)
   useFocusEffect(
     React.useCallback(() => {
-      console.log('🔄 HistoryScreen: Focus triggered refresh');
-      loadData();
-    }, [])
+      if (!loading) {
+        console.log('🔄 HistoryScreen: Focus triggered refresh');
+        loadData();
+      }
+    }, [loading])
   );
 
   const loadData = async () => {
@@ -579,9 +598,9 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = false }) => 
         <SectionCount>{section.data.length}개</SectionCount>
       </SectionHeader>
       <AnimatePresence>
-        {section.data.map((item, index) => (
+        {section.data.filter(item => item && (item.id || item.coffeeName)).map((item, index) => (
           <View
-            key={item.id}
+            key={KeyGenerator.safe(item, index, 'history-item')}
             animation="lazy"
             enterStyle={{
               opacity: 0,
@@ -715,7 +734,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = false }) => 
             <AnimatePresence>
               {groupedTastings.map((section, index) => (
                 <View
-                  key={section.title}
+                  key={KeyGenerator.safe(section, index, 'history-section')}
                   animation="lazy"
                   enterStyle={{
                     opacity: 0,

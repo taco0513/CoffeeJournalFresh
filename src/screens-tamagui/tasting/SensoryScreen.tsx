@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   YStack,
   XStack,
@@ -180,6 +181,7 @@ const NextButtonText = styled(Text, {
 
 const SensoryScreenTamagui = () => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const { selectedSensoryExpressions, setSelectedSensoryExpressions, currentTasting } = useTastingStore();
   
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -250,7 +252,7 @@ const SensoryScreenTamagui = () => {
       <SafeAreaView style={{ flex: 1 }}>
         <YStack flex={1}>
           {/* Navigation Bar */}
-          <HeaderBar>
+          <HeaderBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
             <BackButton onPress={() => navigation.goBack()}>←</BackButton>
             <HeaderTitle>감각 평가</HeaderTitle>
             <SkipButton onPress={() => navigation.navigate('PersonalComment' as never)}>

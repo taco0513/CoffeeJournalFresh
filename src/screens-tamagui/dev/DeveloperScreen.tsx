@@ -1,6 +1,6 @@
 import React from 'react';
-import { SafeAreaView, Alert, DeviceEventEmitter } from 'react-native';
-import { ScrollView } from 'tamagui';
+import { SafeAreaView, Alert, DeviceEventEmitter, View } from 'react-native';
+import { ScrollView, XStack } from 'tamagui';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
@@ -34,7 +34,11 @@ import { MockDataConfigSection } from '../../components-tamagui/dev/MockDataConf
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
-const DeveloperScreen: React.FC = () => {
+interface DeveloperScreenProps {
+  hideNavBar?: boolean;
+}
+
+const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) => {
   const navigation = useNavigation<NavigationProp>();
   
   const { user: currentUser } = useUserStore();
@@ -241,11 +245,13 @@ const DeveloperScreen: React.FC = () => {
     return (
       <Container>
         <SafeAreaView style={{ flex: 1 }}>
-          <NavigationBar>
-            <BackButton onPress={goBack}>← 뒤로</BackButton>
-            <NavigationTitle>개발자 모드</NavigationTitle>
-            <div />
-          </NavigationBar>
+          {!hideNavBar && (
+            <NavigationBar>
+              <BackButton onPress={goBack}>← 뒤로</BackButton>
+              <NavigationTitle>개발자 모드</NavigationTitle>
+              <View />
+            </NavigationBar>
+          )}
 
           <DisabledContainer>
             <DisabledIcon>🚫</DisabledIcon>
@@ -267,18 +273,22 @@ const DeveloperScreen: React.FC = () => {
   return (
     <Container>
       <SafeAreaView style={{ flex: 1 }}>
-        <NavigationBar>
-          <BackButton onPress={goBack}>← 뒤로</BackButton>
-          <NavigationTitle>개발자 모드</NavigationTitle>
-          <div />
-        </NavigationBar>
+        {!hideNavBar && (
+          <NavigationBar>
+            <BackButton onPress={goBack}>← 뒤로</BackButton>
+            <NavigationTitle>개발자 모드</NavigationTitle>
+            <View />
+          </NavigationBar>
+        )}
 
         {/* Developer Warning */}
         <WarningCard>
-          <WarningIcon>⚠️</WarningIcon>
-          <WarningText>
-            개발자 전용 도구입니다. 프로덕션 환경에서는 비활성화하세요.
-          </WarningText>
+          <XStack alignItems="center">
+            <WarningIcon>⚠️</WarningIcon>
+            <WarningText>
+              개발자 전용 도구입니다. 프로덕션 환경에서는 비활성화하세요.
+            </WarningText>
+          </XStack>
         </WarningCard>
 
         <ScrollView showsVerticalScrollIndicator={false}>

@@ -3,7 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { Text, View } from 'react-native';
-import { useUserStore } from '../stores/userStore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useUserStore } from '../stores/useUserStore';
 import { IOSColors, IOSLayout, IOSTypography, IOSShadows } from '../styles/ios-hig-2024';
 import StatusBadge from '../components/StatusBadge';
 import { TabBarIcon } from '../components/TabBarIcon';
@@ -340,12 +341,13 @@ function ProfileStack() {
 function MainTabs() {
   const user = useUserStore((state) => state.user);
   const isAdmin = user?.user_metadata?.role === 'admin' || user?.email === 'admin@example.com';
+  const insets = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, focused }) => {
-          return <TabBarIcon name={route.name as "home" | "journal" | "addCoffee" | "achievements" | "profile"} focused={focused} color={color} />;
+          return <TabBarIcon name={route.name as "Home" | "Journal" | "AddRecord" | "History" | "Profile" | "Admin"} focused={focused} color={color} />;
         },
         tabBarActiveTintColor: '#8B4513',
         tabBarInactiveTintColor: '#999999',
@@ -353,9 +355,9 @@ function MainTabs() {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 0.5,
           borderTopColor: '#E0E0E0',
-          paddingBottom: 5,
+          paddingBottom: insets.bottom + 5,
           paddingTop: 5,
-          height: 55,
+          height: 55 + insets.bottom,
         },
         tabBarLabelStyle: {
           fontSize: 10,
@@ -388,6 +390,14 @@ function MainTabs() {
         options={{
           tabBarLabel: '저널',
           headerTitle: '커피 저널',
+        }}
+      />
+      <Tab.Screen 
+        name="AddRecord" 
+        component={TastingFlow}
+        options={{
+          tabBarLabel: '기록하기',
+          headerShown: false,
         }}
       />
       {isAdmin && (
@@ -481,10 +491,20 @@ function AuthStack() {
 
 // 메인 네비게이터
 export default function AppNavigator() {
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated, user, currentUser, loadStoredUser } = useUserStore();
   const isInitialized = true; // For now, assume it's initialized
   const navigationRef = useRef<any>(null);
   const routeNameRef = useRef<string | undefined>(undefined);
+  
+  // Load stored user on app start
+  useEffect(() => {
+    if (loadStoredUser) {
+      loadStoredUser();
+    }
+  }, [loadStoredUser]);
+  
+  // Debug authentication state
+  console.log('AppNavigator - Auth State:', { isAuthenticated, user: !!user, currentUser: !!currentUser });
 
   useEffect(() => {
     // 네비게이션 상태 변경 추적

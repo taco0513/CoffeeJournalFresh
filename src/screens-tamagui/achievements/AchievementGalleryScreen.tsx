@@ -27,6 +27,10 @@ import { AchievementType } from '../../types/achievements';
 
 type FilterType = 'all' | 'unlocked' | 'locked' | AchievementType;
 
+interface AchievementGalleryScreenProps {
+  hideNavBar?: boolean;
+}
+
 const FILTER_OPTIONS: { key: FilterType; label: string; icon: string }[] = [
   { key: 'all', label: '전체', icon: '🎯' },
   { key: 'unlocked', label: '달성완료', icon: '✅' },
@@ -282,9 +286,9 @@ const LoadingContainer = styled(YStack, {
   gap: '$lg',
 });
 
-export type AchievementGalleryScreenProps = GetProps<typeof Container>;
+export type AchievementGalleryScreenProps_Styled = GetProps<typeof Container>;
 
-const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = () => {
+const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hideNavBar = true }) => {
   const theme = useTheme();
   const { 
     achievements, 
@@ -447,15 +451,17 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = () => 
   if (isLoading) {
     return (
       <Container>
-        <NavigationBar>
-          <TitleContainer>
-            <NavigationTitle>나의 업적</NavigationTitle>
-            <BetaBadge>
-              <BetaText>BETA</BetaText>
-            </BetaBadge>
-          </TitleContainer>
-          <StatusBadge />
-        </NavigationBar>
+        {!hideNavBar && (
+          <NavigationBar>
+            <TitleContainer>
+              <NavigationTitle>나의 업적</NavigationTitle>
+              <BetaBadge>
+                <BetaText>BETA</BetaText>
+              </BetaBadge>
+            </TitleContainer>
+            <StatusBadge />
+          </NavigationBar>
+        )}
         
         <LoadingContainer>
           <Spinner size="large" color="$cupBlue" />
@@ -468,15 +474,17 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = () => 
   if (error) {
     return (
       <Container>
-        <NavigationBar>
-          <TitleContainer>
-            <NavigationTitle>나의 업적</NavigationTitle>
-            <BetaBadge>
-              <BetaText>BETA</BetaText>
-            </BetaBadge>
-          </TitleContainer>
-          <StatusBadge />
-        </NavigationBar>
+        {!hideNavBar && (
+          <NavigationBar>
+            <TitleContainer>
+              <NavigationTitle>나의 업적</NavigationTitle>
+              <BetaBadge>
+                <BetaText>BETA</BetaText>
+              </BetaBadge>
+            </TitleContainer>
+            <StatusBadge />
+          </NavigationBar>
+        )}
         
         <ErrorContainer>
           <ErrorIcon>⚠️</ErrorIcon>
@@ -493,15 +501,17 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = () => 
   return (
     <Container>
       {/* Navigation Bar */}
-      <NavigationBar>
-        <TitleContainer>
-          <NavigationTitle>나의 업적</NavigationTitle>
-          <BetaBadge>
-            <BetaText>BETA</BetaText>
-          </BetaBadge>
-        </TitleContainer>
-        <StatusBadge />
-      </NavigationBar>
+      {!hideNavBar && (
+        <NavigationBar>
+          <TitleContainer>
+            <NavigationTitle>나의 업적</NavigationTitle>
+            <BetaBadge>
+              <BetaText>BETA</BetaText>
+            </BetaBadge>
+          </TitleContainer>
+          <StatusBadge />
+        </NavigationBar>
+      )}
       
       <ScrollView
         flex={1}

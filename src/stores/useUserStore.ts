@@ -23,7 +23,7 @@ interface UserStore {
   signInWithApple: () => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
-  setTestUser: () => void;
+  setTestUser: () => Promise<void>;
   
   // Profile management
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
@@ -226,26 +226,49 @@ export const useUserStore = create<UserStore>((set, get) => ({
   },
 
 
-  setTestUser: () => {
+  setTestUser: async () => {
     // 개발자 테스트용 로그인 바이패스
     const testUser: UserProfile = {
       id: '00000000-0000-4000-8000-000000000001',
       username: 'Developer',
       email: 'dev@test.com',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      level: 10,
-      total_tastings: 100,
-      badges: ['coffee_explorer_1', 'coffee_explorer_2', 'coffee_explorer_3'],
+      authProvider: 'email',
+      displayName: '개발자',
       bio: '개발자 테스트 계정입니다.',
-      avatar_url: '',
-      is_verified: true,
-      is_moderator: true,
-      followers_count: 50,
-      following_count: 30,
-      privacy_level: 'public'
+      avatarUrl: '',
+      privacyLevel: 'public',
+      level: 10,
+      totalTastings: 100,
+      joinedAt: new Date(),
+      lastActiveAt: new Date(),
+      badges: ['coffee_explorer_1', 'coffee_explorer_2', 'coffee_explorer_3'],
+      isVerified: true,
+      isModerator: true,
+      followersCount: 50,
+      followingCount: 30,
+      preferredLanguage: 'ko',
+      notifications: {
+        push: true,
+        email: false,
+        newFollower: true,
+        challengeInvite: true,
+        weeklyReport: true,
+        communityMentions: true,
+        achievementUnlocked: true,
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
+    console.log('Setting test user:', testUser);
+    
+    // Store in AsyncStorage for persistence
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(testUser));
+    } catch (error) {
+      console.error('Failed to store test user:', error);
+    }
+    
     set({
       currentUser: testUser,
       user: testUser, // Alias for compatibility

@@ -4,11 +4,12 @@ import { IOSColors, IOSLayout } from '../styles/ios-hig-2024';
 
 // Simple text-based icons for lightweight MVP
 const iconMap = {
-  home: '⌂',
-  journal: '☰', 
-  addCoffee: '+',
-  achievements: '★',
-  profile: '●',
+  Home: '🏠',
+  Journal: '📝',
+  AddRecord: '➕',
+  History: '📋',
+  Profile: '👤',
+  Admin: '⚙️',
 };
 
 interface TabBarIconProps {

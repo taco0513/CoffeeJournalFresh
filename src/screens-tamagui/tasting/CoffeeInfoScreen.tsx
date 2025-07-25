@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   YStack,
   XStack,
@@ -168,6 +169,7 @@ const NextButton = styled(Button, {
 
 const CoffeeInfoScreenTamagui = () => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   
   // Zustand store 사용
   const { currentTasting, updateField } = useTastingStore();
@@ -254,7 +256,7 @@ const CoffeeInfoScreenTamagui = () => {
       >
         <YStack flex={1}>
           {/* Header */}
-          <HeaderBar>
+          <HeaderBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
             <BackButton onPress={handleBack}>←</BackButton>
             <Text fontSize={17} fontWeight="600" color="$color">
               커피 정보

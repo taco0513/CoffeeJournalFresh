@@ -1,7 +1,7 @@
 import React from 'react';
-import { SafeAreaView } from 'react-native';
 import { YStack, XStack, H1, Text, Button, Card, styled } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTastingStore } from '../../stores/tastingStore';
 import { HomeCafeSimpleFormTamagui } from '../../components/HomeCafeSimpleFormTamagui';
 
@@ -86,6 +86,7 @@ const NextButton = styled(Button, {
 
 const HomeCafeScreenTamagui = () => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const { currentTasting } = useTastingStore();
 
   const handleNext = () => {
@@ -104,10 +105,9 @@ const HomeCafeScreenTamagui = () => {
 
   return (
     <YStack flex={1} backgroundColor="$background">
-      <SafeAreaView style={{ flex: 1 }}>
-        <YStack flex={1}>
+      <YStack flex={1}>
           {/* Header */}
-          <HeaderBar>
+          <HeaderBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
             <BackButton onPress={() => navigation.goBack()}>←</BackButton>
             <Text fontSize={17} fontWeight="600" color="$color">
               홈카페 정보
@@ -143,7 +143,6 @@ const HomeCafeScreenTamagui = () => {
             </NextButton>
           </BottomContainer>
         </YStack>
-      </SafeAreaView>
     </YStack>
   );
 };

@@ -16,6 +16,7 @@ import {
 } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTastingStore } from '../../stores/tastingStore';
 import { TastingMode } from '../../types/tasting';
 import LanguageSwitch from '../../components/LanguageSwitch';
@@ -81,6 +82,7 @@ const ModeSelectionScreen = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const { setTastingMode } = useTastingStore();
+  const insets = useSafeAreaInsets();
 
   const handleModeSelect = (mode: TastingMode) => {
     setTastingMode(mode);
@@ -129,7 +131,7 @@ const ModeSelectionScreen = () => {
   return (
     <Container>
       {/* Header */}
-      <Header>
+      <Header style={{ paddingTop: insets.top + 16 }}>
         <BackButton onPress={() => navigation.goBack()}>
           <Text fontSize="$6" color="$cupBlue">←</Text>
         </BackButton>
@@ -218,16 +220,9 @@ const ModeSelectionScreen = () => {
                     fontSize="$3" 
                     fontWeight="500" 
                     color="$gray11" 
-                    marginBottom="$sm"
-                  >
-                    {mode.subtitle}
-                  </Text>
-                  <Text 
-                    fontSize="$2" 
-                    color="$gray10" 
                     lineHeight={20}
                   >
-                    {mode.description}
+                    {mode.subtitle}
                   </Text>
                 </YStack>
                 
@@ -248,7 +243,7 @@ const ModeSelectionScreen = () => {
         {/* Bottom Info */}
         <YStack paddingVertical="$xl" alignItems="center">
           <Text 
-            fontSize="$2" 
+            fontSize="$3" 
             color="$gray11" 
             textAlign="center" 
             lineHeight={20}

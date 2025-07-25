@@ -38,6 +38,10 @@ interface MenuItem {
   onPress: () => void;
 }
 
+interface ProfileScreenProps {
+  hideNavBar?: boolean;
+}
+
 // Styled Components
 const Container = styled(YStack, {
   flex: 1,
@@ -222,7 +226,7 @@ const SignOutText = styled(Text, {
   fontFamily: '$body',
 })
 
-const ProfileScreenTamagui = () => {
+const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true }) => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { currentUser, signOut } = useUserStore();
   const { isDeveloperMode, toggleDeveloperMode } = useDevStore();
@@ -306,7 +310,7 @@ const ProfileScreenTamagui = () => {
       subtitle: '디버깅 및 개발 도구',
       icon: '🔧',
       onPress: () => {
-        navigation.navigate('DeveloperScreen' as never);
+        navigation.navigate('Developer' as never);
       }
     } : {
       title: '개발자 모드 활성화',
@@ -344,15 +348,17 @@ const ProfileScreenTamagui = () => {
       <SafeAreaView style={{ flex: 1 }}>
         <YStack flex={1}>
           {/* Navigation Bar */}
-          <NavigationBar>
-            <TitleContainer>
-              <NavigationTitle>Profile</NavigationTitle>
-              <BetaBadge animation="lazy">
-                <BetaText>BETA</BetaText>
-              </BetaBadge>
-            </TitleContainer>
-            <StatusBadge />
-          </NavigationBar>
+          {!hideNavBar && (
+            <NavigationBar>
+              <TitleContainer>
+                <NavigationTitle>Profile</NavigationTitle>
+                <BetaBadge animation="lazy">
+                  <BetaText>BETA</BetaText>
+                </BetaBadge>
+              </TitleContainer>
+              <StatusBadge />
+            </NavigationBar>
+          )}
 
           <ScrollView 
             showsVerticalScrollIndicator={false}

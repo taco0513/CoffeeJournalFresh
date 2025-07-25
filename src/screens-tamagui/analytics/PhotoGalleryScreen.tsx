@@ -356,7 +356,7 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
         <XStack key={i} justifyContent="space-between" marginBottom="$sm">
           {row.map((item, index) => (
             <TouchableOpacity
-              key={item.id}
+              key={`photo-${item.id}-${index}`}
               onPress={() => handlePhotoPress(item)}
               onLongPress={() => handlePhotoLongPress(item)}
               activeOpacity={0.8}

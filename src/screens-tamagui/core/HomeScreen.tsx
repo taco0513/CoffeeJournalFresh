@@ -31,6 +31,7 @@ const { width: screenWidth } = Dimensions.get('window');
 
 interface HomeScreenProps {
   navigation: any;
+  hideNavBar?: boolean;
 }
 
 // Styled components for better performance
@@ -62,6 +63,18 @@ const StatCard = styled(Card, {
   elevate: true,
   bordered: true,
   borderColor: '$borderColor',
+  
+  // WCAG 2.4.7 Focus Visible - Enhanced accessibility
+  focusStyle: {
+    borderWidth: 3,
+    borderColor: '$focusRing',
+    shadowColor: '$focusRing',
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    outlineColor: '$focusRing',
+    outlineWidth: 2,
+    outlineOffset: 2,
+  },
 });
 
 const InsightSection = styled(YStack, {
@@ -71,21 +84,6 @@ const InsightSection = styled(YStack, {
   animation: 'lazy',
 });
 
-const PrimaryActionCard = styled(Card, {
-  name: 'PrimaryActionCard',
-  backgroundColor: '$primary',
-  paddingHorizontal: '$lg',
-  paddingVertical: '$xl',
-  marginBottom: '$lg',
-  alignItems: 'center',
-  borderRadius: '$4',
-  pressStyle: {
-    scale: 0.98,
-    backgroundColor: '$primaryHover',
-  },
-  animation: 'bouncy',
-  elevate: true,
-});
 
 const SkeletonBox = styled(YStack, {
   name: 'SkeletonBox',
@@ -95,7 +93,7 @@ const SkeletonBox = styled(YStack, {
   opacity: 0.7,
 });
 
-export default function HomeScreen({ navigation }: HomeScreenProps) {
+export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreenProps) {
   // Performance measurement
   useScreenPerformance('HomeScreen');
   
@@ -432,9 +430,6 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     navigation.navigate('Journal' as never, { initialTab: 'stats' } as never);
   };
 
-  const handleNewTasting = () => {
-    navigation.navigate('ModeSelection' as never);
-  };
 
   // Responsive dimensions
   const isSmallScreen = screenWidth < 375;
@@ -460,22 +455,24 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       />
       
       {/* Navigation Bar */}
-      <NavigationBar>
-        <XStack alignItems="center" gap="$xs">
-          <H2 fontWeight="700" color="$color">CupNote</H2>
-          <Card
-            backgroundColor="$cupBlue"
-            paddingHorizontal="$xs"
-            paddingVertical="$xxxs"
-            borderRadius="$1"
-          >
-            <Text fontSize={12} fontWeight="700" color="white" letterSpacing={0.5}>
-              BETA
-            </Text>
-          </Card>
-        </XStack>
-        <StatusBadge />
-      </NavigationBar>
+      {!hideNavBar && (
+        <NavigationBar>
+          <XStack alignItems="center" gap="$xs">
+            <H2 fontWeight="700" color="$color">CupNote</H2>
+            <Card
+              backgroundColor="$cupBlue"
+              paddingHorizontal="$xs"
+              paddingVertical="$xxxs"
+              borderRadius="$1"
+            >
+              <Text fontSize={12} fontWeight="700" color="white" letterSpacing={0.5}>
+                BETA
+              </Text>
+            </Card>
+          </XStack>
+          <StatusBadge />
+        </NavigationBar>
+      )}
 
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Main Content */}
@@ -649,31 +646,11 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                       <H3 fontWeight="600" color="$color">이번 주 인사이트</H3>
                     </XStack>
                     {insights.map((insight, index) => (
-                      <InsightCard key={index} {...insight} />
+                      <InsightCard key={`insight-${index}-${insight.title.slice(0, 10)}`} {...insight} />
                     ))}
                   </InsightSection>
                 )}
 
-                {/* Primary Action Card */}
-                <PrimaryActionCard onPress={handleNewTasting}>
-                  <H2 
-                    fontSize={isSmallScreen ? '$6' : isLargeScreen ? '$8' : '$7'}
-                    fontWeight="700"
-                    color="white"
-                    marginBottom="$xs"
-                    textAlign="center"
-                  >
-                    오늘의 커피 기록하기
-                  </H2>
-                  <Paragraph
-                    fontSize={isSmallScreen ? '$2' : isLargeScreen ? '$4' : '$3'}
-                    color="white"
-                    opacity={0.9}
-                    textAlign="center"
-                  >
-                    나만의 커피 취향을 발견해보세요
-                  </Paragraph>
-                </PrimaryActionCard>
               </YStack>
             )}
           </AnimatePresence>

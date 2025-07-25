@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   View,
   Text,
@@ -120,6 +121,7 @@ const GuideSubtitle = styled(SizableText, {
 const PreviewSection = styled(YStack, {
   name: 'PreviewSection',
   flex: 1,
+  maxHeight: 250,
   paddingBottom: '$md',
 });
 
@@ -133,7 +135,8 @@ const PreviewCard = styled(Card, {
   flex: 1,
   borderWidth: 1,
   borderColor: '$borderColor',
-  minHeight: 160,
+  minHeight: 120,
+  maxHeight: 180,
   animation: 'lazy',
   enterStyle: {
     opacity: 0,
@@ -229,11 +232,13 @@ const EmptyStateText = styled(SizableText, {
 
 const SensorySection = styled(YStack, {
   name: 'SensorySection',
-  height: 280,
+  minHeight: 280,
+  maxHeight: 400,
   backgroundColor: '$background',
   borderTopWidth: 1,
   borderTopColor: '$gray4',
   paddingTop: '$md',
+  paddingHorizontal: '$md',
 });
 
 const BottomContainer = styled(YStack, {
@@ -274,6 +279,7 @@ export type SensoryEvaluationScreenProps = GetProps<typeof Container>;
 const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
   const theme = useTheme();
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const { selectedSensoryExpressions, setSelectedSensoryExpressions, currentTasting } = useTastingStore();
   
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -394,7 +400,7 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
     <Container>
       <SafeAreaView style={{ flex: 1 }}>
         {/* Navigation Bar */}
-        <NavigationBar>
+        <NavigationBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
           <BackButton unstyled onPress={() => navigation.goBack()}>
             <Text color="$cupBlue" fontSize="$6">←</Text>
           </BackButton>
@@ -443,6 +449,9 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
 
         {/* Fixed Sensory Evaluation Section */}
         <SensorySection>
+          <Text fontSize="$4" color="$color" marginBottom="$md" textAlign="center" fontWeight="600">
+            🧠 감각 평가 인터페이스
+          </Text>
           <AnimatePresence>
             <View
               animation="lazy"

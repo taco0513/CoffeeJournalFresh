@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Keyboard, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   View,
   Text,
@@ -253,6 +254,7 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const route = useRoute();
+  const insets = useSafeAreaInsets();
   const { currentTasting, updateField } = useTastingStore();
   const scannedRoasterNotes = (route.params as any)?.scannedRoasterNotes;
   
@@ -287,7 +289,7 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
         <KeyboardDismissWrapper onPress={Keyboard.dismiss}>
           <View flex={1}>
             {/* Navigation Bar */}
-            <NavigationBar>
+            <NavigationBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
               <BackButton unstyled onPress={() => navigation.goBack()}>
                 <Text color="$cupBlue" fontSize="$6">←</Text>
               </BackButton>

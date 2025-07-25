@@ -25,16 +25,16 @@ interface TextInputProps extends GetProps<typeof StyledInput> {
 
 export type { TextInputProps };
 
-// Size configurations
+// Size configurations - WCAG minimum 44px touch target
 const sizeConfig = {
   small: {
-    minHeight: 36,
-    fontSize: '$2', // 14px
+    minHeight: 44, // WCAG minimum touch target
+    fontSize: '$2', // 16px - WCAG minimum
     paddingHorizontal: '$sm',
     paddingVertical: '$xs',
   },
   medium: {
-    minHeight: 44,
+    minHeight: 44, // WCAG minimum touch target
     fontSize: '$3', // 16px
     paddingHorizontal: '$md',
     paddingVertical: '$sm',
@@ -54,7 +54,7 @@ const Container = styled(YStack, {
 
 const StyledLabel = styled(Label, {
   name: 'TextInputLabel',
-  fontSize: '$2', // 14px
+  fontSize: '$3', // 16px - WCAG minimum
   fontWeight: '600',
   color: '$color',
   marginBottom: '$xs',
@@ -84,13 +84,18 @@ const StyledInput = styled(Input, {
   color: '$color',
   fontSize: '$3',
   
+  // WCAG 2.4.7 Focus Visible - Enhanced accessibility
   focusStyle: {
-    borderWidth: 2,
-    shadowColor: '$cupBlue',
+    borderWidth: 3,
+    borderColor: '$focusRing',
+    shadowColor: '$focusRing',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.4,
     shadowRadius: 4,
     elevation: 4,
+    outlineColor: '$focusRing',
+    outlineWidth: 2,
+    outlineOffset: 2,
   },
   
   disabledStyle: {
@@ -144,7 +149,7 @@ const StyledInput = styled(Input, {
 
 const HelperText = styled(Text, {
   name: 'TextInputHelper',
-  fontSize: '$1', // 12px
+  fontSize: '$2', // 16px - WCAG minimum
   marginTop: '$xs',
   
   variants: {
