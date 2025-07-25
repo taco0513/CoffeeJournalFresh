@@ -408,7 +408,7 @@ export class PrivacyManager {
         '개인정보 보호책임자에게 처리 현황 신고',
       ],
       contact: {
-        email: 'privacy@cupnote.app',
+        email: 'privacy@mycupnote.com',
         phone: '+82-2-0000-0000',
         address: '서울특별시 강남구 테헤란로 xxx번길',
       },
