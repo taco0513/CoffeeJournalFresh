@@ -378,9 +378,40 @@ export class FirecrawlCoffeeService {
         location: 'Oakland, CA',
         region: 'us',
         website: 'https://bluebottlecoffee.com',
-        specialty: ['Third Wave Coffee', 'Single Origin', 'Direct Trade'],
+        specialty: ['프리미엄 싱글오리진', '24시간 내 배송', 'Carbon Neutral 2024'],
         description: 'Artisanal coffee roaster focused on freshness and quality',
         established: 2002,
+        socialMedia: {
+          website: 'https://bluebottlecoffee.com'
+        },
+        lastUpdated: new Date()
+      },
+      {
+        id: 'stumptown',
+        name: 'Stumptown Coffee',
+        location: 'Portland, OR',
+        region: 'us',
+        website: 'https://stumptowncoffee.com',
+        specialty: ['다이렉트 트레이드', '아티잔 로스팅', '혁신적 창조성'],
+        description: '혁신적이고 창조적인 아티잔 로스터, Hair Bender 시그니처 블렌드',
+        established: 1999,
+        socialMedia: {
+          website: 'https://stumptowncoffee.com'
+        },
+        lastUpdated: new Date()
+      },
+      {
+        id: 'intelligentsia',
+        name: 'Intelligentsia Coffee',
+        location: 'Chicago, IL',
+        region: 'us',
+        website: 'https://intelligentsiacoffee.com',
+        specialty: ['프리미엄 크래프트', '다이렉트 트레이드', '개인 맞춤형 추천'],
+        description: 'Chicago-based premium craft coffee with personalized recommendations',
+        established: 1995,
+        socialMedia: {
+          website: 'https://intelligentsiacoffee.com'
+        },
         lastUpdated: new Date()
       }
     ];
