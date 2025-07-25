@@ -591,7 +591,7 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
               <AnimatePresence>
                 {insights.map((insight, index) => (
                   <View
-                    key={`insight-preview-${index}`}
+                    key={`empty-state-insight-${index}-${insight.title}`}
                     animation="lazy"
                     enterStyle={{
                       opacity: 0,
@@ -769,7 +769,7 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
               <SectionTitle>30일 인사이트</SectionTitle>
               {insights.map((insight, index) => (
                 <View
-                  key={`insight-${index}`}
+                  key={`data-state-insight-${index}-${insight.title}`}
                   animation="lazy"
                   enterStyle={{
                     opacity: 0,
