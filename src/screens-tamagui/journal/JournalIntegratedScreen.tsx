@@ -8,16 +8,7 @@ import {
   AnimatePresence,
   Button,
 } from 'tamagui';
-// import HistoryScreen from '../analytics/HistoryScreen';
-// Temporary simple replacement to test navigation
-const SimpleHistoryScreen = ({ hideNavBar }: { hideNavBar?: boolean }) => {
-  return (
-    <YStack flex={1} justifyContent="center" alignItems="center" backgroundColor="$background">
-      <Text fontSize="$6" color="$color">History Screen</Text>
-      <Text fontSize="$4" color="$gray11" marginTop="$2">Navigation is working!</Text>
-    </YStack>
-  );
-};
+import HistoryScreen from '../analytics/HistoryScreen';
 import StatsScreen from '../analytics/StatsScreen';
 import { useScreenPerformance } from '../../hooks/useScreenPerformance';
 
@@ -137,7 +128,7 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
       case 'stats':
         return <StatsScreen hideNavBar={true} />;
       default:
-        return <SimpleHistoryScreen hideNavBar={true} />;
+        return <HistoryScreen hideNavBar={true} />;
     }
   };
 

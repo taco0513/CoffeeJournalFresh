@@ -310,8 +310,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
                     selected={isSelected}
                     disabled={option.disabled}
                     isLast={isLast}
-                    onPress={() => handleSelect(option.value)}
-                    pressable={!option.disabled}
+                    onPress={option.disabled ? undefined : () => handleSelect(option.value)}
                   >
                     {option.icon && (
                       <OptionIcon>{option.icon}</OptionIcon>

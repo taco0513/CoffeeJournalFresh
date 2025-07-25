@@ -287,7 +287,7 @@ export default function UnifiedFlavorScreen() {
                       y: 20,
                     }}
                     style={{
-                      animationDelay: index * 50,
+                      animationDelay: `${index * 50}ms`,
                     }}
                   >
                     <CategoryAccordion
@@ -324,7 +324,7 @@ export default function UnifiedFlavorScreen() {
         paddingVertical="$md"
         borderTopWidth={1}
         borderTopColor="$borderColor"
-        elevate
+        elevation={4}
       >
         <NextButton
           onPress={handleNext}

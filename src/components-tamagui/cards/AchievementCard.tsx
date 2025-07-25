@@ -319,7 +319,6 @@ export const AchievementCard: React.FC<AchievementCardProps> = ({
       compact={compact}
       unlocked={isUnlocked}
       onPress={onPress}
-      pressable={!!onPress}
     >
       {/* New Badge */}
       {achievement.isNew && (

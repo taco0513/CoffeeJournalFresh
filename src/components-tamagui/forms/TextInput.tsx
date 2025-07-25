@@ -9,7 +9,7 @@ import {
 } from 'tamagui';
 
 // Type definitions
-export type TextInputVariant = 'default' | 'error' | 'success' | 'warning';
+export type TextInputVariant = 'default' | 'error' | 'warning';
 export type TextInputSize = 'small' | 'medium' | 'large';
 
 interface TextInputProps extends GetProps<typeof StyledInput> {
@@ -119,13 +119,6 @@ const StyledInput = styled(Input, {
           borderColor: '$red9',
         },
       },
-      success: {
-        borderColor: '$green8',
-        backgroundColor: '$green1',
-        focusStyle: {
-          borderColor: '$green9',
-        },
-      },
       warning: {
         borderColor: '$orange8',
         backgroundColor: '$orange1',
@@ -160,9 +153,6 @@ const HelperText = styled(Text, {
       error: {
         color: '$red9',
       },
-      success: {
-        color: '$green9',
-      },
       warning: {
         color: '$orange9',
       },
@@ -193,7 +183,7 @@ export const TextInput = forwardRef<any, TextInputProps>((
   ref
 ) => {
   // Determine final variant based on error state
-  const finalVariant = errorMessage ? 'error' : variant;
+  const finalVariant = errorMessage ? 'error' : (variant === 'default' ? undefined : variant);
   const finalHelperText = errorMessage || helperText;
 
   return (

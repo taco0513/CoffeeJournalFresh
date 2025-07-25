@@ -602,7 +602,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true }) => {
         .filter(item => item && (item.id || item.coffeeName))
         .map((item, itemIndex) => (
         <View
-          key={`item-${item.id || 'no-id'}-${itemIndex}`}
+          key={`${section.title}-item-${item.id || KeyGenerator.generate()}-${itemIndex}`}
         >
             {renderTastingItem(item)}
           </View>
@@ -728,7 +728,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true }) => {
           {groupedTastings.length > 0 ? (
             <YStack>
               {groupedTastings.map((section, index) => (
-                <View key={`section-${index}-${section.title || 'unknown'}`}>
+                <View key={`section-${section.title || 'unknown'}-${index}-${KeyGenerator.generate()}`}>
                   {renderSection(section, index)}
                 </View>
               ))}

@@ -177,7 +177,7 @@ export const AchievementSummaryCard: React.FC<AchievementSummaryCardProps> = ({
   const completionPercentage = totalCount > 0 ? Math.round((unlockedCount / totalCount) * 100) : 0;
 
   return (
-    <StyledCard onPress={onPress} pressable>
+    <StyledCard onPress={onPress}>
       {/* Header */}
       <XStack justifyContent="space-between" alignItems="center" marginBottom="$lg">
         <XStack alignItems="center" flex={1}>

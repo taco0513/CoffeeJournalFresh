@@ -466,7 +466,18 @@ function AuthStack() {
     >
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
-      <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
+      <Stack.Screen 
+        name="ProfileSetup" 
+        component={(props: any) => (
+          <ProfileSetupScreen 
+            {...props}
+            onComplete={() => {
+              // Navigate to main app after profile setup is complete
+              props.navigation.replace('Main');
+            }} 
+          />
+        )} 
+      />
     </Stack.Navigator>
   );
 }

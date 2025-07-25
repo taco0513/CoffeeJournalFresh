@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './src/services/i18n'; // Initialize i18n
-import { AppState } from 'react-native';
+import { AppState, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
@@ -10,8 +10,9 @@ import { initializeShakeDetection } from './src/hooks/useShakeToFeedback';
 import { performanceMonitor } from './src/services/PerformanceMonitor';
 import { analyticsService } from './src/services/AnalyticsService';
 import { errorContextService } from './src/services/ErrorContextService';
-import { FirstTimeUserFeedback } from './src/components/beta/FirstTimeUserFeedback';
-import { DebugOverlay } from './src/components/DebugOverlay';
+// Unused imports removed for production build
+// import { FirstTimeUserFeedback } from './src/components/beta/FirstTimeUserFeedback';
+// import { DebugOverlay } from './src/components/DebugOverlay';
 import { TamaguiProvider } from './src/providers/TamaguiProvider';
 
 // Initialize Sentry for crash reporting
@@ -55,7 +56,7 @@ function App(): React.JSX.Element {
   }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
         <ErrorBoundary>
           <TamaguiProvider>
@@ -69,5 +70,11 @@ function App(): React.JSX.Element {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default App;

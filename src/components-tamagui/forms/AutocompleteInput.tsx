@@ -360,7 +360,6 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
                     isAddNew={isAddNew}
                     isLast={isLast}
                     onPress={() => handleSelect(suggestion)}
-                    pressable
                   >
                     <SuggestionText 
                       isAddNew={isAddNew}

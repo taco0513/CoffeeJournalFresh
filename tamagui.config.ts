@@ -259,9 +259,5 @@ const config = createTamagui({
 
 export default config
 
-// Types for TypeScript
-type Config = typeof config
-
-declare module 'tamagui' {
-  interface TamaguiCustomConfig extends Config {}
-}
+// Export type without circular reference
+export type { TamaguiCustomConfig } from 'tamagui'

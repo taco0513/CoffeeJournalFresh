@@ -33,24 +33,29 @@ export class BaseRealmService {
       this.realm = await Realm.open({
         schema: schemas,
         schemaVersion: 3, // Updated to include achievement schemas
-        deleteRealmIfMigrationNeeded: __DEV__,
-        onMigration: (oldRealm: Realm, newRealm: Realm) => {
-          if (oldRealm.schemaVersion < 2) {
-            const oldTastings = oldRealm.objects('TastingRecord');
-            const newTastings = newRealm.objects('TastingRecord');
-            
-            for (let i = 0; i < oldTastings.length; i++) {
-              const oldRecord = oldTastings[i] as any;
-              const newRecord = newTastings[i] as any;
-              
-              if (oldRecord.matchScore !== undefined) {
-                newRecord.matchScoreTotal = oldRecord.matchScore;
-                newRecord.matchScoreFlavor = 0;
-                newRecord.matchScoreSensory = 0;
+        // Use deleteRealmIfMigrationNeeded in development for clean state
+        // Or use onMigration for production data preservation, but not both
+        ...__DEV__ 
+          ? { deleteRealmIfMigrationNeeded: true }
+          : {
+              onMigration: (oldRealm: Realm, newRealm: Realm) => {
+                if (oldRealm.schemaVersion < 2) {
+                  const oldTastings = oldRealm.objects('TastingRecord');
+                  const newTastings = newRealm.objects('TastingRecord');
+                  
+                  for (let i = 0; i < oldTastings.length; i++) {
+                    const oldRecord = oldTastings[i] as any;
+                    const newRecord = newTastings[i] as any;
+                    
+                    if (oldRecord.matchScore !== undefined) {
+                      newRecord.matchScoreTotal = oldRecord.matchScore;
+                      newRecord.matchScoreFlavor = 0;
+                      newRecord.matchScoreSensory = 0;
+                    }
+                  }
+                }
               }
             }
-          }
-        },
       });
 
       this.initialized = true;

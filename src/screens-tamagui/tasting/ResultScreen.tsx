@@ -96,7 +96,7 @@ const BottomContainer = styled(YStack, {
   backgroundColor: '$background',
   borderTopWidth: 0.5,
   borderTopColor: '$borderColor',
-  elevate: true,
+  elevation: 4,
 });
 
 const ActionButton = styled(Button, {
@@ -482,7 +482,7 @@ export default function ResultScreen({ navigation, hideNavBar = false }: ResultS
               <XStack gap="$xs">
                 <Button
                   size="$2"
-                  variant={chartMode === 'radar' ? 'outlined' : 'ghost'}
+                  variant="outlined"
                   backgroundColor={chartMode === 'radar' ? '$cupBlue' : 'transparent'}
                   borderColor={chartMode === 'radar' ? '$cupBlue' : '$gray8'}
                   onPress={() => setChartMode('radar')}
@@ -498,7 +498,7 @@ export default function ResultScreen({ navigation, hideNavBar = false }: ResultS
                 </Button>
                 <Button
                   size="$2"
-                  variant={chartMode === 'bar' ? 'outlined' : 'ghost'}
+                  variant="outlined"
                   backgroundColor={chartMode === 'bar' ? '$cupBlue' : 'transparent'}
                   borderColor={chartMode === 'bar' ? '$cupBlue' : '$gray8'}
                   onPress={() => setChartMode('bar')}

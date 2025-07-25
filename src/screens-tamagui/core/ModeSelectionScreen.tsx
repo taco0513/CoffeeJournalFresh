@@ -188,7 +188,7 @@ const ModeSelectionScreen = () => {
                 animation="lazy"
                 animateOnly={['transform', 'opacity']}
                 style={{
-                  animationDelay: index * 100,
+                  animationDelay: `${index * 100}ms`,
                 }}
               >
                 {(mode.popular || mode.badge) && (

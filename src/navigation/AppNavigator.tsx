@@ -58,15 +58,8 @@ import {
   PerformanceTestingScreen,
 } from '../screens-tamagui';
 
-// Temporary simple replacement to test navigation
-const SimpleHistoryScreen = () => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
-      <Text style={{ fontSize: 18, color: '#333' }}>History Screen</Text>
-      <Text style={{ fontSize: 14, color: '#666', marginTop: 10 }}>Navigation is working!</Text>
-    </View>
-  );
-};
+// Import the actual HistoryScreen
+import HistoryScreen from '../screens-tamagui/analytics/HistoryScreen';
 
 // Admin screens (not yet migrated to Tamagui)
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
@@ -188,7 +181,7 @@ function HistoryStack() {
     >
       <Stack.Screen 
         name="HistoryMain" 
-        component={SimpleHistoryScreen}
+        component={HistoryScreen}
         options={{
           title: '테이스팅 기록',
         }}
@@ -502,7 +495,18 @@ function AuthStack() {
     >
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
-      <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
+      <Stack.Screen 
+        name="ProfileSetup" 
+        component={(props: any) => (
+          <ProfileSetupScreen 
+            {...props}
+            onComplete={() => {
+              // Navigate to main app after profile setup is complete
+              props.navigation.replace('Main');
+            }} 
+          />
+        )} 
+      />
     </Stack.Navigator>
   );
 }

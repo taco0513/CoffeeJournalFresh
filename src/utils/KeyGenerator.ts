@@ -178,6 +178,19 @@ export class KeyGenerator {
       return `fallback-${index}-${Date.now()}`;
     }
   }
+
+  /**
+   * Simple unique key generator (commonly used method)
+   * @param prefix - Optional prefix for the key
+   * @returns Unique key string
+   */
+  static generate(prefix?: string): string {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substr(2, 9);
+    const uniqueKey = `${timestamp}-${random}`;
+    
+    return prefix ? `${prefix}-${uniqueKey}` : uniqueKey;
+  }
 }
 
 /**
