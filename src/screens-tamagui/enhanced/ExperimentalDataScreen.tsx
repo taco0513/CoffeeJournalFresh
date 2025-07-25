@@ -543,3 +543,4 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
 };
 
 export default ExperimentalDataScreen;
+export { ExperimentalDataScreen };

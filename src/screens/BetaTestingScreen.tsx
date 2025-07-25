@@ -565,12 +565,12 @@ const styles = StyleSheet.create({
     borderBottomColor: HIGColors.separator,
   },
   headerTitle: {
-    fontSize: HIGConstants.FONT_SIZE_TITLE2,
+    fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '700',
     color: HIGColors.label,
   },
   headerSubtitle: {
-    fontSize: HIGConstants.FONT_SIZE_SUBHEADLINE,
+    fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     marginTop: 4,
   },
@@ -622,7 +622,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   cardTitle: {
-    fontSize: HIGConstants.FONT_SIZE_HEADLINE,
+    fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
@@ -753,7 +753,7 @@ const styles = StyleSheet.create({
     color: HIGColors.systemRed,
   },
   modalTitle: {
-    fontSize: HIGConstants.FONT_SIZE_HEADLINE,
+    fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
   },

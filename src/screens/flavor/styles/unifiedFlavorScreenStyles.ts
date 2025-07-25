@@ -116,30 +116,30 @@ export const unifiedFlavorScreenStyles = StyleSheet.create({
   noResultsText: {
     fontSize: 16,
     fontWeight: '600',
-    color: HIGColors.label,
+    color: Colors.label,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_SM,
   },
   noResultsSubtext: {
     fontSize: 14,
-    color: HIGColors.secondaryLabel,
+    color: Colors.secondaryLabel,
     textAlign: 'center',
   },
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
-    borderTopColor: HIGColors.systemGray4,
+    borderTopColor: Colors.systemGray4,
   },
   nextButton: {
     height: 48,
-    backgroundColor: HIGColors.systemBlue,
+    backgroundColor: Colors.systemBlue,
     borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
     justifyContent: 'center',
   },
   nextButtonDisabled: {
-    backgroundColor: HIGColors.systemGray4,
+    backgroundColor: Colors.systemGray4,
   },
   nextButtonText: {
     fontSize: 16,

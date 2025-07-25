@@ -560,14 +560,14 @@ const PerformanceDashboardScreen: React.FC<PerformanceDashboardScreenProps> = ()
         </MetricsGrid>
 
         {/* Slowest Operations */}
-        {report?.summary.slowestOperations.length > 0 && (
+        {report?.summary?.slowestOperations && report.summary.slowestOperations.length > 0 && (
           <YStack
             animation="lazy"
             enterStyle={{ opacity: 0, y: 20 }}
             animateOnly={['opacity', 'transform']}
           >
             <SectionTitle>Slowest Operations</SectionTitle>
-            {report.summary.slowestOperations.map((op, index) => (
+            {report?.summary?.slowestOperations?.map((op, index) => (
               <OperationCard key={index}>
                 <OperationHeader>
                   <OperationName>{op.name}</OperationName>
@@ -581,28 +581,28 @@ const PerformanceDashboardScreen: React.FC<PerformanceDashboardScreenProps> = ()
         )}
 
         {/* Critical Issues */}
-        {report?.criticalIssues.length > 0 && (
+        {report?.criticalIssues && report.criticalIssues.length > 0 && (
           <YStack
             animation="lazy"
             enterStyle={{ opacity: 0, y: 20 }}
             animateOnly={['opacity', 'transform']}
           >
             <SectionTitle>Critical Issues</SectionTitle>
-            {report.criticalIssues.map((issue, index) => (
+            {report?.criticalIssues?.map((issue, index) => (
               <TamaguiIssueCard key={index} issue={issue} />
             ))}
           </YStack>
         )}
 
         {/* Recommendations */}
-        {report?.recommendations.length > 0 && (
+        {report?.recommendations && report.recommendations.length > 0 && (
           <YStack
             animation="lazy"
             enterStyle={{ opacity: 0, y: 20 }}
             animateOnly={['opacity', 'transform']}
           >
             <SectionTitle>Recommendations</SectionTitle>
-            {report.recommendations.map((rec, index) => (
+            {report?.recommendations?.map((rec, index) => (
               <RecommendationCard key={index}>
                 <RecommendationText>• {rec}</RecommendationText>
               </RecommendationCard>

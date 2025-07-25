@@ -211,12 +211,12 @@ const CoffeeInfoScreenTamagui = () => {
       const varieties = Array.from(new Set(tastingArray.map(t => t.variety).filter(Boolean)));
       const processes = Array.from(new Set(tastingArray.map(t => t.process).filter(Boolean)));
 
-      setCafeSuggestions(cafes);
-      setRoasterSuggestions(roasters);
-      setCoffeeNameSuggestions(coffeeNames);
-      setOriginSuggestions(origins);
-      setVarietySuggestions(varieties);
-      setProcessSuggestions([...defaultProcessOptions, ...processes]);
+      setCafeSuggestions(cafes.filter((c): c is string => c !== undefined));
+      setRoasterSuggestions(roasters.filter((r): r is string => r !== undefined));
+      setCoffeeNameSuggestions(coffeeNames.filter((c): c is string => c !== undefined));
+      setOriginSuggestions(origins.filter((o): o is string => o !== undefined));
+      setVarietySuggestions(varieties.filter((v): v is string => v !== undefined));
+      setProcessSuggestions([...defaultProcessOptions, ...processes.filter((p): p is string => p !== undefined)]);
     } catch (error) {
       console.error('Failed to load suggestions:', error);
     }

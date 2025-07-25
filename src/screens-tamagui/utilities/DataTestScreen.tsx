@@ -270,7 +270,9 @@ interface TastingData {
 interface Statistics {
   totalTastings: number;
   averageScore: number;
-  firstTastingDays: number;
+  firstTastingDays?: number;
+  uniqueCafes?: number;
+  uniqueRoasters?: number;
 }
 
 const DataTestScreen: React.FC<DataTestScreenProps & { navigation: any }> = ({ navigation, ...props }) => {

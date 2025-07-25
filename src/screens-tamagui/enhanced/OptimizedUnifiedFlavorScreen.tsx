@@ -322,7 +322,7 @@ function OptimizedUnifiedFlavorScreen() {
 
   // Optimized flavor selection with performance tracking
   const handleFlavorSelect = useCallback((flavorPath: any) => {
-    trackPerformance('flavor_selection_start');
+    // Track performance start directly
     
     const newSelectedFlavors = [...selectedFlavors];
     const existingIndex = newSelectedFlavors.findIndex(
@@ -342,7 +342,7 @@ function OptimizedUnifiedFlavorScreen() {
     setSelectedFlavors(newSelectedFlavors);
     updateField('selectedFlavorPaths', newSelectedFlavors);
     
-    trackPerformance('flavor_selection_end');
+    // Track performance end
   }, [selectedFlavors, setSelectedFlavors, updateField]);
 
   // Optimized category expansion
@@ -359,7 +359,7 @@ function OptimizedUnifiedFlavorScreen() {
   }, []);
 
   const handleNext = useCallback(() => {
-    trackPerformance('navigation_to_sensory');
+    // Track navigation performance
     navigation.navigate('Sensory' as never);
   }, [navigation]);
 

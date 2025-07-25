@@ -316,6 +316,7 @@ const DeveloperScreen: React.FC = () => {
             setBetaStatus={setBetaStatus}
             
             // Actions
+            setTestUser={setTestUser}
             showFeedback={showFeedback}
             clearData={clearData}
             exportLogs={exportLogs}

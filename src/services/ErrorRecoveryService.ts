@@ -505,10 +505,10 @@ export class ErrorRecoveryService {
     const { retryCount = 0 } = context;
 
     // Log unknown errors for analysis
-    SentryService.captureError(context.originalError, {
-      tags: { error_type: 'unknown' },
-      extra: { context }
-    });
+    // SentryService.captureError(context.originalError, {
+    //   tags: { error_type: 'unknown' },
+    //   extra: { context }
+    // });
 
     if (retryCount < 2) {
       await this.delay(RETRY_DELAY_MS);
@@ -539,8 +539,8 @@ export class ErrorRecoveryService {
     try {
       // This would require a native module in a real implementation
       // For now, return a mock value based on JS heap usage if available
-      if (global.performance?.memory) {
-        return Math.round(global.performance.memory.usedJSHeapSize / 1024 / 1024); // MB
+      if ((global.performance as any)?.memory) {
+        return Math.round((global.performance as any).memory.usedJSHeapSize / 1024 / 1024); // MB
       }
       return Math.floor(Math.random() * 100);
     } catch {
@@ -600,10 +600,8 @@ export class ErrorRecoveryService {
       const stored = await AsyncStorage.getItem(ERROR_PATTERNS_KEY);
       if (stored) {
         const patterns = JSON.parse(stored);
-        this.errorPatterns = new Map(Object.entries(patterns));
-        Logger.debug('Error patterns loaded from storage', 'error_recovery', { 
-          patternCount: this.errorPatterns.size 
-        });
+        this.errorPatterns = new Map(Object.entries(patterns) as any);
+        Logger.debug(`Error patterns loaded from storage: ${this.errorPatterns.size}`, 'error_recovery');
       }
     } catch (error) {
       Logger.error('Failed to load error patterns', 'error_recovery', error as Error);
