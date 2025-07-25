@@ -10,11 +10,11 @@ export { default as ModeSelectionScreen } from './core/ModeSelectionScreen';
 // =============================================
 // Phase 3.1 - High Priority Core Screens
 // =============================================
-export { default as TastingDetailScreen } from './core/TastingDetailScreen';
-export { default as AchievementGalleryScreen } from './core/AchievementGalleryScreen';
+export { default as TastingDetailScreen } from './journal/TastingDetailScreen';
+export { default as AchievementGalleryScreen } from './achievements/AchievementGalleryScreen';
 export { default as OnboardingScreen } from './core/OnboardingScreen';
-export { default as DeveloperScreen } from './core/DeveloperScreen';
-export { default as PersonalTasteDashboard } from './core/PersonalTasteDashboard';
+export { default as DeveloperScreen } from './dev/DeveloperScreen';
+export { default as PersonalTasteDashboard } from './analytics/PersonalTasteDashboard';
 
 // =============================================
 // Tasting Flow Screens (Phase 1 & 2)
@@ -65,6 +65,7 @@ export { default as ProfileScreen } from './profile/ProfileScreen';
 // Development Tools
 // =============================================
 export { default as TamaguiComparisonScreen } from './dev/TamaguiComparisonScreen';
+export { default as PerformanceTestingScreen } from './dev/PerformanceTestingScreen';
 
 // =============================================
 // Type Exports for Navigation

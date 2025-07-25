@@ -8,9 +8,10 @@ import {
   AnimatePresence,
   Button,
 } from 'tamagui';
-import HistoryScreen from '../../screens/HistoryScreen';
-import StatsScreen from '../../screens/StatsScreen';
+import HistoryScreen from '../analytics/HistoryScreen';
+import StatsScreen from '../analytics/StatsScreen';
 import StatusBadge from '../../components/StatusBadge';
+import { useScreenPerformance } from '../../hooks/useScreenPerformance';
 
 const { width } = Dimensions.get('window');
 
@@ -128,6 +129,9 @@ const TabIndicator = styled(XStack, {
 })
 
 export default function JournalIntegratedScreenTamagui({ route }: JournalIntegratedScreenProps) {
+  // Performance measurement
+  useScreenPerformance('JournalIntegratedScreen');
+  
   const [activeTab, setActiveTab] = useState<TabType>(route?.params?.initialTab || 'history');
 
   const renderTabButton = (tab: TabType, label: string) => {

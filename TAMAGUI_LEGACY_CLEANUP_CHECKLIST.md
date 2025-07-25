@@ -6,34 +6,46 @@ This checklist tracks the cleanup of legacy HIGColors and HIGConstants usage acr
 
 ## 📊 Current Status
 
-- **Total Files with Legacy Styles**: 77 (25 screens + 52 components)
+**Last Updated**: Phase 3 Complete - Navigation Updated, Legacy Screens Removed
+
+- **Total Files with Legacy Styles**: 61 (9 screens + 52 components)
 - **Migrated to Tamagui**: 31 screens (in screens-tamagui/)
-- **Remaining Cleanup**: 77 files
+- **Legacy Screens Removed**: 22 files (all with Tamagui replacements)
+- **Remaining Cleanup**: 61 files
 
-## 🎯 Priority 1: Core Screens (Already Migrated to Tamagui)
+## ✅ Completed: Legacy Screens Removed
 
-These screens have Tamagui versions but the legacy versions are still in use:
+The following screens have been successfully removed after updating navigation to use Tamagui versions:
 
-- [ ] `/src/screens/OnboardingScreen.tsx` → Use `/src/screens-tamagui/core/OnboardingScreen.tsx`
-- [ ] `/src/screens/AchievementGalleryScreen.tsx` → Use `/src/screens-tamagui/core/AchievementGalleryScreen.tsx`
-- [ ] `/src/screens/DeveloperScreen.tsx` → Use `/src/screens-tamagui/core/DeveloperScreen.tsx`
-- [ ] `/src/screens/PersonalTasteDashboard.tsx` → Use `/src/screens-tamagui/core/PersonalTasteDashboard.tsx`
-- [ ] `/src/screens/DataTestScreen.tsx` → Use `/src/screens-tamagui/utilities/DataTestScreen.tsx`
-- [ ] `/src/screens/PerformanceDashboardScreen.tsx` → Use `/src/screens-tamagui/utilities/PerformanceDashboardScreen.tsx`
+### Priority 1: Core Screens (REMOVED)
+- [x] `/src/screens/OnboardingScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/AchievementGalleryScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/DeveloperScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/PersonalTasteDashboard.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/DataTestScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/PerformanceDashboardScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/TastingDetailScreen.tsx` → ✅ Removed, using Tamagui version
 
-## 🎯 Priority 2: Enhanced Feature Screens (Already Migrated)
+### Priority 2: Enhanced Feature Screens (REMOVED)
+- [x] `/src/screens/EnhancedHomeCafeScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/LabModeScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/OptimizedUnifiedFlavorScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/ExperimentalDataScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/RoasterNotesScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/SensoryEvaluationScreen.tsx` → ✅ Removed, using Tamagui version
 
-- [ ] `/src/screens/EnhancedHomeCafeScreen.tsx` → Use `/src/screens-tamagui/enhanced/EnhancedHomeCafeScreen.tsx`
-- [ ] `/src/screens/LabModeScreen.tsx` → Use `/src/screens-tamagui/enhanced/LabModeScreen.tsx`
-- [ ] `/src/screens/OptimizedUnifiedFlavorScreen.tsx` → Use `/src/screens-tamagui/enhanced/OptimizedUnifiedFlavorScreen.tsx`
+### Priority 3: Analytics & Media Screens (REMOVED)
+- [x] `/src/screens/StatsScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/HistoryScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/PhotoGalleryScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/PhotoViewerScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/MarketIntelligenceScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/SearchScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/ProfileSetupScreen.tsx` → ✅ Removed, using Tamagui version
 
-## 🎯 Priority 3: Analytics & Media Screens (Already Migrated)
-
-- [ ] `/src/screens/StatsScreen.tsx` → Use `/src/screens-tamagui/analytics/StatsScreen.tsx`
-- [ ] `/src/screens/HistoryScreen.tsx` → Use `/src/screens-tamagui/analytics/HistoryScreen.tsx`
-- [ ] `/src/screens/PhotoGalleryScreen.tsx` → Use `/src/screens-tamagui/analytics/PhotoGalleryScreen.tsx`
-- [ ] `/src/screens/PhotoViewerScreen.tsx` → Use `/src/screens-tamagui/analytics/PhotoViewerScreen.tsx`
-- [ ] `/src/screens/MarketIntelligenceScreen.tsx` → Use `/src/screens-tamagui/analytics/MarketIntelligenceScreen.tsx`
+### Flavor Screens (REMOVED)
+- [x] `/src/screens/flavor/UnifiedFlavorScreen.tsx` → ✅ Removed, using Tamagui version
+- [x] `/src/screens/flavor/UnifiedFlavorScreenDebug.tsx` → ✅ Removed, not needed
 
 ## 🎯 Priority 4: Critical Components
 

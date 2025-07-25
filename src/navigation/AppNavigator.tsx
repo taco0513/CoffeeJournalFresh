@@ -4,46 +4,76 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { Text, View } from 'react-native';
 import { useUserStore } from '../stores/useUserStore';
-import { HIGColors } from '../styles/common';
 import { IOSColors, IOSLayout, IOSTypography, IOSShadows } from '../styles/ios-hig-2024';
 import StatusBadge from '../components/StatusBadge';
 import { TabBarIcon } from '../components/TabBarIcon';
 import ScreenContextService from '../services/ScreenContextService';
 
-// 화면 import - Tamagui optimized versions from organized structure
+// 🎉 All screens from Tamagui! Complete migration achieved!
 import {
+  // Core App Screens
   HomeScreen,
   ModeSelectionScreen,
+  OnboardingScreen,
+  
+  // Tasting Flow
   CoffeeInfoScreen,
-  SensoryScreen as SensoryScreenTamagui,
-  PersonalCommentScreen as PersonalCommentScreenTamagui,
-  ResultScreen as ResultScreenTamagui,
-  HomeCafeScreen as HomeCafeScreenTamagui,
+  SensoryScreen,
+  PersonalCommentScreen,
+  ResultScreen,
+  HomeCafeScreen,
   UnifiedFlavorScreen,
-  JournalIntegratedScreen as JournalIntegratedScreenTamagui,
-  ProfileScreen as ProfileScreenTamagui,
+  RoasterNotesScreen,
+  ExperimentalDataScreen,
+  SensoryEvaluationScreen,
+  
+  // Enhanced Features
+  EnhancedHomeCafeScreen,
+  LabModeScreen,
+  OptimizedUnifiedFlavorScreen,
+  
+  // Journal & Profile
+  JournalIntegratedScreen,
+  ProfileScreen,
+  TastingDetailScreen,
+  PersonalTasteDashboard,
+  
+  // Analytics & Media
+  StatsScreen,
+  HistoryScreen,
+  PhotoGalleryScreen,
+  PhotoViewerScreen,
+  SearchScreen,
+  MarketIntelligenceScreen,
+  
+  // Achievements
+  AchievementGalleryScreen,
+  
+  // Development & Admin
+  DeveloperScreen,
+  DataTestScreen,
+  PerformanceDashboardScreen,
+  ProfileSetupScreen,
+  PerformanceTestingScreen,
 } from '../screens-tamagui';
 
-// Original screens (fallback for screens without Tamagui versions)
-import RoasterNotesScreen from '../screens/RoasterNotesScreen';
-import ExperimentalDataScreen from '../screens/ExperimentalDataScreen';
-import SensoryEvaluationScreen from '../screens/SensoryEvaluationScreen';
-import SearchScreen from '../screens/SearchScreen';
-import TastingDetailScreen from '../screens/TastingDetailScreen';
-import DataTestScreen from '../screens/DataTestScreen';
-
-// Admin and other screens
+// Admin screens (not yet migrated to Tamagui)
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
 import { AdminCoffeeEditScreen } from '../screens/admin/AdminCoffeeEditScreen';
-import DeveloperScreen from '../screens/DeveloperScreen';
 import AdminFeedbackScreen from '../screens/admin/AdminFeedbackScreen';
-import AchievementGalleryScreen from '../screens/AchievementGalleryScreen';
 
 // Testing screens
 import I18nValidationScreen from '../components/testing/I18nValidationScreen';
 import MarketConfigurationTester from '../components/testing/MarketConfigurationTester';
 import BetaTestingScreen from '../screens/BetaTestingScreen';
 import CrossMarketTestingScreen from '../components/testing/CrossMarketTestingScreen';
+
+// Legal screen (not yet migrated)
+import LegalScreen from '../screens/LegalScreen';
+
+// Auth screens (not yet migrated)
+import SignInScreen from '../screens/auth/SignInScreen';
+import SignUpScreen from '../screens/auth/SignUpScreen';
 
 // Context providers
 import { FeedbackProvider } from '../components/feedback';
@@ -83,7 +113,7 @@ function TastingFlow() {
       />
       <Stack.Screen 
         name="HomeCafe" 
-        component={HomeCafeScreenTamagui} 
+        component={HomeCafeScreen} 
         options={{title: 'Home Cafe'}}
       />
       <Stack.Screen 
@@ -91,7 +121,6 @@ function TastingFlow() {
         component={RoasterNotesScreen} 
         options={{title: 'Roaster Notes'}}
       />
-      {/* New unified flavor selection */}
       <Stack.Screen 
         name="UnifiedFlavor" 
         component={UnifiedFlavorScreen} 
@@ -99,10 +128,9 @@ function TastingFlow() {
       />
       <Stack.Screen 
         name="Sensory" 
-        component={SensoryScreenTamagui} 
+        component={SensoryScreen} 
         options={{title: 'Sensory Evaluation'}}
       />
-      {/* Home Cafe Mode: Separate screens for experimental data and sensory evaluation */}
       <Stack.Screen 
         name="ExperimentalData" 
         component={ExperimentalDataScreen} 
@@ -115,25 +143,14 @@ function TastingFlow() {
       />
       <Stack.Screen 
         name="PersonalComment" 
-        component={PersonalCommentScreenTamagui} 
+        component={PersonalCommentScreen} 
         options={{title: 'Personal Comment'}}
       />
       <Stack.Screen 
         name="Result" 
-        component={ResultScreenTamagui} 
+        component={ResultScreen} 
         options={{title: 'Tasting Results'}}
       />
-      {/* OCR Screens moved to feature_backlog */}
-      {/* <Stack.Screen 
-        name="OCRScan" 
-        component={OCRScanScreen} 
-        options={{title: 'Scan Coffee Label'}}
-      />
-      <Stack.Screen 
-        name="OCRResult" 
-        component={OCRResultScreen} 
-        options={{title: 'OCR Results'}}
-      /> */}
     </Stack.Navigator>
   );
 }
@@ -147,298 +164,377 @@ function HistoryStack() {
         headerShown: true,
         headerStyle: {
           backgroundColor: '#FFFFFF',
+          borderBottomWidth: 0.5,
+          borderBottomColor: '#E0E0E0',
         },
-        headerTintColor: HIGColors.label,
         headerTitleStyle: {
-          fontWeight: '600',
           fontSize: 17,
+          fontWeight: '600',
         },
+        headerTintColor: '#007AFF',
         ...commonHeaderOptions,
       }}
     >
       <Stack.Screen 
         name="HistoryMain" 
-        component={JournalIntegratedScreenTamagui} 
-        options={{headerShown: false}}
+        component={HistoryScreen}
+        options={{
+          title: '테이스팅 기록',
+        }}
       />
       <Stack.Screen 
         name="TastingDetail" 
-        component={TastingDetailScreen} 
-        options={{title: 'Tasting Details'}}
+        component={TastingDetailScreen}
+        options={{
+          title: '상세 기록',
+        }}
       />
       <Stack.Screen 
         name="Search" 
-        component={SearchScreen} 
-        options={{title: 'Search'}}
+        component={SearchScreen}
+        options={{
+          title: '검색',
+        }}
       />
-      {/* Feature Backlog - Community Share */}
-      {/* <Stack.Screen 
-        name="ShareReview" 
-        component={ShareReviewScreen} 
-        options={{title: 'Share Review'}}
-      /> */}
+      <Stack.Screen 
+        name="PhotoViewer" 
+        component={PhotoViewerScreen}
+        options={{
+          title: '사진 보기',
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 }
-
-// StatsStack 제거 - Stats 탭에서 직접 StatsScreen 사용
-
 
 // 프로필 스택 네비게이터
 function ProfileStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false, // Disable stack headers to use custom headers
+        headerShown: true,
         headerStyle: {
           backgroundColor: '#FFFFFF',
+          borderBottomWidth: 0.5,
+          borderBottomColor: '#E0E0E0',
         },
-        headerTintColor: HIGColors.label,
         headerTitleStyle: {
-          fontWeight: '600',
           fontSize: 17,
+          fontWeight: '600',
         },
+        headerTintColor: '#007AFF',
         ...commonHeaderOptions,
-        presentation: 'card',
-        animationTypeForReplace: 'push',
-        cardStyleInterpolator: ({ current, layouts }) => {
-          return {
-            cardStyle: {
-              transform: [
-                {
-                  translateX: current.progress.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [layouts.screen.width, 0],
-                    extrapolate: 'clamp',
-                  }),
-                },
-              ],
-            },
-            overlayStyle: {
-              opacity: current.progress.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 0.5],
-                extrapolate: 'clamp',
-              }),
-            },
-          };
-        },
-        transitionSpec: {
-          open: {
-            animation: 'timing',
-            config: {
-              duration: 300,
-            },
-          },
-          close: {
-            animation: 'timing',
-            config: {
-              duration: 300,
-            },
-          },
-        },
       }}
     >
       <Stack.Screen 
         name="ProfileMain" 
-        component={ProfileScreenTamagui} 
-        options={{title: 'Profile'}}
+        component={ProfileScreen}
+        options={{
+          title: '내 프로필',
+        }}
       />
       <Stack.Screen 
-        name="AchievementGallery" 
-        component={AchievementGalleryScreen} 
-        options={{title: 'Achievements'}}
+        name="Developer" 
+        component={DeveloperScreen}
+        options={{
+          title: '개발자 옵션',
+        }}
       />
       <Stack.Screen 
         name="DataTest" 
-        component={DataTestScreen} 
-        options={{title: 'Data Test'}}
-      />
-      {/* Cross-Market Testing Screens */}
-      <Stack.Screen 
-        name="CrossMarketTesting" 
-        component={CrossMarketTestingScreen} 
-        options={{title: 'Cross-Market Testing'}}
+        component={DataTestScreen}
+        options={{
+          title: '데이터 테스트',
+        }}
       />
       <Stack.Screen 
         name="I18nValidation" 
-        component={I18nValidationScreen} 
-        options={{title: 'I18n Validation'}}
+        component={I18nValidationScreen}
+        options={{
+          title: 'i18n 검증',
+        }}
       />
       <Stack.Screen 
         name="MarketConfigurationTester" 
-        component={MarketConfigurationTester} 
-        options={{title: 'Market Configuration Tester'}}
-      />
-      <Stack.Screen 
-        name="BetaTestingScreen" 
-        component={BetaTestingScreen} 
-        options={{title: 'Beta Testing Dashboard'}}
-      />
-      {/* Feature Backlog - Photo features */}
-      {/* <Stack.Screen 
-        name="PhotoGallery" 
-        component={PhotoGalleryScreen} 
-        options={{title: 'Photo Gallery'}}
-      />
-      <Stack.Screen 
-        name="PhotoViewer" 
-        component={PhotoViewerScreen} 
+        component={MarketConfigurationTester}
         options={{
-          title: 'Photo Viewer',
-          headerShown: false,
+          title: '마켓 설정 테스터',
         }}
-      /> */}
+      />
+      <Stack.Screen 
+        name="BetaTesting" 
+        component={BetaTestingScreen}
+        options={{
+          title: '베타 테스팅',
+        }}
+      />
+      <Stack.Screen 
+        name="CrossMarketTesting" 
+        component={CrossMarketTestingScreen}
+        options={{
+          title: '크로스 마켓 테스팅',
+        }}
+      />
+      <Stack.Screen 
+        name="PhotoGallery" 
+        component={PhotoGalleryScreen}
+        options={{
+          title: '사진 갤러리',
+        }}
+      />
+      <Stack.Screen 
+        name="Stats" 
+        component={StatsScreen}
+        options={{
+          title: '통계',
+        }}
+      />
+      <Stack.Screen 
+        name="PersonalTaste" 
+        component={PersonalTasteDashboard}
+        options={{
+          title: '내 취향 분석',
+        }}
+      />
+      <Stack.Screen 
+        name="AchievementGallery" 
+        component={AchievementGalleryScreen}
+        options={{
+          title: '성취',
+        }}
+      />
+      <Stack.Screen 
+        name="PerformanceDashboard" 
+        component={PerformanceDashboardScreen}
+        options={{
+          title: '성능 대시보드',
+        }}
+      />
+      <Stack.Screen 
+        name="PerformanceTesting" 
+        component={PerformanceTestingScreen}
+        options={{
+          title: '성능 테스트',
+        }}
+      />
+      <Stack.Screen 
+        name="MarketIntelligence" 
+        component={MarketIntelligenceScreen}
+        options={{
+          title: '시장 인텔리전스',
+        }}
+      />
+      <Stack.Screen 
+        name="Legal" 
+        component={LegalScreen}
+        options={{
+          title: '법적 고지',
+        }}
+      />
     </Stack.Navigator>
   );
 }
 
-// 메인 탭 네비게이터 래퍼
-function MainTabsWrapper({ navigation: parentNavigation }: { navigation: any }) {
-  return <MainTabs parentNavigation={parentNavigation} />;
-}
-
 // 메인 탭 네비게이터
-function MainTabs({ parentNavigation }: { parentNavigation: any }) {
+function MainTabs() {
+  const user = useUserStore(state => state.user);
+  const isAdmin = user?.role === 'admin';
+
   return (
     <Tab.Navigator
-      screenOptions={{
-        headerShown: true,
-        headerStyle: {
-          backgroundColor: IOSColors.systemBackground,
-          elevation: 0,
-          shadowOpacity: 0,
-          borderBottomWidth: IOSLayout.borderWidthThin,
-          borderBottomColor: IOSColors.separator,
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          return <TabBarIcon name={route.name} color={color} size={size} />;
         },
-        headerTintColor: IOSColors.label,
-        headerTitleStyle: IOSTypography.headline,
-        ...commonHeaderOptions,
+        tabBarActiveTintColor: '#8B4513',
+        tabBarInactiveTintColor: '#999999',
         tabBarStyle: {
-          backgroundColor: IOSColors.systemBackground,
-          borderTopColor: IOSColors.separator,
-          borderTopWidth: IOSLayout.borderWidthThin,
-          height: IOSLayout.tabBarHeight + 34,
-          paddingBottom: 8,
-          paddingTop: 4,
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 0.5,
+          borderTopColor: '#E0E0E0',
+          paddingBottom: 5,
+          paddingTop: 5,
+          height: 55,
         },
         tabBarLabelStyle: {
-          ...IOSTypography.caption2,
           fontSize: 10,
+          fontWeight: '500',
         },
-        tabBarActiveTintColor: IOSColors.systemBrown,
-        tabBarInactiveTintColor: IOSColors.secondaryLabel,
-      }}
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+          borderBottomWidth: 0.5,
+          borderBottomColor: '#E0E0E0',
+        },
+        headerTitleStyle: {
+          fontSize: 17,
+          fontWeight: '600',
+        },
+        ...commonHeaderOptions,
+      })}
     >
       <Tab.Screen 
         name="Home" 
-        component={HomeScreen} 
+        component={HomeScreen}
         options={{
-          headerShown: false, // HomeScreen has its own navigation
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ focused, color }) => (
-            <TabBarIcon name="home" focused={focused} color={color} />
-          ),
+          tabBarLabel: '홈',
+          headerTitle: 'CupNote',
         }}
       />
       <Tab.Screen 
         name="Journal" 
-        component={HistoryStack} 
+        component={JournalIntegratedScreen}
         options={{
-          headerShown: false, // HistoryStack has its own navigation
-          tabBarLabel: 'Journal',
-          tabBarIcon: ({ focused, color }) => (
-            <TabBarIcon name="journal" focused={focused} color={color} />
-          ),
+          tabBarLabel: '저널',
+          headerTitle: '커피 저널',
         }}
       />
+      {isAdmin && (
+        <Tab.Screen 
+          name="Admin" 
+          component={AdminStack}
+          options={{
+            tabBarLabel: '관리자',
+            headerShown: false,
+          }}
+        />
+      )}
       <Tab.Screen 
-        name="AddCoffee" 
-        component={View} // Placeholder component
+        name="History" 
+        component={HistoryStack}
         options={{
-          tabBarLabel: '',
-          tabBarIcon: ({ focused, color }) => (
-            <View style={{
-              position: 'absolute',
-              bottom: 0,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <View style={{
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                backgroundColor: IOSColors.systemBlue,
-                alignItems: 'center',
-                justifyContent: 'center',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.25,
-                shadowRadius: 4,
-                elevation: 5,
-              }}>
-                <Text style={{ fontSize: 32, color: '#FFF', fontWeight: '300' as const }}>+</Text>
-              </View>
-            </View>
-          ),
-        }}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            parentNavigation.navigate('TastingFlow', { screen: 'ModeSelection' });
-          },
-        }}
-      />
-      <Tab.Screen 
-        name="Achievements" 
-        component={AchievementGalleryScreen} 
-        options={{
+          tabBarLabel: '기록',
           headerShown: false,
-          tabBarLabel: '업적',
-          tabBarIcon: ({ focused, color }) => (
-            <TabBarIcon name="achievements" focused={focused} color={color} />
-          ),
         }}
       />
       <Tab.Screen 
         name="Profile" 
-        component={ProfileStack} 
+        component={ProfileStack}
         options={{
-          headerShown: false, // ProfileStack has its own navigation
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({ focused, color }) => (
-            <TabBarIcon name="profile" focused={focused} color={color} />
-          ),
+          tabBarLabel: '프로필',
+          headerShown: false,
         }}
       />
     </Tab.Navigator>
   );
 }
 
+// 관리자 스택 네비게이터
+function AdminStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+          borderBottomWidth: 0.5,
+          borderBottomColor: '#E0E0E0',
+        },
+        headerTitleStyle: {
+          fontSize: 17,
+          fontWeight: '600',
+        },
+        headerTintColor: '#007AFF',
+        ...commonHeaderOptions,
+      }}
+    >
+      <Stack.Screen 
+        name="AdminDashboard" 
+        component={AdminDashboardScreen}
+        options={{
+          title: '관리자 대시보드',
+        }}
+      />
+      <Stack.Screen 
+        name="AdminCoffeeEdit" 
+        component={AdminCoffeeEditScreen}
+        options={{
+          title: '커피 편집',
+        }}
+      />
+      <Stack.Screen 
+        name="AdminFeedback" 
+        component={AdminFeedbackScreen}
+        options={{
+          title: '피드백 관리',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 
-function AppNavigator() {
-  // Skip authentication entirely - go directly to main app
-  const { loadStoredUser } = useUserStore();
-  const navigationRef = useRef<any>(null);
-  
+// 인증 스택 네비게이터
+function AuthStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="SignIn" component={SignInScreen} />
+      <Stack.Screen name="SignUp" component={SignUpScreen} />
+      <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
+    </Stack.Navigator>
+  );
+}
+
+// 메인 네비게이터
+export default function AppNavigator() {
+  const { isInitialized, isAuthenticated } = useUserStore();
+  const navigationRef = useRef(null);
+  const routeNameRef = useRef();
+
   useEffect(() => {
-    // Initialize app without authentication check
-    initializeApp();
+    // 네비게이션 상태 변경 추적
+    return () => {};
   }, []);
 
-  const initializeApp = async () => {
-    try {
-      // Load any stored user data if available
-      await loadStoredUser();
-      
-      // Set navigation reference for ScreenContextService
-      if (navigationRef.current) {
-        ScreenContextService.setNavigationRef(navigationRef.current);
-      }
-    } catch (error) {
-      // Continue without stored data
-    }
+  const onReady = () => {
+    routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;
+    ScreenContextService.setCurrentScreen(routeNameRef.current || '');
   };
+
+  const onStateChange = async () => {
+    const previousRouteName = routeNameRef.current;
+    const currentRouteName = navigationRef.current?.getCurrentRoute()?.name;
+
+    if (previousRouteName !== currentRouteName) {
+      // 화면 전환 추적
+      ScreenContextService.setCurrentScreen(currentRouteName || '');
+      
+      // AsyncStorage에 마지막 방문 화면 저장 (선택사항)
+      if (currentRouteName) {
+        await AsyncStorage.setItem('lastVisitedScreen', currentRouteName);
+      }
+    }
+
+    routeNameRef.current = currentRouteName;
+  };
+
+  // Check for first time launch
+  const [isFirstLaunch, setIsFirstLaunch] = React.useState(null);
+
+  React.useEffect(() => {
+    AsyncStorage.getItem('hasLaunched').then(value => {
+      if (value === null) {
+        AsyncStorage.setItem('hasLaunched', 'true');
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false);
+      }
+    });
+  }, []);
+
+  console.log('AppNavigator state:', { isInitialized, isAuthenticated, isFirstLaunch });
+  
+  if (!isInitialized || isFirstLaunch === null) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
+        <Text style={{ fontSize: 18, color: '#333' }}>Loading CupNote...</Text>
+      </View>
+    );
+  }
 
   return (
     <RealmProvider>
@@ -446,85 +542,35 @@ function AppNavigator() {
         <FeedbackProvider>
           <NavigationContainer 
             ref={navigationRef}
-            onReady={() => {
-              // Set navigation reference when ready
-              ScreenContextService.setNavigationRef(navigationRef.current);
-            }}
+            onReady={onReady}
+            onStateChange={onStateChange}
           >
-          <Stack.Navigator 
-            initialRouteName="MainTabs"
-            screenOptions={{
-              headerShown: false,
-              presentation: 'card',
-            }}
-          >
-            <Stack.Screen 
-              name="MainTabs" 
-              component={MainTabsWrapper} 
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen 
-              name="TastingFlow" 
-              component={TastingFlow} 
-              options={{
-                presentation: 'card',
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen 
-              name="AdminDashboard" 
-              component={AdminDashboardScreen}
-              options={{
-                headerShown: true,
-                headerTitle: '관리자 대시보드',
-              }}
-            />
-            <Stack.Screen 
-              name="AdminCoffeeEdit" 
-              component={AdminCoffeeEditScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen 
-              name="AdminFeedback" 
-              component={AdminFeedbackScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen 
-              name="DeveloperScreen" 
-              component={DeveloperScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen 
-              name="TastingDetail" 
-              component={TastingDetailScreen}
-              options={{
-                headerShown: true,
-                title: 'Tasting Details',
-                headerStyle: {
-                  backgroundColor: '#FFFFFF',
-                },
-                headerTintColor: HIGColors.label,
-                headerTitleStyle: {
-                  fontWeight: '600',
-                  fontSize: 17,
-                },
-                ...commonHeaderOptions,
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </FeedbackProvider>
-    </AchievementProvider>
-  </RealmProvider>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              {isFirstLaunch && (
+                <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+              )}
+              {isAuthenticated ? (
+                <>
+                  <Stack.Screen name="Main" component={MainTabs} />
+                  <Stack.Screen name="TastingFlow" component={TastingFlow} />
+                  <Stack.Screen 
+                    name="EnhancedHomeCafe" 
+                    component={EnhancedHomeCafeScreen}
+                    options={{ title: '홈카페 프로' }}
+                  />
+                  <Stack.Screen 
+                    name="LabMode" 
+                    component={LabModeScreen}
+                    options={{ title: '랩 모드' }}
+                  />
+                </>
+              ) : (
+                <Stack.Screen name="Auth" component={AuthStack} />
+              )}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </FeedbackProvider>
+      </AchievementProvider>
+    </RealmProvider>
   );
 }
-
-export default AppNavigator;

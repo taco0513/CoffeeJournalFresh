@@ -25,6 +25,7 @@ import { useCoffeeNotifications } from '../../hooks/useCoffeeNotifications';
 import { CoffeeDiscoveryAlert } from '../../components/CoffeeDiscoveryAlert';
 import { InsightCard } from '../../components-tamagui';
 import StatusBadge from '../../components/StatusBadge';
+import { useScreenPerformance } from '../../hooks/useScreenPerformance';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -95,6 +96,9 @@ const SkeletonBox = styled(YStack, {
 });
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
+  // Performance measurement
+  useScreenPerformance('HomeScreen');
+  
   const theme = useTheme();
   const tokens = getTokens();
   const { currentUser } = useUserStore();
