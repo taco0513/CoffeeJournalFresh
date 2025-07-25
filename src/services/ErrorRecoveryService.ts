@@ -112,7 +112,7 @@ export class ErrorRecoveryService {
       await this.updateErrorPattern(errorType);
 
       // Log the error
-      Logger.error(`Error recovery initiated: ${errorType}`, 'error_recovery', error);
+      Logger.error(`Error recovery initiated: ${errorType}`, 'error_recovery', { error });
 
       // Execute recovery strategy
       this.recoveryInProgress.add(errorType);
@@ -125,7 +125,7 @@ export class ErrorRecoveryService {
       return result;
 
     } catch (recoveryError) {
-      Logger.error('Error recovery failed', 'error_recovery', recoveryError as Error);
+      Logger.error('Error recovery failed', 'error_recovery', { error: recoveryError as Error });
 
       return {
         success: false,
@@ -274,7 +274,7 @@ export class ErrorRecoveryService {
       };
 
     } catch (error) {
-      Logger.error('Realm recovery failed', 'error_recovery', error as Error);
+      Logger.error('Realm recovery failed', 'error_recovery', { error: error as Error });
       
       return {
         success: false,
@@ -588,7 +588,7 @@ export class ErrorRecoveryService {
 
       await this.saveErrorPatterns();
     } catch (error) {
-      Logger.error(`Failed to update error pattern for ${errorType}`, 'error_recovery', error as Error);
+      Logger.error(`Failed to update error pattern for ${errorType}`, 'error_recovery', { error: error as Error });
     }
   }
 
@@ -604,7 +604,7 @@ export class ErrorRecoveryService {
         Logger.debug(`Error patterns loaded from storage: ${this.errorPatterns.size}`, 'error_recovery');
       }
     } catch (error) {
-      Logger.error('Failed to load error patterns', 'error_recovery', error as Error);
+      Logger.error('Failed to load error patterns', 'error_recovery', { error: error as Error });
     }
   }
 
@@ -616,7 +616,7 @@ export class ErrorRecoveryService {
       const patterns = Object.fromEntries(this.errorPatterns);
       await AsyncStorage.setItem(ERROR_PATTERNS_KEY, JSON.stringify(patterns));
     } catch (error) {
-      Logger.error('Failed to save error patterns', 'error_recovery', error as Error);
+      Logger.error('Failed to save error patterns', 'error_recovery', { error: error as Error });
     }
   }
 
@@ -672,7 +672,7 @@ export class ErrorRecoveryService {
       await AsyncStorage.removeItem(ERROR_PATTERNS_KEY);
       Logger.info('Error patterns cleared', 'error_recovery');
     } catch (error) {
-      Logger.error('Failed to clear error patterns', 'error_recovery', error as Error);
+      Logger.error('Failed to clear error patterns', 'error_recovery', { error: error as Error });
     }
   }
 }

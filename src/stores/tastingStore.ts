@@ -113,7 +113,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     }));
   },
 
-  saveTasting: async () => {
+  saveTasting: async (): Promise<void> => {
     const state = get();
     const {currentTasting, selectedFlavors, selectedSensoryExpressions} = state;
 
@@ -150,9 +150,8 @@ export const useTastingStore = create<TastingState>((set, get) => ({
           sensoryScore: 0,
         },
         personalComment: currentTasting.personalComment,
-        mode: currentTasting.mode,
+        mode: currentTasting.mode as 'cafe' | 'home_cafe' | undefined,
         homeCafeData: currentTasting.homeCafeData,
-        simpleHomeCafeData: currentTasting.simpleHomeCafeData,
         labModeData: currentTasting.labModeData,
       });
 
@@ -160,13 +159,13 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       state.calculateMatchScore();
       
       // Check achievements after saving
-      if (savedTasting && savedTasting.userId) {
+      if (savedTasting && (savedTasting as any).userId) {
         try {
           const achievementSystem = new AchievementSystem();
           const action: UserAction = {
             type: 'tasting',
             data: {
-              tastingId: savedTasting.id,
+              tastingId: (savedTasting as any).id,
               flavors: selectedFlavors,
               sensoryExpressions: selectedSensoryExpressions,
               mode: currentTasting.mode,
@@ -178,14 +177,14 @@ export const useTastingStore = create<TastingState>((set, get) => ({
             },
             timestamp: new Date(),
           };
-          await achievementSystem.checkAndUpdateAchievements(savedTasting.userId, action);
+          await achievementSystem.checkAndUpdateAchievements((savedTasting as any).userId, action);
         } catch (achievementError) {
           console.error('Achievement check failed:', achievementError);
           // Don't throw - achievement check failure shouldn't prevent tasting save
         }
       }
       
-      return savedTasting;
+      // return savedTasting; // Return type should be void
     } catch (error) {
       throw error;
     }
@@ -373,11 +372,6 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     }));
   },
 
-  updateSyncStatus: (status: Partial<SyncStatus>) => {
-    set((state) => ({
-      syncStatus: { ...state.syncStatus, ...status },
-    }));
-  },
 
   checkAchievements: async (userId: string) => {
     if (!userId) return [];

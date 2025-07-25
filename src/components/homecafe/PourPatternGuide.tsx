@@ -15,6 +15,8 @@ interface PourPatternGuideProps {
   selectedPattern?: string;
   onPatternSelect?: (pattern: string) => void;
   selectedDripper: string;
+  technique?: string;
+  dripper?: string;
 }
 
 interface PourPattern {

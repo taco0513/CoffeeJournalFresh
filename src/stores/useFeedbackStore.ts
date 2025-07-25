@@ -87,9 +87,14 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
       // Let user write their own feedback content
       
       // Auto-fill form with smart suggestions (excluding description)
+      // Map the category to match FeedbackCategory type
+      const mappedCategory = suggestedCategory === 'bug_report' ? 'bug' : 
+                           suggestedCategory === 'feature_request' ? 'idea' : 
+                           suggestedCategory as FeedbackCategory;
+      
       set({ 
         isVisible: true,
-        category: suggestedCategory,
+        category: mappedCategory,
         title: suggestedTitle,
         description: '', // Keep description empty for user input
       });

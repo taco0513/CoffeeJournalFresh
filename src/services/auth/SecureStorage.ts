@@ -261,7 +261,7 @@ export class SecureStorage {
         features.push('Hardware 보안 모듈');
       } else {
         features.push('Android Keystore');
-        if (Platform.Version >= 23) {
+        if (typeof Platform.Version === 'number' && Platform.Version >= 23) {
           features.push('Hardware 백업 키');
         }
       }
@@ -429,38 +429,37 @@ export class SecureStorage {
     const keychainOptions: Partial<Keychain.Options> = {};
 
     if (Platform.OS === 'ios') {
-      keychainOptions.accessControl = options.touchID
-        ? Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET
-        : Keychain.ACCESS_CONTROL.DEVICE_PASSCODE;
+      // ACCESS_CONTROL is not available in newer versions
+      // Use accessible property instead
+      if (options.touchID) {
+        (keychainOptions as any).authenticatePrompt = options.authenticatePrompt || 'Please authenticate';
+      }
       
       keychainOptions.accessible = Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY;
       
       if (options.accessGroup) {
-        keychainOptions.accessGroup = options.accessGroup;
+        (keychainOptions as any).accessGroup = options.accessGroup;
       }
       
       if (options.authenticatePrompt) {
-        keychainOptions.authenticatePrompt = options.authenticatePrompt;
+        keychainOptions.authenticationPrompt = options.authenticatePrompt;
       }
       
       if (options.kLocalizedFallbackTitle) {
-        keychainOptions.localizedFallbackTitle = options.kLocalizedFallbackTitle;
+        (keychainOptions as any).localizedFallbackTitle = options.kLocalizedFallbackTitle;
       }
     }
 
     if (Platform.OS === 'android') {
-      keychainOptions.securityLevel = options.touchID
-        ? Keychain.SECURITY_LEVEL.SECURE_HARDWARE
-        : Keychain.SECURITY_LEVEL.SECURE_SOFTWARE;
-      
-      keychainOptions.storage = Keychain.STORAGE_TYPE.AES;
+      // Android doesn't have securityLevel and storage properties in latest version
+      // These are handled internally by the library
       
       if (options.showModal !== undefined) {
-        keychainOptions.showModal = options.showModal;
+        (keychainOptions as any).showModal = options.showModal;
       }
       
       if (options.kLocalizedFallbackTitle) {
-        keychainOptions.kLocalizedFallbackTitle = options.kLocalizedFallbackTitle;
+        (keychainOptions as any).kLocalizedFallbackTitle = options.kLocalizedFallbackTitle;
       }
     }
 

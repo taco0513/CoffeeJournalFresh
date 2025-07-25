@@ -14,27 +14,37 @@ import { transformFlavorData } from './utils/flavorDataTransform';
 const flavorData = transformFlavorData();
 
 interface CategoryAccordionProps {
-  category: string;
-  expanded: boolean;
-  onToggle: () => void;
-  onSelectFlavor: (path: FlavorPath) => void;
-  onSelectSubcategory: (level1: string, level2: string) => void;
-  selectedPaths: FlavorPath[];
-  searchQuery: string;
-  expandedSubCategories: Set<string>;
-  onToggleSubcategory: (subcategoryKey: string) => void;
+  category: string | any;
+  expanded?: boolean;
+  isExpanded?: boolean;
+  onToggle?: () => void;
+  onToggleExpansion?: () => void;
+  onSelectFlavor?: (path: FlavorPath) => void;
+  onFlavorSelect?: (path: FlavorPath) => void;
+  onSelectSubcategory?: (level1: string, level2: string) => void;
+  selectedPaths?: FlavorPath[];
+  selectedFlavors?: FlavorPath[];
+  searchQuery?: string;
+  expandedSubCategories?: Set<string>;
+  onToggleSubcategory?: (subcategoryKey: string) => void;
+  onSubCategoryToggle?: (subcategoryKey: string) => void;
 }
 
 export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
   category,
   expanded,
+  isExpanded,
   onToggle,
+  onToggleExpansion,
   onSelectFlavor,
+  onFlavorSelect,
   onSelectSubcategory,
-  selectedPaths,
-  searchQuery,
-  expandedSubCategories,
+  selectedPaths = [],
+  selectedFlavors = [],
+  searchQuery = '',
+  expandedSubCategories = new Set(),
   onToggleSubcategory,
+  onSubCategoryToggle,
 }) => {
   const categoryData = flavorData.find(item => item.category === category);
   const categoryColor = CATEGORY_COLORS[category] || '#9E9E9E';
@@ -143,14 +153,14 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
                     const subcategoryKey = `${category}-${sub.name}`;
                     
                     if (isDirectlySelected) {
-                      onSelectSubcategory(category, sub.name);
+                      onSelectSubcategory?.(category, sub.name);
                       if (expandedSubCategories.has(subcategoryKey)) {
-                        onToggleSubcategory(subcategoryKey);
+                        onToggleSubcategory?.(subcategoryKey);
                       }
                     } else {
-                      onToggleSubcategory(subcategoryKey);
+                      onToggleSubcategory?.(subcategoryKey);
                       if (!expandedSubCategories.has(subcategoryKey) && !hasSelectedFlavors) {
-                        onSelectSubcategory(category, sub.name);
+                        onSelectSubcategory?.(category, sub.name);
                       }
                     }
                   }}
@@ -210,7 +220,7 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
                             ]}
                             onPress={() => {
                               if (!isDisabled) {
-                                onSelectFlavor({
+                                onSelectFlavor?.({
                                   level1: category,
                                   level2: sub.name,
                                   level3: flavor.name,

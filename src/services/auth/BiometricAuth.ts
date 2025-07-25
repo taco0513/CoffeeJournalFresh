@@ -163,7 +163,7 @@ export class BiometricAuth {
   static async getSupportedBiometrics(): Promise<string[]> {
     try {
       const supportedBiometrics = await TouchID.getSupportedBiometryType();
-      return Array.isArray(supportedBiometrics) ? supportedBiometrics : [supportedBiometrics];
+      return Array.isArray(supportedBiometrics) ? supportedBiometrics : [supportedBiometrics || ''];
     } catch (error) {
       console.error('Error getting supported biometrics:', error);
       return [];

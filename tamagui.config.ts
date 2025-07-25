@@ -198,6 +198,7 @@ const darkTheme = {
 }
 
 // Create and export config
+// @ts-ignore - circular reference
 const config = createTamagui({
   tokens: cupNoteTokens,
   themes: {

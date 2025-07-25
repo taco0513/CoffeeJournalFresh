@@ -16,12 +16,16 @@ interface GrindSizeGuideProps {
   selectedDripper: string;
   onGrindSizeSelect?: (grindSize: string) => void;
   currentGrindSize?: string;
+  dripper?: string;
+  brewMethod?: string;
 }
 
 export const GrindSizeGuide: React.FC<GrindSizeGuideProps> = ({
   selectedDripper,
   onGrindSizeSelect,
   currentGrindSize,
+  dripper,
+  brewMethod,
 }) => {
   const { t } = useTranslation();
   const [showGuide, setShowGuide] = useState(false);

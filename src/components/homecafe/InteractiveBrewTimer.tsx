@@ -17,6 +17,10 @@ interface InteractiveBrewTimerProps {
   totalBrewTime: number;
   onTimerComplete?: (lapTimes: number[]) => void;
   onStepComplete?: (stepIndex: number, actualTime: number) => void;
+  recipe?: any;
+  onComplete?: (actualBrewTime: number) => void;
+  showModal?: boolean;
+  onClose?: () => void;
 }
 
 const { width } = Dimensions.get('window');

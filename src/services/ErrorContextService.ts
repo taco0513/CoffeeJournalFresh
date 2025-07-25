@@ -119,7 +119,7 @@ class ErrorContextService {
     global.fetch = async (...args: any[]) => {
       const startTime = Date.now();
       try {
-        const response = await originalFetch(...args);
+        const response = await originalFetch(args[0], args[1]);
         const duration = Date.now() - startTime;
         
         await analyticsService.trackTiming('network_request', duration, {
@@ -133,7 +133,7 @@ class ErrorContextService {
       } catch (error) {
         const duration = Date.now() - startTime;
         
-        await analyticsService.trackError('network_error', error.message, error.stack, {
+        await analyticsService.trackError('network_error', (error as any).message, (error as any).stack, {
           url: args[0],
           method: args[1]?.method || 'GET',
           duration,

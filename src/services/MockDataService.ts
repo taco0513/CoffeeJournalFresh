@@ -1,4 +1,5 @@
-import { TastingData, HomeCafeData } from './realm/types';
+import { TastingData } from './realm/types';
+import { HomeCafeData } from '../types/tasting';
 import { SelectedSensoryExpression } from '../types/tasting';
 import RealmService from './realm/RealmService';
 import { RealmLogger } from '../utils/logger';
@@ -519,7 +520,7 @@ export class MockDataService {
           await realmService.saveTasting(record);
           successCount++;
         } catch (error) {
-          RealmLogger.error('realm', `Failed to save mock record: ${error}`, { record });
+          RealmLogger.error('realm', `Failed to save mock record: ${error}`);
         }
       }
 

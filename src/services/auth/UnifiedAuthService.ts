@@ -1,8 +1,8 @@
 import { Alert } from 'react-native';
 import appleAuth from '@invertase/react-native-apple-authentication';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { supabase } from '../supabase/client';
-import { GoogleAuthConfig, isGoogleSignInConfigured } from '@/config/googleAuth';
+import { GoogleAuthConfig, isGoogleSignInConfigured } from '../../config/googleAuth';
 import { SecureStorage } from './SecureStorage';
 import { BiometricAuth } from './BiometricAuth';
 
@@ -214,7 +214,7 @@ export class UnifiedAuthService {
     } catch (error: any) {
       console.error('Google sign-in error:', error);
 
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      if (error.code === '-5' || error.message?.includes('cancelled')) { // User cancelled
         return {
           success: false,
           error: '로그인이 취소되었습니다.',
@@ -451,7 +451,7 @@ export class UnifiedAuthService {
           accessToken: data.session.access_token,
           refreshToken: data.session.refresh_token,
           expiresAt: new Date(data.session.expires_at || 0).getTime(),
-          provider: data.session.user.app_metadata?.provider || 'email',
+          provider: (data.session.user.app_metadata?.provider as 'email' | 'google' | 'apple') || 'email',
         };
       }
 

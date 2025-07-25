@@ -408,8 +408,23 @@ function OptimizedUnifiedFlavorScreen() {
           {/* Selected Flavors */}
           <SelectedFlavorsContainer hasSelected={selectedCount > 0}>
             <SelectedFlavorsHeader 
+              selectedPaths={selectedFlavors}
               selectedFlavors={selectedFlavors}
-              onRemoveFlavor={handleFlavorSelect}
+              onRemoveFlavor={(index) => {
+                const flavorToRemove = selectedFlavors[index];
+                if (flavorToRemove) {
+                  handleFlavorSelect(flavorToRemove);
+                }
+              }}
+              onToggleAllCategories={() => {
+                if (expandedCategories.size === flavorData.length) {
+                  setExpandedCategories(new Set());
+                } else {
+                  setExpandedCategories(new Set(flavorData.map((cat: any) => cat.category)));
+                }
+              }}
+              expandedCategoriesCount={expandedCategories.size}
+              totalCategoriesCount={flavorData.length}
               maxSelections={5}
             />
           </SelectedFlavorsContainer>
@@ -444,7 +459,7 @@ function OptimizedUnifiedFlavorScreen() {
               )}
 
               {/* Category Accordion */}
-              {!searchQuery.trim() && flavorData.map((category, categoryIndex) => (
+              {!searchQuery.trim() && flavorData.map((category: any, categoryIndex: number) => (
                 <View
                   key={category.name}
                   animation="lazy"

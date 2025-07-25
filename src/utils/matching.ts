@@ -1,4 +1,4 @@
-import { SelectedFlavors, SensoryAttributes } from '../stores/tastingStore';
+import type { SelectedFlavors, SensoryAttributes } from '../types/tasting';
 import { flavorWheel } from '../data/flavorWheel';
 import { flavorWheelKorean } from '../data/flavorWheelKorean';
 
@@ -77,10 +77,9 @@ const calculateFlavorMatch = (
   const userFlavorSet = new Set<string>();
   
   // Add all selected flavors and their variations
-  [...selectedFlavors.level1, 
-   ...selectedFlavors.level2, 
-   ...selectedFlavors.level3, 
-   ...selectedFlavors.level4].forEach(flavor => {
+  [...(selectedFlavors.level1 || []), 
+   ...(selectedFlavors.level2 || []), 
+   ...(selectedFlavors.level3 || [])].forEach(flavor => {
     getFlavorVariations(flavor).forEach(variation => {
       userFlavorSet.add(variation);
     });
@@ -112,22 +111,18 @@ const calculateFlavorMatch = (
   
   // Also check user selections against roaster notes (reverse check)
   const roasterNotesLower = roasterNotes.toLowerCase();
-  selectedFlavors.level1.forEach(() => maxPossibleScore += 8);
-  selectedFlavors.level2.forEach(() => maxPossibleScore += 6);
-  selectedFlavors.level3.forEach(() => maxPossibleScore += 4);
-  selectedFlavors.level4.forEach(() => maxPossibleScore += 2);
+  (selectedFlavors.level1 || []).forEach(() => maxPossibleScore += 8);
+  (selectedFlavors.level2 || []).forEach(() => maxPossibleScore += 6);
+  (selectedFlavors.level3 || []).forEach(() => maxPossibleScore += 4);
   
-  selectedFlavors.level1.forEach((flavor: string) => {
+  (selectedFlavors.level1 || []).forEach((flavor: string) => {
     if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 8;
   });
-  selectedFlavors.level2.forEach((flavor: string) => {
+  (selectedFlavors.level2 || []).forEach((flavor: string) => {
     if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 6;
   });
-  selectedFlavors.level3.forEach((flavor: string) => {
+  (selectedFlavors.level3 || []).forEach((flavor: string) => {
     if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 4;
-  });
-  selectedFlavors.level4.forEach((flavor: string) => {
-    if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 2;
   });
   
   // Calculate percentage
@@ -338,10 +333,9 @@ export const getMatchDetails = (
   const roasterWords = normalizeText(roasterNotes);
   const userFlavorSet = new Set<string>();
   
-  [...selectedFlavors.level1, 
-   ...selectedFlavors.level2, 
-   ...selectedFlavors.level3, 
-   ...selectedFlavors.level4].forEach(flavor => {
+  [...(selectedFlavors.level1 || []), 
+   ...(selectedFlavors.level2 || []), 
+   ...(selectedFlavors.level3 || [])].forEach(flavor => {
     userFlavorSet.add(flavor.toLowerCase());
   });
   

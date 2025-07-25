@@ -52,7 +52,7 @@ class BridgeDebugger {
         this.interceptBridgeCalls();
         debugLog('🔍 Bridge debugger initialized');
       } catch (error) {
-        debugWarn('⚠️ Bridge debugger initialization failed, continuing without debugging:', error.message);
+        debugWarn('⚠️ Bridge debugger initialization failed, continuing without debugging:', (error as any).message);
       }
     }
   }
@@ -104,7 +104,7 @@ class BridgeDebugger {
           moduleID,
           methodID,
           params,
-          error: error.message,
+          error: (error as any).message,
           moduleName: this.getModuleName(moduleID),
           methodName: this.getMethodName(moduleID, methodID)
         });
@@ -210,7 +210,12 @@ class BridgeDebugger {
 
   private getModuleName(moduleID: number): string {
     if (!this.originalBridge?._remoteModuleTable) return `Module${moduleID}`;
-    return this.originalBridge._remoteModuleTable[moduleID] || `Module${moduleID}`;
+    const moduleTable = this.originalBridge._remoteModuleTable[moduleID];
+    if (typeof moduleTable === 'object' && moduleTable !== null) {
+      // If it's an object with a name property, try to get the name
+      return (moduleTable as any).name || `Module${moduleID}`;
+    }
+    return `Module${moduleID}`;
   }
 
   private getMethodName(moduleID: number, methodID: number): string {
@@ -242,6 +247,6 @@ if (DEBUG_ENABLED) {
   try {
     bridgeDebugger.init();
   } catch (error) {
-    debugWarn('⚠️ Bridge debugger failed to initialize, continuing without debugging:', error.message);
+    debugWarn('⚠️ Bridge debugger failed to initialize, continuing without debugging:', (error as any).message);
   }
 }

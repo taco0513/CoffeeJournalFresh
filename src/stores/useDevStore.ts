@@ -55,7 +55,6 @@ export const useDevStore = create<DevState>()(
         if (!currentMode) {
           // Entering developer mode - reset all other settings
           set({
-            isDeveloperMode: true,
             ...initialState,
             isDeveloperMode: true,
           });

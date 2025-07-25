@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { Text, View } from 'react-native';
+import { Text, View, TouchableOpacity, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUserStore } from '../stores/useUserStore';
 import { IOSColors, IOSLayout, IOSTypography, IOSShadows } from '../styles/ios-hig-2024';
@@ -41,7 +41,7 @@ import {
   
   // Analytics & Media
   StatsScreen,
-  HistoryScreen,
+  // HistoryScreen,
   PhotoGalleryScreen,
   PhotoViewerScreen,
   SearchScreen,
@@ -57,6 +57,16 @@ import {
   ProfileSetupScreen,
   PerformanceTestingScreen,
 } from '../screens-tamagui';
+
+// Temporary simple replacement to test navigation
+const SimpleHistoryScreen = () => {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
+      <Text style={{ fontSize: 18, color: '#333' }}>History Screen</Text>
+      <Text style={{ fontSize: 14, color: '#666', marginTop: 10 }}>Navigation is working!</Text>
+    </View>
+  );
+};
 
 // Admin screens (not yet migrated to Tamagui)
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
@@ -178,7 +188,7 @@ function HistoryStack() {
     >
       <Stack.Screen 
         name="HistoryMain" 
-        component={HistoryScreen}
+        component={SimpleHistoryScreen}
         options={{
           title: '테이스팅 기록',
         }}
@@ -340,29 +350,12 @@ function ProfileStack() {
 // 메인 탭 네비게이터
 function MainTabs() {
   const user = useUserStore((state) => state.user);
-  const isAdmin = user?.user_metadata?.role === 'admin' || user?.email === 'admin@example.com';
+  const isAdmin = user?.email === 'hello@zimojin.com' || user?.isModerator === true;
   const insets = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, focused }) => {
-          return <TabBarIcon name={route.name as "Home" | "Journal" | "AddRecord" | "History" | "Profile" | "Admin"} focused={focused} color={color} />;
-        },
-        tabBarActiveTintColor: '#8B4513',
-        tabBarInactiveTintColor: '#999999',
-        tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 0.5,
-          borderTopColor: '#E0E0E0',
-          paddingBottom: insets.bottom + 5,
-          paddingTop: 5,
-          height: 55 + insets.bottom,
-        },
-        tabBarLabelStyle: {
-          fontSize: 10,
-          fontWeight: '500',
-        },
+      screenOptions={{
         headerShown: true,
         headerStyle: {
           backgroundColor: '#FFFFFF',
@@ -373,8 +366,15 @@ function MainTabs() {
           fontSize: 17,
           fontWeight: '600',
         },
+        tabBarActiveTintColor: '#007AFF',
+        tabBarInactiveTintColor: '#8E8E93',
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          borderTopColor: '#E0E0E0',
+        },
         ...commonHeaderOptions,
-      })}
+      }}
     >
       <Tab.Screen 
         name="Home" 
@@ -382,6 +382,14 @@ function MainTabs() {
         options={{
           tabBarLabel: '홈',
           headerTitle: 'CupNote',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name="Home" focused={focused} color={color} />
+          ),
+        }}
+        listeners={{
+          tabPress: e => {
+            console.log('🔥 Home tab pressed');
+          },
         }}
       />
       <Tab.Screen 
@@ -390,6 +398,14 @@ function MainTabs() {
         options={{
           tabBarLabel: '저널',
           headerTitle: '커피 저널',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name="Journal" focused={focused} color={color} />
+          ),
+        }}
+        listeners={{
+          tabPress: e => {
+            console.log('🔥 Journal tab pressed');
+          },
         }}
       />
       <Tab.Screen 
@@ -398,6 +414,9 @@ function MainTabs() {
         options={{
           tabBarLabel: '기록하기',
           headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name="AddRecord" focused={focused} color={color} />
+          ),
         }}
       />
       {isAdmin && (
@@ -407,6 +426,9 @@ function MainTabs() {
           options={{
             tabBarLabel: '관리자',
             headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name="Admin" focused={focused} color={color} />
+            ),
           }}
         />
       )}
@@ -416,6 +438,9 @@ function MainTabs() {
         options={{
           tabBarLabel: '기록',
           headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name="History" focused={focused} color={color} />
+          ),
         }}
       />
       <Tab.Screen 
@@ -424,6 +449,9 @@ function MainTabs() {
         options={{
           tabBarLabel: '프로필',
           headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name="Profile" focused={focused} color={color} />
+          ),
         }}
       />
     </Tab.Navigator>
@@ -495,6 +523,7 @@ export default function AppNavigator() {
   const isInitialized = true; // For now, assume it's initialized
   const navigationRef = useRef<any>(null);
   const routeNameRef = useRef<string | undefined>(undefined);
+  const [navigationReady, setNavigationReady] = React.useState(false);
   
   // Load stored user on app start
   useEffect(() => {
@@ -507,8 +536,13 @@ export default function AppNavigator() {
   console.log('AppNavigator - Auth State:', { isAuthenticated, user: !!user, currentUser: !!currentUser });
 
   useEffect(() => {
-    // 네비게이션 상태 변경 추적
-    return () => {};
+    // Ensure navigation is fully ready
+    const timer = setTimeout(() => {
+      setNavigationReady(true);
+      console.log('AppNavigator: Navigation system ready');
+    }, 500);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const getCurrentRoute = (state: any): any => {
@@ -583,30 +617,48 @@ export default function AppNavigator() {
         <FeedbackProvider>
           <NavigationContainer 
             ref={navigationRef}
-            onReady={onReady}
+            onReady={() => {
+              onReady();
+              setNavigationReady(true);
+              console.log('NavigationContainer: Ready');
+            }}
             onStateChange={onStateChange}
           >
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              {isFirstLaunch && (
-                <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-              )}
-              {isAuthenticated ? (
+            <Stack.Navigator 
+              screenOptions={{ 
+                headerShown: false,
+                gestureEnabled: navigationReady,
+                animation: navigationReady ? 'default' : 'none',
+              }}
+            >
+              {isFirstLaunch ? (
                 <>
-                  <Stack.Screen name="Main" component={MainTabs} />
-                  <Stack.Screen name="TastingFlow" component={TastingFlow} />
-                  <Stack.Screen 
-                    name="EnhancedHomeCafe" 
-                    component={EnhancedHomeCafeScreen}
-                    options={{ title: '홈카페 프로' }}
-                  />
-                  <Stack.Screen 
-                    name="LabMode" 
-                    component={LabModeScreen}
-                    options={{ title: '랩 모드' }}
-                  />
+                  <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+                  {!isAuthenticated && (
+                    <Stack.Screen name="Auth" component={AuthStack} />
+                  )}
                 </>
               ) : (
-                <Stack.Screen name="Auth" component={AuthStack} />
+                <>
+                  {isAuthenticated ? (
+                    <>
+                      <Stack.Screen name="Main" component={MainTabs} />
+                      <Stack.Screen name="TastingFlow" component={TastingFlow} />
+                      <Stack.Screen 
+                        name="EnhancedHomeCafe" 
+                        component={EnhancedHomeCafeScreen}
+                        options={{ title: '홈카페 프로' }}
+                      />
+                      <Stack.Screen 
+                        name="LabMode" 
+                        component={LabModeScreen}
+                        options={{ title: '랩 모드' }}
+                      />
+                    </>
+                  ) : (
+                    <Stack.Screen name="Auth" component={AuthStack} />
+                  )}
+                </>
               )}
             </Stack.Navigator>
           </NavigationContainer>

@@ -1,5 +1,5 @@
 import { useTastingStore } from '../stores/tastingStore';
-import { FlavorPath, SelectedSensoryExpression } from '../types/tasting';
+import { FlavorPath, SelectedSensoryExpression, FilterType, PourTechnique, PouroverDripper } from '../types/tasting';
 import { MouthfeelType } from '../types/sensory';
 
 // Sample dummy data collections
@@ -170,23 +170,23 @@ export class DummyDataService {
           model: grinder.model,
           setting: `${15 + Math.floor(Math.random() * 10)}`,
         },
-        brewingMethod: HOME_CAFE_EQUIPMENT.brewingMethods[Math.floor(Math.random() * HOME_CAFE_EQUIPMENT.brewingMethods.length)],
-        filter: HOME_CAFE_EQUIPMENT.filters[Math.floor(Math.random() * HOME_CAFE_EQUIPMENT.filters.length)],
-        water: '삼다수',
-        other: '',
+        dripper: HOME_CAFE_EQUIPMENT.brewingMethods[Math.floor(Math.random() * HOME_CAFE_EQUIPMENT.brewingMethods.length)] as PouroverDripper,
+        filter: 'bleached' as FilterType, // Simplified for dummy data
       },
       recipe: {
         doseIn: 15 + Math.floor(Math.random() * 5),
         waterAmount: 240 + Math.floor(Math.random() * 60),
         ratio: '1:16',
         waterTemp: 88 + Math.floor(Math.random() * 8),
+        bloomWater: 30 + Math.floor(Math.random() * 20),
         bloomTime: 30 + Math.floor(Math.random() * 15),
         totalBrewTime: 180 + Math.floor(Math.random() * 60),
-        pourPattern: '30-70-70-70',
+        pourTechnique: 'spiral' as PourTechnique,
+        numberOfPours: 4,
       },
       notes: {
-        previousChange: '그라인더 세팅을 조금 더 굵게 조정',
-        result: '추출 시간이 줄어들고 산미가 더 밝아짐',
+        grindAdjustment: '그라인더 세팅을 조금 더 굵게 조정',
+        tasteResult: '추출 시간이 줄어들고 산미가 더 밝아짐',
         nextExperiment: '물 온도를 2도 낮춰서 테스트 예정',
       },
     });
@@ -240,6 +240,9 @@ export class DummyDataService {
         expressionId: `${category}_${Math.floor(Math.random() * 10)}`,
         korean: randomExpression,
         english: '',
+        emoji: '☕',
+        intensity: 3,
+        selected: true,
       });
     });
     
@@ -349,29 +352,29 @@ export class DummyDataService {
           model: grinder.model,
           setting: `${15 + Math.floor(Math.random() * 15)}`, // 15-30 range
         },
-        brewingMethod,
-        filter: HOME_CAFE_EQUIPMENT.filters[Math.floor(Math.random() * HOME_CAFE_EQUIPMENT.filters.length)],
-        water: waterType,
-        other: brewingMethod === 'Siphon' ? '사이폰 전용 알코올 버너 사용' : '',
+        dripper: brewingMethod as PouroverDripper,
+        filter: 'bleached' as FilterType, // Simplified for dummy data
       },
       recipe: {
         doseIn: 12 + Math.floor(Math.random() * 8), // 12-20g range
         waterAmount: 200 + Math.floor(Math.random() * 100), // 200-300ml range
         ratio: ['1:15', '1:16', '1:17'][Math.floor(Math.random() * 3)],
         waterTemp: 85 + Math.floor(Math.random() * 10), // 85-95°C range
+        bloomWater: 30 + Math.floor(Math.random() * 20), // 30-50g bloom water
         bloomTime: 20 + Math.floor(Math.random() * 25), // 20-45 seconds
         totalBrewTime: 150 + Math.floor(Math.random() * 90), // 2:30-4:00 range
-        pourPattern,
+        pourTechnique: 'pulse' as PourTechnique,
+        numberOfPours: 3,
       },
       notes: {
-        previousChange: [
+        grindAdjustment: [
           '그라인더 세팅을 한 단계 굵게 조정',
           '물 온도를 3도 낮춤',
           '추출 시간을 30초 단축',
           '새로운 원두로 교체',
           '필터를 다른 브랜드로 변경',
         ][Math.floor(Math.random() * 5)],
-        result: [
+        tasteResult: [
           '산미가 더 밝고 깔끔해짐',
           '바디감이 향상되고 균형이 좋아짐',
           '쓴맛이 줄어들고 단맛이 강조됨',

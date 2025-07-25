@@ -9,13 +9,15 @@ type SentryScope = any;
 type SeverityLevel = 'fatal' | 'error' | 'warning' | 'log' | 'info' | 'debug';
 
 const Sentry = {
-  init: () => {},
-  setUser: () => {},
-  captureException: () => {},
-  captureMessage: () => {},
-  withScope: (callback: (scope: any) => void) => callback({}),
-  startTransaction: () => ({ finish: () => {} }),
-  reactNativeTracingIntegration: () => ({}),
+  init: (options?: any) => {},
+  setUser: (user: any) => {},
+  captureException: (error: any, context?: any) => {},
+  captureMessage: (message: string, level?: SeverityLevel) => {},
+  withScope: (callback: (scope: any) => void) => callback({
+    setContext: () => {},
+  }),
+  startTransaction: (context: any) => ({ finish: () => {} }),
+  reactNativeTracingIntegration: (options?: any) => ({}),
   reactNavigationIntegration: () => ({}),
 };
 

@@ -2,6 +2,9 @@
  * @format
  */
 
+// MUST BE AT THE TOP - Required for React Navigation
+import 'react-native-gesture-handler';
+
 // Define __DEV__ if not already defined
 if (typeof __DEV__ === 'undefined') {
   global.__DEV__ = process.env.NODE_ENV !== 'production';

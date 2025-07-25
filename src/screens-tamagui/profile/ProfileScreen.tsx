@@ -46,6 +46,9 @@ interface ProfileScreenProps {
 const Container = styled(YStack, {
   flex: 1,
   backgroundColor: '$background',
+  // Ensure container fills the screen properly
+  width: '100%',
+  height: '100%',
 })
 
 const NavigationBar = styled(XStack, {
@@ -104,11 +107,6 @@ const StyledAvatar = styled(Circle, {
   backgroundColor: '$primary',
   alignItems: 'center',
   justifyContent: 'center',
-  shadowColor: '$shadowColor',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 8,
-  elevation: 4,
 })
 
 const AvatarText = styled(Text, {
@@ -155,16 +153,6 @@ const MenuItem = styled(Card, {
   borderRadius: '$3',
   borderWidth: 1,
   borderColor: '$borderColor',
-  shadowColor: '$shadowColor',
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.05,
-  shadowRadius: 3,
-  elevation: 2,
-  
-  pressStyle: {
-    backgroundColor: '$gray3',
-    scale: 0.98,
-  },
 })
 
 const MenuIconContainer = styled(Circle, {
@@ -212,11 +200,6 @@ const SignOutButton = styled(Button, {
   backgroundColor: '$error',
   height: 48,
   borderRadius: '$3',
-  
-  pressStyle: {
-    backgroundColor: '$red9',
-    scale: 0.98,
-  },
 })
 
 const SignOutText = styled(Text, {
@@ -227,51 +210,102 @@ const SignOutText = styled(Text, {
 })
 
 const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true }) => {
+  console.log('🔄 ProfileScreen: Component rendering...');
+  
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { currentUser, signOut } = useUserStore();
   const { isDeveloperMode, toggleDeveloperMode } = useDevStore();
   const [stats, setStats] = useState({
     joinedDaysAgo: 0,
     achievementCount: 0,
-    favoriteRoaster: '',
+    favoriteRoaster: 'None',
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const realmService = RealmService.getInstance();
 
   useEffect(() => {
-    loadUserStats();
+    console.log('🔄 ProfileScreen: useEffect triggered');
+    const timeoutId = setTimeout(() => {
+      loadUserStats();
+    }, 100); // 작은 지연으로 렌더링 블로킹 방지
+    
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const loadUserStats = async () => {
     try {
-      if (realmService.isInitialized) {
-        const realm = realmService.getRealm();
-        const tastings = realm.objects('TastingRecord').filtered('isDeleted = false');
-        
-        // Find most visited roaster
-        const roasterCounts: Record<string, number> = {};
-        tastings.forEach((tasting: any) => {
-          const roaster = tasting.roastery;
-          roasterCounts[roaster] = (roasterCounts[roaster] || 0) + 1;
-        });
-        
-        const favoriteRoaster = Object.keys(roasterCounts).reduce((a, b) => 
-          roasterCounts[a] > roasterCounts[b] ? a : b
-        , '') || 'None';
-
-        // Calculate days since joining
-        const joinedDaysAgo = tastings.length > 0 
-          ? Math.floor((Date.now() - new Date((tastings[tastings.length - 1] as any).createdAt).getTime()) / (1000 * 60 * 60 * 24))
-          : 0;
-
-        setStats({
-          joinedDaysAgo,
-          achievementCount: Math.min(tastings.length, 15),
-          favoriteRoaster,
-        });
+      console.log('🔄 ProfileScreen: Loading user stats...');
+      
+      if (!realmService.isInitialized) {
+        console.log('⚠️ ProfileScreen: Realm not initialized, skipping stats load');
+        setIsLoading(false);
+        return;
       }
+      
+      const realm = realmService.getRealm();
+      if (!realm) {
+        console.log('⚠️ ProfileScreen: No realm instance available');
+        setIsLoading(false);
+        return;
+      }
+      
+      const tastings = Array.from(realm.objects('TastingRecord').filtered('isDeleted = false'));
+      console.log(`📊 ProfileScreen: Found ${tastings.length} tastings`);
+      
+      if (tastings.length === 0) {
+        setStats({
+          joinedDaysAgo: 0,
+          achievementCount: 0,
+          favoriteRoaster: 'None',
+        });
+        setIsLoading(false);
+        return;
+      }
+      
+      // Find most visited roaster
+      const roasterCounts: Record<string, number> = {};
+      tastings.forEach((tasting: any) => {
+        const roaster = tasting.roastery;
+        if (roaster && typeof roaster === 'string') {
+          roasterCounts[roaster] = (roasterCounts[roaster] || 0) + 1;
+        }
+      });
+      
+      const favoriteRoaster = Object.keys(roasterCounts).length > 0 
+        ? Object.keys(roasterCounts).reduce((a, b) => 
+            roasterCounts[a] > roasterCounts[b] ? a : b
+          )
+        : 'None';
+
+      // Calculate days since joining (use earliest record)
+      const earliestTasting = tastings.reduce((earliest: any, current: any) => {
+        return new Date(current.createdAt) < new Date(earliest.createdAt) ? current : earliest;
+      }, tastings[0]);
+      
+      const joinedDaysAgo = earliestTasting 
+        ? Math.floor((Date.now() - new Date(earliestTasting.createdAt).getTime()) / (1000 * 60 * 60 * 24))
+        : 0;
+
+      const newStats = {
+        joinedDaysAgo,
+        achievementCount: Math.min(tastings.length, 15),
+        favoriteRoaster,
+      };
+      
+      console.log('✅ ProfileScreen: Stats loaded:', newStats);
+      setStats(newStats);
+      
     } catch (error) {
-      // Handle error silently
+      console.error('❌ ProfileScreen: Error loading stats:', error);
+      // Set default stats on error
+      setStats({
+        joinedDaysAgo: 0,
+        achievementCount: 0,
+        favoriteRoaster: 'None',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -285,11 +319,14 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
           text: '로그아웃', 
           style: 'destructive', 
           onPress: async () => {
-            await signOut();
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Auth' as never }],
-            });
+            try {
+              console.log('🔐 ProfileScreen: Signing out...');
+              await signOut();
+              console.log('✅ ProfileScreen: Sign out completed');
+              // Reset은 상위 네비게이터에서 처리하도록 변경
+            } catch (error) {
+              console.error('❌ ProfileScreen: Sign out error:', error);
+            }
           }
         },
       ]
@@ -343,6 +380,20 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
     },
   ];
 
+  console.log('🔄 ProfileScreen: About to render, isLoading:', isLoading);
+  
+  if (isLoading) {
+    return (
+      <Container>
+        <SafeAreaView style={{ flex: 1 }}>
+          <YStack flex={1} justifyContent="center" alignItems="center">
+            <Text fontSize="$6" color="$gray11">프로필 로딩 중...</Text>
+          </YStack>
+        </SafeAreaView>
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <SafeAreaView style={{ flex: 1 }}>
@@ -352,7 +403,7 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
             <NavigationBar>
               <TitleContainer>
                 <NavigationTitle>Profile</NavigationTitle>
-                <BetaBadge animation="lazy">
+                <BetaBadge>
                   <BetaText>BETA</BetaText>
                 </BetaBadge>
               </TitleContainer>
@@ -366,9 +417,9 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
             contentContainerStyle={{ flexGrow: 1 }}
           >
             {/* Profile Header */}
-            <ProfileHeader animation="lazy">
+            <ProfileHeader>
               <AvatarContainer>
-                <StyledAvatar animation="bouncy">
+                <StyledAvatar>
                   <AvatarText>
                     {currentUser?.username?.charAt(0)?.toUpperCase() || 'U'}
                   </AvatarText>
@@ -385,14 +436,6 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
                 <MenuItem
                   key={index}
                   onPress={item.onPress}
-                  animation="quick"
-                  enterStyle={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  style={{
-                    animationDelay: index * 50,
-                  }}
                 >
                   <MenuIconContainer>
                     <MenuIcon>{item.icon}</MenuIcon>
@@ -412,7 +455,6 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
             <SignOutContainer>
               <SignOutButton
                 onPress={handleSignOut}
-                animation="quick"
               >
                 <SignOutText>로그아웃</SignOutText>
               </SignOutButton>

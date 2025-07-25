@@ -22,7 +22,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTastingStore } from '../../stores/tastingStore';
-import { HomeCafeData } from '../../types/tasting';
+import { HomeCafeData, PouroverDripper, PourTechnique } from '../../types/tasting';
+import { RecipeTemplate } from '../../services/HomeCafeEnhancedService';
 
 // Enhanced HomeCafe Components
 import EnhancedDripperSelector from '../../components/homecafe/EnhancedDripperSelector';
@@ -32,7 +33,7 @@ import PourPatternGuide from '../../components/homecafe/PourPatternGuide';
 import InteractiveBrewTimer from '../../components/homecafe/InteractiveBrewTimer';
 
 // Services
-import HomeCafeEnhancedService, { RecipeTemplate } from '../../services/HomeCafeEnhancedService';
+import HomeCafeEnhancedService from '../../services/HomeCafeEnhancedService';
 
 interface EnhancedHomeCafeScreenProps {
   onNext?: () => void;
@@ -522,19 +523,24 @@ export const EnhancedHomeCafeScreen: React.FC<EnhancedHomeCafeScreenProps> = ({ 
           onPress={() => {
             // Temporary workaround - use default template
             const defaultTemplate: RecipeTemplate = {
+              id: 'default-standard',
               name: 'Standard Recipe',
+              korean: '표준 레시피',
+              author: 'CupNote',
               dripper: formData.equipment.dripper,
+              difficulty: 'beginner',
+              description: '표준적인 추출 레시피',
               recipe: {
                 doseIn: 15,
                 waterAmount: 250,
                 ratio: '1:16.7',
                 waterTemp: 93,
                 grindSize: 'Medium',
-                bloomWater: 30,
-                bloomTime: 30,
                 totalBrewTime: 210,
-                pourPattern: 'Continuous' as PourTechnique,
+                steps: []
               },
+              notes: [],
+              tags: ['standard', 'basic']
             };
             handleRecipeTemplateSelect(defaultTemplate);
           }}
@@ -625,6 +631,8 @@ export const EnhancedHomeCafeScreen: React.FC<EnhancedHomeCafeScreenProps> = ({ 
                   
                   {useAdvancedMode && (
                     <RecipeTemplateSelector
+                      selectedDripper={formData.equipment.dripper}
+                      onRecipeSelect={handleRecipeTemplateSelect}
                       selectedTemplate={selectedRecipe}
                       onTemplateSelect={handleRecipeTemplateSelect}
                       dripper={formData.equipment.dripper}

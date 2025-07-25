@@ -131,9 +131,7 @@ interface DeveloperSettingSectionsProps {
   toggleShakeToFeedback: () => void;
   isBetaUser: boolean;
   setBetaStatus: (value: boolean) => void;
-  
-  // Actions
-  setTestUser: () => void;
+  setTestUser: () => Promise<void>;
   showFeedback: () => void;
   clearData: () => void;
   exportLogs: () => void;

@@ -75,7 +75,6 @@ export const useUserProfile = () => useUserStore(
   useShallow(state => ({
     currentUser: state.currentUser,
     isLoading: state.isLoading,
-    error: state.error,
   }))
 );
 

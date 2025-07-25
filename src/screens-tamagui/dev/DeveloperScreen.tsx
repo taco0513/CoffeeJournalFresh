@@ -41,7 +41,7 @@ interface DeveloperScreenProps {
 const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) => {
   const navigation = useNavigation<NavigationProp>();
   
-  const { user: currentUser } = useUserStore();
+  const { user: currentUser, setTestUser } = useUserStore();
   const { showFeedback, enableShakeToFeedback, toggleShakeToFeedback, isBetaUser, setBetaStatus } = useFeedbackStore();
   const { runAllDemos } = useFirecrawlDemo();
   const {
@@ -324,6 +324,7 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
             toggleShakeToFeedback={toggleShakeToFeedback}
             isBetaUser={isBetaUser}
             setBetaStatus={setBetaStatus}
+            setTestUser={setTestUser}
             
             // Actions
             showFeedback={showFeedback}

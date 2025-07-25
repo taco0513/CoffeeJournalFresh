@@ -318,7 +318,7 @@ export const commonLayoutStyles = StyleSheet.create({
 
 // 그림자 스타일 (iOS용)
 export const shadowStyles = StyleSheet.create({
-  buttonShadow: Platform.select({
+  buttonShadow: Platform.select<any>({
     ios: {
       shadowColor: '#000',
       shadowOffset: {
@@ -333,7 +333,7 @@ export const shadowStyles = StyleSheet.create({
     },
   }),
   
-  cardShadow: Platform.select({
+  cardShadow: Platform.select<any>({
     ios: {
       shadowColor: '#000',
       shadowOffset: {

@@ -1,6 +1,6 @@
 import { supabase } from '../supabase/client';
-import { GoogleAuthService } from '@/services/supabase/googleAuth';
-import AppleAuthService from '@/services/supabase/appleAuth';
+import { GoogleAuthService } from '../supabase/googleAuth';
+import AppleAuthService from '../supabase/appleAuth';
 
 export interface AuthResult {
   success: boolean;
@@ -45,7 +45,7 @@ export class EnhancedAuthService {
         success: true,
         user,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Enhanced Google Sign-In error:', error);
       return {
         success: false,
@@ -81,7 +81,7 @@ export class EnhancedAuthService {
         success: true,
         user,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Enhanced Apple Sign-In error:', error);
       return {
         success: false,
@@ -362,7 +362,7 @@ export class EnhancedAuthService {
       return {
         success: true,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Enhanced sign out error:', error);
       return {
         success: false,

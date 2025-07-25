@@ -17,6 +17,8 @@ interface SelectedFlavorsHeaderProps {
   onToggleAllCategories: () => void;
   expandedCategoriesCount: number;
   totalCategoriesCount: number;
+  selectedFlavors?: FlavorPath[];
+  maxSelections?: number;
 }
 
 export const SelectedFlavorsHeader: React.FC<SelectedFlavorsHeaderProps> = React.memo(({
@@ -25,6 +27,8 @@ export const SelectedFlavorsHeader: React.FC<SelectedFlavorsHeaderProps> = React
   onToggleAllCategories,
   expandedCategoriesCount,
   totalCategoriesCount,
+  selectedFlavors,
+  maxSelections,
 }) => {
   return (
     <View style={[styles.stickyHeader, selectedPaths.length === 0 && styles.stickyHeaderEmpty]}>

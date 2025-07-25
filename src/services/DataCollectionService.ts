@@ -49,7 +49,9 @@ class DataCollectionService {
       }
 
       // 데이터 변환 및 업로드
-      const uploadedRecords = await this.uploadTastingsToSupabase(localTastings, userId);
+      // Results를 배열로 변환
+      const tastingsArray = Array.from(localTastings);
+      const uploadedRecords = await this.uploadTastingsToSupabase(tastingsArray, userId);
 
       return {
         success: true,
@@ -178,7 +180,9 @@ class DataCollectionService {
         };
       }
 
-      const uploadedRecords = await this.uploadTastingsToSupabase(filteredTastings, userId);
+      // Results를 배열로 변환
+      const tastingsArray = Array.from(filteredTastings);
+      const uploadedRecords = await this.uploadTastingsToSupabase(tastingsArray, userId);
 
       return {
         success: true,
@@ -258,18 +262,23 @@ class DataCollectionService {
           variety: 'Arabica',
           process: 'Washed',
           roasterNotes: `테스트 로스터 노트 ${i + 1}`,
-          temperature: 'Hot',
+          temperature: 'hot',
           sensoryAttribute: {
             body: Math.floor(Math.random() * 5) + 1,
             acidity: Math.floor(Math.random() * 5) + 1,
             sweetness: Math.floor(Math.random() * 5) + 1,
             finish: Math.floor(Math.random() * 5) + 1,
+            mouthfeel: 'Clean' as const,
           },
           flavorNotes: [
             { level: 1, value: 'Fruity' },
             { level: 2, value: 'Berry' }
           ],
-          matchScoreTotal: Math.floor(Math.random() * 100) + 1
+          matchScoreTotal: Math.floor(Math.random() * 100) + 1,
+          isSynced: false,
+          matchScoreFlavor: Math.floor(Math.random() * 100) + 1,
+          matchScoreSensory: Math.floor(Math.random() * 100) + 1,
+          isDeleted: false
         };
 
         realmService.saveTastingRecord(testData);

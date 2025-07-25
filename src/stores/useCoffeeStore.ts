@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { StorageService } from '../services/StorageService';
-import { TastingData } from '../types/tasting';
+import { CurrentTasting } from '../types/tasting';
 
 interface CoffeeStore {
   // Current tasting session
-  currentTasting: Partial<TastingData>;
+  currentTasting: Partial<CurrentTasting>;
   
   // Cached tastings for display
-  tastingSessions: TastingData[];
+  tastingSessions: CurrentTasting[];
   
   // Loading states
   isLoading: boolean;

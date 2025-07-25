@@ -110,7 +110,7 @@ export class AchievementSystem {
 
       return notifications;
     } catch (error) {
-      Logger.error('Error tracking user action', 'achievement', { error: error as Error, action, userId });
+      Logger.error('Error tracking user action', 'achievement', { error: error as Error, data: { action: String(action), userId } });
       return [];
     }
   }
@@ -244,7 +244,7 @@ export class AchievementSystem {
         }
       });
     } catch (error) {
-      Logger.error('Error awarding points', 'achievement', { error: error as Error, userId, points });
+      Logger.error('Error awarding points', 'achievement', { error: error as Error, data: { userId, points } });
     }
   }
 
@@ -313,7 +313,7 @@ export class AchievementSystem {
           updated_at: achievement.updatedAt.toISOString(),
         });
     } catch (error) {
-      Logger.error('Error syncing achievement to Supabase', 'achievement', { error: error as Error, achievement });
+      Logger.error('Error syncing achievement to Supabase', 'achievement', { error: error as Error, data: { achievement } });
     }
   }
 
@@ -430,7 +430,7 @@ export class AchievementSystem {
         }
       });
     } catch (error) {
-      Logger.error('Error marking achievement as seen', 'achievement', { error: error as Error, achievementId });
+      Logger.error('Error marking achievement as seen', 'achievement', { error: error as Error, data: { achievementId } });
     }
   }
 
@@ -527,7 +527,7 @@ export class AchievementSystem {
       const currentCount = this.userCoffeeDiscoveries.get(userId) || 0;
       this.userCoffeeDiscoveries.set(userId, currentCount + 1);
     } catch (error) {
-      Logger.error('Error tracking coffee discovery', 'achievement', { error: error as Error, userId, coffeeData });
+      Logger.error('Error tracking coffee discovery', 'achievement', { error: error as Error, data: { userId, coffeeData } });
     }
   }
 }

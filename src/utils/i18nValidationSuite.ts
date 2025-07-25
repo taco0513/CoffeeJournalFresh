@@ -151,8 +151,8 @@ class I18nValidationSuite {
         'save', 'cancel', 'next', 'back'
       ];
       
-      const koreanTranslations = {};
-      const englishTranslations = {};
+      const koreanTranslations: Record<string, string> = {};
+      const englishTranslations: Record<string, string> = {};
       
       // Test Korean translations
       await changeLanguage('ko');
@@ -303,8 +303,8 @@ class I18nValidationSuite {
       
       const isBeta = isBetaMarket();
       const hasMarketConfig = isBeta ? 
-        deploymentConfig.marketConfig.us_beta !== undefined :
-        deploymentConfig.marketConfig.korean !== undefined;
+        (deploymentConfig.marketConfig as any).us_beta !== undefined :
+        (deploymentConfig.marketConfig as any).korean !== undefined;
       
       if (!hasMarketConfig) {
         throw new Error(`Missing deployment config for ${marketConfig.market} market`);
@@ -339,9 +339,9 @@ class I18nValidationSuite {
         'crashReporting'
       ];
       
-      const flagResults = {};
+      const flagResults: Record<string, boolean> = {};
       for (const flag of testFlags) {
-        flagResults[flag] = isFeatureFlagEnabled(flag);
+        flagResults[flag] = isFeatureFlagEnabled(flag as any);
       }
       
       const marketConfig = getCurrentMarketConfig();
@@ -382,7 +382,7 @@ class I18nValidationSuite {
           details: { currentLang, marketConfig: marketConfig.market, isValidLang, hasMarketConfig }
         };
       } catch (error) {
-        throw new Error(`Component integration failed: ${error.message}`);
+        throw new Error(`Component integration failed: ${(error as any).message}`);
       }
     });
   }
@@ -479,15 +479,15 @@ class I18nValidationSuite {
         category,
         status: 'fail',
         message: 'Test failed',
-        errorMessage: error.message,
+        errorMessage: (error as any).message,
         executionTime: Math.round(endTime - startTime)
       });
       
-      console.error(`❌ ${testName}: ${error.message}`);
+      console.error(`❌ ${testName}: ${(error as any).message}`);
       
       // Report critical failures to performance monitor
       if (performanceMonitor) {
-        performanceMonitor.reportError(error, `i18n_validation_${testName.toLowerCase().replace(/\s+/g, '_')}`, 'medium');
+        performanceMonitor.reportError(error as Error, `i18n_validation_${testName.toLowerCase().replace(/\s+/g, '_')}`, 'medium');
       }
     }
   }

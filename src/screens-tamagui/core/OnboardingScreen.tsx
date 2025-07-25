@@ -15,7 +15,9 @@ import {
   GetProps,
 } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RootStackParamList } from '../../types/navigation';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -210,7 +212,7 @@ export type OnboardingScreenProps = GetProps<typeof Container>;
 
 const OnboardingScreen: React.FC<OnboardingScreenProps> = () => {
   const theme = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -220,8 +222,19 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = () => {
   };
 
   const handleSkip = async () => {
-    await AsyncStorage.setItem('hasSeenOnboarding', 'true');
-    navigation.navigate('Auth' as never);
+    await AsyncStorage.setItem('hasLaunched', 'true');
+    // Force a re-render of the app by reloading
+    // This is a temporary solution - ideally we'd use a context or state management
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      // Force reload the app to update the navigation state
+      // @ts-ignore
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Auth' }],
+      });
+    }
   };
 
   const handleNext = () => {

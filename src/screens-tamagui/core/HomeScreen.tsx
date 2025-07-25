@@ -11,7 +11,6 @@ import {
   H3,
   Paragraph,
   Spinner,
-  AnimatePresence,
   styled,
   useTheme,
   getTokens,
@@ -59,7 +58,6 @@ const StatCard = styled(Card, {
     scale: 0.98,
     backgroundColor: '$backgroundPress',
   },
-  animation: 'quick',
   elevate: true,
   bordered: true,
   borderColor: '$borderColor',
@@ -81,7 +79,6 @@ const InsightSection = styled(YStack, {
   name: 'InsightSection',
   marginBottom: '$sm',
   marginTop: '$sm',
-  animation: 'lazy',
 });
 
 
@@ -89,13 +86,27 @@ const SkeletonBox = styled(YStack, {
   name: 'SkeletonBox',
   backgroundColor: '$gray5',
   borderRadius: '$2',
-  animation: 'lazy',
   opacity: 0.7,
 });
 
+// Track render count per instance
 export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreenProps) {
-  // Performance measurement
-  useScreenPerformance('HomeScreen');
+  const [instanceRenderCount, setInstanceRenderCount] = useState(0);
+  
+  useEffect(() => {
+    setInstanceRenderCount(prev => prev + 1);
+    console.log(`🏠 HomeScreen: Render #${instanceRenderCount + 1}`);
+  }, []);
+  
+  // Early return for safety
+  if (instanceRenderCount > 50) {
+    console.error('🚨 HomeScreen: Too many renders, preventing infinite loop');
+    return (
+      <YStack flex={1} backgroundColor="$background" justifyContent="center" alignItems="center">
+        <Text>Too many renders detected</Text>
+      </YStack>
+    );
+  }
   
   const theme = useTheme();
   const tokens = getTokens();
@@ -122,6 +133,21 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
     discoveryStats,
     dismissApprovalAlert,
   } = useCoffeeNotifications();
+  
+  // Prevent modal from showing immediately on load
+  const [isReady, setIsReady] = useState(false);
+  useEffect(() => {
+    // Delay to prevent immediate modal show
+    const timer = setTimeout(() => setIsReady(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+  
+  // Debug modal state
+  console.log('🏠 HomeScreen: Modal state', { 
+    showApprovalAlert, 
+    isReady, 
+    willShowModal: isReady && showApprovalAlert 
+  });
   
   // Check if admin
   const isAdmin = currentUser?.email === 'hello@zimojin.com';
@@ -155,10 +181,20 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
 
   // Initialize Realm on component mount
   useEffect(() => {
+    console.log('🏠 HomeScreen: useEffect for initialization');
     const initializeAndLoad = async () => {
       try {
+        console.log('🏠 HomeScreen: Checking Realm initialization status');
         if (!realmService.isInitialized) {
-          await realmService.initialize();
+          console.log('🏠 HomeScreen: Initializing Realm...');
+          // Add timeout to prevent hanging
+          const initPromise = realmService.initialize();
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Realm initialization timeout')), 5000)
+          );
+          
+          await Promise.race([initPromise, timeoutPromise]);
+          console.log('🏠 HomeScreen: Realm initialized successfully');
         }
         loadDashboardData();
       } catch (error) {
@@ -180,16 +216,22 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
 
   // 화면이 포커스될 때마다 데이터 새로고침
   useEffect(() => {
+    console.log('🏠 HomeScreen: Setting up focus listener');
     const unsubscribe = navigation.addListener('focus', () => {
+      console.log('🏠 HomeScreen: Focus event triggered');
       if (realmService.isInitialized) {
         loadDashboardData();
       }
     });
 
-    return unsubscribe;
+    return () => {
+      console.log('🏠 HomeScreen: Cleaning up focus listener');
+      unsubscribe();
+    };
   }, [navigation]);
 
   const loadDashboardData = async () => {
+    console.log('🏠 HomeScreen: loadDashboardData called');
     try {
       setIsLoading(true);
       setError(null);
@@ -446,7 +488,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
     <YStack flex={1} backgroundColor="$background">
       {/* Coffee Approval Alert */}
       <CoffeeDiscoveryAlert
-        visible={showApprovalAlert}
+        visible={isReady && showApprovalAlert}
         type="approved"
         coffeeName={approvalData?.coffee_name}
         roasteryName={approvalData?.roastery}
@@ -474,7 +516,11 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
         </NavigationBar>
       )}
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        scrollEventThrottle={16}
+      >
         {/* Main Content */}
         <YStack flex={1} paddingHorizontal="$lg">
           {/* Welcome Section */}
@@ -485,9 +531,8 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
           </YStack>
 
           {/* Skeleton loading state */}
-          <AnimatePresence>
             {isLoading && (
-              <YStack animation="lazy" opacity={1} exitStyle={{ opacity: 0 }}>
+              <YStack opacity={1}>
                 {/* Stats cards skeleton */}
                 <XStack justifyContent="space-between" marginBottom="$md" gap="$sm">
                   <SkeletonCard />
@@ -520,7 +565,6 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
                 </Card>
               </YStack>
             )}
-          </AnimatePresence>
 
           {/* Error state */}
           {error && !isLoading && (
@@ -531,7 +575,6 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
               marginVertical="$lg"
               alignItems="center"
               borderRadius="$4"
-              animation="quick"
             >
               <Text fontSize={48} marginBottom="$md">⚠️</Text>
               <Paragraph color="$red11" textAlign="center" marginBottom="$lg">
@@ -549,9 +592,34 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
           )}
 
           {/* Main content when loaded */}
-          <AnimatePresence>
             {!isLoading && !error && (
-              <YStack animation="lazy" opacity={1} enterStyle={{ opacity: 0, y: 10 }}>
+              <YStack opacity={1}>
+                {/* Navigation Test Buttons */}
+                <Card
+                  backgroundColor="$green2"
+                  borderColor="$green5"
+                  padding="$md"
+                  marginBottom="$sm"
+                  alignItems="center"
+                  borderRadius="$3"
+                  pressStyle={{ scale: 0.98 }}
+                  onPress={() => {
+                    console.log('🚀 Testing navigation object:', { navigation, canGoBack: navigation?.canGoBack() });
+                    console.log('🚀 Navigation object keys:', Object.keys(navigation || {}));
+                    try {
+                      navigation.navigate('Journal');
+                      console.log('🚀 Navigation.navigate called successfully');
+                    } catch (error) {
+                      console.error('🚨 Navigation error:', error);
+                    }
+                  }}
+                  elevate
+                >
+                  <Text fontWeight="700" color="$color" letterSpacing={0.2}>
+                    Navigate to Journal (Test)
+                  </Text>
+                </Card>
+
                 {/* Admin button */}
                 {isAdmin && (
                   <Card
@@ -562,8 +630,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
                     alignItems="center"
                     borderRadius="$3"
                     pressStyle={{ scale: 0.98 }}
-                    animation="quick"
-                    onPress={() => navigation.navigate('AdminDashboard' as never)}
+                          onPress={() => navigation.navigate('AdminDashboard' as never)}
                     elevate
                   >
                     <Text fontWeight="700" color="$color" letterSpacing={0.2}>
@@ -571,6 +638,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
                     </Text>
                   </Card>
                 )}
+
 
                 {/* Stats Overview - 3 cards */}
                 <XStack justifyContent="space-between" marginBottom="$md" gap="$sm">
@@ -653,7 +721,6 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
 
               </YStack>
             )}
-          </AnimatePresence>
         </YStack>
       </ScrollView>
     </YStack>

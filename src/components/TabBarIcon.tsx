@@ -1,38 +1,53 @@
 import React from 'react';
-import { View, Text, Platform } from 'react-native';
+import { View, Text, Platform, TouchableOpacity } from 'react-native';
 import { IOSColors, IOSLayout } from '../styles/ios-hig-2024';
 
 // Simple text-based icons for lightweight MVP
 const iconMap = {
+  // Navigation screen names (exact match with route names)
   Home: '🏠',
   Journal: '📝',
   AddRecord: '➕',
   History: '📋',
   Profile: '👤',
   Admin: '⚙️',
+  // Legacy support for lowercase route names
+  home: '🏠',
+  journal: '📝',
+  addCoffee: '➕',
+  achievements: '🏆',
+  profile: '👤',
 };
 
 interface TabBarIconProps {
   name: keyof typeof iconMap;
   focused: boolean;
   color: string;
+  onPress?: () => void;
 }
 
-export const TabBarIcon: React.FC<TabBarIconProps> = ({ name, focused, color }) => {
+export const TabBarIcon: React.FC<TabBarIconProps> = ({ name, focused, color, onPress }) => {
   // iOS에서는 filled/outlined 스타일 구분
   const iconName = iconMap[name];
+  
+  const handlePress = () => {
+    console.log(`TabBarIcon pressed: ${name}`);
+    if (onPress) {
+      onPress();
+    }
+  };
   
   return (
     <View style={{ 
       alignItems: 'center', 
       justifyContent: 'center',
-      width: IOSLayout.iconSizeMedium,
-      height: IOSLayout.iconSizeMedium,
+      width: 30,
+      height: 30,
     }}>
       <Text style={{ 
-        fontSize: 26, 
-        color,
-        fontWeight: focused ? '700' : '400',
+        fontSize: focused ? 26 : 24, 
+        color: color,
+        textAlign: 'center',
       }}>
         {iconName}
       </Text>

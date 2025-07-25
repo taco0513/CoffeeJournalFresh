@@ -1,4 +1,10 @@
 export type RootStackParamList = {
+    // Auth screens
+    Auth: undefined;
+    Onboarding: undefined;
+    
+    // Main screens
+    Main: undefined;
     Home: undefined;
     HomeMain: undefined;
     ProfileMain: undefined;

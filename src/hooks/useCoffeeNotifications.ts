@@ -3,6 +3,7 @@ import { coffeeNotificationService, CoffeeApprovalNotification } from '../servic
 import { useUserStore } from '../stores/useUserStore';
 
 export const useCoffeeNotifications = () => {
+  // Temporarily disable notifications to debug freezing issue
   const [showApprovalAlert, setShowApprovalAlert] = useState(false);
   const [approvalData, setApprovalData] = useState<CoffeeApprovalNotification | null>(null);
   const [discoveryStats, setDiscoveryStats] = useState({
@@ -17,20 +18,20 @@ export const useCoffeeNotifications = () => {
   useEffect(() => {
     if (!user?.id) return;
 
-    // Start listening for approval notifications
-    coffeeNotificationService.startListening(user.id, (notification) => {
-      setApprovalData(notification);
-      setShowApprovalAlert(true);
-      
-      // Update discovery stats
-      loadDiscoveryStats();
-    });
+    // TEMPORARILY DISABLED: Start listening for approval notifications
+    // coffeeNotificationService.startListening(user.id, (notification) => {
+    //   setApprovalData(notification);
+    //   setShowApprovalAlert(true);
+    //   
+    //   // Update discovery stats
+    //   loadDiscoveryStats();
+    // });
 
     // Load initial stats
     loadDiscoveryStats();
 
     return () => {
-      coffeeNotificationService.stopListening();
+      // coffeeNotificationService.stopListening();
     };
   }, [user?.id]);
 

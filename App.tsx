@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import './src/services/i18n'; // Initialize i18n
 import { AppState } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { SentryService } from './src/services/SentryService';
@@ -53,13 +55,18 @@ function App(): React.JSX.Element {
   }, []);
 
   return (
-    <ErrorBoundary>
-      <TamaguiProvider>
-        <AppNavigator />
-        <FirstTimeUserFeedback />
-        <DebugOverlay />
-      </TamaguiProvider>
-    </ErrorBoundary>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <ErrorBoundary>
+          <TamaguiProvider>
+            <AppNavigator />
+            {/* Temporarily disabled to debug navigation issue */}
+            {/* <FirstTimeUserFeedback /> */}
+            {/* <DebugOverlay /> */}
+          </TamaguiProvider>
+        </ErrorBoundary>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

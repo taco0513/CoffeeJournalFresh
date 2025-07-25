@@ -15,6 +15,9 @@ import HomeCafeEnhancedService, { RecipeTemplate } from '../../services/HomeCafe
 interface RecipeTemplateSelectorProps {
   selectedDripper: string;
   onRecipeSelect: (recipe: RecipeTemplate) => void;
+  selectedTemplate?: RecipeTemplate | null;
+  onTemplateSelect?: (template: RecipeTemplate) => void;
+  dripper?: string;
 }
 
 const { width } = Dimensions.get('window');
@@ -22,6 +25,9 @@ const { width } = Dimensions.get('window');
 export const RecipeTemplateSelector: React.FC<RecipeTemplateSelectorProps> = ({
   selectedDripper,
   onRecipeSelect,
+  selectedTemplate,
+  onTemplateSelect,
+  dripper,
 }) => {
   const { t } = useTranslation();
   const [showRecipeDetail, setShowRecipeDetail] = useState(false);

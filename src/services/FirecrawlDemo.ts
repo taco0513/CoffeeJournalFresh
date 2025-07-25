@@ -52,10 +52,10 @@ export class FirecrawlDemo {
         console.log(`✅ Successfully scraped ${site}`);
         
       } catch (error) {
-        console.error(`❌ Failed to scrape ${site}:`, error);
+        console.error(`❌ Failed to scrape ${site}:`, (error as any).message || error);
         results.push({
           url: site,
-          error: error.message,
+          error: (error as any).message,
           timestamp: new Date(),
           success: false
         });
@@ -79,10 +79,10 @@ export class FirecrawlDemo {
     ];
 
     const marketData = {
-      roasters: [],
-      trendingFlavors: new Set(),
-      priceRanges: [],
-      newProducts: []
+      roasters: [] as any[],
+      trendingFlavors: new Set<string>(),
+      priceRanges: [] as any[],
+      newProducts: [] as any[]
     };
 
     for (const site of usCoffeeSites) {
@@ -132,10 +132,10 @@ export class FirecrawlDemo {
     ];
 
     const contentDatabase = {
-      brewingGuides: [],
-      flavorWheelData: [],
-      coffeeNews: [],
-      technicalArticles: []
+      brewingGuides: [] as any[],
+      flavorWheelData: [] as any[],
+      coffeeNews: [] as any[],
+      technicalArticles: [] as any[]
     };
 
     for (const source of educationalSources) {
@@ -239,9 +239,9 @@ export class FirecrawlDemo {
     ];
 
     const priceData = {
-      korea: { prices: [], currency: 'KRW' },
-      us: { prices: [], currency: 'USD' },
-      trends: []
+      korea: { prices: [] as any[], currency: 'KRW' },
+      us: { prices: [] as any[], currency: 'USD' },
+      trends: [] as any[]
     };
 
     for (const site of priceMonitoringSites) {

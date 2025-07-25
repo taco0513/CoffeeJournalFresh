@@ -90,7 +90,7 @@ export class AccessControlService {
 
       return this.currentUserProfile;
     } catch (error) {
-      Logger.error('Failed to initialize user profile', 'access_control', undefined, error as Error);
+      Logger.error('Failed to initialize user profile', 'access_control', { error: error as Error });
       
       // Fallback to safe default
       const fallbackRole = __DEV__ ? UserRole.DEVELOPER : UserRole.REGULAR;
@@ -301,7 +301,7 @@ export class AccessControlService {
 
       return true;
     } catch (error) {
-      Logger.error('Failed to change user role', 'access_control', undefined, error as Error);
+      Logger.error('Failed to change user role', 'access_control', { error: error as Error });
       return false;
     }
   }
@@ -456,7 +456,7 @@ export class AccessControlService {
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(this.currentUserProfile));
     } catch (error) {
-      Logger.error('Failed to save user profile', 'access_control', { error });
+      Logger.error('Failed to save user profile', 'access_control', { error: error as Error });
     }
   }
 
@@ -470,10 +470,10 @@ export class AccessControlService {
       await this.initialize();
       
       Logger.info('User profile reset to default', 'access_control', { 
-        data: { newRole: this.currentUserProfile?.role as string | undefined } 
+        data: { newRole: this.currentUserProfile?.role ? String(this.currentUserProfile.role) : undefined } 
       });
     } catch (error) {
-      Logger.error('Failed to reset user profile', 'access_control', undefined, error as Error);
+      Logger.error('Failed to reset user profile', 'access_control', { error: error as Error });
     }
   }
 
@@ -514,12 +514,12 @@ export class AccessControlService {
       await this.saveUserProfile();
       
       Logger.info('Permissions repaired successfully', 'access_control', { 
-        role: this.currentUserProfile.role as string 
+        data: { role: this.currentUserProfile.role as string }
       });
       
       return true;
     } catch (error) {
-      Logger.error('Failed to repair permissions', 'access_control', { error });
+      Logger.error('Failed to repair permissions', 'access_control', { error: error as Error });
       return false;
     }
   }

@@ -120,8 +120,7 @@ const GuideSubtitle = styled(SizableText, {
 
 const PreviewSection = styled(YStack, {
   name: 'PreviewSection',
-  flex: 1,
-  maxHeight: 250,
+  maxHeight: 180,
   paddingBottom: '$md',
 });
 
@@ -232,8 +231,8 @@ const EmptyStateText = styled(SizableText, {
 
 const SensorySection = styled(YStack, {
   name: 'SensorySection',
-  minHeight: 280,
-  maxHeight: 400,
+  flex: 1,
+  minHeight: 350,
   backgroundColor: '$background',
   borderTopWidth: 1,
   borderTopColor: '$gray4',
@@ -449,35 +448,21 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
 
         {/* Fixed Sensory Evaluation Section */}
         <SensorySection>
-          <Text fontSize="$4" color="$color" marginBottom="$md" textAlign="center" fontWeight="600">
-            🧠 감각 평가 인터페이스
-          </Text>
-          <AnimatePresence>
-            <View
-              animation="lazy"
-              enterStyle={{
-                opacity: 0,
-                y: 20,
-              }}
-              animateOnly={['opacity', 'transform']}
-            >
-              <CompactSensoryEvaluation 
-                selectedExpressions={(selectedSensoryExpressions || []).map(item => ({
-                  categoryId: item.categoryId,
-                  expression: {
-                    id: item.expressionId,
-                    korean: item.korean,
-                    english: item.english,
-                    emoji: item.emoji || '',
-                    intensity: (item.intensity || 2) as 1 | 2 | 3,
-                    beginner: true,
-                  },
-                }))}
-                onExpressionChange={handleExpressionChange}
-                beginnerMode={true}
-              />
-            </View>
-          </AnimatePresence>
+          <CompactSensoryEvaluation 
+            selectedExpressions={(selectedSensoryExpressions || []).map(item => ({
+              categoryId: item.categoryId,
+              expression: {
+                id: item.expressionId,
+                korean: item.korean,
+                english: item.english,
+                emoji: item.emoji || '',
+                intensity: (item.intensity || 2) as 1 | 2 | 3,
+                beginner: true,
+              },
+            }))}
+            onExpressionChange={handleExpressionChange}
+            beginnerMode={true}
+          />
         </SensorySection>
 
         {/* Bottom Button */}

@@ -591,27 +591,22 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true }) => {
     }
   };
 
-  const renderSection = (section: GroupedTastings) => (
-    <YStack key={section.title}>
+  const renderSection = (section: GroupedTastings, index: number) => (
+    <YStack>
       <SectionHeader>
-        <SectionTitle>{section.title}</SectionTitle>
+        <SectionTitle>{section.title || 'Unknown Section'}</SectionTitle>
         <SectionCount>{section.data.length}개</SectionCount>
       </SectionHeader>
-      <AnimatePresence>
-        {section.data.filter(item => item && (item.id || item.coffeeName)).map((item, index) => (
-          <View
-            key={KeyGenerator.safe(item, index, 'history-item')}
-            animation="lazy"
-            enterStyle={{
-              opacity: 0,
-              y: 20 + (index * 5),
-            }}
-            animateOnly={['opacity', 'transform']}
-          >
+      {/* Simplified without animation to debug key issues */}
+      {section.data
+        .filter(item => item && (item.id || item.coffeeName))
+        .map((item, itemIndex) => (
+        <View
+          key={`item-${item.id || 'no-id'}-${itemIndex}`}
+        >
             {renderTastingItem(item)}
           </View>
         ))}
-      </AnimatePresence>
     </YStack>
   );
 
@@ -731,21 +726,13 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true }) => {
         {/* Content */}
         <ContentScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           {groupedTastings.length > 0 ? (
-            <AnimatePresence>
+            <YStack>
               {groupedTastings.map((section, index) => (
-                <View
-                  key={KeyGenerator.safe(section, index, 'history-section')}
-                  animation="lazy"
-                  enterStyle={{
-                    opacity: 0,
-                    y: 30 + (index * 10),
-                  }}
-                  animateOnly={['opacity', 'transform']}
-                >
-                  {renderSection(section)}
+                <View key={`section-${index}-${section.title || 'unknown'}`}>
+                  {renderSection(section, index)}
                 </View>
               ))}
-            </AnimatePresence>
+            </YStack>
           ) : (
             <EmptyContainer>
               <EmptyIcon>☕️</EmptyIcon>

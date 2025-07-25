@@ -280,7 +280,7 @@ class FlavorDataOptimizer {
   private transformFlavorData(): any {
     // This would contain the existing transformation logic
     // Simplified for demo purposes
-    return flavorWheelKorean.categories || [];
+    return Object.values(flavorWheelKorean.level1) || [];
   }
 }
 

@@ -27,6 +27,10 @@ interface LearningPath {
 
 export const getMockTastePattern = (): TastePattern => ({
   userId: 'mock-user',
+  dominantCategories: ['chocolate', 'caramel', 'nutty'],
+  preferredIntensity: 3.5,
+  balancePreference: 'sweet-forward',
+  uniqueDescriptors: ['rich', 'smooth', 'creamy', 'velvety'],
   dominantFlavors: [
     { category: 'chocolate', preference: 0.9, frequency: 15, consistency: 0.8 },
     { category: 'caramel', preference: 0.7, frequency: 12, consistency: 0.75 },
@@ -52,11 +56,17 @@ export const getMockTastePattern = (): TastePattern => ({
 });
 
 export const getMockGrowthMetrics = (): GrowthMetrics => ({
+  totalTastings: 42,
+  uniqueFlavors: 28,
+  vocabularySize: 35,
   vocabularyGrowth: 2.5,
+  weeklyProgress: 0.8,
+  monthlyGrowth: 15,
+  currentStreak: 7,
   accuracyImprovement: 0.25,
   flavorDiversityIndex: 0.7,
   consistencyScore: 0.85,
-  weeklyProgress: 0.8,
+  milestones: [],
 });
 
 export const getMockRecommendations = (): CoffeeRecommendation[] => [
@@ -146,9 +156,7 @@ export const getMockMasteryLevels = (): MasteryLevel[] => [
     achievements: ['초콜릿 마스터', '전문가 수준'],
     score: 85,
     totalExposures: 120,
-    correctIdentifications: 102,
     accuracyRate: 0.85,
-    lastImprovement: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
     progressToNext: 0.7,
     nextMilestone: 'Master - 15 more correct identifications',
   },
@@ -160,9 +168,9 @@ export const getMockMasteryLevels = (): MasteryLevel[] => [
     achievements: ['과일향 발견자'],
     score: 65,
     totalExposures: 80,
-    correctIdentifications: 52,
+    // correctIdentifications: 52,
     accuracyRate: 0.65,
-    lastImprovement: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+    // lastImprovement: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
     progressToNext: 0.3,
     nextMilestone: 'Expert - Practice with African coffees',
   },
@@ -174,9 +182,9 @@ export const getMockMasteryLevels = (): MasteryLevel[] => [
     achievements: ['꽃향기 탐지기'],
     score: 40,
     totalExposures: 30,
-    correctIdentifications: 12,
+    // correctIdentifications: 12,
     accuracyRate: 0.4,
-    lastImprovement: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+    // lastImprovement: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
     progressToNext: 0.6,
     nextMilestone: 'Proficient - Try more light roasts',
   },

@@ -17,6 +17,7 @@ interface EnhancedDripperSelectorProps {
   onDripperSelect: (dripper: string) => void;
   onSizeSelect?: (size: string) => void;
   selectedSize?: string;
+  showRecommendations?: boolean;
 }
 
 const { width } = Dimensions.get('window');
@@ -26,6 +27,7 @@ export const EnhancedDripperSelector: React.FC<EnhancedDripperSelectorProps> = (
   onDripperSelect,
   onSizeSelect,
   selectedSize,
+  showRecommendations = false,
 }) => {
   const { t } = useTranslation();
   const [showSpecs, setShowSpecs] = useState(false);
