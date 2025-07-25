@@ -153,7 +153,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         value={value.toString()}
         onChangeText={handleChangeText}
         keyboardType="numeric"
-        style={[styles.numberInput, inputProps.style].filter(Boolean) as ViewStyle}
+        style={StyleSheet.flatten([styles.numberInput, inputProps.style])}
       />
       {unit && (
         <Text style={styles.unitLabel}>{unit}</Text>

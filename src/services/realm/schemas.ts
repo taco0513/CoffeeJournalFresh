@@ -50,6 +50,12 @@ export interface ITastingRecord {
   flavorNotes: IFlavorNote[];
   sensoryAttribute: ISensoryAttribute;
   
+  // Additional derived properties  
+  flavorProfile?: string[];
+  overallScore?: number;
+  roastLevel?: string;
+  brewingMethod?: string;
+  
   // Photo
   photoUri?: string;
   photoThumbnailUri?: string;

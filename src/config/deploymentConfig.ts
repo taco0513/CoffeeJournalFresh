@@ -499,16 +499,16 @@ export const getApiEndpoint = (type: keyof ApiEndpoints = 'production'): string 
 /**
  * Get rate limit for current market and request type
  */
-export const getRateLimit = (type: keyof RateLimits, period: keyof RateLimits['apiCalls']): number => {
+export const getRateLimit = (type: keyof RateLimits, period: string): number => {
   const marketConfig = getMarketDeploymentConfig();
   const rateLimits = marketConfig.rateLimits[type];
   
   if (type === 'apiCalls') {
-    return (rateLimits as RateLimits['apiCalls'])[period];
+    return (rateLimits as RateLimits['apiCalls'])[period as keyof RateLimits['apiCalls']] || 0;
   } else if (type === 'feedback') {
-    return (rateLimits as RateLimits['feedback'])[period];
+    return (rateLimits as RateLimits['feedback'])[period as keyof RateLimits['feedback']] || 0;
   } else if (type === 'uploads') {
-    return (rateLimits as RateLimits['uploads'])[period];
+    return (rateLimits as RateLimits['uploads'])[period as keyof RateLimits['uploads']] || 0;
   }
   
   return 0;

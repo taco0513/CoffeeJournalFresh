@@ -445,13 +445,13 @@ export class UnifiedAuthService {
     try {
       const { data } = await supabase.auth.getSession();
       
-      if (data.session && data.user) {
+      if (data.session && data.session.user) {
         return {
-          user: data.user,
+          user: data.session.user,
           accessToken: data.session.access_token,
           refreshToken: data.session.refresh_token,
           expiresAt: new Date(data.session.expires_at || 0).getTime(),
-          provider: data.user.app_metadata?.provider || 'email',
+          provider: data.session.user.app_metadata?.provider || 'email',
         };
       }
 

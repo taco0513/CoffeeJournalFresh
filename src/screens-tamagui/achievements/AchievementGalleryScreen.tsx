@@ -23,7 +23,7 @@ import {
 import { AchievementCard } from '../../components-tamagui';
 import { useAchievements } from '../../hooks/useAchievements';
 import StatusBadge from '../../components/StatusBadge';
-import { AchievementType } from '../../services/AchievementSystem';
+import { AchievementType } from '../../types/achievements';
 
 type FilterType = 'all' | 'unlocked' | 'locked' | AchievementType;
 

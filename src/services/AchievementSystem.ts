@@ -2,426 +2,14 @@ import Realm from 'realm';
 import { generateUUID } from '../utils/uuid';
 import { supabase } from './supabase/client';
 import { Logger } from '../utils/logger';
-
-// =============================================
-// Types and Interfaces
-// =============================================
-
-export enum AchievementType {
-  // Basic progression
-  FIRST_STEPS = 'first_steps',
-  CONSISTENCY = 'consistency',
-  
-  // Flavor exploration
-  FLAVOR_EXPLORER = 'flavor_explorer',
-  TASTE_ACCURACY = 'taste_accuracy',
-  VOCABULARY = 'vocabulary',
-  
-  // Personal growth
-  LEVEL_UP = 'level_up',
-  MASTERY = 'mastery',
-  PERSONAL_BEST = 'personal_best',
-  
-  // Coffee discovery
-  COFFEE_EXPLORER = 'coffee_explorer',
-  
-  // Special achievements
-  SEASONAL = 'seasonal',
-  HIDDEN = 'hidden',
-  COLLECTOR = 'collector',
-}
-
-export interface Achievement {
-  id: string;
-  type: string;
-  title: string;
-  description: string;
-  icon: string;
-  rarity: 'common' | 'rare' | 'epic' | 'legendary';
-  category: AchievementType;
-  requirements: AchievementRequirement;
-  rewards: AchievementReward;
-  progress: number; // 0-1
-  unlockedAt?: Date;
-  isNew?: boolean; // For UI notification
-}
-
-export interface AchievementRequirement {
-  type: string;
-  value: number;
-  additionalConditions?: Record<string, any>;
-}
-
-export interface AchievementReward {
-  type: 'points' | 'badge' | 'title' | 'unlock';
-  value: string | number;
-  additionalRewards?: AchievementReward[];
-}
-
-export interface UserAction {
-  type: 'tasting' | 'quiz' | 'learning' | 'social' | 'milestone';
-  data: Record<string, any>;
-  timestamp: Date;
-}
-
-export interface ProgressData {
-  currentValue: number;
-  targetValue: number;
-  percentage: number;
-  estimatedTimeToComplete?: number; // days
-  lastUpdated: Date;
-}
-
-export interface AchievementNotification {
-  achievement: Achievement;
-  celebrationType: 'subtle' | 'normal' | 'epic';
-  message: string;
-  points?: number;
-}
-
-// =============================================
-// Achievement Definitions
-// =============================================
-
-const ACHIEVEMENT_DEFINITIONS: Record<string, Omit<Achievement, 'id' | 'progress' | 'unlockedAt'>> = {
-  // First Steps
-  first_tasting: {
-    type: 'first_tasting',
-    title: '첫 한 모금',
-    description: '첫 번째 커피 테이스팅을 완료하세요',
-    icon: '☕',
-    rarity: 'common',
-    category: AchievementType.FIRST_STEPS,
-    requirements: { type: 'tasting_count', value: 1 },
-    rewards: { type: 'points', value: 10 },
-  },
-  first_week: {
-    type: 'first_week',
-    title: '첫 주간 탐험가',
-    description: '일주일 내 3가지 이상 다른 커피 시도',
-    icon: '📅',
-    rarity: 'common',
-    category: AchievementType.FIRST_STEPS,
-    requirements: { type: 'weekly_variety', value: 3 },
-    rewards: { type: 'points', value: 50 },
-  },
-  first_flavor_match: {
-    type: 'first_flavor_match',
-    title: '첫 향미 매치',
-    description: '로스터 노트와 일치하는 향미를 찾으세요',
-    icon: '🎯',
-    rarity: 'common',
-    category: AchievementType.FIRST_STEPS,
-    requirements: { type: 'flavor_match', value: 1 },
-    rewards: { type: 'points', value: 15 },
-  },
-
-  // Flavor Explorer Series
-  flavor_explorer_bronze: {
-    type: 'flavor_explorer_bronze',
-    title: '향미 탐험가 브론즈',
-    description: '10가지 서로 다른 향미를 발견하세요',
-    icon: '🗺️',
-    rarity: 'common',
-    category: AchievementType.FLAVOR_EXPLORER,
-    requirements: { type: 'unique_flavors', value: 10 },
-    rewards: { type: 'badge', value: 'flavor_explorer_bronze' },
-  },
-  flavor_explorer_silver: {
-    type: 'flavor_explorer_silver',
-    title: '향미 탐험가 실버',
-    description: '25가지 서로 다른 향미를 발견하세요',
-    icon: '🗺️',
-    rarity: 'rare',
-    category: AchievementType.FLAVOR_EXPLORER,
-    requirements: { type: 'unique_flavors', value: 25 },
-    rewards: { type: 'badge', value: 'flavor_explorer_silver' },
-  },
-  flavor_explorer_gold: {
-    type: 'flavor_explorer_gold',
-    title: '향미 탐험가 골드',
-    description: '50가지 서로 다른 향미를 발견하세요',
-    icon: '🗺️',
-    rarity: 'epic',
-    category: AchievementType.FLAVOR_EXPLORER,
-    requirements: { type: 'unique_flavors', value: 50 },
-    rewards: { type: 'badge', value: 'flavor_explorer_gold' },
-  },
-  flavor_category_master: {
-    type: 'flavor_category_master',
-    title: '카테고리 마스터',
-    description: '한 향미 카테고리의 모든 하위 향미를 발견하세요',
-    icon: '🏆',
-    rarity: 'epic',
-    category: AchievementType.FLAVOR_EXPLORER,
-    requirements: { type: 'category_completion', value: 1 },
-    rewards: { type: 'title', value: 'Category Master' },
-  },
-
-  // Taste Accuracy Series
-  taste_novice: {
-    type: 'taste_novice',
-    title: '미각 초보자',
-    description: '향미 퀴즈에서 70% 이상 정확도 달성',
-    icon: '🎯',
-    rarity: 'common',
-    category: AchievementType.TASTE_ACCURACY,
-    requirements: { type: 'quiz_accuracy', value: 0.7 },
-    rewards: { type: 'title', value: 'Taste Novice' },
-  },
-  taste_expert: {
-    type: 'taste_expert',
-    title: '미각 전문가',
-    description: '향미 퀴즈에서 85% 이상 정확도 달성',
-    icon: '🎯',
-    rarity: 'rare',
-    category: AchievementType.TASTE_ACCURACY,
-    requirements: { type: 'quiz_accuracy', value: 0.85 },
-    rewards: { type: 'title', value: 'Taste Expert' },
-  },
-  taste_master: {
-    type: 'taste_master',
-    title: '미각 마스터',
-    description: '향미 퀴즈에서 95% 이상 정확도 달성',
-    icon: '🎯',
-    rarity: 'epic',
-    category: AchievementType.TASTE_ACCURACY,
-    requirements: { type: 'quiz_accuracy', value: 0.95 },
-    rewards: { type: 'title', value: 'Taste Master' },
-  },
-
-  // Consistency Series
-  week_warrior: {
-    type: 'week_warrior',
-    title: '주간 전사',
-    description: '한 달 동안 매주 5회 이상 테이스팅',
-    icon: '💪',
-    rarity: 'common',
-    category: AchievementType.CONSISTENCY,
-    requirements: { 
-      type: 'weekly_tastings', 
-      value: 5,
-      additionalConditions: { weeks: 4 }
-    },
-    rewards: { type: 'points', value: 100 },
-  },
-  month_master: {
-    type: 'month_master',
-    title: '월간 큐레이터',
-    description: '한 달에 10가지 이상 고품질 커피 기록',
-    icon: '🏆',
-    rarity: 'rare',
-    category: AchievementType.CONSISTENCY,
-    requirements: { type: 'monthly_quality', value: 10 },
-    rewards: { type: 'points', value: 200 },
-  },
-  hundred_tastings: {
-    type: 'hundred_tastings',
-    title: '백 잔의 커피',
-    description: '총 100잔의 커피를 테이스팅하세요',
-    icon: '💯',
-    rarity: 'rare',
-    category: AchievementType.CONSISTENCY,
-    requirements: { type: 'total_tastings', value: 100 },
-    rewards: { type: 'badge', value: 'centurion' },
-  },
-
-  // Vocabulary Series
-  word_collector: {
-    type: 'word_collector',
-    title: '단어 수집가',
-    description: '50개의 다른 향미 단어 사용',
-    icon: '📚',
-    rarity: 'common',
-    category: AchievementType.VOCABULARY,
-    requirements: { type: 'unique_words', value: 50 },
-    rewards: { type: 'points', value: 75 },
-  },
-  vocabulary_virtuoso: {
-    type: 'vocabulary_virtuoso',
-    title: '어휘 거장',
-    description: '100개의 다른 향미 단어 사용',
-    icon: '📚',
-    rarity: 'epic',
-    category: AchievementType.VOCABULARY,
-    requirements: { type: 'unique_words', value: 100 },
-    rewards: { type: 'title', value: 'Vocabulary Virtuoso' },
-  },
-
-  // Hidden Achievements
-  early_bird: {
-    type: 'early_bird',
-    title: '얼리버드',
-    description: '오전 7시 이전에 커피 테이스팅',
-    icon: '🌅',
-    rarity: 'rare',
-    category: AchievementType.HIDDEN,
-    requirements: { 
-      type: 'tasting_time', 
-      value: 7,
-      additionalConditions: { before: true }
-    },
-    rewards: { type: 'points', value: 50 },
-  },
-  night_owl: {
-    type: 'night_owl',
-    title: '올빼미',
-    description: '오후 10시 이후에 커피 테이스팅',
-    icon: '🦉',
-    rarity: 'rare',
-    category: AchievementType.HIDDEN,
-    requirements: { 
-      type: 'tasting_time', 
-      value: 22,
-      additionalConditions: { after: true }
-    },
-    rewards: { type: 'points', value: 50 },
-  },
-  perfect_match: {
-    type: 'perfect_match',
-    title: '완벽한 매치',
-    description: '로스터 노트와 100% 일치',
-    icon: '💯',
-    rarity: 'legendary',
-    category: AchievementType.HIDDEN,
-    requirements: { type: 'match_score', value: 100 },
-    rewards: { 
-      type: 'title', 
-      value: 'Perfect Matcher',
-      additionalRewards: [{ type: 'points', value: 1000 }]
-    },
-  },
-  weekend_warrior: {
-    type: 'weekend_warrior',
-    title: '주말 커피 애호가',
-    description: '주말에 만 마신 특별한 커피 10가지',
-    icon: '🎉',
-    rarity: 'rare',
-    category: AchievementType.HIDDEN,
-    requirements: { 
-      type: 'weekend_specials', 
-      value: 10 
-    },
-    rewards: { type: 'badge', value: 'weekend_warrior' },
-  },
-  
-  // Coffee Discovery Achievements
-  coffee_discoverer_1: {
-    type: 'coffee_discoverer_1',
-    title: '커피 탐험가 Lv.1',
-    description: '새로운 커피를 처음으로 등록했습니다',
-    icon: '🏆',
-    rarity: 'rare',
-    category: AchievementType.COFFEE_EXPLORER,
-    requirements: { type: 'coffee_discovery', value: 1 },
-    rewards: { type: 'title', value: 'Coffee Discoverer' },
-  },
-  coffee_discoverer_5: {
-    type: 'coffee_discoverer_5',
-    title: '커피 탐험가 Lv.2',
-    description: '새로운 커피 5개를 등록했습니다',
-    icon: '🏆',
-    rarity: 'epic',
-    category: AchievementType.COFFEE_EXPLORER,
-    requirements: { type: 'coffee_discovery', value: 5 },
-    rewards: { type: 'title', value: 'Coffee Explorer' },
-  },
-  coffee_discoverer_10: {
-    type: 'coffee_discoverer_10',
-    title: '커피 탐험가 Lv.3',
-    description: '새로운 커피 10개를 등록했습니다',
-    icon: '🏆',
-    rarity: 'legendary',
-    category: AchievementType.COFFEE_EXPLORER,
-    requirements: { type: 'coffee_discovery', value: 10 },
-    rewards: { type: 'title', value: 'Coffee Pioneer' },
-  },
-
-  // Home Cafe Achievements
-  home_cafe_starter: {
-    type: 'home_cafe_starter',
-    title: '🏠 홈카페 입문자',
-    description: '첫 홈카페 기록을 완성하세요',
-    icon: '🏠',
-    rarity: 'common',
-    category: AchievementType.FIRST_STEPS,
-    requirements: { 
-      type: 'home_cafe_tasting', 
-      value: 1 
-    },
-    rewards: { type: 'points', value: 20 },
-  },
-  home_barista: {
-    type: 'home_barista',
-    title: '☕ 꾸준한 바리스타',
-    description: '홈카페로 7일 연속 기록하기',
-    icon: '☕',
-    rarity: 'rare',
-    category: AchievementType.CONSISTENCY,
-    requirements: { 
-      type: 'home_cafe_streak', 
-      value: 7 
-    },
-    rewards: { type: 'badge', value: 'home_barista' },
-  },
-  recipe_experimenter: {
-    type: 'recipe_experimenter',
-    title: '🔬 실험가',
-    description: '같은 원두로 5번 다른 레시피 시도',
-    icon: '🔬',
-    rarity: 'rare',
-    category: AchievementType.HIDDEN,
-    requirements: { 
-      type: 'recipe_variations', 
-      value: 5 
-    },
-    rewards: { type: 'title', value: 'Recipe Experimenter' },
-  },
-  brewing_method_explorer: {
-    type: 'brewing_method_explorer',
-    title: '📚 학습자',
-    description: '3가지 이상 추출 방법 사용하기',
-    icon: '📚',
-    rarity: 'common',
-    category: AchievementType.FLAVOR_EXPLORER,
-    requirements: { 
-      type: 'brewing_methods', 
-      value: 3 
-    },
-    rewards: { type: 'points', value: 50 },
-  },
-  perfect_brew: {
-    type: 'perfect_brew',
-    title: '🎯 정확한 손맛',
-    description: '동일 레시피로 3회 연속 90% 이상 점수',
-    icon: '🎯',
-    rarity: 'epic',
-    category: AchievementType.TASTE_ACCURACY,
-    requirements: { 
-      type: 'consistent_recipe', 
-      value: 3,
-      additionalConditions: { minScore: 90 }
-    },
-    rewards: { type: 'title', value: 'Perfect Brewer' },
-  },
-  home_cafe_master: {
-    type: 'home_cafe_master',
-    title: '⭐ 홈카페 마스터',
-    description: '모든 홈카페 기본 뱃지 획득',
-    icon: '⭐',
-    rarity: 'legendary',
-    category: AchievementType.HIDDEN,
-    requirements: { 
-      type: 'home_cafe_badges', 
-      value: 5 
-    },
-    rewards: { 
-      type: 'title', 
-      value: 'Home Cafe Master',
-      additionalRewards: [{ type: 'points', value: 500 }]
-    },
-  },
-};
+import { 
+  Achievement, 
+  UserAction, 
+  ProgressData, 
+  AchievementNotification, 
+  AchievementType 
+} from '../types/achievements';
+import { ACHIEVEMENT_DEFINITIONS } from '../data/achievementDefinitions';
 
 // =============================================
 // Achievement System Service
@@ -480,170 +68,329 @@ export class AchievementSystem {
   }
 
   /**
-   * Check and update achievements based on user action
+   * Track user action and check for achievements
    */
-  async checkAndUpdateAchievements(
-    userId: string,
-    action: UserAction
-  ): Promise<Achievement[]> {
+  async trackUserAction(action: UserAction, userId: string): Promise<AchievementNotification[]> {
     if (!this.realm) throw new Error('Realm not initialized');
 
+    const notifications: AchievementNotification[] = [];
+    
     try {
-      const unlockedAchievements: Achievement[] = [];
-      
-      // Load user's current achievements
-      await this.loadUserAchievements(userId);
+      // Get user achievements from database
+      const userAchievements = this.realm
+        .objects('UserAchievement')
+        .filtered('userId = $0', userId);
 
       // Check each achievement definition
       for (const [type, definition] of Object.entries(ACHIEVEMENT_DEFINITIONS)) {
-        // Skip if already unlocked
-        if (this.userAchievements.has(type)) continue;
+        const userAchievement = userAchievements.filtered('achievementType = $0', type)[0];
+        
+        if (!userAchievement || userAchievement.isUnlocked) {
+          continue; // Skip if not exists or already unlocked
+        }
 
-        // Check if achievement conditions are met
-        const progress = await this.checkAchievementProgress(
-          userId,
-          definition,
-          action
-        );
-
-        if (progress >= 1.0) {
+        const progress = this.calculateProgressInternal(definition, action, userId);
+        
+        if (progress.percentage >= 1.0) {
           // Achievement unlocked!
-          const achievement = await this.unlockAchievement(userId, type, definition);
-          unlockedAchievements.push(achievement);
-        } else if (progress > 0) {
+          const achievement = await this.unlockAchievement(type, userId);
+          if (achievement) {
+            notifications.push({
+              achievement,
+              celebrationType: this.getCelebrationType(definition.rarity),
+              message: `축하합니다! "${achievement.title}" 업적을 달성했습니다!`,
+              points: typeof definition.rewards.value === 'number' ? definition.rewards.value : undefined,
+            });
+          }
+        } else {
           // Update progress
-          this.achievementProgress.set(type, progress);
-          await this.updateAchievementProgress(userId, type, progress);
+          await this.updateAchievementProgress(type, userId, progress.percentage);
         }
       }
 
-      // Check for combo achievements
-      const comboAchievements = await this.checkComboAchievements(userId, unlockedAchievements);
-      unlockedAchievements.push(...comboAchievements);
-
-      return unlockedAchievements;
+      return notifications;
     } catch (error) {
-      Logger.error('Error checking achievements', 'achievement', { error: error as Error });
-      throw error;
+      Logger.error('Error tracking user action', 'achievement', { error: error as Error, action, userId });
+      return [];
     }
   }
 
   /**
-   * Calculate progress for a specific achievement
+   * Calculate progress for a specific achievement (internal method)
    */
-  async calculateProgress(
-    userId: string,
-    achievementType: string
-  ): Promise<ProgressData> {
-    if (!this.realm) throw new Error('Realm not initialized');
+  private calculateProgressInternal(definition: any, action: UserAction, userId: string): ProgressData {
+    const req = definition.requirements;
+    let currentValue = 0;
+    const targetValue = req.value;
+
+    // Get relevant data based on requirement type
+    switch (req.type) {
+      case 'tasting_count':
+        currentValue = this.getTastingCount(userId);
+        break;
+      case 'weekly_variety':
+        currentValue = this.getWeeklyVariety(userId);
+        break;
+      case 'unique_flavors':
+        currentValue = this.getUniqueFlavorCount(userId);
+        break;
+      case 'home_cafe_tasting':
+        currentValue = this.getHomeCafeTastingCount(userId);
+        break;
+      case 'coffee_discovery':
+        currentValue = this.getCoffeeDiscoveryCount(userId);
+        break;
+      // Add more cases as needed
+      default:
+        currentValue = 0;
+    }
+
+    const percentage = Math.min(currentValue / targetValue, 1.0);
+    
+    return {
+      currentValue,
+      targetValue,
+      percentage,
+      lastUpdated: new Date(),
+    };
+  }
+
+  /**
+   * Unlock achievement for user
+   */
+  private async unlockAchievement(achievementType: string, userId: string): Promise<Achievement | null> {
+    if (!this.realm) return null;
 
     try {
       const definition = ACHIEVEMENT_DEFINITIONS[achievementType];
-      if (!definition) throw new Error(`Unknown achievement type: ${achievementType}`);
+      if (!definition) return null;
 
-      const requirement = definition.requirements;
-      let currentValue = 0;
-      let targetValue = requirement.value;
+      let userAchievement: any;
+      
+      this.realm.write(() => {
+        userAchievement = this.realm!.create('UserAchievement', {
+          id: generateUUID(),
+          userId,
+          achievementType,
+          progress: 1.0,
+          isUnlocked: true,
+          unlockedAt: new Date(),
+          isNew: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }, Realm.UpdateMode.Modified);
+      });
 
-      switch (requirement.type) {
-        case 'tasting_count':
-          currentValue = await this.getTastingCount(userId);
-          break;
-        
-        case 'weekly_variety':
-          currentValue = await this.getWeeklyVariety(userId);
-          break;
-          
-        case 'monthly_quality':
-          currentValue = await this.getMonthlyQualityCount(userId);
-          break;
-          
-        case 'weekend_specials':
-          currentValue = await this.getWeekendSpecialsCount(userId);
-          break;
-        
-        case 'unique_flavors':
-          currentValue = await this.getUniqueFlavorsCount(userId);
-          break;
-        
-        case 'quiz_accuracy':
-          currentValue = await this.getQuizAccuracy(userId);
-          targetValue = requirement.value * 100; // Convert to percentage
-          break;
-        
-        case 'weekly_tastings':
-          currentValue = await this.getWeeklyTastingAverage(userId, requirement.additionalConditions?.weeks || 4);
-          break;
-        
-        case 'unique_words':
-          currentValue = await this.getUniqueWordsCount(userId);
-          break;
-        
-        case 'total_tastings':
-          currentValue = await this.getTotalTastings(userId);
-          break;
-        
-        case 'match_score':
-          currentValue = await this.getBestMatchScore(userId);
-          break;
-          
-        case 'coffee_discovery':
-          // Count user's coffee discoveries
-          // This would query from coffee_catalog table where first_added_by = userId
-          // For now, we'll use the action data
-          currentValue = this.userCoffeeDiscoveries.get(userId) || 0;
-          if (true) { // Simplified for now
-            currentValue++;
-            this.userCoffeeDiscoveries.set(userId, currentValue);
-          }
-          break;
-      }
+      // Award points/rewards
+      await this.awardRewards(definition.rewards, userId);
 
-      const percentage = Math.min(currentValue / targetValue, 1);
-      const estimatedDays = this.estimateTimeToComplete(
-        requirement.type,
-        currentValue,
-        targetValue,
-        userId
-      );
+      // Sync to Supabase
+      await this.syncAchievementToSupabase(userAchievement);
 
       return {
-        currentValue,
-        targetValue,
-        percentage,
-        estimatedTimeToComplete: estimatedDays,
-        lastUpdated: new Date(),
+        id: userAchievement.id,
+        type: achievementType,
+        title: definition.title,
+        description: definition.description,
+        icon: definition.icon,
+        rarity: definition.rarity,
+        category: definition.category,
+        requirements: definition.requirements,
+        rewards: definition.rewards,
+        progress: 1.0,
+        unlockedAt: userAchievement.unlockedAt,
+        isNew: true,
       };
     } catch (error) {
-      Logger.error('Error calculating progress', 'achievement', { error: error as Error });
-      throw error;
+      Logger.error('Error unlocking achievement', 'achievement', { error: error as Error, achievementType, userId });
+      return null;
     }
   }
 
   /**
-   * Get all achievements for a user
+   * Award rewards to user
    */
-  async getUserAchievements(userId: string): Promise<Achievement[]> {
-    if (!this.realm) throw new Error('Realm not initialized');
+  private async awardRewards(rewards: any, userId: string): Promise<void> {
+    try {
+      if (rewards.type === 'points' && typeof rewards.value === 'number') {
+        await this.awardPoints(userId, rewards.value);
+      }
+      
+      if (rewards.additionalRewards) {
+        for (const additionalReward of rewards.additionalRewards) {
+          await this.awardRewards(additionalReward, userId);
+        }
+      }
+    } catch (error) {
+      Logger.error('Error awarding rewards', 'achievement', { error: error as Error, rewards, userId });
+    }
+  }
+
+  /**
+   * Award points to user
+   */
+  private async awardPoints(userId: string, points: number): Promise<void> {
+    if (!this.realm) return;
 
     try {
-      await this.loadUserAchievements(userId);
-      
+      this.realm.write(() => {
+        const userProfile = this.realm!
+          .objects('UserProfile')
+          .filtered('userId = $0', userId)[0];
+        
+        if (userProfile) {
+          (userProfile as any).totalPoints = ((userProfile as any).totalPoints || 0) + points;
+          (userProfile as any).updatedAt = new Date();
+        }
+      });
+    } catch (error) {
+      Logger.error('Error awarding points', 'achievement', { error: error as Error, userId, points });
+    }
+  }
+
+  /**
+   * Get celebration type based on rarity
+   */
+  private getCelebrationType(rarity: string): 'subtle' | 'normal' | 'epic' {
+    switch (rarity) {
+      case 'legendary':
+      case 'epic':
+        return 'epic';
+      case 'rare':
+        return 'normal';
+      default:
+        return 'subtle';
+    }
+  }
+
+  /**
+   * Update achievement progress
+   */
+  private async updateAchievementProgress(achievementType: string, userId: string, progress: number): Promise<void> {
+    if (!this.realm) return;
+
+    try {
+      this.realm.write(() => {
+        const existing = this.realm!
+          .objects('UserAchievement')
+          .filtered('userId = $0 AND achievementType = $1', userId, achievementType)[0];
+
+        if (existing) {
+          (existing as any).progress = progress;
+          (existing as any).updatedAt = new Date();
+        } else {
+          this.realm!.create('UserAchievement', {
+            id: generateUUID(),
+            userId,
+            achievementType,
+            progress,
+            isUnlocked: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+        }
+      });
+    } catch (error) {
+      Logger.error('Error updating achievement progress', 'achievement', { error: error as Error, achievementType, userId, progress });
+    }
+  }
+
+  /**
+   * Sync achievement to Supabase
+   */
+  private async syncAchievementToSupabase(achievement: any): Promise<void> {
+    try {
+      await supabase
+        .from('user_achievements')
+        .upsert({
+          id: achievement.id,
+          user_id: achievement.userId,
+          achievement_type: achievement.achievementType,
+          progress: achievement.progress,
+          is_unlocked: achievement.isUnlocked,
+          unlocked_at: achievement.unlockedAt?.toISOString(),
+          created_at: achievement.createdAt.toISOString(),
+          updated_at: achievement.updatedAt.toISOString(),
+        });
+    } catch (error) {
+      Logger.error('Error syncing achievement to Supabase', 'achievement', { error: error as Error, achievement });
+    }
+  }
+
+  // Helper methods for data retrieval
+  private getTastingCount(userId: string): number {
+    if (!this.realm) return 0;
+    return this.realm.objects('TastingRecord').filtered('userId = $0', userId).length;
+  }
+
+  private getWeeklyVariety(userId: string): number {
+    if (!this.realm) return 0;
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    
+    const records = this.realm
+      .objects('TastingRecord')
+      .filtered('userId = $0 AND createdAt >= $1', userId, oneWeekAgo);
+    
+    const uniqueCoffees = new Set();
+    for (const record of records) {
+      const coffeeKey = `${(record as any).roaster}-${(record as any).coffeeName}`;
+      uniqueCoffees.add(coffeeKey);
+    }
+    
+    return uniqueCoffees.size;
+  }
+
+  private getUniqueFlavorCount(userId: string): number {
+    if (!this.realm) return 0;
+    const records = this.realm.objects('TastingRecord').filtered('userId = $0', userId);
+    
+    const uniqueFlavors = new Set();
+    for (const record of records) {
+      if ((record as any).flavorProfile) {
+        try {
+          const flavors = JSON.parse((record as any).flavorProfile);
+          flavors.forEach((flavor: any) => uniqueFlavors.add(flavor.name || flavor));
+        } catch (error) {
+          // Ignore parsing errors
+        }
+      }
+    }
+    
+    return uniqueFlavors.size;
+  }
+
+  private getHomeCafeTastingCount(userId: string): number {
+    if (!this.realm) return 0;
+    return this.realm
+      .objects('TastingRecord')
+      .filtered('userId = $0 AND mode = $1', userId, 'home_cafe').length;
+  }
+
+  private getCoffeeDiscoveryCount(userId: string): number {
+    // This would need to be implemented based on your coffee discovery logic
+    return this.userCoffeeDiscoveries.get(userId) || 0;
+  }
+
+  /**
+   * Get user achievements
+   */
+  async getUserAchievements(userId: string): Promise<Achievement[]> {
+    if (!this.realm) return [];
+
+    try {
+      const userAchievements = this.realm
+        .objects('UserAchievement')
+        .filtered('userId = $0', userId);
+
       const achievements: Achievement[] = [];
       
-      // Get unlocked achievements
-      this.userAchievements.forEach(achievement => {
-        achievements.push(achievement);
-      });
-
-      // Get in-progress achievements
-      for (const [type, definition] of Object.entries(ACHIEVEMENT_DEFINITIONS)) {
-        if (!this.userAchievements.has(type)) {
-          const progress = this.achievementProgress.get(type) || 0;
-          
+      for (const userAchievement of userAchievements) {
+        const definition = ACHIEVEMENT_DEFINITIONS[(userAchievement as any).achievementType];
+        if (definition) {
           achievements.push({
-            id: generateUUID(),
-            type,
+            id: (userAchievement as any).id,
+            type: (userAchievement as any).achievementType,
             title: definition.title,
             description: definition.description,
             icon: definition.icon,
@@ -651,560 +398,139 @@ export class AchievementSystem {
             category: definition.category,
             requirements: definition.requirements,
             rewards: definition.rewards,
-            progress,
+            progress: (userAchievement as any).progress,
+            unlockedAt: (userAchievement as any).unlockedAt,
+            isNew: (userAchievement as any).isNew,
           });
         }
       }
 
-      // Sort by category and progress
-      return achievements.sort((a, b) => {
-        if (a.unlockedAt && !b.unlockedAt) return -1;
-        if (!a.unlockedAt && b.unlockedAt) return 1;
-        if (a.category !== b.category) return a.category.localeCompare(b.category);
-        return b.progress - a.progress;
-      });
+      return achievements;
     } catch (error) {
-      Logger.error('Error getting user achievements', 'achievement', { error: error as Error });
-      throw error;
+      Logger.error('Error getting user achievements', 'achievement', { error: error as Error, userId });
+      return [];
     }
   }
 
   /**
-   * Track coffee discovery achievement
+   * Mark achievement as seen (remove isNew flag)
    */
-  async trackCoffeeDiscovery(): Promise<Achievement[]> {
-    const userId = await this.getCurrentUserId();
-    if (!userId) return [];
+  async markAchievementAsSeen(achievementId: string): Promise<void> {
+    if (!this.realm) return;
 
-    return this.checkAndUpdateAchievements(userId, {
-      type: 'milestone',
+    try {
+      this.realm.write(() => {
+        const achievement = this.realm!
+          .objects('UserAchievement')
+          .filtered('id = $0', achievementId)[0];
+        
+        if (achievement) {
+          (achievement as any).isNew = false;
+          (achievement as any).updatedAt = new Date();
+        }
+      });
+    } catch (error) {
+      Logger.error('Error marking achievement as seen', 'achievement', { error: error as Error, achievementId });
+    }
+  }
+
+  /**
+   * Check and update achievements (wrapper for trackUserAction)
+   */
+  async checkAndUpdateAchievements(userId: string, action: UserAction): Promise<Achievement[]> {
+    const notifications = await this.trackUserAction(action, userId);
+    return notifications.map(n => n.achievement);
+  }
+
+  /**
+   * Calculate progress for a specific achievement type
+   */
+  async calculateProgress(userId: string, achievementType: string): Promise<ProgressData | null> {
+    const definition = ACHIEVEMENT_DEFINITIONS[achievementType];
+    if (!definition) return null;
+
+    // Create a dummy action for progress calculation
+    const dummyAction: UserAction = {
+      type: 'tasting',
+      data: {},
       timestamp: new Date(),
-      data: { discovered: true },
-    });
+    };
+
+    return this.calculateProgressInternal(definition, dummyAction, userId);
   }
 
   /**
-   * Get current user ID from auth state
-   */
-  private async getCurrentUserId(): Promise<string | null> {
-    // This would typically get from your auth state management
-    // For now, we'll use a placeholder
-    return 'current-user-id';
-  }
-
-  /**
-   * Get achievement statistics for a user
+   * Get achievement statistics for user
    */
   async getAchievementStats(userId: string): Promise<{
-    totalUnlocked: number;
-    totalAvailable: number;
-    completionRate: number;
     totalPoints: number;
-    rarityBreakdown: Record<string, number>;
-    categoryBreakdown: Record<string, number>;
+    unlockedCount: number;
+    totalCount: number;
+    completionPercentage: number;
   }> {
-    if (!this.realm) throw new Error('Realm not initialized');
+    if (!this.realm) {
+      return {
+        totalPoints: 0,
+        unlockedCount: 0,
+        totalCount: 0,
+        completionPercentage: 0,
+      };
+    }
 
     try {
-      await this.loadUserAchievements(userId);
+      const userAchievements = await this.getUserAchievements(userId);
+      const unlockedAchievements = userAchievements.filter(a => a.unlockedAt);
+      
+      const totalPoints = unlockedAchievements
+        .filter(a => a.rewards.type === 'points')
+        .reduce((sum, a) => sum + (a.rewards.value as number), 0);
 
-      const totalAvailable = Object.keys(ACHIEVEMENT_DEFINITIONS).length;
-      const totalUnlocked = this.userAchievements.size;
-      const completionRate = totalUnlocked / totalAvailable;
-
-      let totalPoints = 0;
-      const rarityBreakdown: Record<string, number> = {
-        common: 0,
-        rare: 0,
-        epic: 0,
-        legendary: 0,
-      };
-      const categoryBreakdown: Record<string, number> = {};
-
-      this.userAchievements.forEach(achievement => {
-        // Count points
-        if (achievement.rewards.type === 'points') {
-          totalPoints += achievement.rewards.value as number;
-        }
-        if (achievement.rewards.additionalRewards) {
-          achievement.rewards.additionalRewards.forEach(reward => {
-            if (reward.type === 'points') {
-              totalPoints += reward.value as number;
-            }
-          });
-        }
-
-        // Count by rarity
-        rarityBreakdown[achievement.rarity]++;
-
-        // Count by category
-        const category = achievement.category;
-        categoryBreakdown[category] = (categoryBreakdown[category] || 0) + 1;
-      });
+      const totalCount = Object.keys(ACHIEVEMENT_DEFINITIONS).length;
+      const unlockedCount = unlockedAchievements.length;
+      const completionPercentage = totalCount > 0 ? Math.round((unlockedCount / totalCount) * 100) : 0;
 
       return {
-        totalUnlocked,
-        totalAvailable,
-        completionRate,
         totalPoints,
-        rarityBreakdown,
-        categoryBreakdown,
+        unlockedCount,
+        totalCount,
+        completionPercentage,
       };
     } catch (error) {
-      Logger.error('Error getting achievement stats', 'achievement', { error: error as Error });
-      throw error;
+      Logger.error('Error getting achievement stats', 'achievement', { error: error as Error, userId });
+      return {
+        totalPoints: 0,
+        unlockedCount: 0,
+        totalCount: 0,
+        completionPercentage: 0,
+      };
     }
-  }
-
-  // =============================================
-  // Private Helper Methods
-  // =============================================
-
-  private async loadUserAchievements(userId: string): Promise<void> {
-    if (!this.realm) return;
-
-    this.userAchievements.clear();
-    this.achievementProgress.clear();
-
-    const userAchievements = this.realm
-      .objects('UserAchievement')
-      .filtered('userId = $0', userId);
-
-    userAchievements.forEach((ua: any) => {
-      const definition = ACHIEVEMENT_DEFINITIONS[ua.achievementType];
-      if (definition) {
-        this.userAchievements.set(ua.achievementType, {
-          id: ua.id,
-          type: ua.achievementType,
-          title: definition.title,
-          description: definition.description,
-          icon: definition.icon,
-          rarity: definition.rarity,
-          category: definition.category,
-          requirements: definition.requirements,
-          rewards: definition.rewards,
-          progress: ua.progress,
-          unlockedAt: ua.unlockedAt,
-        });
-      }
-
-      if (ua.progress < 1) {
-        this.achievementProgress.set(ua.achievementType, ua.progress);
-      }
-    });
-  }
-
-  private async checkAchievementProgress(
-    userId: string,
-    definition: Omit<Achievement, 'id' | 'progress' | 'unlockedAt'>,
-    action: UserAction
-  ): Promise<number> {
-    const requirement = definition.requirements;
-    
-    // Quick check if this action is relevant to the achievement
-    if (!this.isActionRelevant(requirement.type, action.type)) {
-      return this.achievementProgress.get(definition.type) || 0;
-    }
-
-    const progressData = await this.calculateProgress(userId, definition.type);
-    return progressData.percentage;
-  }
-
-  private isActionRelevant(requirementType: string, actionType: string): boolean {
-    const relevanceMap: Record<string, string[]> = {
-      tasting_count: ['tasting'],
-      weekly_variety: ['tasting'],
-      monthly_quality: ['tasting'],
-      weekend_specials: ['tasting'],
-      unique_flavors: ['tasting'],
-      quiz_accuracy: ['quiz'],
-      weekly_tastings: ['tasting'],
-      unique_words: ['tasting'],
-      total_tastings: ['tasting'],
-      match_score: ['tasting'],
-      flavor_match: ['tasting'],
-      category_completion: ['tasting'],
-      tasting_time: ['tasting'],
-    };
-
-    return relevanceMap[requirementType]?.includes(actionType) || false;
-  }
-
-  private async unlockAchievement(
-    userId: string,
-    type: string,
-    definition: Omit<Achievement, 'id' | 'progress' | 'unlockedAt'>
-  ): Promise<Achievement> {
-    if (!this.realm) throw new Error('Realm not initialized');
-
-    const achievement: Achievement = {
-      id: generateUUID(),
-      ...definition,
-      type,
-      progress: 1,
-      unlockedAt: new Date(),
-      isNew: true,
-    };
-
-    this.realm.write(() => {
-      this.realm!.create('UserAchievement', {
-        id: achievement.id,
-        userId,
-        achievementType: type,
-        achievementLevel: 1,
-        achievementData: JSON.stringify({
-          unlockedAt: achievement.unlockedAt,
-          actionType: 'unlock',
-        }),
-        unlockedAt: achievement.unlockedAt,
-        progress: 1,
-        isSynced: false,
-      });
-    });
-
-    this.userAchievements.set(type, achievement);
-    
-    // Award points if applicable
-    if (definition.rewards.type === 'points') {
-      await this.awardPoints(userId, definition.rewards.value as number);
-    }
-
-    return achievement;
-  }
-
-  private async updateAchievementProgress(
-    userId: string,
-    type: string,
-    progress: number
-  ): Promise<void> {
-    if (!this.realm) return;
-
-    this.realm.write(() => {
-      let userAchievement = this.realm!
-        .objects('UserAchievement')
-        .filtered('userId = $0 AND achievementType = $1', userId, type)[0];
-
-      if (!userAchievement) {
-        userAchievement = this.realm!.create('UserAchievement', {
-          id: generateUUID(),
-          userId,
-          achievementType: type,
-          achievementLevel: 1,
-          achievementData: JSON.stringify({
-            startedAt: new Date(),
-          }),
-          progress,
-          isSynced: false,
-        }) as any;
-      } else {
-        userAchievement.progress = progress;
-        userAchievement.isSynced = false;
-      }
-    });
-  }
-
-  private async checkComboAchievements(
-    userId: string,
-    newAchievements: Achievement[]
-  ): Promise<Achievement[]> {
-    const comboAchievements: Achievement[] = [];
-
-    // Check for category completions
-    const categoryGroups: Record<string, string[]> = {
-      flavor_explorer_complete: ['flavor_explorer_bronze', 'flavor_explorer_silver', 'flavor_explorer_gold'],
-      taste_master_complete: ['taste_novice', 'taste_expert', 'taste_master'],
-    };
-
-    for (const [comboType, requiredTypes] of Object.entries(categoryGroups)) {
-      const hasAll = requiredTypes.every(type => 
-        this.userAchievements.has(type) || 
-        newAchievements.some(a => a.type === type)
-      );
-
-      if (hasAll && !this.userAchievements.has(comboType)) {
-        // Create combo achievement (would be defined in ACHIEVEMENT_DEFINITIONS in production)
-        // For now, we'll skip this
-      }
-    }
-
-    return comboAchievements;
-  }
-
-  // =============================================
-  // Data Fetching Methods
-  // =============================================
-
-  private async getTastingCount(userId: string): Promise<number> {
-    if (!this.realm) return 0;
-    
-    return this.realm
-      .objects('TastingRecord')
-      .filtered('userId = $0', userId)
-      .length;
-  }
-
-  private async getWeeklyVariety(userId: string): Promise<number> {
-    if (!this.realm) return 0;
-
-    const weekStart = new Date();
-    weekStart.setDate(weekStart.getDate() - 7);
-    
-    const records = this.realm
-      .objects('TastingRecord')
-      .filtered('userId = $0 AND createdAt >= $1', userId, weekStart);
-
-    const uniqueCoffees = new Set();
-    Array.from(records).forEach((record: any) => {
-      uniqueCoffees.add(`${record.roastery}-${record.coffeeName}`);
-    });
-
-    return uniqueCoffees.size;
-  }
-
-  private async getMonthlyQualityCount(userId: string): Promise<number> {
-    if (!this.realm) return 0;
-
-    const monthStart = new Date();
-    monthStart.setDate(monthStart.getDate() - 30);
-    
-    const records = this.realm
-      .objects('TastingRecord')
-      .filtered('userId = $0 AND createdAt >= $1 AND matchScoreTotal >= 80', userId, monthStart);
-
-    return records.length;
-  }
-
-  private async getWeekendSpecialsCount(userId: string): Promise<number> {
-    if (!this.realm) return 0;
-
-    const records = this.realm
-      .objects('TastingRecord')
-      .filtered('userId = $0', userId);
-
-    let weekendSpecials = 0;
-    Array.from(records).forEach((record: any) => {
-      const recordDate = new Date(record.createdAt);
-      const dayOfWeek = recordDate.getDay();
-      
-      // Weekend (Saturday = 6, Sunday = 0)
-      if (dayOfWeek === 0 || dayOfWeek === 6) {
-        weekendSpecials++;
-      }
-    });
-
-    return weekendSpecials;
-  }
-
-  private async getUniqueFlavorsCount(userId: string): Promise<number> {
-    if (!this.realm) return 0;
-
-    const flavors = new Set<string>();
-    const records = this.realm
-      .objects('TastingRecord')
-      .filtered('userId = $0', userId);
-
-    records.forEach((record: any) => {
-      const flavorNotes = record.flavorNotes || [];
-      flavorNotes.forEach((note: any) => {
-        if (note.level1) flavors.add(note.level1);
-        if (note.level2) flavors.add(`${note.level1}-${note.level2}`);
-        if (note.level3) flavors.add(`${note.level1}-${note.level2}-${note.level3}`);
-      });
-    });
-
-    return flavors.size;
-  }
-
-  private async getQuizAccuracy(userId: string): Promise<number> {
-    if (!this.realm) return 0;
-
-    // Get quiz results from learning progress
-    const learningProgress = this.realm
-      .objects('FlavorLearningProgress')
-      .filtered('userId = $0', userId);
-
-    if (learningProgress.length === 0) return 0;
-
-    let totalExposures = 0;
-    let totalCorrect = 0;
-
-    learningProgress.forEach((progress: any) => {
-      totalExposures += progress.exposureCount;
-      totalCorrect += progress.identificationCount;
-    });
-
-    return totalExposures > 0 ? (totalCorrect / totalExposures) : 0;
-  }
-
-  private async getWeeklyTastingAverage(userId: string, weeks: number): Promise<number> {
-    if (!this.realm) return 0;
-
-    const weeksAgo = new Date();
-    weeksAgo.setDate(weeksAgo.getDate() - (weeks * 7));
-
-    const records = this.realm
-      .objects('TastingRecord')
-      .filtered('userId = $0 AND createdAt >= $1', userId, weeksAgo);
-
-    // Group by week
-    const weeklyTastings: Map<number, number> = new Map();
-    
-    records.forEach((record: any) => {
-      const weekNumber = Math.floor(
-        (new Date().getTime() - record.createdAt.getTime()) / (7 * 24 * 60 * 60 * 1000)
-      );
-      weeklyTastings.set(weekNumber, (weeklyTastings.get(weekNumber) || 0) + 1);
-    });
-
-    // Check if all weeks meet the requirement
-    let qualifyingWeeks = 0;
-    for (let i = 0; i < weeks; i++) {
-      if ((weeklyTastings.get(i) || 0) >= 5) {
-        qualifyingWeeks++;
-      }
-    }
-
-    return qualifyingWeeks;
-  }
-
-  private async getUniqueWordsCount(userId: string): Promise<number> {
-    if (!this.realm) return 0;
-
-    const uniqueWords = new Set<string>();
-    const records = this.realm
-      .objects('TastingRecord')
-      .filtered('userId = $0', userId);
-
-    records.forEach((record: any) => {
-      if (record.vocabularyUsed) {
-        record.vocabularyUsed.forEach((word: string) => {
-          uniqueWords.add(word.toLowerCase());
-        });
-      }
-    });
-
-    return uniqueWords.size;
-  }
-
-  private async getTotalTastings(userId: string): Promise<number> {
-    if (!this.realm) return 0;
-
-    const profile = this.realm
-      .objects('UserTasteProfile')
-      .filtered('userId = $0', userId)[0];
-
-    return (profile as any)?.totalTastings || 0;
-  }
-
-  private async getBestMatchScore(userId: string): Promise<number> {
-    if (!this.realm) return 0;
-
-    const records = this.realm
-      .objects('TastingRecord')
-      .filtered('userId = $0 AND matchScore != null', userId)
-      .sorted('matchScore', true);
-
-    return records.length > 0 ? (records[0] as any).matchScore : 0;
-  }
-
-  private estimateTimeToComplete(
-    requirementType: string,
-    current: number,
-    target: number,
-    userId: string
-  ): number {
-    const remaining = target - current;
-    if (remaining <= 0) return 0;
-
-    // Rough estimates based on requirement type
-    const estimatesPerDay: Record<string, number> = {
-      tasting_count: 2,
-      consecutive_days: 1,
-      unique_flavors: 3,
-      quiz_accuracy: 0.02, // 2% improvement per day
-      weekly_tastings: 0.25, // Quarter week per day
-      unique_words: 5,
-      total_tastings: 2,
-      match_score: 0.5, // Half point per day
-    };
-
-    const perDay = estimatesPerDay[requirementType] || 1;
-    return Math.ceil(remaining / perDay);
-  }
-
-  private async awardPoints(userId: string, points: number): Promise<void> {
-    // In a real implementation, this would update a user points table
-    // For now, we'll just log it
-    console.log(`Awarded ${points} points to user ${userId}`);
   }
 
   /**
-   * Generate achievement notification
+   * Track coffee discovery for achievements
    */
-  generateNotification(achievement: Achievement): AchievementNotification {
-    const celebrationTypes: Record<string, AchievementNotification['celebrationType']> = {
-      common: 'subtle',
-      rare: 'normal',
-      epic: 'epic',
-      legendary: 'epic',
-    };
-
-    const messages: Record<string, string> = {
-      first_tasting: '커피 여정의 첫 걸음을 내디뎠습니다!',
-      flavor_explorer_bronze: '향미 탐험가로서의 여정이 시작되었습니다!',
-      taste_master: '당신은 진정한 미각의 달인입니다!',
-      perfect_match: '완벽합니다! 로스터와 같은 향미를 느끼셨네요!',
-      
-      // Home Cafe Achievement Messages
-      home_cafe_starter: '🏠 홈카페 여행의 시작을 축하합니다!',
-      home_barista: '☕ 집에서도 전문가 수준의 바리스타가 되셨네요!',
-      recipe_experimenter: '🔬 끊임없는 실험 정신이 놀랍습니다!',
-      brewing_method_explorer: '📚 다양한 추출 방법을 마스터하고 계시네요!',
-      perfect_brew: '🎯 완벽한 일관성! 진정한 홈카페 마스터입니다!',
-      home_cafe_master: '⭐ 축하합니다! 홈카페의 모든 것을 정복하셨습니다!',
-    };
-
-    return {
-      achievement,
-      celebrationType: celebrationTypes[achievement.rarity],
-      message: messages[achievement.type] || `${achievement.title} 달성!`,
-      points: achievement.rewards.type === 'points' ? achievement.rewards.value as number : undefined,
-    };
-  }
-
-  /**
-   * Sync achievements with Supabase
-   */
-  async syncWithSupabase(userId: string): Promise<void> {
-    if (!this.realm) throw new Error('Realm not initialized');
-
+  async trackCoffeeDiscovery(userId: string, coffeeData: any): Promise<void> {
     try {
-      const unsyncedAchievements = this.realm
-        .objects('UserAchievement')
-        .filtered('userId = $0 AND isSynced = false', userId);
+      const action: UserAction = {
+        type: 'milestone',
+        data: {
+          type: 'coffee_discovery',
+          coffeeName: coffeeData.coffeeName,
+          roaster: coffeeData.roaster,
+        },
+        timestamp: new Date(),
+      };
 
-      for (const achievement of unsyncedAchievements) {
-        const { error } = await supabase
-          .from('user_achievements')
-          .upsert({
-            id: achievement.id,
-            user_id: achievement.userId,
-            achievement_type: achievement.achievementType,
-            achievement_level: achievement.achievementLevel,
-            achievement_data: JSON.parse((achievement as any).achievementData || '{}'),
-            unlocked_at: achievement.unlockedAt,
-            progress: achievement.progress,
-          });
-
-        if (!error) {
-          this.realm.write(() => {
-            achievement.isSynced = true;
-          });
-        }
-      }
+      await this.trackUserAction(action, userId);
+      
+      // Update coffee discovery count
+      const currentCount = this.userCoffeeDiscoveries.get(userId) || 0;
+      this.userCoffeeDiscoveries.set(userId, currentCount + 1);
     } catch (error) {
-      Logger.error('Error syncing achievements', 'achievement', { error: error as Error });
-      throw error;
+      Logger.error('Error tracking coffee discovery', 'achievement', { error: error as Error, userId, coffeeData });
     }
   }
 }
+
+// Export singleton instance
+export const achievementSystem = new AchievementSystem();

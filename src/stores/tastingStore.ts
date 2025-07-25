@@ -1,7 +1,8 @@
 import {create} from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RealmService from '../services/realm/RealmService';
-import { AchievementSystem, UserAction, Achievement } from '../services/AchievementSystem';
+import { AchievementSystem } from '../services/AchievementSystem';
+import { UserAction, Achievement } from '../types/achievements';
 import { 
   FlavorPath, 
   SyncStatus, 

@@ -16,6 +16,7 @@ import { HIGColors, HIGConstants } from '../styles/common';
 import { addCoffeeToCatalog } from '../services/supabase/coffeeSearch';
 import { CoffeeDiscoveryAlert } from './CoffeeDiscoveryAlert';
 import { AchievementSystem } from '../services/AchievementSystem';
+import { useUserStore } from '../stores/userStore';
 
 interface AddCoffeeModalProps {
   visible: boolean;
@@ -31,6 +32,7 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
   onCoffeeAdded,
 }) => {
   const navigation = useNavigation();
+  const { user } = useUserStore();
   const [coffeeName, setCoffeeName] = useState('');
   const [origin, setOrigin] = useState('');
   const [region, setRegion] = useState('');
@@ -65,7 +67,7 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
       // Track achievement for coffee discovery
       try {
         const achievementSystem = new AchievementSystem();
-        await achievementSystem.trackCoffeeDiscovery();
+        await achievementSystem.trackCoffeeDiscovery(user?.id || 'anonymous', newCoffee);
       } catch (error) {
         console.log('Achievement tracking skipped:', error);
       }

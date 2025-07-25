@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { ScrollView, SafeAreaView, RefreshControl, Dimensions } from 'react-native';
+import { SafeAreaView, RefreshControl, Dimensions } from 'react-native';
+import { ScrollView } from 'tamagui';
 import {
   View,
   Text,

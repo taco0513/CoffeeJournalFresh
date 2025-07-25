@@ -9,7 +9,7 @@ import { HIGColors, HIGConstants } from '../../styles/common';
 import { IOSColors, IOSLayout, IOSTypography, IOSSpacing, IOSShadows } from '../../styles/ios-hig-2024';
 import { ProgressBar } from './ProgressBar';
 import { CircularProgress } from './CircularProgress';
-import { Achievement, ProgressData } from '../../services/AchievementSystem';
+import { Achievement, ProgressData } from '../../types/achievements';
 
 interface AchievementCardProps {
   achievement: Achievement;

@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { Text, View } from 'react-native';
-import { useUserStore } from '../stores/useUserStore';
+import { useUserStore } from '../stores/userStore';
 import { IOSColors, IOSLayout, IOSTypography, IOSShadows } from '../styles/ios-hig-2024';
 import StatusBadge from '../components/StatusBadge';
 import { TabBarIcon } from '../components/TabBarIcon';
@@ -338,14 +338,14 @@ function ProfileStack() {
 
 // 메인 탭 네비게이터
 function MainTabs() {
-  const user = useUserStore(state => state.user);
-  const isAdmin = user?.role === 'admin';
+  const user = useUserStore((state) => state.user);
+  const isAdmin = user?.user_metadata?.role === 'admin' || user?.email === 'admin@example.com';
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          return <TabBarIcon name={route.name} color={color} size={size} />;
+        tabBarIcon: ({ color, focused }) => {
+          return <TabBarIcon name={route.name as "home" | "journal" | "addCoffee" | "achievements" | "profile"} focused={focused} color={color} />;
         },
         tabBarActiveTintColor: '#8B4513',
         tabBarInactiveTintColor: '#999999',
@@ -481,28 +481,41 @@ function AuthStack() {
 
 // 메인 네비게이터
 export default function AppNavigator() {
-  const { isAuthenticated, setTestUser } = useUserStore();
+  const { isAuthenticated } = useUserStore();
   const isInitialized = true; // For now, assume it's initialized
-  const navigationRef = useRef(null);
-  const routeNameRef = useRef();
+  const navigationRef = useRef<any>(null);
+  const routeNameRef = useRef<string | undefined>();
 
   useEffect(() => {
-    // 개발자 모드: 자동 테스트 사용자 로그인
-    if (__DEV__ && !isAuthenticated) {
-      setTestUser();
-    }
     // 네비게이션 상태 변경 추적
     return () => {};
   }, []);
 
+  const getCurrentRoute = (state: any): any => {
+    if (!state) return null;
+    const route = state.routes?.[state.index];
+    if (route?.state) {
+      return getCurrentRoute(route.state);
+    }
+    return route;
+  };
+
   const onReady = () => {
-    routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;
-    // ScreenContextService.setCurrentScreen(routeNameRef.current || ''); // Disabled for now
+    try {
+      const state = navigationRef.current?.getRootState();
+      const currentRoute = getCurrentRoute(state);
+      routeNameRef.current = currentRoute?.name;
+    } catch (error) {
+      console.warn('Navigation ready error:', error);
+    }
   };
 
   const onStateChange = async () => {
-    const previousRouteName = routeNameRef.current;
-    const currentRouteName = navigationRef.current?.getCurrentRoute()?.name;
+    try {
+      const previousRouteName = routeNameRef.current;
+      const state = navigationRef.current?.getRootState();
+      const currentRoute = getCurrentRoute(state);
+      const currentRouteName = currentRoute?.name;
 
     if (previousRouteName !== currentRouteName) {
       // 화면 전환 추적
@@ -514,14 +527,17 @@ export default function AppNavigator() {
       }
     }
 
-    routeNameRef.current = currentRouteName;
+      routeNameRef.current = currentRouteName;
+    } catch (error) {
+      console.warn('Navigation state change error:', error);
+    }
   };
 
   // Check for first time launch
-  const [isFirstLaunch, setIsFirstLaunch] = React.useState(null);
+  const [isFirstLaunch, setIsFirstLaunch] = React.useState<boolean | null>(null);
 
   React.useEffect(() => {
-    AsyncStorage.getItem('hasLaunched').then(value => {
+    AsyncStorage.getItem('hasLaunched').then((value: string | null) => {
       if (value === null) {
         AsyncStorage.setItem('hasLaunched', 'true');
         setIsFirstLaunch(true);

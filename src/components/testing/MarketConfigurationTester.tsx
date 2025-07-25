@@ -31,7 +31,7 @@ import {
   getRolloutPercentage,
 } from '../../config/deploymentConfig';
 import { betaTestingService } from '../../services/BetaTestingService';
-import { HIGColors, HIGConstants } from '../../styles/common';
+import { HIGColors, HIGConstants } from '../../constants/HIG';
 
 /**
  * Market Configuration Tester
@@ -106,13 +106,13 @@ const MarketConfigurationTester: React.FC = () => {
           apiEndpoint: getApiEndpoint(),
           rateLimits: {
             apiCalls: getRateLimit('apiCalls', 'requestsPerMinute'),
-            feedback: getRateLimit('feedback', 'submissionsPerHour'),
+            feedback: getRateLimit('feedback', 'requestsPerHour'),
           },
           maintenanceMode: isMaintenanceMode(),
           rolloutPercentage: getRolloutPercentage(),
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load market info:', error);
     }
   };
@@ -155,7 +155,7 @@ const MarketConfigurationTester: React.FC = () => {
             message: success ? 'All Korean market features working' : 'Some features missing or incorrect',
             data: { features, roasters: roasters.slice(0, 3), currencyFormat, hasKoreanRoasters, isKoreanCurrency }
           };
-        } catch (error) {
+        } catch (error: any) {
           return {
             scenario: 'Korean Market - Full Features',
             success: false,
@@ -201,7 +201,7 @@ const MarketConfigurationTester: React.FC = () => {
             message: success ? 'US beta configuration working correctly' : 'US beta configuration issues detected',
             data: { features, roasters: roasters.slice(0, 3), currencyFormat, hasUSRoasters, isUSCurrency }
           };
-        } catch (error) {
+        } catch (error: any) {
           return {
             scenario: 'US Beta Market - Limited Features',
             success: false,
@@ -227,7 +227,7 @@ const MarketConfigurationTester: React.FC = () => {
           const brewMethods = getSupportedBrewMethods();
           
           // Test data completeness
-          const hasData = rosters.length > 0 && origins.length > 0 && flavorProfiles.length > 0 && brewMethods.length > 0;
+          const hasData = roasters.length > 0 && origins.length > 0 && flavorProfiles.length > 0 && brewMethods.length > 0;
           
           // Test market-specific data
           const isKoreanMarket = marketConfig.market === 'korean';
@@ -249,7 +249,7 @@ const MarketConfigurationTester: React.FC = () => {
               consistency
             }
           };
-        } catch (error) {
+        } catch (error: any) {
           return {
             scenario: 'Market Data Consistency',
             success: false,
@@ -289,7 +289,7 @@ const MarketConfigurationTester: React.FC = () => {
             message: success ? 'Beta testing functionality available' : 'Beta testing functionality issues',
             data: { feedbackStats, canAccessBeta, hasBetaConfig, betaEnabled }
           };
-        } catch (error) {
+        } catch (error: any) {
           return {
             scenario: 'Beta Testing Functionality',
             success: false,
@@ -334,7 +334,7 @@ const MarketConfigurationTester: React.FC = () => {
               rateLimits: { korean: koreanRateLimit, us: usRateLimit }
             }
           };
-        } catch (error) {
+        } catch (error: any) {
           return {
             scenario: 'Performance Monitoring',
             success: false,
@@ -364,8 +364,8 @@ const MarketConfigurationTester: React.FC = () => {
           const koreanApiUrl = deploymentConfig.marketConfig.korean.apiBaseUrl;
           const usApiUrl = deploymentConfig.marketConfig.us_beta.apiBaseUrl;
           
-          const hasEndpoints = productionEndpoint && stagingEndpoint && developmentEndpoint;
-          const hasMarketEndpoints = koreanApiUrl && usApiUrl;
+          const hasEndpoints = !!(productionEndpoint && stagingEndpoint && developmentEndpoint);
+          const hasMarketEndpoints = !!(koreanApiUrl && usApiUrl);
           const endpointsDiffer = koreanApiUrl !== usApiUrl;
           
           const success = hasEndpoints && hasMarketEndpoints && endpointsDiffer;
@@ -382,7 +382,7 @@ const MarketConfigurationTester: React.FC = () => {
               endpointsDiffer
             }
           };
-        } catch (error) {
+        } catch (error: any) {
           return {
             scenario: 'API Endpoints Configuration',
             success: false,
@@ -404,7 +404,7 @@ const MarketConfigurationTester: React.FC = () => {
     try {
       const result = await scenario.testFunction();
       setTestResults(prev => [...prev.filter(r => r.scenario !== scenario.name), result]);
-    } catch (error) {
+    } catch (error: any) {
       const failureResult: TestResult = {
         scenario: scenario.name,
         success: false,
@@ -621,13 +621,13 @@ const styles = StyleSheet.create({
     backgroundColor: HIGColors.systemGreen,
   },
   headerTitle: {
-    fontSize: HIGConstants.FONT_SIZE_TITLE1,
+    fontSize: HIGConstants.fontSizeTitle1,
     fontWeight: '700',
     color: HIGColors.white,
     marginBottom: 4,
   },
   headerSubtitle: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.white,
     opacity: 0.9,
   },
@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
     borderBottomColor: HIGColors.separator,
   },
   sectionTitle: {
-    fontSize: HIGConstants.FONT_SIZE_HEADLINE,
+    fontSize: HIGConstants.fontSizeHeadline,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
@@ -648,7 +648,7 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_MD,
   },
   infoText: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.label,
     marginBottom: 4,
   },
@@ -672,7 +672,7 @@ const styles = StyleSheet.create({
     borderColor: HIGColors.systemGray4,
   },
   featureText: {
-    fontSize: HIGConstants.FONT_SIZE_CAPTION,
+    fontSize: HIGConstants.fontSizeCaption1,
     fontWeight: '600',
   },
   featureEnabledText: {
@@ -687,7 +687,7 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_MD,
   },
   controlLabel: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.label,
     marginLeft: HIGConstants.SPACING_MD,
   },
@@ -711,7 +711,7 @@ const styles = StyleSheet.create({
     borderColor: HIGColors.systemGray4,
   },
   buttonText: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
     fontWeight: '600',
     color: HIGColors.white,
   },
@@ -739,18 +739,18 @@ const styles = StyleSheet.create({
     marginRight: HIGConstants.SPACING_MD,
   },
   scenarioName: {
-    fontSize: HIGConstants.FONT_SIZE_SUBHEADLINE,
+    fontSize: HIGConstants.fontSizeSubheadline,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
   },
   scenarioDescription: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.secondaryLabel,
     marginBottom: 4,
   },
   scenarioMeta: {
-    fontSize: HIGConstants.FONT_SIZE_CAPTION,
+    fontSize: HIGConstants.fontSizeCaption1,
     color: HIGColors.tertiaryLabel,
   },
   scenarioButton: {
@@ -765,7 +765,7 @@ const styles = StyleSheet.create({
     backgroundColor: HIGColors.systemOrange,
   },
   scenarioButtonText: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
     fontWeight: '600',
     color: HIGColors.white,
   },
@@ -789,20 +789,20 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_SM,
   },
   resultScenario: {
-    fontSize: HIGConstants.FONT_SIZE_SUBHEADLINE,
+    fontSize: HIGConstants.fontSizeSubheadline,
     fontWeight: '600',
     color: HIGColors.label,
   },
   resultStatus: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
   },
   resultMessage: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
   },
   resultError: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.systemRed,
     marginBottom: HIGConstants.SPACING_SM,
   },
@@ -812,13 +812,13 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_SM,
   },
   resultDetailsTitle: {
-    fontSize: HIGConstants.FONT_SIZE_CAPTION,
+    fontSize: HIGConstants.fontSizeCaption1,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
   },
   resultDetailsText: {
-    fontSize: HIGConstants.FONT_SIZE_CAPTION,
+    fontSize: HIGConstants.fontSizeCaption1,
     color: HIGColors.secondaryLabel,
     fontFamily: 'Menlo',
   },
@@ -828,14 +828,14 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_MD,
   },
   dataLabel: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
     fontWeight: '600',
     color: HIGColors.label,
     marginTop: HIGConstants.SPACING_SM,
     marginBottom: 4,
   },
   dataValue: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
+    fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.secondaryLabel,
     fontFamily: 'Menlo',
   },

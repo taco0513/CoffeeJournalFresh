@@ -1,6 +1,6 @@
 import React from 'react';
 import { XStack, YStack, Text, Card, styled, Separator } from 'tamagui';
-import { Achievement } from '../../services/AchievementSystem';
+import { Achievement } from '../../types/achievements';
 
 // Styled components
 const StyledCard = styled(Card, {

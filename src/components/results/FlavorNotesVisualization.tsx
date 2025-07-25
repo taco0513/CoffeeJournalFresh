@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { HIGColors, HIGConstants } from '../../styles/common';
+import { HIGColors, HIGConstants } from '../../constants/HIG';
 
 interface FlavorNote {
   category: string;
@@ -39,7 +39,7 @@ export const FlavorNotesVisualization: React.FC<FlavorNotesVisualizationProps> =
     'Sweet': HIGColors.systemOrange,
     'Nutty/Cocoa': HIGColors.systemBrown,
     'Spices': HIGColors.systemYellow,
-    'Roasted': HIGColors.systemGray,
+    'Roasted': HIGColors.systemGray4,
     'Green/Vegetative': HIGColors.systemGreen,
     'Other': HIGColors.systemBlue,
     'Sour/Fermented': HIGColors.systemIndigo,
@@ -78,7 +78,7 @@ export const FlavorNotesVisualization: React.FC<FlavorNotesVisualizationProps> =
   };
 
   const getExpressionCategoryColor = (category: string): string => {
-    return expressionCategoryColors[category] || HIGColors.systemGray;
+    return expressionCategoryColors[category] || HIGColors.systemGray4;
   };
 
   const getCategoryTitle = (category: string): string => {
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
   flavorChip: {
     paddingHorizontal: HIGConstants.SPACING_MD,
     paddingVertical: HIGConstants.SPACING_SM,
-    borderRadius: HIGConstants.BORDER_RADIUS_SM,
+    borderRadius: HIGConstants.cornerRadiusSmall,
     borderWidth: 1,
   },
   chipText: {
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   expressionHeader: {
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: HIGConstants.SPACING_XS,
-    borderRadius: HIGConstants.BORDER_RADIUS_SM,
+    borderRadius: HIGConstants.cornerRadiusSmall,
     marginBottom: HIGConstants.SPACING_SM,
   },
   expressionCategoryTitle: {
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   expressionChip: {
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: HIGConstants.SPACING_XS,
-    borderRadius: HIGConstants.BORDER_RADIUS_SM,
+    borderRadius: HIGConstants.cornerRadiusSmall,
     borderWidth: 1,
   },
   expressionText: {

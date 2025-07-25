@@ -5,7 +5,7 @@ import {
   // FlavorLearningEngine, // Moved to feature_backlog
   AchievementSystem,
 } from '../services/personalTaste';
-import { AchievementType } from '../services/AchievementSystem';
+import { AchievementType } from '../types/achievements';
 import {
   TastePattern,
   GrowthMetrics,

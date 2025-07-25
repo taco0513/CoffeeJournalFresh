@@ -101,6 +101,7 @@ export interface HomeCafeData {
     waterAmount: number; // 물량 (g)
     ratio: string; // "1:15", "1:16"
     waterTemp: number; // 물 온도 (°C)
+    grindSize?: string; // 그라인드 사이즈
     
     // Bloom phase
     bloomWater: number; // 블룸 물량 (g)
@@ -168,6 +169,12 @@ export interface CurrentTasting {
   mouthfeel: string;
   personalComment: string;
   selectedFlavors?: FlavorPath[];
+  
+  // Additional derived properties
+  flavorProfile?: string[];
+  overallScore?: number;
+  matchScoreTotal?: number;
+  brewingMethod?: string;
   
   // Cafe mode specific
   cafeName?: string;

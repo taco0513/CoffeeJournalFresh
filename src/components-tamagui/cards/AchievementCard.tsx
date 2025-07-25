@@ -1,6 +1,6 @@
 import React from 'react';
 import { XStack, YStack, Text, Card, styled } from 'tamagui';
-import { Achievement, ProgressData } from '../../services/AchievementSystem';
+import { Achievement, ProgressData } from '../../types/achievements';
 import { CircularProgress } from './CircularProgress';
 
 // Styled components

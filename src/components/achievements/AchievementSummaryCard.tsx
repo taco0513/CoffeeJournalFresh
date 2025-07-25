@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { HIGColors, HIGConstants } from '../../styles/common';
-import { Achievement } from '../../services/AchievementSystem';
+import { Achievement } from '../../types/achievements';
 
 interface AchievementSummaryCardProps {
   unlockedCount: number;

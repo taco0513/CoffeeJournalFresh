@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { Achievement } from '../services/AchievementSystem';
+import { Achievement } from '../types/achievements';
 import { AchievementNotification } from '../components/achievements/AchievementNotification';
 
 interface AchievementContextType {

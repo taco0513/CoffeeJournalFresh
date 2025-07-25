@@ -13,7 +13,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { betaTestingService, BetaUser, DeploymentStatus } from '../services/BetaTestingService';
 import { getCurrentMarketConfig, isBetaMarket } from '../config/marketConfig';
-import { HIGColors, HIGConstants } from '../styles/common';
+import { HIGConstants } from '../styles/common';
+import { HIGColors } from '../constants/HIG';
 
 /**
  * Beta Testing Dashboard Screen

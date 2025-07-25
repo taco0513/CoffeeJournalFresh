@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { AchievementSystem, Achievement, ProgressData, UserAction } from '../services/AchievementSystem';
+import { AchievementSystem } from '../services/AchievementSystem';
+import { Achievement, ProgressData, UserAction } from '../types/achievements';
 import { useUserStore } from '../stores/useUserStore';
 import { useRealm } from '../contexts/RealmContext';
 
