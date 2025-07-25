@@ -10,38 +10,46 @@ import StatusBadge from '../components/StatusBadge';
 import { TabBarIcon } from '../components/TabBarIcon';
 import ScreenContextService from '../services/ScreenContextService';
 
-// 화면 import - Tamagui optimized versions (only existing ones)
-import HomeScreen from '../screens/HomeScreen';
-import CoffeeInfoScreen from '../screens/CoffeeInfoScreen.tamagui';
-import JournalIntegratedScreen from '../screens/JournalIntegratedScreen';
+// 화면 import - Tamagui optimized versions from organized structure
+import {
+  HomeScreen,
+  ModeSelectionScreen,
+  CoffeeInfoScreen,
+  SensoryScreen as SensoryScreenTamagui,
+  PersonalCommentScreen as PersonalCommentScreenTamagui,
+  ResultScreen as ResultScreenTamagui,
+  HomeCafeScreen as HomeCafeScreenTamagui,
+  UnifiedFlavorScreen,
+  JournalIntegratedScreen as JournalIntegratedScreenTamagui,
+  ProfileScreen as ProfileScreenTamagui,
+} from '../screens-tamagui';
+
+// Original screens (fallback for screens without Tamagui versions)
 import RoasterNotesScreen from '../screens/RoasterNotesScreen';
-import UnifiedFlavorScreen from '../screens/flavor/UnifiedFlavorScreen.tamagui';
-// import UnifiedFlavorScreen from '../screens/flavor/TestScreen';
-// import UnifiedFlavorScreen from '../screens/flavor/MinimalTestScreen';
-import SensoryScreen from '../screens/SensoryScreen';
 import ExperimentalDataScreen from '../screens/ExperimentalDataScreen';
 import SensoryEvaluationScreen from '../screens/SensoryEvaluationScreen';
-import PersonalCommentScreen from '../screens/PersonalCommentScreen';
-import ResultScreen from '../screens/ResultScreen';
-// import OCRScanScreen from '../screens/OCRScanScreen'; // Moved to feature_backlog
-// import OCRResultScreen from '../screens/OCRResultScreen'; // Moved to feature_backlog
 import SearchScreen from '../screens/SearchScreen';
 import TastingDetailScreen from '../screens/TastingDetailScreen';
 import DataTestScreen from '../screens/DataTestScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+
+// Admin and other screens
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
 import { AdminCoffeeEditScreen } from '../screens/admin/AdminCoffeeEditScreen';
 import DeveloperScreen from '../screens/DeveloperScreen';
 import AdminFeedbackScreen from '../screens/admin/AdminFeedbackScreen';
+import AchievementGalleryScreen from '../screens/AchievementGalleryScreen';
+
+// Testing screens
+import I18nValidationScreen from '../components/testing/I18nValidationScreen';
+import MarketConfigurationTester from '../components/testing/MarketConfigurationTester';
+import BetaTestingScreen from '../screens/BetaTestingScreen';
+import CrossMarketTestingScreen from '../components/testing/CrossMarketTestingScreen';
+
+// Context providers
 import { FeedbackProvider } from '../components/feedback';
-import { AchievementGalleryScreen } from '../screens/AchievementGalleryScreen';
 import { AchievementProvider } from '../contexts/AchievementContext';
 import { RealmProvider } from '../contexts/RealmContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ModeSelectionScreen from '../screens/ModeSelectionScreen.tamagui';
-import HomeCafeScreen from '../screens/HomeCafeScreenTamagui'; // Use Tamagui version
-import HomeCafeScreenTamagui from '../screens/HomeCafeScreenTamagui';
-import TamaguiComparisonScreen from '../screens/TamaguiComparisonScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -75,7 +83,7 @@ function TastingFlow() {
       />
       <Stack.Screen 
         name="HomeCafe" 
-        component={HomeCafeScreen} 
+        component={HomeCafeScreenTamagui} 
         options={{title: 'Home Cafe'}}
       />
       <Stack.Screen 
@@ -91,7 +99,7 @@ function TastingFlow() {
       />
       <Stack.Screen 
         name="Sensory" 
-        component={SensoryScreen} 
+        component={SensoryScreenTamagui} 
         options={{title: 'Sensory Evaluation'}}
       />
       {/* Home Cafe Mode: Separate screens for experimental data and sensory evaluation */}
@@ -107,12 +115,12 @@ function TastingFlow() {
       />
       <Stack.Screen 
         name="PersonalComment" 
-        component={PersonalCommentScreen} 
+        component={PersonalCommentScreenTamagui} 
         options={{title: 'Personal Comment'}}
       />
       <Stack.Screen 
         name="Result" 
-        component={ResultScreen} 
+        component={ResultScreenTamagui} 
         options={{title: 'Tasting Results'}}
       />
       {/* OCR Screens moved to feature_backlog */}
@@ -150,7 +158,7 @@ function HistoryStack() {
     >
       <Stack.Screen 
         name="HistoryMain" 
-        component={JournalIntegratedScreen} 
+        component={JournalIntegratedScreenTamagui} 
         options={{headerShown: false}}
       />
       <Stack.Screen 
@@ -233,7 +241,7 @@ function ProfileStack() {
     >
       <Stack.Screen 
         name="ProfileMain" 
-        component={ProfileScreen} 
+        component={ProfileScreenTamagui} 
         options={{title: 'Profile'}}
       />
       <Stack.Screen 
@@ -245,6 +253,27 @@ function ProfileStack() {
         name="DataTest" 
         component={DataTestScreen} 
         options={{title: 'Data Test'}}
+      />
+      {/* Cross-Market Testing Screens */}
+      <Stack.Screen 
+        name="CrossMarketTesting" 
+        component={CrossMarketTestingScreen} 
+        options={{title: 'Cross-Market Testing'}}
+      />
+      <Stack.Screen 
+        name="I18nValidation" 
+        component={I18nValidationScreen} 
+        options={{title: 'I18n Validation'}}
+      />
+      <Stack.Screen 
+        name="MarketConfigurationTester" 
+        component={MarketConfigurationTester} 
+        options={{title: 'Market Configuration Tester'}}
+      />
+      <Stack.Screen 
+        name="BetaTestingScreen" 
+        component={BetaTestingScreen} 
+        options={{title: 'Beta Testing Dashboard'}}
       />
       {/* Feature Backlog - Photo features */}
       {/* <Stack.Screen 
@@ -265,12 +294,12 @@ function ProfileStack() {
 }
 
 // 메인 탭 네비게이터 래퍼
-function MainTabsWrapper({ navigation: parentNavigation }) {
+function MainTabsWrapper({ navigation: parentNavigation }: { navigation: any }) {
   return <MainTabs parentNavigation={parentNavigation} />;
 }
 
 // 메인 탭 네비게이터
-function MainTabs({ parentNavigation }) {
+function MainTabs({ parentNavigation }: { parentNavigation: any }) {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -307,8 +336,8 @@ function MainTabs({ parentNavigation }) {
         options={{
           headerShown: false, // HomeScreen has its own navigation
           tabBarLabel: 'Home',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon name="home" focused={focused} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabBarIcon name="home" focused={focused} color={color} />
           ),
         }}
       />
@@ -318,8 +347,8 @@ function MainTabs({ parentNavigation }) {
         options={{
           headerShown: false, // HistoryStack has its own navigation
           tabBarLabel: 'Journal',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon name="journal" focused={focused} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabBarIcon name="journal" focused={focused} color={color} />
           ),
         }}
       />
@@ -328,7 +357,7 @@ function MainTabs({ parentNavigation }) {
         component={View} // Placeholder component
         options={{
           tabBarLabel: '',
-          tabBarIcon: ({ focused }) => (
+          tabBarIcon: ({ focused, color }) => (
             <View style={{
               position: 'absolute',
               bottom: 0,
@@ -366,8 +395,8 @@ function MainTabs({ parentNavigation }) {
         options={{
           headerShown: false,
           tabBarLabel: '업적',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon name="achievements" focused={focused} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabBarIcon name="achievements" focused={focused} color={color} />
           ),
         }}
       />
@@ -377,8 +406,8 @@ function MainTabs({ parentNavigation }) {
         options={{
           headerShown: false, // ProfileStack has its own navigation
           tabBarLabel: 'Profile',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon name="profile" focused={focused} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabBarIcon name="profile" focused={focused} color={color} />
           ),
         }}
       />
@@ -469,20 +498,6 @@ function AppNavigator() {
             <Stack.Screen 
               name="DeveloperScreen" 
               component={DeveloperScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen 
-              name="TamaguiComparison" 
-              component={TamaguiComparisonScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen 
-              name="HomeCafeScreenTamagui" 
-              component={HomeCafeScreenTamagui}
               options={{
                 headerShown: false,
               }}

@@ -96,16 +96,16 @@ const animations = createAnimations({
 // Create fonts
 const headingFont = createInterFont({
   size: {
-    1: 12,
-    2: 14,
-    3: 16,
-    4: 18,
-    5: 20,
-    6: 24,
-    7: 28,
-    8: 32,
-    9: 40,
-    10: 48,
+    1: 14,   // Small heading
+    2: 16,   // 
+    3: 18,   // 
+    4: 20,   // H4
+    5: 24,   // H3
+    6: 28,   // H2
+    7: 32,   // H1
+    8: 36,   // Large H1
+    9: 40,   // Extra large
+    10: 48,  // Display
   },
   weight: {
     1: '400',
@@ -118,11 +118,11 @@ const headingFont = createInterFont({
 
 const bodyFont = createInterFont({
   size: {
-    1: 12,
-    2: 14,
-    3: 16,
-    4: 18,
-    5: 20,
+    1: 14,   // Small body text
+    2: 16,   // Default body text
+    3: 18,   // Large body text
+    4: 20,   // Extra large body
+    5: 22,   // Emphasized text
   },
   weight: {
     1: '400',
@@ -194,6 +194,33 @@ const config = createTamagui({
     body: bodyFont,
   },
   animations,
+  // Default font settings
+  defaultProps: {
+    Text: {
+      fontFamily: '$body',
+      fontSize: '$2', // Default to 16px
+    },
+    H1: {
+      fontFamily: '$heading',
+      fontSize: '$7', // 32px
+      fontWeight: '700',
+    },
+    H2: {
+      fontFamily: '$heading',
+      fontSize: '$6', // 28px
+      fontWeight: '600',
+    },
+    H3: {
+      fontFamily: '$heading',
+      fontSize: '$5', // 24px
+      fontWeight: '600',
+    },
+    Paragraph: {
+      fontFamily: '$body',
+      fontSize: '$2', // 16px
+      lineHeight: 24,
+    },
+  },
   media: {
     xs: { maxWidth: 660 },
     sm: { maxWidth: 800 },

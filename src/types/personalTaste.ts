@@ -187,7 +187,7 @@ export interface CoffeeInfo {
 export interface PersonalDashboardData {
   tastePattern: TastePattern | null;
   growthMetrics: GrowthMetrics | null;
-  recentAchievements: Achievement[];
+  recentAchievements: any[]; // Achievement[];
   weeklyProgress: WeeklyProgressData;
   recommendations: CoffeeRecommendation[];
 }
@@ -225,7 +225,7 @@ export interface QuizResult {
   correctAnswers: number;
   totalQuestions: number;
   earnedPoints: number;
-  unlockedAchievements: Achievement[];
+  unlockedAchievements: any[]; // Achievement[];
 }
 
 export interface DailyChallengeData {

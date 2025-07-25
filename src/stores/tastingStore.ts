@@ -1,7 +1,7 @@
 import {create} from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RealmService from '../services/realm/RealmService';
-import { AchievementSystem, UserAction } from '../services/AchievementSystem';
+import { AchievementSystem, UserAction, Achievement } from '../services/AchievementSystem';
 import { 
   FlavorPath, 
   SyncStatus, 
@@ -9,7 +9,6 @@ import {
   SensoryAttributes, 
   SelectedSensoryExpression,
   CurrentTasting,
-  Achievement,
   TastingMode,
   HomeCafeData,
   SimpleHomeCafeData,
@@ -162,7 +161,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       // Check achievements after saving
       if (savedTasting && savedTasting.userId) {
         try {
-          const achievementSystem = AchievementSystem.getInstance();
+          const achievementSystem = new AchievementSystem();
           const action: UserAction = {
             type: 'tasting',
             data: {
@@ -178,7 +177,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
             },
             timestamp: new Date(),
           };
-          await achievementSystem.checkAchievements(savedTasting.userId, action);
+          await achievementSystem.checkAndUpdateAchievements(savedTasting.userId, action);
         } catch (achievementError) {
           console.error('Achievement check failed:', achievementError);
           // Don't throw - achievement check failure shouldn't prevent tasting save

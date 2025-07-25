@@ -13,7 +13,22 @@ import {
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
-import { HIGConstants, HIGColors } from '../styles/common';
+import { HIGConstants } from '../styles/common';
+
+// Tamagui color tokens (temporary until full Tamagui migration)
+const Colors = {
+  background: '#FFFFFF',
+  cupBlue: '#2196F3',
+  gray6: '#D1D1D6',
+  gray5: '#E5E5EA',
+  gray4: '#F2F2F7',
+  color: '#000000',
+  gray11: '#3C3C43',
+  gray10: '#8E8E93',
+  green9: '#34C759',
+  red9: '#FF3B30',
+  orange9: '#FF9500',
+} as const;
 import { useDevStore } from '../stores/useDevStore';
 import { useUserStore } from '../stores/useUserStore';
 import { useFeedbackStore } from '../stores/useFeedbackStore';
@@ -306,8 +321,8 @@ const DeveloperScreen = () => {
       <Switch
         value={value}
         onValueChange={onValueChange}
-        trackColor={{ false: HIGColors.gray3, true: HIGColors.blue }}
-        thumbColor={value ? HIGColors.white : HIGColors.gray}
+        trackColor={{ false: Colors.gray6, true: Colors.cupBlue }}
+        thumbColor={value ? Colors.background : Colors.gray10}
       />
     </View>
   );
@@ -659,6 +674,34 @@ count={0}
               />
             </View>
             
+            <View style={styles.actionGroup}>
+              <Text style={styles.actionGroupTitle}>듀얼 마켓 테스팅</Text>
+              <ActionButton
+                title="🌍 Cross-Market 종합 테스트"
+                onPress={() => navigation.navigate('CrossMarketTesting' as any)}
+                style={[styles.actionButton, { backgroundColor: '#6F42C1' }]}
+                icon="🌐"
+              />
+              <ActionButton
+                title="🔤 I18n 시스템 검증"
+                onPress={() => navigation.navigate('I18nValidation' as any)}
+                style={[styles.actionButton, { backgroundColor: Colors.cupBlue }]}
+                icon="🔤"
+              />
+              <ActionButton
+                title="⚙️ 마켓 구성 테스터"
+                onPress={() => navigation.navigate('MarketConfigurationTester' as any)}
+                style={[styles.actionButton, { backgroundColor: Colors.green9 }]}
+                icon="⚙️"
+              />
+              <ActionButton
+                title="📊 베타 테스팅 대시보드"
+                onPress={() => navigation.navigate('BetaTestingScreen' as any)}
+                style={[styles.actionButton, { backgroundColor: Colors.orange9 }]}
+                icon="📊"
+              />
+            </View>
+            
             
             <View style={[styles.actionGroup, styles.dangerZone]}>
               <Text style={[styles.actionGroupTitle, styles.dangerTitle]}>위험 구역</Text>
@@ -868,24 +911,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray4,
+    borderBottomColor: Colors.gray6,
   },
   backButton: {
     paddingVertical: HIGConstants.SPACING_SM,
   },
   backButtonText: {
     fontSize: 17,
-    color: HIGColors.blue,
+    color: Colors.cupBlue,
     fontWeight: '400',
   },
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
-    color: HIGColors.label,
+    color: Colors.color,
   },
   disableButtonText: {
     fontSize: 15,
-    color: HIGColors.red,
+    color: Colors.red9,
     fontWeight: '500',
   },
   scrollView: {
@@ -904,25 +947,25 @@ const styles = StyleSheet.create({
   disabledTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: HIGColors.label,
+    color: Colors.color,
     marginBottom: HIGConstants.SPACING_SM,
     textAlign: 'center',
   },
   disabledDescription: {
     fontSize: 16,
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: HIGConstants.SPACING_XL,
   },
   enableButton: {
-    backgroundColor: HIGColors.blue,
+    backgroundColor: Colors.cupBlue,
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS,
   },
   enableButtonText: {
-    color: HIGColors.white,
+    color: Colors.background,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -932,7 +975,7 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_MD,
     margin: HIGConstants.SPACING_LG,
     borderWidth: 1,
-    borderColor: HIGColors.orange,
+    borderColor: Colors.orange9,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -943,7 +986,7 @@ const styles = StyleSheet.create({
   warningText: {
     flex: 1,
     fontSize: 14,
-    color: HIGColors.label,
+    color: Colors.color,
     lineHeight: 20,
   },
   section: {
@@ -967,10 +1010,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 17,
     fontWeight: '600',
-    color: HIGColors.label,
+    color: Colors.color,
   },
   badge: {
-    backgroundColor: HIGColors.blue,
+    backgroundColor: Colors.cupBlue,
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: 2,
     borderRadius: 10,
@@ -979,14 +1022,14 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 12,
     fontWeight: '600',
-    color: HIGColors.white,
+    color: Colors.background,
   },
   card: {
     backgroundColor: '#F8F9FA',
     marginHorizontal: HIGConstants.SPACING_LG,
     borderRadius: HIGConstants.BORDER_RADIUS,
     borderWidth: 1,
-    borderColor: HIGColors.gray4,
+    borderColor: Colors.gray6,
     overflow: 'hidden',
   },
   settingRow: {
@@ -994,7 +1037,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: HIGConstants.SPACING_MD,
     borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.gray4,
+    borderBottomColor: Colors.gray6,
     minHeight: 60,
   },
   settingRowLast: {
@@ -1012,16 +1055,16 @@ const styles = StyleSheet.create({
   settingTitle: {
     fontSize: 16,
     fontWeight: '500',
-    color: HIGColors.label,
+    color: Colors.color,
     marginBottom: 2,
   },
   settingDescription: {
     fontSize: 13,
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     lineHeight: 16,
   },
   actionButton: {
-    backgroundColor: HIGColors.blue,
+    backgroundColor: Colors.cupBlue,
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS,
     margin: HIGConstants.SPACING_SM,
@@ -1036,30 +1079,30 @@ const styles = StyleSheet.create({
     marginRight: HIGConstants.SPACING_XS,
   },
   actionButtonText: {
-    color: HIGColors.white,
+    color: Colors.background,
     fontSize: 15,
     fontWeight: '600',
   },
   dangerButton: {
-    backgroundColor: HIGColors.red,
+    backgroundColor: Colors.red9,
   },
   dangerButtonText: {
-    color: HIGColors.white,
+    color: Colors.background,
   },
   warningButton: {
-    backgroundColor: HIGColors.orange,
+    backgroundColor: Colors.orange9,
   },
   warningButtonText: {
-    color: HIGColors.white,
+    color: Colors.background,
   },
   successButton: {
-    backgroundColor: HIGColors.green,
+    backgroundColor: Colors.green9,
   },
   successButtonText: {
-    color: HIGColors.white,
+    color: Colors.background,
   },
   dataButton: {
-    backgroundColor: HIGColors.green,
+    backgroundColor: Colors.green9,
   },
   userInfoCard: {
     flexDirection: 'row',
@@ -1070,7 +1113,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: HIGColors.blue,
+    backgroundColor: Colors.cupBlue,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: HIGConstants.SPACING_MD,
@@ -1078,7 +1121,7 @@ const styles = StyleSheet.create({
   userAvatarText: {
     fontSize: 24,
     fontWeight: '600',
-    color: HIGColors.white,
+    color: Colors.background,
   },
   userDetails: {
     flex: 1,
@@ -1086,12 +1129,12 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 18,
     fontWeight: '600',
-    color: HIGColors.label,
+    color: Colors.color,
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 14,
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     marginBottom: HIGConstants.SPACING_SM,
   },
   userBadges: {
@@ -1107,7 +1150,7 @@ const styles = StyleSheet.create({
   userBadgeText: {
     fontSize: 12,
     fontWeight: '600',
-    color: HIGColors.white,
+    color: Colors.background,
   },
   actionGroup: {
     padding: HIGConstants.SPACING_MD,
@@ -1115,7 +1158,7 @@ const styles = StyleSheet.create({
   actionGroupTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     marginBottom: HIGConstants.SPACING_SM,
     textTransform: 'uppercase',
   },
@@ -1125,11 +1168,11 @@ const styles = StyleSheet.create({
     marginTop: HIGConstants.SPACING_SM,
   },
   dangerTitle: {
-    color: HIGColors.red,
+    color: Colors.red9,
   },
   restrictedFeature: {
     padding: HIGConstants.SPACING_MD,
-    backgroundColor: HIGColors.systemGray6,
+    backgroundColor: Colors.gray4,
     borderRadius: HIGConstants.BORDER_RADIUS_SM,
     marginVertical: HIGConstants.SPACING_XS,
     opacity: 0.6,
@@ -1137,25 +1180,25 @@ const styles = StyleSheet.create({
   restrictedTitle: {
     fontSize: 16,
     fontWeight: '500',
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     marginBottom: 2,
   },
   restrictedDescription: {
     fontSize: 14,
-    color: HIGColors.tertiaryLabel,
+    color: Colors.gray10,
   },
   
   // Mock Data Configuration Styles
   mockDataConfig: {
     padding: HIGConstants.SPACING_MD,
-    backgroundColor: HIGColors.systemGray6,
+    backgroundColor: Colors.gray4,
     marginTop: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.BORDER_RADIUS,
   },
   configTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: HIGColors.label,
+    color: Colors.color,
     marginBottom: HIGConstants.SPACING_MD,
   },
   configRow: {
@@ -1164,7 +1207,7 @@ const styles = StyleSheet.create({
   configLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: HIGColors.label,
+    color: Colors.color,
     marginBottom: HIGConstants.SPACING_XS,
   },
   scenarioButtons: {
@@ -1176,21 +1219,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: HIGConstants.SPACING_XS,
     borderRadius: HIGConstants.BORDER_RADIUS / 2,
-    backgroundColor: HIGColors.systemGray5,
+    backgroundColor: Colors.gray5,
     borderWidth: 1,
-    borderColor: HIGColors.systemGray4,
+    borderColor: Colors.gray6,
   },
   scenarioButtonSelected: {
-    backgroundColor: HIGColors.blue,
-    borderColor: HIGColors.blue,
+    backgroundColor: Colors.cupBlue,
+    borderColor: Colors.cupBlue,
   },
   scenarioButtonText: {
     fontSize: 12,
     fontWeight: '500',
-    color: HIGColors.label,
+    color: Colors.color,
   },
   scenarioButtonTextSelected: {
-    color: HIGColors.white,
+    color: Colors.background,
   },
   countButtons: {
     flexDirection: 'row',
@@ -1202,21 +1245,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: HIGConstants.BORDER_RADIUS / 2,
-    backgroundColor: HIGColors.systemGray5,
+    backgroundColor: Colors.gray5,
     borderWidth: 1,
-    borderColor: HIGColors.systemGray4,
+    borderColor: Colors.gray6,
   },
   countButtonSelected: {
-    backgroundColor: HIGColors.blue,
-    borderColor: HIGColors.blue,
+    backgroundColor: Colors.cupBlue,
+    borderColor: Colors.cupBlue,
   },
   countButtonText: {
     fontSize: 14,
     fontWeight: '500',
-    color: HIGColors.label,
+    color: Colors.color,
   },
   countButtonTextSelected: {
-    color: HIGColors.white,
+    color: Colors.background,
   },
   // Firecrawl Demo Styles
   demoGrid: {
@@ -1227,7 +1270,7 @@ const styles = StyleSheet.create({
   },
   demoCard: {
     width: '48%',
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: Colors.gray4,
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS,
     marginBottom: HIGConstants.SPACING_SM,
@@ -1240,51 +1283,51 @@ const styles = StyleSheet.create({
   demoCardTitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
-    color: HIGColors.label,
+    color: Colors.color,
     marginBottom: 4,
   },
   demoCardDesc: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     textAlign: 'center',
   },
   demoActions: {
     marginTop: HIGConstants.SPACING_LG,
   },
   primaryDemo: {
-    backgroundColor: HIGColors.systemBlue,
+    backgroundColor: Colors.cupBlue,
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS,
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_SM,
   },
   primaryDemoText: {
-    color: HIGColors.white,
+    color: Colors.background,
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
   },
   secondaryDemo: {
-    backgroundColor: HIGColors.secondarySystemBackground,
+    backgroundColor: Colors.gray4,
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: HIGColors.systemGray4,
+    borderColor: Colors.gray6,
   },
   secondaryDemoText: {
-    color: HIGColors.systemBlue,
+    color: Colors.cupBlue,
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
   },
   firecrawlInfo: {
-    backgroundColor: HIGColors.systemBlue + '10',
+    backgroundColor: Colors.cupBlue + '10',
     padding: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.BORDER_RADIUS,
     marginTop: HIGConstants.SPACING_MD,
   },
   firecrawlInfoText: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
-    color: HIGColors.systemBlue,
+    color: Colors.cupBlue,
     textAlign: 'center',
     marginBottom: 4,
   },

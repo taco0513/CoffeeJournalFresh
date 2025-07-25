@@ -1,1 +1,5 @@
-{"node":{"003c36fce6e4ebb5ce077be39471227de4ef39a9ec":{"workers":{"app/dashboard/analytics/page":{"moduleId":"81230","async":false},"app/dashboard/coffee/page":{"moduleId":"81230","async":false},"app/dashboard/page":{"moduleId":"81230","async":false},"app/dashboard/users/page":{"moduleId":"81230","async":false}},"layer":{"app/dashboard/analytics/page":"rsc","app/dashboard/coffee/page":"rsc","app/dashboard/page":"rsc","app/dashboard/users/page":"rsc"}}},"edge":{},"encryptionKey":"Ym23OxFf1vSkYSZ3+bjlh1teRguhm17wT/wEW/pQk4A="}
+{
+  "node": {},
+  "edge": {},
+  "encryptionKey": "Ym23OxFf1vSkYSZ3+bjlh1teRguhm17wT/wEW/pQk4A="
+}

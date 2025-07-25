@@ -27,7 +27,7 @@ const FILTER_OPTIONS: { key: FilterType; label: string; icon: string }[] = [
   { key: AchievementType.HIDDEN, label: '숨겨진', icon: '🕵️' },
 ];
 
-export const AchievementGalleryScreen: React.FC = () => {
+const AchievementGalleryScreen: React.FC = () => {
   const { 
     achievements, 
     stats, 
@@ -105,8 +105,8 @@ export const AchievementGalleryScreen: React.FC = () => {
       </View>
 
       {nextAchievement && (
-        <View style={styles.nextAchievementContainer}>
-          <Text style={styles.nextAchievementTitle}>🎯 다음 목표</Text>
+        <View style={styles.nextAchievementCard}>
+          <Text style={styles.nextAchievementName}>🎯 다음 목표</Text>
           <AchievementCard 
             achievement={nextAchievement}
             compact
@@ -121,14 +121,14 @@ export const AchievementGalleryScreen: React.FC = () => {
       <ScrollView 
         horizontal 
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filterScrollContent}
+        contentContainerStyle={styles.filterScroll}
       >
         {FILTER_OPTIONS.map((filter) => (
           <TouchableOpacity
             key={filter.key}
             style={[
-              styles.filterButton,
-              selectedFilter === filter.key && styles.filterButtonActive,
+              styles.filterPill,
+              selectedFilter === filter.key && styles.filterPillActive,
             ]}
             onPress={() => setSelectedFilter(filter.key)}
           >
@@ -148,58 +148,51 @@ export const AchievementGalleryScreen: React.FC = () => {
   const renderAchievementsList = () => {
     if (filteredAchievements.length === 0) {
       return (
-        <YStack 
-          alignItems="center" 
-          justifyContent="center" 
-          paddingVertical="$16" 
-          paddingHorizontal="$6"
-        >
-          <SizableText size="12" marginBottom="$6">🎯</SizableText>
-          <SizableText size="$5" fontWeight="600" color="$color" marginBottom="$3">
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyStateIcon}>🎯</Text>
+          <Text style={[styles.statNumber, { marginBottom: IOSSpacing.sm }]}>
             업적이 없습니다
-          </SizableText>
-          <SizableText size="$3" color="$colorPress" textAlign="center" lineHeight="$5">
+          </Text>
+          <Text style={styles.emptyStateText}>
             {selectedFilter === 'unlocked' 
               ? '아직 달성한 업적이 없습니다.\n커피 테이스팅을 시작해보세요!'
               : selectedFilter === 'locked'
               ? '진행 중인 업적이 없습니다.'
               : '이 카테고리에는 업적이 없습니다.'
             }
-          </SizableText>
-        </YStack>
+          </Text>
+        </View>
       );
     }
 
     return (
-      <YStack padding="$6">
+      <View style={styles.achievementList}>
         {filteredAchievements.map((achievement) => (
           <AchievementCard
             key={achievement.id}
             achievement={achievement}
           />
         ))}
-      </YStack>
+      </View>
     );
   };
 
   if (error) {
     return (
-      <View flex={1} backgroundColor="$background" alignItems="center" justifyContent="center" paddingHorizontal="$6">
-        <SizableText size="12" marginBottom="$6">⚠️</SizableText>
-        <SizableText size="$5" fontWeight="600" color="$color" marginBottom="$3">
+      <View style={styles.errorContainer}>
+        <Text style={styles.emptyStateIcon}>⚠️</Text>
+        <Text style={[styles.statNumber, { marginBottom: IOSSpacing.sm }]}>
           업적을 불러올 수 없습니다
-        </SizableText>
-        <SizableText size="$3" color="$colorPress" textAlign="center" marginBottom="$6">
+        </Text>
+        <Text style={[styles.errorText, { marginBottom: IOSSpacing.lg }]}>
           {error}
-        </SizableText>
-        <Button 
-          size="$4" 
-          theme="blue" 
+        </Text>
+        <TouchableOpacity 
+          style={[styles.filterPill, styles.filterPillActive, { paddingHorizontal: IOSSpacing.lg, paddingVertical: IOSSpacing.md }]}
           onPress={handleRefresh}
-          animation="bouncy"
         >
-          다시 시도
-        </Button>
+          <Text style={[styles.filterText, styles.filterTextActive]}>다시 시도</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -227,10 +220,187 @@ export const AchievementGalleryScreen: React.FC = () => {
         {renderFilterBar()}
         {renderAchievementsList()}
         
-        <View height="$8" />
+        <View style={{ height: IOSSpacing.xxl }} />
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-// Styles migrated to Tamagui - no StyleSheet needed
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: IOSColors.systemBackground,
+  },
+  
+  navigationBar: {
+    height: IOSLayout.navBarHeight,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: IOSSpacing.screenPadding,
+    backgroundColor: IOSColors.systemBackground,
+    borderBottomWidth: IOSLayout.borderWidthThin,
+    borderBottomColor: IOSColors.separator,
+  },
+  
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  
+  navigationTitle: {
+    ...IOSTypography.headline,
+    fontWeight: '700' as const,
+    color: IOSColors.label,
+  },
+  
+  betaBadge: {
+    marginLeft: IOSSpacing.sm,
+    paddingHorizontal: IOSSpacing.xs,
+    paddingVertical: 2,
+    backgroundColor: IOSColors.systemOrange,
+    borderRadius: IOSLayout.cornerRadiusSmall,
+  },
+  
+  betaText: {
+    ...IOSTypography.caption2,
+    fontSize: 10,
+    fontWeight: '700' as const,
+    color: IOSColors.systemBackground,
+  },
+  
+  scrollView: {
+    flex: 1,
+  },
+  
+  statsContainer: {
+    backgroundColor: IOSColors.systemBackground,
+    paddingHorizontal: IOSSpacing.screenPadding,
+    paddingVertical: IOSSpacing.lg,
+  },
+  
+  statsGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: IOSSpacing.md,
+  },
+  
+  statCard: {
+    flex: 1,
+    alignItems: 'center',
+    padding: IOSSpacing.md,
+    backgroundColor: IOSColors.quaternarySystemFill,
+    borderRadius: IOSLayout.cornerRadiusSmall,
+    marginHorizontal: IOSSpacing.xs,
+  },
+  
+  statNumber: {
+    ...IOSTypography.title1,
+    fontWeight: '700' as const,
+    color: IOSColors.label,
+  },
+  
+  statLabel: {
+    ...IOSTypography.footnote,
+    color: IOSColors.secondaryLabel,
+    marginTop: IOSSpacing.xs,
+  },
+  
+  nextAchievementCard: {
+    backgroundColor: IOSColors.quaternarySystemFill,
+    borderRadius: IOSLayout.cornerRadiusSmall,
+    padding: IOSSpacing.md,
+    marginTop: IOSSpacing.sm,
+  },
+  
+  nextAchievementHeader: {
+    ...IOSTypography.footnote,
+    color: IOSColors.secondaryLabel,
+    marginBottom: IOSSpacing.xs,
+  },
+  
+  nextAchievementName: {
+    ...IOSTypography.body,
+    fontWeight: '600' as const,
+    color: IOSColors.label,
+    marginBottom: IOSSpacing.xs,
+  },
+  
+  filterContainer: {
+    backgroundColor: IOSColors.systemBackground,
+    paddingHorizontal: IOSSpacing.screenPadding,
+    paddingBottom: IOSSpacing.sm,
+  },
+  
+  filterScroll: {
+    flexGrow: 0,
+  },
+  
+  filterPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: IOSSpacing.md,
+    paddingVertical: IOSSpacing.xs,
+    marginRight: IOSSpacing.sm,
+    borderRadius: IOSLayout.cornerRadiusLarge,
+    backgroundColor: IOSColors.quaternarySystemFill,
+  },
+  
+  filterPillActive: {
+    backgroundColor: IOSColors.systemBrown,
+  },
+  
+  filterIcon: {
+    fontSize: 16,
+    marginRight: IOSSpacing.xs,
+  },
+  
+  filterText: {
+    ...IOSTypography.caption1,
+    color: IOSColors.label,
+  },
+  
+  filterTextActive: {
+    color: IOSColors.systemBackground,
+    fontWeight: '600' as const,
+  },
+  
+  achievementList: {
+    flex: 1,
+    paddingHorizontal: IOSSpacing.screenPadding,
+    paddingTop: IOSSpacing.sm,
+  },
+  
+  emptyState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: IOSSpacing.xxxl,
+  },
+  
+  emptyStateIcon: {
+    fontSize: 48,
+    marginBottom: IOSSpacing.md,
+  },
+  
+  emptyStateText: {
+    ...IOSTypography.body,
+    color: IOSColors.secondaryLabel,
+    textAlign: 'center',
+  },
+  
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: IOSSpacing.xl,
+  },
+  
+  errorText: {
+    ...IOSTypography.body,
+    color: IOSColors.systemRed,
+    textAlign: 'center',
+  },
+});
+
+export default AchievementGalleryScreen;

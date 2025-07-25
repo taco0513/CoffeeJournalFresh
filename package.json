@@ -39,6 +39,7 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "i18next": "^25.3.2",
     "react": "19.1.0",
+    "react-dom": "^18.2.0",
     "react-i18next": "^15.6.0",
     "react-native": "0.80.1",
     "react-native-chart-kit": "^6.12.0",

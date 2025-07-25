@@ -1,5 +1,19 @@
 import { StyleSheet } from 'react-native';
-import { HIGConstants, HIGColors } from '../../../styles/common';
+import { HIGConstants } from '../../../styles/common';
+
+// Tamagui color tokens (will be replaced with direct token usage when migrating to Tamagui styled components)
+const Colors = {
+  background: '#FFFFFF',
+  cupBlue: '#2196F3',
+  gray6: '#D1D1D6',
+  gray5: '#E5E5EA',
+  gray4: '#F2F2F7',
+  color: '#000000',
+  gray11: '#3C3C43',
+  gray10: '#8E8E93',
+  backgroundHover: '#FAFAFA',
+  cupBlueLight: '#E3F2FD',
+} as const;
 
 export const categoryAccordionStyles = StyleSheet.create({
   categoryContainer: {
@@ -7,13 +21,13 @@ export const categoryAccordionStyles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_MD,
   },
   categoryCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.background,
     borderRadius: HIGConstants.cornerRadiusMedium,
     overflow: 'visible',
   },
   categoryCardExpanded: {
-    backgroundColor: HIGColors.systemGray6,
-    borderBottomColor: HIGColors.systemGray4,
+    backgroundColor: Colors.gray4,
+    borderBottomColor: Colors.gray6,
   },
   categoryColorBar: {
     position: 'absolute',
@@ -43,11 +57,11 @@ export const categoryAccordionStyles = StyleSheet.create({
   categoryTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: HIGColors.label,
+    color: Colors.color,
   },
   categorySubtext: {
     fontSize: 13,
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     marginTop: 2,
     marginLeft: 28, // Align with title (emoji width + spacing)
   },
@@ -56,7 +70,7 @@ export const categoryAccordionStyles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryBadge: {
-    backgroundColor: HIGColors.systemGray5,
+    backgroundColor: Colors.gray5,
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: 2,
     borderRadius: 10,
@@ -65,10 +79,10 @@ export const categoryAccordionStyles = StyleSheet.create({
   categoryCount: {
     fontSize: 12,
     fontWeight: '600',
-    color: HIGColors.label,
+    color: Colors.color,
   },
   categorySelectedBadge: {
-    backgroundColor: HIGColors.systemBlue,
+    backgroundColor: Colors.cupBlue,
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: 2,
     borderRadius: 10,
@@ -81,14 +95,14 @@ export const categoryAccordionStyles = StyleSheet.create({
   },
   expandIcon: {
     fontSize: 20,
-    color: HIGColors.tertiaryLabel,
+    color: Colors.gray10,
     fontWeight: '300',
   },
   expandIconRotated: {
     transform: [{ rotate: '90deg' }],
   },
   categoryExpandedContent: {
-    backgroundColor: '#FAFAFA',
+    backgroundColor: Colors.backgroundHover,
     paddingVertical: HIGConstants.SPACING_SM,
     marginTop: 0,
     borderBottomLeftRadius: HIGConstants.cornerRadiusMedium,
@@ -100,7 +114,7 @@ export const categoryAccordionStyles = StyleSheet.create({
   },
   categoryGuideText: {
     fontSize: 12,
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     fontStyle: 'italic',
   },
   subCategoryScroll: {
@@ -108,7 +122,7 @@ export const categoryAccordionStyles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_XS,
   },
   subCategoryChip: {
-    backgroundColor: HIGColors.systemGray6,
+    backgroundColor: Colors.gray4,
     paddingHorizontal: 18,
     paddingVertical: 10,
     borderRadius: 25, // Perfect pill shape
@@ -117,12 +131,12 @@ export const categoryAccordionStyles = StyleSheet.create({
     minHeight: 40,
   },
   subCategoryChipSelected: {
-    backgroundColor: HIGColors.systemBlue,
+    backgroundColor: Colors.cupBlue,
     borderWidth: 0,
   },
   subCategoryText: {
     fontSize: 14,
-    color: HIGColors.label,
+    color: Colors.color,
     fontWeight: '500',
   },
   subCategoryTextSelected: {
@@ -130,7 +144,7 @@ export const categoryAccordionStyles = StyleSheet.create({
     fontWeight: '600',
   },
   subCategoryChipFullySelected: {
-    backgroundColor: HIGColors.systemBlue,
+    backgroundColor: Colors.cupBlue,
     borderWidth: 0,
   },
   subCategoryTextFullySelected: {
@@ -138,12 +152,12 @@ export const categoryAccordionStyles = StyleSheet.create({
     fontWeight: '700',
   },
   subCategoryChipChildSelected: {
-    backgroundColor: '#E3F2FD',
+    backgroundColor: Colors.cupBlueLight,
     borderWidth: 1.5,
-    borderColor: HIGColors.systemBlue,
+    borderColor: Colors.cupBlue,
   },
   subCategoryTextChildSelected: {
-    color: HIGColors.systemBlue,
+    color: Colors.cupBlue,
     fontWeight: '600',
   },
   flavorGrid: {
@@ -153,7 +167,7 @@ export const categoryAccordionStyles = StyleSheet.create({
   subcategoryLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     marginBottom: HIGConstants.SPACING_XS,
   },
   flavorRow: {
@@ -161,7 +175,7 @@ export const categoryAccordionStyles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   flavorButton: {
-    backgroundColor: HIGColors.systemGray6,
+    backgroundColor: Colors.gray4,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 25, // Perfect pill shape
@@ -173,16 +187,16 @@ export const categoryAccordionStyles = StyleSheet.create({
     minHeight: 36, // Match other flavor chips
   },
   flavorButtonSelected: {
-    backgroundColor: HIGColors.systemBlue,
+    backgroundColor: Colors.cupBlue,
     borderWidth: 0,
   },
   flavorButtonDisabled: {
     opacity: 0.4,
-    backgroundColor: HIGColors.systemGray5,
+    backgroundColor: Colors.gray5,
   },
   flavorText: {
     fontSize: 14,
-    color: HIGColors.label,
+    color: Colors.color,
     fontWeight: '500',
   },
   flavorTextSelected: {
@@ -190,19 +204,19 @@ export const categoryAccordionStyles = StyleSheet.create({
     fontWeight: '600',
   },
   flavorTextDisabled: {
-    color: HIGColors.tertiaryLabel,
+    color: Colors.gray10,
   },
   noFlavorContainer: {
     paddingVertical: HIGConstants.SPACING_MD,
     paddingHorizontal: HIGConstants.SPACING_SM,
-    backgroundColor: HIGColors.systemGray6,
+    backgroundColor: Colors.gray4,
     borderRadius: HIGConstants.cornerRadiusSmall,
     alignItems: 'center',
     justifyContent: 'center',
   },
   noFlavorText: {
     fontSize: 13,
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     textAlign: 'center',
     fontStyle: 'italic',
   },

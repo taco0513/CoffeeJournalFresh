@@ -1,10 +1,23 @@
 import { StyleSheet } from 'react-native';
-import { HIGConstants, HIGColors } from '../../../styles/common';
+import { HIGConstants } from '../../../styles/common';
+
+// Tamagui color tokens (will be replaced with direct token usage when migrating to Tamagui styled components)
+const Colors = {
+  background: '#FFFFFF',
+  cupBlue: '#2196F3',
+  gray6: '#D1D1D6',
+  gray5: '#E5E5EA',
+  gray4: '#F2F2F7',
+  color: '#000000',
+  gray11: '#3C3C43',
+  gray10: '#8E8E93',
+  backgroundHover: '#F8F9FA',
+} as const;
 
 export const unifiedFlavorScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.background,
   },
   navigationBar: {
     height: 44,
@@ -12,46 +25,46 @@ export const unifiedFlavorScreenStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.background,
     borderBottomWidth: 0.5,
-    borderBottomColor: HIGColors.systemGray4,
+    borderBottomColor: Colors.gray6,
   },
   backButton: {
     fontSize: 24,
-    color: HIGColors.systemBlue,
+    color: Colors.cupBlue,
   },
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
-    color: HIGColors.label,
+    color: Colors.color,
   },
   skipButton: {
     fontSize: 15,
-    color: HIGColors.systemBlue,
+    color: Colors.cupBlue,
   },
   progressBar: {
     height: 3,
-    backgroundColor: HIGColors.systemGray5,
+    backgroundColor: Colors.gray5,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: HIGColors.systemBlue,
+    backgroundColor: Colors.cupBlue,
   },
   guideMessageContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
-    backgroundColor: '#E3F2FD',
+    backgroundColor: '#E3F2FD', // CupBlue light variant
   },
   guideMessage: {
     fontSize: 15,
-    color: HIGColors.systemBlue,
+    color: Colors.cupBlue,
     textAlign: 'center',
     fontWeight: '500',
   },
   guideSubMessage: {
     fontSize: 13,
-    color: HIGColors.secondaryLabel,
+    color: Colors.gray11,
     textAlign: 'center',
     marginTop: 4,
   },
@@ -62,12 +75,12 @@ export const unifiedFlavorScreenStyles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: HIGColors.systemGray6,
+    backgroundColor: Colors.gray4,
     borderRadius: 12,
     paddingHorizontal: HIGConstants.SPACING_MD,
     height: 44,
     borderWidth: 1,
-    borderColor: HIGColors.systemGray5,
+    borderColor: Colors.gray5,
   },
   searchIcon: {
     fontSize: 16,
@@ -76,11 +89,11 @@ export const unifiedFlavorScreenStyles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: HIGColors.label,
+    color: Colors.color,
   },
   clearIcon: {
     fontSize: 18,
-    color: HIGColors.tertiaryLabel,
+    color: Colors.gray10,
     padding: HIGConstants.SPACING_XS,
   },
   content: {

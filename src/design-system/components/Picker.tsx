@@ -14,7 +14,7 @@ import {
   StyleSheet,
   ViewStyle,
 } from 'react-native';
-import { Colors, Typography, Component, Spacing } from '../tokens';
+import { Colors, Typography, Component, Spacing, Layout } from '../tokens';
 
 // 가로 스크롤 휠 컴포넌트 (비율 선택용)
 export interface WheelPickerProps {
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     marginHorizontal: 4,
     backgroundColor: Colors.background.secondary,
-    borderRadius: Component.button.radius,
+    borderRadius: Layout.radius.md,
     borderWidth: 1,
     borderColor: Colors.border.light,
     minWidth: 60,
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.primary,
     borderWidth: 1,
     borderColor: Colors.border.medium,
-    borderRadius: Component.button.radius,
+    borderRadius: Layout.radius.md,
     alignItems: 'center',
   },
   
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
-    borderRadius: Component.button.radius,
+    borderRadius: Layout.radius.md,
     borderWidth: 1,
     alignItems: 'center',
     flex: 1,

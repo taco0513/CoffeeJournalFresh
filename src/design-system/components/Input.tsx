@@ -15,7 +15,7 @@ import {
   TextInputProps,
   ViewStyle,
 } from 'react-native';
-import { Colors, Typography, Component, Spacing } from '../tokens';
+import { Colors, Typography, Component, Spacing, Layout } from '../tokens';
 
 // 기본 TextInput 컴포넌트
 export interface InputProps extends Omit<TextInputProps, 'style'> {
@@ -153,7 +153,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         value={value.toString()}
         onChangeText={handleChangeText}
         keyboardType="numeric"
-        style={[styles.numberInput, inputProps.style].filter(Boolean)}
+        style={[styles.numberInput, inputProps.style].filter(Boolean) as ViewStyle}
       />
       {unit && (
         <Text style={styles.unitLabel}>{unit}</Text>
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   
   // SelectButton 스타일
   selectButton: {
-    borderRadius: Component.button.radius,
+    borderRadius: Layout.radius.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     borderWidth: 1,

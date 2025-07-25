@@ -1,32 +1,17 @@
 {
   "polyfillFiles": [
-    "static/chunks/polyfills-42372ed130431b0a.js"
+    "static/chunks/polyfills.js"
   ],
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/coffee-admin-1753155138749/_buildManifest.js",
-    "static/coffee-admin-1753155138749/_ssgManifest.js"
+    "static/development/_buildManifest.js",
+    "static/development/_ssgManifest.js"
   ],
-  "rootMainFiles": [
-    "static/chunks/webpack-0c96bda28fe2bc3c.js",
-    "static/chunks/vendors-a643fb3631217cce.js",
-    "static/chunks/main-app-46a6fc3eb7a558c0.js"
-  ],
+  "rootMainFiles": [],
   "rootMainFilesTree": {},
   "pages": {
-    "/_app": [
-      "static/chunks/webpack-0c96bda28fe2bc3c.js",
-      "static/chunks/vendors-a643fb3631217cce.js",
-      "static/chunks/main-d0146434eb01ddb6.js",
-      "static/chunks/pages/_app-5f06ecd35990859e.js"
-    ],
-    "/_error": [
-      "static/chunks/webpack-0c96bda28fe2bc3c.js",
-      "static/chunks/vendors-a643fb3631217cce.js",
-      "static/chunks/main-d0146434eb01ddb6.js",
-      "static/chunks/pages/_error-4cb0ef326fa68cea.js"
-    ]
+    "/_app": []
   },
   "ampFirstPages": []
 }

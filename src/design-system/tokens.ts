@@ -68,12 +68,14 @@ export const Colors = {
     secondary: '#F9FAFB',
     tertiary: '#F3F4F6',
     overlay: 'rgba(0, 0, 0, 0.5)',
+    disabled: '#F5F5F5',
   },
 
   border: {
     light: '#E5E7EB',
     medium: '#D1D5DB', 
     strong: '#9CA3AF',
+    disabled: '#E0E0E0',
   },
 } as const;
 

@@ -540,7 +540,7 @@ export const HomeCafeSimpleFormTamagui = () => {
                     <XStack alignItems="center" space="$md">
                       <NumberInput
                         value={(formData.waterTemp || 93).toString()}
-                        onChangeText={(text) => updateField('waterTemp', parseInt(text) || 93)}
+                        onChangeText={(text: string) => updateField('waterTemp', parseInt(text) || 93)}
                         placeholder="93"
                         keyboardType="numeric"
                       />
@@ -552,7 +552,7 @@ export const HomeCafeSimpleFormTamagui = () => {
                     <Text fontSize={14} marginBottom="$sm">그라인딩 메모</Text>
                     <Input
                       value={formData.grindNote || ''}
-                      onChangeText={(text) => updateField('grindNote', text)}
+                      onChangeText={(text: string) => updateField('grindNote', text)}
                       placeholder="예: 2클릭 더 굵게"
                       backgroundColor="$gray2"
                       borderWidth={1}
@@ -576,7 +576,7 @@ export const HomeCafeSimpleFormTamagui = () => {
             
             <Input
               value={formData.quickNote || ''}
-              onChangeText={(text) => updateField('quickNote', text)}
+              onChangeText={(text: string) => updateField('quickNote', text)}
               placeholder="예: 블룸 30초, 첫 붓기 천천히, 다음엔 물온도 1도 낮춰보기"
               backgroundColor="$gray2"
               borderWidth={1}
