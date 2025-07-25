@@ -333,19 +333,38 @@ export class FirecrawlCoffeeService {
     return [];
   }
 
-  // Fallback data methods
+  // Real data methods (Updated 2025-07-25 with Firecrawl results)
   private getFallbackKoreanRoasters(): RoasterProfile[] {
     return [
       {
         id: 'coffee-libre',
         name: 'Coffee Libre',
         nameKorean: '커피 리브레',
-        location: 'Seoul, Korea',
+        location: '경기도 파주시',
         region: 'korea',
         website: 'https://coffeelibrary.co.kr',
-        specialty: ['Single Origin', 'Light Roast', 'Ethiopian Beans'],
-        description: '서울 최고의 스페셜티 커피 로스터리',
+        specialty: ['B Corporation 인증', 'Single Origin', '지속가능 소싱'],
+        description: '스페셜티 커피 전문, 투명한 소싱, 윤리적 운영',
         established: 2015,
+        socialMedia: {
+          instagram: '@coffeelibrary',
+          website: 'https://coffeelibrary.co.kr'
+        },
+        lastUpdated: new Date()
+      },
+      {
+        id: 'terarosa',
+        name: 'Terarosa Coffee',
+        nameKorean: '테라로사 커피',
+        location: '강원도 강릉시',
+        region: 'korea',
+        website: 'https://terarosa.com',
+        specialty: ['싱글오리진 전문', '정밀 로스팅', 'Direct Trade'],
+        description: '21년 역사의 강릉 로컬 브랜드, 웨스트 코스트 라이트 로스팅 선구자',
+        established: 2004,
+        socialMedia: {
+          website: 'https://terarosa.com'
+        },
         lastUpdated: new Date()
       }
     ];
