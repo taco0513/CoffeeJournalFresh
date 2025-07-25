@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TastingData } from '../types/tasting';
+import { TastingData } from '../types/personalTaste';
 import { Logger } from '../utils/logger';
 
 const STORAGE_KEYS = {

@@ -152,7 +152,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         personalComment: currentTasting.personalComment,
         mode: currentTasting.mode as 'cafe' | 'home_cafe' | undefined,
         homeCafeData: currentTasting.homeCafeData,
-        labModeData: currentTasting.labModeData,
+        // labModeData: currentTasting.labModeData, // LabModeData not yet implemented in RealmService
       });
 
       // 저장 후 점수 계산

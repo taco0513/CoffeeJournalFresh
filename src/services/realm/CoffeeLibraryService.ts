@@ -45,7 +45,7 @@ export class CoffeeLibraryService {
     const realm = this.baseService.getRealm();
     return realm.objects<ICoffeeLibrary>('CoffeeLibrary')
       .filtered('coffeeName CONTAINS[c] $0 OR roastery CONTAINS[c] $0', searchTerm)
-      .sorted('useCount', true);
+      .sorted('useCount', true) as unknown as Realm.Results<ICoffeeLibrary>;
   }
 
   incrementCoffeeUseCount(coffeeId: string): void {
@@ -118,7 +118,7 @@ export class CoffeeLibraryService {
         });
       }
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to update coffee library', { error });
+      RealmLogger.error('Failed to update coffee library', { error: error as Error });
     }
   }
 
@@ -137,7 +137,7 @@ export class CoffeeLibraryService {
       
       return Array.from(suggestions).slice(0, 5);
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get coffee name suggestions', { error });
+      RealmLogger.error('Failed to get coffee name suggestions', { error: error as Error });
       return [];
     }
   }
@@ -158,7 +158,7 @@ export class CoffeeLibraryService {
       
       return Array.from(suggestions).slice(0, 5);
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get origin suggestions', { error });
+      RealmLogger.error('Failed to get origin suggestions', { error: error as Error });
       return [];
     }
   }
@@ -179,7 +179,7 @@ export class CoffeeLibraryService {
       
       return Array.from(suggestions).slice(0, 5);
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get variety suggestions', { error });
+      RealmLogger.error('Failed to get variety suggestions', { error: error as Error });
       return [];
     }
   }
@@ -200,7 +200,7 @@ export class CoffeeLibraryService {
       
       return Array.from(suggestions).slice(0, 5);
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get process suggestions', { error });
+      RealmLogger.error('Failed to get process suggestions', { error: error as Error });
       return [];
     }
   }
@@ -240,7 +240,7 @@ export class CoffeeLibraryService {
       
       return null;
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get coffee details', { error });
+      RealmLogger.error('Failed to get coffee details', { error: error as Error });
       return null;
     }
   }

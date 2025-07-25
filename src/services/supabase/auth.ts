@@ -50,8 +50,7 @@ class AuthService {
             AuthLogger.warn(`Retrying sign up (attempt ${attempt})`, {
               function: 'signUp',
               error,
-              attempt,
-              email
+              data: { attempt, email }
             });
           }
         }

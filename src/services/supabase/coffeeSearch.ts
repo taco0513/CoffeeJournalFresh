@@ -31,7 +31,7 @@ export async function searchRoasters(query: string): Promise<RoasterSearchResult
   try {
     // Search user's personal roasters first
     // Note: roaster_info table might not exist yet, so we'll handle the error
-    let userRoasters = [];
+    let userRoasters: any[] = [];
     try {
       const { data, error } = await supabase
         .from('roaster_info')

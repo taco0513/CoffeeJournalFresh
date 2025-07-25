@@ -45,7 +45,7 @@ export class RoasterService {
     const realm = this.baseService.getRealm();
     return realm.objects<IRoasterInfo>('RoasterInfo')
       .filtered('name CONTAINS[c] $0', searchTerm)
-      .sorted('coffeeCount', true);
+      .sorted('coffeeCount', true) as unknown as Realm.Results<IRoasterInfo>;
   }
 
   updateRoasterStats(roasterName: string, newScore: number): void {
@@ -77,7 +77,7 @@ export class RoasterService {
       
       return Array.from(roasters.slice(0, 5));
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get roaster suggestions', { error });
+      RealmLogger.error('Failed to get roaster suggestions', { error: error as Error });
       return [];
     }
   }
@@ -106,7 +106,7 @@ export class RoasterService {
         }
       });
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to increment roaster visit', { error });
+      RealmLogger.error('Failed to increment roaster visit', { error: error as Error });
     }
   }
 
@@ -131,7 +131,7 @@ export class RoasterService {
       
       return Array.from(coffees).sort();
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get roaster coffees', { error });
+      RealmLogger.error('Failed to get roaster coffees', { error: error as Error });
       return [];
     }
   }

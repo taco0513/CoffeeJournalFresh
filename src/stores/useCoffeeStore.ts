@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { StorageService } from '../services/StorageService';
 import { CurrentTasting } from '../types/tasting';
+import { TastingData } from '../types/personalTaste';
 
 interface CoffeeStore {
   // Current tasting session
@@ -14,7 +15,7 @@ interface CoffeeStore {
   isSaving: boolean;
   
   // Actions
-  updateCurrentTasting: (field: keyof TastingData, value: any) => void;
+  updateCurrentTasting: (field: keyof CurrentTasting, value: any) => void;
   resetCurrentTasting: () => void;
   saveTasting: () => Promise<void>;
   loadTastings: () => Promise<void>;
@@ -25,27 +26,24 @@ interface CoffeeStore {
   loadProgress: () => Promise<void>;
 }
 
-const initialTastingData: Partial<TastingData> = {
+const initialTastingData: Partial<CurrentTasting> = {
+  mode: 'cafe',
   coffeeName: '',
   roastery: '',
   origin: '',
   variety: '',
   process: '',
   roasterNotes: '',
-  brewMethod: '',
-  temperature: 'Hot',
-  selectedFlavors: {
-    level1: [],
-    level2: [],
-    level3: [],
-    level4: []
-  },
-  sensoryScore: {
-    body: 3,
-    acidity: 3,
-    sweetness: 3,
-    finish: 3
-  }
+  brewingMethod: '',
+  temperature: 'hot',
+  body: 3,
+  acidity: 3,
+  sweetness: 3,
+  finish: 3,
+  bitterness: 3,
+  balance: 3,
+  mouthfeel: 'Clean',
+  personalComment: ''
 };
 
 export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
@@ -71,23 +69,32 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
     set({ isSaving: true });
     try {
       const { currentTasting } = get();
-      const newTasting: TastingData = {
-        id: Date.now().toString(),
+      const completeTasting: CurrentTasting = {
+        mode: currentTasting.mode || 'cafe',
         coffeeName: currentTasting.coffeeName || '',
         roastery: currentTasting.roastery || '',
         origin: currentTasting.origin || '',
         variety: currentTasting.variety || '',
         process: currentTasting.process || '',
+        altitude: currentTasting.altitude || '',
+        roastLevel: currentTasting.roastLevel || '',
+        temperature: currentTasting.temperature || 'hot',
         roasterNotes: currentTasting.roasterNotes || '',
-        brewMethod: currentTasting.brewMethod || 'Pour Over',
-        temperature: currentTasting.temperature || 'Hot',
-        selectedFlavors: currentTasting.selectedFlavors || { level1: [], level2: [], level3: [], level4: [] },
-        sensoryScore: currentTasting.sensoryScore || { body: 3, acidity: 3, sweetness: 3, finish: 3 },
-        matchScore: currentTasting.matchScore || { total: 0, flavor: 0, sensory: 0 },
-        createdAt: new Date(),
+        body: currentTasting.body || 3,
+        acidity: currentTasting.acidity || 3,
+        sweetness: currentTasting.sweetness || 3,
+        finish: currentTasting.finish || 3,
+        bitterness: currentTasting.bitterness || 3,
+        balance: currentTasting.balance || 3,
+        mouthfeel: currentTasting.mouthfeel || 'Clean',
+        personalComment: currentTasting.personalComment || '',
+        cafeName: currentTasting.cafeName,
+        homeCafeData: currentTasting.homeCafeData,
+        simpleHomeCafeData: currentTasting.simpleHomeCafeData,
+        labModeData: currentTasting.labModeData,
       };
       
-      await StorageService.saveTasting(newTasting);
+      await StorageService.saveTasting(completeTasting as any);
       await StorageService.clearCurrentTasting();
       
       // Reload tastings to update UI
@@ -108,7 +115,7 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
     set({ isLoading: true });
     try {
       const tastings = await StorageService.getTastings();
-      set({ tastingSessions: tastings, isLoading: false });
+      set({ tastingSessions: tastings as any, isLoading: false });
     } catch (error) {
       // console.error('Error loading tastings:', error);
       set({ isLoading: false });
@@ -128,7 +135,7 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
   saveProgress: async () => {
     try {
       const { currentTasting } = get();
-      await StorageService.saveCurrentTasting(currentTasting);
+      await StorageService.saveCurrentTasting(currentTasting as any);
     } catch (error) {
       // console.error('Error saving progress:', error);
     }
@@ -138,7 +145,7 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
     try {
       const savedProgress = await StorageService.getCurrentTasting();
       if (savedProgress) {
-        set({ currentTasting: savedProgress });
+        set({ currentTasting: savedProgress as any });
       }
     } catch (error) {
       // console.error('Error loading progress:', error);

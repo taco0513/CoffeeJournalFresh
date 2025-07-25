@@ -262,23 +262,26 @@ class DataCollectionService {
           variety: 'Arabica',
           process: 'Washed',
           roasterNotes: `테스트 로스터 노트 ${i + 1}`,
-          temperature: 'hot',
+          temperature: 'hot' as const,
           sensoryAttribute: {
             body: Math.floor(Math.random() * 5) + 1,
             acidity: Math.floor(Math.random() * 5) + 1,
             sweetness: Math.floor(Math.random() * 5) + 1,
             finish: Math.floor(Math.random() * 5) + 1,
             mouthfeel: 'Clean' as const,
+            bitterness: Math.floor(Math.random() * 5) + 1,
+            balance: Math.floor(Math.random() * 5) + 1
           },
           flavorNotes: [
             { level: 1, value: 'Fruity' },
             { level: 2, value: 'Berry' }
           ],
           matchScoreTotal: Math.floor(Math.random() * 100) + 1,
-          isSynced: false,
           matchScoreFlavor: Math.floor(Math.random() * 100) + 1,
           matchScoreSensory: Math.floor(Math.random() * 100) + 1,
-          isDeleted: false
+          isSynced: false,
+          isDeleted: false,
+          mode: 'cafe' as const
         };
 
         realmService.saveTastingRecord(testData);

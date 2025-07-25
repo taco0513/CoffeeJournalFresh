@@ -110,6 +110,7 @@ const headingFont = createInterFont({
     8: 36,   // Large H1 ✅
     9: 40,   // Extra large ✅
     10: 48,  // Display ✅
+    true: 24, // Default heading size
   },
   weight: {
     1: '400',
@@ -127,6 +128,7 @@ const bodyFont = createInterFont({
     3: 18,   // Large body text ✅
     4: 20,   // Extra large body ✅
     5: 22,   // Emphasized text ✅
+    true: 16, // Default body size
   },
   weight: {
     1: '400',
@@ -198,7 +200,6 @@ const darkTheme = {
 }
 
 // Create and export config
-// @ts-ignore - circular reference
 const config = createTamagui({
   tokens: cupNoteTokens,
   themes: {
@@ -258,9 +259,9 @@ const config = createTamagui({
 
 export default config
 
-// Export types for TypeScript
-export type AppConfig = typeof config
+// Types for TypeScript
+type Config = typeof config
 
 declare module 'tamagui' {
-  interface TamaguiCustomConfig extends AppConfig {}
+  interface TamaguiCustomConfig extends Config {}
 }

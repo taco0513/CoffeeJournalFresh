@@ -45,7 +45,7 @@ export class CafeService {
     const realm = this.baseService.getRealm();
     return realm.objects<ICafeInfo>('CafeInfo')
       .filtered('name CONTAINS[c] $0', searchTerm)
-      .sorted('visitCount', true);
+      .sorted('visitCount', true) as unknown as Realm.Results<ICafeInfo>;
   }
 
   getCafesByName(searchText: string, limit: number = 10): ICafeInfo[] {
@@ -58,7 +58,7 @@ export class CafeService {
       
       return Array.from(cafes.slice(0, limit));
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get cafes by name', { error });
+      RealmLogger.error('Failed to get cafes by name', { error: error as Error });
       return [];
     }
   }
@@ -73,7 +73,7 @@ export class CafeService {
       
       return Array.from(cafes.slice(0, 5));
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get cafe suggestions', { error });
+      RealmLogger.error('Failed to get cafe suggestions', { error: error as Error });
       return [];
     }
   }
@@ -103,7 +103,7 @@ export class CafeService {
         }
       });
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to increment cafe visit', { error });
+      RealmLogger.error('Failed to increment cafe visit', { error: error as Error });
     }
   }
 
@@ -128,7 +128,7 @@ export class CafeService {
       
       return Array.from(roasters).sort();
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get cafe roasters', { error });
+      RealmLogger.error('Failed to get cafe roasters', { error: error as Error });
       return [];
     }
   }
@@ -150,7 +150,7 @@ export class CafeService {
       
       return Array.from(roasters).sort();
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get roasters by cafe', { error });
+      RealmLogger.error('Failed to get roasters by cafe', { error: error as Error });
       return [];
     }
   }

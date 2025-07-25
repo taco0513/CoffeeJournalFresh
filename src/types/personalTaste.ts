@@ -109,14 +109,11 @@ export interface FlavorIdentification {
 
 export type {
   Achievement,
-  AchievementRequirement,
-  AchievementReward,
   UserAction,
   ProgressData,
   AchievementNotification,
-} from '@/services/AchievementSystem';
-
-export { AchievementType } from '@/services/AchievementSystem';
+  AchievementType,
+} from './achievements';
 
 // Coach types - Moved to Future Roadmap
 // export type {

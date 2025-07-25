@@ -1,4 +1,4 @@
-import auth from '@react-native-firebase/auth';
+import { auth, GoogleAuthProvider } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { supabase } from '../supabase/client';
 import { GoogleAuthConfig, isGoogleSignInConfigured } from '../../config/googleAuth';
@@ -84,7 +84,7 @@ export class FirebaseAuthService {
       }
 
       // Create a Google credential with the token
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken, null);
+      const googleCredential = GoogleAuthProvider.credential(idToken, null);
 
       // Sign in to Firebase with the Google credential
       const firebaseResult = await auth().signInWithCredential(googleCredential);

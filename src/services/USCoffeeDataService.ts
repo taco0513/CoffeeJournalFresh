@@ -132,7 +132,7 @@ export class USCoffeeDataService {
       },
       {
         name: 'Streetlevel',
-        roaser: 'Verve Coffee Roasters',
+        roaster: 'Verve Coffee Roasters',
         origin: 'Blend',
         notes: ['Chocolate', 'Caramel', 'Balanced']
       },

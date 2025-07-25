@@ -185,8 +185,8 @@ class PhotoService {
     } catch (error) {
       logError(error instanceof Error ? error : new Error(String(error)), {
         function: 'savePhoto',
-        sourceUri,
-        destinationDir
+        sourceUri: photoResult.uri,
+        tastingId
       }, 'photo');
       return null;
     }
@@ -232,9 +232,8 @@ class PhotoService {
     } catch (error) {
       logError(error instanceof Error ? error : new Error(String(error)), {
         function: 'createThumbnail',
-        photoUri,
-        maxWidth,
-        maxHeight
+        photoPath,
+        tastingId
       }, 'photo');
       return null;
     }
@@ -256,7 +255,7 @@ class PhotoService {
       const cutoffDate = Date.now() - (daysOld * 24 * 60 * 60 * 1000);
       
       for (const file of files) {
-        const fileDate = new Date(file.mtime).getTime();
+        const fileDate = new Date(file.mtime || file.ctime || 0).getTime();
         if (fileDate < cutoffDate) {
           await RNFS.unlink(file.path);
         }

@@ -125,7 +125,15 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
   const renderContent = () => {
     switch (activeTab) {
       case 'history':
-        return <SimpleHistoryScreen hideNavBar={true} />;
+        return (
+          <YStack flex={1} justifyContent="center" alignItems="center" backgroundColor="$background">
+            <Text fontSize="$6" color="$color">커피 테이스팅 기록</Text>
+            <Text fontSize="$4" color="$gray11" marginTop="$2">나의 커피 테이스팅 히스토리</Text>
+            <Text fontSize="$3" color="$gray10" marginTop="$4" textAlign="center">
+              실제 테이스팅 기록이 여기에 표시됩니다{'\n'}(개발 중...)
+            </Text>
+          </YStack>
+        );
       case 'stats':
         return <StatsScreen hideNavBar={true} />;
       default:

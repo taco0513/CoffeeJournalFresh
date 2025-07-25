@@ -1,5 +1,5 @@
 import { TastingData } from './realm/types';
-import { HomeCafeData } from '../types/tasting';
+import { HomeCafeData, PouroverDripper, FilterType, PourTechnique } from '../types/tasting';
 import { SelectedSensoryExpression } from '../types/tasting';
 import RealmService from './realm/RealmService';
 import { RealmLogger } from '../utils/logger';
@@ -402,7 +402,8 @@ export class MockDataService {
   private static generateSimpleHomeCafeData(): HomeCafeData {
     return {
       equipment: {
-        brewingMethod: 'French Press' as any,
+        dripper: 'V60' as PouroverDripper,
+        filter: 'bleached' as FilterType,
         grinder: {
           brand: '하리오',
           model: 'Mini Mill',
@@ -414,10 +415,14 @@ export class MockDataService {
         waterAmount: 300,
         ratio: '1:15',
         waterTemp: 95,
-        totalBrewTime: 240
+        bloomWater: 40,
+        bloomTime: 30,
+        totalBrewTime: 240,
+        pourTechnique: 'center' as PourTechnique,
+        numberOfPours: 3
       },
       notes: {
-        result: '처음 시도해본 홈브루잉, 생각보다 괜찮았음'
+        tasteResult: '처음 시도해본 홈브루잉, 생각보다 괜찮았음'
       }
     };
   }
@@ -428,27 +433,30 @@ export class MockDataService {
   private static generateDetailedHomeCafeData(): HomeCafeData {
     return {
       equipment: {
-        brewingMethod: 'V60' as any,
+        dripper: 'V60' as PouroverDripper,
         grinder: {
           brand: '커맨단테',
           model: 'C40',
           setting: '18클릭'
         },
-        filter: 'V60 필터 #02',
-        other: '구스넥 주전자, 디지털 저울'
+        filter: 'bleached' as FilterType,
+        kettle: '구스넥 주전자',
+        scale: '디지털 저울'
       },
       recipe: {
         doseIn: 22,
         waterAmount: 350,
         ratio: '1:16',
         waterTemp: 93,
+        bloomWater: 44,
         bloomTime: 45,
         totalBrewTime: 180,
-        pourPattern: '3번 나누어 붓기'
+        pourTechnique: 'pulse' as PourTechnique,
+        numberOfPours: 3
       },
       notes: {
-        previousChange: '그라인딩을 1클릭 더 굵게 조정',
-        result: '산미가 더 밝아지고 균형감이 좋아짐',
+        grindAdjustment: '그라인딩을 1클릭 더 굵게 조정',
+        tasteResult: '산미가 더 밝아지고 균형감이 좋아짐',
         nextExperiment: '블룸 시간을 15초 더 늘려보기'
       }
     };
@@ -520,15 +528,15 @@ export class MockDataService {
           await realmService.saveTasting(record);
           successCount++;
         } catch (error) {
-          RealmLogger.error('realm', `Failed to save mock record: ${error}`);
+          RealmLogger.error(`Failed to save mock record: ${error}`, { error: error instanceof Error ? error : new Error(String(error)) });
         }
       }
 
-      RealmLogger.info('realm', `Created ${successCount} mock tasting records`);
+      RealmLogger.info(`Created ${successCount} mock tasting records`, { data: { successCount } });
 
       return successCount;
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to create mock data', { error, options });
+      RealmLogger.error('Failed to create mock data', { error: error instanceof Error ? error : new Error(String(error)) });
       throw error;
     }
   }
@@ -546,9 +554,9 @@ export class MockDataService {
 
       await realmService.clearAllTastings();
       
-      RealmLogger.info('realm', 'Cleared all mock data successfully');
+      RealmLogger.info('Cleared all mock data successfully', { action: 'clearMockData' });
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to clear mock data', { error });
+      RealmLogger.error('Failed to clear mock data', { error: error instanceof Error ? error : new Error(String(error)) });
       throw error;
     }
   }
@@ -560,33 +568,33 @@ export class MockDataService {
     try {
       // Check required fields
       if (!data.coffeeInfo?.roastery || !data.coffeeInfo?.coffeeName) {
-        RealmLogger.warn('Invalid coffee info', { roastery: data.coffeeInfo?.roastery, coffeeName: data.coffeeInfo?.coffeeName });
+        RealmLogger.warn('Invalid coffee info', { data: { roastery: data.coffeeInfo?.roastery, coffeeName: data.coffeeInfo?.coffeeName } });
         return false;
       }
 
       // Check sensory attributes
       if (!data.sensoryAttributes?.body || !data.sensoryAttributes?.acidity) {
-        RealmLogger.error('realm', 'Invalid sensory attributes', new Error('Invalid data'));
+        RealmLogger.error('Invalid sensory attributes', { error: new Error('Invalid sensory attributes') });
         return false;
       }
 
       // Check match score
       if (!data.matchScore?.total || data.matchScore.total < 0 || data.matchScore.total > 100) {
-        RealmLogger.error('realm', 'Invalid match score', new Error('Invalid data'));
+        RealmLogger.error('Invalid match score', { error: new Error('Invalid match score') });
         return false;
       }
 
       // Check HomeCafe data if present
       if (data.mode === 'home_cafe' && data.homeCafeData) {
-        if (!data.homeCafeData.equipment?.brewingMethod || !data.homeCafeData.recipe?.doseIn) {
-          RealmLogger.error('realm', 'Invalid HomeCafe data', new Error('Invalid data'));
+        if (!data.homeCafeData.equipment?.dripper || !data.homeCafeData.recipe?.doseIn) {
+          RealmLogger.error('Invalid HomeCafe data', { error: new Error('Invalid HomeCafe data') });
           return false;
         }
       }
 
       return true;
     } catch (error) {
-      RealmLogger.error('Error validating mock data', { error });
+      RealmLogger.error('Error validating mock data', { error: error instanceof Error ? error : new Error(String(error)) });
       return false;
     }
   }
@@ -605,7 +613,7 @@ export class MockDataService {
       const tastings = await realmService.getTastingRecords({ isDeleted: false });
       return Array.from(tastings).length;
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to get mock data count', { error });
+      RealmLogger.error('Failed to get mock data count', { error: error instanceof Error ? error : new Error(String(error)) });
       return 0;
     }
   }

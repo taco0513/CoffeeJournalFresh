@@ -386,11 +386,6 @@ function MainTabs() {
             <TabBarIcon name="Home" focused={focused} color={color} />
           ),
         }}
-        listeners={{
-          tabPress: e => {
-            console.log('🔥 Home tab pressed');
-          },
-        }}
       />
       <Tab.Screen 
         name="Journal" 
@@ -401,11 +396,6 @@ function MainTabs() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="Journal" focused={focused} color={color} />
           ),
-        }}
-        listeners={{
-          tabPress: e => {
-            console.log('🔥 Journal tab pressed');
-          },
         }}
       />
       <Tab.Screen 
@@ -532,14 +522,11 @@ export default function AppNavigator() {
     }
   }, [loadStoredUser]);
   
-  // Debug authentication state
-  console.log('AppNavigator - Auth State:', { isAuthenticated, user: !!user, currentUser: !!currentUser });
 
   useEffect(() => {
     // Ensure navigation is fully ready
     const timer = setTimeout(() => {
       setNavigationReady(true);
-      console.log('AppNavigator: Navigation system ready');
     }, 500);
     
     return () => clearTimeout(timer);
@@ -620,7 +607,6 @@ export default function AppNavigator() {
             onReady={() => {
               onReady();
               setNavigationReady(true);
-              console.log('NavigationContainer: Ready');
             }}
             onStateChange={onStateChange}
           >

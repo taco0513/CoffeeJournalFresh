@@ -1,7 +1,7 @@
 import appleAuth, {
-  AppleAuthRequestOperation,
-  AppleAuthRequestScope,
-  AppleAuthCredentialState,
+  AppleRequestOperation,
+  AppleRequestScope,
+  AppleCredentialState,
 } from '@invertase/react-native-apple-authentication';
 import { supabase } from './client';
 
@@ -27,8 +27,8 @@ class AppleAuthService {
 
       // Apple Sign-In 요청
       const appleAuthRequestResponse = await appleAuth.performRequest({
-        requestedOperation: AppleAuthRequestOperation.LOGIN,
-        requestedScopes: [AppleAuthRequestScope.EMAIL, AppleAuthRequestScope.FULL_NAME],
+        requestedOperation: AppleRequestOperation.LOGIN,
+        requestedScopes: [AppleRequestScope.EMAIL, AppleRequestScope.FULL_NAME],
       });
 
       // 자격 증명 상태 확인
@@ -36,7 +36,7 @@ class AppleAuthService {
         appleAuthRequestResponse.user,
       );
 
-      if (credentialState !== AppleAuthCredentialState.AUTHORIZED) {
+      if (credentialState !== AppleCredentialState.AUTHORIZED) {
         throw new Error('Apple Sign-In authorization failed');
       }
 
@@ -63,7 +63,7 @@ class AppleAuthService {
   }
 
   // Apple Sign-In 자격 증명 상태 확인
-  async checkCredentialState(userID: string): Promise<AppleAuthCredentialState> {
+  async checkCredentialState(userID: string): Promise<AppleCredentialState> {
     try {
       return await appleAuth.getCredentialStateForUser(userID);
     } catch (error) {

@@ -31,7 +31,6 @@ export const TabBarIcon: React.FC<TabBarIconProps> = ({ name, focused, color, on
   const iconName = iconMap[name];
   
   const handlePress = () => {
-    console.log(`TabBarIcon pressed: ${name}`);
     if (onPress) {
       onPress();
     }

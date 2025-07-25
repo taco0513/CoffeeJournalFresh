@@ -89,24 +89,7 @@ const SkeletonBox = styled(YStack, {
   opacity: 0.7,
 });
 
-// Track render count per instance
 export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreenProps) {
-  const [instanceRenderCount, setInstanceRenderCount] = useState(0);
-  
-  useEffect(() => {
-    setInstanceRenderCount(prev => prev + 1);
-    console.log(`🏠 HomeScreen: Render #${instanceRenderCount + 1}`);
-  }, []);
-  
-  // Early return for safety
-  if (instanceRenderCount > 50) {
-    console.error('🚨 HomeScreen: Too many renders, preventing infinite loop');
-    return (
-      <YStack flex={1} backgroundColor="$background" justifyContent="center" alignItems="center">
-        <Text>Too many renders detected</Text>
-      </YStack>
-    );
-  }
   
   const theme = useTheme();
   const tokens = getTokens();
@@ -216,22 +199,18 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
 
   // 화면이 포커스될 때마다 데이터 새로고침
   useEffect(() => {
-    console.log('🏠 HomeScreen: Setting up focus listener');
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log('🏠 HomeScreen: Focus event triggered');
       if (realmService.isInitialized) {
         loadDashboardData();
       }
     });
 
     return () => {
-      console.log('🏠 HomeScreen: Cleaning up focus listener');
       unsubscribe();
     };
   }, [navigation]);
 
   const loadDashboardData = async () => {
-    console.log('🏠 HomeScreen: loadDashboardData called');
     try {
       setIsLoading(true);
       setError(null);
@@ -594,31 +573,6 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
           {/* Main content when loaded */}
             {!isLoading && !error && (
               <YStack opacity={1}>
-                {/* Navigation Test Buttons */}
-                <Card
-                  backgroundColor="$green2"
-                  borderColor="$green5"
-                  padding="$md"
-                  marginBottom="$sm"
-                  alignItems="center"
-                  borderRadius="$3"
-                  pressStyle={{ scale: 0.98 }}
-                  onPress={() => {
-                    console.log('🚀 Testing navigation object:', { navigation, canGoBack: navigation?.canGoBack() });
-                    console.log('🚀 Navigation object keys:', Object.keys(navigation || {}));
-                    try {
-                      navigation.navigate('Journal');
-                      console.log('🚀 Navigation.navigate called successfully');
-                    } catch (error) {
-                      console.error('🚨 Navigation error:', error);
-                    }
-                  }}
-                  elevate
-                >
-                  <Text fontWeight="700" color="$color" letterSpacing={0.2}>
-                    Navigate to Journal (Test)
-                  </Text>
-                </Card>
 
                 {/* Admin button */}
                 {isAdmin && (

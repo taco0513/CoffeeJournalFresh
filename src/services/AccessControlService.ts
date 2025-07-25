@@ -470,7 +470,7 @@ export class AccessControlService {
       await this.initialize();
       
       Logger.info('User profile reset to default', 'access_control', { 
-        data: { newRole: this.currentUserProfile?.role ? String(this.currentUserProfile.role) : undefined } 
+        data: { newRole: this.currentUserProfile ? String((this.currentUserProfile as any).role) : undefined } 
       });
     } catch (error) {
       Logger.error('Failed to reset user profile', 'access_control', { error: error as Error });

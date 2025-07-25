@@ -24,6 +24,9 @@ export class ScreenshotService {
       const finalFilename = filename || `screenshot-${timestamp}.png`;
 
       // Capture screenshot
+      if (!viewShotRef.current || !viewShotRef.current.capture) {
+        throw new Error('ViewShot ref or capture method is not available');
+      }
       const uri = await viewShotRef.current.capture();
       
       // Define destination path

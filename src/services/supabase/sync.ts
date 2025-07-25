@@ -188,12 +188,12 @@ class SyncService {
         variety: record.variety || undefined,
         altitude: record.altitude || undefined,
         process: record.process || undefined,
-        temperature: record.temperature,
+        temperature: record.temperature === 'cold' ? 'ice' : record.temperature as 'hot' | 'ice',
         roaster_notes: record.roasterNotes || undefined,
         personal_comment: record.personalComment || undefined,
         match_score: record.matchScoreTotal || 0,  // Total 점수만 사용
-        created_at: record.createdAt.toISOString(),
-        updated_at: record.updatedAt.toISOString(),
+        created_at: record.createdAt ? record.createdAt.toISOString() : new Date().toISOString(),
+        updated_at: record.updatedAt ? record.updatedAt.toISOString() : new Date().toISOString(),
       };
 
       const { data: tastingRecord, error: tastingError } = await NetworkUtils.retry(
@@ -231,7 +231,7 @@ class SyncService {
           .eq('tasting_id', tastingRecord.id);
 
         // 새로운 맛 노트 삽입
-        const flavorNotes = [];
+        const flavorNotes: any[] = [];
         // Realm은 정규화된 구조, Supabase는 비정규화 구조 사용
         // 각 flavor path를 하나의 레코드로 변환
         const flavorsByPath: any = {};
@@ -432,7 +432,7 @@ class SyncService {
         matchScoreFlavor: 0,  // TODO: 나중에 제거
         matchScoreSensory: 0,  // TODO: 나중에 제거
         flavorNotes,
-        sensoryAttribute,
+        sensoryAttribute: sensoryAttribute as ISensoryAttribute,
         isSynced: true,
         isDeleted: false,  // Realm에는 있지만 Supabase에는 없음
         syncedAt: new Date(),
@@ -636,9 +636,9 @@ class SyncService {
               achievement_level: achievement.achievementLevel,
               achievement_data: achievement.achievementData,
               progress: achievement.progress,
-              unlocked_at: achievement.createdAt?.toISOString(),
-              created_at: achievement.createdAt?.toISOString(),
-              updated_at: achievement.updatedAt?.toISOString(),
+              unlocked_at: (achievement.createdAt as Date)?.toISOString() || new Date().toISOString(),
+              created_at: (achievement.createdAt as Date)?.toISOString() || new Date().toISOString(),
+              updated_at: (achievement.updatedAt as Date)?.toISOString() || new Date().toISOString(),
             }, {
               onConflict: 'id'
             });
@@ -692,8 +692,8 @@ class SyncService {
               total_attempts: progress.totalAttempts,
               confidence_level: progress.confidenceLevel,
               learning_stage: progress.learningStage,
-              created_at: progress.createdAt?.toISOString(),
-              updated_at: progress.updatedAt?.toISOString(),
+              created_at: (progress.createdAt as Date)?.toISOString() || new Date().toISOString(),
+              updated_at: (progress.updatedAt as Date)?.toISOString() || new Date().toISOString(),
             }, {
               onConflict: 'id'
             });
@@ -743,9 +743,9 @@ class SyncService {
               unique_flavors_tried: profile.uniqueFlavorsTried,
               vocabulary_level: profile.vocabularyLevel,
               taste_discovery_rate: profile.tasteDiscoveryRate,
-              last_analysis_at: profile.lastAnalysisAt?.toISOString(),
-              created_at: profile.createdAt?.toISOString(),
-              updated_at: profile.updatedAt?.toISOString(),
+              last_analysis_at: (profile.lastAnalysisAt as Date)?.toISOString() || null,
+              created_at: (profile.createdAt as Date)?.toISOString() || new Date().toISOString(),
+              updated_at: (profile.updatedAt as Date)?.toISOString() || new Date().toISOString(),
             }, {
               onConflict: 'id'
             });

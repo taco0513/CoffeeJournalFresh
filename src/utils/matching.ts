@@ -77,13 +77,13 @@ const calculateFlavorMatch = (
   const userFlavorSet = new Set<string>();
   
   // Add all selected flavors and their variations
-  [...(selectedFlavors.level1 || []), 
-   ...(selectedFlavors.level2 || []), 
-   ...(selectedFlavors.level3 || [])].forEach(flavor => {
-    getFlavorVariations(flavor).forEach(variation => {
-      userFlavorSet.add(variation);
+  [selectedFlavors.level1, selectedFlavors.level2, selectedFlavors.level3]
+    .filter(flavor => flavor && flavor.trim() !== '')  // Filter out empty/undefined values
+    .forEach(flavor => {
+      getFlavorVariations(flavor!).forEach(variation => {
+        userFlavorSet.add(variation);
+      });
     });
-  });
 
   // Normalize roaster notes
   const roasterWords = normalizeText(roasterNotes);
@@ -111,19 +111,28 @@ const calculateFlavorMatch = (
   
   // Also check user selections against roaster notes (reverse check)
   const roasterNotesLower = roasterNotes.toLowerCase();
-  (selectedFlavors.level1 || []).forEach(() => maxPossibleScore += 8);
-  (selectedFlavors.level2 || []).forEach(() => maxPossibleScore += 6);
-  (selectedFlavors.level3 || []).forEach(() => maxPossibleScore += 4);
   
-  (selectedFlavors.level1 || []).forEach((flavor: string) => {
-    if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 8;
-  });
-  (selectedFlavors.level2 || []).forEach((flavor: string) => {
-    if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 6;
-  });
-  (selectedFlavors.level3 || []).forEach((flavor: string) => {
-    if (roasterNotesLower.includes(flavor.toLowerCase())) matchScore += 4;
-  });
+  // Check individual flavor selections (string values, not arrays)
+  if (selectedFlavors.level1) {
+    maxPossibleScore += 8;
+    if (roasterNotesLower.includes(selectedFlavors.level1.toLowerCase())) {
+      matchScore += 8;
+    }
+  }
+  
+  if (selectedFlavors.level2) {
+    maxPossibleScore += 6;
+    if (roasterNotesLower.includes(selectedFlavors.level2.toLowerCase())) {
+      matchScore += 6;
+    }
+  }
+  
+  if (selectedFlavors.level3) {
+    maxPossibleScore += 4;
+    if (roasterNotesLower.includes(selectedFlavors.level3.toLowerCase())) {
+      matchScore += 4;
+    }
+  }
   
   // Calculate percentage
   const percentage = maxPossibleScore > 0 
@@ -333,11 +342,11 @@ export const getMatchDetails = (
   const roasterWords = normalizeText(roasterNotes);
   const userFlavorSet = new Set<string>();
   
-  [...(selectedFlavors.level1 || []), 
-   ...(selectedFlavors.level2 || []), 
-   ...(selectedFlavors.level3 || [])].forEach(flavor => {
-    userFlavorSet.add(flavor.toLowerCase());
-  });
+  [selectedFlavors.level1, selectedFlavors.level2, selectedFlavors.level3]
+    .filter(flavor => flavor && flavor.trim() !== '')  // Filter out empty/undefined values
+    .forEach(flavor => {
+      userFlavorSet.add(flavor!.toLowerCase());
+    });
   
   const matchedFlavors = roasterWords.filter(word => userFlavorSet.has(word));
   const unmatchedFlavors = Array.from(userFlavorSet).filter(

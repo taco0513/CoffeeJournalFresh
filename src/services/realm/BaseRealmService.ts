@@ -28,13 +28,13 @@ export class BaseRealmService {
     const timer = new PerformanceTimer('realm_init');
 
     try {
-      RealmLogger.info('realm', 'Initializing Realm database');
+      RealmLogger.info('Initializing Realm database', { action: 'initialize' });
       
       this.realm = await Realm.open({
         schema: schemas,
         schemaVersion: 3, // Updated to include achievement schemas
         deleteRealmIfMigrationNeeded: __DEV__,
-        migration: (oldRealm: Realm, newRealm: Realm) => {
+        onMigration: (oldRealm: Realm, newRealm: Realm) => {
           if (oldRealm.schemaVersion < 2) {
             const oldTastings = oldRealm.objects('TastingRecord');
             const newTastings = newRealm.objects('TastingRecord');
@@ -56,7 +56,7 @@ export class BaseRealmService {
       this.initialized = true;
       
       const duration = timer.end();
-      RealmLogger.info('realm', 'Realm initialized successfully', { duration });
+      RealmLogger.info('Realm initialized successfully', { data: { duration } });
       
       // Initialize indexes
       this.createIndexes();
@@ -67,7 +67,7 @@ export class BaseRealmService {
     } catch (error) {
       try {
         const duration = timer.end();
-        RealmLogger.error('realm', 'Failed to initialize Realm', { error, duration });
+        RealmLogger.error('Failed to initialize Realm', { error: error as Error, data: { duration } });
       } catch (timerError) {
         console.error('Timer error during Realm initialization:', timerError);
       }
@@ -96,7 +96,7 @@ export class BaseRealmService {
 
   private createIndexes(): void {
     // Indexes are defined in schema, this is for any runtime optimization
-    RealmLogger.info('realm', 'Indexes created');
+    RealmLogger.info('Indexes created');
   }
 
   private scheduleCleanup(): void {
@@ -120,7 +120,7 @@ export class BaseRealmService {
       });
       
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to cleanup deleted records', { error });
+      RealmLogger.error('Failed to cleanup deleted records', { error: error as Error });
     }
   }
 
@@ -129,7 +129,7 @@ export class BaseRealmService {
     results: Realm.Results<T>, 
     limit?: number, 
     offset?: number
-  ): Realm.Results<T> {
+  ): Realm.Results<T> | T[] {
     if (limit !== undefined) {
       const startIndex = offset || 0;
       return results.slice(startIndex, startIndex + limit);
@@ -160,7 +160,7 @@ export class BaseRealmService {
       }
       instance.cleanupDeletedRecords();
     } catch (error) {
-      RealmLogger.error('realm', 'Failed to cleanup deleted records via static method', { error });
+      RealmLogger.error('Failed to cleanup deleted records via static method', { error: error as Error });
     }
   }
 }
