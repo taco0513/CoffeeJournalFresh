@@ -437,7 +437,7 @@ ${ready ?
       return {
         ready: false,
         score: 0,
-        report: `Deployment readiness check failed: ${error.message}`,
+        report: `Deployment readiness check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         criticalIssues: ['Unable to run deployment readiness tests'],
         recommendations: ['Fix test execution issues before attempting deployment']
       };
