@@ -36,7 +36,7 @@ export {
 
 // Enhanced screens from Tamagui
 export { ExperimentalDataScreen } from '../screens-tamagui/enhanced/ExperimentalDataScreen';
-export { SensoryEvaluationScreen } from '../screens-tamagui/enhanced/SensoryEvaluationScreen';
+export { default as SensoryEvaluationScreen } from '../screens-tamagui/enhanced/SensoryEvaluationScreen';
 export { EnhancedHomeCafeScreen } from '../screens-tamagui/enhanced/EnhancedHomeCafeScreen';
 
 // Admin screens

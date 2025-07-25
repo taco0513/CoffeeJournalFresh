@@ -5,7 +5,7 @@
  * Supports Korean + US dual-market strategy with real-time data
  */
 
-import { WebFetch } from '../utils/WebFetch';
+// import { WebFetch } from '../utils/WebFetch'; // WebFetch not available in current setup
 
 // Types for coffee industry data
 export interface RoasterProfile {

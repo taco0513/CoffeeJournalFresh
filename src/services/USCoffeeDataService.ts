@@ -1,4 +1,5 @@
-import { isUSBetaMarket } from './i18n';
+// import { isUSBetaMarket } from './i18n'; // Function not available in current setup
+const isUSBetaMarket = () => false; // Temporary stub
 
 /**
  * US Coffee Data Service for Beta Users

@@ -340,7 +340,7 @@ function OptimizedUnifiedFlavorScreen() {
     }
 
     setSelectedFlavors(newSelectedFlavors);
-    updateField('selectedFlavorPaths', newSelectedFlavors);
+    updateField('selectedFlavors', newSelectedFlavors);
     
     // Track performance end
   }, [selectedFlavors, setSelectedFlavors, updateField]);

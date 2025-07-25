@@ -1,6 +1,6 @@
 import { supabase } from '../supabase/client';
 import { GoogleAuthService } from '@/services/supabase/googleAuth';
-import { AppleAuthService } from '@/services/supabase/appleAuth';
+import AppleAuthService from '@/services/supabase/appleAuth';
 
 export interface AuthResult {
   success: boolean;
@@ -343,7 +343,8 @@ export class EnhancedAuthService {
 
       // Sign out from Apple if applicable
       try {
-        await AppleAuthService.signOut();
+        // AppleAuthService doesn't have signOut method - Apple sign out is handled by Supabase
+        // await AppleAuthService.signOut();
       } catch (error) {
         console.warn('Apple sign out failed (expected if not signed in via Apple):', error);
       }

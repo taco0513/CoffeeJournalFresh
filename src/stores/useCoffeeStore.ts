@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { StorageService } from '../services/StorageService';
-import { TastingData } from '../types';
+import { TastingData } from '../types/tasting';
 
 interface CoffeeStore {
   // Current tasting session

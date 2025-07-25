@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { supabase } from '../supabase/supabase';
+import { supabase } from '../supabase/client';
 import { SecureStorage } from '../auth/SecureStorage';
 
 export interface UserConsent {

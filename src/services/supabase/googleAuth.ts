@@ -1,5 +1,5 @@
 // Google Sign-In stub - replace this when adding @react-native-google-signin/google-signin package
-import { supabase } from './supabase';
+import { supabase } from './client';
 import { GoogleAuthConfig, validateGoogleConfig, isGoogleSignInConfigured } from '@/config/googleAuth';
 
 export interface GoogleSignInResult {

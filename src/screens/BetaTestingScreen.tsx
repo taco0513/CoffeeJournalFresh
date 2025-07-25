@@ -83,7 +83,7 @@ const BetaTestingScreen: React.FC = () => {
         { text: t('cancel'), style: 'cancel' },
         {
           text: t('submit'),
-          onPress: async (comment) => {
+          onPress: async (comment?: string) => {
             try {
               await betaTestingService.submitQuickFeedback(rating, comment);
               Alert.alert(t('success'), t('feedbackSubmitted'));

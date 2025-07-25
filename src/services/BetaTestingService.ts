@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { performanceMonitor } from './PerformanceMonitor';
 import { getCurrentMarketConfig, isBetaMarket, getBetaConfig } from '../config/marketConfig';
-import { supabase } from '../supabase/client';
+import { supabase } from './supabase/client';
 import { Alert } from 'react-native';
 
 /**

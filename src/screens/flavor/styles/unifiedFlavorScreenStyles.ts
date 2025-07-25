@@ -12,6 +12,10 @@ const Colors = {
   gray11: '#3C3C43',
   gray10: '#8E8E93',
   backgroundHover: '#F8F9FA',
+  label: '#000000',
+  secondaryLabel: '#3C3C43',
+  systemGray4: '#D1D1D6',
+  systemBlue: '#2196F3',
 } as const;
 
 export const unifiedFlavorScreenStyles = StyleSheet.create({

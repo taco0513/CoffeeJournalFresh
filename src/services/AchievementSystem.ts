@@ -202,7 +202,7 @@ export class AchievementSystem {
         isNew: true,
       };
     } catch (error) {
-      Logger.error('Error unlocking achievement', 'achievement', { error: error as Error, achievementType, userId });
+      Logger.error('Error unlocking achievement', 'achievement', { error: error as Error, data: { achievementType, userId } });
       return null;
     }
   }
@@ -222,7 +222,7 @@ export class AchievementSystem {
         }
       }
     } catch (error) {
-      Logger.error('Error awarding rewards', 'achievement', { error: error as Error, rewards, userId });
+      Logger.error('Error awarding rewards', 'achievement', { error: error as Error, data: { rewards, userId } });
     }
   }
 
@@ -291,7 +291,7 @@ export class AchievementSystem {
         }
       });
     } catch (error) {
-      Logger.error('Error updating achievement progress', 'achievement', { error: error as Error, achievementType, userId, progress });
+      Logger.error('Error updating achievement progress', 'achievement', { error: error as Error, data: { achievementType, userId, progress } });
     }
   }
 
