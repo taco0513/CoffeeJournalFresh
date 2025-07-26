@@ -59,7 +59,7 @@ class LoggingService {
   }
 
   private generateSessionId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    return Date.now().toString(36) + Math.random().toString(36).substring(2);
   }
 
   private shouldLog(level: LogLevel, category: string): boolean {

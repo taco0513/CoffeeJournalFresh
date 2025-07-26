@@ -125,3 +125,14 @@ declare module 'react-native-vector-icons/Ionicons' {
   
   export default class Icon extends Component<IconProps> {}
 }
+
+declare module 'react-native-config' {
+  interface Config {
+    [key: string]: string;
+    LOG_LEVEL?: string;
+    SENTRY_DSN?: string;
+  }
+  
+  const Config: Config;
+  export default Config;
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { AchievementSystem } from '../services/AchievementSystem';
 import { Achievement, ProgressData, UserAction } from '../types/achievements';
 import { useUserStore } from '../stores/useUserStore';
@@ -81,23 +81,50 @@ export const useAchievements = (): UseAchievementsReturn => {
       
       // Load user achievements
       const userAchievements = await achievementSystem.getUserAchievements(currentUser.id);
-      setAchievements(userAchievements);
       
-      // Calculate stats
-      const totalAchievements = userAchievements.length;
-      const unlockedAchievements = userAchievements.filter(a => a.unlockedAt).length;
-      const totalPoints = userAchievements
+      // Remove duplicates by ID to prevent React key duplication errors
+      console.log('🔍 Raw achievements count:', userAchievements.length);
+      const duplicateIds = userAchievements.map(a => a.id).filter((id, index, arr) => arr.indexOf(id) !== index);
+      if (duplicateIds.length > 0) {
+        console.warn('⚠️ Duplicate achievement IDs found:', duplicateIds);
+      }
+      
+      const uniqueAchievements = userAchievements.reduce((acc: Achievement[], current: Achievement) => {
+        const existingAchievement = acc.find(item => item.id === current.id);
+        if (!existingAchievement) {
+          acc.push(current);
+        } else {
+          console.log('🔄 Replacing duplicate achievement:', current.id, current.title);
+          // Keep the more recent/updated version (with unlockedAt if available)
+          if (current.unlockedAt && !existingAchievement.unlockedAt) {
+            const index = acc.findIndex(item => item.id === current.id);
+            acc[index] = current;
+          }
+        }
+        return acc;
+      }, []);
+      
+      console.log('✅ Unique achievements count:', uniqueAchievements.length);
+      
+      // Calculate stats using unique achievements
+      const totalAchievements = uniqueAchievements.length;
+      const unlockedAchievements = uniqueAchievements.filter(a => a.unlockedAt).length;
+      const totalPoints = uniqueAchievements
         .filter((a: Achievement) => a.unlockedAt && a.rewards.type === 'points')
         .reduce((sum: number, a: Achievement) => sum + (a.rewards.value as number), 0);
       const completionPercentage = totalAchievements > 0 
         ? Math.round((unlockedAchievements / totalAchievements) * 100)
         : 0;
 
-      setStats({
-        totalAchievements,
-        unlockedAchievements,
-        totalPoints,
-        completionPercentage,
+      // Batch update to prevent intermediate render states
+      React.startTransition(() => {
+        setAchievements(uniqueAchievements);
+        setStats({
+          totalAchievements,
+          unlockedAchievements,
+          totalPoints,
+          completionPercentage,
+        });
       });
     } catch (err) {
       console.error('Failed to refresh achievements:', err);

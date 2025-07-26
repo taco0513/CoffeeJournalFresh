@@ -39,14 +39,15 @@ export class AchievementSystem {
 
     try {
       this.realm.write(() => {
-        Object.entries(ACHIEVEMENT_DEFINITIONS).forEach(([type, definition]) => {
+        Object.entries(ACHIEVEMENT_DEFINITIONS).forEach(([type, definition], index) => {
           const existing = this.realm!
             .objects('AchievementDefinition')
             .filtered('achievementType = $0', type)[0];
 
           if (!existing) {
+            const uniqueId = `achievement-def-${type}-${index}-${Date.now()}`;
             this.realm!.create('AchievementDefinition', {
-              id: generateUUID(),
+              id: uniqueId,
               achievementType: type,
               title: definition.title,
               description: definition.description,
@@ -384,25 +385,51 @@ export class AchievementSystem {
         .filtered('userId = $0', userId);
 
       const achievements: Achievement[] = [];
+      const uniqueKeyTracker = new Set<string>();
+      const timestamp = Date.now();
       
-      for (const userAchievement of userAchievements) {
-        const definition = ACHIEVEMENT_DEFINITIONS[(userAchievement as any).achievementType];
-        if (definition) {
-          achievements.push({
-            id: (userAchievement as any).id,
-            type: (userAchievement as any).achievementType,
-            title: definition.title,
-            description: definition.description,
-            icon: definition.icon,
-            rarity: definition.rarity,
-            category: definition.category,
-            requirements: definition.requirements,
-            rewards: definition.rewards,
-            progress: (userAchievement as any).progress,
-            unlockedAt: (userAchievement as any).unlockedAt,
-            isNew: (userAchievement as any).isNew,
-          });
+      // Process each achievement with enhanced deduplication
+      for (let index = 0; index < userAchievements.length; index++) {
+        const userAchievement = userAchievements[index];
+        const achievementType = (userAchievement as any).achievementType;
+        const achievementId = (userAchievement as any).id;
+        const definition = ACHIEVEMENT_DEFINITIONS[achievementType];
+        
+        // Skip if definition doesn't exist or required fields are missing
+        if (!definition || !achievementId || !achievementType) {
+          console.warn('⚠️ Skipping invalid achievement:', { achievementType, achievementId, hasDefinition: !!definition });
+          continue;
         }
+        
+        // Generate ultra-unique ID that prevents React key duplication
+        let uniqueId = `achievement-${achievementType}-${achievementId}-${index}-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
+        let counter = 0;
+        
+        // Ensure absolute uniqueness with counter fallback
+        while (uniqueKeyTracker.has(uniqueId)) {
+          counter++;
+          uniqueId = `achievement-${achievementType}-${achievementId}-${index}-${timestamp}-${counter}-${Math.random().toString(36).substr(2, 9)}`;
+        }
+        
+        uniqueKeyTracker.add(uniqueId);
+        
+        // Create achievement object with guaranteed unique ID
+        const achievement = {
+          id: uniqueId,
+          type: achievementType,
+          title: definition.title,
+          description: definition.description,
+          icon: definition.icon,
+          rarity: definition.rarity,
+          category: definition.category,
+          requirements: definition.requirements,
+          rewards: definition.rewards,
+          progress: (userAchievement as any).progress || 0,
+          unlockedAt: (userAchievement as any).unlockedAt || undefined,
+          isNew: (userAchievement as any).isNew || false,
+        };
+        
+        achievements.push(achievement);
       }
 
       return achievements;

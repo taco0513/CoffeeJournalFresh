@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SafeAreaView, RefreshControl, Alert, TouchableOpacity } from 'react-native';
+import { SafeAreaView, RefreshControl, Alert } from 'react-native';
 import {
   View,
   Text,
@@ -402,24 +402,23 @@ const TamaguiMetricCard: React.FC<MetricCardProps> = ({
   color = '$cupBlue',
   onPress 
 }) => (
-  <TouchableOpacity onPress={onPress} disabled={!onPress} activeOpacity={0.8}>
-    <MetricCardContainer
-      clickable={!!onPress}
-      animation="lazy"
-      enterStyle={{
-        opacity: 0,
-        scale: 0.9,
-        y: 20,
-      }}
-      animateOnly={['opacity', 'transform']}
-    >
-      <MetricTitle>{title}</MetricTitle>
-      <MetricValue style={{ color }}>
-        {typeof value === 'number' ? value.toLocaleString() : value}
-      </MetricValue>
-      {subtitle && <MetricSubtitle>{subtitle}</MetricSubtitle>}
-    </MetricCardContainer>
-  </TouchableOpacity>
+  <MetricCardContainer
+    clickable={!!onPress}
+    onPress={onPress}
+    animation="lazy"
+    enterStyle={{
+      opacity: 0,
+      scale: 0.9,
+      y: 20,
+    }}
+    animateOnly={['opacity', 'transform']}
+  >
+    <MetricTitle>{title}</MetricTitle>
+    <MetricValue style={{ color }}>
+      {typeof value === 'number' ? value.toLocaleString() : value}
+    </MetricValue>
+    {subtitle && <MetricSubtitle>{subtitle}</MetricSubtitle>}
+  </MetricCardContainer>
 );
 
 const TamaguiIssueCard: React.FC<{

@@ -1,7 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { SafeAreaView, DeviceEventEmitter, TouchableOpacity } from 'react-native';
+import { SafeAreaView, DeviceEventEmitter } from 'react-native';
 import { KeyGenerator } from '../../utils/KeyGenerator';
 import { DataLoadingService } from '../../services/DataLoadingService';
+
+// 안전한 고유 키 생성 함수 - 더 강력한 중복 방지
+const generateSafeKey = (prefix: string, index: number, additionalId?: string, extraContext?: string) => {
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substr(2, 12); // 더 긴 랜덤 문자열
+  const processId = Math.floor(Math.random() * 10000); // 추가 프로세스 ID
+  const context = extraContext ? `-${extraContext}` : '';
+  const cleanAdditionalId = additionalId ? additionalId.replace(/[^a-zA-Z0-9-_]/g, '-') : 'noId';
+  return `${prefix}-idx${index}-${cleanAdditionalId}-t${timestamp}-r${random}-p${processId}${context}`;
+};
 import {
   View,
   Text,
@@ -36,6 +46,7 @@ interface GroupedTastings {
 
 interface HistoryScreenProps {
   hideNavBar?: boolean;
+  screenId?: string; // 각 인스턴스별 고유 ID
 }
 
 // Styled Components
@@ -369,7 +380,7 @@ const EmptySubtext = styled(Text, {
 
 export type HistoryScreenProps_Styled = GetProps<typeof Container>;
 
-const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true }) => {
+const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screenId = 'default' }) => {
   const theme = useTheme();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { currentUser } = useUserStore();
@@ -465,24 +476,39 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true }) => {
         }
       });
       
-      // Convert to plain objects
-      results = results.map((tasting) => {
-        try {
-          return {
-            ...tasting,
-            id: tasting.id,
-            coffeeName: tasting.coffeeName,
-            roastery: tasting.roastery,
-            cafeName: tasting.cafeName,
-            origin: tasting.origin,
-            createdAt: new Date(tasting.createdAt),
-            matchScoreTotal: tasting.matchScoreTotal
-          };
-        } catch (error) {
-          console.error('❌ Error converting tasting to plain object:', error, tasting);
-          return tasting;
-        }
-      });
+      // Remove duplicates by ID and convert to plain objects
+      const seenIds = new Set();
+      results = results
+        .filter(tasting => {
+          if (seenIds.has(tasting.id)) {
+            console.log('🔄 Duplicate tasting found, removing:', tasting.id, tasting.coffeeName);
+            return false;
+          }
+          seenIds.add(tasting.id);
+          return true;
+        })
+        .map((tasting, index) => {
+          try {
+            return {
+              ...tasting,
+              id: tasting.id,
+              coffeeName: tasting.coffeeName,
+              roastery: tasting.roastery,
+              cafeName: tasting.cafeName,
+              origin: tasting.origin,
+              createdAt: new Date(tasting.createdAt),
+              matchScoreTotal: tasting.matchScoreTotal,
+              // 추가 안정성을 위한 인덱스
+              _uniqueIndex: index
+            };
+          } catch (error) {
+            console.error('❌ Error converting tasting to plain object:', error, tasting);
+            return {
+              ...tasting,
+              _uniqueIndex: index
+            };
+          }
+        });
       
       // Apply search query
       if (searchQuery) {
@@ -560,25 +586,23 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true }) => {
       }) : '날짜 없음';
       
       return (
-        <TouchableOpacity
+        <TastingCard
           onPress={() => {
             navigation.navigate('TastingDetail', { 
               tastingId: item.id
             });
           }}
-          activeOpacity={0.7}
+          pressStyle={{ scale: 0.98 }}
         >
-          <TastingCard>
-            <CardHeader>
-              <CoffeeName>{item.coffeeName}</CoffeeName>
-              <MatchScoreContainer score={getScoreType(item.matchScoreTotal || 0)}>
-                <MatchScore>{item.matchScoreTotal || 0}%</MatchScore>
-              </MatchScoreContainer>
-            </CardHeader>
-            <RoasterName>{item.roastery || 'Unknown Roastery'}</RoasterName>
-            <DateText>{formattedDate}</DateText>
-          </TastingCard>
-        </TouchableOpacity>
+          <CardHeader>
+            <CoffeeName>{item.coffeeName}</CoffeeName>
+            <MatchScoreContainer score={getScoreType(item.matchScoreTotal || 0)}>
+              <MatchScore>{item.matchScoreTotal || 0}%</MatchScore>
+            </MatchScoreContainer>
+          </CardHeader>
+          <RoasterName>{item.roastery || 'Unknown Roastery'}</RoasterName>
+          <DateText>{formattedDate}</DateText>
+        </TastingCard>
       );
     } catch (error) {
       console.error('Error rendering tasting item:', error, item);
@@ -591,24 +615,30 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true }) => {
     }
   };
 
-  const renderSection = (section: GroupedTastings, index: number) => (
-    <YStack>
-      <SectionHeader>
-        <SectionTitle>{section.title || 'Unknown Section'}</SectionTitle>
-        <SectionCount>{section.data.length}개</SectionCount>
-      </SectionHeader>
-      {/* Simplified without animation to debug key issues */}
-      {section.data
-        .filter(item => item && (item.id || item.coffeeName))
-        .map((item, itemIndex) => (
-        <View
-          key={`${section.title}-item-${item.id || KeyGenerator.generate()}-${itemIndex}`}
-        >
-            {renderTastingItem(item)}
-          </View>
-        ))}
-    </YStack>
-  );
+  const renderSection = (section: GroupedTastings, index: number) => {
+    const sectionKey = generateSafeKey(`${screenId}-section`, index, section.title, `section-${section.data.length}`);
+    
+    return (
+      <YStack key={sectionKey}>
+        <SectionHeader>
+          <SectionTitle>{section.title || 'Unknown Section'}</SectionTitle>
+          <SectionCount>{section.data.length}개</SectionCount>
+        </SectionHeader>
+        {section.data
+          .filter(item => item && (item.id || item.coffeeName))
+          .map((item, itemIndex) => {
+            const itemKey = generateSafeKey(`${screenId}-item`, itemIndex, item.id, `item-${item.coffeeName || 'unknown'}`);
+            return (
+              <React.Fragment key={itemKey}>
+                <View>
+                  {renderTastingItem(item)}
+                </View>
+              </React.Fragment>
+            );
+          })}
+      </YStack>
+    );
+  };
 
   if (loading) {
     return (
@@ -727,11 +757,14 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true }) => {
         <ContentScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           {groupedTastings.length > 0 ? (
             <YStack>
-              {groupedTastings.map((section, index) => (
-                <View key={`section-${section.title || 'unknown'}-${index}-${KeyGenerator.generate()}`}>
-                  {renderSection(section, index)}
-                </View>
-              ))}
+              {groupedTastings.map((section, index) => {
+                const sectionKey = generateSafeKey(`${screenId}-main-section`, index, section.title, `main-${section.data.length}-items`);
+                return (
+                  <React.Fragment key={sectionKey}>
+                    {renderSection(section, index)}
+                  </React.Fragment>
+                );
+              })}
             </YStack>
           ) : (
             <EmptyContainer>

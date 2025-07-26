@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, TouchableOpacity, Image, Dimensions, Alert, Share, StatusBar } from 'react-native';
+import { SafeAreaView, Image, Dimensions, Alert, Share, StatusBar } from 'react-native';
 import {
   View,
   Text,
@@ -234,11 +234,14 @@ const ActionButtonText = styled(Text, {
   } as const,
 });
 
-const TouchablePhotoContainer = styled(TouchableOpacity, {
+const TouchablePhotoContainer = styled(View, {
   name: 'TouchablePhotoContainer',
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',
+  pressStyle: {
+    opacity: 0.9,
+  },
 });
 
 export type PhotoViewerScreenProps = GetProps<typeof Container>;
@@ -357,7 +360,6 @@ const PhotoViewerScreen: React.FC<PhotoViewerScreenProps> = () => {
         {/* Photo Container */}
         <TouchablePhotoContainer
           onPress={toggleControls}
-          activeOpacity={1}
         >
           <PhotoImage
             source={{ uri: PhotoService.getPhotoUri(photoItem.uri) }}

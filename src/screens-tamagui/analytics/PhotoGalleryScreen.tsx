@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, TouchableOpacity, Image, Dimensions, Alert, RefreshControl } from 'react-native';
+import { SafeAreaView, Image, Dimensions, Alert, RefreshControl } from 'react-native';
 import {
   View,
   Text,
@@ -355,35 +355,32 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
       photoRows.push(
         <XStack key={i} justifyContent="space-between" marginBottom="$sm">
           {row.map((item, index) => (
-            <TouchableOpacity
+            <PhotoItem
               key={`photo-${item.id}-${index}`}
               onPress={() => handlePhotoPress(item)}
               onLongPress={() => handlePhotoLongPress(item)}
-              activeOpacity={0.8}
+              animation="lazy"
+              enterStyle={{
+                opacity: 0,
+                scale: 0.9,
+                y: 20 + (i + index) * 5,
+              }}
+              animateOnly={['opacity', 'transform']}
+              pressStyle={{ scale: 0.98 }}
             >
-              <PhotoItem
-                animation="lazy"
-                enterStyle={{
-                  opacity: 0,
-                  scale: 0.9,
-                  y: 20 + (i + index) * 5,
-                }}
-                animateOnly={['opacity', 'transform']}
-              >
-                <PhotoImage
-                  source={{ uri: PhotoService.getPhotoUri(item.thumbnailUri || item.uri) }}
-                  resizeMode="cover"
-                />
-                <PhotoInfo>
-                  <CoffeeName numberOfLines={1}>
-                    {item.coffeeName}
-                  </CoffeeName>
-                  <RoasteryName numberOfLines={1}>
-                    {item.roasteryName}
-                  </RoasteryName>
-                </PhotoInfo>
-              </PhotoItem>
-            </TouchableOpacity>
+              <PhotoImage
+                source={{ uri: PhotoService.getPhotoUri(item.thumbnailUri || item.uri) }}
+                resizeMode="cover"
+              />
+              <PhotoInfo>
+                <CoffeeName numberOfLines={1}>
+                  {item.coffeeName}
+                </CoffeeName>
+                <RoasteryName numberOfLines={1}>
+                  {item.roasteryName}
+                </RoasteryName>
+              </PhotoInfo>
+            </PhotoItem>
           ))}
           {/* Add empty space if odd number of items */}
           {row.length === 1 && <View width={ITEM_SIZE} />}

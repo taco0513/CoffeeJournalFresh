@@ -222,7 +222,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
           onBlur={handleBlur}
           onKeyPress={Platform.OS === 'web' ? handleKeyPress : undefined}
           placeholder={placeholder}
-          placeholderTextColor="#CCCCCC"
+          placeholderTextColor="$gray8"
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="off"
@@ -258,32 +258,32 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#D1D1D6',
+    borderColor: '$borderColor',
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
     fontSize: 16,
-    backgroundColor: '#FFFFFF',
-    color: '#000000',
+    backgroundColor: '$background',
+    color: '$color',
     minHeight: 40,
   },
   inputDisabled: {
-    backgroundColor: '#F0F0F0',
-    color: Colors.TEXT_DISABLED,
+    backgroundColor: '$backgroundStrong',
+    color: '$gray8',
   },
   suggestionsContainer: {
     position: 'absolute',
     top: '100%',
     left: 0,
     right: 0,
-    backgroundColor: 'white',
+    backgroundColor: '$background',
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: '$borderColor',
     borderRadius: 8,
     maxHeight: 200,
     zIndex: 9999,
     elevation: 10,
-    shadowColor: '#000',
+    shadowColor: '$shadowColor',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
@@ -295,8 +295,8 @@ const styles = StyleSheet.create({
   suggestionItem: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-    backgroundColor: '#FFFFFF',
+    borderBottomColor: '$borderColor',
+    backgroundColor: '$background',
     minHeight: 44, // Accessibility minimum touch target
     justifyContent: 'center',
   },

@@ -1,18 +1,89 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import { Dimensions } from 'react-native';
+import { View, Text, Button, styled } from 'tamagui';
 import { useFeedbackStore } from '../../stores/useFeedbackStore';
 import ScreenContextService from '../../services/ScreenContextService';
-import { HIGColors } from '../../constants/HIG';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const BUTTON_SIZE = 56;
 const SAFE_AREA = 20;
+
+// Styled Components
+const Container = styled(View, {
+  name: 'FloatingFeedbackContainer',
+  position: 'absolute',
+  bottom: 120, // Above tab bar
+  right: SAFE_AREA,
+  zIndex: 9999,
+  alignItems: 'center',
+});
+
+const FloatingButton = styled(Button, {
+  name: 'FloatingButton',
+  backgroundColor: '$cupBlue',
+  width: BUTTON_SIZE,
+  height: BUTTON_SIZE,
+  borderRadius: BUTTON_SIZE / 2,
+  borderWidth: 0,
+  alignItems: 'center',
+  justifyContent: 'center',
+  shadowColor: '$shadowColor',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.3,
+  shadowRadius: 8,
+  elevation: 8,
+  pressStyle: { opacity: 0.9 },
+  variants: {
+    expanded: {
+      true: {
+        width: 120,
+        height: 50,
+        borderRadius: 25,
+      },
+    },
+  } as const,
+});
+
+const ExpandedContent = styled(View, {
+  name: 'ExpandedContent',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
+const ExpandedText = styled(Text, {
+  name: 'ExpandedText',
+  color: 'white',
+  fontSize: '$3',
+  fontWeight: '600',
+});
+
+const ExpandedSubtext = styled(Text, {
+  name: 'ExpandedSubtext',
+  color: 'white',
+  fontSize: '$1',
+  opacity: 0.8,
+});
+
+const ButtonText = styled(Text, {
+  name: 'ButtonText',
+  fontSize: 24,
+});
+
+const BetaBadge = styled(View, {
+  name: 'BetaBadge',
+  backgroundColor: '$orange9',
+  paddingHorizontal: '$1',
+  paddingVertical: '$1',
+  borderRadius: '$1',
+  marginTop: '$1',
+});
+
+const BetaBadgeText = styled(Text, {
+  name: 'BetaBadgeText',
+  color: 'white',
+  fontSize: '$1',
+  fontWeight: '700',
+});
 
 export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible }) => {
   const { showSmartFeedback, setScreenContext } = useFeedbackStore();
@@ -68,82 +139,26 @@ export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible
   if (!visible) return null;
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={[styles.button, expanded && styles.buttonExpanded]}
+    <Container>
+      <FloatingButton
+        expanded={expanded}
         onPress={handlePress}
-        activeOpacity={0.9}
+        unstyled
       >
         {expanded ? (
-          <View style={styles.expandedContent}>
-            <Text style={styles.expandedText}>피드백</Text>
-            <Text style={styles.expandedSubtext}>탭하여 열기</Text>
-          </View>
+          <ExpandedContent>
+            <ExpandedText>피드백</ExpandedText>
+            <ExpandedSubtext>탭하여 열기</ExpandedSubtext>
+          </ExpandedContent>
         ) : (
-          <Text style={styles.buttonText}>💭</Text>
+          <ButtonText>💭</ButtonText>
         )}
-      </TouchableOpacity>
+      </FloatingButton>
       
       {/* Beta Badge */}
-      <View style={styles.betaBadge}>
-        <Text style={styles.betaBadgeText}>BETA</Text>
-      </View>
-    </View>
+      <BetaBadge>
+        <BetaBadgeText>BETA</BetaBadgeText>
+      </BetaBadge>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    bottom: 120, // Above tab bar
-    right: SAFE_AREA,
-    zIndex: 9999,
-  },
-  button: {
-    width: BUTTON_SIZE,
-    height: BUTTON_SIZE,
-    borderRadius: BUTTON_SIZE / 2,
-    backgroundColor: HIGColors.systemBlue,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  buttonExpanded: {
-    width: 120,
-    borderRadius: 28,
-  },
-  buttonText: {
-    fontSize: 28,
-  },
-  expandedContent: {
-    alignItems: 'center',
-  },
-  expandedText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  expandedSubtext: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 11,
-    marginTop: 2,
-  },
-  betaBadge: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    backgroundColor: HIGColors.systemOrange,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
-  betaBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 9,
-    fontWeight: 'bold',
-  },
-});

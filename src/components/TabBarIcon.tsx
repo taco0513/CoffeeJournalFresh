@@ -1,6 +1,44 @@
 import React from 'react';
-import { View, Text, Platform, TouchableOpacity } from 'react-native';
-import { IOSColors, IOSLayout } from '../styles/ios-hig-2024';
+import { Platform } from 'react-native';
+import { View, Text, styled } from 'tamagui';
+
+// Styled Components
+const IconContainer = styled(View, {
+  name: 'IconContainer',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 32,
+  height: 32,
+  borderRadius: 0,
+  backgroundColor: 'transparent',
+  scale: 1.0,
+  animation: 'quick',
+  variants: {
+    focused: {
+      true: {
+        borderRadius: 8,
+        backgroundColor: '$blue3',
+        scale: 1.05,
+      },
+    },
+  } as const,
+});
+
+const IconText = styled(Text, {
+  name: 'IconText',
+  fontSize: 18,
+  textAlign: 'center',
+  fontWeight: '400',
+  animation: 'quick',
+  variants: {
+    focused: {
+      true: {
+        fontSize: 20,
+        fontWeight: '600',
+      },
+    },
+  } as const,
+});
 
 // Simple text-based icons for lightweight MVP
 const iconMap = {
@@ -8,9 +46,11 @@ const iconMap = {
   Home: '🏠',
   Journal: '📝',
   AddRecord: '➕',
+  UserProfile: '🏆',
+  Settings: '⚙️',
+  Admin: '👤',
   History: '📋',
   Profile: '👤',
-  Admin: '⚙️',
   // Legacy support for lowercase route names
   home: '🏠',
   journal: '📝',
@@ -37,20 +77,11 @@ export const TabBarIcon: React.FC<TabBarIconProps> = ({ name, focused, color, on
   };
   
   return (
-    <View style={{ 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      width: 30,
-      height: 30,
-    }}>
-      <Text style={{ 
-        fontSize: focused ? 26 : 24, 
-        color: color,
-        textAlign: 'center',
-      }}>
+    <IconContainer focused={focused}>
+      <IconText focused={focused} color={color}>
         {iconName}
-      </Text>
-    </View>
+      </IconText>
+    </IconContainer>
   );
 };
 

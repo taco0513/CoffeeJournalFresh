@@ -43,23 +43,23 @@ const Toast: React.FC<ToastProps> = ({
     switch (type) {
       case 'success':
         return {
-          backgroundColor: '#34C759',
-          borderColor: '#2DB84A',
+          backgroundColor: '$green9',
+          borderColor: '$green10',
         };
       case 'error':
         return {
-          backgroundColor: '#FF3B30',
-          borderColor: '#E82C1F',
+          backgroundColor: '$red9',
+          borderColor: '$red10',
         };
       case 'info':
         return {
-          backgroundColor: '#007AFF',
-          borderColor: '#0056CC',
+          backgroundColor: '$blue9',
+          borderColor: '$blue10',
         };
       default:
         return {
-          backgroundColor: '#34C759',
-          borderColor: '#2DB84A',
+          backgroundColor: '$green9',
+          borderColor: '$green10',
         };
     }
   };

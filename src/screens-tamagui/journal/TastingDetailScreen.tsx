@@ -340,7 +340,7 @@ const TastingDetailScreen: React.FC<TastingDetailScreenProps> = ({ hideNavBar = 
     const displayText = parts.join(' > ');
 
     return (
-      <FlavorChip key={`flavor-${index}-${displayText}`}>
+      <FlavorChip key={`flavor-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`}>
         <ChipText>{displayText}</ChipText>
       </FlavorChip>
     );

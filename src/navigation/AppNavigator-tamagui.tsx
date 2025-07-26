@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { Text, View } from 'react-native';
-import { useUserStore } from '../stores/userStore';
+import { useUserStore } from '../stores/useUserStore';
 import { IOSColors, IOSLayout, IOSTypography, IOSShadows } from '../styles/ios-hig-2024';
 import StatusBadge from '../components/StatusBadge';
 import { TabBarIcon } from '../components/TabBarIcon';
@@ -40,7 +40,6 @@ import {
   
   // Analytics & Media
   StatsScreen,
-  HistoryScreen,
   PhotoGalleryScreen,
   PhotoViewerScreen,
   SearchScreen,
@@ -55,6 +54,9 @@ import {
   PerformanceDashboardScreen,
   ProfileSetupScreen,
 } from '../screens-tamagui';
+
+// Import dedicated Navigation HistoryScreen (replaced by Achievement screen)
+// import NavigationHistoryScreen from '../screens-tamagui/analytics/NavigationHistoryScreen';
 
 // Admin screens (not yet migrated to Tamagui)
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
@@ -154,11 +156,11 @@ function TastingFlow() {
   );
 }
 
-// 히스토리 스택 네비게이터
-function HistoryStack() {
+// 프로필 스택 네비게이터 (Achievement 중심)
+function AchievementStack() {
   return (
     <Stack.Navigator
-      initialRouteName="HistoryMain"
+      initialRouteName="AchievementMain"
       screenOptions={{
         headerShown: true,
         headerStyle: {
@@ -175,10 +177,10 @@ function HistoryStack() {
       }}
     >
       <Stack.Screen 
-        name="HistoryMain" 
-        component={HistoryScreen}
+        name="AchievementMain" 
+        component={AchievementGalleryScreen}
         options={{
-          title: '테이스팅 기록',
+          title: '내 성취',
         }}
       />
       <Stack.Screen 
@@ -227,10 +229,10 @@ function ProfileStack() {
       }}
     >
       <Stack.Screen 
-        name="ProfileMain" 
+        name="SettingsMain" 
         component={ProfileScreen}
         options={{
-          title: '내 프로필',
+          title: '세팅',
         }}
       />
       <Stack.Screen 
@@ -335,33 +337,50 @@ function MainTabs() {
 
   return (
     <Tab.Navigator
+      detachInactiveScreens={true}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, focused }) => {
-          return <TabBarIcon name={route.name as "home" | "journal" | "addCoffee" | "achievements" | "profile"} focused={focused} color={color} />;
+          return <TabBarIcon name={route.name as "Home" | "Journal" | "AddRecord" | "UserProfile" | "Settings" | "Admin"} focused={focused} color={color} />;
         },
-        tabBarActiveTintColor: '#8B4513',
-        tabBarInactiveTintColor: '#999999',
+        tabBarActiveTintColor: '#007AFF',
+        tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
-          borderTopWidth: 0.5,
-          borderTopColor: '#E0E0E0',
-          paddingBottom: 5,
-          paddingTop: 5,
-          height: 55,
+          borderTopWidth: 0,
+          paddingBottom: 8,
+          paddingTop: 8,
+          height: 60,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: -2,
+          },
+          shadowOpacity: 0.05,
+          shadowRadius: 8,
+          elevation: 5,
         },
         tabBarLabelStyle: {
-          fontSize: 10,
-          fontWeight: '500',
+          fontSize: 11,
+          fontWeight: '600',
+          marginTop: 2,
         },
         headerShown: true,
         headerStyle: {
           backgroundColor: '#FFFFFF',
-          borderBottomWidth: 0.5,
-          borderBottomColor: '#E0E0E0',
+          borderBottomWidth: 0,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.05,
+          shadowRadius: 4,
+          elevation: 3,
         },
         headerTitleStyle: {
-          fontSize: 17,
-          fontWeight: '600',
+          fontSize: 18,
+          fontWeight: '700',
+          color: '#000',
         },
         ...commonHeaderOptions,
       })}
@@ -382,6 +401,14 @@ function MainTabs() {
           headerTitle: '커피 저널',
         }}
       />
+      <Tab.Screen 
+        name="AddRecord" 
+        component={TastingFlow}
+        options={{
+          tabBarLabel: '기록',
+          headerShown: false,
+        }}
+      />
       {isAdmin && (
         <Tab.Screen 
           name="Admin" 
@@ -393,18 +420,18 @@ function MainTabs() {
         />
       )}
       <Tab.Screen 
-        name="History" 
-        component={HistoryStack}
+        name="UserProfile" 
+        component={AchievementStack}
         options={{
-          tabBarLabel: '기록',
+          tabBarLabel: '프로필',
           headerShown: false,
         }}
       />
       <Tab.Screen 
-        name="Profile" 
+        name="Settings" 
         component={ProfileStack}
         options={{
-          tabBarLabel: '프로필',
+          tabBarLabel: '세팅',
           headerShown: false,
         }}
       />
@@ -468,15 +495,10 @@ function AuthStack() {
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen 
         name="ProfileSetup" 
-        component={(props: any) => (
-          <ProfileSetupScreen 
-            {...props}
-            onComplete={() => {
-              // Navigate to main app after profile setup is complete
-              props.navigation.replace('Main');
-            }} 
-          />
-        )} 
+        component={ProfileSetupScreen}
+        options={{
+          headerShown: false,
+        }}
       />
     </Stack.Navigator>
   );
@@ -487,6 +509,8 @@ export default function AppNavigator() {
   const { isAuthenticated } = useUserStore();
   const navigationRef = useRef<any>(null);
   const routeNameRef = useRef<string | undefined>(undefined);
+  
+  console.log('🔧 AppNavigator render - isAuthenticated:', isAuthenticated);
 
   useEffect(() => {
     // 네비게이션 상태 변경 추적

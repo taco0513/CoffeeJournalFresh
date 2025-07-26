@@ -67,16 +67,18 @@ const SignInScreen = () => {
 
     setLoading(true);
     try {
+      console.log('Attempting sign in with:', email);
       // Use the store's signIn method which handles everything
       await signIn(email, password);
 
+      console.log('Sign in successful, navigating to Main');
       // Navigate to main app
       navigation.reset({
         index: 0,
         routes: [{ name: 'Main' as never }],
       });
     } catch (error: any) {
-      // console.error('Sign in error:', error);
+      console.error('Sign in error:', error);
       ErrorHandler.handle(error, '로그인');
     } finally {
       setLoading(false);
@@ -254,26 +256,23 @@ const SignInScreen = () => {
               <TouchableOpacity
                 style={[styles.socialButton, styles.developerButton]}
                 onPress={async () => {
+                  console.log('Developer login button pressed');
                   try {
-                    // Set test user for development
+                    console.log('Calling setTestUser...');
                     await setTestUser();
+                    console.log('setTestUser completed successfully');
+                    console.log('Authentication state should now be true - navigation will happen automatically');
                     
-                    // Show success message
+                    // Show success message - navigation will happen automatically via isAuthenticated state change
                     Alert.alert(
                       '✅ 개발자 로그인 성공!', 
-                      '테스트 계정으로 로그인되었습니다.\n\n이제 시뮬레이터를 새로고침 (Cmd+R)하면 메인 화면으로 이동합니다.',
-                      [
-                        {
-                          text: '확인',
-                          onPress: () => {
-                            console.log('Developer login completed. Please refresh the app (Cmd+R).');
-                          }
-                        }
-                      ]
+                      '테스트 계정으로 로그인되었습니다.\n\n화면이 자동으로 전환됩니다.',
+                      [{ text: '확인' }]
                     );
                   } catch (error) {
                     console.error('Developer login error:', error);
-                    Alert.alert('오류', '개발자 로그인에 실패했습니다.');
+                    console.error('Error details:', JSON.stringify(error));
+                    Alert.alert('오류', `개발자 로그인에 실패했습니다.\n\n${error}`);
                   }
                 }}
                 activeOpacity={0.8}

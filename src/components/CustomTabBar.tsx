@@ -1,16 +1,8 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-  Dimensions,
-  Animated,
-} from 'react-native';
+import { Platform, Dimensions } from 'react-native';
+import { View, Text, Button, styled, useTheme } from 'tamagui';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { IOSColors, IOSLayout, IOSTypography, IOSSpacing, IOSShadows } from '../styles/ios-hig-2024';
 import {
   HomeIcon,
   JournalIcon,
@@ -20,6 +12,72 @@ import {
 } from './icons/TabIcons';
 
 const { width: screenWidth } = Dimensions.get('window');
+
+// Styled Components
+const Container = styled(View, {
+  name: 'TabBarContainer',
+  backgroundColor: '$background',
+  borderTopWidth: 1,
+  borderTopColor: '$borderColor',
+});
+
+const TabBarWrapper = styled(View, {
+  name: 'TabBarWrapper',
+  flexDirection: 'row',
+  height: 64,
+  alignItems: 'center',
+});
+
+const TabButton = styled(Button, {
+  name: 'TabButton',
+  flex: 1,
+  backgroundColor: 'transparent',
+  borderWidth: 0,
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingTop: '$xs',
+  pressStyle: {
+    opacity: 0.7,
+  },
+});
+
+const TabLabel = styled(Text, {
+  name: 'TabLabel',
+  fontSize: '$1',
+  marginTop: '$1',
+});
+
+const CenterButtonContainer = styled(View, {
+  name: 'CenterButtonContainer',
+  flex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
+const CenterButton = styled(Button, {
+  name: 'CenterButton',
+  position: 'absolute',
+  bottom: 10,
+  width: 64,
+  height: 64,
+  borderRadius: 32,
+  backgroundColor: '$cupBrown',
+  shadowColor: '$cupBrown',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.3,
+  shadowRadius: 8,
+  elevation: 8,
+  pressStyle: {
+    opacity: 0.8,
+  },
+});
+
+const CenterButtonInner = styled(View, {
+  name: 'CenterButtonInner',
+  flex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+});
 
 // Icon component with minimal design
 const TabIcon = ({ name, focused, color }: { name: string; focused: boolean; color: string }) => {
@@ -46,11 +104,12 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({
   descriptors,
   navigation,
 }) => {
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
-      <View style={styles.tabBarContainer}>
+    <Container paddingBottom={insets.bottom}>
+      <TabBarWrapper>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const label = options.tabBarLabel ?? options.title ?? route.name;
@@ -72,110 +131,37 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({
           if (isAddCoffee) {
             // Special center button
             return (
-              <View key={index} style={styles.centerButtonContainer}>
-                <TouchableOpacity
-                  onPress={onPress}
-                  style={styles.centerButton}
-                  activeOpacity={0.8}
-                >
-                  <View style={styles.centerButtonInner}>
+              <CenterButtonContainer key={index}>
+                <CenterButton unstyled onPress={onPress}>
+                  <CenterButtonInner>
                     <TabIcon 
                       name={route.name} 
                       focused={true} 
-                      color={IOSColors.systemBackground} 
+                      color={theme.background.val} 
                     />
-                  </View>
-                </TouchableOpacity>
-              </View>
+                  </CenterButtonInner>
+                </CenterButton>
+              </CenterButtonContainer>
             );
           }
 
           return (
-            <TouchableOpacity
-              key={index}
-              onPress={onPress}
-              style={styles.tab}
-              activeOpacity={0.7}
-            >
+            <TabButton key={index} unstyled onPress={onPress}>
               <TabIcon
                 name={route.name}
                 focused={isFocused}
-                color={isFocused ? IOSColors.systemBrown : IOSColors.secondaryLabel}
+                color={isFocused ? theme.cupBrown?.val || theme.brown9.val : theme.gray9.val}
               />
-              <Text
-                style={[
-                  styles.tabLabel,
-                  { color: isFocused ? IOSColors.systemBrown : IOSColors.secondaryLabel },
-                ]}
+              <TabLabel
+                color={isFocused ? theme.cupBrown?.val || theme.brown9.val : theme.gray9.val}
               >
                 {label as string}
-              </Text>
-            </TouchableOpacity>
+              </TabLabel>
+            </TabButton>
           );
         })}
-      </View>
-    </View>
+      </TabBarWrapper>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: IOSColors.systemBackground,
-    borderTopWidth: IOSLayout.borderWidthThin,
-    borderTopColor: IOSColors.separator,
-  },
-  tabBarContainer: {
-    flexDirection: 'row',
-    height: IOSLayout.tabBarHeight,
-    alignItems: 'center',
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: IOSSpacing.xs,
-  },
-  tabLabel: {
-    ...IOSTypography.caption2,
-    marginTop: IOSSpacing.xxxs,
-  },
-  centerButtonContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  centerButton: {
-    position: 'absolute',
-    bottom: 10,
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: IOSColors.systemBrown,
-    ...IOSShadows.large,
-    ...Platform.select({
-      ios: {
-        shadowColor: IOSColors.systemBrown,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 8,
-      },
-    }),
-  },
-  centerButtonInner: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  plusIcon: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    fontSize: 16,
-    fontWeight: '700' as const,
-    color: IOSColors.systemBackground,
-  },
-});

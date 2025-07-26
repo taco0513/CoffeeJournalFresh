@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, RefreshControl, Alert, TouchableOpacity } from 'react-native';
+import { SafeAreaView, RefreshControl, Alert } from 'react-native';
 import {
   View,
   Text,
@@ -546,36 +546,39 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
       
       <AnimatePresence>
         {currentRoasters.map((roaster, index) => (
-          <TouchableOpacity key={roaster.id} activeOpacity={0.8}>
-            <RoasterCard
-              animation="lazy"
-              enterStyle={{
-                opacity: 0,
-                scale: 0.95,
-                y: 20 + (index * 5),
-              }}
-              animateOnly={['opacity', 'transform']}
-            >
-              <RoasterHeader>
-                <RoasterName numberOfLines={1}>
-                  {activeTab === 'korea' && roaster.nameKorean ? roaster.nameKorean : roaster.name}
-                </RoasterName>
-                <RoasterLocation>{roaster.location}</RoasterLocation>
-              </RoasterHeader>
-              
-              <RoasterDescription numberOfLines={2}>
-                {roaster.description}
-              </RoasterDescription>
-              
-              <SpecialtyContainer>
-                {roaster.specialty.slice(0, 3).map((spec, idx) => (
-                  <SpecialtyTag key={idx}>
-                    <SpecialtyText>{spec}</SpecialtyText>
-                  </SpecialtyTag>
-                ))}
-              </SpecialtyContainer>
-            </RoasterCard>
-          </TouchableOpacity>
+          <RoasterCard
+            key={roaster.id}
+            animation="lazy"
+            enterStyle={{
+              opacity: 0,
+              scale: 0.95,
+              y: 20 + (index * 5),
+            }}
+            animateOnly={['opacity', 'transform']}
+            pressStyle={{ scale: 0.98 }}
+            onPress={() => {
+              // Handle roaster selection if needed
+            }}
+          >
+            <RoasterHeader>
+              <RoasterName numberOfLines={1}>
+                {activeTab === 'korea' && roaster.nameKorean ? roaster.nameKorean : roaster.name}
+              </RoasterName>
+              <RoasterLocation>{roaster.location}</RoasterLocation>
+            </RoasterHeader>
+            
+            <RoasterDescription numberOfLines={2}>
+              {roaster.description}
+            </RoasterDescription>
+            
+            <SpecialtyContainer>
+              {roaster.specialty.slice(0, 3).map((spec, idx) => (
+                <SpecialtyTag key={idx}>
+                  <SpecialtyText>{spec}</SpecialtyText>
+                </SpecialtyTag>
+              ))}
+            </SpecialtyContainer>
+          </RoasterCard>
         ))}
       </AnimatePresence>
     </ContentSection>

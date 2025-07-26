@@ -3,7 +3,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -288,9 +287,9 @@ const CoffeeInfoScreenTamagui = () => {
                     placeholder="예: 블루보틀, 커피리브레"
                     suggestions={cafeSuggestions}
                     style={{
-                      backgroundColor: '#F5F5F5',
+                      backgroundColor: '$backgroundStrong',
                       borderWidth: 1,
-                      borderColor: '#E0E0E0',
+                      borderColor: '$borderColor',
                       borderRadius: 8,
                       paddingHorizontal: 16,
                       height: 44,
@@ -309,9 +308,9 @@ const CoffeeInfoScreenTamagui = () => {
                     placeholder="예: 에티오피아 예가체프, 콜롬비아 수프리모"
                     suggestions={coffeeNameSuggestions}
                     style={{
-                      backgroundColor: '#F5F5F5',
+                      backgroundColor: '$backgroundStrong',
                       borderWidth: 1,
-                      borderColor: '#E0E0E0',
+                      borderColor: '$borderColor',
                       borderRadius: 8,
                       paddingHorizontal: 16,
                       height: 44,
@@ -391,9 +390,9 @@ const CoffeeInfoScreenTamagui = () => {
                           placeholder="예: 에티오피아, 콜롬비아"
                           suggestions={originSuggestions}
                           style={{
-                            backgroundColor: '#F5F5F5',
+                            backgroundColor: '$backgroundStrong',
                             borderWidth: 1,
-                            borderColor: '#E0E0E0',
+                            borderColor: '$borderColor',
                             borderRadius: 8,
                             paddingHorizontal: 16,
                             height: 44,
@@ -412,9 +411,9 @@ const CoffeeInfoScreenTamagui = () => {
                           placeholder="예: 아라비카, 게이샤"
                           suggestions={varietySuggestions}
                           style={{
-                            backgroundColor: '#F5F5F5',
+                            backgroundColor: '$backgroundStrong',
                             borderWidth: 1,
-                            borderColor: '#E0E0E0',
+                            borderColor: '$borderColor',
                             borderRadius: 8,
                             paddingHorizontal: 16,
                             height: 44,
@@ -457,28 +456,21 @@ const CoffeeInfoScreenTamagui = () => {
 
           {/* Bottom Button */}
           <BottomContainer>
-            <TouchableOpacity
-              style={{
-                backgroundColor: isValid ? '#007AFF' : '#C7C7CC',
-                paddingVertical: 16,
-                borderRadius: 12,
-                alignItems: 'center',
-                flex: 1,
-              }}
+            <Button
+              backgroundColor={isValid ? '$cupBlue' : '$gray8'}
+              paddingVertical="$md"
+              borderRadius="$3"
+              alignItems="center"
+              flex={1}
               onPress={handleNext}
               disabled={!isValid}
-              activeOpacity={0.7}
+              pressStyle={{ scale: 0.98 }}
+              color="white"
+              fontSize="$5"
+              fontWeight="600"
             >
-              <Text 
-                style={{
-                  color: 'white',
-                  fontSize: 17,
-                  fontWeight: '600',
-                }}
-              >
-                다음
-              </Text>
-            </TouchableOpacity>
+              다음
+            </Button>
           </BottomContainer>
         </YStack>
 

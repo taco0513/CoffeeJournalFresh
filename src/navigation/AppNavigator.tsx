@@ -2,10 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { Text, View, TouchableOpacity, Pressable } from 'react-native';
+import { Text, View, useTheme } from 'tamagui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUserStore } from '../stores/useUserStore';
-import { IOSColors, IOSLayout, IOSTypography, IOSShadows } from '../styles/ios-hig-2024';
 import StatusBadge from '../components/StatusBadge';
 import { TabBarIcon } from '../components/TabBarIcon';
 import ScreenContextService from '../services/ScreenContextService';
@@ -41,7 +40,6 @@ import {
   
   // Analytics & Media
   StatsScreen,
-  // HistoryScreen,
   PhotoGalleryScreen,
   PhotoViewerScreen,
   SearchScreen,
@@ -58,8 +56,8 @@ import {
   PerformanceTestingScreen,
 } from '../screens-tamagui';
 
-// Import the actual HistoryScreen
-import HistoryScreen from '../screens-tamagui/analytics/HistoryScreen';
+// Import dedicated Navigation HistoryScreen
+import NavigationHistoryScreen from '../screens-tamagui/analytics/NavigationHistoryScreen';
 
 // Admin screens (not yet migrated to Tamagui)
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
@@ -161,29 +159,32 @@ function TastingFlow() {
 
 // 히스토리 스택 네비게이터
 function HistoryStack() {
+  const theme = useTheme();
+  
   return (
     <Stack.Navigator
-      initialRouteName="HistoryMain"
+      initialRouteName="Profile"
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: theme.background.val,
           borderBottomWidth: 0.5,
-          borderBottomColor: '#E0E0E0',
+          borderBottomColor: theme.borderColor.val,
         },
         headerTitleStyle: {
           fontSize: 17,
           fontWeight: '600',
+          color: theme.color.val,
         },
-        headerTintColor: '#007AFF',
+        headerTintColor: theme.blue10.val,
         ...commonHeaderOptions,
       }}
     >
       <Stack.Screen 
-        name="HistoryMain" 
-        component={HistoryScreen}
+        name="Profile" 
+        component={NavigationHistoryScreen}
         options={{
-          title: '테이스팅 기록',
+          title: '내 프로필',
         }}
       />
       <Stack.Screen 
@@ -214,28 +215,31 @@ function HistoryStack() {
 
 // 프로필 스택 네비게이터
 function ProfileStack() {
+  const theme = useTheme();
+  
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: theme.background.val,
           borderBottomWidth: 0.5,
-          borderBottomColor: '#E0E0E0',
+          borderBottomColor: theme.borderColor.val,
         },
         headerTitleStyle: {
           fontSize: 17,
           fontWeight: '600',
+          color: theme.color.val,
         },
-        headerTintColor: '#007AFF',
+        headerTintColor: theme.blue10.val,
         ...commonHeaderOptions,
       }}
     >
       <Stack.Screen 
-        name="ProfileMain" 
+        name="SettingsMain" 
         component={ProfileScreen}
         options={{
-          title: '내 프로필',
+          title: '세팅',
         }}
       />
       <Stack.Screen 
@@ -345,26 +349,32 @@ function MainTabs() {
   const user = useUserStore((state) => state.user);
   const isAdmin = user?.email === 'hello@zimojin.com' || user?.isModerator === true;
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
 
   return (
     <Tab.Navigator
+      detachInactiveScreens={true}
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: theme.background.val,
           borderBottomWidth: 0.5,
-          borderBottomColor: '#E0E0E0',
+          borderBottomColor: theme.borderColor.val,
         },
         headerTitleStyle: {
           fontSize: 17,
           fontWeight: '600',
+          color: theme.color.val,
         },
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: '#8E8E93',
+        tabBarActiveTintColor: theme.blue10.val,
+        tabBarInactiveTintColor: theme.gray8.val,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: theme.background.val,
           borderTopWidth: 1,
-          borderTopColor: '#E0E0E0',
+          borderTopColor: theme.borderColor.val,
+          paddingBottom: 35,
+          height: 95,
+          marginBottom: 10,
         },
         ...commonHeaderOptions,
       }}
@@ -416,10 +426,10 @@ function MainTabs() {
         />
       )}
       <Tab.Screen 
-        name="History" 
+        name="UserProfile" 
         component={HistoryStack}
         options={{
-          tabBarLabel: '기록',
+          tabBarLabel: '프로필',
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="History" focused={focused} color={color} />
@@ -427,10 +437,10 @@ function MainTabs() {
         }}
       />
       <Tab.Screen 
-        name="Profile" 
+        name="Settings" 
         component={ProfileStack}
         options={{
-          tabBarLabel: '프로필',
+          tabBarLabel: '세팅',
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="Profile" focused={focused} color={color} />
@@ -443,20 +453,23 @@ function MainTabs() {
 
 // 관리자 스택 네비게이터
 function AdminStack() {
+  const theme = useTheme();
+  
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: theme.background.val,
           borderBottomWidth: 0.5,
-          borderBottomColor: '#E0E0E0',
+          borderBottomColor: theme.borderColor.val,
         },
         headerTitleStyle: {
           fontSize: 17,
           fontWeight: '600',
+          color: theme.color.val,
         },
-        headerTintColor: '#007AFF',
+        headerTintColor: theme.blue10.val,
         ...commonHeaderOptions,
       }}
     >
@@ -596,8 +609,8 @@ export default function AppNavigator() {
   
   if (!isInitialized || isFirstLaunch === null) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
-        <Text style={{ fontSize: 18, color: '#333' }}>Loading CupNote...</Text>
+      <View flex={1} justifyContent="center" alignItems="center" backgroundColor="$background">
+        <Text fontSize="$5" color="$color">Loading CupNote...</Text>
       </View>
     );
   }

@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Button, Text, styled } from 'tamagui';
 import { useDevStore } from '../stores/useDevStore';
 import { useFeedbackStore } from '../stores/useFeedbackStore';
-import { HIGColors } from '../styles/common';
 
 const StatusBadge = () => {
   const { isDeveloperMode, toggleDeveloperMode } = useDevStore();
@@ -28,14 +27,14 @@ const StatusBadge = () => {
     }
   };
 
-  // 현재 상태에 따른 배지 표시
-  const getBadgeStyle = () => {
+  // 현재 상태에 따른 배지 색상
+  const getBadgeColor = () => {
     if (isDeveloperMode && isBetaUser) {
-      return styles.bothBadge;
+      return '$purple9';
     } else if (isDeveloperMode) {
-      return styles.developerBadge;
+      return '$red9';
     } else {
-      return styles.betaBadge;
+      return '$orange9';
     }
   };
 
@@ -50,41 +49,22 @@ const StatusBadge = () => {
   };
 
   return (
-    <TouchableOpacity
+    <Button
       onPress={handleTogglePress}
-      activeOpacity={0.7}
-      style={[styles.badge, getBadgeStyle()]}
+      backgroundColor={getBadgeColor()}
+      paddingHorizontal="$1"
+      paddingVertical="$1"
+      borderRadius="$1"
+      borderWidth={0}
+      pressStyle={{ opacity: 0.7 }}
+      fontSize="$1"
+      fontWeight="700"
+      color="white"
+      letterSpacing={0.5}
     >
-      <Text style={styles.badgeText}>{getBadgeText()}</Text>
-    </TouchableOpacity>
+      {getBadgeText()}
+    </Button>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-  badge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  developerBadge: {
-    backgroundColor: HIGColors.red,
-  },
-  betaBadge: {
-    backgroundColor: HIGColors.orange,
-  },
-  bothBadge: {
-    backgroundColor: HIGColors.purple,
-  },
-  badgeText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: HIGColors.white,
-    letterSpacing: 0.5,
-  },
-});
 
 export default StatusBadge;

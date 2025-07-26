@@ -227,6 +227,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
 
   setTestUser: async () => {
+    console.log('🔧 setTestUser called');
     // 개발자 테스트용 로그인 바이패스
     const testUser: UserProfile = {
       id: '00000000-0000-4000-8000-000000000001',
@@ -260,21 +261,26 @@ export const useUserStore = create<UserStore>((set, get) => ({
       updatedAt: new Date(),
     };
 
-    console.log('Setting test user:', testUser);
+    console.log('🔧 Test user created:', testUser.username);
     
     // Store in AsyncStorage for persistence
     try {
+      console.log('🔧 Storing test user in AsyncStorage...');
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(testUser));
+      console.log('🔧 Test user stored successfully');
     } catch (error) {
-      console.error('Failed to store test user:', error);
+      console.error('🔧 Failed to store test user:', error);
+      throw error; // Re-throw to catch in SignInScreen
     }
     
+    console.log('🔧 Setting state...');
     set({
       currentUser: testUser,
       user: testUser, // Alias for compatibility
       isAuthenticated: true, // 개발자 모드에서는 인증된 상태
       isLoading: false,
     });
+    console.log('🔧 State set successfully - isAuthenticated: true');
   },
 
 

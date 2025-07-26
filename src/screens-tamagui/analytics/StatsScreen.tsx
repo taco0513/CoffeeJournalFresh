@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { SafeAreaView, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import {
   View,
   Text,
@@ -301,10 +301,10 @@ const ModePercentageFill = styled(View, {
   variants: {
     type: {
       cafe: {
-        backgroundColor: '#FF6B35',
+        backgroundColor: '$orange9',
       },
       homeCafe: {
-        backgroundColor: '#4CAF50',
+        backgroundColor: '$green9',
       },
     },
   } as const,
@@ -547,12 +547,12 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
   if (loading) {
     return (
       <Container>
-        <SafeAreaView style={{ flex: 1 }}>
+        <YStack flex={1}>
           <LoadingContainer>
             <Spinner size="large" color="$cupBlue" />
             <LoadingText>통계를 불러오는 중...</LoadingText>
           </LoadingContainer>
-        </SafeAreaView>
+        </YStack>
       </Container>
     );
   }
@@ -560,7 +560,7 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
   if (!stats || stats.totalTastings === 0) {
     return (
       <Container>
-        <SafeAreaView style={{ flex: 1 }}>
+        <YStack flex={1}>
           {/* Navigation Bar */}
           {!hideNavBar && (
             <NavigationBar>
@@ -591,7 +591,7 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
               <AnimatePresence>
                 {insights.map((insight, index) => (
                   <View
-                    key={`empty-state-insight-${index}-${insight.title}`}
+                    key={`empty-state-insight-${index}-${insight.title}-${Math.random().toString(36).substr(2, 9)}`}
                     animation="lazy"
                     enterStyle={{
                       opacity: 0,
@@ -607,14 +607,14 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
 
             <BottomSpacer />
           </ContentScrollView>
-        </SafeAreaView>
+        </YStack>
       </Container>
     );
   }
 
   return (
     <Container>
-      <SafeAreaView style={{ flex: 1 }}>
+      <YStack flex={1}>
         {/* Navigation Bar */}
         {!hideNavBar && (
           <NavigationBar>
@@ -769,7 +769,7 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
               <SectionTitle>30일 인사이트</SectionTitle>
               {insights.map((insight, index) => (
                 <View
-                  key={`data-state-insight-${index}-${insight.title}`}
+                  key={`data-state-insight-${index}-${insight.title}-${Math.random().toString(36).substr(2, 9)}`}
                   animation="lazy"
                   enterStyle={{
                     opacity: 0,
@@ -785,7 +785,7 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
             <BottomSpacer />
           </AnimatePresence>
         </ContentScrollView>
-      </SafeAreaView>
+      </YStack>
     </Container>
   );
 };

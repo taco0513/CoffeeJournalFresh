@@ -367,11 +367,12 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
       </StatsGrid>
 
       {nextAchievement && (
-        <NextAchievementCard>
+        <NextAchievementCard key={`next-achievement-${nextAchievement.id}-${Date.now()}`}>
           <NextAchievementName>🎯 다음 목표</NextAchievementName>
           <AchievementCard 
             achievement={nextAchievement}
             compact
+            key={`next-achievement-card-${nextAchievement.id}-${Date.now()}`}
           />
         </NextAchievementCard>
       )}
@@ -386,9 +387,9 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
         contentContainerStyle={{ paddingRight: '$lg' }}
       >
         <XStack gap="$sm">
-          {FILTER_OPTIONS.map((filter) => (
+          {FILTER_OPTIONS.map((filter, index) => (
             <FilterPill
-              key={filter.key}
+              key={`filter-pill-${filter.key}-${index}`}
               active={selectedFilter === filter.key}
               onPress={() => setSelectedFilter(filter.key)}
               unstyled
@@ -427,22 +428,27 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
     return (
       <AchievementList>
         <AnimatePresence>
-          {filteredAchievements.map((achievement, index) => (
-            <View
-              key={achievement.id}
-              animation="lazy"
-              enterStyle={{
-                opacity: 0,
-                y: 30 + (index * 10), // Staggered entrance
-                scale: 0.9,
-              }}
-              animateOnly={['opacity', 'transform']}
-            >
-              <AchievementCard
-                achievement={achievement}
-              />
-            </View>
-          ))}
+          {filteredAchievements.map((achievement, index) => {
+            // Generate ultra-unique key with multiple identifiers
+            const uniqueKey = `achievement-gallery-${achievement.id || 'no-id'}-${achievement.title || 'no-title'}-${index}-${selectedFilter}-${achievement.rarity || 'no-rarity'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            
+            return (
+              <View
+                key={uniqueKey}
+                animation="lazy"
+                enterStyle={{
+                  opacity: 0,
+                  y: 30 + (index * 10), // Staggered entrance
+                  scale: 0.9,
+                }}
+                animateOnly={['opacity', 'transform']}
+              >
+                <AchievementCard
+                  achievement={achievement}
+                />
+              </View>
+            );
+          })}
         </AnimatePresence>
       </AchievementList>
     );

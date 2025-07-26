@@ -127,6 +127,17 @@ const nextConfig = {
       };
     }
 
+    // Fix for ChunkLoadError in development
+    if (dev) {
+      config.optimization = {
+        ...config.optimization,
+        runtimeChunk: false,
+        splitChunks: {
+          chunks: 'async',
+        },
+      };
+    }
+
     return config;
   },
 
