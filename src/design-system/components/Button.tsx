@@ -82,98 +82,98 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     ...Layout.shadow.sm,
-  },
+},
 
   // Size variants
   size_sm: {
     height: Component.button.height.sm,
     paddingHorizontal: Component.button.padding.sm.horizontal,
     paddingVertical: Component.button.padding.sm.vertical,
-  },
+},
   size_md: {
     height: Component.button.height.md,
     paddingHorizontal: Component.button.padding.md.horizontal,
     paddingVertical: Component.button.padding.md.vertical,
-  },
+},
   size_lg: {
     height: Component.button.height.lg,
     paddingHorizontal: Component.button.padding.lg.horizontal,
     paddingVertical: Component.button.padding.lg.vertical,
-  },
+},
   size_xl: {
     height: Component.button.height.xl,
     paddingHorizontal: Component.button.padding.xl.horizontal,
     paddingVertical: Component.button.padding.xl.vertical,
-  },
+},
 
   // Variant styles
   variant_primary: {
     backgroundColor: Colors.primary[500],
     borderWidth: 0,
-  },
+},
   variant_secondary: {
     backgroundColor: Colors.gray[100],
     borderWidth: 0,
-  },
+},
   variant_outline: {
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: Colors.primary[500],
-  },
+},
   variant_ghost: {
     backgroundColor: 'transparent',
     borderWidth: 0,
-  },
+},
   variant_coffee: {
     backgroundColor: Colors.semantic.coffee,
     borderWidth: 0,
-  },
+},
 
   // Text styles
   text: {
     fontFamily: Typography.fontFamily.system,
     fontWeight: Typography.fontWeight.semibold,
     textAlign: 'center',
-  },
+},
   
   text_sm: {
     fontSize: Typography.fontSize.sm,
-  },
+},
   text_md: {
     fontSize: Typography.fontSize.base,
-  },
+},
   text_lg: {
     fontSize: Typography.fontSize.lg,
-  },
+},
   text_xl: {
     fontSize: Typography.fontSize.xl,
-  },
+},
 
   // Text variant styles
   text_primary: {
     color: Colors.text.inverse,
-  },
+},
   text_secondary: {
     color: Colors.text.primary,
-  },
+},
   text_outline: {
     color: Colors.primary[500],
-  },
+},
   text_ghost: {
     color: Colors.primary[500],
-  },
+},
   text_coffee: {
     color: Colors.text.inverse,
-  },
+},
 
   // State styles
   fullWidth: {
     width: '100%',
-  },
+},
   disabled: {
     opacity: Layout.opacity.disabled,
-  },
+},
   textDisabled: {
     color: Colors.text.disabled,
-  },
+},
 });

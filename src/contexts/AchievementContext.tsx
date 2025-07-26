@@ -17,7 +17,7 @@ export const useAchievementNotification = () => {
   const context = useContext(AchievementContext);
   if (!context) {
     throw new Error('useAchievementNotification must be used within an AchievementProvider');
-  }
+}
   return context;
 };
 
@@ -42,8 +42,8 @@ export const AchievementProvider: React.FC<AchievementProviderProps> = ({ childr
       case 'common':
       default:
         return 'subtle';
-    }
-  };
+  }
+};
 
   const showNextAchievement = useCallback(() => {
     if (achievementQueue.length > 0 && !isVisible) {
@@ -56,8 +56,8 @@ export const AchievementProvider: React.FC<AchievementProviderProps> = ({ childr
       
       // Remove from queue
       setAchievementQueue(prev => prev.slice(1));
-    }
-  }, [achievementQueue, isVisible]);
+  }
+}, [achievementQueue, isVisible]);
 
   const showAchievementNotification = useCallback(
     (achievement: Achievement, customCelebrationType?: 'subtle' | 'normal' | 'epic') => {
@@ -66,12 +66,12 @@ export const AchievementProvider: React.FC<AchievementProviderProps> = ({ childr
       if (isVisible) {
         // Add to queue if notification is already showing
         setAchievementQueue(prev => [...prev, achievement]);
-      } else {
+    } else {
         setCurrentAchievement(achievement);
         setCelebrationType(celebType);
         setIsVisible(true);
-      }
-    },
+    }
+  },
     [isVisible]
   );
 
@@ -81,7 +81,7 @@ export const AchievementProvider: React.FC<AchievementProviderProps> = ({ childr
     if (achievements.length === 1) {
       showAchievementNotification(achievements[0]);
       return;
-    }
+  }
     
     // Show first achievement immediately
     const [first, ...rest] = achievements;
@@ -89,7 +89,7 @@ export const AchievementProvider: React.FC<AchievementProviderProps> = ({ childr
     
     // Add rest to queue
     setAchievementQueue(prev => [...prev, ...rest]);
-  }, [showAchievementNotification]);
+}, [showAchievementNotification]);
 
   const handleDismiss = useCallback(() => {
     setIsVisible(false);
@@ -98,8 +98,8 @@ export const AchievementProvider: React.FC<AchievementProviderProps> = ({ childr
     // Show next achievement in queue after a short delay
     setTimeout(() => {
       showNextAchievement();
-    }, 500);
-  }, [showNextAchievement]);
+  }, 500);
+}, [showNextAchievement]);
 
   const handleReplay = useCallback(() => {
     if (currentAchievement) {
@@ -107,15 +107,15 @@ export const AchievementProvider: React.FC<AchievementProviderProps> = ({ childr
       setIsVisible(false);
       setTimeout(() => {
         setIsVisible(true);
-      }, 300);
-    }
-  }, [currentAchievement]);
+    }, 300);
+  }
+}, [currentAchievement]);
 
   const contextValue: AchievementContextType = {
     showAchievementNotification,
     showMultipleAchievements,
     isNotificationVisible: isVisible,
-  };
+};
 
   return (
     <AchievementContext.Provider value={contextValue}>

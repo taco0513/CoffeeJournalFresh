@@ -28,6 +28,7 @@ import {
 import { HIGColors, HIGConstants } from '../../styles/common';
 import LanguageSwitch from '../LanguageSwitch';
 
+import { Logger } from '../../services/LoggingService';
 /**
  * Comprehensive I18n Validation Screen
  * Tests language detection, switching, market configuration, and dual-market functionality
@@ -37,7 +38,7 @@ interface ValidationResult {
   test: string;
   status: 'pass' | 'fail' | 'warning';
   message: string;
-  details?: any;
+  details?: Record<string, string | number | boolean>;
 }
 
 const I18nValidationScreen: React.FC = () => {
@@ -45,13 +46,13 @@ const I18nValidationScreen: React.FC = () => {
   const [validationResults, setValidationResults] = useState<ValidationResult[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [forceUSMarket, setForceUSMarket] = useState(false);
-  const [deviceInfo, setDeviceInfo] = useState<any>({});
-  const [marketData, setMarketData] = useState<any>({});
+  const [deviceInfo, setDeviceInfo] = useState<unknown>({});
+  const [marketData, setMarketData] = useState<unknown>({});
 
   useEffect(() => {
     loadDeviceInfo();
     loadMarketData();
-  }, [forceUSMarket]);
+}, [forceUSMarket]);
 
   /**
    * Load device and locale information
@@ -67,12 +68,12 @@ const I18nValidationScreen: React.FC = () => {
         isKorean: isKorean(),
         i18nLanguage: i18n.language,
         forceUSMarket,
-      };
+    };
       setDeviceInfo(deviceInfo);
-    } catch (error) {
-      console.error('Failed to load device info:', error);
-    }
-  };
+  } catch (error) {
+      Logger.error('Failed to load device info:', 'component', { component: 'I18nValidationScreen', error: error });
+  }
+};
 
   /**
    * Load market-specific data
@@ -88,12 +89,12 @@ const I18nValidationScreen: React.FC = () => {
         roasters: getMarketRoasters(),
         origins: getMarketOrigins(),
         flavorProfiles: getMarketFlavorProfiles(),
-      };
+    };
       setMarketData(marketData);
-    } catch (error) {
-      console.error('Failed to load market data:', error);
-    }
-  };
+  } catch (error) {
+      Logger.error('Failed to load market data:', 'component', { component: 'I18nValidationScreen', error: error });
+  }
+};
 
   /**
    * Run comprehensive validation tests
@@ -118,8 +119,8 @@ const I18nValidationScreen: React.FC = () => {
           executionTime: result.executionTime,
           errorMessage: result.errorMessage,
           ...result.details
-        }
-      }));
+      }
+    }));
       
       setValidationResults(results);
       
@@ -129,8 +130,8 @@ const I18nValidationScreen: React.FC = () => {
         `${suiteResults.summary}\n\nRecommendations:\n${suiteResults.recommendations.slice(0, 3).join('\n')}`,
         [{ text: 'OK' }]
       );
-    } catch (error) {
-      console.error('Validation suite error:', error);
+  } catch (error) {
+      Logger.error('Validation suite error:', 'component', { component: 'I18nValidationScreen', error: error });
       
       // Fallback to basic test if suite fails
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -139,7 +140,7 @@ const I18nValidationScreen: React.FC = () => {
         status: 'fail',
         message: `Validation suite failed: ${errorMessage}`,
         details: { error: errorMessage }
-      }];
+    }];
       
       setValidationResults(results);
       
@@ -148,8 +149,8 @@ const I18nValidationScreen: React.FC = () => {
         `Validation suite encountered an error: ${errorMessage}`,
         [{ text: 'OK' }]
       );
-    }
-  };
+  }
+};
 
   /**
    * Test dual-market functionality
@@ -174,11 +175,11 @@ const I18nValidationScreen: React.FC = () => {
             await runValidationTests();
             
             Alert.alert('Dual-Market Test Complete', 'Check results for both markets');
-          }
         }
+      }
       ]
     );
-  };
+};
 
   /**
    * Reset all i18n settings
@@ -200,14 +201,14 @@ const I18nValidationScreen: React.FC = () => {
               await loadDeviceInfo();
               await loadMarketData();
               Alert.alert('Settings Reset', 'I18n settings have been reset to defaults');
-            } catch (error) {
+          } catch (error) {
               Alert.alert('Error', `Failed to reset settings: ${error instanceof Error ? error.message : 'Unknown error'}`);
-            }
           }
         }
+      }
       ]
     );
-  };
+};
 
   return (
     <ScrollView style={styles.container}>
@@ -246,7 +247,7 @@ const I18nValidationScreen: React.FC = () => {
           <Text style={styles.infoText}>i18n Language: {deviceInfo.i18nLanguage}</Text>
           <Text style={styles.infoText}>Korean Market: {deviceInfo.isKoreanMarket ? 'Yes' : 'No'}</Text>
           <Text style={styles.infoText}>Beta Market: {deviceInfo.isBetaMarket ? 'Yes' : 'No'}</Text>
-          <Text style={styles.infoText}>Device Locales: {deviceInfo.locales?.map((l: any) => `${l.languageCode}-${l.countryCode}`).join(', ')}</Text>
+          <Text style={styles.infoText}>Device Locales: {deviceInfo.locales?.map((l: unknown) => `${l.languageCode}-${l.countryCode}`).join(', ')}</Text>
         </View>
       </View>
 
@@ -257,7 +258,7 @@ const I18nValidationScreen: React.FC = () => {
           <Text style={styles.infoText}>Market: {marketData.marketConfig?.market}</Text>
           <Text style={styles.infoText}>Language: {marketData.marketConfig?.language}</Text>
           <Text style={styles.infoText}>Currency: {marketData.marketConfig?.currency}</Text>
-          <Text style={styles.infoText}>Sample Roasters: {marketData.roasters?.slice(0, 3).join(', ')}</Text>
+          <Text style={styles.infoText}>Sample Roasters: {(marketData.roasters as RoasterData[])?.slice(0, 3).join(', ')}</Text>
           <Text style={styles.infoText}>Sample Origins: {marketData.origins?.slice(0, 3).join(', ')}</Text>
         </View>
       </View>
@@ -327,7 +328,7 @@ const I18nValidationScreen: React.FC = () => {
           <Text style={styles.translationExample}>Home: {t('home')}</Text>
           <Text style={styles.translationExample}>Journal: {t('journal')}</Text>
           <Text style={styles.translationExample}>Profile: {t('profile')}</Text>
-          <Text style={styles.translationExample}>Coffee Journal: {t('coffeeJournal')}</Text>
+          <Text style={styles.translationExample}>CupNote: {t('coffeeJournal')}</Text>
           <Text style={styles.translationExample}>Start New Tasting: {t('startNewTasting')}</Text>
           <Text style={styles.translationExample}>Cafe Mode: {t('cafeMode')}</Text>
           <Text style={styles.translationExample}>Home Cafe Mode: {t('homeCafeMode')}</Text>
@@ -342,125 +343,125 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   header: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   headerTitle: {
     fontSize: HIGConstants.FONT_SIZE_H1,
     fontWeight: '700',
     color: HIGColors.white,
     marginBottom: 4,
-  },
+},
   headerSubtitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.white,
     opacity: 0.9,
-  },
+},
   section: {
     padding: HIGConstants.SPACING_LG,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray4,
-  },
+},
   sectionTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   toggleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
+},
   toggleLabel: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
-  },
+},
   infoContainer: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
-  },
+},
   infoText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     marginBottom: 4,
     fontFamily: 'Menlo',
-  },
+},
   buttonContainer: {
     gap: HIGConstants.SPACING_MD,
-  },
+},
   button: {
     paddingVertical: HIGConstants.SPACING_MD,
     paddingHorizontal: HIGConstants.SPACING_LG,
     borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
-  },
+},
   primaryButton: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   secondaryButton: {
     backgroundColor: HIGColors.systemGray5,
     borderWidth: 1,
     borderColor: HIGColors.systemGray4,
-  },
+},
   dangerButton: {
     backgroundColor: HIGColors.systemRed,
-  },
+},
   buttonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.white,
-  },
+},
   secondaryButtonText: {
     color: HIGColors.label,
-  },
+},
   resultCard: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_SM,
     borderLeftWidth: 4,
-  },
+},
   resultPass: {
     borderLeftColor: HIGColors.systemGreen,
-  },
+},
   resultWarning: {
     borderLeftColor: HIGColors.systemOrange,
-  },
+},
   resultFail: {
     borderLeftColor: HIGColors.systemRed,
-  },
+},
   resultHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   resultTest: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   resultStatus: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
-  },
+},
   statusPass: {
     color: HIGColors.systemGreen,
-  },
+},
   statusWarning: {
     color: HIGColors.systemOrange,
-  },
+},
   statusFail: {
     color: HIGColors.systemRed,
-  },
+},
   resultMessage: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   resultDetails: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.tertiaryLabel,
@@ -468,17 +469,17 @@ const styles = StyleSheet.create({
     backgroundColor: HIGColors.systemGray6,
     padding: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.cornerRadiusSmall,
-  },
+},
   translationContainer: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
-  },
+},
   translationExample: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
 });
 
 export default I18nValidationScreen;

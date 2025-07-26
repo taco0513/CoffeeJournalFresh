@@ -33,6 +33,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import RealmService from '../../services/realm/RealmService';
 import { ITastingRecord } from '../../services/realm/schemas';
+import { Logger } from '../../services/LoggingService';
 import { useUserStore } from '../../stores/useUserStore';
 
 interface GroupedTastings {
@@ -133,7 +134,7 @@ const ProfileSearchBar = styled(XStack, {
   focusStyle: {
     borderColor: '$cupBlue',
     backgroundColor: '$backgroundFocus',
-  },
+},
 });
 
 const ProfileSearchIcon = styled(Text, {
@@ -161,7 +162,7 @@ const ProfileClearButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const ProfileClearIcon = styled(Text, {
@@ -192,12 +193,12 @@ const ProfileSortButton = styled(Button, {
       true: {
         backgroundColor: '$cupBlue',
         borderColor: '$cupBlue',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const ProfileSortButtonText = styled(Text, {
@@ -208,12 +209,12 @@ const ProfileSortButtonText = styled(Text, {
     active: {
       true: {
         color: 'white',
-      },
+    },
       false: {
         color: '$gray11',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const ProfileAdvancedSearchButton = styled(Button, {
@@ -226,7 +227,7 @@ const ProfileAdvancedSearchButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.98,
-  },
+},
 });
 
 const ProfileAdvancedSearchText = styled(Text, {
@@ -279,11 +280,11 @@ const ProfileTastingCard = styled(Card, {
     opacity: 0,
     scale: 0.95,
     y: 20,
-  },
+},
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$backgroundPress',
-  },
+},
 });
 
 const ProfileCardHeader = styled(XStack, {
@@ -325,15 +326,15 @@ const ProfileMatchScoreContainer = styled(View, {
     score: {
       high: {
         backgroundColor: '$green9',
-      },
+    },
       medium: {
         backgroundColor: '$orange9',
-      },
+    },
       low: {
         backgroundColor: '$red9',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const ProfileMatchScore = styled(Text, {
@@ -371,7 +372,7 @@ const ProfileEmptySubtext = styled(Text, {
 
 const ProfileHistoryScreen: React.FC = () => {
   const theme = useTheme();
-  const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<unknown>>();
   const { currentUser } = useUserStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [allTastings, setAllTastings] = useState<ITastingRecord[]>([]);
@@ -385,36 +386,36 @@ const ProfileHistoryScreen: React.FC = () => {
     const managedLoadData = async () => {
       if (!isActive) return;
       
-      console.log('🔄 ProfileHistoryScreen: Loading data...');
+      Logger.debug('🔄 ProfileHistoryScreen: Loading data...', 'screen', { component: 'ProfileHistoryScreen' });
       await DataLoadingService.loadOnce(
         'profile-history-screen-data',
         () => loadData(),
         'ProfileHistoryScreen'
       );
-    };
+  };
 
     managedLoadData();
 
     // Listen for mock data creation events
     const subscription = DeviceEventEmitter.addListener('mockDataCreated', () => {
-      console.log('🔄 ProfileHistoryScreen: Mock data created event received');
+      Logger.debug('🔄 ProfileHistoryScreen: Mock data created event received', 'screen', { component: 'ProfileHistoryScreen' });
       if (isActive) managedLoadData();
-    });
+  });
 
     return () => {
       isActive = false;
       subscription.remove();
-    };
-  }, []);
+  };
+}, []);
 
   // Refresh data when screen comes into focus (but only if not currently loading)
   useFocusEffect(
     React.useCallback(() => {
       if (!loading) {
-        console.log('🔄 ProfileHistoryScreen: Focus triggered refresh');
+        Logger.debug('🔄 ProfileHistoryScreen: Focus triggered refresh', 'screen', { component: 'ProfileHistoryScreen' });
         loadData();
-      }
-    }, [loading])
+    }
+  }, [loading])
   );
 
   const loadData = async () => {
@@ -424,46 +425,46 @@ const ProfileHistoryScreen: React.FC = () => {
       const realmService = RealmService.getInstance();
       
       if (!realmService.isInitialized) {
-        console.log('⚠️ Realm not initialized in ProfileHistoryScreen, attempting to initialize...');
+        Logger.debug('⚠️ Realm not initialized in ProfileHistoryScreen, attempting to initialize...', 'screen', { component: 'ProfileHistoryScreen' });
         try {
           await realmService.initialize();
-        } catch (initError) {
-          console.error('Failed to initialize Realm:', initError);
-        }
+      } catch (initError) {
+          Logger.error('Failed to initialize Realm:', 'screen', { component: 'ProfileHistoryScreen', error: initError });
       }
+    }
       
       const tastings = await realmService.getTastingRecords({ isDeleted: false });
       const tastingsArray = Array.from(tastings);
       
-      console.log('📊 ProfileHistoryScreen data loaded:', {
+      Logger.debug('📊 ProfileHistoryScreen data loaded:', {
         isInitialized: realmService.isInitialized,
         recordsCount: tastingsArray.length,
         firstRecord: tastingsArray[0]?.coffeeName,
         timestamp: new Date().toISOString(),
-      });
+    });
       
       setAllTastings(tastingsArray);
-    } catch (error) {
-      console.error('Failed to load data:', error);
-    } finally {
+  } catch (error) {
+      Logger.error('Failed to load data:', 'screen', { component: 'ProfileHistoryScreen', error: error });
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+};
 
   // Filter and group tastings
   const groupedTastings = useMemo(() => {
     try {
-      console.log('🔄 Processing ProfileHistory groupedTastings - input count:', allTastings.length);
+      Logger.debug('🔄 Processing ProfileHistory groupedTastings - input count:', 'screen', { component: 'ProfileHistoryScreen', data: allTastings.length });
       
       let results = allTastings.filter(tasting => {
         try {
           const isValid = tasting && tasting.id && tasting.coffeeName;
           return isValid;
-        } catch (error) {
-          console.log('❌ Error during validation:', error, tasting);
+      } catch (error) {
+          Logger.debug('❌ Error during validation:', 'screen', { component: 'ProfileHistoryScreen', error: error, tasting });
           return false;
-        }
-      });
+      }
+    });
       
       // Remove duplicates by ID with enhanced filtering
       const seenIds = new Set();
@@ -474,13 +475,13 @@ const ProfileHistoryScreen: React.FC = () => {
         if (!tasting || !tasting.id) continue;
         
         if (seenIds.has(tasting.id)) {
-          console.log('🔄 Duplicate tasting found, removing:', tasting.id, tasting.coffeeName);
+          Logger.debug('🔄 Duplicate tasting found, removing:', 'screen', { component: 'ProfileHistoryScreen', data: tasting.id, coffeeName: tasting.coffeeName });
           continue;
-        }
+      }
         
         seenIds.add(tasting.id);
         uniqueResults.push(tasting);
-      }
+    }
       
       results = uniqueResults
         .map((tasting, index) => {
@@ -496,15 +497,15 @@ const ProfileHistoryScreen: React.FC = () => {
               matchScoreTotal: tasting.matchScoreTotal,
               // 추가 안정성을 위한 인덱스
               _uniqueIndex: index
-            };
-          } catch (error) {
-            console.error('❌ Error converting tasting to plain object:', error, tasting);
+          };
+        } catch (error) {
+            Logger.error('❌ Error converting tasting to plain object:', 'screen', { component: 'ProfileHistoryScreen', error: error, tasting });
             return {
               ...tasting,
               _uniqueIndex: index
-            };
-          }
-        });
+          };
+        }
+      });
       
       // Apply search query
       if (searchQuery) {
@@ -515,14 +516,14 @@ const ProfileHistoryScreen: React.FC = () => {
           (tasting.cafeName && tasting.cafeName.toLowerCase().includes(query)) ||
           (tasting.origin && tasting.origin.toLowerCase().includes(query))
         );
-      }
+    }
       
       // Sort results
       if (sortBy === 'date') {
         results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-      } else {
+    } else {
         results.sort((a, b) => b.matchScoreTotal - a.matchScoreTotal);
-      }
+    }
       
       // Group by date
       const grouped: GroupedTastings[] = [];
@@ -543,51 +544,51 @@ const ProfileHistoryScreen: React.FC = () => {
       
       if (todayRecords.length > 0) {
         grouped.push({ title: '오늘', data: todayRecords });
-      }
+    }
       if (yesterdayRecords.length > 0) {
         grouped.push({ title: '어제', data: yesterdayRecords });
-      }
+    }
       if (weekRecords.length > 0) {
         grouped.push({ title: '이번 주', data: weekRecords });
-      }
+    }
       if (monthRecords.length > 0) {
         grouped.push({ title: '이번 달', data: monthRecords });
-      }
+    }
       if (olderRecords.length > 0) {
         grouped.push({ title: '이전', data: olderRecords });
-      }
+    }
       
       return grouped;
-    } catch (error) {
-      console.error('Error grouping tastings:', error);
+  } catch (error) {
+      Logger.error('Error grouping tastings:', 'screen', { component: 'ProfileHistoryScreen', error: error });
       return [];
-    }
-  }, [allTastings, searchQuery, sortBy]);
+  }
+}, [allTastings, searchQuery, sortBy]);
 
   const getScoreType = (score: number): 'high' | 'medium' | 'low' => {
     if (score >= 85) return 'high';
     if (score >= 70) return 'medium';
     return 'low';
-  };
+};
 
   const renderTastingItem = useCallback((item: ITastingRecord) => {
     if (!item || !item.id || !item.coffeeName) {
       return null;
-    }
+  }
 
     try {
       const formattedDate = item.createdAt ? item.createdAt.toLocaleDateString('ko-KR', { 
         month: 'long', 
         day: 'numeric' 
-      }) : '날짜 없음';
+    }) : '날짜 없음';
       
       return (
         <ProfileTastingCard
           onPress={() => {
             navigation.navigate('TastingDetail', { 
               tastingId: item.id
-            });
-          }}
+          });
+        }}
           pressStyle={{ scale: 0.98 }}
         >
           <ProfileCardHeader>
@@ -600,16 +601,16 @@ const ProfileHistoryScreen: React.FC = () => {
           <ProfileDateText>{formattedDate}</ProfileDateText>
         </ProfileTastingCard>
       );
-    } catch (error) {
-      console.error('Error rendering tasting item:', error, item);
+  } catch (error) {
+      Logger.error('Error rendering tasting item:', 'screen', { component: 'ProfileHistoryScreen', error: error, item });
       return (
         <ProfileTastingCard>
           <ProfileCoffeeName>Error loading item</ProfileCoffeeName>
           <ProfileRoasterName>ID: {item.id}</ProfileRoasterName>
         </ProfileTastingCard>
       );
-    }
-  }, [navigation]);
+  }
+}, [navigation]);
 
   const renderSection = (section: GroupedTastings, index: number) => {
     return (
@@ -627,7 +628,7 @@ const ProfileHistoryScreen: React.FC = () => {
           ))}
       </YStack>
     );
-  };
+};
 
   if (loading) {
     return (
@@ -650,7 +651,7 @@ const ProfileHistoryScreen: React.FC = () => {
         </SafeAreaView>
       </ProfileContainer>
     );
-  }
+}
 
   return (
     <ProfileContainer>
@@ -673,7 +674,7 @@ const ProfileHistoryScreen: React.FC = () => {
             enterStyle={{
               opacity: 0,
               y: -20,
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
           >
             <ProfileHeaderTitle>총 {allTastings.length}개의 기록</ProfileHeaderTitle>
@@ -685,7 +686,7 @@ const ProfileHistoryScreen: React.FC = () => {
             enterStyle={{
               opacity: 0,
               y: -10,
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
           >
             <ProfileSearchBar>
@@ -710,7 +711,7 @@ const ProfileHistoryScreen: React.FC = () => {
             enterStyle={{
               opacity: 0,
               y: -10,
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
           >
             <ProfileSortButton

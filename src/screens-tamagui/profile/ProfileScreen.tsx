@@ -18,8 +18,8 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useUserStore } from '../../stores/useUserStore';
 import RealmService from '../../services/realm/RealmService';
 import { useDevStore } from '../../stores/useDevStore';
-import StatusBadge from '../../components/StatusBadge';
 
+import { Logger } from '../../services/LoggingService';
 // Tab navigation type definition
 type MainTabParamList = {
   Home: undefined;
@@ -210,7 +210,7 @@ const SignOutText = styled(Text, {
 })
 
 const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true }) => {
-  console.log('🔄 ProfileScreen: Component rendering...');
+  Logger.debug('🔄 ProfileScreen: Component rendering...', 'screen', { component: 'ProfileScreen' });
   
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { currentUser, signOut } = useUserStore();
@@ -219,58 +219,58 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
     joinedDaysAgo: 0,
     achievementCount: 0,
     favoriteRoaster: 'None',
-  });
+});
   const [isLoading, setIsLoading] = useState(true);
 
   const realmService = RealmService.getInstance();
 
   useEffect(() => {
-    console.log('🔄 ProfileScreen: useEffect triggered');
+    Logger.debug('🔄 ProfileScreen: useEffect triggered', 'screen', { component: 'ProfileScreen' });
     const timeoutId = setTimeout(() => {
       loadUserStats();
-    }, 100); // 작은 지연으로 렌더링 블로킹 방지
+  }, 100); // 작은 지연으로 렌더링 블로킹 방지
     
     return () => clearTimeout(timeoutId);
-  }, []);
+}, []);
 
   const loadUserStats = async () => {
     try {
-      console.log('🔄 ProfileScreen: Loading user stats...');
+      Logger.debug('🔄 ProfileScreen: Loading user stats...', 'screen', { component: 'ProfileScreen' });
       
       if (!realmService.isInitialized) {
-        console.log('⚠️ ProfileScreen: Realm not initialized, skipping stats load');
+        Logger.debug('⚠️ ProfileScreen: Realm not initialized, skipping stats load', 'screen', { component: 'ProfileScreen' });
         setIsLoading(false);
         return;
-      }
+    }
       
       const realm = realmService.getRealm();
       if (!realm) {
-        console.log('⚠️ ProfileScreen: No realm instance available');
+        Logger.debug('⚠️ ProfileScreen: No realm instance available', 'screen', { component: 'ProfileScreen' });
         setIsLoading(false);
         return;
-      }
+    }
       
       const tastings = Array.from(realm.objects('TastingRecord').filtered('isDeleted = false'));
-      console.log(`📊 ProfileScreen: Found ${tastings.length} tastings`);
+      Logger.debug(`📊 ProfileScreen: Found ${tastings.length} tastings`, 'screen', { component: 'ProfileScreen' });
       
       if (tastings.length === 0) {
         setStats({
           joinedDaysAgo: 0,
           achievementCount: 0,
           favoriteRoaster: 'None',
-        });
+      });
         setIsLoading(false);
         return;
-      }
+    }
       
       // Find most visited roaster
       const roasterCounts: Record<string, number> = {};
-      tastings.forEach((tasting: any) => {
+      tastings.forEach((tasting: unknown) => {
         const roaster = tasting.roastery;
         if (roaster && typeof roaster === 'string') {
           roasterCounts[roaster] = (roasterCounts[roaster] || 0) + 1;
-        }
-      });
+      }
+    });
       
       const favoriteRoaster = Object.keys(roasterCounts).length > 0 
         ? Object.keys(roasterCounts).reduce((a, b) => 
@@ -279,9 +279,9 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
         : 'None';
 
       // Calculate days since joining (use earliest record)
-      const earliestTasting = tastings.reduce((earliest: any, current: any) => {
+      const earliestTasting = tastings.reduce((earliest: unknown, current: unknown) => {
         return new Date(current.createdAt) < new Date(earliest.createdAt) ? current : earliest;
-      }, tastings[0]);
+    }, tastings[0]);
       
       const joinedDaysAgo = earliestTasting 
         ? Math.floor((Date.now() - new Date(earliestTasting.createdAt).getTime()) / (1000 * 60 * 60 * 24))
@@ -291,23 +291,23 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
         joinedDaysAgo,
         achievementCount: Math.min(tastings.length, 15),
         favoriteRoaster,
-      };
+    };
       
-      console.log('✅ ProfileScreen: Stats loaded:', newStats);
+      Logger.debug('✅ ProfileScreen: Stats loaded:', 'screen', { component: 'ProfileScreen', data: newStats });
       setStats(newStats);
       
-    } catch (error) {
-      console.error('❌ ProfileScreen: Error loading stats:', error);
+  } catch (error) {
+      Logger.error('❌ ProfileScreen: Error loading stats:', 'screen', { component: 'ProfileScreen', error: error });
       // Set default stats on error
       setStats({
         joinedDaysAgo: 0,
         achievementCount: 0,
         favoriteRoaster: 'None',
-      });
-    } finally {
+    });
+  } finally {
       setIsLoading(false);
-    }
-  };
+  }
+};
 
   const handleSignOut = () => {
     Alert.alert(
@@ -320,18 +320,18 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
           style: 'destructive', 
           onPress: async () => {
             try {
-              console.log('🔐 ProfileScreen: Signing out...');
+              Logger.debug('🔐 ProfileScreen: Signing out...', 'screen', { component: 'ProfileScreen' });
               await signOut();
-              console.log('✅ ProfileScreen: Sign out completed');
+              Logger.debug('✅ ProfileScreen: Sign out completed', 'screen', { component: 'ProfileScreen' });
               // Reset은 상위 네비게이터에서 처리하도록 변경
-            } catch (error) {
-              console.error('❌ ProfileScreen: Sign out error:', error);
-            }
+          } catch (error) {
+              Logger.error('❌ ProfileScreen: Sign out error:', 'screen', { component: 'ProfileScreen', error: error });
           }
-        },
+        }
+      },
       ]
     );
-  };
+};
 
   const menuItems: MenuItem[] = [
     {
@@ -340,16 +340,16 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
       icon: '⚙️',
       onPress: () => {
         Alert.alert('설정', '설정 화면은 추후 구현 예정입니다.');
-      }
-    },
+    }
+  },
     isDeveloperMode ? {
       title: '개발자 모드',
       subtitle: '디버깅 및 개발 도구',
       icon: '🔧',
       onPress: () => {
         navigation.navigate('Developer' as never);
-      }
-    } : {
+    }
+  } : {
       title: '개발자 모드 활성화',
       subtitle: '개발자 도구 사용하기',
       icon: '🔓',
@@ -364,23 +364,23 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
               onPress: () => {
                 toggleDeveloperMode();
                 Alert.alert('완료', '개발자 모드가 활성화되었습니다. 상단의 DEV 배지를 탭하여 비활성화할 수 있습니다.');
-              }
             }
+          }
           ]
         );
-      }
-    },
+    }
+  },
     {
       title: '도움말',
       subtitle: '앱 사용법 및 FAQ',
       icon: '❓',
       onPress: () => {
         Alert.alert('도움말', '도움말 화면은 추후 구현 예정입니다.');
-      }
-    },
+    }
+  },
   ];
 
-  console.log('🔄 ProfileScreen: About to render, isLoading:', isLoading);
+  Logger.debug('🔄 ProfileScreen: About to render, isLoading:', 'screen', { component: 'ProfileScreen', data: isLoading });
   
   if (isLoading) {
     return (
@@ -392,7 +392,7 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
         </SafeAreaView>
       </Container>
     );
-  }
+}
 
   return (
     <Container>
@@ -407,7 +407,6 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
                   <BetaText>BETA</BetaText>
                 </BetaBadge>
               </TitleContainer>
-              <StatusBadge />
             </NavigationBar>
           )}
 

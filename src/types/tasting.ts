@@ -75,7 +75,7 @@ export interface SimpleHomeCafeData {
     waterAmount: number;   // ml
     brewTime?: number;     // seconds (자동 타이머)
     lapTimes?: { time: number; label: string }[]; // 랩 타임 기록
-  };
+};
   waterTemp?: number;      // °C (선택)
   grindNote?: string;      // "2클릭 더 굵게" (선택)
   quickNote?: string;      // 추출 노트 (선택)
@@ -88,14 +88,14 @@ export interface HomeCafeData {
       brand: string;
       model: string;
       setting: string; // "15클릭" or "중간-굵게"
-    };
+  };
     dripper: PouroverDripper;
     dripperSize?: string; // "01", "02", "03" for V60, "155", "185" for Wave
     filter: FilterType;
     server?: string; // 서버/저그 브랜드
     scale?: string; // 저울 브랜드
     kettle?: string; // 주전자 브랜드
-  };
+};
   recipe: {
     doseIn: number; // 원두량 (g)
     waterAmount: number; // 물량 (g)
@@ -120,14 +120,14 @@ export interface HomeCafeData {
     // Technique
     agitation?: 'stir' | 'swirl' | 'tap' | 'none'; // 교반 방법
     agitationTiming?: string; // "블룸 후", "마지막 붓기 후"
-  };
+};
   notes?: {
     grindAdjustment?: string; // "1클릭 더 굵게"
     channeling?: boolean; // 채널링 발생 여부
     mudBed?: boolean; // 머드베드 발생 여부
     tasteResult?: string; // "밸런스 좋음, 단맛 증가"
     nextExperiment?: string; // "다음엔 물온도 2도 낮춰보기"
-  };
+};
 }
 
 // Lab mode data (extends HomeCafe with professional features)
@@ -136,14 +136,14 @@ export interface LabModeData extends HomeCafeData {
   extractionYield?: number;
   comparison?: {
     variable: string;
-    previousValue: any;
-    currentValue: any;
+    previousValue: unknown;
+    currentValue: unknown;
     result: string;
-  };
+};
   agitation?: {
     method: 'none' | 'stir' | 'swirl' | 'tap';
     timing: string[];
-  };
+};
 }
 
 export interface CurrentTasting {

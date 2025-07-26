@@ -1,93 +1,83 @@
 import React from 'react';
 import {
-  View,
+  XStack,
   Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+  styled,
+  useTheme,
+} from 'tamagui';
+import { TouchableOpacity } from 'react-native';
 import { BetaTestingTab } from '../../types/BetaTestingTypes';
-import { HIGColors } from '../../constants/HIG';
 
 interface BetaTabNavigationProps {
   selectedTab: BetaTestingTab;
   onTabSelect: (tab: BetaTestingTab) => void;
 }
 
+// Styled components
+const Container = styled(XStack, {
+  name: 'BetaTabContainer',
+  backgroundColor: '$background',
+  borderRadius: '$3',
+  padding: '$xs',
+  marginBottom: '$lg',
+});
+
+const Tab = styled(TouchableOpacity, {
+  name: 'BetaTab',
+  flex: 1,
+  alignItems: 'center',
+  paddingVertical: '$sm',
+  paddingHorizontal: '$sm',
+  borderRadius: '$2',
+});
+
 export const BetaTabNavigation: React.FC<BetaTabNavigationProps> = ({
   selectedTab,
   onTabSelect,
 }) => {
+  const theme = useTheme();
+  
   const tabs: Array<{ key: BetaTestingTab; label: string; icon: string }> = [
     { key: 'status', label: 'Status', icon: '📊' },
     { key: 'feedback', label: 'Feedback', icon: '💬' },
     { key: 'deployment', label: 'Deployment', icon: '🚀' },
   ];
 
-  const renderTab = (tab: { key: BetaTestingTab; label: string; icon: string }) => (
-    <TouchableOpacity
-      key={tab.key}
-      style={[
-        styles.tab,
-        selectedTab === tab.key && styles.activeTab,
-      ]}
-      onPress={() => onTabSelect(tab.key)}
-    >
-      <Text style={[
-        styles.tabIcon,
-        selectedTab === tab.key && styles.activeTabIcon,
-      ]}>
-        {tab.icon}
-      </Text>
-      <Text style={[
-        styles.tabLabel,
-        selectedTab === tab.key && styles.activeTabLabel,
-      ]}>
-        {tab.label}
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderTab = (tab: { key: BetaTestingTab; label: string; icon: string }) => {
+    const isActive = selectedTab === tab.key;
+    
+    return (
+      <Tab
+        key={tab.key}
+        onPress={() => onTabSelect(tab.key)}
+        style={{
+          backgroundColor: isActive ? theme.blue10.val : 'transparent',
+      }}
+      >
+        <Text
+          fontSize="$5"
+          marginBottom="$xs"
+        >
+          {tab.icon}
+        </Text>
+        <Text
+          fontSize="$2"
+          fontWeight={isActive ? '600' : '500'}
+          color={isActive ? 'white' : '$color11'}
+        >
+          {tab.label}
+        </Text>
+      </Tab>
+    );
+};
 
   return (
-    <View style={styles.container}>
+    <Container>
       {tabs.map(renderTab)}
-    </View>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 16,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-  },
-  activeTab: {
-    backgroundColor: HIGColors.systemBlue,
-  },
-  tabIcon: {
-    fontSize: 18,
-    marginBottom: 4,
-  },
-  activeTabIcon: {
-    // Icon color doesn't change for emojis
-  },
-  tabLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: HIGColors.secondaryLabel,
-  },
-  activeTabLabel: {
-    color: 'white',
-    fontWeight: '600',
-  },
-});
+// All styles are now handled by Tamagui styled components and design tokens
 
 export default BetaTabNavigation;

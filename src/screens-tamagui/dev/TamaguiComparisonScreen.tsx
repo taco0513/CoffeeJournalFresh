@@ -238,21 +238,21 @@ const TamaguiComparisonScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-  },
+},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
-  },
+},
   title: {
     fontSize: 18,
     fontWeight: '600',
-  },
+},
   renderCount: {
     fontSize: 12,
     color: '#666',
-  },
+},
   card: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
@@ -264,43 +264,43 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
+},
   cardSelected: {
     backgroundColor: '#E3F2FD',
     borderColor: '#2196F3',
     borderWidth: 2,
-  },
+},
   cardTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#000000',
     marginBottom: 8,
-  },
+},
   cardTitleSelected: {
     color: '#2196F3',
-  },
+},
   cardDetails: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
+},
   detailText: {
     fontSize: 12,
     color: '#666666',
-  },
+},
   detailTextSelected: {
     color: '#1976D2',
-  },
+},
   codeStats: {
     marginTop: 16,
     padding: 12,
     backgroundColor: '#F5F5F5',
     borderRadius: 8,
-  },
+},
   statLabel: {
     fontSize: 12,
     color: '#666',
     lineHeight: 20,
-  },
+},
 });
 
 export default TamaguiComparisonScreen;

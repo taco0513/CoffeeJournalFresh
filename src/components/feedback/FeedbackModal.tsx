@@ -19,6 +19,7 @@ import { FeedbackCategory, FEEDBACK_CATEGORY_LABELS } from '../../types/feedback
 import { FeedbackService } from '../../services/FeedbackService';
 import ScreenContextService from '../../services/ScreenContextService';
 import { HIGColors } from '../../constants/HIG';
+import { Logger } from '../../services/LoggingService';
 import { showSuccessToast, showErrorToast } from '../../utils/toast';
 
 const RATING_EMOJIS = ['😞', '😕', '😐', '😊', '😍'];
@@ -43,7 +44,7 @@ export const FeedbackModal: React.FC = () => {
     submitFeedback,
     hideFeedback,
     resetForm,
-  } = useFeedbackStore();
+} = useFeedbackStore();
 
   const [isCapturingScreen, setIsCapturingScreen] = useState(false);
 
@@ -64,12 +65,12 @@ export const FeedbackModal: React.FC = () => {
         useFeedbackStore.getState().showFeedback();
         setIsCapturingScreen(false);
         showErrorToast('스크린샷 기능은 준비 중입니다');
-      }, 500);
-    } catch (error) {
-      console.error('Error capturing screen:', error);
+    }, 500);
+  } catch (error) {
+      Logger.error('Error capturing screen:', 'component', { component: 'FeedbackModal', error: error });
       setIsCapturingScreen(false);
-    }
-  };
+  }
+};
 
   const handleSubmit = async () => {
     await submitFeedback(
@@ -77,12 +78,12 @@ export const FeedbackModal: React.FC = () => {
       currentUser?.email,
       currentUser?.username
     );
-  };
+};
 
   const handleClose = () => {
     hideFeedback();
     setTimeout(resetForm, 300);
-  };
+};
 
   return (
     <Modal
@@ -254,12 +255,12 @@ export const FeedbackModal: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
+},
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
-  },
+},
   modal: {
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 20,
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 10,
     elevation: 5,
-  },
+},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -278,36 +279,36 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray6,
-  },
+},
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   closeButton: {
     padding: 5,
-  },
+},
   closeButtonText: {
     fontSize: 24,
     color: HIGColors.secondaryLabel,
-  },
+},
   content: {
     padding: 20,
-  },
+},
   section: {
     marginBottom: 25,
-  },
+},
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 12,
-  },
+},
   categoryGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-  },
+},
   categoryItem: {
     flex: 1,
     minWidth: '45%',
@@ -318,38 +319,38 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: HIGColors.systemGray6,
     backgroundColor: '#FFFFFF',
-  },
+},
   categoryItemSelected: {
     borderColor: HIGColors.systemBlue,
     backgroundColor: '#E3F2FD',
-  },
+},
   categoryEmoji: {
     fontSize: 24,
     marginRight: 8,
-  },
+},
   categoryLabel: {
     fontSize: 14,
     color: HIGColors.label,
-  },
+},
   categoryLabelSelected: {
     fontWeight: '600',
     color: HIGColors.systemBlue,
-  },
+},
   ratingContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
+},
   ratingItem: {
     padding: 10,
     borderRadius: 8,
     backgroundColor: HIGColors.systemGray6,
-  },
+},
   ratingItemSelected: {
     backgroundColor: '#FFF3E0',
-  },
+},
   ratingEmoji: {
     fontSize: 28,
-  },
+},
   titleInput: {
     borderWidth: 1,
     borderColor: HIGColors.systemGray6,
@@ -358,7 +359,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: HIGColors.label,
     backgroundColor: '#FFFFFF',
-  },
+},
   descriptionInput: {
     borderWidth: 1,
     borderColor: HIGColors.systemGray6,
@@ -369,22 +370,22 @@ const styles = StyleSheet.create({
     minHeight: 120,
     textAlignVertical: 'top',
     backgroundColor: '#FFFFFF',
-  },
+},
   charCount: {
     fontSize: 12,
     color: HIGColors.tertiaryLabel,
     textAlign: 'right',
     marginTop: 5,
-  },
+},
   screenshotContainer: {
     position: 'relative',
-  },
+},
   screenshot: {
     width: '100%',
     height: 200,
     borderRadius: 8,
     backgroundColor: HIGColors.systemGray6,
-  },
+},
   removeScreenshot: {
     position: 'absolute',
     top: 10,
@@ -393,11 +394,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 4,
-  },
+},
   removeScreenshotText: {
     color: '#FFFFFF',
     fontSize: 12,
-  },
+},
   captureButton: {
     borderWidth: 2,
     borderColor: HIGColors.systemBlue,
@@ -405,48 +406,48 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: 'center',
     backgroundColor: '#E3F2FD',
-  },
+},
   captureButtonText: {
     color: HIGColors.systemBlue,
     fontSize: 16,
     fontWeight: '500',
-  },
+},
   errorContainer: {
     backgroundColor: '#FFEBEE',
     padding: 12,
     borderRadius: 8,
     marginBottom: 15,
-  },
+},
   errorText: {
     color: HIGColors.systemRed,
     fontSize: 14,
-  },
+},
   submitButton: {
     backgroundColor: HIGColors.systemBlue,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 20,
-  },
+},
   submitButtonDisabled: {
     backgroundColor: HIGColors.systemGray6,
-  },
+},
   submitButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
-  },
+},
   contextContainer: {
     backgroundColor: HIGColors.systemGray6,
     padding: 12,
     borderRadius: 8,
     borderLeftWidth: 4,
     borderLeftColor: HIGColors.systemBlue,
-  },
+},
   contextText: {
     fontSize: 13,
     color: HIGColors.secondaryLabel,
     lineHeight: 18,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-  },
+},
 });

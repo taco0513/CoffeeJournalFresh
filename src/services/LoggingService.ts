@@ -49,24 +49,24 @@ class LoggingService {
       : new Set(['error', 'auth', 'sync', 'realm', 'critical']);
     
     this.sessionId = this.generateSessionId();
-  }
+}
 
   static getInstance(): LoggingService {
     if (!LoggingService.instance) {
       LoggingService.instance = new LoggingService();
-    }
-    return LoggingService.instance;
   }
+    return LoggingService.instance;
+}
 
   private generateSessionId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
-  }
+}
 
   private shouldLog(level: LogLevel, category: string): boolean {
     if (level < this.currentLogLevel) return false;
     if (this.enabledCategories.has('*')) return true;
     return this.enabledCategories.has(category);
-  }
+}
 
   private formatMessage(level: LogLevel, message: string, context: LogContext): string {
     const levelName = LogLevel[level];
@@ -74,14 +74,14 @@ class LoggingService {
     const contextStr = context.component || context.screen || context.function || '';
     
     return `[${timestamp}] ${levelName} ${contextStr ? `[${contextStr}]` : ''} ${message}`;
-  }
+}
 
   private addToBuffer(entry: LogEntry): void {
     this.logBuffer.push(entry);
     if (this.logBuffer.length > this.maxBufferSize) {
       this.logBuffer.shift(); // Remove oldest entry
-    }
   }
+}
 
   private createLogEntry(
     level: LogLevel, 
@@ -97,10 +97,10 @@ class LoggingService {
         ...context,
         sessionId: this.sessionId,
         timestamp: new Date().toISOString(),
-      },
+    },
       timestamp: new Date().toISOString(),
-    };
-  }
+  };
+}
 
   // Core logging methods
   debug(message: string, category = 'debug', context: LogContext = {}): void {
@@ -111,8 +111,8 @@ class LoggingService {
     
     if (__DEV__) {
       console.log(this.formatMessage(LogLevel.DEBUG, message, context));
-    }
   }
+}
 
   info(message: string, category = 'info', context: LogContext = {}): void {
     if (!this.shouldLog(LogLevel.INFO, category)) return;
@@ -122,8 +122,8 @@ class LoggingService {
     
     if (__DEV__) {
       console.info(this.formatMessage(LogLevel.INFO, message, context));
-    }
   }
+}
 
   warn(message: string, category = 'warn', context: LogContext = {}): void {
     if (!this.shouldLog(LogLevel.WARN, category)) return;
@@ -132,7 +132,7 @@ class LoggingService {
     this.addToBuffer(entry);
     
     console.warn(this.formatMessage(LogLevel.WARN, message, context));
-  }
+}
 
   error(message: string, category = 'error', context: LogContext = {}): void {
     if (!this.shouldLog(LogLevel.ERROR, category)) return;
@@ -148,12 +148,12 @@ class LoggingService {
         SentryService.captureException(context.error, {
           tags: { category },
           extra: { message, context },
-        });
-      } catch (sentryError) {
+      });
+    } catch (sentryError) {
         console.error('Failed to send error to Sentry:', sentryError);
-      }
     }
   }
+}
 
   fatal(message: string, category = 'fatal', context: LogContext = {}): void {
     const entry = this.createLogEntry(LogLevel.FATAL, message, category, context);
@@ -168,41 +168,41 @@ class LoggingService {
           level: 'fatal',
           tags: { category },
           extra: { message, context },
-        });
-      } catch (sentryError) {
+      });
+    } catch (sentryError) {
         console.error('Failed to send fatal error to Sentry:', sentryError);
-      }
     }
   }
+}
 
   // Specialized logging methods for common use cases
   realm(message: string, context: LogContext = {}): void {
     this.debug(message, 'realm', { ...context, component: 'RealmService' });
-  }
+}
 
   auth(message: string, context: LogContext = {}): void {
     this.info(message, 'auth', { ...context, component: 'AuthService' });
-  }
+}
 
   sync(message: string, context: LogContext = {}): void {
     this.info(message, 'sync', { ...context, component: 'SyncService' });
-  }
+}
 
   performance(message: string, duration?: number, context: LogContext = {}): void {
     this.info(message, 'performance', { 
       ...context, 
       data: { ...context.data, duration },
       component: 'Performance'
-    });
-  }
+  });
+}
 
   userAction(action: string, screen: string, context: LogContext = {}): void {
     this.info(`User action: ${action}`, 'user', { 
       ...context, 
       action,
       screen,
-    });
-  }
+  });
+}
 
   apiCall(endpoint: string, method: string, status?: number, context: LogContext = {}): void {
     const level = status && status >= 400 ? LogLevel.ERROR : LogLevel.INFO;
@@ -210,41 +210,41 @@ class LoggingService {
     
     if (level === LogLevel.ERROR) {
       this.error(message, 'api', { ...context, data: { endpoint, method, status } });
-    } else {
+  } else {
       this.info(message, 'api', { ...context, data: { endpoint, method, status } });
-    }
   }
+}
 
   // Configuration methods
   setLogLevel(level: LogLevel): void {
     this.currentLogLevel = level;
-  }
+}
 
   enableCategory(category: string): void {
     this.enabledCategories.add(category);
-  }
+}
 
   disableCategory(category: string): void {
     this.enabledCategories.delete(category);
-  }
+}
 
   // Utility methods
   getLogBuffer(): LogEntry[] {
     return [...this.logBuffer];
-  }
+}
 
   clearLogBuffer(): void {
     this.logBuffer = [];
-  }
+}
 
   getSessionId(): string {
     return this.sessionId;
-  }
+}
 
   // Export logs for debugging or support
   exportLogs(): string {
     return JSON.stringify(this.logBuffer, null, 2);
-  }
+}
 
   // Create category-specific loggers
   createLogger(category: string, defaultContext: LogContext = {}) {
@@ -259,8 +259,8 @@ class LoggingService {
         this.error(message, category, { ...defaultContext, ...context }),
       fatal: (message: string, context: LogContext = {}) => 
         this.fatal(message, category, { ...defaultContext, ...context }),
-    };
-  }
+  };
+}
 }
 
 // Export singleton instance and create convenient logger

@@ -144,7 +144,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
     if (max !== undefined && numValue > max) return;
     
     onChangeValue(numValue);
-  };
+};
 
   return (
     <View style={styles.numberInputContainer}>
@@ -166,20 +166,20 @@ const styles = StyleSheet.create({
   // 기본 Input 스타일
   container: {
     marginBottom: Spacing.sm,
-  },
+},
   
   label: {
     fontSize: Typography.fontSize.sm,
     fontWeight: Typography.fontWeight.medium,
     color: Colors.text.primary,
     marginBottom: 6,
-  },
+},
   
   input: {
     fontSize: Typography.fontSize.base,
     color: Colors.text.primary,
     borderRadius: Component.input.radius,
-  },
+},
   
   // Input variants
   variant_default: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.light,
     paddingHorizontal: Component.input.padding.horizontal,
     paddingVertical: Component.input.padding.vertical,
-  },
+},
   
   variant_outlined: {
     backgroundColor: Colors.background.primary,
@@ -196,47 +196,47 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.medium,
     paddingHorizontal: Component.input.padding.horizontal,
     paddingVertical: Component.input.padding.vertical,
-  },
+},
   
   variant_filled: {
     backgroundColor: Colors.background.secondary,
     borderWidth: 0,
     paddingHorizontal: Component.input.padding.horizontal,
     paddingVertical: Component.input.padding.vertical,
-  },
+},
   
   // Input sizes
   size_sm: {
     fontSize: Typography.fontSize.sm,
     minHeight: 36,
-  },
+},
   
   size_md: {
     fontSize: Typography.fontSize.base,
     minHeight: 44,
-  },
+},
   
   size_lg: {
     fontSize: Typography.fontSize.lg,
     minHeight: 52,
-  },
+},
   
   // Input states
   disabled: {
     backgroundColor: Colors.background.secondary,
     color: Colors.text.disabled,
     borderColor: Colors.border.light,
-  },
+},
   
   error: {
     borderColor: Colors.semantic.error,
-  },
+},
   
   errorText: {
     fontSize: Typography.fontSize.xs,
     color: Colors.semantic.error,
     marginTop: 4,
-  },
+},
   
   // SelectButton 스타일
   selectButton: {
@@ -246,108 +246,108 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   
   selectButton_default: {
     backgroundColor: Colors.background.primary,
     borderColor: Colors.border.medium,
-  },
+},
   
   selectButton_primary: {
     backgroundColor: Colors.background.primary,
     borderColor: Colors.primary[300],
-  },
+},
   
   selectButton_secondary: {
     backgroundColor: Colors.gray[50],
     borderColor: Colors.gray[200],
-  },
+},
   
   // SelectButton selected states
   selectButtonSelected_default: {
     backgroundColor: Colors.primary[50],
     borderColor: Colors.primary[500],
-  },
+},
   
   selectButtonSelected_primary: {
     backgroundColor: Colors.primary[500],
     borderColor: Colors.primary[500],
-  },
+},
   
   selectButtonSelected_secondary: {
     backgroundColor: Colors.gray[100],
     borderColor: Colors.gray[400],
-  },
+},
   
   // SelectButton sizes
   selectButton_sm: {
     paddingHorizontal: Spacing.sm,
     paddingVertical: 6,
-  },
+},
   
   selectButton_md: {
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
-  },
+},
   
   selectButton_lg: {
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
-  },
+},
   
   selectButtonDisabled: {
     backgroundColor: Colors.background.disabled,
     borderColor: Colors.border.disabled,
-  },
+},
   
   // SelectButton text styles
   selectButtonText: {
     fontWeight: Typography.fontWeight.medium,
     color: Colors.text.primary,
-  },
+},
   
   selectButtonText_sm: {
     fontSize: Typography.fontSize.sm,
-  },
+},
   
   selectButtonText_md: {
     fontSize: Typography.fontSize.base,
-  },
+},
   
   selectButtonText_lg: {
     fontSize: Typography.fontSize.lg,
-  },
+},
   
   selectButtonTextSelected_default: {
     color: Colors.primary[700],
-  },
+},
   
   selectButtonTextSelected_primary: {
     color: Colors.text.inverse,
-  },
+},
   
   selectButtonTextSelected_secondary: {
     color: Colors.text.primary,
-  },
+},
   
   selectButtonTextDisabled: {
     color: Colors.text.disabled,
-  },
+},
   
   // NumberInput 스타일
   numberInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   
   numberInput: {
     flex: 1,
     marginRight: Spacing.sm,
-  },
+},
   
   unitLabel: {
     fontSize: Typography.fontSize.sm,
     color: Colors.text.secondary,
     fontWeight: Typography.fontWeight.medium,
-  },
+},
 });

@@ -59,8 +59,8 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
   Object.keys(koreanSensoryData).forEach(key => {
     if (!animatedValues.current[key]) {
       animatedValues.current[key] = new Animated.Value(0);
-    }
-  });
+  }
+});
 
   const toggleCategory = useCallback((categoryId: string) => {
     LayoutAnimation.configureNext(animationConfig);
@@ -76,24 +76,24 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
         friction: 8,
         tension: 40,
         useNativeDriver: true,
-      }).start();
-    } else {
+    }).start();
+  } else {
       newExpanded.delete(categoryId);
       // Animate collapse
       Animated.timing(animatedValues.current[categoryId], {
         toValue: 0,
         duration: 200,
         useNativeDriver: true,
-      }).start();
-    }
+    }).start();
+  }
     
     setExpandedCategories(newExpanded);
     
     // Haptic feedback
     if (HAPTIC_ENABLED) {
       Vibration.vibrate(10);
-    }
-  }, [expandedCategories]);
+  }
+}, [expandedCategories]);
 
   const handleExpressionSelect = useCallback((
     categoryId: string,
@@ -113,29 +113,29 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
       newExpressions.splice(existingIndex, 1);
       if (HAPTIC_ENABLED) {
         Vibration.vibrate(15);
-      }
-    } else {
+    }
+  } else {
       // Check limit
       if (categorySelections.length >= MAX_PER_CATEGORY) {
         // Provide feedback that limit is reached
         if (HAPTIC_ENABLED) {
           Vibration.vibrate([0, 10, 50, 10]);
-        }
-        return;
       }
+        return;
+    }
       // Select
       newExpressions.push({ categoryId, expression });
       if (HAPTIC_ENABLED) {
         Vibration.vibrate(20);
-      }
     }
+  }
 
     onExpressionChange(newExpressions);
     
     // Announce to screen readers
     const action = existingIndex >= 0 ? '선택 해제됨' : '선택됨';
     AccessibilityInfo.announceForAccessibility(`${expression.korean} ${action}`);
-  }, [selectedExpressions, onExpressionChange]);
+}, [selectedExpressions, onExpressionChange]);
 
   const isExpressionSelected = useCallback((
     categoryId: string,
@@ -144,12 +144,12 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
     return selectedExpressions.some(
       item => item.categoryId === categoryId && item.expression.id === expressionId
     );
-  }, [selectedExpressions]);
+}, [selectedExpressions]);
 
   const getCategoryProgress = useCallback((categoryId: string): number => {
     const count = selectedExpressions.filter(item => item.categoryId === categoryId).length;
     return count / MAX_PER_CATEGORY;
-  }, [selectedExpressions]);
+}, [selectedExpressions]);
 
   const renderExpressionButton = useCallback((
     categoryId: string,
@@ -168,7 +168,7 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
             backgroundColor: category?.color || '#007AFF',
             borderColor: category?.color || '#007AFF',
             transform: [{ scale: 1.02 }],
-          },
+        },
           isDisabled && styles.expressionButtonDisabled
         ]}
         onPress={() => !isDisabled && handleExpressionSelect(categoryId, expression)}
@@ -180,7 +180,7 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
         accessibilityState={{ 
           selected: isSelected,
           disabled: isDisabled 
-        }}
+      }}
         accessibilityHint={isDisabled ? '선택 한도에 도달했습니다' : '탭하여 선택하거나 선택 해제'}
       >
         <Text style={[
@@ -192,7 +192,7 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
         </Text>
       </TouchableOpacity>
     );
-  }, [isExpressionSelected, handleExpressionSelect]);
+}, [isExpressionSelected, handleExpressionSelect]);
 
   const renderCategory = (category: typeof koreanSensoryData[keyof typeof koreanSensoryData]) => {
     const isExpanded = expandedCategories.has(category.id);
@@ -204,7 +204,7 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
     const rotateAnim = animatedValues.current[category.id].interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '90deg'],
-    });
+  });
 
     return (
       <View key={category.id} style={styles.categoryContainer}>
@@ -242,7 +242,7 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
                     { 
                       backgroundColor: category.color,
                       width: `${progress * 100}%`
-                    }
+                  }
                   ]} 
                 />
               </View>
@@ -272,9 +272,9 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
                   translateY: animatedValues.current[category.id].interpolate({
                     inputRange: [0, 1],
                     outputRange: [-10, 0],
-                  })
-                }]
-              }
+                })
+              }]
+            }
             ]}
           >
             {showDescriptions && (
@@ -292,7 +292,7 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
                   !isExpressionSelected(category.id, expression.id);
                 
                 return renderExpressionButton(category.id, expression, isDisabled);
-              })}
+            })}
             </View>
             
             {expressions.length === 0 && (
@@ -304,7 +304,7 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
         )}
       </View>
     );
-  };
+};
 
   // Memoized category groups for summary
   const selectedByCategory = useMemo(() => {
@@ -312,11 +312,11 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
     selectedExpressions.forEach(item => {
       if (!groups[item.categoryId]) {
         groups[item.categoryId] = [];
-      }
+    }
       groups[item.categoryId].push(item);
-    });
+  });
     return groups;
-  }, [selectedExpressions]);
+}, [selectedExpressions]);
 
   return (
     <ScrollView 
@@ -359,7 +359,7 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
                             { 
                               borderColor: category.color,
                               backgroundColor: category.color + '15'
-                            }
+                          }
                           ]}
                           onPress={() => handleExpressionSelect(item.categoryId, item.expression)}
                           activeOpacity={0.7}
@@ -372,7 +372,7 @@ const EnhancedSensoryEvaluationV2: React.FC<EnhancedSensoryEvaluationProps> = ({
                     </View>
                   </View>
                 );
-              })}
+            })}
             </View>
           </ScrollView>
         </View>
@@ -390,27 +390,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
+},
   scrollContent: {
     paddingBottom: 20,
-  },
+},
   header: {
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 16,
     alignItems: 'center',
-  },
+},
   title: {
     fontSize: 26,
     fontWeight: '700',
     color: '#1A1A1A',
     marginBottom: 8,
-  },
+},
   subtitle: {
     fontSize: 16,
     color: '#666666',
     textAlign: 'center',
-  },
+},
 
   // Summary section
   summaryContainer: {
@@ -419,32 +419,32 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#F8F9FA',
     borderRadius: 12,
-  },
+},
   summaryTitle: {
     fontSize: 14,
     fontWeight: '600',
     color: '#666666',
     marginBottom: 12,
-  },
+},
   summaryScroll: {
     marginHorizontal: -4,
-  },
+},
   summaryItems: {
     flexDirection: 'row',
     paddingHorizontal: 4,
-  },
+},
   summaryCategoryGroup: {
     marginRight: 20,
-  },
+},
   summaryCategoryName: {
     fontSize: 12,
     fontWeight: '600',
     marginBottom: 8,
-  },
+},
   summaryExpressions: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
+},
   summaryItem: {
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -452,16 +452,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 8,
     marginBottom: 8,
-  },
+},
   summaryItemText: {
     fontSize: 13,
     fontWeight: '600',
-  },
+},
 
   // Categories
   categoriesContainer: {
     paddingHorizontal: 20,
-  },
+},
   categoryContainer: {
     marginBottom: 12,
     borderRadius: 16,
@@ -472,84 +472,84 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
     overflow: 'hidden',
-  },
+},
   categoryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
     backgroundColor: '#FAFBFC',
-  },
+},
   categoryHeaderExpanded: {
     backgroundColor: '#F5F7FA',
-  },
+},
   categoryHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-  },
+},
   categoryEmoji: {
     fontSize: 24,
     marginRight: 12,
-  },
+},
   categoryTitles: {
     flex: 1,
-  },
+},
   categoryNameKo: {
     fontSize: 17,
     fontWeight: '700',
     marginBottom: 2,
-  },
+},
   categoryNameEn: {
     fontSize: 13,
     color: '#8E8E93',
-  },
+},
   categoryHeaderRight: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   progressContainer: {
     alignItems: 'center',
     marginRight: 12,
-  },
+},
   progressBar: {
     width: 60,
     height: 4,
     borderRadius: 2,
     overflow: 'hidden',
     marginBottom: 4,
-  },
+},
   progressFill: {
     height: '100%',
     borderRadius: 2,
-  },
+},
   selectionCount: {
     fontSize: 12,
     fontWeight: '600',
     color: '#8E8E93',
-  },
+},
   expandIcon: {
     fontSize: 14,
     color: '#8E8E93',
-  },
+},
   categoryDescription: {
     paddingHorizontal: 16,
     paddingBottom: 12,
     fontSize: 14,
     color: '#666666',
     lineHeight: 20,
-  },
+},
 
   // Expressions
   expressionsContainer: {
     paddingHorizontal: 16,
     paddingBottom: 16,
-  },
+},
   expressionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginHorizontal: -4,
-  },
+},
   expressionButton: {
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -561,28 +561,28 @@ const styles = StyleSheet.create({
     minHeight: 38,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   expressionButtonText: {
     fontSize: 15,
     color: '#1A1A1A',
     fontWeight: '600',
-  },
+},
   expressionButtonTextSelected: {
     color: '#FFFFFF',
-  },
+},
   expressionButtonDisabled: {
     opacity: 0.4,
-  },
+},
   expressionButtonTextDisabled: {
     color: '#8E8E93',
-  },
+},
   noExpressionsText: {
     textAlign: 'center',
     color: '#8E8E93',
     fontSize: 14,
     padding: 20,
     fontStyle: 'italic',
-  },
+},
 });
 
 export default EnhancedSensoryEvaluationV2;

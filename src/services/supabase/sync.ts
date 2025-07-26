@@ -5,6 +5,7 @@ import { useTastingStore } from '../../stores/tastingStore';
 import NetInfo from '@react-native-community/netinfo';
 import { ENABLE_SYNC } from '../../../App';
 import NetworkUtils from '../../utils/NetworkUtils';
+import { Logger } from '../LoggingService';
 // import { reportError } from '../../utils/sentry';
 
 export interface SyncStatus {
@@ -63,18 +64,18 @@ class SyncService {
     lastSyncTime: null,
     pendingUploads: 0,
     error: null,
-  };
+};
 
   private constructor() {
     this.initializeNetworkListener();
-  }
+}
 
   static getInstance(): SyncService {
     if (!SyncService.instance) {
       SyncService.instance = new SyncService();
-    }
-    return SyncService.instance;
   }
+    return SyncService.instance;
+}
 
   private initializeNetworkListener(): void {
     NetInfo.addEventListener(state => {
@@ -83,9 +84,9 @@ class SyncService {
       // 온라인 상태가 되면 자동 동기화 시도
       if (ENABLE_SYNC && this.syncStatus.isOnline && !this.syncStatus.isSyncing) {
         this.syncAll();
-      }
-    });
-  }
+    }
+  });
+}
 
   // 네트워크 상태 확인
   async checkNetworkStatus(): Promise<boolean> {
@@ -93,26 +94,26 @@ class SyncService {
       const state = await NetInfo.fetch();
       this.syncStatus.isOnline = state.isConnected || false;
       return this.syncStatus.isOnline;
-    } catch (error) {
+  } catch (error) {
       this.syncStatus.isOnline = false;
       return false;
-    }
   }
+}
 
   // 현재 동기화 상태 반환
   getSyncStatus(): SyncStatus {
     return { ...this.syncStatus };
-  }
+}
 
   // 전체 동기화 실행
   async syncAll(): Promise<void> {
     if (!ENABLE_SYNC) {
       return;
-    }
+  }
     
     if (this.syncStatus.isSyncing) {
       return;
-    }
+  }
 
     this.syncStatus.isSyncing = true;
     this.syncStatus.error = null;
@@ -122,7 +123,7 @@ class SyncService {
       const isOnline = await this.checkNetworkStatus();
       if (!isOnline) {
         throw new Error('No internet connection');
-      }
+    }
 
       // 1. 로컬 → Supabase 업로드
       await this.uploadLocalChanges();
@@ -137,13 +138,13 @@ class SyncService {
       this.syncStatus.lastSyncTime = new Date();
       this.syncStatus.error = null;
       
-    } catch (error) {
+  } catch (error) {
       this.syncStatus.error = error instanceof Error ? error.message : 'Unknown sync error';
-    } finally {
+  } finally {
       this.syncStatus.isSyncing = false;
       this.updateTastingStore();
-    }
   }
+}
 
   // 로컬 변경사항을 Supabase로 업로드
   async uploadLocalChanges(): Promise<void> {
@@ -157,17 +158,17 @@ class SyncService {
       for (const record of unsyncedRecords) {
         try {
           await this.uploadSingleRecord(record);
-        } catch (error) {
+      } catch (error) {
           // 개별 업로드 실패는 전체 동기화를 중단하지 않음
-        }
       }
+    }
 
       this.syncStatus.pendingUploads = 0;
       this.updateTastingStore();
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
   }
+}
 
   // 개별 레코드 업로드
   private async uploadSingleRecord(record: ITastingRecord): Promise<void> {
@@ -175,7 +176,7 @@ class SyncService {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         throw new Error('User not authenticated');
-      }
+    }
 
       // 1. 메인 테이스팅 레코드 업로드
       const tastingData: Partial<SupabaseTastingRecord> = {
@@ -194,7 +195,7 @@ class SyncService {
         match_score: record.matchScoreTotal || 0,  // Total 점수만 사용
         created_at: record.createdAt ? record.createdAt.toISOString() : new Date().toISOString(),
         updated_at: record.updatedAt ? record.updatedAt.toISOString() : new Date().toISOString(),
-      };
+    };
 
       const { data: tastingRecord, error: tastingError } = await NetworkUtils.retry(
         async () => {
@@ -206,21 +207,21 @@ class SyncService {
           
           if (result.error) {
             throw result.error;
-          }
+        }
           
           return result;
-        },
+      },
         {
           maxRetries: 3,
           onRetry: (attempt, error) => {
-            console.log(`[Sync] Retrying tasting record upload (attempt ${attempt}):`, error.message);
-          }
+            Logger.debug(`[Sync] Retrying tasting record upload (attempt ${attempt}):`, 'supabase', { component: 'sync', error: error.message });
         }
+      }
       );
 
       if (tastingError) {
         throw tastingError;
-      }
+    }
 
       // 2. 맛 노트 업로드
       if (record.flavorNotes && record.flavorNotes.length > 0) {
@@ -231,10 +232,10 @@ class SyncService {
           .eq('tasting_id', tastingRecord.id);
 
         // 새로운 맛 노트 삽입
-        const flavorNotes: any[] = [];
+        const flavorNotes: unknown[] = [];
         // Realm은 정규화된 구조, Supabase는 비정규화 구조 사용
         // 각 flavor path를 하나의 레코드로 변환
-        const flavorsByPath: any = {};
+        const flavorsByPath: unknown = {};
         
         record.flavorNotes.forEach((note: IFlavorNote) => {
           const key = `${note.level || ''}`;
@@ -245,25 +246,25 @@ class SyncService {
               level2: null,
               level3: null,
               level4: null,
-            };
-          }
+          };
+        }
           
           // level에 따라 적절한 필드에 값 설정
           if (note.level === 1 && note.value) {
             flavorsByPath[key].level1 = note.value;
-          } else if (note.level === 2 && note.value) {
+        } else if (note.level === 2 && note.value) {
             flavorsByPath[key].level2 = note.value;
-          } else if (note.level === 3 && note.value) {
+        } else if (note.level === 3 && note.value) {
             flavorsByPath[key].level3 = note.value;
-          } else if (note.level === 4 && note.value) {
+        } else if (note.level === 4 && note.value) {
             flavorsByPath[key].level4 = note.value;
-          }
-        });
+        }
+      });
         
         // 변환된 데이터를 배열로 변환
         Object.values(flavorsByPath).forEach(flavor => {
           flavorNotes.push(flavor);
-        });
+      });
 
         const { error: flavorError } = await supabase
           .from('flavor_notes')
@@ -271,8 +272,8 @@ class SyncService {
 
         if (flavorError) {
           throw flavorError;
-        }
       }
+    }
 
       // 3. 감각 속성 업로드
       if (record.sensoryAttribute) {
@@ -283,7 +284,7 @@ class SyncService {
           sweetness: record.sensoryAttribute.sweetness,
           finish: record.sensoryAttribute.finish,
           mouthfeel: record.sensoryAttribute.mouthfeel,
-        };
+      };
 
         const { error: sensoryError } = await supabase
           .from('sensory_attributes')
@@ -291,17 +292,17 @@ class SyncService {
 
         if (sensoryError) {
           throw sensoryError;
-        }
       }
+    }
 
       // 4. 로컬 레코드를 동기화됨으로 표시
       const realmService = RealmService.getInstance();
       realmService.markAsSynced([record.id]);
 
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
   }
+}
 
   // Supabase에서 변경사항 다운로드
   async downloadRemoteChanges(): Promise<void> {
@@ -309,7 +310,7 @@ class SyncService {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         throw new Error('User not authenticated');
-      }
+    }
 
       const realmService = RealmService.getInstance();
       const lastSyncTime = this.syncStatus.lastSyncTime;
@@ -326,41 +327,41 @@ class SyncService {
 
       if (lastSyncTime) {
         query = query.gte('updated_at', lastSyncTime.toISOString());
-      }
+    }
 
       const { data: remoteRecords, error } = await NetworkUtils.retry(
         async () => {
           const result = await query;
           if (result.error) {
             throw result.error;
-          }
+        }
           return result;
-        },
+      },
         {
           maxRetries: 3,
           onRetry: (attempt, error) => {
-            console.log(`[Sync] Retrying download records (attempt ${attempt}):`, error.message);
-          }
+            Logger.debug(`[Sync] Retrying download records (attempt ${attempt}):`, 'supabase', { component: 'sync', error: error.message });
         }
+      }
       );
 
       if (error) {
         throw error;
-      }
+    }
 
       // 각 레코드를 로컬에 저장
       if (remoteRecords && remoteRecords.length > 0) {
         for (const remoteRecord of remoteRecords) {
           await this.downloadSingleRecord(remoteRecord);
-        }
       }
-    } catch (error) {
-      throw error;
     }
+  } catch (error) {
+      throw error;
   }
+}
 
   // 개별 레코드 다운로드 및 충돌 해결
-  private async downloadSingleRecord(remoteRecord: any): Promise<void> {
+  private async downloadSingleRecord(remoteRecord: unknown): Promise<void> {
     try {
       const realmService = RealmService.getInstance();
       const localRecord = await realmService.getTastingRecordById(remoteRecord.realm_id);
@@ -368,38 +369,38 @@ class SyncService {
       if (!localRecord) {
         // 새로운 레코드 생성
         await this.createLocalRecord(remoteRecord);
-      } else {
+    } else {
         // 충돌 해결
         await this.resolveConflict(localRecord, remoteRecord);
-      }
-    } catch (error) {
-      throw error;
     }
+  } catch (error) {
+      throw error;
   }
+}
 
   // 로컬에 새 레코드 생성
-  private async createLocalRecord(remoteRecord: any): Promise<void> {
+  private async createLocalRecord(remoteRecord: unknown): Promise<void> {
     try {
       const realmService = RealmService.getInstance();
 
       // 맛 노트 변환 (Supabase의 비정규화 구조를 Realm의 정규화 구조로)
       const flavorNotes: IFlavorNote[] = [];
       
-      remoteRecord.flavor_notes?.forEach((note: any) => {
+      remoteRecord.flavor_notes?.forEach((note: unknown) => {
         // level1-4 각각을 개별 FlavorNote로 변환
         if (note.level1) {
           flavorNotes.push({ level: 1, value: note.level1 });
-        }
+      }
         if (note.level2) {
           flavorNotes.push({ level: 2, value: note.level2 });
-        }
+      }
         if (note.level3) {
           flavorNotes.push({ level: 3, value: note.level3 });
-        }
+      }
         if (note.level4) {
           flavorNotes.push({ level: 4, value: note.level4 });
-        }
-      });
+      }
+    });
 
       // 감각 속성 변환
       let sensoryAttribute: ISensoryAttribute | undefined;
@@ -411,8 +412,8 @@ class SyncService {
           sweetness: sensory.sweetness,
           finish: sensory.finish,
           mouthfeel: sensory.mouthfeel,
-        };
-      }
+      };
+    }
 
       // 로컬 레코드 생성
       const localData: Omit<ITastingRecord, 'id'> = {
@@ -436,23 +437,23 @@ class SyncService {
         isSynced: true,
         isDeleted: false,  // Realm에는 있지만 Supabase에는 없음
         syncedAt: new Date(),
-      };
+    };
 
       const realm = realmService.getRealm();
       realm.write(() => {
         realm.create<ITastingRecord>('TastingRecord', {
           id: remoteRecord.realm_id,
           ...localData,
-        });
       });
+    });
 
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
   }
+}
 
   // 충돌 해결 (최신 업데이트 시간 기준)
-  private async resolveConflict(localRecord: ITastingRecord, remoteRecord: any): Promise<void> {
+  private async resolveConflict(localRecord: ITastingRecord, remoteRecord: unknown): Promise<void> {
     try {
       const localUpdatedAt = localRecord.updatedAt;
       const remoteUpdatedAt = new Date(remoteRecord.updated_at);
@@ -460,18 +461,18 @@ class SyncService {
       // 원격 레코드가 더 최신인 경우
       if (remoteUpdatedAt > localUpdatedAt) {
         await this.updateLocalRecord(localRecord, remoteRecord);
-      } else if (localUpdatedAt > remoteUpdatedAt) {
+    } else if (localUpdatedAt > remoteUpdatedAt) {
         await this.uploadSingleRecord(localRecord);
-      } else {
+    } else {
         await this.updateLocalRecord(localRecord, remoteRecord);
-      }
-    } catch (error) {
-      throw error;
     }
+  } catch (error) {
+      throw error;
   }
+}
 
   // 로컬 레코드 업데이트
-  private async updateLocalRecord(localRecord: ITastingRecord, remoteRecord: any): Promise<void> {
+  private async updateLocalRecord(localRecord: ITastingRecord, remoteRecord: unknown): Promise<void> {
     try {
       const realmService = RealmService.getInstance();
       const realm = realmService.getRealm();
@@ -500,23 +501,23 @@ class SyncService {
         if (remoteRecord.flavor_notes) {
           const newFlavorNotes: IFlavorNote[] = [];
           
-          remoteRecord.flavor_notes.forEach((note: any) => {
+          remoteRecord.flavor_notes.forEach((note: unknown) => {
             if (note.level1) {
               newFlavorNotes.push({ level: 1, value: note.level1 });
-            }
+          }
             if (note.level2) {
               newFlavorNotes.push({ level: 2, value: note.level2 });
-            }
+          }
             if (note.level3) {
               newFlavorNotes.push({ level: 3, value: note.level3 });
-            }
+          }
             if (note.level4) {
               newFlavorNotes.push({ level: 4, value: note.level4 });
-            }
-          });
+          }
+        });
           
           localRecord.flavorNotes = newFlavorNotes;
-        }
+      }
 
         // 감각 속성 업데이트
         if (remoteRecord.sensory_attributes && remoteRecord.sensory_attributes.length > 0) {
@@ -527,22 +528,22 @@ class SyncService {
             sweetness: sensory.sweetness,
             finish: sensory.finish,
             mouthfeel: sensory.mouthfeel,
-          };
-        }
-      });
+        };
+      }
+    });
 
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
   }
+}
 
   // 수동 동기화 트리거
   async manualSync(): Promise<void> {
     if (!ENABLE_SYNC) {
       return;
-    }
-    await this.syncAll();
   }
+    await this.syncAll();
+}
 
   // 특정 레코드 강제 업로드
   async forceUploadRecord(recordId: string): Promise<void> {
@@ -552,18 +553,18 @@ class SyncService {
       
       if (!record) {
         throw new Error(`Record not found: ${recordId}`);
-      }
+    }
 
       const isOnline = await this.checkNetworkStatus();
       if (!isOnline) {
         throw new Error('No internet connection');
-      }
+    }
 
       await this.uploadSingleRecord(record);
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
   }
+}
 
   // 카페 및 로스터 정보 동기화
   async syncCafeAndRoasterInfo(): Promise<void> {
@@ -571,7 +572,7 @@ class SyncService {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         throw new Error('User not authenticated');
-      }
+    }
 
       const realmService = RealmService.getInstance();
       const realm = realmService.getRealm();
@@ -581,29 +582,29 @@ class SyncService {
       for (const cafe of cafes) {
         await supabase.rpc('increment_cafe_visit', {
           user_uuid: user.id,
-          cafe_name_param: (cafe as any).name,
-        });
-      }
+          cafe_name_param: (cafe as unknown).name,
+      });
+    }
 
       // 로스터 정보 동기화
       const roasters = realm.objects('RoasterInfo').filtered('coffeeCount > 0');
       for (const roaster of roasters) {
         await supabase.rpc('increment_roaster_visit', {
           user_uuid: user.id,
-          roaster_name_param: (roaster as any).name,
-        });
-      }
-
-    } catch (error) {
+          roaster_name_param: (roaster as unknown).name,
+      });
     }
+
+  } catch (error) {
   }
+}
 
   // TastingStore 업데이트
   private updateTastingStore(): void {
     // Zustand store는 직접 업데이트할 수 없으므로, 
     // 스토어에서 이 상태를 구독하도록 해야 함
     // 여기서는 단순히 콘솔 로그만 출력
-  }
+}
 
   /**
    * Sync user achievements to Supabase
@@ -612,7 +613,7 @@ class SyncService {
     try {
       if (!this.syncStatus.isOnline) {
         return;
-      }
+    }
 
       const realmService = RealmService.getInstance();
       const realm = realmService.getRealm();
@@ -623,7 +624,7 @@ class SyncService {
 
       if (unsyncedAchievements.length === 0) {
         return;
-      }
+    }
 
       for (const achievement of unsyncedAchievements) {
         try {
@@ -639,34 +640,34 @@ class SyncService {
               unlocked_at: (achievement.createdAt as Date)?.toISOString() || new Date().toISOString(),
               created_at: (achievement.createdAt as Date)?.toISOString() || new Date().toISOString(),
               updated_at: (achievement.updatedAt as Date)?.toISOString() || new Date().toISOString(),
-            }, {
+          }, {
               onConflict: 'id'
-            });
+          });
 
           if (error) {
             throw error;
-          }
+        }
 
           // Mark as synced
           realm.write(() => {
             achievement.isSynced = true;
             achievement.syncedAt = new Date();
-          });
+        });
 
-        } catch (error) {
-          console.error('Failed to sync achievement:', achievement.id, error);
-        }
+      } catch (error) {
+          Logger.error('Failed to sync achievement:', 'supabase', { component: 'sync', error: achievement.id, error });
       }
+    }
 
       // Also sync flavor learning progress and taste profiles
       await this.syncFlavorLearningProgress();
       await this.syncTasteProfiles();
 
-    } catch (error) {
-      console.error('Achievement sync failed:', error);
+  } catch (error) {
+      Logger.error('Achievement sync failed:', 'supabase', { component: 'sync', error: error });
       this.syncStatus.error = 'Achievement sync failed';
-    }
   }
+}
 
   /**
    * Sync flavor learning progress
@@ -694,26 +695,26 @@ class SyncService {
               learning_stage: progress.learningStage,
               created_at: (progress.createdAt as Date)?.toISOString() || new Date().toISOString(),
               updated_at: (progress.updatedAt as Date)?.toISOString() || new Date().toISOString(),
-            }, {
+          }, {
               onConflict: 'id'
-            });
+          });
 
           if (error) {
             throw error;
-          }
+        }
 
           realm.write(() => {
             progress.isSynced = true;
-          });
+        });
 
-        } catch (error) {
-          console.error('Failed to sync flavor progress:', progress.id, error);
-        }
+      } catch (error) {
+          Logger.error('Failed to sync flavor progress:', 'supabase', { component: 'sync', error: progress.id, error });
       }
-    } catch (error) {
-      console.error('Flavor learning progress sync failed:', error);
     }
+  } catch (error) {
+      Logger.error('Flavor learning progress sync failed:', 'supabase', { component: 'sync', error: error });
   }
+}
 
   /**
    * Sync user taste profiles
@@ -746,31 +747,31 @@ class SyncService {
               last_analysis_at: (profile.lastAnalysisAt as Date)?.toISOString() || null,
               created_at: (profile.createdAt as Date)?.toISOString() || new Date().toISOString(),
               updated_at: (profile.updatedAt as Date)?.toISOString() || new Date().toISOString(),
-            }, {
+          }, {
               onConflict: 'id'
-            });
+          });
 
           if (error) {
             throw error;
-          }
+        }
 
           realm.write(() => {
             profile.isSynced = true;
-          });
+        });
 
-        } catch (error) {
-          console.error('Failed to sync taste profile:', profile.id, error);
-        }
+      } catch (error) {
+          Logger.error('Failed to sync taste profile:', 'supabase', { component: 'sync', error: profile.id, error });
       }
-    } catch (error) {
-      console.error('Taste profile sync failed:', error);
     }
+  } catch (error) {
+      Logger.error('Taste profile sync failed:', 'supabase', { component: 'sync', error: error });
   }
+}
 
   // 정리
   cleanup(): void {
     // 필요한 경우 리소스 정리
-  }
+}
 }
 
 // 전역 동기화 상태 관리를 위한 스토어 확장
@@ -781,11 +782,11 @@ export const syncStore = {
     lastSyncTime: null,
     pendingUploads: 0,
     error: null,
-  } as SyncStatus,
+} as SyncStatus,
   
   updateStatus: (newStatus: Partial<SyncStatus>) => {
     syncStore.status = { ...syncStore.status, ...newStatus };
-  },
+},
   
   getStatus: () => ({ ...syncStore.status }),
 };
@@ -798,29 +799,29 @@ export const syncUtils = {
   startAutoSync: () => {
     if (!ENABLE_SYNC) {
       return;
-    }
+  }
     setInterval(async () => {
       const status = syncService.getSyncStatus();
       if (ENABLE_SYNC && status.isOnline && !status.isSyncing) {
         await syncService.syncAll();
-      }
-    }, 5 * 60 * 1000); // 5분마다
-  },
+    }
+  }, 5 * 60 * 1000); // 5분마다
+},
 
   // 네트워크 상태 확인
   checkConnection: async () => {
     return await syncService.checkNetworkStatus();
-  },
+},
 
   // 즉시 동기화
   syncNow: async () => {
     await syncService.manualSync();
-  },
+},
 
   // 동기화 상태 가져오기
   getSyncStatus: () => {
     return syncService.getSyncStatus();
-  },
+},
 };
 
 export default SyncService;

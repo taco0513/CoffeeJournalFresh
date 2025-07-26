@@ -1,6 +1,7 @@
 import { supabase } from '@/services/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
+import { Logger } from '../LoggingService';
 export interface CoffeeApprovalNotification {
   coffee_id: string;
   coffee_name: string;
@@ -33,7 +34,7 @@ class CoffeeNotificationService {
           schema: 'public',
           table: 'coffee_catalog',
           filter: `first_added_by=eq.${userId}`,
-        },
+      },
         (payload) => {
           // Check if the coffee was just approved
           if (
@@ -45,16 +46,16 @@ class CoffeeNotificationService {
               coffee_name: payload.new.coffee_name,
               roastery: payload.new.roastery,
               approved_at: new Date().toISOString(),
-            };
+          };
             
             if (this.onApprovalCallback) {
               this.onApprovalCallback(notification);
-            }
           }
         }
+      }
       )
       .subscribe();
-  }
+}
 
   /**
    * Stop listening for notifications
@@ -63,10 +64,10 @@ class CoffeeNotificationService {
     if (this.channel) {
       supabase.removeChannel(this.channel);
       this.channel = null;
-    }
+  }
     this.userId = null;
     this.onApprovalCallback = null;
-  }
+}
 
   /**
    * Get user's pending coffee submissions
@@ -82,11 +83,11 @@ class CoffeeNotificationService {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      console.error('Error fetching pending coffees:', error);
+  } catch (error) {
+      Logger.error('Error fetching pending coffees:', 'supabase', { component: 'coffeeNotifications', error: error });
       return [];
-    }
   }
+}
 
   /**
    * Get user's approved coffee submissions
@@ -102,11 +103,11 @@ class CoffeeNotificationService {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      console.error('Error fetching approved coffees:', error);
+  } catch (error) {
+      Logger.error('Error fetching approved coffees:', 'supabase', { component: 'coffeeNotifications', error: error });
       return [];
-    }
   }
+}
 
   /**
    * Get coffee discovery statistics for a user
@@ -129,12 +130,12 @@ class CoffeeNotificationService {
         approved,
         pending,
         level: this.calculateDiscoveryLevel(approved),
-      };
-    } catch (error) {
-      console.error('Error fetching discovery stats:', error);
+    };
+  } catch (error) {
+      Logger.error('Error fetching discovery stats:', 'supabase', { component: 'coffeeNotifications', error: error });
       return { total: 0, approved: 0, pending: 0, level: 1 };
-    }
   }
+}
 
   /**
    * Calculate discovery level based on approved coffees
@@ -144,7 +145,7 @@ class CoffeeNotificationService {
     if (approvedCount >= 5) return 2;
     if (approvedCount >= 1) return 1;
     return 0;
-  }
+}
 }
 
 export const coffeeNotificationService = new CoffeeNotificationService();

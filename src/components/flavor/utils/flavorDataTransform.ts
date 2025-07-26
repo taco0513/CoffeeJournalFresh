@@ -34,17 +34,17 @@ export const transformFlavorData = (): CategoryData[] => {
         flavors: flavors.map((flavor: string) => ({
           name: flavor,
           koreanName: flavor, // Korean flavors are already in Korean
-        })),
-      };
-    });
+      })),
+    };
+  });
     
     result.push({
       category,
       emoji: CATEGORY_EMOJIS[category] || '☕',
       koreanName: koreanName as string,
       subcategories: subcategoryData,
-    });
-  }
+  });
+}
   
   return result;
 };

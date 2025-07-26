@@ -1,0 +1,10 @@
+diff --git a/node_modules/react-native-gesture-handler/lib/module/specs/NativeRNGestureHandlerModule.ts b/node_modules/react-native-gesture-handler/lib/module/specs/NativeRNGestureHandlerModule.ts
+index 1234567..2345678 100644
+--- a/node_modules/react-native-gesture-handler/lib/module/specs/NativeRNGestureHandlerModule.ts
++++ b/node_modules/react-native-gesture-handler/lib/module/specs/NativeRNGestureHandlerModule.ts
+@@ -23,4 +23,4 @@ export interface Spec extends TurboModule {
+   flushOperations: () => void;
+ }
+ 
+-export default TurboModuleRegistry.getEnforcing<Spec>('RNGestureHandlerModule');
++export default TurboModuleRegistry.get<Spec>('RNGestureHandlerModule');

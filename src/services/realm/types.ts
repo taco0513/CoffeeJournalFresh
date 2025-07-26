@@ -11,7 +11,7 @@ export interface TastingData {
     altitude?: string;
     process?: string;
     temperature?: 'hot' | 'cold';
-  };
+};
   roasterNotes?: string;
   selectedFlavors?: FlavorPath[];
   selectedSensoryExpressions?: SelectedSensoryExpression[];
@@ -23,15 +23,15 @@ export interface TastingData {
     bitterness?: number;
     balance?: number;
     mouthfeel?: string;
-  };
+};
   personalComment?: string;
   matchScore?: {
     total?: number;
     flavorScore?: number;
     sensoryScore?: number;
-  };
+};
   mode?: 'cafe' | 'home_cafe';
-  homeCafeData?: any;
+  homeCafeData?: unknown;
 }
 
 export interface TastingFilter {

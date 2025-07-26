@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo} from 'react';
 import { FlatList, SafeAreaView } from 'react-native';
 import { XStack, Spinner, GetProps } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import RealmService from '../../services/realm/RealmService';
-import { ITastingRecord } from '../../services/realm/schemas';
+import { RealmService } from '../../services/realm/RealmService';
+import { ITastingRecord} from '../../services/realm/schemas';
 
 // Components
 import {
@@ -32,7 +32,8 @@ import {
   EmptySubtext,
 } from '../../components-tamagui/search/SearchScreenStyles';
 import { TastingSearchCard } from '../../components-tamagui/search/TastingSearchCard';
-import { SearchFilters } from '../../components-tamagui/search/SearchFilters';
+import { Logger } from '../../services/LoggingService';
+import { SearchFilters} from '../../components-tamagui/search/SearchFilters';
 
 interface FilterOptions {
   roastery?: string;
@@ -47,7 +48,7 @@ interface FilterOptions {
 export type SearchScreenProps = GetProps<typeof Container>;
 
 const SearchScreen: React.FC<SearchScreenProps> = () => {
-  const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<unknown>>();
   
   // State
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,7 +64,7 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
   // Load data
   useEffect(() => {
     loadTastingData();
-  }, []);
+}, []);
 
   const loadTastingData = async () => {
     try {
@@ -72,7 +73,7 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
       
       if (!realmService.isInitialized) {
         await realmService.initialize();
-      }
+    }
 
       const tastings = await realmService.getTastingRecords({ isDeleted: false });
       const tastingArray = Array.from(tastings);
@@ -96,19 +97,19 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
           return t.flavorNotes.map(note => 
             note.koreanValue || note.value || String(note)
           ).filter(Boolean);
-        })
+      })
       )].sort();
       
       setAvailableRoasteries(roasteries);
       setAvailableCafeNames(cafeNames);
       setAvailableFlavorNotes(flavorNotes);
       
-    } catch (error) {
-      console.error('Error loading tasting data:', error);
-    } finally {
+  } catch (error) {
+      Logger.error('Error loading tasting data:', 'screen', { component: 'SearchScreen', error: error });
+  } finally {
       setIsLoading(false);
-    }
-  };
+  }
+};
 
   // Filter and search logic
   const filteredTastings = useMemo(() => {
@@ -126,28 +127,28 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
         tasting.personalComment?.toLowerCase().includes(query) ||
         tasting.roasterNotes?.toLowerCase().includes(query)
       );
-    }
+  }
 
     // Apply filters
     if (filters.roastery) {
       result = result.filter(t => t.roastery === filters.roastery);
-    }
+  }
 
     if (filters.cafeName) {
       result = result.filter(t => t.cafeName === filters.cafeName);
-    }
+  }
 
     if (filters.minScore !== undefined) {
       result = result.filter(t => 
         t.matchScoreTotal !== undefined && t.matchScoreTotal >= filters.minScore!
       );
-    }
+  }
 
     if (filters.maxScore !== undefined) {
       result = result.filter(t => 
         t.matchScoreTotal !== undefined && t.matchScoreTotal <= filters.maxScore!
       );
-    }
+  }
 
     if (filters.flavorNotes && filters.flavorNotes.length > 0) {
       result = result.filter(tasting => {
@@ -160,12 +161,12 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
         return filters.flavorNotes!.some(flavor => 
           tastingFlavors.includes(flavor)
         );
-      });
-    }
+    });
+  }
 
     // Sort by creation date (newest first)
     return result.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  }, [allTastings, searchQuery, filters]);
+}, [allTastings, searchQuery, filters]);
 
   // Filter count
   const activeFilterCount = useMemo(() => {
@@ -175,26 +176,26 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
     if (filters.minScore !== undefined || filters.maxScore !== undefined) count++;
     if (filters.flavorNotes && filters.flavorNotes.length > 0) count++;
     return count;
-  }, [filters]);
+}, [filters]);
 
   // Handlers
   const clearSearch = () => {
     setSearchQuery('');
-  };
+};
 
   const clearFilters = () => {
     setFilters({});
-  };
+};
 
   const handleApplyFilters = (newFilters: FilterOptions) => {
     setFilters(newFilters);
-  };
+};
 
   const handleTastingPress = (tasting: ITastingRecord) => {
     navigation.navigate('TastingDetail', { 
       tastingId: tasting.id 
-    });
-  };
+  });
+};
 
   // Render methods
   const renderSearchBar = () => (
@@ -241,7 +242,7 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
         </ClearFiltersButton>
       </ClearFiltersContainer>
     );
-  };
+};
 
   const renderEmptyState = () => (
     <EmptyContainer>
@@ -250,13 +251,13 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
         {searchQuery || activeFilterCount > 0 
           ? '검색 결과가 없습니다' 
           : '아직 기록된 커피가 없습니다'
-        }
+      }
       </EmptyText>
       <EmptySubtext>
         {searchQuery || activeFilterCount > 0
           ? '다른 검색어나 필터를 시도해보세요'
           : '첫 번째 커피 테이스팅을 기록해보세요'
-        }
+      }
       </EmptySubtext>
     </EmptyContainer>
   );
@@ -279,7 +280,7 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
         </SafeAreaView>
       </Container>
     );
-  }
+}
 
   return (
     <Container>

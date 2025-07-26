@@ -39,23 +39,23 @@ export const AchievementCard: React.FC<AchievementCardProps> = ({
         return IOSColors.systemOrange;
       default:
         return IOSColors.systemGray3;
-    }
-  };
+  }
+};
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('ko-KR', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-    }).format(date);
-  };
+  }).format(date);
+};
 
-  const formatReward = (reward: any) => {
+  const formatReward = (reward: unknown) => {
     if (reward.type === 'points') {
       return `${reward.value}pt`;
-    }
+  }
     return reward.value;
-  };
+};
 
   return (
     <TouchableOpacity 
@@ -190,17 +190,17 @@ const styles = StyleSheet.create({
     borderWidth: IOSLayout.borderWidthThin,
     borderColor: IOSColors.separator,
     ...IOSShadows.small,
-  },
+},
   compactContainer: {
     padding: IOSSpacing.md,
     marginBottom: IOSSpacing.sm,
-  },
+},
   unlockedContainer: {
     borderColor: IOSColors.systemGreen,
-  },
+},
   lockedContainer: {
     opacity: 0.8,
-  },
+},
   newBadge: {
     position: 'absolute',
     top: -8,
@@ -210,17 +210,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: IOSSpacing.xs,
     paddingVertical: IOSSpacing.xxs,
     zIndex: 1,
-  },
+},
   newBadgeText: {
     ...IOSTypography.caption2,
     fontWeight: '700' as const,
     color: IOSColors.systemBackground,
-  },
+},
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: IOSSpacing.sm,
-  },
+},
   iconContainer: {
     width: 48,
     height: 48,
@@ -228,99 +228,99 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: IOSSpacing.md,
-  },
+},
   icon: {
     fontSize: IOSLayout.iconSizeLarge,
-  },
+},
   compactIcon: {
     fontSize: IOSLayout.iconSizeMedium,
-  },
+},
   lockedIcon: {
     opacity: 0.5,
-  },
+},
   headerInfo: {
     flex: 1,
-  },
+},
   title: {
     ...IOSTypography.headline,
     color: IOSColors.label,
     marginBottom: IOSSpacing.xxs,
-  },
+},
   compactTitle: {
     ...IOSTypography.subheadline,
-  },
+},
   rarityRow: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   rarityBadge: {
     paddingHorizontal: IOSSpacing.xs,
     paddingVertical: IOSSpacing.xxxs,
     borderRadius: IOSLayout.cornerRadiusSmall,
-  },
+},
   rarityBadgeText: {
     ...IOSTypography.caption2,
     fontWeight: '600' as const,
     color: IOSColors.systemBackground,
-  },
+},
   rewardContainer: {
     alignItems: 'flex-end',
-  },
+},
   rewardText: {
     ...IOSTypography.footnote,
     fontWeight: '600' as const,
     color: IOSColors.systemBlue,
-  },
+},
   description: {
     ...IOSTypography.footnote,
     color: IOSColors.secondaryLabel,
     lineHeight: 20,
     marginBottom: IOSSpacing.sm,
-  },
+},
   progressSection: {
     marginTop: IOSSpacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     gap: IOSSpacing.md,
-  },
+},
   progressSectionCompact: {
     marginTop: IOSSpacing.sm,
     gap: IOSSpacing.sm,
-  },
+},
   progressInfo: {
     flex: 1,
-  },
+},
   circularProgressText: {
     ...IOSTypography.footnote,
     fontWeight: '600' as const,
     color: IOSColors.label,
-  },
+},
   circularProgressTextCompact: {
     ...IOSTypography.caption2,
     fontWeight: '600' as const,
-  },
+},
   estimatedTime: {
     ...IOSTypography.caption1,
     color: IOSColors.tertiaryLabel,
     marginTop: IOSSpacing.xxxs,
-  },
+},
   progressDetail: {
     ...IOSTypography.footnote,
     fontWeight: '500' as const,
     color: IOSColors.secondaryLabel,
-  },
+},
   unlockSection: {
     marginTop: IOSSpacing.sm,
     paddingTop: IOSSpacing.sm,
     borderTopWidth: IOSLayout.borderWidthThin,
     borderTopColor: IOSColors.separator,
-  },
+},
   unlockDate: {
     ...IOSTypography.caption1,
     fontWeight: '500' as const,
     color: IOSColors.secondaryLabel,
-  },
+},
   lockedText: {
     opacity: 0.6,
-  },
+},
 });

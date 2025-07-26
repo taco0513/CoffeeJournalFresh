@@ -1,0 +1,209 @@
+{
+  "summary": {
+    "total": 13,
+    "byCategory": {
+      "UI Implementation": 1,
+      "Navigation Implementation": 3,
+      "Sentry Integration": 2,
+      "Supabase Integration": 7
+    },
+    "byPriority": {
+      "HIGH": 4,
+      "MEDIUM": 6,
+      "LOW": 3
+    }
+  },
+  "todos": [
+    {
+      "file": "src/components/flavor/FlavorChip.tsx",
+      "line": 15,
+      "content": "// TODO: Add search highlighting logic if needed",
+      "category": "UI Implementation",
+      "priority": "LOW"
+    },
+    {
+      "file": "src/screens-tamagui/analytics/PersonalTasteDashboard.tsx",
+      "line": 383,
+      "content": "// TODO: FlavorCategoryDetail screen needs to be implemented",
+      "category": "Navigation Implementation",
+      "priority": "HIGH"
+    },
+    {
+      "file": "src/screens-tamagui/analytics/PersonalTasteDashboard.tsx",
+      "line": 392,
+      "content": "// TODO: Add recommendations screen or redirect to appropriate screen",
+      "category": "Navigation Implementation",
+      "priority": "MEDIUM"
+    },
+    {
+      "file": "src/screens-tamagui/analytics/PhotoGalleryScreen.tsx",
+      "line": 300,
+      "content": "// TODO: PhotoViewer screen needs to be implemented",
+      "category": "Navigation Implementation",
+      "priority": "HIGH"
+    },
+    {
+      "file": "src/services/SentryService.ts",
+      "line": 2,
+      "content": "// TODO: When implementing @sentry/react-native:",
+      "category": "Sentry Integration",
+      "priority": "HIGH"
+    },
+    {
+      "file": "src/services/SentryService.ts",
+      "line": 15,
+      "content": "const SENTRY_DSN = process.env.SENTRY_DSN || ''; // TODO: Add your Sentry DSN from https://sentry.io",
+      "category": "Sentry Integration",
+      "priority": "HIGH"
+    },
+    {
+      "file": "src/services/supabase/sync.ts",
+      "line": 433,
+      "content": "matchScoreFlavor: 0,  // TODO: 나중에 제거",
+      "category": "Supabase Integration",
+      "priority": "LOW"
+    },
+    {
+      "file": "src/services/supabase/sync.ts",
+      "line": 434,
+      "content": "matchScoreSensory: 0,  // TODO: 나중에 제거",
+      "category": "Supabase Integration",
+      "priority": "LOW"
+    },
+    {
+      "file": "src/stores/useUserStore.ts",
+      "line": 452,
+      "content": "// TODO: Save to Supabase",
+      "category": "Supabase Integration",
+      "priority": "MEDIUM"
+    },
+    {
+      "file": "src/stores/useUserStore.ts",
+      "line": 463,
+      "content": "// TODO: Check username availability in Supabase",
+      "category": "Supabase Integration",
+      "priority": "MEDIUM"
+    },
+    {
+      "file": "src/stores/useUserStore.ts",
+      "line": 471,
+      "content": "// TODO: Implement Supabase follow relationship",
+      "category": "Supabase Integration",
+      "priority": "MEDIUM"
+    },
+    {
+      "file": "src/stores/useUserStore.ts",
+      "line": 481,
+      "content": "// TODO: Implement Supabase unfollow",
+      "category": "Supabase Integration",
+      "priority": "MEDIUM"
+    },
+    {
+      "file": "src/stores/useUserStore.ts",
+      "line": 512,
+      "content": "// TODO: Fetch from Supabase",
+      "category": "Supabase Integration",
+      "priority": "MEDIUM"
+    }
+  ],
+  "plan": {
+    "immediate": [
+      {
+        "file": "src/screens-tamagui/analytics/PersonalTasteDashboard.tsx",
+        "line": 383,
+        "content": "// TODO: FlavorCategoryDetail screen needs to be implemented",
+        "category": "Navigation Implementation",
+        "priority": "HIGH"
+      },
+      {
+        "file": "src/screens-tamagui/analytics/PhotoGalleryScreen.tsx",
+        "line": 300,
+        "content": "// TODO: PhotoViewer screen needs to be implemented",
+        "category": "Navigation Implementation",
+        "priority": "HIGH"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "line": 2,
+        "content": "// TODO: When implementing @sentry/react-native:",
+        "category": "Sentry Integration",
+        "priority": "HIGH"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "line": 15,
+        "content": "const SENTRY_DSN = process.env.SENTRY_DSN || ''; // TODO: Add your Sentry DSN from https://sentry.io",
+        "category": "Sentry Integration",
+        "priority": "HIGH"
+      }
+    ],
+    "nextSprint": [
+      {
+        "file": "src/screens-tamagui/analytics/PersonalTasteDashboard.tsx",
+        "line": 392,
+        "content": "// TODO: Add recommendations screen or redirect to appropriate screen",
+        "category": "Navigation Implementation",
+        "priority": "MEDIUM"
+      },
+      {
+        "file": "src/stores/useUserStore.ts",
+        "line": 452,
+        "content": "// TODO: Save to Supabase",
+        "category": "Supabase Integration",
+        "priority": "MEDIUM"
+      },
+      {
+        "file": "src/stores/useUserStore.ts",
+        "line": 463,
+        "content": "// TODO: Check username availability in Supabase",
+        "category": "Supabase Integration",
+        "priority": "MEDIUM"
+      },
+      {
+        "file": "src/stores/useUserStore.ts",
+        "line": 471,
+        "content": "// TODO: Implement Supabase follow relationship",
+        "category": "Supabase Integration",
+        "priority": "MEDIUM"
+      },
+      {
+        "file": "src/stores/useUserStore.ts",
+        "line": 481,
+        "content": "// TODO: Implement Supabase unfollow",
+        "category": "Supabase Integration",
+        "priority": "MEDIUM"
+      },
+      {
+        "file": "src/stores/useUserStore.ts",
+        "line": 512,
+        "content": "// TODO: Fetch from Supabase",
+        "category": "Supabase Integration",
+        "priority": "MEDIUM"
+      }
+    ],
+    "backlog": [
+      {
+        "file": "src/components/flavor/FlavorChip.tsx",
+        "line": 15,
+        "content": "// TODO: Add search highlighting logic if needed",
+        "category": "UI Implementation",
+        "priority": "LOW"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "line": 433,
+        "content": "matchScoreFlavor: 0,  // TODO: 나중에 제거",
+        "category": "Supabase Integration",
+        "priority": "LOW"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "line": 434,
+        "content": "matchScoreSensory: 0,  // TODO: 나중에 제거",
+        "category": "Supabase Integration",
+        "priority": "LOW"
+      }
+    ]
+  },
+  "generated": "2025-07-26T03:33:53.890Z"
+}

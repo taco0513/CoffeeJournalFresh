@@ -1,6 +1,7 @@
 import { performanceMonitor } from '../services/PerformanceMonitor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { Logger } from '../services/LoggingService';
 export interface PerformanceReport {
   summary: {
     totalOperations: number;
@@ -9,7 +10,7 @@ export interface PerformanceReport {
     fastestOperations: { name: string; duration: number }[];
     errorRate: number;
     memoryIssues: number;
-  };
+};
   recommendations: string[];
   criticalIssues: { type: string; description: string; severity: 'high' | 'medium' | 'low' }[];
 }
@@ -19,7 +20,7 @@ interface StoredMetric {
   duration: number;
   timestamp: number;
   success: boolean;
-  metadata?: any;
+  metadata?: unknown;
 }
 
 /**
@@ -34,37 +35,37 @@ class PerformanceAnalyzer {
 
   private constructor() {
     this.loadStoredMetrics();
-  }
+}
 
   static getInstance(): PerformanceAnalyzer {
     if (!PerformanceAnalyzer.instance) {
       PerformanceAnalyzer.instance = new PerformanceAnalyzer();
-    }
-    return PerformanceAnalyzer.instance;
   }
+    return PerformanceAnalyzer.instance;
+}
 
   /**
    * Record a performance metric
    */
-  recordMetric(name: string, duration: number, success: boolean = true, metadata?: any): void {
+  recordMetric(name: string, duration: number, success: boolean = true, metadata?: unknown): void {
     const metric: StoredMetric = {
       name,
       duration,
       timestamp: Date.now(),
       success,
       metadata,
-    };
+  };
 
     this.metrics.push(metric);
 
     // Keep only recent metrics
     if (this.metrics.length > this.MAX_STORED_METRICS) {
       this.metrics = this.metrics.slice(-this.MAX_STORED_METRICS);
-    }
+  }
 
     // Persist to storage (debounced)
     this.debouncedSave();
-  }
+}
 
   /**
    * Generate comprehensive performance report
@@ -79,8 +80,8 @@ class PerformanceAnalyzer {
       summary,
       recommendations,
       criticalIssues,
-    };
-  }
+  };
+}
 
   /**
    * Get performance insights for specific operations
@@ -90,7 +91,7 @@ class PerformanceAnalyzer {
     successRate: number;
     recentTrend: 'improving' | 'degrading' | 'stable';
     recommendations: string[];
-  } {
+} {
     const recentMetrics = this.getRecentMetrics();
     const operationMetrics = recentMetrics.filter(m => m.name === operationName);
 
@@ -100,8 +101,8 @@ class PerformanceAnalyzer {
         successRate: 0,
         recentTrend: 'stable',
         recommendations: ['No data available for this operation'],
-      };
-    }
+    };
+  }
 
     const averageTime = operationMetrics.reduce((sum, m) => sum + m.duration, 0) / operationMetrics.length;
     const successRate = operationMetrics.filter(m => m.success).length / operationMetrics.length;
@@ -119,9 +120,9 @@ class PerformanceAnalyzer {
 
     if (secondHalfAvg < firstHalfAvg * (1 - trendThreshold)) {
       recentTrend = 'improving';
-    } else if (secondHalfAvg > firstHalfAvg * (1 + trendThreshold)) {
+  } else if (secondHalfAvg > firstHalfAvg * (1 + trendThreshold)) {
       recentTrend = 'degrading';
-    }
+  }
 
     const recommendations = this.generateOperationRecommendations(
       operationName,
@@ -135,19 +136,19 @@ class PerformanceAnalyzer {
       successRate,
       recentTrend,
       recommendations,
-    };
-  }
+  };
+}
 
   /**
    * Export performance data for analysis
    */
-  exportData(): any {
+  exportData(): unknown {
     return {
       metrics: this.getRecentMetrics(),
       summary: this.generateSummary(this.getRecentMetrics()),
       exportedAt: new Date().toISOString(),
-    };
-  }
+  };
+}
 
   /**
    * Clear all stored metrics
@@ -155,13 +156,13 @@ class PerformanceAnalyzer {
   clearMetrics(): void {
     this.metrics = [];
     AsyncStorage.removeItem(this.STORAGE_KEY);
-  }
+}
 
   // Private methods
   private getRecentMetrics(): StoredMetric[] {
     const cutoff = Date.now() - this.ANALYSIS_PERIOD;
     return this.metrics.filter(m => m.timestamp >= cutoff);
-  }
+}
 
   private generateSummary(metrics: StoredMetric[]): PerformanceReport['summary'] {
     if (metrics.length === 0) {
@@ -172,8 +173,8 @@ class PerformanceAnalyzer {
         fastestOperations: [],
         errorRate: 0,
         memoryIssues: 0,
-      };
-    }
+    };
+  }
 
     const totalOperations = metrics.length;
     const averageResponseTime = metrics.reduce((sum, m) => sum + m.duration, 0) / totalOperations;
@@ -183,16 +184,16 @@ class PerformanceAnalyzer {
     const operationGroups = metrics.reduce((groups, metric) => {
       if (!groups[metric.name]) {
         groups[metric.name] = [];
-      }
+    }
       groups[metric.name].push(metric);
       return groups;
-    }, {} as Record<string, StoredMetric[]>);
+  }, {} as Record<string, StoredMetric[]>);
 
     // Calculate average times per operation
     const operationAverages = Object.entries(operationGroups).map(([name, ops]) => ({
       name,
       duration: ops.reduce((sum, op) => sum + op.duration, 0) / ops.length,
-    }));
+  }));
 
     const slowestOperations = operationAverages
       .sort((a, b) => b.duration - a.duration)
@@ -214,8 +215,8 @@ class PerformanceAnalyzer {
       fastestOperations,
       errorRate,
       memoryIssues,
-    };
-  }
+  };
+}
 
   private generateRecommendations(
     metrics: StoredMetric[], 
@@ -228,31 +229,31 @@ class PerformanceAnalyzer {
       recommendations.push(
         `Error rate is ${(summary.errorRate * 100).toFixed(1)}%. Focus on error handling and retry mechanisms.`
       );
-    }
+  }
 
     // Slow operations
     if (summary.slowestOperations.length > 0 && summary.slowestOperations[0].duration > 2000) {
       recommendations.push(
         `Slowest operation "${summary.slowestOperations[0].name}" takes ${summary.slowestOperations[0].duration.toFixed(0)}ms. Consider optimization.`
       );
-    }
+  }
 
     // Memory issues
     if (summary.memoryIssues > 0) {
       recommendations.push(
         `${summary.memoryIssues} memory-related issues detected. Monitor memory usage and implement cleanup.`
       );
-    }
+  }
 
     // High average response time
     if (summary.averageResponseTime > 1000) {
       recommendations.push(
         `Average response time is ${summary.averageResponseTime.toFixed(0)}ms. Consider implementing caching or lazy loading.`
       );
-    }
+  }
 
     return recommendations;
-  }
+}
 
   private identifyCriticalIssues(
     metrics: StoredMetric[], 
@@ -266,8 +267,8 @@ class PerformanceAnalyzer {
         type: 'high_error_rate',
         description: `Error rate of ${(summary.errorRate * 100).toFixed(1)}% indicates system instability`,
         severity: 'high',
-      });
-    }
+    });
+  }
 
     // Extremely slow operations
     if (summary.slowestOperations.length > 0 && summary.slowestOperations[0].duration > 5000) {
@@ -275,8 +276,8 @@ class PerformanceAnalyzer {
         type: 'slow_operation',
         description: `Operation "${summary.slowestOperations[0].name}" takes over 5 seconds`,
         severity: 'high',
-      });
-    }
+    });
+  }
 
     // Memory pressure
     if (summary.memoryIssues > 10) {
@@ -284,11 +285,11 @@ class PerformanceAnalyzer {
         type: 'memory_pressure',
         description: `${summary.memoryIssues} memory issues detected in recent period`,
         severity: 'medium',
-      });
-    }
+    });
+  }
 
     return issues;
-  }
+}
 
   private generateOperationRecommendations(
     operationName: string,
@@ -300,50 +301,50 @@ class PerformanceAnalyzer {
 
     if (averageTime > 2000) {
       recommendations.push(`Consider optimizing ${operationName} - current average: ${averageTime.toFixed(0)}ms`);
-    }
+  }
 
     if (successRate < 0.95) {
       recommendations.push(`Improve error handling for ${operationName} - success rate: ${(successRate * 100).toFixed(1)}%`);
-    }
+  }
 
     if (trend === 'degrading') {
       recommendations.push(`Performance degrading for ${operationName} - investigate recent changes`);
-    }
+  }
 
     return recommendations;
-  }
+}
 
   private async loadStoredMetrics(): Promise<void> {
     try {
       const stored = await AsyncStorage.getItem(this.STORAGE_KEY);
       if (stored) {
         this.metrics = JSON.parse(stored);
-      }
-    } catch (error) {
-      console.warn('Failed to load performance metrics:', error);
     }
+  } catch (error) {
+      Logger.warn('Failed to load performance metrics:', 'util', { component: 'performanceAnalysis', error: error });
   }
+}
 
   private saveTimeout: NodeJS.Timeout | null = null;
   private debouncedSave = (): void => {
     if (this.saveTimeout) {
       clearTimeout(this.saveTimeout);
-    }
+  }
     
     this.saveTimeout = setTimeout(async () => {
       try {
         await AsyncStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.metrics));
-      } catch (error) {
-        console.warn('Failed to save performance metrics:', error);
-      }
-    }, 5000); // Save after 5 seconds of inactivity
-  };
+    } catch (error) {
+        Logger.warn('Failed to save performance metrics:', 'util', { component: 'performanceAnalysis', error: error });
+    }
+  }, 5000); // Save after 5 seconds of inactivity
+};
 }
 
 export const performanceAnalyzer = PerformanceAnalyzer.getInstance();
 
 // Convenience function for easy integration
-export function trackPerformance<T extends (...args: any[]) => any>(
+export function trackPerformance<T extends (...args: unknown[]) => any>(
   fn: T,
   operationName: string
 ): T {
@@ -358,18 +359,18 @@ export function trackPerformance<T extends (...args: any[]) => any>(
           .then((value) => {
             performanceAnalyzer.recordMetric(operationName, Date.now() - startTime, true);
             return value;
-          })
+        })
           .catch((error) => {
             performanceAnalyzer.recordMetric(operationName, Date.now() - startTime, false);
             throw error;
-          });
-      } else {
+        });
+    } else {
         performanceAnalyzer.recordMetric(operationName, Date.now() - startTime, true);
         return result;
-      }
-    } catch (error) {
+    }
+  } catch (error) {
       performanceAnalyzer.recordMetric(operationName, Date.now() - startTime, false);
       throw error;
-    }
-  }) as T;
+  }
+}) as T;
 }

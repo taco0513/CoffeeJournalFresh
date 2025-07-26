@@ -19,9 +19,9 @@ const IconContainer = styled(View, {
         borderRadius: 8,
         backgroundColor: '$blue3',
         scale: 1.05,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const IconText = styled(Text, {
@@ -35,9 +35,9 @@ const IconText = styled(Text, {
       true: {
         fontSize: 20,
         fontWeight: '600',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 // Simple text-based icons for lightweight MVP
@@ -73,8 +73,8 @@ export const TabBarIcon: React.FC<TabBarIconProps> = ({ name, focused, color, on
   const handlePress = () => {
     if (onPress) {
       onPress();
-    }
-  };
+  }
+};
   
   return (
     <IconContainer focused={focused}>

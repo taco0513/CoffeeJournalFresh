@@ -2,6 +2,7 @@ import { useTastingStore } from '../stores/tastingStore';
 import { FlavorPath, SelectedSensoryExpression, FilterType, PourTechnique, PouroverDripper } from '../types/tasting';
 import { MouthfeelType } from '../types/sensory';
 
+import { Logger } from './LoggingService';
 // Sample dummy data collections
 const COFFEE_NAMES = [
   '에티오피아 예가체프',
@@ -126,7 +127,7 @@ const PROFILE_DATA = {
     preferredOrigins: ORIGINS,
     brewingExperience: ['초보자', '중급자', '상급자', '전문가'],
     dailyCoffeeConsumption: ['1잔', '2-3잔', '4-5잔', '6잔 이상'],
-  },
+},
 };
 
 const DEVELOPER_SETTINGS = {
@@ -146,7 +147,7 @@ export class DummyDataService {
     if (store.currentTasting.mode === 'cafe') {
       const cafeNames = ['블루보틀 카페', '스타벅스', '앤트러사이트', '프릳츠 매장', '테라로사', 'Home'];
       store.updateField('cafeName', cafeNames[Math.floor(Math.random() * cafeNames.length)]);
-    }
+  }
     
     store.updateField('roastery', ROASTERS[Math.floor(Math.random() * ROASTERS.length)]);
     store.updateField('coffeeName', COFFEE_NAMES[randomIndex]);
@@ -156,7 +157,7 @@ export class DummyDataService {
     store.updateField('altitude', `${1200 + Math.floor(Math.random() * 800)}m`);
     store.updateField('roastLevel', ROAST_LEVELS[Math.floor(Math.random() * ROAST_LEVELS.length)]);
     store.updateField('temperature', Math.random() > 0.5 ? 'hot' : 'cold');
-  }
+}
 
   // Home Cafe screen
   static async fillHomeCafeData() {
@@ -169,10 +170,10 @@ export class DummyDataService {
           brand: grinder.brand,
           model: grinder.model,
           setting: `${15 + Math.floor(Math.random() * 10)}`,
-        },
+      },
         dripper: HOME_CAFE_EQUIPMENT.brewingMethods[Math.floor(Math.random() * HOME_CAFE_EQUIPMENT.brewingMethods.length)] as PouroverDripper,
         filter: 'bleached' as FilterType, // Simplified for dummy data
-      },
+    },
       recipe: {
         doseIn: 15 + Math.floor(Math.random() * 5),
         waterAmount: 240 + Math.floor(Math.random() * 60),
@@ -183,14 +184,14 @@ export class DummyDataService {
         totalBrewTime: 180 + Math.floor(Math.random() * 60),
         pourTechnique: 'spiral' as PourTechnique,
         numberOfPours: 4,
-      },
+    },
       notes: {
         grindAdjustment: '그라인더 세팅을 조금 더 굵게 조정',
         tasteResult: '추출 시간이 줄어들고 산미가 더 밝아짐',
         nextExperiment: '물 온도를 2도 낮춰서 테스트 예정',
-      },
-    });
-  }
+    },
+  });
+}
 
   // Flavor selection screen
   static async selectRandomFlavors() {
@@ -205,7 +206,7 @@ export class DummyDataService {
     const count = 2 + Math.floor(Math.random() * 2);
     const selectedFlavors = flavors.slice(0, count);
     store.setSelectedFlavors(selectedFlavors);
-  }
+}
 
   // Sensory evaluation screens
   static async fillSensoryData() {
@@ -220,7 +221,7 @@ export class DummyDataService {
     
     const mouthfeelOptions: MouthfeelType[] = ['Clean', 'Creamy', 'Juicy', 'Silky'];
     store.updateField('mouthfeel', mouthfeelOptions[Math.floor(Math.random() * mouthfeelOptions.length)]);
-  }
+}
 
   // Korean sensory expressions
   static async selectKoreanExpressions() {
@@ -243,32 +244,32 @@ export class DummyDataService {
         emoji: '☕',
         intensity: 3,
         selected: true,
-      });
     });
+  });
     
     store.setSelectedSensoryExpressions(expressions);
-  }
+}
 
   // Personal comment screen
   static async fillPersonalComment() {
     const store = useTastingStore.getState();
     const comment = PERSONAL_COMMENTS[Math.floor(Math.random() * PERSONAL_COMMENTS.length)];
     store.updateField('personalComment', comment);
-  }
+}
 
   // Roaster notes screen
   static async fillRoasterNotes() {
     const store = useTastingStore.getState();
     const notes = ROASTER_NOTES[Math.floor(Math.random() * ROASTER_NOTES.length)];
     store.updateField('roasterNotes', notes);
-  }
+}
 
   // Search screen filters
   static async fillSearchFilters() {
     // Auto-fill search form with random filters
     // Note: This would need to be implemented based on actual SearchScreen component structure
-    console.log('Filling search filters with dummy data');
-  }
+    Logger.debug('Filling search filters with dummy data', 'service', { component: 'DummyDataService' });
+}
 
   // Admin coffee edit form
   static async fillAdminEditForm() {
@@ -276,15 +277,15 @@ export class DummyDataService {
     const randomIndex = Math.floor(Math.random() * COFFEE_NAMES.length);
     
     // This would fill admin form fields - implementation depends on actual admin form structure
-    console.log('Filling admin edit form:', {
+    Logger.debug('Filling admin edit form:', {
       roastery: ROASTERS[Math.floor(Math.random() * ROASTERS.length)],
       coffeeName: COFFEE_NAMES[randomIndex],
       origin: ORIGINS[Math.floor(Math.random() * ORIGINS.length)],
       variety: VARIETIES[Math.floor(Math.random() * VARIETIES.length)],
       process: PROCESSES[Math.floor(Math.random() * PROCESSES.length)],
       roastLevel: ROAST_LEVELS[Math.floor(Math.random() * ROAST_LEVELS.length)],
-    });
-  }
+  });
+}
 
   // Auto-select tasting mode
   static async autoSelectMode() {
@@ -292,8 +293,8 @@ export class DummyDataService {
     // Randomly select between cafe and home_cafe mode, but prefer home_cafe for testing
     const mode = Math.random() > 0.3 ? 'home_cafe' : 'cafe';
     store.updateField('mode', mode);
-    console.log('Auto-selected mode:', mode);
-  }
+    Logger.debug('Auto-selected mode:', 'service', { component: 'DummyDataService', data: mode });
+}
 
   // Profile setup data
   static async fillProfileData() {
@@ -303,14 +304,14 @@ export class DummyDataService {
     const experience = PROFILE_DATA.preferences.brewingExperience[Math.floor(Math.random() * PROFILE_DATA.preferences.brewingExperience.length)];
     const consumption = PROFILE_DATA.preferences.dailyCoffeeConsumption[Math.floor(Math.random() * PROFILE_DATA.preferences.dailyCoffeeConsumption.length)];
     
-    console.log('Filling profile data:', {
+    Logger.debug('Filling profile data:', {
       username,
       preferredRoastLevel: roastLevel,
       preferredOrigin: origin,
       brewingExperience: experience,
       dailyCoffeeConsumption: consumption,
-    });
-  }
+  });
+}
 
   // Admin feedback data
   static async generateFeedbackData() {
@@ -318,24 +319,24 @@ export class DummyDataService {
     const priority = ADMIN_DATA.priorities[Math.floor(Math.random() * ADMIN_DATA.priorities.length)];
     const status = ADMIN_DATA.statuses[Math.floor(Math.random() * ADMIN_DATA.statuses.length)];
     
-    console.log('Generating admin feedback data:', {
+    Logger.debug('Generating admin feedback data:', {
       type: feedbackType,
       priority,
       status,
       description: '사용자가 제출한 피드백 내용입니다.',
       timestamp: new Date().toISOString(),
-    });
-  }
+  });
+}
 
   // Developer settings toggles
   static async fillDeveloperSettings() {
-    console.log('Toggling developer settings:', {
+    Logger.debug('Toggling developer settings:', {
       mockDataEnabled: DEVELOPER_SETTINGS.mockDataEnabled[Math.floor(Math.random() * 2)],
       debugMode: DEVELOPER_SETTINGS.debugMode[Math.floor(Math.random() * 2)],
       performanceMonitoring: DEVELOPER_SETTINGS.performanceMonitoring[Math.floor(Math.random() * 2)],
       crashReporting: DEVELOPER_SETTINGS.crashReporting[Math.floor(Math.random() * 2)],
-    });
-  }
+  });
+}
 
   // Enhanced HomeCafe data with more realistic details
   static async fillEnhancedHomeCafeData() {
@@ -351,10 +352,10 @@ export class DummyDataService {
           brand: grinder.brand,
           model: grinder.model,
           setting: `${15 + Math.floor(Math.random() * 15)}`, // 15-30 range
-        },
+      },
         dripper: brewingMethod as PouroverDripper,
         filter: 'bleached' as FilterType, // Simplified for dummy data
-      },
+    },
       recipe: {
         doseIn: 12 + Math.floor(Math.random() * 8), // 12-20g range
         waterAmount: 200 + Math.floor(Math.random() * 100), // 200-300ml range
@@ -365,7 +366,7 @@ export class DummyDataService {
         totalBrewTime: 150 + Math.floor(Math.random() * 90), // 2:30-4:00 range
         pourTechnique: 'pulse' as PourTechnique,
         numberOfPours: 3,
-      },
+    },
       notes: {
         grindAdjustment: [
           '그라인더 세팅을 한 단계 굵게 조정',
@@ -388,9 +389,9 @@ export class DummyDataService {
           '다른 필터로 실험해볼 예정',
           '푸어 패턴을 바꿔서 테스트할 계획',
         ][Math.floor(Math.random() * 5)],
-      },
-    });
-  }
+    },
+  });
+}
 
   // Generate complete tasting record
   static async generateCompleteTastingRecord() {
@@ -405,21 +406,21 @@ export class DummyDataService {
     const store = useTastingStore.getState();
     if (store.currentTasting.mode === 'home_cafe') {
       await this.fillEnhancedHomeCafeData();
-    }
   }
+}
 
   // Auto-select functions for UI components
   static async autoSelectDropdown(options: string[], defaultIndex?: number) {
     const selectedIndex = defaultIndex ?? Math.floor(Math.random() * options.length);
     return options[selectedIndex];
-  }
+}
 
   static async autoSelectRadioButton(options: string[], preferredOption?: string) {
     if (preferredOption && options.includes(preferredOption)) {
       return preferredOption;
-    }
-    return options[Math.floor(Math.random() * options.length)];
   }
+    return options[Math.floor(Math.random() * options.length)];
+}
 
   static async autoSelectCheckboxes(options: string[], minSelections = 1, maxSelections?: number) {
     const maxSelect = maxSelections ?? Math.min(3, options.length);
@@ -427,14 +428,14 @@ export class DummyDataService {
     
     const shuffled = [...options].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, numSelections);
-  }
+}
 
   static async autoFillSlider(min: number, max: number, preferredValue?: number) {
     if (preferredValue !== undefined && preferredValue >= min && preferredValue <= max) {
       return preferredValue;
-    }
-    return min + Math.floor(Math.random() * (max - min + 1));
   }
+    return min + Math.floor(Math.random() * (max - min + 1));
+}
 
   // History screen search input
   static async fillHistorySearch() {
@@ -451,18 +452,18 @@ export class DummyDataService {
     ];
     
     const searchTerm = searchTerms[Math.floor(Math.random() * searchTerms.length)];
-    console.log('Filling history search with:', searchTerm);
+    Logger.debug('Filling history search with:', 'service', { component: 'DummyDataService', data: searchTerm });
     return searchTerm;
-  }
+}
 
   // Onboarding screen auto-progression
   static async progressOnboarding() {
-    console.log('Auto-progressing through onboarding for testing');
+    Logger.debug('Auto-progressing through onboarding for testing', 'service', { component: 'DummyDataService' });
     return {
       currentStep: Math.floor(Math.random() * 4) + 1, // Steps 1-4
       completed: Math.random() > 0.5,
-    };
-  }
+  };
+}
 
   // Achievement gallery sample data
   static async generateSampleAchievements() {
@@ -474,7 +475,7 @@ export class DummyDataService {
         progress: 1,
         total: 1,
         unlocked: true,
-      },
+    },
       {
         id: 'flavor_explorer',
         title: '향미 탐험가',
@@ -482,7 +483,7 @@ export class DummyDataService {
         progress: 7,
         total: 10,
         unlocked: false,
-      },
+    },
       {
         id: 'home_barista',
         title: '홈 바리스타',
@@ -490,12 +491,12 @@ export class DummyDataService {
         progress: 3,
         total: 5,
         unlocked: false,
-      },
+    },
     ];
     
-    console.log('Generated sample achievements:', achievements.length);
+    Logger.debug('Generated sample achievements:', 'service', { component: 'DummyDataService', data: achievements.length });
     return achievements;
-  }
+}
 
   // Statistics screen sample data
   static async generateSampleStats() {
@@ -514,10 +515,10 @@ export class DummyDataService {
         '4.0-4.4': 18,
         '3.5-3.9': 6,
         '3.0-3.4': 0,
-      },
-    };
+    },
+  };
     
-    console.log('Generated sample statistics:', stats);
+    Logger.debug('Generated sample statistics:', 'service', { component: 'DummyDataService', data: stats });
     return stats;
-  }
+}
 }

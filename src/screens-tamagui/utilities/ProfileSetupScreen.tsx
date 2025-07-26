@@ -47,7 +47,7 @@ const Header = styled(YStack, {
   enterStyle: {
     opacity: 0,
     y: -20,
-  },
+},
 });
 
 const Title = styled(Text, {
@@ -71,7 +71,7 @@ const Form = styled(YStack, {
   enterStyle: {
     opacity: 0,
     y: 20,
-  },
+},
 });
 
 const InputContainer = styled(YStack, {
@@ -100,7 +100,7 @@ const StyledInput = styled(Input, {
   focusStyle: {
     borderColor: '$cupBlue',
     backgroundColor: '$backgroundFocus',
-  },
+},
 });
 
 const Hint = styled(Text, {
@@ -123,10 +123,10 @@ const PrimaryButton = styled(Button, {
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$cupBrownDark',
-  },
+},
   disabledStyle: {
     opacity: 0.5,
-  },
+},
 });
 
 const PrimaryButtonText = styled(Text, {
@@ -145,7 +145,7 @@ const SecondaryButton = styled(Button, {
   animation: 'quick',
   pressStyle: {
     opacity: 0.6,
-  },
+},
 });
 
 const SecondaryButtonText = styled(Text, {
@@ -165,7 +165,7 @@ const PrivacyNote = styled(Text, {
   animation: 'lazy',
   enterStyle: {
     opacity: 0,
-  },
+},
 });
 
 const LoadingOverlay = styled(YStack, {
@@ -207,33 +207,33 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ onComplete, ...
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
-    }
+  }
 
     if (password.length < 6) {
       Alert.alert('Error', 'Password must be at least 6 characters');
       return;
-    }
+  }
 
     setStep('username');
-  };
+};
 
   const handleCompleteSignUp = async () => {
     const validation = validateUsername(username);
     if (!validation.valid) {
       Alert.alert('Invalid Username', validation.error);
       return;
-    }
+  }
 
     setIsLoading(true);
     try {
       await signUp(email, username, password);
       onComplete();
-    } catch (error) {
+  } catch (error) {
       Alert.alert('Error', 'Failed to create account');
-    } finally {
+  } finally {
       setIsLoading(false);
-    }
-  };
+  }
+};
 
   const renderSignUpScreen = () => (
     <AnimatePresence>

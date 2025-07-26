@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { SafeAreaView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { IOSLayout, IOSSpacing } from '../../styles/ios-hig-2024';
 import {
   YStack,
   XStack,
@@ -9,7 +9,6 @@ import {
   Card,
   styled,
   ScrollView,
-  AnimatePresence,
   H3,
 } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
@@ -27,36 +26,7 @@ const Container = styled(YStack, {
   backgroundColor: '$background',
 })
 
-const HeaderBar = styled(XStack, {
-  height: 44,
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingHorizontal: '$lg',
-  backgroundColor: '$background',
-  borderBottomWidth: 0.5,
-  borderBottomColor: '$borderColor',
-})
-
-const BackButton = styled(Text, {
-  fontSize: 24,
-  color: '$primary',
-  fontFamily: '$body',
-  pressStyle: { opacity: 0.7 },
-})
-
-const HeaderTitle = styled(Text, {
-  fontSize: 17,
-  fontWeight: '600',
-  color: '$color',
-  fontFamily: '$heading',
-})
-
-const SkipButton = styled(Text, {
-  fontSize: 15,
-  color: '$primary',
-  fontFamily: '$body',
-  pressStyle: { opacity: 0.7 },
-})
+// HeaderBar, BackButton, HeaderTitle, SkipButton 제거됨 - 네비게이션 헤더 사용
 
 const ProgressBar = styled(XStack, {
   height: 3,
@@ -85,7 +55,7 @@ const GuideText = styled(Text, {
 })
 
 const GuideSubText = styled(Text, {
-  fontSize: 13,
+  fontSize: 14,
   color: '$gray11',
   textAlign: 'center',
   marginTop: 4,
@@ -130,13 +100,13 @@ const CategoryGroup = styled(XStack, {
       true: {
         borderRightWidth: 0,
         paddingRight: 0,
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const CategoryLabel = styled(Text, {
-  fontSize: 12,
+  fontSize: 14,
   fontWeight: '600',
   color: '$gray11',
   marginRight: '$sm',
@@ -155,12 +125,7 @@ const PreviewPlaceholder = styled(Text, {
   fontStyle: 'italic',
 })
 
-const BottomContainer = styled(XStack, {
-  padding: '$lg',
-  backgroundColor: '$background',
-  borderTopWidth: 0.5,
-  borderTopColor: '$borderColor',
-})
+// BottomContainer는 SafeArea를 고려해서 동적으로 처리
 
 const NextButton = styled(Button, {
   height: 48,
@@ -170,7 +135,7 @@ const NextButton = styled(Button, {
   pressStyle: {
     backgroundColor: '$primaryHover',
     scale: 0.98,
-  },
+},
 })
 
 const NextButtonText = styled(Text, {
@@ -191,16 +156,16 @@ const SensoryScreenTamagui = () => {
     if (currentTasting.mode === 'home_cafe' || currentTasting.mode === 'lab') {
       setShowOnboarding(false);
       return;
-    }
+  }
     
     checkShouldShowOnboarding().then(shouldShow => {
       setShowOnboarding(shouldShow);
-    });
-  }, [currentTasting.mode]);
+  });
+}, [currentTasting.mode]);
 
   const handleComplete = useCallback(async () => {
     navigation.navigate('PersonalComment' as never);
-  }, [navigation]);
+}, [navigation]);
 
   // Convert EnhancedSensoryEvaluation format to TastingStore format
   const handleExpressionChange = useCallback((expressions: Array<{
@@ -211,8 +176,8 @@ const SensoryScreenTamagui = () => {
       english: string;
       emoji: string;
       intensity?: number;
-    };
-  }>) => {
+  };
+}>) => {
     const converted: SelectedSensoryExpression[] = expressions.map(item => ({
       categoryId: item.categoryId,
       expressionId: item.expression.id,
@@ -221,19 +186,19 @@ const SensoryScreenTamagui = () => {
       emoji: item.expression.emoji,
       intensity: 3, // Default intensity since we removed user selection
       selected: true,
-    }));
+  }));
     setSelectedSensoryExpressions(converted);
-  }, [setSelectedSensoryExpressions]);
+}, [setSelectedSensoryExpressions]);
 
   // Group expressions by category for display
   const groupedExpressions = (selectedSensoryExpressions || []).reduce((acc, expr) => {
     const category = expr.categoryId;
     if (!acc[category]) {
       acc[category] = [];
-    }
+  }
     acc[category].push(expr.korean);
     return acc;
-  }, {} as Record<string, string[]>);
+}, {} as Record<string, string[]>);
 
   const categoryNames: Record<string, string> = {
     acidity: '산미',
@@ -242,31 +207,22 @@ const SensoryScreenTamagui = () => {
     body: '바디',
     aftertaste: '애프터',
     balance: '밸런스'
-  };
+};
 
   const categoryOrder = ['acidity', 'sweetness', 'bitterness', 'body', 'aftertaste', 'balance'];
   const filteredCategories = categoryOrder.filter(cat => groupedExpressions[cat]);
 
   return (
     <Container>
-      <SafeAreaView style={{ flex: 1 }}>
-        <YStack flex={1}>
-          {/* Navigation Bar */}
-          <HeaderBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
-            <BackButton onPress={() => navigation.goBack()}>←</BackButton>
-            <HeaderTitle>감각 평가</HeaderTitle>
-            <SkipButton onPress={() => navigation.navigate('PersonalComment' as never)}>
-              건너뛰기
-            </SkipButton>
-          </HeaderBar>
+      <YStack flex={1}>
           
           {/* Progress Bar */}
           <ProgressBar>
-            <ProgressFill width="67%" animation="lazy" />
+            <ProgressFill width="67%" />
           </ProgressBar>
 
           {/* Guide Message */}
-          <GuideSection animation="quick">
+          <GuideSection>
             <GuideText>맛의 언어로 표현해보세요</GuideText>
             <GuideSubText>이 커피에서 느껴지는 감각을 선택해주세요</GuideSubText>
           </GuideSection>
@@ -274,14 +230,14 @@ const SensoryScreenTamagui = () => {
           <ScrollView 
             showsVerticalScrollIndicator={false}
             bounces={true}
-            contentContainerStyle={{ flexGrow: 1 }}
+            contentContainerStyle={{ 
+              flexGrow: 1,
+              paddingBottom: 24 // Reasonable padding for bottom button
+            }}
           >
             <ContentContainer>
               {/* Selected Sensory Preview */}
-              <SelectedPreviewContainer
-                animation="lazy"
-                enterStyle={{ opacity: 0, scale: 0.95 }}
-              >
+              <SelectedPreviewContainer>
                 {filteredCategories.length > 0 ? (
                   <SelectedPreviewContent>
                     {filteredCategories.map((category, index) => {
@@ -295,15 +251,15 @@ const SensoryScreenTamagui = () => {
                           <CategoryExpressions>{expressions}</CategoryExpressions>
                         </CategoryGroup>
                       );
-                    })}
+                  })}
                   </SelectedPreviewContent>
                 ) : (
-                  <PreviewPlaceholder animation="lazy">—</PreviewPlaceholder>
+                  <PreviewPlaceholder>—</PreviewPlaceholder>
                 )}
               </SelectedPreviewContainer>
               
               {/* Sensory Evaluation Component */}
-              <YStack animation="quick">
+              <YStack>
                 <CompactSensoryEvaluation
                   selectedExpressions={(selectedSensoryExpressions || []).map(item => ({
                     categoryId: item.categoryId,
@@ -314,8 +270,8 @@ const SensoryScreenTamagui = () => {
                       emoji: item.emoji || '',
                       intensity: item.intensity || 2,
                       beginner: true,
-                    } as any,
-                  }))}
+                  },
+                }))}
                   onExpressionChange={handleExpressionChange}
                   beginnerMode={true}
                 />
@@ -324,23 +280,27 @@ const SensoryScreenTamagui = () => {
           </ScrollView>
 
           {/* Bottom Button */}
-          <BottomContainer>
+          <XStack
+            padding="$lg"
+            paddingBottom={Math.max(insets.bottom, IOSLayout.safeAreaBottom) + IOSSpacing.md}
+            backgroundColor="$background"
+            borderTopWidth={0.5}
+            borderTopColor="$borderColor"
+          >
             <NextButton
               flex={1}
               onPress={handleComplete}
-              animation="quick"
             >
               <NextButtonText>평가 완료</NextButtonText>
             </NextButton>
-          </BottomContainer>
+          </XStack>
         </YStack>
 
-        {/* Onboarding Modal */}
-        <SensoryOnboarding
-          visible={showOnboarding}
-          onComplete={() => setShowOnboarding(false)}
-        />
-      </SafeAreaView>
+      {/* Onboarding Modal */}
+      <SensoryOnboarding
+        visible={showOnboarding}
+        onComplete={() => setShowOnboarding(false)}
+      />
     </Container>
   );
 };

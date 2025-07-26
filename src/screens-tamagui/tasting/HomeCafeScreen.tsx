@@ -1,20 +1,12 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { IOSLayout, IOSSpacing } from '../../styles/ios-hig-2024';
 import { YStack, XStack, H1, Text, Button, Card, styled } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTastingStore } from '../../stores/tastingStore';
 import { HomeCafeSimpleFormTamagui } from '../../components/HomeCafeSimpleFormTamagui';
 
 // Styled components
-const HeaderBar = styled(XStack, {
-  height: 44,
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingHorizontal: '$lg',
-  backgroundColor: '$background',
-  borderBottomWidth: 0.5,
-  borderBottomColor: '$borderColor',
-})
 
 const ProgressBar = styled(XStack, {
   height: 3,
@@ -27,17 +19,6 @@ const ProgressFill = styled(XStack, {
   backgroundColor: '$primary',
 })
 
-const BackButton = styled(Text, {
-  fontSize: 24,
-  color: '$primary',
-  fontFamily: '$body',
-})
-
-const SkipButton = styled(Text, {
-  fontSize: 15,
-  color: '$primary',
-  fontFamily: '$body',
-})
 
 const TitleSection = styled(YStack, {
   paddingHorizontal: '$lg',
@@ -59,12 +40,7 @@ const Subtitle = styled(Text, {
   lineHeight: 22,
 })
 
-const BottomContainer = styled(XStack, {
-  padding: '$lg',
-  backgroundColor: '$background',
-  borderTopWidth: 1,
-  borderTopColor: '$gray4',
-})
+// BottomContainer는 SafeArea를 고려해서 동적으로 처리
 
 const NextButton = styled(Button, {
   backgroundColor: '$primary',
@@ -79,9 +55,9 @@ const NextButton = styled(Button, {
       true: {
         backgroundColor: '$gray8',
         opacity: 0.6,
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const HomeCafeScreenTamagui = () => {
@@ -91,11 +67,26 @@ const HomeCafeScreenTamagui = () => {
 
   const handleNext = () => {
     navigation.navigate('UnifiedFlavor' as never);
-  };
+};
 
   const handleSkip = () => {
     navigation.navigate('UnifiedFlavor' as never);
   };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: '홈카페 정보',
+      headerRight: () => (
+        <Button
+          unstyled
+          onPress={handleSkip}
+          pressStyle={{ opacity: 0.7 }}
+        >
+          <Text fontSize="$3" color="$cupBlue">건너뛰기</Text>
+        </Button>
+      ),
+    });
+  }, [navigation, handleSkip]);
 
   // 필수 필드 검증 - 간소화된 홈카페 모드
   const isValid = 
@@ -105,44 +96,48 @@ const HomeCafeScreenTamagui = () => {
 
   return (
     <YStack flex={1} backgroundColor="$background">
+      {/* Progress Bar */}
+      <ProgressBar>
+        <ProgressFill width="25%" animation="lazy" />
+      </ProgressBar>
+
+      {/* Content */}
       <YStack flex={1}>
-          {/* Header */}
-          <HeaderBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
-            <BackButton onPress={() => navigation.goBack()}>←</BackButton>
-            <Text fontSize={17} fontWeight="600" color="$color">
-              홈카페 정보
-            </Text>
-            <SkipButton onPress={handleSkip}>건너뛰기</SkipButton>
-          </HeaderBar>
+        <TitleSection>
+          <Title>🏠 간단 홈카페 기록</Title>
+          <Subtitle>5개 필드로 빠르게 기록해보세요</Subtitle>
+        </TitleSection>
 
-          {/* Progress Bar */}
-          <ProgressBar>
-            <ProgressFill width="25%" animation="lazy" />
-          </ProgressBar>
+        <HomeCafeSimpleFormTamagui />
+      </YStack>
 
-          {/* Content */}
-          <YStack flex={1}>
-            <TitleSection>
-              <Title>🏠 간단 홈카페 기록</Title>
-              <Subtitle>5개 필드로 빠르게 기록해보세요</Subtitle>
-            </TitleSection>
-
-            <HomeCafeSimpleFormTamagui />
-          </YStack>
-
-          {/* Bottom Button */}
-          <BottomContainer>
-            <NextButton
-              flex={1}
-              disabled={!isValid}
-              onPress={handleNext}
-              pressStyle={{ scale: 0.98 }}
-              animation="quick"
-            >
-              다음 단계
-            </NextButton>
-          </BottomContainer>
-        </YStack>
+      {/* Bottom Button */}
+      <XStack
+        padding="$lg"
+        paddingBottom={Math.max(insets.bottom, IOSLayout.safeAreaBottom) + IOSSpacing.md}
+        backgroundColor="$background"
+        borderTopWidth={1}
+        borderTopColor="$gray4"
+      >
+        <NextButton
+          flex={1}
+          disabled={!isValid}
+          onPress={handleNext}
+          pressStyle={{ scale: 0.98 }}
+          animation="quick"
+          height={48}
+          justifyContent="center"
+        >
+          <Text
+            color="white"
+            fontSize="$4"
+            fontWeight="600"
+            textAlign="center"
+          >
+            다음 단계
+          </Text>
+        </NextButton>
+      </XStack>
     </YStack>
   );
 };

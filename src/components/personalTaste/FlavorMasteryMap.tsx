@@ -26,7 +26,7 @@ interface FlavorMasteryMapProps {
   masteryLevels: MasteryLevel[];
   layout?: 'grid' | 'wheel' | 'tree';
   onCategorySelect?: (category: string) => void;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
@@ -51,14 +51,14 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
         duration: 300,
         delay: index * 80,
         useNativeDriver: true,
-      })
+    })
     );
 
     Animated.stagger(80, animations).start(() => {
       // Animation complete - ensure all values are at final state
       animatedValues.forEach(anim => anim.setValue(1));
-    });
-  }, [categories.length]);
+  });
+}, [categories.length]);
 
   const getMasteryColor = (score: number): string => {
     if (score >= 90) return HIGColors.green;
@@ -66,7 +66,7 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
     if (score >= 50) return HIGColors.orange;
     if (score >= 25) return HIGColors.yellow;
     return HIGColors.gray;
-  };
+};
 
   const getMasteryEmoji = (level: number | string): string => {
     const emojiMap: Record<string, string> = {
@@ -75,7 +75,7 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
       proficient: '🌳',
       expert: '🏆',
       master: '👑',
-    };
+  };
     
     // Convert numeric level to string representation
     let levelKey = typeof level === 'string' ? level : 'novice';
@@ -85,10 +85,10 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
       else if (level >= 3) levelKey = 'proficient';
       else if (level >= 2) levelKey = 'apprentice';
       else levelKey = 'novice';
-    }
+  }
     
     return emojiMap[levelKey] || '🌱';
-  };
+};
 
   const getCategoryEmoji = (categoryName: string): string => {
     const emojiMap: Record<string, string> = {
@@ -102,9 +102,9 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
       vegetal: '🌿',
       sour: '🍋',
       other: '✨',
-    };
-    return emojiMap[categoryName.toLowerCase()] || '☕';
   };
+    return emojiMap[categoryName.toLowerCase()] || '☕';
+};
 
   const renderGridLayout = () => {
     return (
@@ -129,17 +129,17 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
                         inputRange: [0, 1],
                         outputRange: [0.9, 1],
                         extrapolate: 'clamp',
-                      }),
-                    },
+                    }),
+                  },
                     {
                       translateY: animatedValues[index].interpolate({
                         inputRange: [0, 1],
                         outputRange: [20, 0],
                         extrapolate: 'clamp',
-                      }),
-                    },
+                    }),
+                  },
                   ],
-                },
+              },
               ]}
             >
               <TouchableOpacity
@@ -161,7 +161,7 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
                       { 
                         backgroundColor: color,
                         height: `${score}%`,
-                      }
+                    }
                     ]} 
                   />
                 </View>
@@ -212,7 +212,7 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
                           { 
                             width: `${(mastery.progressToNext ?? 0) * 100}%`,
                             backgroundColor: color,
-                          },
+                        },
                         ]}
                       />
                     </View>
@@ -221,10 +221,10 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
               </TouchableOpacity>
             </Animated.View>
           );
-        })}
+      })}
       </View>
     );
-  };
+};
 
   const renderWheelLayout = () => {
     // Simplified wheel layout - could be enhanced with actual circular positioning
@@ -233,7 +233,7 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
         <Text style={styles.comingSoon}>Wheel layout coming soon!</Text>
       </View>
     );
-  };
+};
 
   const renderTreeLayout = () => {
     // Simplified tree layout - could be enhanced with hierarchical view
@@ -242,7 +242,7 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
         <Text style={styles.comingSoon}>Tree layout coming soon!</Text>
       </View>
     );
-  };
+};
 
   const renderLayout = () => {
     switch (layout) {
@@ -252,8 +252,8 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
         return renderTreeLayout();
       default:
         return renderGridLayout();
-    }
-  };
+  }
+};
 
   return (
     <View style={[styles.container, style]}>
@@ -305,28 +305,28 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
+},
   header: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   totalMastery: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
   scrollContent: {
     paddingBottom: HIGConstants.SPACING_MD,
-  },
+},
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: HIGConstants.SPACING_SM,
-  },
+},
   gridItem: {
     width: CARD_WIDTH,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   categoryCard: {
     backgroundColor: HIGColors.secondarySystemBackground,
     borderRadius: HIGConstants.BORDER_RADIUS,
@@ -334,13 +334,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     alignItems: 'center',
     minHeight: 180,
-  },
+},
   progressRing: {
     width: 60,
     height: 60,
     marginBottom: HIGConstants.SPACING_SM,
     position: 'relative',
-  },
+},
   progressRingOuter: {
     width: 60,
     height: 60,
@@ -348,14 +348,14 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   progressRingInner: {
     width: 50,
     height: 50,
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   progressFill: {
     position: 'absolute',
     bottom: 0,
@@ -363,21 +363,21 @@ const styles = StyleSheet.create({
     right: 0,
     opacity: 0.2,
     borderRadius: 30,
-  },
+},
   categoryEmoji: {
     fontSize: 28,
-  },
+},
   categoryName: {
     fontSize: 14,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   masteryScore: {
     fontSize: 20,
     fontWeight: '700',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   levelBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -385,77 +385,77 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 10,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   levelEmoji: {
     fontSize: 14,
     marginRight: 4,
-  },
+},
   levelText: {
     fontSize: 11,
     fontWeight: '600',
     color: HIGColors.white,
     textTransform: 'capitalize',
-  },
+},
   statsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   statItem: {
     flex: 1,
     alignItems: 'center',
-  },
+},
   statValue: {
     fontSize: 14,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   statLabel: {
     fontSize: 10,
     color: HIGColors.tertiaryLabel,
-  },
+},
   statDivider: {
     width: 1,
     height: 20,
     backgroundColor: HIGColors.gray5,
     marginHorizontal: HIGConstants.SPACING_SM,
-  },
+},
   progressInfo: {
     width: '100%',
-  },
+},
   progressText: {
     fontSize: 10,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_XS,
     textAlign: 'center',
-  },
+},
   progressBar: {
     height: 4,
     backgroundColor: HIGColors.gray5,
     borderRadius: 2,
     overflow: 'hidden',
-  },
+},
   progressBarFill: {
     height: '100%',
     borderRadius: 2,
-  },
+},
   wheelContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: 300,
-  },
+},
   treeContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: 300,
-  },
+},
   comingSoon: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     fontStyle: 'italic',
-  },
+},
   legend: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -465,19 +465,19 @@ const styles = StyleSheet.create({
     paddingTop: HIGConstants.SPACING_MD,
     borderTopWidth: 1,
     borderTopColor: HIGColors.gray5,
-  },
+},
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: HIGConstants.SPACING_XS,
-  },
+},
   legendDot: {
     width: 12,
     height: 12,
     borderRadius: 6,
-  },
+},
   legendText: {
     fontSize: 12,
     color: HIGColors.secondaryLabel,
-  },
+},
 });

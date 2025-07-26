@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { IOSLayout, IOSSpacing } from '../../../styles/ios-hig-2024';
 import {
   YStack,
   XStack,
@@ -17,7 +19,6 @@ import {
 } from 'tamagui';
 import { Platform, UIManager } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTastingStore } from '../../../stores/tastingStore';
 import { useFlavorSelection } from '../../../hooks/useFlavorSelection';
 import { CategoryAccordion } from '../../../components/flavor/CategoryAccordion';
@@ -38,23 +39,6 @@ const Container = styled(YStack, {
   backgroundColor: '$background',
 });
 
-const NavigationBar = styled(XStack, {
-  name: 'NavigationBar',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingHorizontal: '$lg',
-  paddingVertical: '$md',
-  borderBottomWidth: 0.5,
-  borderBottomColor: '$borderColor',
-});
-
-const BackButton = styled(Button, {
-  name: 'BackButton',
-  unstyled: true,
-  pressStyle: {
-    opacity: 0.7,
-  },
-});
 
 const SearchContainer = styled(YStack, {
   name: 'SearchContainer',
@@ -83,11 +67,11 @@ const NextButton = styled(Button, {
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$cupBlueDark',
-  },
+},
   disabledStyle: {
     backgroundColor: '$gray5',
     opacity: 0.6,
-  },
+},
 });
 
 const NoResultsContainer = styled(YStack, {
@@ -99,13 +83,13 @@ const NoResultsContainer = styled(YStack, {
   enterStyle: {
     opacity: 0,
     y: 20,
-  },
+},
 });
 
 export default function UnifiedFlavorScreen() {
   const navigation = useNavigation();
-  const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
   const { currentTasting, updateField } = useTastingStore();
   const selectedPaths = currentTasting.selectedFlavors || [];
 
@@ -120,17 +104,17 @@ export default function UnifiedFlavorScreen() {
     toggleCategory,
     toggleSubcategory,
     toggleAllCategories,
-  } = useFlavorSelection(selectedPaths, updateField as (field: string, value: any) => void);
+} = useFlavorSelection(selectedPaths, updateField as (field: string, value: unknown) => void);
 
   const handleNext = () => {
     // Navigate based on mode
     if (currentTasting.mode === 'lab') {
       navigation.navigate('ExperimentalData' as never);
-    } else {
+  } else {
       // For both cafe and home_cafe modes, go to sensory evaluation
       navigation.navigate('SensoryEvaluation' as never);
-    }
-  };
+  }
+};
 
   const handleSkip = () => {
     // Navigate based on mode
@@ -141,6 +125,21 @@ export default function UnifiedFlavorScreen() {
       navigation.navigate('SensoryEvaluation' as never);
     }
   };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: '향미 선택',
+      headerRight: () => (
+        <Button
+          unstyled
+          onPress={handleSkip}
+          pressStyle={{ opacity: 0.7 }}
+        >
+          <Text fontSize="$3" color="$cupBlue">건너뛰기</Text>
+        </Button>
+      ),
+    });
+  }, [navigation, handleSkip]);
 
   // Calculate progress based on mode
   const progressValue = currentTasting.mode === 'lab' ? 25 : 43;
@@ -158,26 +157,10 @@ export default function UnifiedFlavorScreen() {
         f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
-  });
+});
 
   return (
     <Container>
-      {/* Navigation Bar */}
-      <NavigationBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
-        <BackButton onPress={() => navigation.goBack()}>
-          <Text fontSize="$6" color="$cupBlue">←</Text>
-        </BackButton>
-        <Text fontSize="$4" fontWeight="600" color="$color">
-          향미 선택
-        </Text>
-        <Button
-          unstyled
-          onPress={handleSkip}
-          pressStyle={{ opacity: 0.7 }}
-        >
-          <Text fontSize="$3" color="$cupBlue">건너뛰기</Text>
-        </Button>
-      </NavigationBar>
 
       {/* Progress Bar */}
       <Progress 
@@ -285,10 +268,10 @@ export default function UnifiedFlavorScreen() {
                     enterStyle={{
                       opacity: 0,
                       y: 20,
-                    }}
+                  }}
                     style={{
                       animationDelay: `${index * 50}ms`,
-                    }}
+                  }}
                   >
                     <CategoryAccordion
                       category={item.category}
@@ -296,8 +279,8 @@ export default function UnifiedFlavorScreen() {
                       onToggle={() => {
                         if (!searchQuery) {
                           toggleCategory(item.category);
-                        }
-                      }}
+                      }
+                    }}
                       onSelectFlavor={handleSelectFlavor}
                       onSelectSubcategory={handleSelectSubcategory}
                       selectedPaths={selectedPaths}
@@ -307,7 +290,7 @@ export default function UnifiedFlavorScreen() {
                     />
                   </YStack>
                 );
-              }).filter(Boolean)}
+            }).filter(Boolean)}
             </YStack>
           )}
         </AnimatePresence>
@@ -322,6 +305,7 @@ export default function UnifiedFlavorScreen() {
         backgroundColor="$background"
         paddingHorizontal="$lg"
         paddingVertical="$md"
+        paddingBottom={Math.max(insets.bottom, IOSLayout.safeAreaBottom) + IOSSpacing.md}
         borderTopWidth={1}
         borderTopColor="$borderColor"
         elevation={4}

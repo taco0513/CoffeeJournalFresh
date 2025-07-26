@@ -29,8 +29,8 @@ interface SelectInputProps {
   multiple?: boolean;
   searchable?: boolean;
   maxHeight?: number;
-  containerStyle?: any;
-  buttonStyle?: any;
+  containerStyle?: unknown;
+  buttonStyle?: unknown;
 }
 
 export type { SelectInputProps, SelectOption };
@@ -61,17 +61,17 @@ const SelectButton = styled(Button, {
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
-  },
+},
   
   pressStyle: {
     backgroundColor: '$gray2',
     scale: 0.98,
-  },
+},
   
   disabledStyle: {
     opacity: 0.5,
     backgroundColor: '$gray3',
-  },
+},
   
   variants: {
     isOpen: {
@@ -79,9 +79,9 @@ const SelectButton = styled(Button, {
         borderColor: '$cupBlue',
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const ButtonContent = styled(XStack, {
@@ -101,12 +101,12 @@ const ButtonText = styled(Text, {
     isPlaceholder: {
       true: {
         color: '$gray10',
-      },
+    },
       false: {
         color: '$color',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const ChevronIcon = styled(Text, {
@@ -119,9 +119,9 @@ const ChevronIcon = styled(Text, {
     isOpen: {
       true: {
         transform: [{ rotate: '180deg' }],
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const OptionsContainer = styled(Card, {
@@ -159,11 +159,11 @@ const OptionItem = styled(XStack, {
   pressStyle: {
     backgroundColor: '$gray3',
     scale: 0.98,
-  },
+},
   
   hoverStyle: {
     backgroundColor: '$gray2',
-  },
+},
   
   variants: {
     selected: {
@@ -171,23 +171,23 @@ const OptionItem = styled(XStack, {
         backgroundColor: '$cupBlueLight',
         borderLeftWidth: 3,
         borderLeftColor: '$cupBlue',
-      },
     },
+  },
     disabled: {
       true: {
         opacity: 0.5,
         pressStyle: {
           backgroundColor: '$background',
           scale: 1,
-        },
       },
     },
+  },
     isLast: {
       true: {
         borderBottomWidth: 0,
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const OptionIcon = styled(Text, {
@@ -207,14 +207,14 @@ const OptionText = styled(Text, {
       true: {
         fontWeight: '500',
         color: '$cupBlue',
-      },
     },
+  },
     disabled: {
       true: {
         color: '$gray10',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const CheckIcon = styled(Text, {
@@ -245,20 +245,20 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   const handleToggle = () => {
     if (disabled) return;
     setIsOpen(!isOpen);
-  };
+};
   
   const handleSelect = (optionValue: string) => {
     const option = options.find(opt => opt.value === optionValue);
     if (option && !option.disabled) {
       onValueChange(optionValue);
       setIsOpen(false);
-    }
-  };
+  }
+};
   
   // Close dropdown when clicking outside (handled by AnimatePresence)
   const handleBackdropPress = () => {
     setIsOpen(false);
-  };
+};
   
   return (
     <Container style={containerStyle}>
@@ -288,12 +288,12 @@ export const SelectInput: React.FC<SelectInputProps> = ({
               opacity: 0,
               scale: 0.95,
               y: -10,
-            }}
+          }}
             exitStyle={{
               opacity: 0,
               scale: 0.95,
               y: -10,
-            }}
+          }}
           >
             <ScrollView
               showsVerticalScrollIndicator={false}
@@ -325,7 +325,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
                     {isSelected && <CheckIcon>✓</CheckIcon>}
                   </OptionItem>
                 );
-              })}
+            })}
             </ScrollView>
           </OptionsContainer>
         )}

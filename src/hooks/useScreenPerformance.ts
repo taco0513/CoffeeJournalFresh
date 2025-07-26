@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { usePerformanceMeasurement } from '../utils/performanceTestUtils';
 
+import { Logger } from '../services/LoggingService';
 /**
  * Hook to automatically measure screen performance
  * @param screenName Name of the screen being measured
@@ -11,7 +12,7 @@ export function useScreenPerformance(screenName: string, enabled: boolean = __DE
   
   useEffect(() => {
     if (enabled) {
-      console.log(`📊 Performance measurement enabled for ${screenName}`);
-    }
-  }, [screenName, enabled]);
+      Logger.debug(`📊 Performance measurement enabled for ${screenName}`, 'hook', { component: 'useScreenPerformance' });
+  }
+}, [screenName, enabled]);
 }

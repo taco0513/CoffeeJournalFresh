@@ -32,7 +32,7 @@ export const MarketTestResults: React.FC<MarketTestResultsProps> = ({
     const successRate = total > 0 ? Math.round((passed / total) * 100) : 0;
     
     return { total, passed, failed, successRate };
-  };
+};
 
   const stats = getTestStats();
 
@@ -136,125 +136,125 @@ export const MarketTestResults: React.FC<MarketTestResultsProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
+},
   summaryContainer: {
     backgroundColor: HIGColors.systemGray6,
     padding: 16,
     marginBottom: 16,
     borderRadius: 8,
-  },
+},
   summaryTitle: {
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 12,
     textAlign: 'center',
-  },
+},
   statsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-  },
+},
   statItem: {
     alignItems: 'center',
-  },
+},
   statNumber: {
     fontSize: 24,
     fontWeight: '700',
     color: HIGColors.label,
-  },
+},
   statLabel: {
     fontSize: 12,
     color: HIGColors.secondaryLabel,
     marginTop: 4,
-  },
+},
   toggleButton: {
     backgroundColor: HIGColors.systemBlue,
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,
     alignItems: 'center',
-  },
+},
   toggleButtonText: {
     color: 'white',
     fontWeight: '600',
-  },
+},
   resultsContainer: {
     flex: 1,
-  },
+},
   resultItem: {
     backgroundColor: 'white',
     padding: 16,
     marginBottom: 8,
     borderRadius: 8,
     borderLeftWidth: 4,
-  },
+},
   successResult: {
     borderLeftColor: HIGColors.green,
-  },
+},
   failureResult: {
     borderLeftColor: HIGColors.red,
-  },
+},
   selectedResult: {
     backgroundColor: HIGColors.systemGray6,
-  },
+},
   resultHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
-  },
+},
   resultScenario: {
     fontSize: 16,
     fontWeight: '600',
     flex: 1,
-  },
+},
   resultStatus: {
     fontSize: 14,
     fontWeight: '700',
-  },
+},
   successText: {
     color: HIGColors.green,
-  },
+},
   failureText: {
     color: HIGColors.red,
-  },
+},
   resultMessage: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     lineHeight: 20,
-  },
+},
   detailsContainer: {
     marginTop: 12,
     padding: 12,
     backgroundColor: HIGColors.systemGray6,
     borderRadius: 6,
-  },
+},
   detailsTitle: {
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 8,
-  },
+},
   detailsContent: {
     fontSize: 12,
     fontFamily: 'Courier',
     color: HIGColors.secondaryLabel,
-  },
+},
   errorContainer: {
     marginTop: 12,
     padding: 12,
     backgroundColor: HIGColors.systemRed,
     borderRadius: 6,
-  },
+},
   errorTitle: {
     fontSize: 14,
     fontWeight: '600',
     color: 'white',
     marginBottom: 8,
-  },
+},
   errorContent: {
     fontSize: 12,
     color: 'white',
     fontFamily: 'Courier',
-  },
+},
 });
 
 export default MarketTestResults;

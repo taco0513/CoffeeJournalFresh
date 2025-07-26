@@ -15,7 +15,7 @@ const CARD_WIDTH = (SCREEN_WIDTH - HIGConstants.SPACING_LG * 2 - HIGConstants.SP
 interface PersonalStatsGridProps {
   stats: PersonalStatsData;
   onStatTap?: (statKey: keyof PersonalStatsData) => void;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface StatCardProps {
@@ -68,29 +68,29 @@ export const PersonalStatsGrid: React.FC<PersonalStatsGridProps> = ({
       icon: '🏆',
       color: HIGColors.orange,
       subtitle: `다음까지 ${Math.round(stats.nextLevelProgress)}%`,
-    },
+  },
     {
       key: 'quizAccuracy' as keyof PersonalStatsData,
       title: '퀴즈 정확도',
       icon: '🎯',
       color: HIGColors.green,
       subtitle: '평균 점수',
-      format: (val: any) => `${Math.round(val)}%`,
-    },
+      format: (val: unknown) => `${Math.round(val)}%`,
+  },
     {
       key: 'favoriteFlavor' as keyof PersonalStatsData,
       title: '선호 향미',
       icon: '💝',
       color: HIGColors.accent,
       subtitle: '가장 좋아하는',
-    },
+  },
     {
       key: 'uniqueCoffees' as keyof PersonalStatsData,
       title: '이번달 신규',
       icon: '🌟',
       color: HIGColors.blue,
       subtitle: '새로 시도한 커피',
-    },
+  },
   ];
 
   return (
@@ -111,7 +111,7 @@ export const PersonalStatsGrid: React.FC<PersonalStatsGridProps> = ({
               onPress={onStatTap ? () => onStatTap(config.key) : undefined}
             />
           );
-        })}
+      })}
       </View>
     </View>
   );
@@ -120,16 +120,16 @@ export const PersonalStatsGrid: React.FC<PersonalStatsGridProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginTop: HIGConstants.SPACING_MD,
-  },
+},
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   statCard: {
     width: CARD_WIDTH,
-  },
+},
   statCardInner: {
     backgroundColor: '#FFF8DC',
     borderRadius: HIGConstants.BORDER_RADIUS,
@@ -140,23 +140,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#DEB887',
-  },
+},
   statIcon: {
     fontSize: 32,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   statTitle: {
     fontSize: 13,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   statValue: {
     fontSize: 24,
     fontWeight: '700',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   statSubtitle: {
     fontSize: 11,
     color: HIGColors.tertiaryLabel,
-  },
+},
 });

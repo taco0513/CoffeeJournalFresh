@@ -5,6 +5,7 @@ import { FeedbackCategory } from '../types/feedback';
 import { errorContextService } from '../services/ErrorContextService';
 import { ScreenContext } from '../services/ScreenContextService';
 
+import { Logger } from '../services/LoggingService';
 interface FeedbackStore {
   // State
   isVisible: boolean;
@@ -61,18 +62,18 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
 
   // Actions
   showFeedback: (screenName?: string, context?: string) => {
-    const updates: any = { isVisible: true };
+    const updates: unknown = { isVisible: true };
     
     if (screenName && !get().title) {
       updates.title = `Feedback for ${screenName}`;
-    }
+  }
     
     if (context && !get().description) {
       updates.description = `Context: ${context}\n\n`;
-    }
+  }
     
     set(updates);
-  },
+},
   
   showSmartFeedback: async () => {
     try {
@@ -97,13 +98,13 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
         category: mappedCategory,
         title: suggestedTitle,
         description: '', // Keep description empty for user input
-      });
-    } catch (error) {
-      console.error('Error generating smart feedback:', error);
+    });
+  } catch (error) {
+      Logger.error('Error generating smart feedback:', 'store', { component: 'useFeedbackStore', error: error });
       // Fallback to regular feedback
       set({ isVisible: true });
-    }
-  },
+  }
+},
   
   hideFeedback: () => set({ isVisible: false }),
   
@@ -122,9 +123,9 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
       set({ 
         submitStatus: 'error', 
         errorMessage: '필수 항목을 모두 입력해주세요.' 
-      });
+    });
       return;
-    }
+  }
 
     set({ submitStatus: 'submitting', errorMessage: null });
 
@@ -134,7 +135,7 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
       const combinedContext = {
         ...errorContext,
         screenContext: state.screenContext,
-      };
+    };
 
       await FeedbackService.submitFeedback({
         category: state.category,
@@ -146,24 +147,24 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
         userEmail,
         username,
         context: combinedContext,
-      });
+    });
 
       set({ 
         submitStatus: 'success',
         isVisible: false 
-      });
+    });
 
       // Reset form after a delay
       setTimeout(() => {
         get().resetForm();
-      }, 1000);
-    } catch (error) {
+    }, 1000);
+  } catch (error) {
       set({ 
         submitStatus: 'error', 
         errorMessage: '피드백 전송에 실패했습니다. 다시 시도해주세요.' 
-      });
-    }
-  },
+    });
+  }
+},
 
   resetForm: () => set({
     category: null,
@@ -174,7 +175,7 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
     screenContext: null,
     submitStatus: 'idle',
     errorMessage: null,
-  }),
+}),
 
   toggleShakeToFeedback: async () => {
     const current = get().enableShakeToFeedback;
@@ -184,10 +185,10 @@ export const useFeedbackStore = create<FeedbackStore>((set, get) => ({
     
     try {
       await AsyncStorage.setItem(SHAKE_ENABLED_KEY, JSON.stringify(newValue));
-    } catch (error) {
-      console.error('Error saving shake preference:', error);
-    }
-  },
+  } catch (error) {
+      Logger.error('Error saving shake preference:', 'store', { component: 'useFeedbackStore', error: error });
+  }
+},
 }));
 
 // Initialize shake preference from storage
@@ -195,6 +196,6 @@ AsyncStorage.getItem(SHAKE_ENABLED_KEY).then((value) => {
   if (value !== null) {
     useFeedbackStore.setState({ 
       enableShakeToFeedback: JSON.parse(value) 
-    });
-  }
+  });
+}
 });

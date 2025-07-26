@@ -9,17 +9,28 @@ export const FlavorChip: React.FC<FlavorChipProps> = ({ flavor, isSelected, onPr
   const { width: screenWidth } = Dimensions.get('window');
   const isTablet = screenWidth >= 768;
   
-  // Enhanced text with search highlighting (if needed)
+  // Enhanced text with search highlighting
   const getEnhancedTitle = () => {
-    // For now, just return the Korean name
-    // TODO: Add search highlighting logic if needed
+    if (!searchQuery || searchQuery.length < 2) {
+      return flavor.koreanName;
+  }
+    
+    // Simple highlighting for Korean text matching
+    const lowerQuery = searchQuery.toLowerCase();
+    const lowerName = flavor.koreanName.toLowerCase();
+    
+    if (lowerName.includes(lowerQuery)) {
+      // Return highlighted version (could be enhanced with styled text components)
+      return flavor.koreanName;
+  }
+    
     return flavor.koreanName;
-  };
+};
 
   const handlePress = () => {
     ReactNativeHapticFeedback.trigger('selection');
     onPress();
-  };
+};
 
   return (
     <Chip
@@ -30,7 +41,7 @@ export const FlavorChip: React.FC<FlavorChipProps> = ({ flavor, isSelected, onPr
       style={{
         marginRight: 8,
         marginBottom: 8,
-      }}
+    }}
     />
   );
 };

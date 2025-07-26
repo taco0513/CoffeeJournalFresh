@@ -17,12 +17,12 @@ const StyledCard = styled(Card, {
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$backgroundPress',
-  },
+},
   
   enterStyle: {
     opacity: 0,
     y: 10,
-  },
+},
 });
 
 const IconContainer = styled(YStack, {

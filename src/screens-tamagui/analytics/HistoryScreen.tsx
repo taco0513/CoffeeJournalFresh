@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo} from 'react';
 import { SafeAreaView, DeviceEventEmitter } from 'react-native';
 import { KeyGenerator } from '../../utils/KeyGenerator';
 import { DataLoadingService } from '../../services/DataLoadingService';
@@ -34,10 +34,11 @@ import {
 } from 'tamagui';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import RealmService from '../../services/realm/RealmService';
-import { ITastingRecord } from '../../services/realm/schemas';
+import { RealmService } from '../../services/realm/RealmService';
+import { ITastingRecord} from '../../services/realm/schemas';
 import { useUserStore } from '../../stores/useUserStore';
-import { SkeletonList } from '../../components/common/SkeletonLoader';
+import { Logger } from '../../services/LoggingService';
+import { SkeletonList} from '../../components/common/SkeletonLoader';
 
 interface GroupedTastings {
   title: string;
@@ -142,7 +143,7 @@ const SearchBar = styled(XStack, {
   focusStyle: {
     borderColor: '$cupBlue',
     backgroundColor: '$backgroundFocus',
-  },
+},
 });
 
 const SearchIcon = styled(Text, {
@@ -170,7 +171,7 @@ const ClearButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const ClearIcon = styled(Text, {
@@ -201,12 +202,12 @@ const SortButton = styled(Button, {
       true: {
         backgroundColor: '$cupBlue',
         borderColor: '$cupBlue',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const SortButtonText = styled(Text, {
@@ -217,12 +218,12 @@ const SortButtonText = styled(Text, {
     active: {
       true: {
         color: 'white',
-      },
+    },
       false: {
         color: '$gray11',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const AdvancedSearchButton = styled(Button, {
@@ -235,7 +236,7 @@ const AdvancedSearchButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.98,
-  },
+},
 });
 
 const AdvancedSearchText = styled(Text, {
@@ -288,11 +289,11 @@ const TastingCard = styled(Card, {
     opacity: 0,
     scale: 0.95,
     y: 20,
-  },
+},
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$backgroundPress',
-  },
+},
 });
 
 const CardHeader = styled(XStack, {
@@ -334,15 +335,15 @@ const MatchScoreContainer = styled(View, {
     score: {
       high: {
         backgroundColor: '$green9',
-      },
+    },
       medium: {
         backgroundColor: '$orange9',
-      },
+    },
       low: {
         backgroundColor: '$red9',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const MatchScore = styled(Text, {
@@ -382,7 +383,7 @@ export type HistoryScreenProps_Styled = GetProps<typeof Container>;
 
 const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screenId = 'default' }) => {
   const theme = useTheme();
-  const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<unknown>>();
   const { currentUser } = useUserStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [allTastings, setAllTastings] = useState<ITastingRecord[]>([]);
@@ -396,36 +397,36 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
     const managedLoadData = async () => {
       if (!isActive) return;
       
-      console.log('🔄 HistoryScreen: Loading data...');
+      Logger.debug('🔄 HistoryScreen: Loading data...', 'screen', { component: 'HistoryScreen' });
       await DataLoadingService.loadOnce(
         'history-screen-data',
         () => loadData(),
         'HistoryScreen'
       );
-    };
+  };
 
     managedLoadData();
 
     // Listen for mock data creation events
     const subscription = DeviceEventEmitter.addListener('mockDataCreated', () => {
-      console.log('🔄 HistoryScreen: Mock data created event received');
+      Logger.debug('🔄 HistoryScreen: Mock data created event received', 'screen', { component: 'HistoryScreen' });
       if (isActive) managedLoadData();
-    });
+  });
 
     return () => {
       isActive = false;
       subscription.remove();
-    };
-  }, []);
+  };
+}, []);
 
   // Refresh data when screen comes into focus (but only if not currently loading)
   useFocusEffect(
     React.useCallback(() => {
       if (!loading) {
-        console.log('🔄 HistoryScreen: Focus triggered refresh');
+        Logger.debug('🔄 HistoryScreen: Focus triggered refresh', 'screen', { component: 'HistoryScreen' });
         loadData();
-      }
-    }, [loading])
+    }
+  }, [loading])
   );
 
   const loadData = async () => {
@@ -435,58 +436,58 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
       const realmService = RealmService.getInstance();
       
       if (!realmService.isInitialized) {
-        console.log('⚠️ Realm not initialized in HistoryScreen, attempting to initialize...');
+        Logger.debug('⚠️ Realm not initialized in HistoryScreen, attempting to initialize...', 'screen', { component: 'HistoryScreen' });
         try {
           await realmService.initialize();
-        } catch (initError) {
-          console.error('Failed to initialize Realm:', initError);
-        }
+      } catch (initError) {
+          Logger.error('Failed to initialize Realm:', 'screen', { component: 'HistoryScreen', error: initError });
       }
+    }
       
       const tastings = await realmService.getTastingRecords({ isDeleted: false });
       const tastingsArray = Array.from(tastings);
       
-      console.log('📊 HistoryScreen data loaded:', {
+      Logger.debug('📊 HistoryScreen data loaded:', {
         isInitialized: realmService.isInitialized,
         recordsCount: tastingsArray.length,
         firstRecord: tastingsArray[0]?.coffeeName,
         timestamp: new Date().toISOString(),
-      });
+    });
       
       setAllTastings(tastingsArray);
-    } catch (error) {
-      console.error('Failed to load data:', error);
-    } finally {
+  } catch (error) {
+      Logger.error('Failed to load data:', 'screen', { component: 'HistoryScreen', error: error });
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+};
 
   // Filter and group tastings
   const groupedTastings = useMemo(() => {
     try {
-      console.log('🔄 Processing groupedTastings - input count:', allTastings.length);
+      Logger.debug('🔄 Processing groupedTastings - input count:', 'screen', { component: 'HistoryScreen', data: allTastings.length });
       
       let results = allTastings.filter(tasting => {
         try {
           const isValid = tasting && tasting.id && tasting.coffeeName;
           return isValid;
-        } catch (error) {
-          console.log('❌ Error during validation:', error, tasting);
+      } catch (error) {
+          Logger.debug('❌ Error during validation:', 'screen', { component: 'HistoryScreen', error: error, tasting });
           return false;
-        }
-      });
+      }
+    });
       
       // Remove duplicates by ID and convert to plain objects
       const seenIds = new Set();
       results = results
         .filter(tasting => {
           if (seenIds.has(tasting.id)) {
-            console.log('🔄 Duplicate tasting found, removing:', tasting.id, tasting.coffeeName);
+            Logger.debug('🔄 Duplicate tasting found, removing:', 'screen', { component: 'HistoryScreen', data: tasting.id, coffeeName: tasting.coffeeName });
             return false;
-          }
+        }
           seenIds.add(tasting.id);
           return true;
-        })
+      })
         .map((tasting, index) => {
           try {
             return {
@@ -500,15 +501,15 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
               matchScoreTotal: tasting.matchScoreTotal,
               // 추가 안정성을 위한 인덱스
               _uniqueIndex: index
-            };
-          } catch (error) {
-            console.error('❌ Error converting tasting to plain object:', error, tasting);
+          };
+        } catch (error) {
+            Logger.error('❌ Error converting tasting to plain object:', 'screen', { component: 'HistoryScreen', error: error, tasting });
             return {
               ...tasting,
               _uniqueIndex: index
-            };
-          }
-        });
+          };
+        }
+      });
       
       // Apply search query
       if (searchQuery) {
@@ -519,14 +520,14 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
           (tasting.cafeName && tasting.cafeName.toLowerCase().includes(query)) ||
           (tasting.origin && tasting.origin.toLowerCase().includes(query))
         );
-      }
+    }
       
       // Sort results
       if (sortBy === 'date') {
         results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-      } else {
+    } else {
         results.sort((a, b) => b.matchScoreTotal - a.matchScoreTotal);
-      }
+    }
       
       // Group by date
       const grouped: GroupedTastings[] = [];
@@ -547,51 +548,51 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
       
       if (todayRecords.length > 0) {
         grouped.push({ title: '오늘', data: todayRecords });
-      }
+    }
       if (yesterdayRecords.length > 0) {
         grouped.push({ title: '어제', data: yesterdayRecords });
-      }
+    }
       if (weekRecords.length > 0) {
         grouped.push({ title: '이번 주', data: weekRecords });
-      }
+    }
       if (monthRecords.length > 0) {
         grouped.push({ title: '이번 달', data: monthRecords });
-      }
+    }
       if (olderRecords.length > 0) {
         grouped.push({ title: '이전', data: olderRecords });
-      }
+    }
       
       return grouped;
-    } catch (error) {
-      console.error('Error grouping tastings:', error);
+  } catch (error) {
+      Logger.error('Error grouping tastings:', 'screen', { component: 'HistoryScreen', error: error });
       return [];
-    }
-  }, [allTastings, searchQuery, sortBy]);
+  }
+}, [allTastings, searchQuery, sortBy]);
 
   const getScoreType = (score: number): 'high' | 'medium' | 'low' => {
     if (score >= 85) return 'high';
     if (score >= 70) return 'medium';
     return 'low';
-  };
+};
 
   const renderTastingItem = (item: ITastingRecord) => {
     if (!item || !item.id || !item.coffeeName) {
       return null;
-    }
+  }
 
     try {
       const formattedDate = item.createdAt ? item.createdAt.toLocaleDateString('ko-KR', { 
         month: 'long', 
         day: 'numeric' 
-      }) : '날짜 없음';
+    }) : '날짜 없음';
       
       return (
         <TastingCard
           onPress={() => {
             navigation.navigate('TastingDetail', { 
               tastingId: item.id
-            });
-          }}
+          });
+        }}
           pressStyle={{ scale: 0.98 }}
         >
           <CardHeader>
@@ -604,16 +605,16 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
           <DateText>{formattedDate}</DateText>
         </TastingCard>
       );
-    } catch (error) {
-      console.error('Error rendering tasting item:', error, item);
+  } catch (error) {
+      Logger.error('Error rendering tasting item:', 'screen', { component: 'HistoryScreen', error: error, item });
       return (
         <TastingCard>
           <CoffeeName>Error loading item</CoffeeName>
           <RoasterName>ID: {item.id}</RoasterName>
         </TastingCard>
       );
-    }
-  };
+  }
+};
 
   const renderSection = (section: GroupedTastings, index: number) => {
     const sectionKey = generateSafeKey(`${screenId}-section`, index, section.title, `section-${section.data.length}`);
@@ -635,10 +636,10 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
                 </View>
               </React.Fragment>
             );
-          })}
+        })}
       </YStack>
     );
-  };
+};
 
   if (loading) {
     return (
@@ -661,7 +662,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
         </SafeAreaView>
       </Container>
     );
-  }
+}
 
   return (
     <Container>
@@ -686,7 +687,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
             enterStyle={{
               opacity: 0,
               y: -20,
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
           >
             <HeaderTitle>총 {allTastings.length}개의 기록</HeaderTitle>
@@ -698,7 +699,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
             enterStyle={{
               opacity: 0,
               y: -10,
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
           >
             <SearchBar>
@@ -723,7 +724,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
             enterStyle={{
               opacity: 0,
               y: -10,
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
           >
             <SortButton
@@ -764,7 +765,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
                     {renderSection(section, index)}
                   </React.Fragment>
                 );
-              })}
+            })}
             </YStack>
           ) : (
             <EmptyContainer>

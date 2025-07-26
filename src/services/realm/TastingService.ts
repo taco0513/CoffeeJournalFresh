@@ -26,21 +26,21 @@ export class TastingService {
     this.cafeService = CafeService.getInstance();
     this.roasterService = RoasterService.getInstance();
     this.coffeeLibraryService = CoffeeLibraryService.getInstance();
-  }
+}
 
   static getInstance(): TastingService {
     if (!TastingService.instance) {
       TastingService.instance = new TastingService();
-    }
-    return TastingService.instance;
   }
+    return TastingService.instance;
+}
 
   async saveTasting(data: TastingData): Promise<ITastingRecord> {
     
     // Ensure Realm is initialized before proceeding
     if (!this.baseService.isInitialized) {
       await this.baseService.initialize();
-    }
+  }
     
     const realm = this.baseService.getRealm();
     
@@ -58,7 +58,7 @@ export class TastingService {
           altitude: '',
           process: '',
           temperature: 'hot' as const,
-        };
+      };
         
         const defaultSensoryAttributes = {
           body: 3,
@@ -68,13 +68,13 @@ export class TastingService {
           bitterness: 3,
           balance: 3,
           mouthfeel: 'Clean' as const,
-        };
+      };
         
         const defaultMatchScore = {
           total: 0,
           flavorScore: 0,
           sensoryScore: 0,
-        };
+      };
         
         // Safe data extraction
         const safeData = {
@@ -85,7 +85,7 @@ export class TastingService {
           sensoryAttributes: { ...defaultSensoryAttributes, ...(data.sensoryAttributes || {}) },
           matchScore: { ...defaultMatchScore, ...(data.matchScore || {}) },
           personalComment: data.personalComment || '',
-        };
+      };
         
         // Create flavor notes from selected flavors
         const flavorNotes: IFlavorNote[] = [];
@@ -95,13 +95,13 @@ export class TastingService {
             safeData.selectedFlavors.forEach((flavorPath) => {
               if (flavorPath && typeof flavorPath === 'object') {
                 // Handle test data format: { level, value, koreanValue }
-                if ((flavorPath as any).level && (flavorPath as any).value) {
+                if ((flavorPath as unknown).level && (flavorPath as unknown).value) {
                   flavorNotes.push({
-                    level: (flavorPath as any).level,
-                    value: (flavorPath as any).value,
-                    koreanValue: (flavorPath as any).koreanValue,
-                  });
-                }
+                    level: (flavorPath as unknown).level,
+                    value: (flavorPath as unknown).value,
+                    koreanValue: (flavorPath as unknown).koreanValue,
+                });
+              }
                 // Handle original format: { level1, level2, level3, level4 }
                 else {
                   // Level 1 flavor
@@ -110,8 +110,8 @@ export class TastingService {
                       level: 1,
                       value: flavorPath.level1,
                       koreanValue: undefined,
-                    });
-                  }
+                  });
+                }
                   
                   // Level 2 flavor
                   if (flavorPath.level2) {
@@ -119,8 +119,8 @@ export class TastingService {
                       level: 2,
                       value: flavorPath.level2,
                       koreanValue: undefined,
-                    });
-                  }
+                  });
+                }
                   
                   // Level 3 flavor
                   if (flavorPath.level3) {
@@ -128,24 +128,24 @@ export class TastingService {
                       level: 3,
                       value: flavorPath.level3,
                       koreanValue: undefined,
-                    });
-                  }
+                  });
+                }
                   
                   // Level 4 flavor
-                  if ((flavorPath as any).level4) {
+                  if ((flavorPath as unknown).level4) {
                     flavorNotes.push({
                       level: 4,
-                      value: (flavorPath as any).level4,
+                      value: (flavorPath as unknown).level4,
                       koreanValue: undefined,
-                    });
-                  }
+                  });
                 }
               }
-            });
-          }
-        } catch (flavorError) {
-          RealmLogger.error('Error creating flavor notes', { error: flavorError as Error });
+            }
+          });
         }
+      } catch (flavorError) {
+          RealmLogger.error('Error creating flavor notes', { error: flavorError as Error });
+      }
         
         // Create sensory attribute with safe access
         let sensoryAttribute: ISensoryAttribute;
@@ -158,11 +158,11 @@ export class TastingService {
             bitterness: safeData.sensoryAttributes.bitterness || 3,
             balance: safeData.sensoryAttributes.balance || 3,
             mouthfeel: (safeData.sensoryAttributes.mouthfeel || 'Clean') as 'Clean' | 'Creamy' | 'Juicy' | 'Silky',
-          };
-        } catch (sensoryError) {
+        };
+      } catch (sensoryError) {
           RealmLogger.error('Error creating sensory attributes', { error: sensoryError as Error });
           sensoryAttribute = defaultSensoryAttributes;
-        }
+      }
         
         // Create the tasting record
         try {
@@ -195,7 +195,7 @@ export class TastingService {
             sensoryAttribute: sensoryAttribute,
             
             // Sensory expressions (stored as JSON string)
-            selectedSensoryExpressions: JSON.stringify(safeData.selectedSensoryExpressions || []) as any,
+            selectedSensoryExpressions: JSON.stringify(safeData.selectedSensoryExpressions || []) as unknown,
             
             // Mode
             mode: data.mode || 'cafe',
@@ -206,10 +206,10 @@ export class TastingService {
             // Sync status
             isSynced: false,
             isDeleted: false,
-          });
-        } catch (recordError) {
+        });
+      } catch (recordError) {
           throw recordError;
-        }
+      }
         
         // Update related services after successful record creation
         try {
@@ -222,38 +222,43 @@ export class TastingService {
             altitude: safeData.coffeeInfo.altitude,
             process: safeData.coffeeInfo.process,
             roasterNotes: safeData.roasterNotes,
-          });
+        });
           
           // Update cafe stats if cafe name provided
           if (safeData.coffeeInfo.cafeName) {
             this.cafeService.updateCafeFromTasting(safeData.coffeeInfo.cafeName);
-          }
+        }
           
           // Update roaster stats
           this.roasterService.updateRoasterFromTasting(
             safeData.coffeeInfo.roastery,
             safeData.matchScore.total
           );
-        } catch (updateError) {
+      } catch (updateError) {
           // Log error but don't fail the save operation
           RealmLogger.error('Failed to update related services after tasting save', { error: updateError as Error });
-        }
-      });
+      }
+    });
       
       return savedRecord!;
       
-    } catch (error) {
+  } catch (error) {
       throw new Error(`Failed to save tasting: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
   }
+}
 
   async getTastingRecords(filter?: TastingFilter): Promise<Realm.Results<ITastingRecord>> {
     if (!this.baseService.isInitialized) {
       await this.baseService.initialize();
-    }
+  }
     
     const realm = this.baseService.getRealm();
     let query = realm.objects<ITastingRecord>('TastingRecord');
+    
+    RealmLogger.debug('🔍 TastingService.getTastingRecords called', {
+      filter,
+      totalRecords: query.length
+    });
     
     if (filter) {
       let filterClauses: string[] = [];
@@ -262,56 +267,72 @@ export class TastingService {
       if (filter.isDeleted !== undefined) {
         filterClauses.push('isDeleted = $' + filterValues.length);
         filterValues.push(filter.isDeleted);
-      }
+    }
       
       if (filter.isSynced !== undefined) {
         filterClauses.push('isSynced = $' + filterValues.length);
         filterValues.push(filter.isSynced);
-      }
+    }
       
       if (filter.cafeName) {
         filterClauses.push('cafeName = $' + filterValues.length);
         filterValues.push(filter.cafeName);
-      }
+    }
       
       if (filter.roastery) {
         filterClauses.push('roastery = $' + filterValues.length);
         filterValues.push(filter.roastery);
-      }
+    }
       
       if (filter.startDate) {
         filterClauses.push('createdAt >= $' + filterValues.length);
         filterValues.push(filter.startDate);
-      }
+    }
       
       if (filter.endDate) {
         filterClauses.push('createdAt <= $' + filterValues.length);
         filterValues.push(filter.endDate);
-      }
+    }
       
       if (filterClauses.length > 0) {
-        query = query.filtered(filterClauses.join(' AND '), ...filterValues);
-      }
+        const filterString = filterClauses.join(' AND ');
+        RealmLogger.debug('🔍 Applying filter', {
+          filterString,
+          filterValues
+        });
+        query = query.filtered(filterString, ...filterValues);
     }
+  }
     
     const sortedQuery = query.sorted('createdAt', true);
-    return this.baseService.paginateResults(sortedQuery, filter?.limit, filter?.offset) as any;
-  }
+    const result = this.baseService.paginateResults(sortedQuery, filter?.limit, filter?.offset);
+    
+    RealmLogger.debug('🔍 TastingService.getTastingRecords result', {
+      resultType: Array.isArray(result) ? 'Array' : 'Realm.Results',
+      count: Array.isArray(result) ? result.length : result.length,
+      isRealmResults: !Array.isArray(result),
+      first3Records: Array.isArray(result) 
+        ? result.slice(0, 3).map(r => ({ id: r.id, coffeeName: r.coffeeName, roastery: r.roastery }))
+        : Array.from(sortedQuery).slice(0, 3).map(r => ({ id: r.id, coffeeName: r.coffeeName, roastery: r.roastery }))
+    });
+    
+    return result as Realm.Results<ITastingRecord>;
+}
 
   async getTastingRecordById(id: string): Promise<ITastingRecord | null> {
     if (!this.baseService.isInitialized) {
       await this.baseService.initialize();
-    }
+  }
     
     const realm = this.baseService.getRealm();
     const record = realm.objectForPrimaryKey<ITastingRecord>('TastingRecord', id);
     return record || null;
-  }
+}
 
   async updateTastingRecord(id: string, updates: Partial<ITastingRecord>): Promise<void> {
     if (!this.baseService.isInitialized) {
       await this.baseService.initialize();
-    }
+  }
     
     const realm = this.baseService.getRealm();
     
@@ -321,15 +342,15 @@ export class TastingService {
         Object.assign(record, updates, {
           updatedAt: new Date(),
           isSynced: false,
-        });
-      }
-    });
-  }
+      });
+    }
+  });
+}
 
   async deleteTastingRecord(id: string, hardDelete: boolean = false): Promise<void> {
     if (!this.baseService.isInitialized) {
       await this.baseService.initialize();
-    }
+  }
     
     const realm = this.baseService.getRealm();
     
@@ -339,24 +360,24 @@ export class TastingService {
         if (tasting) {
           if (hardDelete) {
             realm.delete(tasting);
-          } else {
+        } else {
             tasting.isDeleted = true;
             tasting.updatedAt = new Date();
             tasting.isSynced = false;
-          }
-        } else {
-          throw new Error(`Tasting record not found with id: ${id}`);
         }
-      });
-    } catch (error) {
+      } else {
+          throw new Error(`Tasting record not found with id: ${id}`);
+      }
+    });
+  } catch (error) {
       throw new Error(`Failed to delete tasting record: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
   }
+}
 
   async createTastingRecord(data: Omit<ITastingRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<ITastingRecord> {
     if (!this.baseService.isInitialized) {
       await this.baseService.initialize();
-    }
+  }
     
     const realm = this.baseService.getRealm();
     let newRecord: ITastingRecord;
@@ -367,11 +388,11 @@ export class TastingService {
         createdAt: new Date(),
         updatedAt: new Date(),
         ...data,
-      });
     });
+  });
     
     return newRecord!;
-  }
+}
 
   // Get recent tastings with limit
   static async getRecentTastings(limit: number = 10): Promise<{
@@ -381,14 +402,14 @@ export class TastingService {
     coffeeName: string;
     matchScoreTotal: number;
     createdAt: Date;
-  }[]> {
+}[]> {
     try {
       const instance = TastingService.getInstance();
       
       // Realm이 초기화되지 않았으면 초기화 시도
       if (!instance.baseService.isInitialized) {
         await instance.baseService.initialize();
-      }
+    }
       
       const realm = instance.baseService.getRealm();
       const records = realm.objects<ITastingRecord>('TastingRecord')
@@ -404,18 +425,18 @@ export class TastingService {
         coffeeName: tasting.coffeeName,
         matchScoreTotal: tasting.matchScoreTotal,
         createdAt: tasting.createdAt,
-      }));
-    } catch (error) {
+    }));
+  } catch (error) {
       return []; // 에러 시 빈 배열 반환
-    }
   }
+}
 
   // Sync-related methods
-  getUnsyncedRecords(): any {
+  getUnsyncedRecords(): unknown {
     const realm = this.baseService.getRealm();
     return realm.objects<ITastingRecord>('TastingRecord')
       .filtered('isSynced = false');
-  }
+}
 
   markAsSynced(recordIds: string[]): void {
     const realm = this.baseService.getRealm();
@@ -426,10 +447,10 @@ export class TastingService {
         if (record) {
           record.isSynced = true;
           record.syncedAt = new Date();
-        }
-      });
+      }
     });
-  }
+  });
+}
 
   clearAllTastings(): void {
     const realm = this.baseService.getRealm();
@@ -443,8 +464,8 @@ export class TastingService {
       realm.delete(allFlavorNotes);
       realm.delete(allSensoryAttributes);
       realm.delete(allTastings);
-    });
-  }
+  });
+}
 
   // Search methods
   searchCoffees(searchText: string, limit: number = 10): CoffeeSearchResult[] {
@@ -472,9 +493,9 @@ export class TastingService {
             existing.tastingCount++;
             if (tasting.createdAt > existing.lastTasted) {
               existing.lastTasted = tasting.createdAt;
-            }
           }
-        } else {
+        }
+      } else {
           coffeeMap.set(key, {
             id: tasting.id,
             coffeeName: tasting.coffeeName,
@@ -482,9 +503,9 @@ export class TastingService {
             origin: tasting.origin,
             lastTasted: tasting.createdAt,
             tastingCount: 1,
-          });
-        }
-      });
+        });
+      }
+    });
       
       // Convert to array and sort by last tasted
       const results = Array.from(coffeeMap.values())
@@ -492,11 +513,11 @@ export class TastingService {
         .slice(0, limit);
       
       return results;
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to search coffees', { error: error as Error });
       return [];
-    }
   }
+}
 
   getSameCoffeeComparison(coffeeName: string, roastery: string): SameCoffeeComparison | null {
     const realm = this.baseService.getRealm();
@@ -508,7 +529,7 @@ export class TastingService {
       
       if (sameCoffeeRecords.length === 0) {
         return null;
-      }
+    }
       
       // Calculate statistics
       let totalScore = 0;
@@ -518,7 +539,7 @@ export class TastingService {
         const score = record.matchScoreTotal || 0;
         totalScore += score;
         scoreMap.set(score, (scoreMap.get(score) || 0) + 1);
-      });
+    });
       
       const averageScore = totalScore / sameCoffeeRecords.length;
       
@@ -535,12 +556,12 @@ export class TastingService {
         averageScore,
         scoreDistribution,
         recentTastings,
-      };
-    } catch (error) {
+    };
+  } catch (error) {
       RealmLogger.error('Failed to get same coffee comparison', { error: error as Error });
       return null;
-    }
   }
+}
 
   getSimilarCoffees(coffeeName: string, roastery: string, origin?: string): SimilarCoffee[] {
     const realm = this.baseService.getRealm();
@@ -552,7 +573,7 @@ export class TastingService {
       
       if (!referenceCoffee) {
         return [];
-      }
+    }
       
       // Find similar coffees (same origin or similar characteristics)
       let similarCoffees;
@@ -560,12 +581,12 @@ export class TastingService {
         similarCoffees = realm.objects<ITastingRecord>('TastingRecord')
           .filtered('origin = $0 AND isDeleted = false AND NOT (coffeeName = $1 AND roastery = $2)', 
             origin, coffeeName, roastery);
-      } else {
+    } else {
         // If no origin, find coffees from the same roastery
         similarCoffees = realm.objects<ITastingRecord>('TastingRecord')
           .filtered('roastery = $0 AND isDeleted = false AND NOT coffeeName = $1', 
             roastery, coffeeName);
-      }
+    }
       
       // Group and calculate statistics
       const coffeeMap = new Map<string, any>();
@@ -577,7 +598,7 @@ export class TastingService {
           const existing = coffeeMap.get(key);
           existing.totalScore += tasting.matchScoreTotal || 0;
           existing.tastingCount++;
-        } else {
+      } else {
           coffeeMap.set(key, {
             coffeeName: tasting.coffeeName,
             roastery: tasting.roastery,
@@ -585,9 +606,9 @@ export class TastingService {
             totalScore: tasting.matchScoreTotal || 0,
             tastingCount: 1,
             similarity: origin && tasting.origin === origin ? 100 : 50,
-          });
-        }
-      });
+        });
+      }
+    });
       
       // Convert to array with average scores
       const results = Array.from(coffeeMap.values())
@@ -595,16 +616,16 @@ export class TastingService {
           ...coffee,
           averageScore: coffee.totalScore / coffee.tastingCount,
           totalScore: undefined,
-        }))
+      }))
         .sort((a, b) => b.similarity - a.similarity || b.averageScore - a.averageScore)
         .slice(0, 10);
       
       return results;
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to get similar coffees', { error: error as Error });
       return [];
-    }
   }
+}
 }
 
 export default TastingService.getInstance();

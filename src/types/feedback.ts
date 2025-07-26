@@ -16,12 +16,12 @@ export interface FeedbackItem {
     appVersion: string;
     model: string;
     buildNumber?: string;
-  };
+};
   context?: {
     screenName?: string;
     feature?: string;
     breadcrumbs?: string[];
-  };
+};
   status: 'pending' | 'reviewed' | 'in-progress' | 'resolved' | 'closed';
   adminNotes?: string;
   createdAt: Date;

@@ -33,8 +33,8 @@ export const InsightCard: React.FC<InsightCardProps> = ({
         return <Text style={styles.trendIcon}>→</Text>;
       default:
         return null;
-    }
-  };
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -60,36 +60,36 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_MD,
     borderWidth: 1,
     borderColor: '#FFE5CC',
-  },
+},
   icon: {
     fontSize: 32,
     marginRight: HIGConstants.SPACING_LG,
-  },
+},
   content: {
     flex: 1,
-  },
+},
   title: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     marginBottom: 4,
-  },
+},
   valueRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: HIGConstants.SPACING_XS,
-  },
+},
   value: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   trendIcon: {
     fontSize: 16,
     color: HIGColors.green,
-  },
+},
   detail: {
     fontSize: 13,
     color: HIGColors.tertiaryLabel,
     marginTop: 4,
-  },
+},
 });

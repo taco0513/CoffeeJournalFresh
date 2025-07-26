@@ -1,0 +1,51 @@
+Temperature section to add after line 295:
+
+                {/* Temperature */}
+                <YStack>
+                  <FieldLabel>온도 *</FieldLabel>
+                  <XStack flexWrap="wrap">
+                    <ToggleButton
+                      selected={currentTasting.temperature === 'hot'}
+                      onPress={() => updateField('temperature', 
+                        currentTasting.temperature === 'hot' ? undefined : 'hot'
+                      )}
+                      pressStyle={{ scale: '$scalePress' }}
+                      animation="quick"
+                    >
+                      <XStack alignItems="center" space="$xs">
+                        <Text fontSize="$3">☕</Text>
+                        <Text 
+                          fontSize="$2"
+                          fontWeight={currentTasting.temperature === 'hot' ? '600' : '400'}
+                          color={currentTasting.temperature === 'hot' ? '$blue11' : '$color'}
+                        >
+                          Hot
+                        </Text>
+                      </XStack>
+                    </ToggleButton>
+                    <ToggleButton
+                      selected={currentTasting.temperature === 'cold'}
+                      onPress={() => updateField('temperature', 
+                        currentTasting.temperature === 'cold' ? undefined : 'cold'
+                      )}
+                      pressStyle={{ scale: '$scalePress' }}
+                      animation="quick"
+                    >
+                      <XStack alignItems="center" space="$xs">
+                        <Text fontSize="$3">🧊</Text>
+                        <Text 
+                          fontSize="$2"
+                          fontWeight={currentTasting.temperature === 'cold' ? '600' : '400'}
+                          color={currentTasting.temperature === 'cold' ? '$blue11' : '$color'}
+                        >
+                          Ice
+                        </Text>
+                      </XStack>
+                    </ToggleButton>
+                  </XStack>
+                </YStack>
+
+Also update validation around line 425:
+  const isValid = (currentTasting.cafeName?.trim() || currentTasting.roastery?.trim()) && 
+                  currentTasting.coffeeName?.trim() && 
+                  currentTasting.temperature;

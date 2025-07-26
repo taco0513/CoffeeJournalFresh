@@ -33,7 +33,7 @@ export interface TastePattern {
     preference: number;
     frequency: number;
     consistency: number;
-  }>;
+}>;
   tasteProfile: string;
   growthTrend?: {
     vocabularyGrowth: number;
@@ -41,7 +41,7 @@ export interface TastePattern {
     flavorDiversityIndex: number;
     consistencyScore: number;
     weeklyProgress: number;
-  };
+};
   recommendations?: string[];
   lastUpdated?: Date;
 }
@@ -161,7 +161,7 @@ export interface TastingData {
     acidity: number;
     sweetness: number;
     finish: number;
-  };
+};
   rating: number;
   notes?: string;
   createdAt: Date;
@@ -184,7 +184,7 @@ export interface CoffeeInfo {
 export interface PersonalDashboardData {
   tastePattern: TastePattern | null;
   growthMetrics: GrowthMetrics | null;
-  recentAchievements: any[]; // Achievement[];
+  recentAchievements: unknown[]; // Achievement[];
   weeklyProgress: WeeklyProgressData;
   recommendations: CoffeeRecommendation[];
 }
@@ -222,7 +222,7 @@ export interface QuizResult {
   correctAnswers: number;
   totalQuestions: number;
   earnedPoints: number;
-  unlockedAchievements: any[]; // Achievement[];
+  unlockedAchievements: unknown[]; // Achievement[];
 }
 
 export interface DailyChallengeData {
@@ -233,11 +233,11 @@ export interface DailyChallengeData {
   requirements: {
     action: string;
     target: number;
-  };
+};
   reward: {
     points: number;
     achievement?: string;
-  };
+};
   progress: number; // 0-1
   expiresAt: Date;
 }

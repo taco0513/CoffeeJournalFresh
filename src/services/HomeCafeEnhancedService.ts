@@ -46,7 +46,7 @@ export interface RecipeTemplate {
     grindSize: string;
     totalBrewTime: number;
     steps: BrewingStep[];
-  };
+};
   notes: string[];
   tags: string[];
 }
@@ -71,11 +71,11 @@ export interface GrindGuide {
   commonSettings: {
     grinder: string;
     setting: string;
-  }[];
+}[];
   adjustment: {
     tooFast: string;
     tooSlow: string;
-  };
+};
 }
 
 export class HomeCafeEnhancedService {
@@ -86,9 +86,9 @@ export class HomeCafeEnhancedService {
   static getInstance(): HomeCafeEnhancedService {
     if (!HomeCafeEnhancedService.instance) {
       HomeCafeEnhancedService.instance = new HomeCafeEnhancedService();
-    }
-    return HomeCafeEnhancedService.instance;
   }
+    return HomeCafeEnhancedService.instance;
+}
 
   /**
    * Enhanced dripper specifications with detailed characteristics
@@ -119,7 +119,7 @@ export class HomeCafeEnhancedService {
             filterType: 'V60-01 Filter',
             defaultRatio: '1:15',
             recommendedDose: [15, 20, 25]
-          },
+        },
           {
             size: '02',
             capacity: '1-4 cups', 
@@ -127,7 +127,7 @@ export class HomeCafeEnhancedService {
             filterType: 'V60-02 Filter',
             defaultRatio: '1:15',
             recommendedDose: [20, 25, 30, 35]
-          },
+        },
           {
             size: '03',
             capacity: '3-6 cups',
@@ -135,9 +135,9 @@ export class HomeCafeEnhancedService {
             filterType: 'V60-03 Filter',
             defaultRatio: '1:15',
             recommendedDose: [30, 40, 50]
-          }
+        }
         ]
-      },
+    },
       {
         name: 'Kalita Wave',
         korean: '칼리타 웨이브',
@@ -162,7 +162,7 @@ export class HomeCafeEnhancedService {
             filterType: 'Wave 155 Filter',
             defaultRatio: '1:16',
             recommendedDose: [15, 20, 25]
-          },
+        },
           {
             size: '185',
             capacity: '2-4 cups',
@@ -170,9 +170,9 @@ export class HomeCafeEnhancedService {
             filterType: 'Wave 185 Filter', 
             defaultRatio: '1:16',
             recommendedDose: [25, 30, 35]
-          }
+        }
         ]
-      },
+    },
       {
         name: 'Chemex',
         korean: '케멕스',
@@ -197,7 +197,7 @@ export class HomeCafeEnhancedService {
             filterType: 'Chemex Circle Filter',
             defaultRatio: '1:17',
             recommendedDose: [20, 25, 30]
-          },
+        },
           {
             size: '6-cup',
             capacity: '6 cups',
@@ -205,9 +205,9 @@ export class HomeCafeEnhancedService {
             filterType: 'Chemex Circle Filter',
             defaultRatio: '1:17',
             recommendedDose: [35, 42, 50]
-          }
+        }
         ]
-      },
+    },
       {
         name: 'Origami',
         korean: '오리가미',
@@ -232,7 +232,7 @@ export class HomeCafeEnhancedService {
             filterType: 'V60-01 or Wave 155',
             defaultRatio: '1:15',
             recommendedDose: [15, 20, 25]
-          },
+        },
           {
             size: 'M',
             capacity: '1-4 cups',
@@ -240,11 +240,11 @@ export class HomeCafeEnhancedService {
             filterType: 'V60-02 or Wave 185',
             defaultRatio: '1:15',
             recommendedDose: [20, 30, 40]
-          }
+        }
         ]
-      }
+    }
     ];
-  }
+}
 
   /**
    * World Champion Recipe Templates
@@ -277,7 +277,7 @@ export class HomeCafeEnhancedService {
               description: 'First pour - center to control sweetness',
               korean: '1차 붓기 - 중앙에 천천히',
               pourPattern: 'center'
-            },
+          },
             {
               stepNumber: 2,
               time: 45,
@@ -286,7 +286,7 @@ export class HomeCafeEnhancedService {
               description: 'Second pour - center to control sweetness',
               korean: '2차 붓기 - 중앙에 천천히',
               pourPattern: 'center'
-            },
+          },
             {
               stepNumber: 3,
               time: 90,
@@ -295,7 +295,7 @@ export class HomeCafeEnhancedService {
               description: 'Third pour - control strength',
               korean: '3차 붓기 - 농도 조절',
               pourPattern: 'center'
-            },
+          },
             {
               stepNumber: 4,
               time: 135,
@@ -304,7 +304,7 @@ export class HomeCafeEnhancedService {
               description: 'Fourth pour - control strength',
               korean: '4차 붓기 - 농도 조절',
               pourPattern: 'center'
-            },
+          },
             {
               stepNumber: 5,
               time: 180,
@@ -313,16 +313,16 @@ export class HomeCafeEnhancedService {
               description: 'Final pour - complete extraction',
               korean: '마지막 붓기 - 추출 완료',
               pourPattern: 'center'
-            }
+          }
           ]
-        },
+      },
         notes: [
           'First 40% of water controls sweetness',
           'Last 60% of water controls strength',
           'Adjust grind size based on brew time'
         ],
         tags: ['world-champion', 'beginner-friendly', 'consistent']
-      },
+    },
       {
         id: 'james_hoffmann_v60',
         name: 'Hoffmann V60 Method',
@@ -347,7 +347,7 @@ export class HomeCafeEnhancedService {
               description: 'Bloom pour - wet all grounds',
               korean: '블룸 - 모든 원두 적시기',
               pourPattern: 'spiral'
-            },
+          },
             {
               stepNumber: 2,
               time: 30,
@@ -355,7 +355,7 @@ export class HomeCafeEnhancedService {
               description: 'Gentle stir to ensure even saturation',
               korean: '부드럽게 젓기',
               technique: '1-2 gentle stirs'
-            },
+          },
             {
               stepNumber: 3,
               time: 45,
@@ -364,7 +364,7 @@ export class HomeCafeEnhancedService {
               description: 'Pour in center, spiral outward',
               korean: '중앙에서 바깥으로 나선형',
               pourPattern: 'spiral'
-            },
+          },
             {
               stepNumber: 4,
               time: 125,
@@ -373,16 +373,16 @@ export class HomeCafeEnhancedService {
               description: 'Final pour with same technique',
               korean: '마지막 붓기',
               pourPattern: 'spiral'
-            }
+          }
           ]
-        },
+      },
         notes: [
           'Focus on even wetting during bloom',
           'Maintain consistent pour speed',
           'Aim for 5-7 minute total brew time'
         ],
         tags: ['popular', 'consistent', 'even-extraction']
-      },
+    },
       {
         id: 'onyx_kalita_wave',
         name: 'Onyx Kalita Wave',
@@ -407,7 +407,7 @@ export class HomeCafeEnhancedService {
               description: 'Bloom pour - 2x coffee weight',
               korean: '블룸 - 원두량의 2배',
               pourPattern: 'center'
-            },
+          },
             {
               stepNumber: 2,
               time: 30,
@@ -416,7 +416,7 @@ export class HomeCafeEnhancedService {
               description: 'Pour to 197g total weight',
               korean: '197g까지 붓기',
               pourPattern: 'spiral'
-            },
+          },
             {
               stepNumber: 3,
               time: 90,
@@ -425,18 +425,18 @@ export class HomeCafeEnhancedService {
               description: 'Pour to 350g total weight',
               korean: '350g까지 붓기',
               pourPattern: 'spiral'
-            }
+          }
           ]
-        },
+      },
         notes: [
           'Very forgiving brewing method',
           'Hard to over-extract',
           'Great for beginners'
         ],
         tags: ['beginner', 'forgiving', 'simple']
-      }
+    }
     ];
-  }
+}
 
   /**
    * Grind size guidance with visual references
@@ -458,8 +458,8 @@ export class HomeCafeEnhancedService {
         adjustment: {
           tooFast: 'Grind finer (더 곱게) - brew time under 2:30',
           tooSlow: 'Grind coarser (더 굵게) - brew time over 4:00'
-        }
-      },
+      }
+    },
       {
         dripper: 'KalitaWave',
         grindSize: 'Medium',
@@ -475,8 +475,8 @@ export class HomeCafeEnhancedService {
         adjustment: {
           tooFast: 'Grind finer (더 곱게) - brew time under 3:00',
           tooSlow: 'Grind coarser (더 굵게) - brew time over 5:00'
-        }
-      },
+      }
+    },
       {
         dripper: 'Chemex',
         grindSize: 'Medium-coarse',
@@ -492,31 +492,31 @@ export class HomeCafeEnhancedService {
         adjustment: {
           tooFast: 'Grind finer (더 곱게) - brew time under 4:00',
           tooSlow: 'Grind coarser (더 굵게) - brew time over 6:00'
-        }
       }
+    }
     ];
-  }
+}
 
   /**
    * Get recipe template by ID
    */
   getRecipeById(id: string): RecipeTemplate | undefined {
     return this.getRecipeTemplates().find(recipe => recipe.id === id);
-  }
+}
 
   /**
    * Get dripper spec by name
    */
   getDripperSpec(dripperName: string): DripperSpec | undefined {
     return this.getDripperSpecs().find(spec => spec.name === dripperName);
-  }
+}
 
   /**
    * Get grind guide for specific dripper
    */
   getGrindGuide(dripperName: string): GrindGuide | undefined {
     return this.getGrindGuides().find(guide => guide.dripper === dripperName);
-  }
+}
 
   /**
    * Calculate recommended recipe based on dripper and dose
@@ -534,22 +534,22 @@ export class HomeCafeEnhancedService {
       ratio: defaultRatio,
       waterTemp: dripper === 'Chemex' ? 95 : 92,
       grindSize: this.getGrindGuide(dripper)?.grindSize || 'Medium'
-    };
-  }
+  };
+}
 
   /**
    * Get beginner-friendly recipes
    */
   getBeginnerRecipes(): RecipeTemplate[] {
     return this.getRecipeTemplates().filter(recipe => recipe.difficulty === 'beginner');
-  }
+}
 
   /**
    * Get world champion recipes
    */
   getChampionRecipes(): RecipeTemplate[] {
     return this.getRecipeTemplates().filter(recipe => recipe.championship);
-  }
+}
 }
 
 export default HomeCafeEnhancedService;

@@ -138,7 +138,7 @@ export const commonButtonStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: HIGConstants.BORDER_RADIUS,
-  },
+},
   
   // 주요 액션 버튼 (Primary)
   buttonPrimary: {
@@ -149,7 +149,7 @@ export const commonButtonStyles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: HIGConstants.BORDER_RADIUS,
     backgroundColor: HIGColors.blue,
-  },
+},
   
   // 성공/확인 버튼
   buttonSuccess: {
@@ -160,7 +160,7 @@ export const commonButtonStyles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: HIGConstants.BORDER_RADIUS,
     backgroundColor: HIGColors.green,
-  },
+},
   
   // 위험/삭제 버튼
   buttonDanger: {
@@ -171,7 +171,7 @@ export const commonButtonStyles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: HIGConstants.BORDER_RADIUS,
     backgroundColor: HIGColors.red,
-  },
+},
   
   // 보조 버튼 (Secondary)
   buttonSecondary: {
@@ -182,7 +182,7 @@ export const commonButtonStyles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: HIGConstants.BORDER_RADIUS,
     backgroundColor: HIGColors.gray,
-  },
+},
   
   // 비활성화 버튼
   buttonDisabled: {
@@ -193,7 +193,7 @@ export const commonButtonStyles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: HIGConstants.BORDER_RADIUS,
     backgroundColor: HIGColors.gray3,
-  },
+},
   
   // 테두리 버튼 (Outline)
   buttonOutline: {
@@ -206,7 +206,7 @@ export const commonButtonStyles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: HIGColors.blue,
-  },
+},
   
   // 큰 버튼 (Large)
   buttonLarge: {
@@ -216,7 +216,7 @@ export const commonButtonStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: HIGConstants.BORDER_RADIUS_LARGE,
-  },
+},
   
   // 작은 버튼 (Small) - 시각적으로는 작지만 터치 영역은 44pt 유지
   buttonSmall: {
@@ -226,7 +226,7 @@ export const commonButtonStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: HIGConstants.BORDER_RADIUS,
-  },
+},
 });
 
 // 공통 텍스트 스타일
@@ -237,7 +237,7 @@ export const commonTextStyles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
     textAlign: 'center',
-  },
+},
   
   // 버튼 텍스트 (큰 버튼용)
   buttonTextLarge: {
@@ -245,7 +245,7 @@ export const commonTextStyles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
     textAlign: 'center',
-  },
+},
   
   // 버튼 텍스트 (작은 버튼용)
   buttonTextSmall: {
@@ -253,7 +253,7 @@ export const commonTextStyles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
     textAlign: 'center',
-  },
+},
   
   // 테두리 버튼 텍스트
   buttonTextOutline: {
@@ -261,7 +261,7 @@ export const commonTextStyles = StyleSheet.create({
     fontWeight: '600',
     color: HIGColors.blue,
     textAlign: 'center',
-  },
+},
   
   // 비활성화 버튼 텍스트
   buttonTextDisabled: {
@@ -269,7 +269,7 @@ export const commonTextStyles = StyleSheet.create({
     fontWeight: '600',
     color: HIGColors.gray,
     textAlign: 'center',
-  },
+},
 });
 
 // 터치 영역 확장을 위한 hitSlop 설정
@@ -290,63 +290,63 @@ export const commonLayoutStyles = StyleSheet.create({
   buttonContainer: {
     padding: HIGConstants.SPACING_LG,
     gap: HIGConstants.SPACING_MD,
-  },
+},
   
   // 수평 버튼 컨테이너
   buttonContainerHorizontal: {
     flexDirection: 'row',
     padding: HIGConstants.SPACING_LG,
     gap: HIGConstants.SPACING_MD,
-  },
+},
   
   // 버튼 그룹 (여러 버튼이 함께)
   buttonGroup: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_SM,
-  },
+},
   
   // 풀 너비 버튼
   buttonFullWidth: {
     width: '100%',
-  },
+},
   
   // 플렉스 버튼 (같은 크기로)
   buttonFlex: {
     flex: 1,
-  },
+},
 });
 
 // 그림자 스타일 (iOS용)
 export const shadowStyles = StyleSheet.create({
-  buttonShadow: Platform.select<any>({
+  buttonShadow: Platform.select<unknown>({
     ios: {
       shadowColor: '#000',
       shadowOffset: {
         width: 0,
         height: 2,
-      },
+    },
       shadowOpacity: 0.1,
       shadowRadius: 4,
-    },
+  },
     android: {
       elevation: 3,
-    },
-  }),
+  },
+}),
   
-  cardShadow: Platform.select<any>({
+  cardShadow: Platform.select<unknown>({
     ios: {
       shadowColor: '#000',
       shadowOffset: {
         width: 0,
         height: 1,
-      },
+    },
       shadowOpacity: 0.15,
       shadowRadius: 2,
-    },
+  },
     android: {
       elevation: 2,
-    },
-  }),
+  },
+}),
 });
 
 // 마스터 테이블 스타일 룰 (앱 전체 적용)
@@ -359,13 +359,13 @@ export const commonTableStyles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_SM,
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray5,
-  },
+},
   
   // 마지막 테이블 행 (하단 보더 제거)
   tableRowLast: {
     borderBottomWidth: 0,
     borderBottomColor: 'transparent',
-  },
+},
   
   // 정보 표시용 행 (세로 여백 작음)
   infoRow: {
@@ -376,13 +376,13 @@ export const commonTableStyles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray5,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   
   // 마지막 정보 행
   infoRowLast: {
     borderBottomWidth: 0,
     borderBottomColor: 'transparent',
-  },
+},
   
   // 감각 평가용 행 (세로 여백 중간)
   sensoryRow: {
@@ -392,13 +392,13 @@ export const commonTableStyles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_SM,
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray5,
-  },
+},
   
   // 마지막 감각 평가 행
   sensoryRowLast: {
     borderBottomWidth: 0,
     borderBottomColor: 'transparent',
-  },
+},
   
   // 랭킹/순위 표시용 행
   rankingRow: {
@@ -408,13 +408,13 @@ export const commonTableStyles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_SM,
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
-  },
+},
   
   // 마지막 랭킹 행
   rankingRowLast: {
     borderBottomWidth: 0,
     borderBottomColor: 'transparent',
-  },
+},
   
   // 테이블 섹션 컨테이너
   tableSection: {
@@ -429,20 +429,20 @@ export const commonTableStyles = StyleSheet.create({
         shadowOffset: {
           width: 0,
           height: 1,
-        },
+      },
         shadowOpacity: 0.05,
         shadowRadius: 2,
-      },
+    },
       android: {
         elevation: 2,
-      },
-    }),
-  },
+    },
+  }),
+},
   
   // 테이블 헤더
   tableHeader: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   
   // 테이블 제목
   tableTitle: {
@@ -450,7 +450,7 @@ export const commonTableStyles = StyleSheet.create({
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
 });
 
 // 사용 예시 헬퍼
@@ -478,7 +478,7 @@ export const createButtonStyle = (
     case 'outline':
       baseStyle.push(commonButtonStyles.buttonOutline);
       break;
-  }
+}
   
   // 크기별 스타일
   switch (size) {
@@ -488,12 +488,12 @@ export const createButtonStyle = (
     case 'large':
       baseStyle.push(commonButtonStyles.buttonLarge);
       break;
-  }
+}
   
   // 비활성화 상태
   if (disabled) {
     baseStyle.push(commonButtonStyles.buttonDisabled);
-  }
+}
   
   return baseStyle;
 };

@@ -1,5 +1,6 @@
 import { DummyDataService } from './DummyDataService';
 
+import { Logger } from './LoggingService';
 /**
  * AutoSelectService - Provides auto-selection functions for UI components
  * Used by FloatingDummyDataButton to automatically select options in dropdowns,
@@ -10,30 +11,30 @@ export class AutoSelectService {
   // Auto-select dropdown/picker options
   static async selectDropdownOption(elementId: string, options: string[], preferredIndex?: number): Promise<string> {
     const selected = await DummyDataService.autoSelectDropdown(options, preferredIndex);
-    console.log(`🎯 Auto-selected dropdown ${elementId}:`, selected);
+    Logger.debug(`🎯 Auto-selected dropdown ${elementId}:`, 'service', { component: 'AutoSelectService', data: selected });
     return selected;
-  }
+}
 
   // Auto-select radio button options
   static async selectRadioOption(groupName: string, options: string[], preferred?: string): Promise<string> {
     const selected = await DummyDataService.autoSelectRadioButton(options, preferred);
-    console.log(`🎯 Auto-selected radio ${groupName}:`, selected);
+    Logger.debug(`🎯 Auto-selected radio ${groupName}:`, 'service', { component: 'AutoSelectService', data: selected });
     return selected;
-  }
+}
 
   // Auto-select multiple checkbox options
   static async selectCheckboxOptions(groupName: string, options: string[], min = 1, max?: number): Promise<string[]> {
     const selected = await DummyDataService.autoSelectCheckboxes(options, min, max);
-    console.log(`🎯 Auto-selected checkboxes ${groupName}:`, selected);
+    Logger.debug(`🎯 Auto-selected checkboxes ${groupName}:`, 'service', { component: 'AutoSelectService', data: selected });
     return selected;
-  }
+}
 
   // Auto-set slider value
   static async setSliderValue(sliderId: string, min: number, max: number, preferred?: number): Promise<number> {
     const value = await DummyDataService.autoFillSlider(min, max, preferred);
-    console.log(`🎯 Auto-set slider ${sliderId}:`, value);
+    Logger.debug(`🎯 Auto-set slider ${sliderId}:`, 'service', { component: 'AutoSelectService', data: value });
     return value;
-  }
+}
 
   // Screen-specific auto-selection functions
   
@@ -43,11 +44,11 @@ export class AutoSelectService {
       roastLevel: await this.selectDropdownOption('roastLevel', ['Light', 'Medium Light', 'Medium', 'Medium Dark', 'Dark']),
       temperature: await this.selectRadioOption('temperature', ['hot', 'cold'], 'hot'),
       processingMethod: await this.selectDropdownOption('process', ['Washed', 'Natural', 'Honey', 'Anaerobic']),
-    };
+  };
     
-    console.log('☕ Auto-filled CoffeeInfo selections:', selections);
+    Logger.debug('☕ Auto-filled CoffeeInfo selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // HomeCafe Screen auto-selections  
   static async autoHomeCafeSelections() {
@@ -57,11 +58,11 @@ export class AutoSelectService {
       filter: await this.selectDropdownOption('filter', ['하리오 표백', '카페크 애비드', '칼리타 웨이브', '하리오 미표백']),
       waterTemp: await this.setSliderValue('waterTemp', 85, 95, 92),
       grindSetting: await this.setSliderValue('grindSetting', 15, 30, 20),
-    };
+  };
     
-    console.log('🏠 Auto-filled HomeCafe selections:', selections);
+    Logger.debug('🏠 Auto-filled HomeCafe selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // Sensory Screen auto-selections
   static async autoSensorySelections() {
@@ -72,11 +73,11 @@ export class AutoSelectService {
       finish: await this.setSliderValue('finish', 1, 5, 4),
       balance: await this.setSliderValue('balance', 1, 5, 4),
       mouthfeel: await this.selectRadioOption('mouthfeel', ['Clean', 'Creamy', 'Juicy', 'Silky'], 'Creamy'),
-    };
+  };
     
-    console.log('👅 Auto-filled Sensory selections:', selections);
+    Logger.debug('👅 Auto-filled Sensory selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // Korean Sensory Expressions auto-selections
   static async autoKoreanSensorySelections() {
@@ -94,7 +95,7 @@ export class AutoSelectService {
         body: ['크리미한', '벨벳 같은', '가벼운', '묵직한', '실키한'],
         aftertaste: ['깔끔한', '길게 남는', '산뜻한', '여운이 긴', '마무리가 좋은'],
         balance: ['조화로운', '균형잡힌', '자연스러운', '완성도 높은', '안정적인'],
-      };
+    };
       
       selections[category] = await this.selectCheckboxOptions(
         `korean_${category}`, 
@@ -102,11 +103,11 @@ export class AutoSelectService {
         1, 
         3
       );
-    }
-    
-    console.log('🇰🇷 Auto-selected Korean expressions:', selections);
-    return selections;
   }
+    
+    Logger.debug('🇰🇷 Auto-selected Korean expressions:', 'service', { component: 'AutoSelectService', data: selections });
+    return selections;
+}
 
   // Search Screen auto-selections
   static async autoSearchSelections() {
@@ -116,11 +117,11 @@ export class AutoSelectService {
       roastLevel: await this.selectCheckboxOptions('roast_filter', ['Light', 'Medium Light', 'Medium', 'Medium Dark'], 0, 2),
       scoreRange: await this.selectRadioOption('score_range', ['전체', '4.0 이상', '3.5-4.0', '3.0-3.5'], '4.0 이상'),
       dateRange: await this.selectRadioOption('date_range', ['전체 기간', '최근 1주일', '최근 1개월', '최근 3개월'], '최근 1개월'),
-    };
+  };
     
-    console.log('🔍 Auto-filled Search selections:', selections);
+    Logger.debug('🔍 Auto-filled Search selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // Profile Setup auto-selections
   static async autoProfileSelections() {
@@ -130,11 +131,11 @@ export class AutoSelectService {
       preferredOrigins: await this.selectCheckboxOptions('preferred_origins', ['에티오피아', '콜롬비아', '브라질', '케냐'], 1, 3),
       dailyConsumption: await this.selectRadioOption('consumption', ['1잔', '2-3잔', '4-5잔', '6잔 이상'], '2-3잔'),
       notifications: await this.selectCheckboxOptions('notifications', ['새 커피 알림', '성취 알림', '주간 리포트', '추천 알림'], 0, 3),
-    };
+  };
     
-    console.log('👤 Auto-filled Profile selections:', selections);
+    Logger.debug('👤 Auto-filled Profile selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // Admin screens auto-selections
   static async autoAdminSelections() {
@@ -143,11 +144,11 @@ export class AutoSelectService {
       feedbackStatus: await this.selectDropdownOption('status', ['검토중', '진행중', '완료', '보류']),
       feedbackType: await this.selectDropdownOption('type', ['UI/UX 개선', '기능 요청', '버그 신고', '성능 이슈', '기타']),
       assignee: await this.selectDropdownOption('assignee', ['개발팀', '디자인팀', '운영팀', '미할당']),
-    };
+  };
     
-    console.log('⚙️ Auto-filled Admin selections:', selections);
+    Logger.debug('⚙️ Auto-filled Admin selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // Developer settings auto-selections
   static async autoDeveloperSelections() {
@@ -157,11 +158,11 @@ export class AutoSelectService {
       performanceMonitoring: await this.selectRadioOption('perf_monitoring', ['true', 'false'], 'false'),
       crashReporting: await this.selectRadioOption('crash_reporting', ['true', 'false'], 'true'),
       logLevel: await this.selectDropdownOption('log_level', ['debug', 'info', 'warn', 'error'], 1), // info
-    };
+  };
     
-    console.log('🛠️ Auto-filled Developer selections:', selections);
+    Logger.debug('🛠️ Auto-filled Developer selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // History screen auto-selections
   static async autoHistorySelections() {
@@ -169,22 +170,22 @@ export class AutoSelectService {
       searchTerm: await DummyDataService.fillHistorySearch(),
       sortBy: await this.selectDropdownOption('sort_history', ['최신순', '평점순', '날짜순', '이름순'], 0),
       filterBy: await this.selectRadioOption('filter_history', ['전체', '최근 1주일', '최근 1개월', '즐겨찾기'], '전체'),
-    };
+  };
     
-    console.log('🕒 Auto-filled History selections:', selections);
+    Logger.debug('🕒 Auto-filled History selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // Onboarding auto-selections
   static async autoOnboardingSelections() {
     const selections = {
       progression: await DummyDataService.progressOnboarding(),
       skipToEnd: Math.random() > 0.7, // 30% chance to skip to end
-    };
+  };
     
-    console.log('👋 Auto-filled Onboarding selections:', selections);
+    Logger.debug('👋 Auto-filled Onboarding selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // Achievement gallery auto-selections
   static async autoAchievementSelections() {
@@ -192,11 +193,11 @@ export class AutoSelectService {
       sampleAchievements: await DummyDataService.generateSampleAchievements(),
       filterUnlocked: await this.selectRadioOption('achievement_filter', ['전체', '잠금해제', '미완료'], '전체'),
       sortBy: await this.selectDropdownOption('achievement_sort', ['진행률순', '이름순', '잠금해제순'], 0),
-    };
+  };
     
-    console.log('🏆 Auto-filled Achievement selections:', selections);
+    Logger.debug('🏆 Auto-filled Achievement selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // Statistics screen auto-selections
   static async autoStatsSelections() {
@@ -204,11 +205,11 @@ export class AutoSelectService {
       sampleStats: await DummyDataService.generateSampleStats(),
       timeRange: await this.selectRadioOption('stats_time', ['전체', '최근 1개월', '최근 3개월', '최근 1년'], '최근 1개월'),
       chartType: await this.selectDropdownOption('chart_type', ['막대그래프', '선그래프', '원그래프'], 0),
-    };
+  };
     
-    console.log('📊 Auto-filled Stats selections:', selections);
+    Logger.debug('📊 Auto-filled Stats selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
-  }
+}
 
   // Universal auto-selection for any screen
   static async autoSelectForScreen(screenName: string) {
@@ -241,12 +242,12 @@ export class AutoSelectService {
         case 'Stats':
           return await this.autoStatsSelections();
         default:
-          console.log(`ℹ️ No specific auto-selections available for ${screenName}`);
+          Logger.debug(`ℹ️ No specific auto-selections available for ${screenName}`, 'service', { component: 'AutoSelectService' });
           return null;
-      }
-    } catch (error) {
-      console.error(`❌ Error auto-selecting for ${screenName}:`, error);
-      return null;
     }
+  } catch (error) {
+      Logger.error(`❌ Error auto-selecting for ${screenName}:`, 'service', { component: 'AutoSelectService', error: error });
+      return null;
   }
+}
 }

@@ -1,3 +1,5 @@
+import { Logger } from './LoggingService';
+
 /**
  * CupNote - Firecrawl Coffee Data Service
  * 
@@ -21,7 +23,7 @@ export interface RoasterProfile {
   socialMedia?: {
     instagram?: string;
     website?: string;
-  };
+};
   lastUpdated: Date;
 }
 
@@ -38,7 +40,7 @@ export interface CoffeeProduct {
     amount: number;
     currency: 'KRW' | 'USD';
     weight: string;
-  };
+};
   availability: 'available' | 'limited' | 'sold-out';
   lastUpdated: Date;
 }
@@ -51,7 +53,7 @@ export interface MarketTrends {
     min: number;
     max: number;
     currency: 'KRW' | 'USD';
-  };
+};
   seasonalTrends: string[];
   lastUpdated: Date;
 }
@@ -104,9 +106,9 @@ export class FirecrawlCoffeeService {
   public static getInstance(): FirecrawlCoffeeService {
     if (!FirecrawlCoffeeService.instance) {
       FirecrawlCoffeeService.instance = new FirecrawlCoffeeService();
-    }
-    return FirecrawlCoffeeService.instance;
   }
+    return FirecrawlCoffeeService.instance;
+}
 
   /**
    * 🇰🇷 Korean Market Intelligence
@@ -120,17 +122,17 @@ export class FirecrawlCoffeeService {
         try {
           const data = await this.scrapeRoasterProfile(site, 'korea');
           if (data) profiles.push(data);
-        } catch (error) {
-          console.warn(`Failed to scrape ${site}:`, error);
-        }
+      } catch (error) {
+          Logger.warn(`Failed to scrape ${site}:`, 'service', { component: 'FirecrawlCoffeeService', error: error });
       }
+    }
       
       return profiles;
-    } catch (error) {
-      console.error('Error fetching Korean roaster profiles:', error);
+  } catch (error) {
+      Logger.error('Error fetching Korean roaster profiles:', 'service', { component: 'FirecrawlCoffeeService', error: error });
       return this.getFallbackKoreanRoasters();
-    }
   }
+}
 
   /**
    * 🇺🇸 US Market Intelligence
@@ -143,17 +145,17 @@ export class FirecrawlCoffeeService {
         try {
           const data = await this.scrapeRoasterProfile(site, 'us');
           if (data) profiles.push(data);
-        } catch (error) {
-          console.warn(`Failed to scrape ${site}:`, error);
-        }
+      } catch (error) {
+          Logger.warn(`Failed to scrape ${site}:`, 'service', { component: 'FirecrawlCoffeeService', error: error });
       }
+    }
       
       return profiles;
-    } catch (error) {
-      console.error('Error fetching US roaster profiles:', error);
+  } catch (error) {
+      Logger.error('Error fetching US roaster profiles:', 'service', { component: 'FirecrawlCoffeeService', error: error });
       return this.getFallbackUSRoasters();
-    }
   }
+}
 
   /**
    * 📊 Market Trends Analysis
@@ -165,17 +167,17 @@ export class FirecrawlCoffeeService {
       const cached = this.trendsCache.get(cacheKey)!;
       const isRecent = (Date.now() - cached.lastUpdated.getTime()) < 24 * 60 * 60 * 1000; // 24 hours
       if (isRecent) return cached;
-    }
+  }
 
     try {
       const trends = await this.analyzeCoffeeTrends(region);
       this.trendsCache.set(cacheKey, trends);
       return trends;
-    } catch (error) {
-      console.error(`Error analyzing ${region} market trends:`, error);
+  } catch (error) {
+      Logger.error(`Error analyzing ${region} market trends:`, 'service', { component: 'FirecrawlCoffeeService', error: error });
       return this.getFallbackTrends(region);
-    }
   }
+}
 
   /**
    * 🔍 Competitive Analysis
@@ -189,11 +191,11 @@ export class FirecrawlCoffeeService {
       const usApps = await this.analyzeUSCoffeeApps();
       
       return [...koreanApps, ...usApps];
-    } catch (error) {
-      console.error('Error analyzing competitors:', error);
+  } catch (error) {
+      Logger.error('Error analyzing competitors:', 'service', { component: 'FirecrawlCoffeeService', error: error });
       return this.getFallbackCompetitors();
-    }
   }
+}
 
   /**
    * ☕ Real-time Coffee Product Data
@@ -206,26 +208,26 @@ export class FirecrawlCoffeeService {
       const isRecent = cached.length > 0 && 
         (Date.now() - cached[0].lastUpdated.getTime()) < 4 * 60 * 60 * 1000; // 4 hours
       if (isRecent) return cached;
-    }
+  }
 
     try {
       const products = await this.scrapeRoasterProducts(roasterId);
       this.productCache.set(cacheKey, products);
       return products;
-    } catch (error) {
-      console.error(`Error fetching products for ${roasterId}:`, error);
+  } catch (error) {
+      Logger.error(`Error fetching products for ${roasterId}:`, 'service', { component: 'FirecrawlCoffeeService', error: error });
       return [];
-    }
   }
+}
 
   /**
    * 🎯 Content Aggregation for App
    */
   async getEducationalContent(): Promise<{
-    brewingGuides: any[];
-    flavorNotes: any[];
-    coffeeNews: any[];
-  }> {
+    brewingGuides: unknown[];
+    flavorNotes: unknown[];
+    coffeeNews: unknown[];
+}> {
     try {
       const [brewingGuides, flavorNotes, coffeeNews] = await Promise.all([
         this.scrapeBrewingGuides(),
@@ -234,11 +236,11 @@ export class FirecrawlCoffeeService {
       ]);
 
       return { brewingGuides, flavorNotes, coffeeNews };
-    } catch (error) {
-      console.error('Error aggregating educational content:', error);
+  } catch (error) {
+      Logger.error('Error aggregating educational content:', 'service', { component: 'FirecrawlCoffeeService', error: error });
       return { brewingGuides: [], flavorNotes: [], coffeeNews: [] };
-    }
   }
+}
 
   // Private helper methods
   private async scrapeRoasterProfile(url: string, region: 'korea' | 'us'): Promise<RoasterProfile | null> {
@@ -258,12 +260,12 @@ export class FirecrawlCoffeeService {
         specialty: region === 'korea' ? ['Single Origin', 'Light Roast'] : ['Specialty Coffee', 'Direct Trade'],
         description: `Premium specialty coffee roaster in ${region === 'korea' ? 'Korea' : 'the US'}`,
         lastUpdated: new Date()
-      };
-    } catch (error) {
-      console.error(`Error scraping ${url}:`, error);
+    };
+  } catch (error) {
+      Logger.error(`Error scraping ${url}:`, 'service', { component: 'FirecrawlCoffeeService', error: error });
       return null;
-    }
   }
+}
 
   private async analyzeCoffeeTrends(region: 'korea' | 'us'): Promise<MarketTrends> {
     // This would analyze scraped data for trends
@@ -279,13 +281,13 @@ export class FirecrawlCoffeeService {
         min: region === 'korea' ? 15000 : 15,
         max: region === 'korea' ? 35000 : 35,
         currency: region === 'korea' ? 'KRW' : 'USD'
-      },
+    },
       seasonalTrends: region === 'korea'
         ? ['라이트 로스팅 인기', '핸드드립 문화 확산']
         : ['Cold brew popularity', 'Sustainable sourcing focus'],
       lastUpdated: new Date()
-    };
-  }
+  };
+}
 
   private async analyzeKoreanCoffeeApps(): Promise<CompetitorAnalysis[]> {
     return [
@@ -296,9 +298,9 @@ export class FirecrawlCoffeeService {
         userRating: 0,
         downloadCount: 'N/A - 시장 갭 확인됨',
         lastUpdated: new Date()
-      }
+    }
     ];
-  }
+}
 
   private async analyzeUSCoffeeApps(): Promise<CompetitorAnalysis[]> {
     return [
@@ -309,7 +311,7 @@ export class FirecrawlCoffeeService {
         userRating: 4.9,
         downloadCount: '127 reviews (고평점 소수)',
         lastUpdated: new Date()
-      },
+    },
       {
         appName: 'iBrewCoffee',
         platform: 'ios',
@@ -317,7 +319,7 @@ export class FirecrawlCoffeeService {
         userRating: 4.7,
         downloadCount: '34 reviews',
         lastUpdated: new Date()
-      },
+    },
       {
         appName: 'Tasting Grounds',
         platform: 'ios',
@@ -325,7 +327,7 @@ export class FirecrawlCoffeeService {
         userRating: 4.8,
         downloadCount: '46 reviews',
         lastUpdated: new Date()
-      },
+    },
       {
         appName: 'Filtru',
         platform: 'ios',
@@ -333,29 +335,29 @@ export class FirecrawlCoffeeService {
         userRating: 4.8,
         downloadCount: '3,600 reviews (최대 사용자층)',
         lastUpdated: new Date()
-      }
+    }
     ];
-  }
+}
 
   private async scrapeRoasterProducts(roasterId: string): Promise<CoffeeProduct[]> {
     // Mock implementation - would use Firecrawl to get real data
     return [];
-  }
+}
 
   private async scrapeBrewingGuides(): Promise<any[]> {
     // Aggregate brewing guides from SCA and other sources
     return [];
-  }
+}
 
   private async aggregateFlavorNotes(): Promise<any[]> {
     // Build comprehensive flavor note database
     return [];
-  }
+}
 
   private async getCoffeeNews(): Promise<any[]> {
     // Scrape coffee industry news
     return [];
-  }
+}
 
   // Real data methods (Updated 2025-07-25 with Firecrawl results)
   private getFallbackKoreanRoasters(): RoasterProfile[] {
@@ -373,9 +375,9 @@ export class FirecrawlCoffeeService {
         socialMedia: {
           instagram: '@coffeelibrary',
           website: 'https://coffeelibrary.co.kr'
-        },
-        lastUpdated: new Date()
       },
+        lastUpdated: new Date()
+    },
       {
         id: 'terarosa',
         name: 'Terarosa Coffee',
@@ -388,11 +390,11 @@ export class FirecrawlCoffeeService {
         established: 2004,
         socialMedia: {
           website: 'https://terarosa.com'
-        },
+      },
         lastUpdated: new Date()
-      }
+    }
     ];
-  }
+}
 
   private getFallbackUSRoasters(): RoasterProfile[] {
     return [
@@ -407,9 +409,9 @@ export class FirecrawlCoffeeService {
         established: 2002,
         socialMedia: {
           website: 'https://bluebottlecoffee.com'
-        },
-        lastUpdated: new Date()
       },
+        lastUpdated: new Date()
+    },
       {
         id: 'stumptown',
         name: 'Stumptown Coffee',
@@ -421,9 +423,9 @@ export class FirecrawlCoffeeService {
         established: 1999,
         socialMedia: {
           website: 'https://stumptowncoffee.com'
-        },
-        lastUpdated: new Date()
       },
+        lastUpdated: new Date()
+    },
       {
         id: 'intelligentsia',
         name: 'Intelligentsia Coffee',
@@ -435,11 +437,11 @@ export class FirecrawlCoffeeService {
         established: 1995,
         socialMedia: {
           website: 'https://intelligentsiacoffee.com'
-        },
+      },
         lastUpdated: new Date()
-      }
+    }
     ];
-  }
+}
 
   private getFallbackTrends(region: 'korea' | 'us'): MarketTrends {
     return {
@@ -450,11 +452,11 @@ export class FirecrawlCoffeeService {
         min: region === 'korea' ? 20000 : 20,
         max: region === 'korea' ? 30000 : 30,
         currency: region === 'korea' ? 'KRW' : 'USD'
-      },
+    },
       seasonalTrends: ['Light roast popularity'],
       lastUpdated: new Date()
-    };
-  }
+  };
+}
 
   private getFallbackCompetitors(): CompetitorAnalysis[] {
     return [
@@ -464,22 +466,22 @@ export class FirecrawlCoffeeService {
         features: ['Basic logging'],
         userRating: 3.5,
         lastUpdated: new Date()
-      }
+    }
     ];
-  }
+}
 
   private extractRoasterName(domain: string): string {
     return domain.replace(/\.(com|co\.kr|net|org)$/, '').replace(/^www\./, '');
-  }
+}
 
   private getKoreanName(englishName: string): string {
     const nameMap: Record<string, string> = {
       'coffeelibrary': '커피 라이브러리',
       'anthracitecoffee': '안트라사이트 커피',
       'coffeefactory': '커피 팩토리'
-    };
+  };
     return nameMap[englishName] || englishName;
-  }
+}
 }
 
 // Export singleton instance
@@ -495,5 +497,5 @@ export const useFirecrawlCoffeeData = () => {
     getMarketTrends: (region: 'korea' | 'us') => service.getMarketTrends(region),
     getCompetitors: () => service.getCoffeeAppCompetitors(),
     getEducationalContent: () => service.getEducationalContent()
-  };
+};
 };

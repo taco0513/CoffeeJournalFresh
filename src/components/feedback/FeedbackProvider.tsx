@@ -22,13 +22,13 @@ export const FeedbackProvider: React.FC<FeedbackProviderProps> = ({ children }) 
   useEffect(() => {
     if (currentUser?.id) {
       FeedbackService.checkBetaStatus(currentUser.id).then(setBetaStatus);
-    }
-  }, [currentUser?.id, setBetaStatus]);
+  }
+}, [currentUser?.id, setBetaStatus]);
 
   // Sync queued feedback on mount
   useEffect(() => {
     FeedbackService.syncQueuedFeedback();
-  }, []);
+}, []);
 
   return (
     <>

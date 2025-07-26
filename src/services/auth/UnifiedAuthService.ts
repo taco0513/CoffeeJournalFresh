@@ -6,16 +6,17 @@ import { GoogleAuthConfig, isGoogleSignInConfigured } from '../../config/googleA
 import { SecureStorage } from './SecureStorage';
 import { BiometricAuth } from './BiometricAuth';
 
+import { Logger } from '../LoggingService';
 export interface AuthResult {
   success: boolean;
-  user?: any;
+  user?: { id: string; email?: string; [key: string]: unknown };
   error?: string;
   requiresBiometric?: boolean;
   needsProfileUpdate?: boolean;
 }
 
 export interface UserSession {
-  user: any;
+  user: { id: string; email?: string; [key: string]: any };
   accessToken: string;
   refreshToken: string;
   expiresAt: number;
@@ -51,8 +52,8 @@ export class UnifiedAuthService {
           offlineAccess: GoogleAuthConfig.offlineAccess,
           hostedDomain: GoogleAuthConfig.hostedDomain,
           forceCodeForRefreshToken: GoogleAuthConfig.forceCodeForRefreshToken,
-        });
-      }
+      });
+    }
 
       // Initialize secure storage
       await SecureStorage.initialize();
@@ -64,12 +65,12 @@ export class UnifiedAuthService {
       this.startSessionMonitoring();
 
       this.isInitialized = true;
-      console.log('UnifiedAuthService initialized successfully');
-    } catch (error) {
-      console.error('UnifiedAuthService initialization failed:', error);
+      Logger.debug('UnifiedAuthService initialized successfully', 'auth', { component: 'UnifiedAuthService' });
+  } catch (error) {
+      Logger.error('UnifiedAuthService initialization failed:', 'auth', { component: 'UnifiedAuthService', error: error });
       throw error;
-    }
   }
+}
 
   /**
    * Sign in with email and password
@@ -82,15 +83,15 @@ export class UnifiedAuthService {
     try {
       if (!this.isInitialized) {
         await this.initialize();
-      }
+    }
 
       // Validate inputs
       if (!email?.trim() || !password?.trim()) {
         return {
           success: false,
           error: '이메일과 비밀번호를 입력해주세요.',
-        };
-      }
+      };
+    }
 
       // Check if biometric authentication is required and available
       if (options.enableBiometric && await BiometricAuth.isAvailable()) {
@@ -100,26 +101,26 @@ export class UnifiedAuthService {
             success: false,
             error: biometricResult.error || '생체 인증이 필요합니다.',
             requiresBiometric: true,
-          };
-        }
+        };
       }
+    }
 
       // Attempt Supabase authentication
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
-      });
+    });
 
       if (error) {
         return this.handleAuthError(error, 'email');
-      }
+    }
 
       if (!data.user) {
         return {
           success: false,
           error: '로그인에 실패했습니다. 다시 시도해주세요.',
-        };
-      }
+      };
+    }
 
       // Store session securely if remember me is enabled
       if (options.rememberMe && data.session) {
@@ -129,26 +130,26 @@ export class UnifiedAuthService {
           refreshToken: data.session.refresh_token,
           expiresAt: new Date(data.session.expires_at || 0).getTime(),
           provider: 'email',
-        });
-      }
+      });
+    }
 
       // Store biometric preference
       if (options.enableBiometric) {
         await SecureStorage.setItem('biometric_enabled', 'true');
-      }
+    }
 
       return {
         success: true,
         user: data.user,
-      };
-    } catch (error: any) {
-      console.error('Email sign-in error:', error);
+    };
+  } catch (error) {
+      Logger.error('Email sign-in error:', 'auth', { component: 'UnifiedAuthService', error: error });
       return {
         success: false,
         error: this.getErrorMessage(error, 'email'),
-      };
-    }
+    };
   }
+}
 
   /**
    * Sign in with Google
@@ -157,14 +158,14 @@ export class UnifiedAuthService {
     try {
       if (!this.isInitialized) {
         await this.initialize();
-      }
+    }
 
       if (!isGoogleSignInConfigured()) {
         return {
           success: false,
           error: 'Google 로그인이 설정되지 않았습니다. 개발자에게 문의해주세요.',
-        };
-      }
+      };
+    }
 
       // Check Google Play Services
       await GoogleSignin.hasPlayServices();
@@ -176,25 +177,25 @@ export class UnifiedAuthService {
         return {
           success: false,
           error: 'Google 인증 토큰을 받을 수 없습니다.',
-        };
-      }
+      };
+    }
 
       // Sign in to Supabase with Google token
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
         token: userInfo.idToken,
-      });
+    });
 
       if (error) {
         return this.handleAuthError(error, 'google');
-      }
+    }
 
       if (!data.user) {
         return {
           success: false,
           error: 'Google 로그인에 실패했습니다.',
-        };
-      }
+      };
+    }
 
       // Store session if remember me is enabled
       if (options.rememberMe && data.session) {
@@ -204,29 +205,29 @@ export class UnifiedAuthService {
           refreshToken: data.session.refresh_token,
           expiresAt: new Date(data.session.expires_at || 0).getTime(),
           provider: 'google',
-        });
-      }
+      });
+    }
 
       return {
         success: true,
         user: data.user,
-      };
-    } catch (error: any) {
-      console.error('Google sign-in error:', error);
+    };
+  } catch (error) {
+      Logger.error('Google sign-in error:', 'auth', { component: 'UnifiedAuthService', error: error });
 
       if (error.code === '-5' || error.message?.includes('cancelled')) { // User cancelled
         return {
           success: false,
           error: '로그인이 취소되었습니다.',
-        };
-      }
+      };
+    }
 
       return {
         success: false,
         error: this.getErrorMessage(error, 'google'),
-      };
-    }
+    };
   }
+}
 
   /**
    * Sign in with Apple
@@ -235,45 +236,45 @@ export class UnifiedAuthService {
     try {
       if (!this.isInitialized) {
         await this.initialize();
-      }
+    }
 
       const isSupported = await appleAuth.isSupported;
       if (!isSupported) {
         return {
           success: false,
           error: 'Apple 로그인은 이 기기에서 지원되지 않습니다.',
-        };
-      }
+      };
+    }
 
       // Perform Apple authentication
       const appleAuthRequestResponse = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
         requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
-      });
+    });
 
       if (!appleAuthRequestResponse.identityToken) {
         return {
           success: false,
           error: 'Apple 인증 토큰을 받을 수 없습니다.',
-        };
-      }
+      };
+    }
 
       // Sign in to Supabase with Apple token
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'apple',
         token: appleAuthRequestResponse.identityToken,
-      });
+    });
 
       if (error) {
         return this.handleAuthError(error, 'apple');
-      }
+    }
 
       if (!data.user) {
         return {
           success: false,
           error: 'Apple 로그인에 실패했습니다.',
-        };
-      }
+      };
+    }
 
       // Store session if remember me is enabled
       if (options.rememberMe && data.session) {
@@ -283,22 +284,22 @@ export class UnifiedAuthService {
           refreshToken: data.session.refresh_token,
           expiresAt: new Date(data.session.expires_at || 0).getTime(),
           provider: 'apple',
-        });
-      }
+      });
+    }
 
       return {
         success: true,
         user: data.user,
         needsProfileUpdate: !data.user.user_metadata?.full_name,
-      };
-    } catch (error: any) {
-      console.error('Apple sign-in error:', error);
+    };
+  } catch (error) {
+      Logger.error('Apple sign-in error:', 'auth', { component: 'UnifiedAuthService', error: error });
       return {
         success: false,
         error: this.getErrorMessage(error, 'apple'),
-      };
-    }
+    };
   }
+}
 
   /**
    * Sign up with email and password
@@ -312,22 +313,22 @@ export class UnifiedAuthService {
     try {
       if (!this.isInitialized) {
         await this.initialize();
-      }
+    }
 
       // Validate inputs
       if (!email?.trim() || !password?.trim()) {
         return {
           success: false,
           error: '이메일과 비밀번호를 입력해주세요.',
-        };
-      }
+      };
+    }
 
       if (password.length < 8) {
         return {
           success: false,
           error: '비밀번호는 8자 이상이어야 합니다.',
-        };
-      }
+      };
+    }
 
       // Attempt Supabase sign up
       const { data, error } = await supabase.auth.signUp({
@@ -336,20 +337,20 @@ export class UnifiedAuthService {
         options: {
           data: {
             display_name: displayName || email.split('@')[0],
-          },
         },
-      });
+      },
+    });
 
       if (error) {
         return this.handleAuthError(error, 'signup');
-      }
+    }
 
       if (!data.user) {
         return {
           success: false,
           error: '회원가입에 실패했습니다. 다시 시도해주세요.',
-        };
-      }
+      };
+    }
 
       // Check if email confirmation is required
       if (!data.session && !options.skipEmailVerification) {
@@ -357,21 +358,21 @@ export class UnifiedAuthService {
           success: true,
           user: data.user,
           error: '이메일 확인이 필요합니다. 받은 메일을 확인해주세요.',
-        };
-      }
+      };
+    }
 
       return {
         success: true,
         user: data.user,
-      };
-    } catch (error: any) {
-      console.error('Email sign-up error:', error);
+    };
+  } catch (error) {
+      Logger.error('Email sign-up error:', 'auth', { component: 'UnifiedAuthService', error: error });
       return {
         success: false,
         error: this.getErrorMessage(error, 'signup'),
-      };
-    }
+    };
   }
+}
 
   /**
    * Sign out from all services
@@ -381,7 +382,7 @@ export class UnifiedAuthService {
       // Sign out from Google if signed in
       if (await GoogleSignin.isSignedIn()) {
         await GoogleSignin.signOut();
-      }
+    }
 
       // Sign out from Supabase
       const { error } = await supabase.auth.signOut();
@@ -390,8 +391,8 @@ export class UnifiedAuthService {
         return {
           success: false,
           error: error.message,
-        };
-      }
+      };
+    }
 
       // Clear stored session
       await this.clearStoredSession();
@@ -401,15 +402,15 @@ export class UnifiedAuthService {
 
       return {
         success: true,
-      };
-    } catch (error: any) {
-      console.error('Sign out error:', error);
+    };
+  } catch (error) {
+      Logger.error('Sign out error:', 'auth', { component: 'UnifiedAuthService', error: error });
       return {
         success: false,
         error: 'Sign out failed',
-      };
-    }
+    };
   }
+}
 
   /**
    * Refresh the current session
@@ -422,21 +423,21 @@ export class UnifiedAuthService {
         return {
           success: false,
           error: error.message,
-        };
-      }
+      };
+    }
 
       return {
         success: true,
         user: data.user,
-      };
-    } catch (error: any) {
-      console.error('Session refresh error:', error);
+    };
+  } catch (error) {
+      Logger.error('Session refresh error:', 'auth', { component: 'UnifiedAuthService', error: error });
       return {
         success: false,
         error: 'Session refresh failed',
-      };
-    }
+    };
   }
+}
 
   /**
    * Get current session
@@ -452,15 +453,15 @@ export class UnifiedAuthService {
           refreshToken: data.session.refresh_token,
           expiresAt: new Date(data.session.expires_at || 0).getTime(),
           provider: (data.session.user.app_metadata?.provider as 'email' | 'google' | 'apple') || 'email',
-        };
-      }
+      };
+    }
 
       return null;
-    } catch (error) {
-      console.error('Get current session error:', error);
+  } catch (error) {
+      Logger.error('Get current session error:', 'auth', { component: 'UnifiedAuthService', error: error });
       return null;
-    }
   }
+}
 
   /**
    * Check if user is authenticated
@@ -469,11 +470,11 @@ export class UnifiedAuthService {
     try {
       const session = await this.getCurrentSession();
       return !!session && session.expiresAt > Date.now();
-    } catch (error) {
-      console.error('Authentication check error:', error);
+  } catch (error) {
+      Logger.error('Authentication check error:', 'auth', { component: 'UnifiedAuthService', error: error });
       return false;
-    }
   }
+}
 
   /**
    * Reset password
@@ -484,19 +485,19 @@ export class UnifiedAuthService {
 
       if (error) {
         return this.handleAuthError(error, 'reset');
-      }
+    }
 
       return {
         success: true,
-      };
-    } catch (error: any) {
-      console.error('Password reset error:', error);
+    };
+  } catch (error) {
+      Logger.error('Password reset error:', 'auth', { component: 'UnifiedAuthService', error: error });
       return {
         success: false,
         error: 'Password reset failed',
-      };
-    }
+    };
   }
+}
 
   /**
    * Store session securely
@@ -504,10 +505,10 @@ export class UnifiedAuthService {
   private static async storeSession(session: UserSession): Promise<void> {
     try {
       await SecureStorage.setItem('user_session', JSON.stringify(session));
-    } catch (error) {
-      console.error('Failed to store session:', error);
-    }
+  } catch (error) {
+      Logger.error('Failed to store session:', 'auth', { component: 'UnifiedAuthService', error: error });
   }
+}
 
   /**
    * Clear stored session
@@ -516,10 +517,10 @@ export class UnifiedAuthService {
     try {
       await SecureStorage.removeItem('user_session');
       await SecureStorage.removeItem('biometric_enabled');
-    } catch (error) {
-      console.error('Failed to clear session:', error);
-    }
+  } catch (error) {
+      Logger.error('Failed to clear session:', 'auth', { component: 'UnifiedAuthService', error: error });
   }
+}
 
   /**
    * Start session monitoring
@@ -530,12 +531,12 @@ export class UnifiedAuthService {
         const session = await this.getCurrentSession();
         if (session && session.expiresAt <= Date.now() + 5 * 60 * 1000) { // 5 minutes before expiry
           await this.refreshSession();
-        }
-      } catch (error) {
-        console.error('Session monitoring error:', error);
       }
-    }, 60000); // Check every minute
-  }
+    } catch (error) {
+        Logger.error('Session monitoring error:', 'auth', { component: 'UnifiedAuthService', error: error });
+    }
+  }, 60000); // Check every minute
+}
 
   /**
    * Stop session monitoring
@@ -544,14 +545,14 @@ export class UnifiedAuthService {
     if (this.sessionCheckInterval) {
       clearInterval(this.sessionCheckInterval);
       this.sessionCheckInterval = undefined;
-    }
   }
+}
 
   /**
    * Handle authentication errors with user-friendly messages
    */
-  private static handleAuthError(error: any, provider: string): AuthResult {
-    console.error(`${provider} auth error:`, error);
+  private static handleAuthError(error: Error, provider: string): AuthResult {
+    Logger.error(`${provider} auth error:`, 'auth', { component: 'UnifiedAuthService', error: error });
 
     let errorMessage = '로그인에 실패했습니다.';
 
@@ -577,28 +578,28 @@ export class UnifiedAuthService {
       default:
         if (error.message?.includes('network')) {
           errorMessage = '네트워크 연결을 확인해주세요.';
-        } else if (error.message?.includes('timeout')) {
+      } else if (error.message?.includes('timeout')) {
           errorMessage = '요청 시간이 초과되었습니다. 다시 시도해주세요.';
-        }
-    }
+      }
+  }
 
     return {
       success: false,
       error: errorMessage,
-    };
-  }
+  };
+}
 
   /**
    * Get user-friendly error message
    */
-  private static getErrorMessage(error: any, context: string): string {
+  private static getErrorMessage(error: Error, context: string): string {
     if (error.message?.includes('network') || error.message?.includes('fetch')) {
       return '네트워크 연결을 확인해주세요.';
-    }
+  }
 
     if (error.message?.includes('timeout')) {
       return '요청 시간이 초과되었습니다. 다시 시도해주세요.';
-    }
+  }
 
     switch (context) {
       case 'google':
@@ -611,6 +612,6 @@ export class UnifiedAuthService {
         return '회원가입에 실패했습니다. 다시 시도해주세요.';
       default:
         return '인증에 실패했습니다. 다시 시도해주세요.';
-    }
   }
+}
 }

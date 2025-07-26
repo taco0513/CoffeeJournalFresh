@@ -38,13 +38,16 @@ const cupNoteTokens = {
   },
   space: {
     ...tokens.space,
-    // Using your existing spacing system
+    // Complete spacing system with all required tokens
+    xxxs: 1,
+    xxs: 2,
     xs: 4,
     sm: 8,
     md: 16,
     lg: 24,
     xl: 32,
     xxl: 48,
+    xxxl: 64,
   },
   size: {
     ...tokens.size,
@@ -61,6 +64,23 @@ const cupNoteTokens = {
     3.5: 56,
     4: 64,
     true: 44, // Default button height
+    
+    // Badge sizes
+    badgeSmall: 20,
+    badgeMedium: 24,
+    badgeLarge: 28,
+    badgeXLarge: 32,
+    
+    // Icon sizes
+    iconSmall: 24,
+    iconMedium: 32,
+    iconLarge: 48,
+    iconXLarge: 64,
+    
+    // Stat card heights
+    statCardSmall: 75,
+    statCardMedium: 85,
+    statCardLarge: 95,
   },
   radius: {
     ...tokens.radius,
@@ -74,42 +94,63 @@ const cupNoteTokens = {
     6: 24,
     true: 12, // Default radius
   },
+  zIndex: {
+    ...tokens.zIndex,
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    badge: 10,
+    modal: 50,
+    tooltip: 100,
+  },
+  letterSpacing: {
+    tight: -0.5,
+    normal: 0,
+    wide: 0.5,
+    wider: 1,
+    widest: 2,
+  },
+  animation: {
+    delayQuick: '50ms',
+    delayNormal: '100ms',
+    delaySlow: '150ms',
+    delaySlower: '200ms',
+  },
 }
 
-// Create animations
+// MVP Beta: Minimal animation config to prevent errors while disabling animations
 const animations = createAnimations({
+  // Disabled animations with minimal duration
   bouncy: {
-    type: 'spring',
-    damping: 10,
-    mass: 0.9,
-    stiffness: 100,
+    type: 'timing',
+    duration: 1, // 1ms - essentially instant
   },
   lazy: {
-    type: 'spring',
-    damping: 20,
-    stiffness: 60,
+    type: 'timing', 
+    duration: 1, // 1ms - essentially instant
   },
   quick: {
-    type: 'spring',
-    damping: 20,
-    mass: 1.2,
-    stiffness: 250,
+    type: 'timing',
+    duration: 1, // 1ms - essentially instant
   },
 })
 
 // Create fonts
 const headingFont = createInterFont({
   size: {
-    1: 16,   // Small heading - WCAG minimum ✅
-    2: 18,   // Small+ heading ✅
-    3: 20,   // Medium heading ✅
-    4: 22,   // H4 ✅
-    5: 24,   // H3 ✅
-    6: 28,   // H2 ✅
-    7: 32,   // H1 ✅
-    8: 36,   // Large H1 ✅
-    9: 40,   // Extra large ✅
-    10: 48,  // Display ✅
+    1: 18,   // Small heading
+    2: 20,   // Small+ heading 
+    3: 22,   // Medium heading
+    4: 24,   // H4
+    5: 28,   // H3
+    6: 32,   // H2
+    7: 36,   // H1
+    8: 40,   // Large H1
+    9: 44,   // Extra large
+    10: 48,  // Display
     true: 24, // Default heading size
   },
   weight: {
@@ -123,11 +164,12 @@ const headingFont = createInterFont({
 
 const bodyFont = createInterFont({
   size: {
-    1: 16,   // Small body text - WCAG minimum ✅
-    2: 16,   // Default body text ✅
-    3: 18,   // Large body text ✅
-    4: 20,   // Extra large body ✅
-    5: 22,   // Emphasized text ✅
+    1: 12,   // Small text (badges, captions)
+    2: 14,   // Small body text
+    3: 16,   // Default body text - WCAG minimum ✅
+    4: 18,   // Large body text ✅
+    5: 20,   // Extra large body ✅
+    6: 22,   // Emphasized text ✅
     true: 16, // Default body size
   },
   weight: {
@@ -153,6 +195,20 @@ const lightTheme = {
   borderColorHover: '#D0D0D0',
   borderColorPress: '#C0C0C0',
   borderColorFocus: '#B0B0B0',
+  
+  // Gray scale for proper token support
+  gray1: '#FCFCFC',
+  gray2: '#F9F9F9',
+  gray3: '#F0F0F0',
+  gray4: '#E8E8E8',
+  gray5: '#E0E0E0',
+  gray6: '#D9D9D9',
+  gray7: '#CECECE',
+  gray8: '#BBBBBB',
+  gray9: '#8D8D8D',
+  gray10: '#838383',
+  gray11: '#646464',
+  gray12: '#202020',
   
   // Brand colors
   primary: cupNoteTokens.color.cupBlue,
@@ -188,6 +244,20 @@ const darkTheme = {
   borderColorPress: '#555555',
   borderColorFocus: '#666666',
   
+  // Gray scale for dark mode
+  gray1: '#161616',
+  gray2: '#1C1C1C',
+  gray3: '#232323',
+  gray4: '#2A2A2A',
+  gray5: '#313131',
+  gray6: '#3A3A3A',
+  gray7: '#484848',
+  gray8: '#606060',
+  gray9: '#6E6E6E',
+  gray10: '#7B7B7B',
+  gray11: '#B4B4B4',
+  gray12: '#EEEEEE',
+  
   // Brand colors in dark mode
   primary: cupNoteTokens.color.cupBlue,
   
@@ -216,26 +286,26 @@ const config = createTamagui({
   defaultProps: {
     Text: {
       fontFamily: '$body',
-      fontSize: '$2', // Default to 16px
+      fontSize: '$3', // Default to 16px (body size 3)
     },
     H1: {
       fontFamily: '$heading',
-      fontSize: '$7', // 32px
+      fontSize: '$7', // 36px
       fontWeight: '700',
     },
     H2: {
       fontFamily: '$heading',
-      fontSize: '$6', // 28px
+      fontSize: '$6', // 32px
       fontWeight: '600',
     },
     H3: {
       fontFamily: '$heading',
-      fontSize: '$5', // 24px
+      fontSize: '$5', // 28px
       fontWeight: '600',
     },
     Paragraph: {
       fontFamily: '$body',
-      fontSize: '$2', // 16px
+      fontSize: '$3', // 16px
       lineHeight: 24,
     },
   },

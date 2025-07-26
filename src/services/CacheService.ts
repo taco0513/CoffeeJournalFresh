@@ -18,9 +18,9 @@ export class CacheService {
   static getInstance(): CacheService {
     if (!CacheService.instance) {
       CacheService.instance = new CacheService();
-    }
-    return CacheService.instance;
   }
+    return CacheService.instance;
+}
 
   /**
    * Store data in cache with TTL
@@ -32,23 +32,23 @@ export class CacheService {
         data: value,
         timestamp: Date.now(),
         ttl: ttl || this.DEFAULT_TTL,
-      };
+    };
 
       await AsyncStorage.setItem(cacheKey, JSON.stringify(entry));
       
       Logger.debug('Cache entry stored', 'cache', {
         data: { key, ttl: entry.ttl, size: JSON.stringify(value).length }
-      });
+    });
 
       // Clean up old entries periodically
       await this.cleanupExpired();
-    } catch (error) {
+  } catch (error) {
       Logger.error('Failed to store cache entry', 'cache', { 
         error: error as Error,
         data: { key }
-      });
-    }
+    });
   }
+}
 
   /**
    * Retrieve data from cache
@@ -60,7 +60,7 @@ export class CacheService {
       
       if (!storedValue) {
         return null;
-      }
+    }
 
       const entry: CacheEntry<T> = JSON.parse(storedValue);
       const now = Date.now();
@@ -70,23 +70,23 @@ export class CacheService {
         await this.remove(key);
         Logger.debug('Cache entry expired', 'cache', {
           data: { key, age: now - entry.timestamp, ttl: entry.ttl }
-        });
+      });
         return null;
-      }
+    }
 
       Logger.debug('Cache hit', 'cache', {
         data: { key, age: now - entry.timestamp }
-      });
+    });
 
       return entry.data;
-    } catch (error) {
+  } catch (error) {
       Logger.error('Failed to retrieve cache entry', 'cache', { 
         error: error as Error,
         data: { key }
-      });
+    });
       return null;
-    }
   }
+}
 
   /**
    * Remove specific cache entry
@@ -98,14 +98,14 @@ export class CacheService {
       
       Logger.debug('Cache entry removed', 'cache', {
         data: { key }
-      });
-    } catch (error) {
+    });
+  } catch (error) {
       Logger.error('Failed to remove cache entry', 'cache', { 
         error: error as Error,
         data: { key }
-      });
-    }
+    });
   }
+}
 
   /**
    * Invalidate cache entries matching pattern
@@ -122,22 +122,22 @@ export class CacheService {
       const keysToRemove = cacheKeys.filter(cacheKey => {
         const originalKey = cacheKey.replace(this.CACHE_PREFIX, '');
         return regex.test(originalKey);
-      });
+    });
 
       if (keysToRemove.length > 0) {
         await AsyncStorage.multiRemove(keysToRemove);
         
         Logger.info('Cache entries invalidated', 'cache', {
           data: { pattern: pattern.toString(), count: keysToRemove.length }
-        });
-      }
-    } catch (error) {
+      });
+    }
+  } catch (error) {
       Logger.error('Failed to invalidate cache entries', 'cache', { 
         error: error as Error,
         data: { pattern: pattern.toString() }
-      });
-    }
+    });
   }
+}
 
   /**
    * Clear all cache entries
@@ -152,14 +152,14 @@ export class CacheService {
         
         Logger.info('All cache entries cleared', 'cache', {
           data: { count: cacheKeys.length }
-        });
-      }
-    } catch (error) {
-      Logger.error('Failed to clear cache', 'cache', { 
-        error: error as Error
       });
     }
+  } catch (error) {
+      Logger.error('Failed to clear cache', 'cache', { 
+        error: error as Error
+    });
   }
+}
 
   /**
    * Get cache statistics
@@ -168,7 +168,7 @@ export class CacheService {
     totalEntries: number;
     totalSize: number; // in bytes
     expiredEntries: number;
-  }> {
+}> {
     try {
       const allKeys = await AsyncStorage.getAllKeys();
       const cacheKeys = allKeys.filter(key => key.startsWith(this.CACHE_PREFIX));
@@ -186,29 +186,29 @@ export class CacheService {
             const entry = JSON.parse(storedValue);
             if (now - entry.timestamp > entry.ttl) {
               expiredEntries++;
-            }
           }
-        } catch {
-          // Skip corrupted entries
         }
+      } catch {
+          // Skip corrupted entries
       }
+    }
 
       return {
         totalEntries: cacheKeys.length,
         totalSize,
         expiredEntries,
-      };
-    } catch (error) {
+    };
+  } catch (error) {
       Logger.error('Failed to get cache stats', 'cache', { 
         error: error as Error
-      });
+    });
       return {
         totalEntries: 0,
         totalSize: 0,
         expiredEntries: 0,
-      };
-    }
+    };
   }
+}
 
   /**
    * Clean up expired entries
@@ -220,7 +220,7 @@ export class CacheService {
       // Only cleanup if we have expired entries or too many total entries
       if (stats.expiredEntries === 0 && stats.totalEntries < this.MAX_CACHE_SIZE) {
         return;
-      }
+    }
 
       const allKeys = await AsyncStorage.getAllKeys();
       const cacheKeys = allKeys.filter(key => key.startsWith(this.CACHE_PREFIX));
@@ -234,34 +234,34 @@ export class CacheService {
             const entry = JSON.parse(storedValue);
             if (now - entry.timestamp > entry.ttl) {
               keysToRemove.push(cacheKey);
-            }
           }
-        } catch {
+        }
+      } catch {
           // Remove corrupted entries
           keysToRemove.push(cacheKey);
-        }
       }
+    }
 
       if (keysToRemove.length > 0) {
         await AsyncStorage.multiRemove(keysToRemove);
         
         Logger.info('Expired cache entries cleaned up', 'cache', {
           data: { removed: keysToRemove.length }
-        });
-      }
-    } catch (error) {
-      Logger.error('Failed to cleanup expired cache entries', 'cache', { 
-        error: error as Error
       });
     }
+  } catch (error) {
+      Logger.error('Failed to cleanup expired cache entries', 'cache', { 
+        error: error as Error
+    });
   }
+}
 
   /**
    * Generate cache key with prefix
    */
   private getCacheKey(key: string): string {
     return `${this.CACHE_PREFIX}${key}`;
-  }
+}
 
   /**
    * Get cache entry with fallback to async function
@@ -276,12 +276,12 @@ export class CacheService {
       const cached = await this.get<T>(key);
       if (cached !== null) {
         return cached;
-      }
+    }
 
       // Cache miss - fetch data
       Logger.debug('Cache miss, fetching data', 'cache', {
         data: { key }
-      });
+    });
 
       const data = await fetchFn();
       
@@ -289,16 +289,16 @@ export class CacheService {
       await this.set(key, data, ttl);
       
       return data;
-    } catch (error) {
+  } catch (error) {
       Logger.error('Failed to get or set cache entry', 'cache', { 
         error: error as Error,
         data: { key }
-      });
+    });
       
       // Fallback to fetching data without caching
       return await fetchFn();
-    }
   }
+}
 }
 
 export default CacheService;

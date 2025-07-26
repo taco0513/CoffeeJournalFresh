@@ -44,7 +44,7 @@ const BackButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const HeaderTitle = styled(H1, {
@@ -62,7 +62,7 @@ const SkipButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const SkipText = styled(Text, {
@@ -95,7 +95,7 @@ const ProgressFill = styled(View, {
   animation: 'lazy',
   enterStyle: {
     width: '0%',
-  },
+},
 });
 
 const ProgressText = styled(Text, {
@@ -149,7 +149,7 @@ const FormContainer = styled(Card, {
     opacity: 0,
     y: 30,
     scale: 0.95,
-  },
+},
 });
 
 const BottomContainer = styled(View, {
@@ -176,13 +176,13 @@ const NextButton = styled(Button, {
       true: {
         backgroundColor: '$gray6',
         color: '$gray10',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     backgroundColor: '$cupBlueDark',
     scale: 0.98,
-  },
+},
 });
 
 const ValidationMessage = styled(XStack, {
@@ -195,7 +195,7 @@ const ValidationMessage = styled(XStack, {
   enterStyle: {
     opacity: 0,
     y: 10,
-  },
+},
 });
 
 const ValidationIcon = styled(Text, {
@@ -222,7 +222,7 @@ const InfoCard = styled(Card, {
   enterStyle: {
     opacity: 0,
     x: -20,
-  },
+},
 });
 
 const InfoText = styled(Text, {
@@ -241,11 +241,11 @@ const LabModeScreen: React.FC<LabModeScreenProps> = () => {
 
   const handleNext = () => {
     navigation.navigate('UnifiedFlavor' as never);
-  };
+};
 
   const handleSkip = () => {
     navigation.navigate('UnifiedFlavor' as never);
-  };
+};
 
   // 필수 필드 검증 - 랩 모드
   const isValid = 
@@ -274,7 +274,7 @@ const LabModeScreen: React.FC<LabModeScreenProps> = () => {
     if ((currentTasting.labModeData?.recipe.waterTemp || 0) > 0) count++;
     if ((currentTasting.labModeData?.recipe.totalBrewTime || 0) > 0) count++;
     return count;
-  };
+};
 
   const completedFields = getCompletedFieldsCount();
   const progressPercentage = (completedFields / requiredFields.length) * 100;

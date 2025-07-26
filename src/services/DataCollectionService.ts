@@ -14,9 +14,9 @@ class DataCollectionService {
   static getInstance(): DataCollectionService {
     if (!DataCollectionService.instance) {
       DataCollectionService.instance = new DataCollectionService();
-    }
-    return DataCollectionService.instance;
   }
+    return DataCollectionService.instance;
+}
 
   /**
    * 사용자의 모든 테이스팅 데이터를 Supabase로 전송
@@ -27,14 +27,14 @@ class DataCollectionService {
     message: string;
     totalRecords?: number;
     uploadedRecords?: number;
-  }> {
+}> {
     try {
       const realmService = RealmService.getInstance();
       
       // Realm 초기화 확인
       if (!realmService.isInitialized) {
         await realmService.initialize();
-      }
+    }
 
       // 모든 비삭제 테이스팅 레코드 가져오기
       const localTastings = await realmService.getTastingRecords({ isDeleted: false });
@@ -45,8 +45,8 @@ class DataCollectionService {
           message: '전송할 데이터가 없습니다.',
           totalRecords: 0,
           uploadedRecords: 0
-        };
-      }
+      };
+    }
 
       // 데이터 변환 및 업로드
       // Results를 배열로 변환
@@ -58,16 +58,16 @@ class DataCollectionService {
         message: `데이터 수집 완료: ${uploadedRecords}/${localTastings.length} 레코드 업로드`,
         totalRecords: localTastings.length,
         uploadedRecords: uploadedRecords
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       // console.error('데이터 수집 중 오류:', error);
       return {
         success: false,
         message: `데이터 수집 실패: ${error instanceof Error ? error.message : '알 수 없는 오류'}`
-      };
-    }
+    };
   }
+}
 
   /**
    * 테이스팅 데이터를 Supabase로 업로드
@@ -108,41 +108,41 @@ class DataCollectionService {
           flavor_notes: tasting.flavorNotes.map(note => ({
             level: note.level,
             value: note.value
-          })),
+        })),
           
           // 메타데이터
           is_deleted: tasting.isDeleted,
           device_info: {
             platform: 'mobile',
             collection_date: new Date().toISOString()
-          }
-        };
+        }
+      };
 
         // Supabase에 데이터 삽입 (upsert 사용)
         const { error } = await supabase
           .from('collected_tastings')
           .upsert(supabaseData, {
             onConflict: 'id'
-          });
+        });
 
         if (error) {
           // console.error(`레코드 ${tasting.id} 업로드 실패:`, error);
           continue;
-        }
+      }
 
         uploadedCount++;
         
         // 네트워크 부하 방지를 위한 작은 딜레이
         await new Promise(resolve => setTimeout(resolve, 100));
 
-      } catch (error) {
+    } catch (error) {
         // console.error(`레코드 ${tasting.id} 처리 중 오류:`, error);
         continue;
-      }
     }
+  }
 
     return uploadedCount;
-  }
+}
 
   /**
    * 특정 기간의 데이터만 수집
@@ -156,20 +156,20 @@ class DataCollectionService {
     message: string;
     totalRecords?: number;
     uploadedRecords?: number;
-  }> {
+}> {
     try {
       const realmService = RealmService.getInstance();
       
       if (!realmService.isInitialized) {
         await realmService.initialize();
-      }
+    }
 
       // 날짜 범위로 필터링된 테이스팅 레코드 가져오기
       const allTastings = await realmService.getTastingRecords({ isDeleted: false });
       const filteredTastings = allTastings.filter((tasting: ITastingRecord) => {
         const tastingDate = tasting.createdAt;
         return tastingDate >= startDate && tastingDate <= endDate;
-      });
+    });
 
       if (filteredTastings.length === 0) {
         return {
@@ -177,8 +177,8 @@ class DataCollectionService {
           message: '지정된 기간에 데이터가 없습니다.',
           totalRecords: 0,
           uploadedRecords: 0
-        };
-      }
+      };
+    }
 
       // Results를 배열로 변환
       const tastingsArray = Array.from(filteredTastings);
@@ -189,16 +189,16 @@ class DataCollectionService {
         message: `기간별 데이터 수집 완료: ${uploadedRecords}/${filteredTastings.length} 레코드 업로드`,
         totalRecords: filteredTastings.length,
         uploadedRecords: uploadedRecords
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       // console.error('기간별 데이터 수집 중 오류:', error);
       return {
         success: false,
         message: `기간별 데이터 수집 실패: ${error instanceof Error ? error.message : '알 수 없는 오류'}`
-      };
-    }
+    };
   }
+}
 
   /**
    * 데이터 수집 상태 확인
@@ -207,13 +207,13 @@ class DataCollectionService {
     localRecords: number;
     lastCollectionDate?: string;
     pendingRecords: number;
-  }> {
+}> {
     try {
       const realmService = RealmService.getInstance();
       
       if (!realmService.isInitialized) {
         await realmService.initialize();
-      }
+    }
 
       const localTastings = await realmService.getTastingRecords({ isDeleted: false });
       
@@ -222,16 +222,16 @@ class DataCollectionService {
       return {
         localRecords: localTastings.length,
         pendingRecords: localTastings.length, // 실제로는 아직 수집되지 않은 레코드 수
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       // console.error('데이터 수집 상태 확인 중 오류:', error);
       return {
         localRecords: 0,
         pendingRecords: 0
-      };
-    }
+    };
   }
+}
 
   /**
    * 개발자 전용: 테스트 데이터 생성
@@ -241,13 +241,13 @@ class DataCollectionService {
     success: boolean;
     message: string;
     generatedRecords?: number;
-  }> {
+}> {
     try {
       const realmService = RealmService.getInstance();
       
       if (!realmService.isInitialized) {
         await realmService.initialize();
-      }
+    }
 
       const testRoasteries = ['로스터리 A', '로스터리 B', '로스터리 C'];
       const testCoffees = ['에티오피아 예가체프', '콜롬비아 수프리모', '브라질 산토스'];
@@ -271,7 +271,7 @@ class DataCollectionService {
             mouthfeel: 'Clean' as const,
             bitterness: Math.floor(Math.random() * 5) + 1,
             balance: Math.floor(Math.random() * 5) + 1
-          },
+        },
           flavorNotes: [
             { level: 1, value: 'Fruity' },
             { level: 2, value: 'Berry' }
@@ -282,25 +282,25 @@ class DataCollectionService {
           isSynced: false,
           isDeleted: false,
           mode: 'cafe' as const
-        };
+      };
 
         realmService.saveTastingRecord(testData);
-      }
+    }
 
       return {
         success: true,
         message: `테스트 데이터 ${count}개 생성 완료`,
         generatedRecords: count
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       // console.error('테스트 데이터 생성 중 오류:', error);
       return {
         success: false,
         message: `테스트 데이터 생성 실패: ${error instanceof Error ? error.message : '알 수 없는 오류'}`
-      };
-    }
+    };
   }
+}
 }
 
 export default DataCollectionService;

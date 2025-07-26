@@ -70,7 +70,7 @@ const KOREAN_MARKET_CONFIG: MarketConfig = {
     premiumSubscription: false, // MVP is free
     aiCoaching: false, // Phase 2 feature
     photoOCR: false, // Phase 2 feature
-  },
+},
   
   analytics: {
     enabled: true,
@@ -80,7 +80,7 @@ const KOREAN_MARKET_CONFIG: MarketConfig = {
     betaFeedbackCollection: false, // Not beta market
     maxBetaUsers: 10000, // Korean market capacity
     feedbackChannels: ['in-app', 'email', 'kakao'],
-  },
+},
   
   roasters: [
     'Coffee Libre',
@@ -144,7 +144,7 @@ const US_BETA_MARKET_CONFIG: MarketConfig = {
     premiumSubscription: false, // MVP is free
     aiCoaching: false, // Phase 2 feature
     photoOCR: false, // Phase 2 feature
-  },
+},
   
   analytics: {
     enabled: true,
@@ -154,7 +154,7 @@ const US_BETA_MARKET_CONFIG: MarketConfig = {
     betaFeedbackCollection: true, // Beta market priority
     maxBetaUsers: 500, // Limited beta capacity
     feedbackChannels: ['in-app', 'email', 'discord'],
-  },
+},
   
   roasters: [
     'Blue Bottle Coffee',
@@ -207,16 +207,16 @@ export const getCurrentMarketConfig = (): MarketConfig => {
       market: config.market,
       isBeta: config.isBeta,
       language: config.language,
-    });
+  });
     
     return config;
-  } catch (error) {
+} catch (error) {
     performanceMonitor.endTiming(timingId, 'market_config_error');
     performanceMonitor.reportError(error as Error, 'market_config_detection', 'medium');
     
     // Fallback to Korean market on error
     return KOREAN_MARKET_CONFIG;
-  }
+}
 };
 
 /**
@@ -275,7 +275,7 @@ export const getBetaConfig = () => {
   
   if (!config.isBeta) {
     return null;
-  }
+}
   
   return {
     maxUsers: config.analytics.maxBetaUsers,
@@ -283,7 +283,7 @@ export const getBetaConfig = () => {
     version: '1.0.0-beta',
     features: config.features,
     analytics: config.analytics,
-  };
+};
 };
 
 /**
@@ -297,7 +297,7 @@ export const formatCurrency = (amount: number): string => {
     {
       style: 'currency',
       currency: config.currency,
-    }
+  }
   ).format(amount);
 };
 
@@ -309,7 +309,7 @@ export const formatDate = (date: Date): string => {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-  }).format(date);
+}).format(date);
 };
 
 export const formatTime = (date: Date): string => {
@@ -320,7 +320,7 @@ export const formatTime = (date: Date): string => {
     hour: '2-digit',
     minute: '2-digit',
     hour12: config.timeFormat === '12h',
-  }).format(date);
+}).format(date);
 };
 
 /**

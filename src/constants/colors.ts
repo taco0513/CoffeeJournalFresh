@@ -26,23 +26,23 @@ const ColorsOriginal = {
   
   primary: {
     main: '#8B4513',
-  },
+},
   background: {
     primary: '#f8f9fa',
     white: '#FFFFFF',
-  },
+},
   text: {
     primary: '#000000',
     secondary: '#666666',
     tertiary: '#888888',
-  },
+},
   border: {
     light: '#E0E0E0',
-  },
+},
   semantic: {
     error: '#C62828',
     success: '#2E7D32',
-  },
+},
 } as const;
 
 

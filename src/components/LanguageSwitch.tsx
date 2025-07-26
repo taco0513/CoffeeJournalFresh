@@ -1,23 +1,100 @@
 import React from 'react';
+import { Alert } from 'react-native';
 import {
-  View,
+  YStack,
+  XStack,
   Text,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from 'react-native';
+  Button,
+  styled,
+  useTheme,
+} from 'tamagui';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage, getCurrentLanguage, isKoreanMarket } from '../services/i18n';
-import { HIGColors, HIGConstants } from '../styles/common';
+import { Logger } from '../services/LoggingService';
 
 interface LanguageSwitchProps {
-  style?: any;
   showLabels?: boolean;
   compact?: boolean;
 }
 
+// Styled components
+const CompactContainer = styled(XStack, {
+  name: 'CompactContainer',
+  backgroundColor: '$gray5',
+  borderRadius: '$4',
+  padding: '$xxs',
+});
+
+const CompactButton = styled(Button, {
+  name: 'CompactButton',
+  unstyled: true,
+  width: '$iconMedium + $xs',
+  height: '$badgeLarge + $xxs',
+  borderRadius: '$4',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginHorizontal: '$xxxs',
+  pressStyle: {
+    scale: 0.95,
+  },
+  variants: {
+    active: {
+      true: {
+        backgroundColor: '$background',
+        shadowColor: '$borderColor',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 1,
+        elevation: 1,
+      },
+    },
+  } as const,
+});
+
+const SwitchContainer = styled(XStack, {
+  name: 'SwitchContainer',
+  backgroundColor: '$gray5',
+  borderRadius: '$3',
+  padding: '$xxs',
+});
+
+const LanguageButton = styled(Button, {
+  name: 'LanguageButton',
+  unstyled: true,
+  paddingVertical: '$sm',
+  paddingHorizontal: '$lg',
+  borderRadius: '$3 - $xxs',
+  minWidth: 100,
+  alignItems: 'center',
+  marginHorizontal: '$xxxs',
+  pressStyle: {
+    scale: 0.98,
+  },
+  variants: {
+    active: {
+      true: {
+        backgroundColor: '$background',
+        shadowColor: '$borderColor',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
+      },
+    },
+  } as const,
+});
+
+const MarketIndicator = styled(YStack, {
+  name: 'MarketIndicator',
+  marginTop: '$sm',
+  paddingVertical: '$xxs',
+  paddingHorizontal: '$sm',
+  backgroundColor: '$gray6',
+  borderRadius: '$2',
+  alignItems: 'center',
+});
+
 const LanguageSwitch: React.FC<LanguageSwitchProps> = ({
-  style,
   showLabels = true,
   compact = false,
 }) => {
@@ -41,186 +118,86 @@ const LanguageSwitch: React.FC<LanguageSwitchProps> = ({
         [{ text: language === 'ko' ? '확인' : 'OK' }]
       );
     } catch (error) {
-      console.error('Failed to change language:', error);
+      Logger.error('Failed to change language:', 'component', { component: 'LanguageSwitch', error: error });
     }
   };
 
   if (compact) {
     return (
-      <View style={[styles.compactContainer, style]}>
-        <TouchableOpacity
-          style={[
-            styles.compactButton,
-            currentLanguage === 'ko' && styles.compactButtonActive
-          ]}
+      <CompactContainer>
+        <CompactButton
+          active={currentLanguage === 'ko'}
           onPress={() => handleLanguageChange('ko')}
         >
-          <Text style={[
-            styles.compactButtonText,
-            currentLanguage === 'ko' && styles.compactButtonTextActive
-          ]}>
+          <Text 
+            fontSize="$2" 
+            fontWeight="600" 
+            color={currentLanguage === 'ko' ? '$color' : '$gray11'}
+          >
             한
           </Text>
-        </TouchableOpacity>
+        </CompactButton>
         
-        <TouchableOpacity
-          style={[
-            styles.compactButton,
-            currentLanguage === 'en' && styles.compactButtonActive
-          ]}
+        <CompactButton
+          active={currentLanguage === 'en'}
           onPress={() => handleLanguageChange('en')}
         >
-          <Text style={[
-            styles.compactButtonText,
-            currentLanguage === 'en' && styles.compactButtonTextActive
-          ]}>
+          <Text 
+            fontSize="$2" 
+            fontWeight="600" 
+            color={currentLanguage === 'en' ? '$color' : '$gray11'}
+          >
             EN
           </Text>
-        </TouchableOpacity>
-      </View>
+        </CompactButton>
+      </CompactContainer>
     );
   }
 
   return (
-    <View style={[styles.container, style]}>
+    <YStack alignItems="center">
       {showLabels && (
-        <Text style={styles.label}>{t('language')}</Text>
+        <Text fontSize="$3" fontWeight="600" color="$color" marginBottom="$sm">
+          {t('language')}
+        </Text>
       )}
       
-      <View style={styles.switchContainer}>
-        <TouchableOpacity
-          style={[
-            styles.languageButton,
-            styles.leftButton,
-            currentLanguage === 'ko' && styles.activeButton
-          ]}
+      <SwitchContainer>
+        <LanguageButton
+          active={currentLanguage === 'ko'}
           onPress={() => handleLanguageChange('ko')}
         >
-          <Text style={[
-            styles.buttonText,
-            currentLanguage === 'ko' && styles.activeButtonText
-          ]}>
+          <Text 
+            fontSize="$3" 
+            fontWeight="500" 
+            color={currentLanguage === 'ko' ? '$color' : '$gray11'}
+          >
             🇰🇷 한국어
           </Text>
-        </TouchableOpacity>
+        </LanguageButton>
         
-        <TouchableOpacity
-          style={[
-            styles.languageButton,
-            styles.rightButton,
-            currentLanguage === 'en' && styles.activeButton
-          ]}
+        <LanguageButton
+          active={currentLanguage === 'en'}
           onPress={() => handleLanguageChange('en')}
         >
-          <Text style={[
-            styles.buttonText,
-            currentLanguage === 'en' && styles.activeButtonText
-          ]}>
+          <Text 
+            fontSize="$3" 
+            fontWeight="500" 
+            color={currentLanguage === 'en' ? '$color' : '$gray11'}
+          >
             🇺🇸 English
           </Text>
-        </TouchableOpacity>
-      </View>
+        </LanguageButton>
+      </SwitchContainer>
       
       {/* Market indicator */}
-      <View style={styles.marketIndicator}>
-        <Text style={styles.marketText}>
+      <MarketIndicator>
+        <Text fontSize="$2" color="$gray11" fontWeight="500">
           {isKoreanMarket() ? '🇰🇷 Korean Market' : '🇺🇸 US Beta Market'}
         </Text>
-      </View>
-    </View>
+      </MarketIndicator>
+    </YStack>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-  },
-  label: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
-    fontWeight: '600',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    backgroundColor: HIGColors.systemGray5,
-    borderRadius: HIGConstants.cornerRadiusMedium,
-    padding: 2,
-  },
-  languageButton: {
-    paddingVertical: HIGConstants.SPACING_SM,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-    borderRadius: HIGConstants.cornerRadiusMedium - 2,
-    minWidth: 100,
-    alignItems: 'center',
-  },
-  leftButton: {
-    marginRight: 1,
-  },
-  rightButton: {
-    marginLeft: 1,
-  },
-  activeButton: {
-    backgroundColor: HIGColors.white,
-    shadowColor: HIGColors.black,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  buttonText: {
-    fontSize: HIGConstants.FONT_SIZE_BODY,
-    fontWeight: '500',
-    color: HIGColors.secondaryLabel,
-  },
-  activeButtonText: {
-    color: HIGColors.label,
-    fontWeight: '600',
-  },
-  marketIndicator: {
-    marginTop: HIGConstants.SPACING_SM,
-    paddingVertical: 4,
-    paddingHorizontal: HIGConstants.SPACING_SM,
-    backgroundColor: HIGColors.systemGray6,
-    borderRadius: HIGConstants.cornerRadiusSmall,
-  },
-  marketText: {
-    fontSize: HIGConstants.FONT_SIZE_CAPTION,
-    color: HIGColors.secondaryLabel,
-    fontWeight: '500',
-  },
-  
-  // Compact styles
-  compactContainer: {
-    flexDirection: 'row',
-    backgroundColor: HIGColors.systemGray5,
-    borderRadius: 16,
-    padding: 2,
-  },
-  compactButton: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 1,
-  },
-  compactButtonActive: {
-    backgroundColor: HIGColors.white,
-    shadowColor: HIGColors.black,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  compactButtonText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: HIGColors.secondaryLabel,
-  },
-  compactButtonTextActive: {
-    color: HIGColors.label,
-  },
-});
 
 export default LanguageSwitch;

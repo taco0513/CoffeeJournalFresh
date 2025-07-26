@@ -21,9 +21,9 @@ interface AutocompleteInputProps {
   label?: string;
   maxSuggestions?: number;
   disabled?: boolean;
-  style?: any;
-  inputStyle?: any;
-  containerStyle?: any;
+  style?: StyleProp<ViewStyle>;
+  inputStyle?: unknown;
+  containerStyle?: unknown;
 }
 
 const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
@@ -52,7 +52,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   // Sync internal value with prop value
   useEffect(() => {
     setInternalValue(value);
-  }, [value]);
+}, [value]);
 
   // Show/hide suggestions based on focus and suggestions availability
   useEffect(() => {
@@ -66,17 +66,17 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
     // Reset selected index when suggestions change
     if (shouldShow) {
       setSelectedIndex(-1);
-    }
-  }, [inputFocused, suggestions, internalValue, disabled]);
+  }
+}, [inputFocused, suggestions, internalValue, disabled]);
 
   // Cleanup debounce timer on unmount
   useEffect(() => {
     return () => {
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);
-      }
-    };
-  }, []);
+    }
+  };
+}, []);
 
   // Get limited suggestions
   const limitedSuggestions = suggestions.slice(0, maxSuggestions);
@@ -93,8 +93,8 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
     // Blur the input
     if (inputRef.current) {
       inputRef.current.blur();
-    }
-  };
+  }
+};
 
   const handleChangeText = (text: string) => {
     // Update internal value immediately for smooth typing
@@ -103,26 +103,26 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
     // Clear previous debounce timer
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
-    }
+  }
     
     // Debounce the actual update to parent
     debounceTimer.current = setTimeout(() => {
       onChangeText(text);
       // Don't force showSuggestions here - let the parent component handle it
-    }, 300); // 300ms delay for Korean IME
-  };
+  }, 300); // 300ms delay for Korean IME
+};
 
   const handleFocus = () => {
     if (disabled) return;
     setInputFocused(true);
-  };
+};
 
   const handleBlur = () => {
     // Clear any pending debounce and update immediately
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
       onChangeText(internalValue);
-    }
+  }
     
     // Delay hiding suggestions to allow for touch events
     setTimeout(() => {
@@ -133,11 +133,11 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
       // Call parent onBlur if provided
       if (onBlur) {
         onBlur();
-      }
-    }, 150);
-  };
+    }
+  }, 150);
+};
 
-  const handleKeyPress = (event: any) => {
+  const handleKeyPress = (event: unknown) => {
     if (!showSuggestions || limitedSuggestions.length === 0) return;
 
     const { nativeEvent } = event;
@@ -147,25 +147,25 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
       setSelectedIndex(prev => 
         prev < limitedSuggestions.length - 1 ? prev + 1 : 0
       );
-    } else if (nativeEvent.key === 'ArrowUp') {
+  } else if (nativeEvent.key === 'ArrowUp') {
       event.preventDefault();
       setSelectedIndex(prev => 
         prev > 0 ? prev - 1 : limitedSuggestions.length - 1
       );
-    } else if (nativeEvent.key === 'Enter' || nativeEvent.key === 'Tab') {
+  } else if (nativeEvent.key === 'Enter' || nativeEvent.key === 'Tab') {
       event.preventDefault();
       if (selectedIndex >= 0) {
         handleSelect(limitedSuggestions[selectedIndex], selectedIndex);
-      }
-    } else if (nativeEvent.key === 'Escape') {
+    }
+  } else if (nativeEvent.key === 'Escape') {
       event.preventDefault();
       setShowSuggestions(false);
       setSelectedIndex(-1);
       if (inputRef.current) {
         inputRef.current.blur();
-      }
     }
-  };
+  }
+};
 
 
   const renderSuggestions = () => {
@@ -204,7 +204,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
         </ScrollView>
       </View>
     );
-  };
+};
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -246,31 +246,25 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     zIndex: 1,
-  },
+},
   inputGroup: {
     marginBottom: 8,
-  },
+},
   label: {
     fontSize: 13,
     fontWeight: '600',
     color: Colors.TEXT_PRIMARY,
     marginBottom: 4,
-  },
+},
   input: {
-    borderWidth: 1,
-    borderColor: '$borderColor',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
     fontSize: 16,
-    backgroundColor: '$background',
     color: '$color',
-    minHeight: 40,
-  },
+    // Let parent component handle all styling via style prop
+},
   inputDisabled: {
     backgroundColor: '$backgroundStrong',
     color: '$gray8',
-  },
+},
   suggestionsContainer: {
     position: 'absolute',
     top: '100%',
@@ -288,10 +282,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 6,
     marginTop: 2,
-  },
+},
   suggestionsList: {
     flex: 1,
-  },
+},
   suggestionItem: {
     padding: 12,
     borderBottomWidth: 1,
@@ -299,21 +293,21 @@ const styles = StyleSheet.create({
     backgroundColor: '$background',
     minHeight: 44, // Accessibility minimum touch target
     justifyContent: 'center',
-  },
+},
   suggestionItemSelected: {
     backgroundColor: Colors.BACKGROUND_GRAY,
-  },
+},
   suggestionItemLast: {
     borderBottomWidth: 0,
-  },
+},
   suggestionText: {
     fontSize: FONT_SIZE.MEDIUM,
     color: Colors.TEXT_TERTIARY,
-  },
+},
   suggestionTextSelected: {
     color: Colors.TEXT_PRIMARY,
     fontWeight: '500',
-  },
+},
 });
 
 export default AutocompleteInput;

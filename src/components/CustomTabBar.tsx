@@ -38,12 +38,12 @@ const TabButton = styled(Button, {
   paddingTop: '$xs',
   pressStyle: {
     opacity: 0.7,
-  },
+},
 });
 
 const TabLabel = styled(Text, {
   name: 'TabLabel',
-  fontSize: '$1',
+  fontSize: '$2', // 14px - more readable for navigation labels
   marginTop: '$1',
 });
 
@@ -69,7 +69,7 @@ const CenterButton = styled(Button, {
   elevation: 8,
   pressStyle: {
     opacity: 0.8,
-  },
+},
 });
 
 const CenterButtonInner = styled(View, {
@@ -96,7 +96,7 @@ const TabIcon = ({ name, focused, color }: { name: string; focused: boolean; col
       return <ProfileIcon size={iconSize} color={color} focused={focused} />;
     default:
       return null;
-  }
+}
 };
 
 export const CustomTabBar: React.FC<BottomTabBarProps> = ({
@@ -121,12 +121,12 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({
               type: 'tabPress',
               target: route.key,
               canPreventDefault: true,
-            });
+          });
 
             if (!isFocused && !event.defaultPrevented) {
               navigation.navigate(route.name);
-            }
-          };
+          }
+        };
 
           if (isAddCoffee) {
             // Special center button
@@ -143,7 +143,7 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({
                 </CenterButton>
               </CenterButtonContainer>
             );
-          }
+        }
 
           return (
             <TabButton key={index} unstyled onPress={onPress}>
@@ -159,7 +159,7 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({
               </TabLabel>
             </TabButton>
           );
-        })}
+      })}
       </TabBarWrapper>
     </Container>
   );

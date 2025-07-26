@@ -18,9 +18,9 @@ import { Colors, Typography, Component, Spacing, Layout } from '../tokens';
 
 // 가로 스크롤 휠 컴포넌트 (비율 선택용)
 export interface WheelPickerProps {
-  items: Array<{ label: string; value: any }>;
-  selectedValue: any;
-  onValueChange: (value: any) => void;
+  items: Array<{ label: string; value: string | number | boolean | null }>;
+  selectedValue: unknown;
+  onValueChange: (value: string | number | boolean | null) => void;
   style?: ViewStyle;
 }
 
@@ -58,16 +58,16 @@ export const WheelPicker: React.FC<WheelPickerProps> = ({
             </Text>
           </TouchableOpacity>
         );
-      })}
+    })}
     </ScrollView>
   );
 };
 
 // 세그먼트 선택기 (드리퍼, 필터 선택용)
 export interface SegmentedPickerProps {
-  items: Array<{ label: string; value: any }>;
-  selectedValue: any;
-  onValueChange: (value: any) => void;
+  items: Array<{ label: string; value: string | number | boolean | null }>;
+  selectedValue: unknown;
+  onValueChange: (value: string | number | boolean | null) => void;
   columns?: number;
   style?: ViewStyle;
 }
@@ -104,7 +104,7 @@ export const SegmentedPicker: React.FC<SegmentedPickerProps> = ({
             </Text>
           </TouchableOpacity>
         );
-      })}
+    })}
     </View>
   );
 };
@@ -113,11 +113,11 @@ export const SegmentedPicker: React.FC<SegmentedPickerProps> = ({
 export interface ButtonGroupProps {
   buttons: Array<{ 
     label: string; 
-    value: any; 
+    value: string | number | boolean | null; 
     variant?: 'default' | 'custom' | 'preset';
-  }>;
-  selectedValue: any;
-  onValueChange: (value: any) => void;
+}>;
+  selectedValue: unknown;
+  onValueChange: (value: string | number | boolean | null) => void;
   direction?: 'horizontal' | 'vertical';
   style?: ViewStyle;
 }
@@ -163,7 +163,7 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = ({
             <Text style={textStyle}>{button.label}</Text>
           </TouchableOpacity>
         );
-      })}
+    })}
     </View>
   );
 };
@@ -172,12 +172,12 @@ const styles = StyleSheet.create({
   // WheelPicker 스타일
   wheelScroll: {
     flexGrow: 0,
-  },
+},
   
   wheelContainer: {
     paddingHorizontal: Spacing.md,
     alignItems: 'center',
-  },
+},
   
   wheelItem: {
     paddingHorizontal: Spacing.md,
@@ -189,29 +189,29 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.light,
     minWidth: 60,
     alignItems: 'center',
-  },
+},
   
   wheelItemSelected: {
     backgroundColor: Colors.primary[500],
     borderColor: Colors.primary[500],
-  },
+},
   
   wheelItemText: {
     fontSize: Typography.fontSize.sm,
     fontWeight: Typography.fontWeight.medium,
     color: Colors.text.primary,
-  },
+},
   
   wheelItemTextSelected: {
     color: Colors.text.inverse,
-  },
+},
   
   // SegmentedPicker 스타일
   segmentedContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginHorizontal: -4,
-  },
+},
   
   segmentedItem: {
     marginHorizontal: 4,
@@ -223,34 +223,34 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.medium,
     borderRadius: Layout.radius.md,
     alignItems: 'center',
-  },
+},
   
   segmentedItemSelected: {
     backgroundColor: Colors.primary[50],
     borderColor: Colors.primary[500],
-  },
+},
   
   segmentedItemText: {
     fontSize: Typography.fontSize.sm,
     fontWeight: Typography.fontWeight.medium,
     color: Colors.text.primary,
     textAlign: 'center',
-  },
+},
   
   segmentedItemTextSelected: {
     color: Colors.primary[700],
-  },
+},
   
   // ButtonGroup 스타일
   buttonGroup: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginHorizontal: -4,
-  },
+},
   
   buttonGroupVertical: {
     flexDirection: 'column',
-  },
+},
   
   groupButton: {
     marginHorizontal: 4,
@@ -261,41 +261,41 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     flex: 1,
-  },
+},
   
   // ButtonGroup variants
   groupButton_default: {
     backgroundColor: Colors.background.primary,
     borderColor: Colors.border.medium,
-  },
+},
   
   groupButton_preset: {
     backgroundColor: Colors.gray[50],
     borderColor: Colors.gray[200],
-  },
+},
   
   groupButton_custom: {
     backgroundColor: Colors.background.primary,
     borderColor: Colors.primary[300],
     borderStyle: 'dashed',
-  },
+},
   
   // ButtonGroup selected states
   groupButtonSelected_default: {
     backgroundColor: Colors.primary[50],
     borderColor: Colors.primary[500],
-  },
+},
   
   groupButtonSelected_preset: {
     backgroundColor: Colors.primary[500],
     borderColor: Colors.primary[500],
-  },
+},
   
   groupButtonSelected_custom: {
     backgroundColor: Colors.primary[50],
     borderColor: Colors.primary[500],
     borderStyle: 'solid',
-  },
+},
   
   // ButtonGroup text styles
   groupButtonText: {
@@ -303,30 +303,30 @@ const styles = StyleSheet.create({
     fontWeight: Typography.fontWeight.medium,
     color: Colors.text.primary,
     textAlign: 'center',
-  },
+},
   
   groupButtonText_default: {
     color: Colors.text.primary,
-  },
+},
   
   groupButtonText_preset: {
     color: Colors.text.primary,
-  },
+},
   
   groupButtonText_custom: {
     color: Colors.primary[600],
-  },
+},
   
   // ButtonGroup selected text
   groupButtonTextSelected_default: {
     color: Colors.primary[700],
-  },
+},
   
   groupButtonTextSelected_preset: {
     color: Colors.text.inverse,
-  },
+},
   
   groupButtonTextSelected_custom: {
     color: Colors.primary[700],
-  },
+},
 });

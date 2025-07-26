@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Logger } from './LoggingService';
 /**
  * DataLoadingService - Prevents race conditions and duplicate requests
  * 
@@ -14,7 +15,7 @@ interface LoadingTask<T> {
 }
 
 export class DataLoadingService {
-  private static loadingTasks = new Map<string, LoadingTask<any>>();
+  private static loadingTasks = new Map<string, LoadingTask<unknown>>();
   private static readonly CACHE_DURATION = 5000; // 5 seconds
 
   /**
@@ -34,11 +35,11 @@ export class DataLoadingService {
     // Check if we have a recent loading task for this key
     const existingTask = this.loadingTasks.get(key);
     if (existingTask && (now - existingTask.timestamp) < this.CACHE_DURATION) {
-      console.log(`[DataLoadingService] Reusing existing task for key: ${key}`);
+      Logger.debug(`[DataLoadingService] Reusing existing task for key: ${key}`, 'service', { component: 'DataLoadingService' });
       return existingTask.promise;
-    }
+  }
 
-    console.log(`[DataLoadingService] Starting new task for key: ${key} (context: ${context})`);
+    Logger.debug(`[DataLoadingService] Starting new task for key: ${key} (context: ${context})`, 'service', { component: 'DataLoadingService' });
 
     // Create new loading task
     const promise = this.executeWithTimeout(loader(), key, context);
@@ -46,24 +47,24 @@ export class DataLoadingService {
       promise,
       timestamp: now,
       context
-    };
+  };
 
     this.loadingTasks.set(key, task);
 
     try {
       const result = await promise;
-      console.log(`[DataLoadingService] Completed task for key: ${key}`);
+      Logger.debug(`[DataLoadingService] Completed task for key: ${key}`, 'service', { component: 'DataLoadingService' });
       return result;
-    } catch (error) {
-      console.error(`[DataLoadingService] Failed task for key: ${key}`, error);
+  } catch (error) {
+      Logger.error(`[DataLoadingService] Failed task for key: ${key}`, 'service', { component: 'DataLoadingService', error: error });
       throw error;
-    } finally {
+  } finally {
       // Clean up completed task after a delay
       setTimeout(() => {
         this.loadingTasks.delete(key);
-      }, this.CACHE_DURATION);
-    }
+    }, this.CACHE_DURATION);
   }
+}
 
   /**
    * Execute a promise with timeout
@@ -81,11 +82,11 @@ export class DataLoadingService {
     const timeoutPromise = new Promise<never>((_, reject) => {
       setTimeout(() => {
         reject(new Error(`[DataLoadingService] Timeout after ${timeoutMs}ms for key: ${key}`));
-      }, timeoutMs);
-    });
+    }, timeoutMs);
+  });
 
     return Promise.race([promise, timeoutPromise]);
-  }
+}
 
   /**
    * Check if a loading operation is currently in progress
@@ -98,7 +99,7 @@ export class DataLoadingService {
     
     const now = Date.now();
     return (now - task.timestamp) < this.CACHE_DURATION;
-  }
+}
 
   /**
    * Cancel a loading operation
@@ -106,16 +107,16 @@ export class DataLoadingService {
    */
   static cancel(key: string): void {
     this.loadingTasks.delete(key);
-    console.log(`[DataLoadingService] Cancelled task for key: ${key}`);
-  }
+    Logger.debug(`[DataLoadingService] Cancelled task for key: ${key}`, 'service', { component: 'DataLoadingService' });
+}
 
   /**
    * Clear all loading tasks (useful for cleanup)
    */
   static clearAll(): void {
-    console.log(`[DataLoadingService] Clearing all ${this.loadingTasks.size} tasks`);
+    Logger.debug(`[DataLoadingService] Clearing all ${this.loadingTasks.size} tasks`, 'service', { component: 'DataLoadingService' });
     this.loadingTasks.clear();
-  }
+}
 
   /**
    * Get current loading statistics
@@ -127,13 +128,13 @@ export class DataLoadingService {
       key,
       context: task.context,
       age: now - task.timestamp
-    }));
+  }));
 
     return {
       activeCount: tasks.length,
       tasks
-    };
-  }
+  };
+}
 }
 
 /**
@@ -159,36 +160,36 @@ export const useSafeDataLoading = <T>(
     try {
       const result = await DataLoadingService.loadOnce(key, dataLoader, 'useSafeDataLoading');
       setData(result);
-    } catch (err) {
+  } catch (err) {
       const error = err instanceof Error ? err : new Error('Unknown error');
       setError(error);
-      console.error(`[useSafeDataLoading] Error loading data for key ${key}:`, error);
-    } finally {
+      Logger.error(`[useSafeDataLoading] Error loading data for key ${key}:`, 'service', { component: 'DataLoadingService', error: error });
+  } finally {
       setIsLoading(false);
-    }
-  }, [key, dataLoader]);
+  }
+}, [key, dataLoader]);
 
   React.useEffect(() => {
     load();
-  }, [load, ...deps]);
+}, [load, ...deps]);
 
   // Cleanup on unmount
   React.useEffect(() => {
     return () => {
       DataLoadingService.cancel(key);
-    };
-  }, [key]);
+  };
+}, [key]);
 
   return {
     data,
     isLoading,
     error,
     reload: load
-  };
+};
 };
 
 // Type for data validation
-export type DataValidator<T> = (data: any) => data is T;
+export type DataValidator<T> = (data: unknown) => data is T;
 
 /**
  * Validate data before setting it to state
@@ -198,18 +199,18 @@ export type DataValidator<T> = (data: any) => data is T;
  * @returns Validated data or fallback
  */
 export const validateData = <T>(
-  data: any, 
+  data: unknown, 
   validator: DataValidator<T>, 
   fallback: T
 ): T => {
   try {
     if (validator(data)) {
       return data;
-    }
-    console.warn('[DataLoadingService] Data validation failed, using fallback');
-    return fallback;
-  } catch (error) {
-    console.error('[DataLoadingService] Data validation error:', error);
-    return fallback;
   }
+    Logger.warn('[DataLoadingService] Data validation failed, using fallback', 'service', { component: 'DataLoadingService' });
+    return fallback;
+} catch (error) {
+    Logger.error('[DataLoadingService] Data validation error:', 'service', { component: 'DataLoadingService', error: error });
+    return fallback;
+}
 };

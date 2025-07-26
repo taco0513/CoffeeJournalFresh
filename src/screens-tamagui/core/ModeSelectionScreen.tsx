@@ -12,14 +12,11 @@ import {
   ScrollView,
   styled,
   useTheme,
-  AnimatePresence,
 } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTastingStore } from '../../stores/tastingStore';
 import { TastingMode } from '../../types/tasting';
-import LanguageSwitch from '../../components/LanguageSwitch';
 
 // Styled components
 const Container = styled(YStack, {
@@ -28,23 +25,7 @@ const Container = styled(YStack, {
   backgroundColor: '$background',
 });
 
-const Header = styled(XStack, {
-  name: 'Header',
-  alignItems: 'center',
-  paddingHorizontal: '$lg',
-  paddingVertical: '$md',
-  borderBottomWidth: 1,
-  borderBottomColor: '$borderColor',
-});
-
-const BackButton = styled(Button, {
-  name: 'BackButton',
-  unstyled: true,
-  marginRight: '$md',
-  pressStyle: {
-    opacity: 0.7,
-  },
-});
+// Header, BackButton 제거됨 - 네비게이션 헤더 사용
 
 const ModeCard = styled(Card, {
   name: 'ModeCard',
@@ -59,11 +40,11 @@ const ModeCard = styled(Card, {
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$backgroundPress',
-  },
+},
   animation: 'quick',
   hoverStyle: {
     backgroundColor: '$backgroundHover',
-  },
+},
 });
 
 const Badge = styled(YStack, {
@@ -71,10 +52,13 @@ const Badge = styled(YStack, {
   position: 'absolute',
   top: -8,
   right: 16,
-  borderRadius: 12,
-  paddingHorizontal: 8,
-  paddingVertical: 4,
+  borderRadius: '$3',
+  paddingHorizontal: '$sm',
+  paddingVertical: '$xxs',
   zIndex: 1,
+  height: '$badgeMedium',
+  alignItems: 'center',
+  justifyContent: 'center',
 });
 
 const ModeSelectionScreen = () => {
@@ -82,12 +66,11 @@ const ModeSelectionScreen = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const { setTastingMode } = useTastingStore();
-  const insets = useSafeAreaInsets();
 
   const handleModeSelect = (mode: TastingMode) => {
     setTastingMode(mode);
     navigation.navigate('CoffeeInfo' as never);
-  };
+};
 
   const modes = [
     {
@@ -98,7 +81,7 @@ const ModeSelectionScreen = () => {
       icon: '☕',
       color: '$cupBlue',
       popular: true,
-    },
+  },
     {
       id: 'home_cafe' as TastingMode,
       title: t('homeCafeMode'),
@@ -108,7 +91,7 @@ const ModeSelectionScreen = () => {
       color: '$green9',
       popular: false,
       badge: t('comingSoon'),
-    },
+  },
     {
       id: 'lab' as TastingMode,
       title: t('labMode'),
@@ -118,7 +101,7 @@ const ModeSelectionScreen = () => {
       color: '$purple9',
       popular: false,
       badge: t('beta'),
-    },
+  },
   ];
 
   const getBadgeColor = (badge?: string) => {
@@ -126,34 +109,27 @@ const ModeSelectionScreen = () => {
     if (badge === t('beta')) return '$purple9';
     if (badge === t('comingSoon')) return '$green9';
     return '$orange9';
-  };
+};
 
   return (
     <Container>
-      {/* Header */}
-      <Header style={{ paddingTop: insets.top + 16 }}>
-        <BackButton onPress={() => navigation.goBack()}>
-          <Text fontSize="$6" color="$cupBlue">←</Text>
-        </BackButton>
-        <Text fontSize="$4" fontWeight="600" color="$color" flex={1}>
-          {t('modeSelection')}
-        </Text>
-        <LanguageSwitch compact style={{ marginLeft: 16 }} />
-      </Header>
 
       <ScrollView 
         flex={1} 
-        contentContainerStyle={{ paddingHorizontal: 24 }}
+        contentContainerStyle={{ 
+          paddingHorizontal: 24,
+          paddingBottom: 24
+        }}
         showsVerticalScrollIndicator={false}
       >
         {/* Title Section */}
-        <YStack paddingVertical="$xl" alignItems="center">
+        <YStack paddingVertical="$lg" alignItems="center">
           <H1 
             fontSize="$7" 
             fontWeight="700" 
             color="$color" 
             textAlign="center"
-            lineHeight={32}
+            lineHeight="$xxl"
             marginBottom="$sm"
           >
             {t('howRecordCoffee', { defaultValue: '어떤 방식으로\n커피를 기록하시나요?' })}
@@ -168,34 +144,18 @@ const ModeSelectionScreen = () => {
         </YStack>
 
         {/* Mode Options */}
-        <YStack gap="$lg" flex={1}>
-          <AnimatePresence>
+        <YStack gap="$lg">
             {modes.map((mode, index) => (
               <ModeCard
                 key={mode.id}
                 borderColor={mode.color}
                 onPress={() => handleModeSelect(mode.id)}
-                enterStyle={{
-                  opacity: 0,
-                  y: 20,
-                  scale: 0.9,
-                }}
-                exitStyle={{
-                  opacity: 0,
-                  y: -20,
-                  scale: 0.9,
-                }}
-                animation="lazy"
-                animateOnly={['transform', 'opacity']}
-                style={{
-                  animationDelay: `${index * 100}ms`,
-                }}
               >
                 {(mode.popular || mode.badge) && (
                   <Badge backgroundColor={getBadgeColor(mode.badge)}>
                     <Text 
                       color="white" 
-                      fontSize="$2" 
+                      fontSize="$3" 
                       fontWeight="700"
                     >
                       {mode.badge || '인기'}
@@ -204,7 +164,7 @@ const ModeSelectionScreen = () => {
                 )}
                 
                 <YStack marginRight="$lg">
-                  <Text fontSize={48}>{mode.icon}</Text>
+                  <Text fontSize="$iconLarge">{mode.icon}</Text>
                 </YStack>
                 
                 <YStack flex={1}>
@@ -212,7 +172,7 @@ const ModeSelectionScreen = () => {
                     fontSize="$5" 
                     fontWeight="700" 
                     color="$color" 
-                    marginBottom={4}
+                    marginBottom="$xxs"
                   >
                     {mode.title}
                   </H3>
@@ -220,7 +180,7 @@ const ModeSelectionScreen = () => {
                     fontSize="$3" 
                     fontWeight="500" 
                     color="$gray11" 
-                    lineHeight={20}
+                    lineHeight="$lg"
                   >
                     {mode.subtitle}
                   </Text>
@@ -237,16 +197,15 @@ const ModeSelectionScreen = () => {
                 </YStack>
               </ModeCard>
             ))}
-          </AnimatePresence>
         </YStack>
 
         {/* Bottom Info */}
-        <YStack paddingVertical="$xl" alignItems="center">
+        <YStack paddingVertical="$lg" alignItems="center">
           <Text 
             fontSize="$3" 
             color="$gray11" 
             textAlign="center" 
-            lineHeight={20}
+            lineHeight="$lg"
           >
             {t('modeChangeInfo', { defaultValue: '💡 모드는 테이스팅 중에도 언제든 변경 가능합니다' })}
           </Text>

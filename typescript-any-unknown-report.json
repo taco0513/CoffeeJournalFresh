@@ -1,0 +1,5104 @@
+{
+  "summary": {
+    "totalAny": 781,
+    "totalUnknown": 14,
+    "filesWithAny": 156,
+    "filesWithUnknown": 5
+  },
+  "anyTypes": {
+    "src/components-tamagui/buttons/Chip.tsx": [
+      {
+        "file": "src/components-tamagui/buttons/Chip.tsx",
+        "lineNumber": 149,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components-tamagui/buttons/Chip.tsx",
+        "lineNumber": 150,
+        "line": "textStyle?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components-tamagui/cards/AchievementCard.tsx": [
+      {
+        "file": "src/components-tamagui/cards/AchievementCard.tsx",
+        "lineNumber": 299,
+        "line": "const formatReward = (reward: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components-tamagui/cards/AchievementCard.tsx",
+        "lineNumber": 351,
+        "line": "<RarityBadge rarity={achievement.rarity as any}>",
+        "match": "as any"
+      },
+      {
+        "file": "src/components-tamagui/cards/AchievementCard.tsx",
+        "lineNumber": 299,
+        "line": "const formatReward = (reward: any) => {",
+        "match": "(reward: any)"
+      }
+    ],
+    "src/components-tamagui/forms/AutocompleteInput.tsx": [
+      {
+        "file": "src/components-tamagui/forms/AutocompleteInput.tsx",
+        "lineNumber": 29,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components-tamagui/forms/AutocompleteInput.tsx",
+        "lineNumber": 30,
+        "line": "inputStyle?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components-tamagui/forms/AutocompleteInput.tsx",
+        "lineNumber": 31,
+        "line": "containerStyle?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components-tamagui/forms/AutocompleteInput.tsx",
+        "lineNumber": 209,
+        "line": "const inputRef = useRef<any>(null);",
+        "match": "<any>"
+      }
+    ],
+    "src/components-tamagui/forms/FormField.tsx": [
+      {
+        "file": "src/components-tamagui/forms/FormField.tsx",
+        "lineNumber": 20,
+        "line": "containerStyle?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components-tamagui/forms/FormField.tsx",
+        "lineNumber": 21,
+        "line": "labelStyle?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components-tamagui/forms/SelectInput.tsx": [
+      {
+        "file": "src/components-tamagui/forms/SelectInput.tsx",
+        "lineNumber": 32,
+        "line": "containerStyle?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components-tamagui/forms/SelectInput.tsx",
+        "lineNumber": 33,
+        "line": "buttonStyle?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components-tamagui/forms/TextInput.tsx": [
+      {
+        "file": "src/components-tamagui/forms/TextInput.tsx",
+        "lineNumber": 22,
+        "line": "containerStyle?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components-tamagui/forms/TextInput.tsx",
+        "lineNumber": 23,
+        "line": "labelStyle?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components-tamagui/search/SearchFilters.tsx": [
+      {
+        "file": "src/components-tamagui/search/SearchFilters.tsx",
+        "lineNumber": 69,
+        "line": "const updateFilter = (key: keyof FilterOptions, value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components-tamagui/search/SearchFilters.tsx",
+        "lineNumber": 69,
+        "line": "const updateFilter = (key: keyof FilterOptions, value: any) => {",
+        "match": "(key: keyof FilterOptions, value: any)"
+      }
+    ],
+    "src/components/achievements/AchievementCard.tsx": [
+      {
+        "file": "src/components/achievements/AchievementCard.tsx",
+        "lineNumber": 53,
+        "line": "const formatReward = (reward: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/achievements/AchievementCard.tsx",
+        "lineNumber": 53,
+        "line": "const formatReward = (reward: any) => {",
+        "match": "(reward: any)"
+      }
+    ],
+    "src/components/achievements/AchievementNotification.tsx": [
+      {
+        "file": "src/components/achievements/AchievementNotification.tsx",
+        "lineNumber": 190,
+        "line": "const formatReward = (reward: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/achievements/AchievementNotification.tsx",
+        "lineNumber": 190,
+        "line": "const formatReward = (reward: any) => {",
+        "match": "(reward: any)"
+      }
+    ],
+    "src/components/achievements/ProgressBar.tsx": [
+      {
+        "file": "src/components/achievements/ProgressBar.tsx",
+        "lineNumber": 65,
+        "line": "width: progressWidth as any,",
+        "match": "as any"
+      }
+    ],
+    "src/components/AddCoffeeModal.tsx": [
+      {
+        "file": "src/components/AddCoffeeModal.tsx",
+        "lineNumber": 79,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/AddCoffeeModal.tsx",
+        "lineNumber": 79,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/components/beta/BetaStatusPanel.tsx": [
+      {
+        "file": "src/components/beta/BetaStatusPanel.tsx",
+        "lineNumber": 15,
+        "line": "marketConfig: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components/CameraModal.tsx": [
+      {
+        "file": "src/components/CameraModal.tsx",
+        "lineNumber": 17,
+        "line": "onTextRecognized?: (info: any) => void; // OCR functionality moved to feature_backlog",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/CameraModal.tsx",
+        "lineNumber": 17,
+        "line": "onTextRecognized?: (info: any) => void; // OCR functionality moved to feature_backlog",
+        "match": "(info: any)"
+      }
+    ],
+    "src/components/charts/ProgressRing.tsx": [
+      {
+        "file": "src/components/charts/ProgressRing.tsx",
+        "lineNumber": 30,
+        "line": "const circleRef = useRef<any>(null);",
+        "match": "<any>"
+      }
+    ],
+    "src/components/common/AutocompleteInput.tsx": [
+      {
+        "file": "src/components/common/AutocompleteInput.tsx",
+        "lineNumber": 24,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/common/AutocompleteInput.tsx",
+        "lineNumber": 25,
+        "line": "inputStyle?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/common/AutocompleteInput.tsx",
+        "lineNumber": 26,
+        "line": "containerStyle?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/common/AutocompleteInput.tsx",
+        "lineNumber": 140,
+        "line": "const handleKeyPress = (event: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/common/AutocompleteInput.tsx",
+        "lineNumber": 140,
+        "line": "const handleKeyPress = (event: any) => {",
+        "match": "(event: any)"
+      }
+    ],
+    "src/components/common/AutocompleteInputTamagui.tsx": [
+      {
+        "file": "src/components/common/AutocompleteInputTamagui.tsx",
+        "lineNumber": 25,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/common/AutocompleteInputTamagui.tsx",
+        "lineNumber": 26,
+        "line": "inputStyle?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/common/AutocompleteInputTamagui.tsx",
+        "lineNumber": 27,
+        "line": "containerStyle?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/common/AutocompleteInputTamagui.tsx",
+        "lineNumber": 141,
+        "line": "const inputRef = useRef<any>(null);",
+        "match": "<any>"
+      }
+    ],
+    "src/components/common/PerformanceOptimizedWrapper.tsx": [
+      {
+        "file": "src/components/common/PerformanceOptimizedWrapper.tsx",
+        "lineNumber": 24,
+        "line": "const lastPropsRef = useRef<any>(null);",
+        "match": "<any>"
+      }
+    ],
+    "src/components/common/ScreenshotWrapper.tsx": [
+      {
+        "file": "src/components/common/ScreenshotWrapper.tsx",
+        "lineNumber": 9,
+        "line": "style?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components/common/SkeletonLoader.tsx": [
+      {
+        "file": "src/components/common/SkeletonLoader.tsx",
+        "lineNumber": 53,
+        "line": "width: width as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/components/common/SkeletonLoader.tsx",
+        "lineNumber": 54,
+        "line": "height: height as any,",
+        "match": "as any"
+      }
+    ],
+    "src/components/ErrorBoundary.tsx": [
+      {
+        "file": "src/components/ErrorBoundary.tsx",
+        "lineNumber": 19,
+        "line": "onError?: (error: Error, errorInfo: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/ErrorBoundary.tsx",
+        "lineNumber": 25,
+        "line": "errorInfo: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/ErrorBoundary.tsx",
+        "lineNumber": 19,
+        "line": "onError?: (error: Error, errorInfo: any) => void;",
+        "match": "(error: Error, errorInfo: any)"
+      }
+    ],
+    "src/components/flavor/CategoryAccordion.tsx": [
+      {
+        "file": "src/components/flavor/CategoryAccordion.tsx",
+        "lineNumber": 186,
+        "line": "const subsWithFlavors: Array<{sub: any, filteredFlavors: any[]}> = [];",
+        "match": ": any,"
+      },
+      {
+        "file": "src/components/flavor/CategoryAccordion.tsx",
+        "lineNumber": 186,
+        "line": "const subsWithFlavors: Array<{sub: any, filteredFlavors: any[]}> = [];",
+        "match": ": any["
+      },
+      {
+        "file": "src/components/flavor/CategoryAccordion.tsx",
+        "lineNumber": 187,
+        "line": "const subsWithoutFlavors: any[] = [];",
+        "match": ": any["
+      },
+      {
+        "file": "src/components/flavor/CategoryAccordion.tsx",
+        "lineNumber": 210,
+        "line": "{filteredFlavors.map((flavor: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/flavor/CategoryAccordion.tsx",
+        "lineNumber": 186,
+        "line": "const subsWithFlavors: Array<{sub: any, filteredFlavors: any[]}> = [];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/components/flavor/CategoryAccordion.tsx",
+        "lineNumber": 187,
+        "line": "const subsWithoutFlavors: any[] = [];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/components/flavor/CategoryAccordion.tsx",
+        "lineNumber": 206,
+        "line": "{subsWithFlavors.map(({ sub, filteredFlavors }) => (",
+        "match": "(\n                  <View key={sub.name} style={styles.flavorGrid}>\n                    <Text style={styles.subcategoryLabel}>{sub.koreanName} 세부 향미:</Text>\n                    <View style={styles.flavorRow}>\n                      {filteredFlavors.map((flavor: any)"
+      }
+    ],
+    "src/components/flavor/SelectedFlavors.tsx": [
+      {
+        "file": "src/components/flavor/SelectedFlavors.tsx",
+        "lineNumber": 9,
+        "line": "return (flavorWheelKorean.translations as any)[englishName] || englishName;",
+        "match": "as any"
+      }
+    ],
+    "src/components/homecafe/enhanced/EnhancedHomeCafeRecipeSection.tsx": [
+      {
+        "file": "src/components/homecafe/enhanced/EnhancedHomeCafeRecipeSection.tsx",
+        "lineNumber": 22,
+        "line": "onUpdateField: (category: keyof HomeCafeData, field: string, value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/homecafe/enhanced/EnhancedHomeCafeRecipeSection.tsx",
+        "lineNumber": 22,
+        "line": "onUpdateField: (category: keyof HomeCafeData, field: string, value: any) => void;",
+        "match": "(category: keyof HomeCafeData, field: string, value: any)"
+      }
+    ],
+    "src/components/homecafe/enhanced/EnhancedHomeCafeSections.tsx": [
+      {
+        "file": "src/components/homecafe/enhanced/EnhancedHomeCafeSections.tsx",
+        "lineNumber": 27,
+        "line": "onUpdateField: (category: keyof HomeCafeData, field: string, value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/homecafe/enhanced/EnhancedHomeCafeSections.tsx",
+        "lineNumber": 27,
+        "line": "onUpdateField: (category: keyof HomeCafeData, field: string, value: any) => void;",
+        "match": "(category: keyof HomeCafeData, field: string, value: any)"
+      }
+    ],
+    "src/components/homecafe/HomeCafeInputs.tsx": [
+      {
+        "file": "src/components/homecafe/HomeCafeInputs.tsx",
+        "lineNumber": 23,
+        "line": "const updateEquipment = (field: keyof HomeCafeData['equipment'], value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/homecafe/HomeCafeInputs.tsx",
+        "lineNumber": 32,
+        "line": "const updateRecipe = (field: keyof HomeCafeData['recipe'], value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/homecafe/HomeCafeInputs.tsx",
+        "lineNumber": 41,
+        "line": "const updateNotes = (field: string, value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/homecafe/HomeCafeInputs.tsx",
+        "lineNumber": 23,
+        "line": "const updateEquipment = (field: keyof HomeCafeData['equipment'], value: any) => {",
+        "match": "(field: keyof HomeCafeData['equipment'], value: any)"
+      },
+      {
+        "file": "src/components/homecafe/HomeCafeInputs.tsx",
+        "lineNumber": 32,
+        "line": "const updateRecipe = (field: keyof HomeCafeData['recipe'], value: any) => {",
+        "match": "(field: keyof HomeCafeData['recipe'], value: any)"
+      },
+      {
+        "file": "src/components/homecafe/HomeCafeInputs.tsx",
+        "lineNumber": 41,
+        "line": "const updateNotes = (field: string, value: any) => {",
+        "match": "(field: string, value: any)"
+      }
+    ],
+    "src/components/homecafe/InteractiveBrewTimer.tsx": [
+      {
+        "file": "src/components/homecafe/InteractiveBrewTimer.tsx",
+        "lineNumber": 20,
+        "line": "recipe?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components/homecafe/RecipePresets.tsx": [
+      {
+        "file": "src/components/homecafe/RecipePresets.tsx",
+        "lineNumber": 30,
+        "line": "const preset = availablePresets[presetKey as keyof typeof availablePresets] as any;",
+        "match": "as any"
+      },
+      {
+        "file": "src/components/homecafe/RecipePresets.tsx",
+        "lineNumber": 49,
+        "line": "pourTechnique: preset.technique as any,",
+        "match": "as any"
+      }
+    ],
+    "src/components/HomeCafePouroverForm.tsx": [
+      {
+        "file": "src/components/HomeCafePouroverForm.tsx",
+        "lineNumber": 76,
+        "line": "const handleTimerComplete = (lapTimes: any[]) => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/components/HomeCafePouroverForm.tsx",
+        "lineNumber": 76,
+        "line": "const handleTimerComplete = (lapTimes: any[]) => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/components/HomeCafePouroverForm.tsx",
+        "lineNumber": 76,
+        "line": "const handleTimerComplete = (lapTimes: any[]) => {",
+        "match": "(lapTimes: any[])"
+      }
+    ],
+    "src/components/HomeCafeSimpleForm.tsx": [
+      {
+        "file": "src/components/HomeCafeSimpleForm.tsx",
+        "lineNumber": 158,
+        "line": "const updateField = (field: keyof SimpleHomeCafeData, value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/HomeCafeSimpleForm.tsx",
+        "lineNumber": 158,
+        "line": "const updateField = (field: keyof SimpleHomeCafeData, value: any) => {",
+        "match": "(field: keyof SimpleHomeCafeData, value: any)"
+      }
+    ],
+    "src/components/HomeCafeSimpleFormTamagui.tsx": [
+      {
+        "file": "src/components/HomeCafeSimpleFormTamagui.tsx",
+        "lineNumber": 246,
+        "line": "const updateField = (field: keyof SimpleHomeCafeData, value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/HomeCafeSimpleFormTamagui.tsx",
+        "lineNumber": 246,
+        "line": "const updateField = (field: keyof SimpleHomeCafeData, value: any) => {",
+        "match": "(field: keyof SimpleHomeCafeData, value: any)"
+      }
+    ],
+    "src/components/journal/detail/TastingDetailCoffeeInfo.tsx": [
+      {
+        "file": "src/components/journal/detail/TastingDetailCoffeeInfo.tsx",
+        "lineNumber": 23,
+        "line": "[key: string]: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components/journal/detail/TastingDetailContent.tsx": [
+      {
+        "file": "src/components/journal/detail/TastingDetailContent.tsx",
+        "lineNumber": 31,
+        "line": "selectedFlavorPaths?: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/components/journal/detail/TastingDetailContent.tsx",
+        "lineNumber": 31,
+        "line": "selectedFlavorPaths?: any[];",
+        "match": ": any[]"
+      }
+    ],
+    "src/components/journal/detail/TastingDetailFlavorPaths.tsx": [
+      {
+        "file": "src/components/journal/detail/TastingDetailFlavorPaths.tsx",
+        "lineNumber": 29,
+        "line": "return (flavorWheelKorean.translations as any)[englishName] || englishName;",
+        "match": "as any"
+      }
+    ],
+    "src/components/journal/detail/TastingDetailSensoryEvaluation.tsx": [
+      {
+        "file": "src/components/journal/detail/TastingDetailSensoryEvaluation.tsx",
+        "lineNumber": 39,
+        "line": "const desc = (descriptions as any)[type];",
+        "match": "as any"
+      }
+    ],
+    "src/components/lab/LabModeAnalysisSection.tsx": [
+      {
+        "file": "src/components/lab/LabModeAnalysisSection.tsx",
+        "lineNumber": 20,
+        "line": "onUpdateField: (path: string, value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/lab/LabModeAnalysisSection.tsx",
+        "lineNumber": 20,
+        "line": "onUpdateField: (path: string, value: any) => void;",
+        "match": "(path: string, value: any)"
+      }
+    ],
+    "src/components/lab/LabModeDataEntry.tsx": [
+      {
+        "file": "src/components/lab/LabModeDataEntry.tsx",
+        "lineNumber": 45,
+        "line": "const updateData = useCallback((field: keyof LabModeData, value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/lab/LabModeDataEntry.tsx",
+        "lineNumber": 51,
+        "line": "const updateComparison = useCallback((field: keyof NonNullable<LabModeData['comparison']>, value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/lab/LabModeDataEntry.tsx",
+        "lineNumber": 64,
+        "line": "const updateAgitation = useCallback((field: keyof NonNullable<LabModeData['agitation']>, value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/lab/LabModeDataEntry.tsx",
+        "lineNumber": 45,
+        "line": "const updateData = useCallback((field: keyof LabModeData, value: any) => {",
+        "match": "((field: keyof LabModeData, value: any)"
+      },
+      {
+        "file": "src/components/lab/LabModeDataEntry.tsx",
+        "lineNumber": 51,
+        "line": "const updateComparison = useCallback((field: keyof NonNullable<LabModeData['comparison']>, value: any) => {",
+        "match": "((field: keyof NonNullable<LabModeData['comparison']>, value: any)"
+      },
+      {
+        "file": "src/components/lab/LabModeDataEntry.tsx",
+        "lineNumber": 64,
+        "line": "const updateAgitation = useCallback((field: keyof NonNullable<LabModeData['agitation']>, value: any) => {",
+        "match": "((field: keyof NonNullable<LabModeData['agitation']>, value: any)"
+      }
+    ],
+    "src/components/lab/LabModeEquipmentSection.tsx": [
+      {
+        "file": "src/components/lab/LabModeEquipmentSection.tsx",
+        "lineNumber": 29,
+        "line": "onUpdateField: (path: string, value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/lab/LabModeEquipmentSection.tsx",
+        "lineNumber": 29,
+        "line": "onUpdateField: (path: string, value: any) => void;",
+        "match": "(path: string, value: any)"
+      }
+    ],
+    "src/components/lab/LabModeNotesSection.tsx": [
+      {
+        "file": "src/components/lab/LabModeNotesSection.tsx",
+        "lineNumber": 24,
+        "line": "onUpdateField: (path: string, value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/lab/LabModeNotesSection.tsx",
+        "lineNumber": 24,
+        "line": "onUpdateField: (path: string, value: any) => void;",
+        "match": "(path: string, value: any)"
+      }
+    ],
+    "src/components/lab/LabModeRecipeSection.tsx": [
+      {
+        "file": "src/components/lab/LabModeRecipeSection.tsx",
+        "lineNumber": 33,
+        "line": "onUpdateField: (path: string, value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/lab/LabModeRecipeSection.tsx",
+        "lineNumber": 33,
+        "line": "onUpdateField: (path: string, value: any) => void;",
+        "match": "(path: string, value: any)"
+      }
+    ],
+    "src/components/LabModeForm.tsx": [
+      {
+        "file": "src/components/LabModeForm.tsx",
+        "lineNumber": 51,
+        "line": "const updateField = (path: string, value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/LabModeForm.tsx",
+        "lineNumber": 54,
+        "line": "let current: any = updatedFormData;",
+        "match": ": any"
+      },
+      {
+        "file": "src/components/LabModeForm.tsx",
+        "lineNumber": 51,
+        "line": "const updateField = (path: string, value: any) => {",
+        "match": "(path: string, value: any)"
+      }
+    ],
+    "src/components/LanguageSwitch.tsx": [
+      {
+        "file": "src/components/LanguageSwitch.tsx",
+        "lineNumber": 15,
+        "line": "style?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components/personalTaste/FlavorMasteryMap.tsx": [
+      {
+        "file": "src/components/personalTaste/FlavorMasteryMap.tsx",
+        "lineNumber": 29,
+        "line": "style?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components/personalTaste/FlavorRadarChart.tsx": [
+      {
+        "file": "src/components/personalTaste/FlavorRadarChart.tsx",
+        "lineNumber": 44,
+        "line": "style?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components/personalTaste/GrowthTimeline.tsx": [
+      {
+        "file": "src/components/personalTaste/GrowthTimeline.tsx",
+        "lineNumber": 19,
+        "line": "data?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/personalTaste/GrowthTimeline.tsx",
+        "lineNumber": 26,
+        "line": "style?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components/personalTaste/PersonalStatsGrid.tsx": [
+      {
+        "file": "src/components/personalTaste/PersonalStatsGrid.tsx",
+        "lineNumber": 18,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/personalTaste/PersonalStatsGrid.tsx",
+        "lineNumber": 78,
+        "line": "format: (val: any) => `${Math.round(val)}%`,",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/personalTaste/PersonalStatsGrid.tsx",
+        "lineNumber": 78,
+        "line": "format: (val: any) => `${Math.round(val)}%`,",
+        "match": "(val: any)"
+      }
+    ],
+    "src/components/personalTaste/TasteProfileCard.tsx": [
+      {
+        "file": "src/components/personalTaste/TasteProfileCard.tsx",
+        "lineNumber": 19,
+        "line": "style?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components/personalTaste/types.ts": [
+      {
+        "file": "src/components/personalTaste/types.ts",
+        "lineNumber": 19,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/personalTaste/types.ts",
+        "lineNumber": 43,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/personalTaste/types.ts",
+        "lineNumber": 51,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/personalTaste/types.ts",
+        "lineNumber": 67,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/personalTaste/types.ts",
+        "lineNumber": 74,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/personalTaste/types.ts",
+        "lineNumber": 84,
+        "line": "//   style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/personalTaste/types.ts",
+        "lineNumber": 91,
+        "line": "//   style?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/components/results/FlavorNotesVisualization.tsx": [
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 13,
+        "line": "flavorPaths: any[]; // FlavorPath array",
+        "match": ": any["
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 14,
+        "line": "selectedExpressions?: any[]; // Korean sensory expressions",
+        "match": ": any["
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 26,
+        "line": "const groupedFlavors = flavorPaths.reduce((acc: any, path: any) => {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 26,
+        "line": "const groupedFlavors = flavorPaths.reduce((acc: any, path: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 52,
+        "line": "const formatFlavorPath = (path: any): string => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 62,
+        "line": "const groupedExpressions = selectedExpressions.reduce((acc: any, expr: any) => {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 62,
+        "line": "const groupedExpressions = selectedExpressions.reduce((acc: any, expr: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 120,
+        "line": "{flavors.map((flavor: any, index: number) => (",
+        "match": ": any,"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 137,
+        "line": "{flavorPaths.map((path: any, index: number) => (",
+        "match": ": any,"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 174,
+        "line": "{expressions.map((expr: any, index: number) => (",
+        "match": ": any,"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 13,
+        "line": "flavorPaths: any[]; // FlavorPath array",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 14,
+        "line": "selectedExpressions?: any[]; // Korean sensory expressions",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 26,
+        "line": "const groupedFlavors = flavorPaths.reduce((acc: any, path: any) => {",
+        "match": "((acc: any, path: any)"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 52,
+        "line": "const formatFlavorPath = (path: any): string => {",
+        "match": "(path: any)"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 62,
+        "line": "const groupedExpressions = selectedExpressions.reduce((acc: any, expr: any) => {",
+        "match": "((acc: any, expr: any)"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 120,
+        "line": "{flavors.map((flavor: any, index: number) => (",
+        "match": "((flavor: any, index: number)"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 134,
+        "line": ") : (",
+        "match": "(\n            <ScrollView horizontal showsHorizontalScrollIndicator={false}>\n              <View style={styles.chipContainer}>\n                {flavorPaths.map((path: any, index: number)"
+      },
+      {
+        "file": "src/components/results/FlavorNotesVisualization.tsx",
+        "lineNumber": 174,
+        "line": "{expressions.map((expr: any, index: number) => (",
+        "match": "((expr: any, index: number)"
+      }
+    ],
+    "src/components/SafeText.tsx": [
+      {
+        "file": "src/components/SafeText.tsx",
+        "lineNumber": 60,
+        "line": "function sanitizeStyleObject(styleObj: any): any {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/SafeText.tsx",
+        "lineNumber": 60,
+        "line": "function sanitizeStyleObject(styleObj: any): any {",
+        "match": ": any"
+      },
+      {
+        "file": "src/components/SafeText.tsx",
+        "lineNumber": 60,
+        "line": "function sanitizeStyleObject(styleObj: any): any {",
+        "match": "(styleObj: any)"
+      }
+    ],
+    "src/components/stats/screen/StatsScreenContent.tsx": [
+      {
+        "file": "src/components/stats/screen/StatsScreenContent.tsx",
+        "lineNumber": 36,
+        "line": "insights: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/components/stats/screen/StatsScreenContent.tsx",
+        "lineNumber": 36,
+        "line": "insights: any[];",
+        "match": ": any[]"
+      }
+    ],
+    "src/components/stats/screen/StatsScreenEmptyState.tsx": [
+      {
+        "file": "src/components/stats/screen/StatsScreenEmptyState.tsx",
+        "lineNumber": 17,
+        "line": "insights: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/components/stats/screen/StatsScreenEmptyState.tsx",
+        "lineNumber": 17,
+        "line": "insights: any[];",
+        "match": ": any[]"
+      }
+    ],
+    "src/components/stats/screen/StatsScreenInsights.tsx": [
+      {
+        "file": "src/components/stats/screen/StatsScreenInsights.tsx",
+        "lineNumber": 13,
+        "line": "insights: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/components/stats/screen/StatsScreenInsights.tsx",
+        "lineNumber": 13,
+        "line": "insights: any[];",
+        "match": ": any[]"
+      }
+    ],
+    "src/components/SyncStatus.tsx": [
+      {
+        "file": "src/components/SyncStatus.tsx",
+        "lineNumber": 15,
+        "line": "style?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/SyncStatus.tsx",
+        "lineNumber": 34,
+        "line": "setSyncStatus((prev: any) => ({ ...prev, isOnline: state.isConnected || false }));",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/SyncStatus.tsx",
+        "lineNumber": 33,
+        "line": "const unsubscribe = NetInfo.addEventListener(state => {",
+        "match": "(state => {\n      setSyncStatus((prev: any)"
+      }
+    ],
+    "src/components/testing/CrossMarketTestingScreen.tsx": [
+      {
+        "file": "src/components/testing/CrossMarketTestingScreen.tsx",
+        "lineNumber": 36,
+        "line": "const [currentMarketInfo, setCurrentMarketInfo] = useState<any>({});",
+        "match": "<any>"
+      }
+    ],
+    "src/components/testing/I18nValidationScreen.tsx": [
+      {
+        "file": "src/components/testing/I18nValidationScreen.tsx",
+        "lineNumber": 41,
+        "line": "details?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/testing/I18nValidationScreen.tsx",
+        "lineNumber": 250,
+        "line": "<Text style={styles.infoText}>Device Locales: {deviceInfo.locales?.map((l: any) => `${l.languageCode}-${l.countryCode}`).join(', ')}</Text>",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/I18nValidationScreen.tsx",
+        "lineNumber": 49,
+        "line": "const [deviceInfo, setDeviceInfo] = useState<any>({});",
+        "match": "<any>"
+      },
+      {
+        "file": "src/components/testing/I18nValidationScreen.tsx",
+        "lineNumber": 50,
+        "line": "const [marketData, setMarketData] = useState<any>({});",
+        "match": "<any>"
+      },
+      {
+        "file": "src/components/testing/I18nValidationScreen.tsx",
+        "lineNumber": 250,
+        "line": "<Text style={styles.infoText}>Device Locales: {deviceInfo.locales?.map((l: any) => `${l.languageCode}-${l.countryCode}`).join(', ')}</Text>",
+        "match": ": {deviceInfo.locales?.map((l: any) => `${l.languageCode}"
+      },
+      {
+        "file": "src/components/testing/I18nValidationScreen.tsx",
+        "lineNumber": 250,
+        "line": "<Text style={styles.infoText}>Device Locales: {deviceInfo.locales?.map((l: any) => `${l.languageCode}-${l.countryCode}`).join(', ')}</Text>",
+        "match": "((l: any)"
+      }
+    ],
+    "src/components/testing/MarketConfigurationTester_Original.tsx": [
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 55,
+        "line": "data?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 116,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 159,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 205,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 253,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 293,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 338,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 386,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 408,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 65,
+        "line": "const [currentMarketInfo, setCurrentMarketInfo] = useState<any>({});",
+        "match": "<any>"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 116,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 159,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 205,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 253,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 293,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 338,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 386,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester_Original.tsx",
+        "lineNumber": 408,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/components/testing/MarketConfigurationTester.tsx": [
+      {
+        "file": "src/components/testing/MarketConfigurationTester.tsx",
+        "lineNumber": 105,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/MarketConfigurationTester.tsx",
+        "lineNumber": 105,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/components/testing/MarketInfoPanel.tsx": [
+      {
+        "file": "src/components/testing/MarketInfoPanel.tsx",
+        "lineNumber": 20,
+        "line": "const renderInfoSection = (title: string, data: any) => (",
+        "match": ": any)"
+      },
+      {
+        "file": "src/components/testing/MarketInfoPanel.tsx",
+        "lineNumber": 20,
+        "line": "const renderInfoSection = (title: string, data: any) => (",
+        "match": "(title: string, data: any)"
+      }
+    ],
+    "src/constants/colorMapping.ts": [
+      {
+        "file": "src/constants/colorMapping.ts",
+        "lineNumber": 147,
+        "line": "export const replaceHIGColorsInObject = (obj: any): any => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/constants/colorMapping.ts",
+        "lineNumber": 147,
+        "line": "export const replaceHIGColorsInObject = (obj: any): any => {",
+        "match": ": any"
+      },
+      {
+        "file": "src/constants/colorMapping.ts",
+        "lineNumber": 156,
+        "line": "const result: any = {};",
+        "match": ": any"
+      },
+      {
+        "file": "src/constants/colorMapping.ts",
+        "lineNumber": 147,
+        "line": "export const replaceHIGColorsInObject = (obj: any): any => {",
+        "match": "(obj: any)"
+      }
+    ],
+    "src/database/schemas/PersonalTasteSchemas.ts": [
+      {
+        "file": "src/database/schemas/PersonalTasteSchemas.ts",
+        "lineNumber": 152,
+        "line": "export const parseAchievementData = (jsonString: string): any => {",
+        "match": ": any"
+      },
+      {
+        "file": "src/database/schemas/PersonalTasteSchemas.ts",
+        "lineNumber": 160,
+        "line": "export const stringifyAchievementData = (data: any): string => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/database/schemas/PersonalTasteSchemas.ts",
+        "lineNumber": 160,
+        "line": "export const stringifyAchievementData = (data: any): string => {",
+        "match": "(data: any)"
+      }
+    ],
+    "src/design-system/components/Picker.tsx": [
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 21,
+        "line": "items: Array<{ label: string; value: any }>;",
+        "match": ": any"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 22,
+        "line": "selectedValue: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 23,
+        "line": "onValueChange: (value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 68,
+        "line": "items: Array<{ label: string; value: any }>;",
+        "match": ": any"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 69,
+        "line": "selectedValue: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 70,
+        "line": "onValueChange: (value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 116,
+        "line": "value: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 119,
+        "line": "selectedValue: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 120,
+        "line": "onValueChange: (value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 23,
+        "line": "onValueChange: (value: any) => void;",
+        "match": "(value: any)"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 70,
+        "line": "onValueChange: (value: any) => void;",
+        "match": "(value: any)"
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "lineNumber": 120,
+        "line": "onValueChange: (value: any) => void;",
+        "match": "(value: any)"
+      }
+    ],
+    "src/design-system/utils/createStyles.ts": [
+      {
+        "file": "src/design-system/utils/createStyles.ts",
+        "lineNumber": 92,
+        "line": "let result: any = Colors;",
+        "match": ": any"
+      }
+    ],
+    "src/hooks/useAchievements.ts": [
+      {
+        "file": "src/hooks/useAchievements.ts",
+        "lineNumber": 130,
+        "line": ".filter((a: any) => a.unlockedAt && a.rewards && a.rewards.type === 'points')",
+        "match": ": any)"
+      },
+      {
+        "file": "src/hooks/useAchievements.ts",
+        "lineNumber": 131,
+        "line": ".reduce((sum: number, a: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/hooks/useAchievements.ts",
+        "lineNumber": 130,
+        "line": ".filter((a: any) => a.unlockedAt && a.rewards && a.rewards.type === 'points')",
+        "match": "((a: any)"
+      },
+      {
+        "file": "src/hooks/useAchievements.ts",
+        "lineNumber": 131,
+        "line": ".reduce((sum: number, a: any) => {",
+        "match": "((sum: number, a: any)"
+      }
+    ],
+    "src/hooks/useFlavorSelection.ts": [
+      {
+        "file": "src/hooks/useFlavorSelection.ts",
+        "lineNumber": 10,
+        "line": "updateField: (field: string, value: any) => void",
+        "match": ": any)"
+      },
+      {
+        "file": "src/hooks/useFlavorSelection.ts",
+        "lineNumber": 8,
+        "line": "export const useFlavorSelection = (",
+        "match": "(\n  selectedPaths: FlavorPath[],\n  updateField: (field: string, value: any)"
+      }
+    ],
+    "src/hooks/usePerformanceOptimized.ts": [
+      {
+        "file": "src/hooks/usePerformanceOptimized.ts",
+        "lineNumber": 31,
+        "line": "<T extends (...args: any[]) => any>(",
+        "match": ": any["
+      },
+      {
+        "file": "src/hooks/usePerformanceOptimized.ts",
+        "lineNumber": 68,
+        "line": "<T extends (...args: any[]) => any>(",
+        "match": ": any["
+      },
+      {
+        "file": "src/hooks/usePerformanceOptimized.ts",
+        "lineNumber": 113,
+        "line": "<T extends (...args: any[]) => any>(",
+        "match": ": any["
+      },
+      {
+        "file": "src/hooks/usePerformanceOptimized.ts",
+        "lineNumber": 31,
+        "line": "<T extends (...args: any[]) => any>(",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/hooks/usePerformanceOptimized.ts",
+        "lineNumber": 68,
+        "line": "<T extends (...args: any[]) => any>(",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/hooks/usePerformanceOptimized.ts",
+        "lineNumber": 113,
+        "line": "<T extends (...args: any[]) => any>(",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/hooks/usePerformanceOptimized.ts",
+        "lineNumber": 30,
+        "line": "const optimizedCallback = useCallback(",
+        "match": "(\n    <T extends (...args: any[])"
+      },
+      {
+        "file": "src/hooks/usePerformanceOptimized.ts",
+        "lineNumber": 67,
+        "line": "const debouncedCallback = useCallback(",
+        "match": "(\n    <T extends (...args: any[])"
+      },
+      {
+        "file": "src/hooks/usePerformanceOptimized.ts",
+        "lineNumber": 112,
+        "line": "const throttledCallback = useCallback(",
+        "match": "(\n    <T extends (...args: any[])"
+      }
+    ],
+    "src/hooks/usePersonalTaste.ts": [
+      {
+        "file": "src/hooks/usePersonalTaste.ts",
+        "lineNumber": 223,
+        "line": "async (action: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/hooks/usePersonalTaste.ts",
+        "lineNumber": 289,
+        "line": "async (flavorIdentification: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/hooks/usePersonalTaste.ts",
+        "lineNumber": 191,
+        "line": "const [stats, setStats] = useState<any>(null);",
+        "match": "<any>"
+      },
+      {
+        "file": "src/hooks/usePersonalTaste.ts",
+        "lineNumber": 222,
+        "line": "const checkForNewAchievements = useCallback(",
+        "match": "(\n    async (action: any)"
+      },
+      {
+        "file": "src/hooks/usePersonalTaste.ts",
+        "lineNumber": 288,
+        "line": "const updateFlavorProgress = useCallback(",
+        "match": "(\n    async (flavorIdentification: any)"
+      }
+    ],
+    "src/navigation/AppNavigator-tamagui.tsx": [
+      {
+        "file": "src/navigation/AppNavigator-tamagui.tsx",
+        "lineNumber": 521,
+        "line": "const getCurrentRoute = (state: any): any => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/navigation/AppNavigator-tamagui.tsx",
+        "lineNumber": 521,
+        "line": "const getCurrentRoute = (state: any): any => {",
+        "match": ": any"
+      },
+      {
+        "file": "src/navigation/AppNavigator-tamagui.tsx",
+        "lineNumber": 511,
+        "line": "const navigationRef = useRef<any>(null);",
+        "match": "<any>"
+      },
+      {
+        "file": "src/navigation/AppNavigator-tamagui.tsx",
+        "lineNumber": 521,
+        "line": "const getCurrentRoute = (state: any): any => {",
+        "match": "(state: any)"
+      }
+    ],
+    "src/navigation/AppNavigator.tsx": [
+      {
+        "file": "src/navigation/AppNavigator.tsx",
+        "lineNumber": 514,
+        "line": "component={(props: any) => (",
+        "match": ": any)"
+      },
+      {
+        "file": "src/navigation/AppNavigator.tsx",
+        "lineNumber": 553,
+        "line": "const getCurrentRoute = (state: any): any => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/navigation/AppNavigator.tsx",
+        "lineNumber": 553,
+        "line": "const getCurrentRoute = (state: any): any => {",
+        "match": ": any"
+      },
+      {
+        "file": "src/navigation/AppNavigator.tsx",
+        "lineNumber": 532,
+        "line": "const navigationRef = useRef<any>(null);",
+        "match": "<any>"
+      },
+      {
+        "file": "src/navigation/AppNavigator.tsx",
+        "lineNumber": 504,
+        "line": "return (",
+        "match": "(\n    <Stack.Navigator\n      screenOptions={{\n        headerShown: false,\n      }}\n    >\n      <Stack.Screen name=\"SignIn\" component={SignInScreen} />\n      <Stack.Screen name=\"SignUp\" component={SignUpScreen} />\n      <Stack.Screen \n        name=\"ProfileSetup\" \n        component={(props: any)"
+      },
+      {
+        "file": "src/navigation/AppNavigator.tsx",
+        "lineNumber": 553,
+        "line": "const getCurrentRoute = (state: any): any => {",
+        "match": "(state: any)"
+      }
+    ],
+    "src/screens-legacy/HomeScreen.tsx": [
+      {
+        "file": "src/screens-legacy/HomeScreen.tsx",
+        "lineNumber": 29,
+        "line": "navigation: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/screens-legacy/HomeScreen.tsx",
+        "lineNumber": 181,
+        "line": "const getThisWeekTastings = (tastings: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-legacy/HomeScreen.tsx",
+        "lineNumber": 187,
+        "line": "const getNewCoffeesThisMonth = (tastings: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-legacy/HomeScreen.tsx",
+        "lineNumber": 181,
+        "line": "const getThisWeekTastings = (tastings: any) => {",
+        "match": "(tastings: any)"
+      },
+      {
+        "file": "src/screens-legacy/HomeScreen.tsx",
+        "lineNumber": 187,
+        "line": "const getNewCoffeesThisMonth = (tastings: any) => {",
+        "match": "(tastings: any)"
+      }
+    ],
+    "src/screens-legacy/PersonalCommentScreen.tsx": [
+      {
+        "file": "src/screens-legacy/PersonalCommentScreen.tsx",
+        "lineNumber": 82,
+        "line": "currentTasting.selectedFlavors.forEach((flavorPath: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-legacy/PersonalCommentScreen.tsx",
+        "lineNumber": 82,
+        "line": "currentTasting.selectedFlavors.forEach((flavorPath: any) => {",
+        "match": "((flavorPath: any)"
+      }
+    ],
+    "src/screens-legacy/ProfileScreen.tsx": [
+      {
+        "file": "src/screens-legacy/ProfileScreen.tsx",
+        "lineNumber": 65,
+        "line": "tastings.forEach((tasting: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-legacy/ProfileScreen.tsx",
+        "lineNumber": 76,
+        "line": "? Math.floor((Date.now() - new Date((tastings[tastings.length - 1] as any).createdAt).getTime()) / (1000 * 60 * 60 * 24))",
+        "match": "as any"
+      },
+      {
+        "file": "src/screens-legacy/ProfileScreen.tsx",
+        "lineNumber": 65,
+        "line": "tastings.forEach((tasting: any) => {",
+        "match": "((tasting: any)"
+      }
+    ],
+    "src/screens-legacy/ResultScreen.tsx": [
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 39,
+        "line": "export default function ResultScreen({navigation}: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 66,
+        "line": "} catch (supabaseError: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 91,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 208,
+        "line": "const flavorList = selectedFlavorNotes.map((path: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 366,
+        "line": "{comparison.popularFlavors.map((flavor: any, index: number) => (",
+        "match": ": any,"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 45,
+        "line": "const [comparison, setComparison] = useState<any>(null);",
+        "match": "<any>"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 76,
+        "line": "showMultipleAchievements(newAchievements as any);",
+        "match": "as any"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 204,
+        "line": "return (flavorWheelKorean.translations as any)[englishName] || englishName;",
+        "match": "as any"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 39,
+        "line": "export default function ResultScreen({navigation}: any) {",
+        "match": "({navigation}: any)"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 66,
+        "line": "} catch (supabaseError: any) {",
+        "match": "(supabaseError: any)"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 91,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 208,
+        "line": "const flavorList = selectedFlavorNotes.map((path: any) => {",
+        "match": "((path: any)"
+      },
+      {
+        "file": "src/screens-legacy/ResultScreen.tsx",
+        "lineNumber": 362,
+        "line": "{comparison.popularFlavors && comparison.popularFlavors.length > 0 && (",
+        "match": "(\n            <View style={styles.popularFlavorsContainer}>\n              <Text style={styles.popularFlavorsTitle}>인기 맛 노트</Text>\n              <View style={styles.flavorTagsContainer}>\n                {comparison.popularFlavors.map((flavor: any, index: number)"
+      }
+    ],
+    "src/screens-legacy/SensoryScreen.tsx": [
+      {
+        "file": "src/screens-legacy/SensoryScreen.tsx",
+        "lineNumber": 173,
+        "line": "} as any,",
+        "match": "as any"
+      }
+    ],
+    "src/screens-tamagui/analytics/HistoryScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/analytics/HistoryScreen.tsx",
+        "lineNumber": 387,
+        "line": "const navigation = useNavigation<StackNavigationProp<any>>();",
+        "match": "<any>"
+      }
+    ],
+    "src/screens-tamagui/analytics/MarketIntelligenceScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/analytics/MarketIntelligenceScreen.tsx",
+        "lineNumber": 40,
+        "line": "navigation: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/screens-tamagui/analytics/PhotoGalleryScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/analytics/PhotoGalleryScreen.tsx",
+        "lineNumber": 245,
+        "line": "const navigation = useNavigation<StackNavigationProp<any>>();",
+        "match": "<any>"
+      }
+    ],
+    "src/screens-tamagui/analytics/PhotoViewerScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/analytics/PhotoViewerScreen.tsx",
+        "lineNumber": 251,
+        "line": "const navigation = useNavigation<StackNavigationProp<any>>();",
+        "match": "<any>"
+      }
+    ],
+    "src/screens-tamagui/analytics/ProfileHistoryScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/analytics/ProfileHistoryScreen.tsx",
+        "lineNumber": 376,
+        "line": "const navigation = useNavigation<StackNavigationProp<any>>();",
+        "match": "<any>"
+      }
+    ],
+    "src/screens-tamagui/analytics/SearchScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/analytics/SearchScreen.tsx",
+        "lineNumber": 52,
+        "line": "const navigation = useNavigation<StackNavigationProp<any>>();",
+        "match": "<any>"
+      }
+    ],
+    "src/screens-tamagui/analytics/SimpleProfileHistoryScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/analytics/SimpleProfileHistoryScreen.tsx",
+        "lineNumber": 21,
+        "line": "const navigation = useNavigation<StackNavigationProp<any>>();",
+        "match": "<any>"
+      }
+    ],
+    "src/screens-tamagui/core/HomeScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/core/HomeScreen.tsx",
+        "lineNumber": 34,
+        "line": "navigation: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/screens-tamagui/core/HomeScreen.tsx",
+        "lineNumber": 278,
+        "line": "const getThisWeekTastings = (tastings: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/core/HomeScreen.tsx",
+        "lineNumber": 284,
+        "line": "const getNewCoffeesThisMonth = (tastings: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/core/HomeScreen.tsx",
+        "lineNumber": 278,
+        "line": "const getThisWeekTastings = (tastings: any) => {",
+        "match": "(tastings: any)"
+      },
+      {
+        "file": "src/screens-tamagui/core/HomeScreen.tsx",
+        "lineNumber": 284,
+        "line": "const getNewCoffeesThisMonth = (tastings: any) => {",
+        "match": "(tastings: any)"
+      }
+    ],
+    "src/screens-tamagui/core/OnboardingScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/core/OnboardingScreen.tsx",
+        "lineNumber": 219,
+        "line": "const handleScroll = (event: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/core/OnboardingScreen.tsx",
+        "lineNumber": 219,
+        "line": "const handleScroll = (event: any) => {",
+        "match": "(event: any)"
+      }
+    ],
+    "src/screens-tamagui/dev/PerformanceTestingScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/dev/PerformanceTestingScreen.tsx",
+        "lineNumber": 31,
+        "line": "const [bundleAnalysis, setBundleAnalysis] = useState<any>(null);",
+        "match": "<any>"
+      }
+    ],
+    "src/screens-tamagui/enhanced/EnhancedHomeCafeScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/enhanced/EnhancedHomeCafeScreen.tsx",
+        "lineNumber": 66,
+        "line": "const updateField = (category: keyof HomeCafeData, field: string, value: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/enhanced/EnhancedHomeCafeScreen.tsx",
+        "lineNumber": 107,
+        "line": "filter: (template as any).filter || formData.equipment.filter,",
+        "match": "as any"
+      },
+      {
+        "file": "src/screens-tamagui/enhanced/EnhancedHomeCafeScreen.tsx",
+        "lineNumber": 66,
+        "line": "const updateField = (category: keyof HomeCafeData, field: string, value: any) => {",
+        "match": "(category: keyof HomeCafeData, field: string, value: any)"
+      }
+    ],
+    "src/screens-tamagui/enhanced/OptimizedUnifiedFlavorScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/enhanced/OptimizedUnifiedFlavorScreen.tsx",
+        "lineNumber": 324,
+        "line": "const handleFlavorSelect = useCallback((flavorPath: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/enhanced/OptimizedUnifiedFlavorScreen.tsx",
+        "lineNumber": 423,
+        "line": "setExpandedCategories(new Set(flavorData.map((cat: any) => cat.category)));",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/enhanced/OptimizedUnifiedFlavorScreen.tsx",
+        "lineNumber": 462,
+        "line": "{!searchQuery.trim() && flavorData.map((category: any, categoryIndex: number) => (",
+        "match": ": any,"
+      },
+      {
+        "file": "src/screens-tamagui/enhanced/OptimizedUnifiedFlavorScreen.tsx",
+        "lineNumber": 324,
+        "line": "const handleFlavorSelect = useCallback((flavorPath: any) => {",
+        "match": "((flavorPath: any)"
+      },
+      {
+        "file": "src/screens-tamagui/enhanced/OptimizedUnifiedFlavorScreen.tsx",
+        "lineNumber": 423,
+        "line": "setExpandedCategories(new Set(flavorData.map((cat: any) => cat.category)));",
+        "match": "(new Set(flavorData.map((cat: any)"
+      },
+      {
+        "file": "src/screens-tamagui/enhanced/OptimizedUnifiedFlavorScreen.tsx",
+        "lineNumber": 462,
+        "line": "{!searchQuery.trim() && flavorData.map((category: any, categoryIndex: number) => (",
+        "match": "((category: any, categoryIndex: number)"
+      }
+    ],
+    "src/screens-tamagui/enhanced/RoasterNotesScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/enhanced/RoasterNotesScreen.tsx",
+        "lineNumber": 259,
+        "line": "const scannedRoasterNotes = (route.params as any)?.scannedRoasterNotes;",
+        "match": "as any"
+      }
+    ],
+    "src/screens-tamagui/index.ts": [
+      {
+        "file": "src/screens-tamagui/index.ts",
+        "lineNumber": 74,
+        "line": "navigation: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/screens-tamagui/index.ts",
+        "lineNumber": 75,
+        "line": "route: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/screens-tamagui/profile/ProfileScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/profile/ProfileScreen.tsx",
+        "lineNumber": 269,
+        "line": "tastings.forEach((tasting: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/profile/ProfileScreen.tsx",
+        "lineNumber": 283,
+        "line": "const earliestTasting = tastings.reduce((earliest: any, current: any) => {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/screens-tamagui/profile/ProfileScreen.tsx",
+        "lineNumber": 283,
+        "line": "const earliestTasting = tastings.reduce((earliest: any, current: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/profile/ProfileScreen.tsx",
+        "lineNumber": 269,
+        "line": "tastings.forEach((tasting: any) => {",
+        "match": "((tasting: any)"
+      },
+      {
+        "file": "src/screens-tamagui/profile/ProfileScreen.tsx",
+        "lineNumber": 283,
+        "line": "const earliestTasting = tastings.reduce((earliest: any, current: any) => {",
+        "match": "((earliest: any, current: any)"
+      }
+    ],
+    "src/screens-tamagui/tasting/flavor/UnifiedFlavorScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/tasting/flavor/UnifiedFlavorScreen.tsx",
+        "lineNumber": 123,
+        "line": "} = useFlavorSelection(selectedPaths, updateField as (field: string, value: any) => void);",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/flavor/UnifiedFlavorScreen.tsx",
+        "lineNumber": 123,
+        "line": "} = useFlavorSelection(selectedPaths, updateField as (field: string, value: any) => void);",
+        "match": "(selectedPaths, updateField as (field: string, value: any)"
+      }
+    ],
+    "src/screens-tamagui/tasting/PersonalCommentScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/tasting/PersonalCommentScreen.tsx",
+        "lineNumber": 269,
+        "line": "currentTasting.selectedFlavors.forEach((flavorPath: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/PersonalCommentScreen.tsx",
+        "lineNumber": 230,
+        "line": "const textInputRef = useRef<any>(null);",
+        "match": "<any>"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/PersonalCommentScreen.tsx",
+        "lineNumber": 269,
+        "line": "currentTasting.selectedFlavors.forEach((flavorPath: any) => {",
+        "match": "((flavorPath: any)"
+      }
+    ],
+    "src/screens-tamagui/tasting/ResultScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 39,
+        "line": "navigation: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 179,
+        "line": "} catch (supabaseError: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 204,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 320,
+        "line": "const flavorList = selectedFlavorNotes.map((path: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 579,
+        "line": "{comparison.popularFlavors.slice(0, 6).map((flavor: any, index: number) => (",
+        "match": ": any,"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 156,
+        "line": "const [comparison, setComparison] = useState<any>(null);",
+        "match": "<any>"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 189,
+        "line": "showMultipleAchievements(newAchievements as any);",
+        "match": "as any"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 316,
+        "line": "return (flavorWheelKorean.translations as any)[englishName] || englishName;",
+        "match": "as any"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 179,
+        "line": "} catch (supabaseError: any) {",
+        "match": "(supabaseError: any)"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 204,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 320,
+        "line": "const flavorList = selectedFlavorNotes.map((path: any) => {",
+        "match": "((path: any)"
+      },
+      {
+        "file": "src/screens-tamagui/tasting/ResultScreen.tsx",
+        "lineNumber": 579,
+        "line": "{comparison.popularFlavors.slice(0, 6).map((flavor: any, index: number) => (",
+        "match": "((flavor: any, index: number)"
+      }
+    ],
+    "src/screens-tamagui/tasting/SensoryScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/tasting/SensoryScreen.tsx",
+        "lineNumber": 317,
+        "line": "} as any,",
+        "match": "as any"
+      }
+    ],
+    "src/screens-tamagui/utilities/DataTestScreen.tsx": [
+      {
+        "file": "src/screens-tamagui/utilities/DataTestScreen.tsx",
+        "lineNumber": 278,
+        "line": "const DataTestScreen: React.FC<DataTestScreenProps & { navigation: any }> = ({ navigation, ...props }) => {",
+        "match": ": any"
+      }
+    ],
+    "src/screens/admin/AdminCoffeeEditScreen.tsx": [
+      {
+        "file": "src/screens/admin/AdminCoffeeEditScreen.tsx",
+        "lineNumber": 19,
+        "line": "export const AdminCoffeeEditScreen = ({ navigation, route }: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens/admin/AdminCoffeeEditScreen.tsx",
+        "lineNumber": 19,
+        "line": "export const AdminCoffeeEditScreen = ({ navigation, route }: any) => {",
+        "match": "({ navigation, route }: any)"
+      }
+    ],
+    "src/screens/admin/AdminDashboardScreen.tsx": [
+      {
+        "file": "src/screens/admin/AdminDashboardScreen.tsx",
+        "lineNumber": 38,
+        "line": "export const AdminDashboardScreen = ({ navigation }: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens/admin/AdminDashboardScreen.tsx",
+        "lineNumber": 38,
+        "line": "export const AdminDashboardScreen = ({ navigation }: any) => {",
+        "match": "({ navigation }: any)"
+      }
+    ],
+    "src/screens/admin/AdminFeedbackScreen.tsx": [
+      {
+        "file": "src/screens/admin/AdminFeedbackScreen.tsx",
+        "lineNumber": 23,
+        "line": "export default function AdminFeedbackScreen({ navigation }: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens/admin/AdminFeedbackScreen.tsx",
+        "lineNumber": 29,
+        "line": "const [stats, setStats] = useState<any>(null);",
+        "match": "<any>"
+      },
+      {
+        "file": "src/screens/admin/AdminFeedbackScreen.tsx",
+        "lineNumber": 23,
+        "line": "export default function AdminFeedbackScreen({ navigation }: any) {",
+        "match": "({ navigation }: any)"
+      }
+    ],
+    "src/screens/auth/SignInScreen.tsx": [
+      {
+        "file": "src/screens/auth/SignInScreen.tsx",
+        "lineNumber": 128,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens/auth/SignInScreen.tsx",
+        "lineNumber": 152,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens/auth/SignInScreen.tsx",
+        "lineNumber": 167,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens/auth/SignInScreen.tsx",
+        "lineNumber": 128,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/screens/auth/SignInScreen.tsx",
+        "lineNumber": 152,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/screens/auth/SignInScreen.tsx",
+        "lineNumber": 167,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/screens/auth/SignUpScreen.tsx": [
+      {
+        "file": "src/screens/auth/SignUpScreen.tsx",
+        "lineNumber": 94,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/screens/auth/SignUpScreen.tsx",
+        "lineNumber": 94,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/screens/BetaTestingScreen_Original.tsx": [
+      {
+        "file": "src/screens/BetaTestingScreen_Original.tsx",
+        "lineNumber": 217,
+        "line": "marketConfig: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/screens/BetaTestingScreen_Original.tsx",
+        "lineNumber": 367,
+        "line": "marketConfig: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/services/AccessControlService.ts": [
+      {
+        "file": "src/services/AccessControlService.ts",
+        "lineNumber": 473,
+        "line": "data: { newRole: this.currentUserProfile ? String((this.currentUserProfile as any).role) : undefined }",
+        "match": "as any"
+      }
+    ],
+    "src/services/AchievementSystem.ts": [
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 123,
+        "line": "private calculateProgressInternal(definition: any, action: UserAction, userId: string): ProgressData {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 170,
+        "line": "let userAchievement: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 215,
+        "line": "private async awardRewards(rewards: any, userId: string): Promise<void> {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 303,
+        "line": "private async syncAchievementToSupabase(achievement: any): Promise<void> {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 355,
+        "line": "flavors.forEach((flavor: any) => uniqueFlavors.add(flavor.name || flavor));",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 564,
+        "line": "async trackCoffeeDiscovery(userId: string, coffeeData: any): Promise<void> {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 244,
+        "line": "(userProfile as any).totalPoints = ((userProfile as any).totalPoints || 0) + points;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 244,
+        "line": "(userProfile as any).totalPoints = ((userProfile as any).totalPoints || 0) + points;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 245,
+        "line": "(userProfile as any).updatedAt = new Date();",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 281,
+        "line": "(existing as any).progress = progress;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 282,
+        "line": "(existing as any).updatedAt = new Date();",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 339,
+        "line": "const coffeeKey = `${(record as any).roaster}-${(record as any).coffeeName}`;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 339,
+        "line": "const coffeeKey = `${(record as any).roaster}-${(record as any).coffeeName}`;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 352,
+        "line": "if ((record as any).flavorProfile) {",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 354,
+        "line": "const flavors = JSON.parse((record as any).flavorProfile);",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 399,
+        "line": "const achievementType = (userAchievement as any).achievementType;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 400,
+        "line": "const achievementId = (userAchievement as any).id;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 414,
+        "line": "if ((userAchievement as any).unlockedAt && !(existing as any).unlockedAt) {",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 414,
+        "line": "if ((userAchievement as any).unlockedAt && !(existing as any).unlockedAt) {",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 447,
+        "line": "progress: (userAchievement as any).progress || 0,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 448,
+        "line": "unlockedAt: (userAchievement as any).unlockedAt || undefined,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 449,
+        "line": "isNew: (userAchievement as any).isNew || false,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 480,
+        "line": "(achievement as any).isNew = false;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 481,
+        "line": "(achievement as any).updatedAt = new Date();",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 123,
+        "line": "private calculateProgressInternal(definition: any, action: UserAction, userId: string): ProgressData {",
+        "match": "(definition: any, action: UserAction, userId: string)"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 215,
+        "line": "private async awardRewards(rewards: any, userId: string): Promise<void> {",
+        "match": "(rewards: any, userId: string)"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 303,
+        "line": "private async syncAchievementToSupabase(achievement: any): Promise<void> {",
+        "match": "(achievement: any)"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 355,
+        "line": "flavors.forEach((flavor: any) => uniqueFlavors.add(flavor.name || flavor));",
+        "match": "((flavor: any)"
+      },
+      {
+        "file": "src/services/AchievementSystem.ts",
+        "lineNumber": 564,
+        "line": "async trackCoffeeDiscovery(userId: string, coffeeData: any): Promise<void> {",
+        "match": "(userId: string, coffeeData: any)"
+      }
+    ],
+    "src/services/AnalyticsService.ts": [
+      {
+        "file": "src/services/AnalyticsService.ts",
+        "lineNumber": 316,
+        "line": "async getSessionStats(): Promise<any> {",
+        "match": "<any>"
+      }
+    ],
+    "src/services/auth/BiometricAuth.ts": [
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 117,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 211,
+        "line": "} catch (enrollmentError: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 229,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 243,
+        "line": "private static handleBiometricError(error: any): BiometricResult {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 337,
+        "line": "private static isNotEnrolledError(error: any): boolean {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 353,
+        "line": "private static getCapabilityErrorMessage(error: any): string {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 117,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 211,
+        "line": "} catch (enrollmentError: any) {",
+        "match": "(enrollmentError: any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 229,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 243,
+        "line": "private static handleBiometricError(error: any): BiometricResult {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 337,
+        "line": "private static isNotEnrolledError(error: any): boolean {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/BiometricAuth.ts",
+        "lineNumber": 353,
+        "line": "private static getCapabilityErrorMessage(error: any): string {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/services/auth/EnhancedAuthService.ts": [
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 8,
+        "line": "user?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 49,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 85,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 266,
+        "line": "private static calculateSecurityLevel(securityData: any): 'basic' | 'enhanced' | 'premium' {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 303,
+        "line": "private static generateSecurityRecommendations(securityData: any): string[] {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 366,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 97,
+        "line": "static async validateGoogleToken(idToken: string): Promise<any> {",
+        "match": "<any>"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 49,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 85,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 266,
+        "line": "private static calculateSecurityLevel(securityData: any): 'basic' | 'enhanced' | 'premium' {",
+        "match": "(securityData: any)"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 303,
+        "line": "private static generateSecurityRecommendations(securityData: any): string[] {",
+        "match": "(securityData: any)"
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "lineNumber": 366,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/services/auth/PermissionService.ts": [
+      {
+        "file": "src/services/auth/PermissionService.ts",
+        "lineNumber": 100,
+        "line": "(p: any) => p.permission as Permission",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/PermissionService.ts",
+        "lineNumber": 218,
+        "line": "(rp: any) => rp.permission as Permission",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/PermissionService.ts",
+        "lineNumber": 239,
+        "line": "private static getStatusBasedPermissions(userData: any): Permission[] {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/PermissionService.ts",
+        "lineNumber": 99,
+        "line": "const userSpecificPermissions = userData.user_permissions?.map(",
+        "match": "(\n        (p: any)"
+      },
+      {
+        "file": "src/services/auth/PermissionService.ts",
+        "lineNumber": 217,
+        "line": "const permissions = data.role_permissions?.map(",
+        "match": "(\n        (rp: any)"
+      },
+      {
+        "file": "src/services/auth/PermissionService.ts",
+        "lineNumber": 239,
+        "line": "private static getStatusBasedPermissions(userData: any): Permission[] {",
+        "match": "(userData: any)"
+      }
+    ],
+    "src/services/auth/SecureStorage.ts": [
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 91,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 133,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 165,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 230,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 293,
+        "line": "data: any,",
+        "match": ": any,"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 312,
+        "line": "): Promise<StorageResult & { data?: any }> {",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 509,
+        "line": "private static getErrorMessage(error: any, operation: string): string {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 574,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 436,
+        "line": "(keychainOptions as any).authenticatePrompt = options.authenticatePrompt || 'Please authenticate';",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 442,
+        "line": "(keychainOptions as any).accessGroup = options.accessGroup;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 450,
+        "line": "(keychainOptions as any).localizedFallbackTitle = options.kLocalizedFallbackTitle;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 459,
+        "line": "(keychainOptions as any).showModal = options.showModal;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 463,
+        "line": "(keychainOptions as any).kLocalizedFallbackTitle = options.kLocalizedFallbackTitle;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 91,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 133,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 165,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 230,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 291,
+        "line": "static async storeAuthData(",
+        "match": "(\n    key: string,\n    data: any,\n    requireBiometric = false\n  )"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 509,
+        "line": "private static getErrorMessage(error: any, operation: string): string {",
+        "match": "(error: any, operation: string)"
+      },
+      {
+        "file": "src/services/auth/SecureStorage.ts",
+        "lineNumber": 574,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/services/auth/SessionManager.ts": [
+      {
+        "file": "src/services/auth/SessionManager.ts",
+        "lineNumber": 11,
+        "line": "user: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/auth/SessionManager.ts",
+        "lineNumber": 46,
+        "line": "private appStateSubscription?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/auth/SessionManager.ts",
+        "lineNumber": 101,
+        "line": "user: any,",
+        "match": ": any,"
+      },
+      {
+        "file": "src/services/auth/SessionManager.ts",
+        "lineNumber": 100,
+        "line": "async createSession(",
+        "match": "(\n    user: any,\n    accessToken: string,\n    refreshToken: string,\n    expiresAt: number,\n    provider: 'email' | 'google' | 'apple'\n  )"
+      }
+    ],
+    "src/services/auth/UnifiedAuthService.ts": [
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 12,
+        "line": "user?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 19,
+        "line": "user: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 145,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 215,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 295,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 368,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 406,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 433,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 493,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 554,
+        "line": "private static handleAuthError(error: any, provider: string): AuthResult {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 595,
+        "line": "private static getErrorMessage(error: any, context: string): string {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 145,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 215,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 295,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 368,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 406,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 433,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 493,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 554,
+        "line": "private static handleAuthError(error: any, provider: string): AuthResult {",
+        "match": "(error: any, provider: string)"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "lineNumber": 595,
+        "line": "private static getErrorMessage(error: any, context: string): string {",
+        "match": "(error: any, context: string)"
+      }
+    ],
+    "src/services/DataLoadingService.ts": [
+      {
+        "file": "src/services/DataLoadingService.ts",
+        "lineNumber": 192,
+        "line": "export type DataValidator<T> = (data: any) => data is T;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/DataLoadingService.ts",
+        "lineNumber": 202,
+        "line": "data: any,",
+        "match": ": any,"
+      },
+      {
+        "file": "src/services/DataLoadingService.ts",
+        "lineNumber": 18,
+        "line": "private static loadingTasks = new Map<string, LoadingTask<any>>();",
+        "match": "<any>"
+      },
+      {
+        "file": "src/services/DataLoadingService.ts",
+        "lineNumber": 192,
+        "line": "export type DataValidator<T> = (data: any) => data is T;",
+        "match": "(data: any)"
+      },
+      {
+        "file": "src/services/DataLoadingService.ts",
+        "lineNumber": 201,
+        "line": "export const validateData = <T>(",
+        "match": "(\n  data: any, \n  validator: DataValidator<T>, \n  fallback: T\n)"
+      }
+    ],
+    "src/services/ErrorContextService.ts": [
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 46,
+        "line": "args?: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 53,
+        "line": "private originalConsole: any = {};",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 76,
+        "line": "return (...args: any[]) => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 119,
+        "line": "global.fetch = async (...args: any[]) => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 46,
+        "line": "args?: any[];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 76,
+        "line": "return (...args: any[]) => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 119,
+        "line": "global.fetch = async (...args: any[]) => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 136,
+        "line": "await analyticsService.trackError('network_error', (error as any).message, (error as any).stack, {",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 136,
+        "line": "await analyticsService.trackError('network_error', (error as any).message, (error as any).stack, {",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 76,
+        "line": "return (...args: any[]) => {",
+        "match": "(...args: any[])"
+      },
+      {
+        "file": "src/services/ErrorContextService.ts",
+        "lineNumber": 119,
+        "line": "global.fetch = async (...args: any[]) => {",
+        "match": "(...args: any[])"
+      }
+    ],
+    "src/services/ErrorRecoveryService.ts": [
+      {
+        "file": "src/services/ErrorRecoveryService.ts",
+        "lineNumber": 542,
+        "line": "if ((global.performance as any)?.memory) {",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/ErrorRecoveryService.ts",
+        "lineNumber": 543,
+        "line": "return Math.round((global.performance as any).memory.usedJSHeapSize / 1024 / 1024); // MB",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/ErrorRecoveryService.ts",
+        "lineNumber": 603,
+        "line": "this.errorPatterns = new Map(Object.entries(patterns) as any);",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/ErrorRecoveryService.ts",
+        "lineNumber": 632,
+        "line": "const errorsByType: Record<ErrorType, number> = {} as any;",
+        "match": "as any"
+      }
+    ],
+    "src/services/FeedbackService.ts": [
+      {
+        "file": "src/services/FeedbackService.ts",
+        "lineNumber": 38,
+        "line": "context?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/FeedbackService.ts",
+        "lineNumber": 206,
+        "line": "static async captureScreenshot(viewRef: any): Promise<string | null> {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FeedbackService.ts",
+        "lineNumber": 175,
+        "line": "static async getFeedbackStats(): Promise<any> {",
+        "match": "<any>"
+      },
+      {
+        "file": "src/services/FeedbackService.ts",
+        "lineNumber": 29,
+        "line": "static async submitFeedback(feedback: {",
+        "match": ": {\n    category: FeedbackCategory;\n    rating?: number;\n    title: string;\n    description: string;\n    screenshotUri?: string;\n    userId?: string;\n    userEmail?: string;\n    username?: string;\n    context?: any;\n  }"
+      },
+      {
+        "file": "src/services/FeedbackService.ts",
+        "lineNumber": 29,
+        "line": "static async submitFeedback(feedback: {",
+        "match": "(feedback: {\n    category: FeedbackCategory;\n    rating?: number;\n    title: string;\n    description: string;\n    screenshotUri?: string;\n    userId?: string;\n    userEmail?: string;\n    username?: string;\n    context?: any;\n  })"
+      },
+      {
+        "file": "src/services/FeedbackService.ts",
+        "lineNumber": 206,
+        "line": "static async captureScreenshot(viewRef: any): Promise<string | null> {",
+        "match": "(viewRef: any)"
+      }
+    ],
+    "src/services/FirecrawlCoffeeService.ts": [
+      {
+        "file": "src/services/FirecrawlCoffeeService.ts",
+        "lineNumber": 227,
+        "line": "brewingGuides: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/FirecrawlCoffeeService.ts",
+        "lineNumber": 228,
+        "line": "flavorNotes: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/FirecrawlCoffeeService.ts",
+        "lineNumber": 229,
+        "line": "coffeeNews: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/FirecrawlCoffeeService.ts",
+        "lineNumber": 227,
+        "line": "brewingGuides: any[];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/FirecrawlCoffeeService.ts",
+        "lineNumber": 228,
+        "line": "flavorNotes: any[];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/FirecrawlCoffeeService.ts",
+        "lineNumber": 229,
+        "line": "coffeeNews: any[];",
+        "match": ": any[]"
+      }
+    ],
+    "src/services/FirecrawlDemo.ts": [
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 282,
+        "line": "private async simulateFirecrawlScrape(url: string, options: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 297,
+        "line": "private async simulateFirecrawlAnalysis(url: string, options: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 317,
+        "line": "private async simulateContentCrawl(url: string, options: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 341,
+        "line": "private async simulateAppStoreAnalysis(url: string, options: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 371,
+        "line": "private async simulatePriceExtraction(url: string, options: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 405,
+        "line": "private identifyMarketGaps(competitorData: any[]): string[] {",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 414,
+        "line": "private generateCompetitiveRecommendations(competitorData: any[]): string[] {",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 424,
+        "line": "private analyzePriceTrends(priceData: any): any[] {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 424,
+        "line": "private analyzePriceTrends(priceData: any): any[] {",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 405,
+        "line": "private identifyMarketGaps(competitorData: any[]): string[] {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 414,
+        "line": "private generateCompetitiveRecommendations(competitorData: any[]): string[] {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 424,
+        "line": "private analyzePriceTrends(priceData: any): any[] {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 57,
+        "line": "Logger.error('❌ Failed to scrape ${site}:', 'service', { component: 'FirecrawlDemo', error: (error as any }).message || error);",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 60,
+        "line": "error: (error as any).message,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 84,
+        "line": "roasters: [] as any[],",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 86,
+        "line": "priceRanges: [] as any[],",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 87,
+        "line": "newProducts: [] as any[]",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 137,
+        "line": "brewingGuides: [] as any[],",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 138,
+        "line": "flavorWheelData: [] as any[],",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 139,
+        "line": "coffeeNews: [] as any[],",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 140,
+        "line": "technicalArticles: [] as any[]",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 244,
+        "line": "korea: { prices: [] as any[], currency: 'KRW' },",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 245,
+        "line": "us: { prices: [] as any[], currency: 'USD' },",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 246,
+        "line": "trends: [] as any[]",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 282,
+        "line": "private async simulateFirecrawlScrape(url: string, options: any) {",
+        "match": "(url: string, options: any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 297,
+        "line": "private async simulateFirecrawlAnalysis(url: string, options: any) {",
+        "match": "(url: string, options: any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 317,
+        "line": "private async simulateContentCrawl(url: string, options: any) {",
+        "match": "(url: string, options: any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 341,
+        "line": "private async simulateAppStoreAnalysis(url: string, options: any) {",
+        "match": "(url: string, options: any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 371,
+        "line": "private async simulatePriceExtraction(url: string, options: any) {",
+        "match": "(url: string, options: any)"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 405,
+        "line": "private identifyMarketGaps(competitorData: any[]): string[] {",
+        "match": "(competitorData: any[])"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 414,
+        "line": "private generateCompetitiveRecommendations(competitorData: any[]): string[] {",
+        "match": "(competitorData: any[])"
+      },
+      {
+        "file": "src/services/FirecrawlDemo.ts",
+        "lineNumber": 424,
+        "line": "private analyzePriceTrends(priceData: any): any[] {",
+        "match": "(priceData: any)"
+      }
+    ],
+    "src/services/FlavorDataOptimizer.ts": [
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 5,
+        "line": "data: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 42,
+        "line": "getTransformedFlavorData(): any {",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 92,
+        "line": "flavorData.forEach((category: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 104,
+        "line": "category.subcategories?.forEach((subcategory: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 117,
+        "line": "subcategory.flavors?.forEach((flavor: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 160,
+        "line": "searchFlavors(query: string, maxResults: number = 20): any[] {",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 168,
+        "line": "const results: any[] = [];",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 206,
+        "line": "getFlavorSuggestions(selectedFlavors: string[], maxSuggestions: number = 5): any[] {",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 210,
+        "line": "const suggestions: any[] = [];",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 251,
+        "line": "private addToIndex(index: FlavorSearchIndex, term: string, entry: any): void {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 280,
+        "line": "private transformFlavorData(): any {",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 160,
+        "line": "searchFlavors(query: string, maxResults: number = 20): any[] {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 168,
+        "line": "const results: any[] = [];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 206,
+        "line": "getFlavorSuggestions(selectedFlavors: string[], maxSuggestions: number = 5): any[] {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 210,
+        "line": "const suggestions: any[] = [];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 277,
+        "line": "return (flavorWheelKorean.translations as any)[englishName] || englishName;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 92,
+        "line": "flavorData.forEach((category: any) => {",
+        "match": "((category: any)"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 104,
+        "line": "category.subcategories?.forEach((subcategory: any) => {",
+        "match": "((subcategory: any)"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 117,
+        "line": "subcategory.flavors?.forEach((flavor: any) => {",
+        "match": "((flavor: any)"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "lineNumber": 251,
+        "line": "private addToIndex(index: FlavorSearchIndex, term: string, entry: any): void {",
+        "match": "(index: FlavorSearchIndex, term: string, entry: any)"
+      }
+    ],
+    "src/services/MockDataService.ts": [
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 78,
+        "line": "selectedFlavors: beginnerFlavors.slice(0, Math.floor(Math.random() * 3) + 1) as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 138,
+        "line": "selectedFlavors: intermediateFlavors.slice(0, Math.floor(Math.random() * 5) + 2) as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 145,
+        "line": "mouthfeel: ['Clean', 'Creamy', 'Juicy', 'Silky'][Math.floor(Math.random() * 4)] as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 201,
+        "line": "selectedFlavors: expertFlavors.slice(0, Math.floor(Math.random() * 8) + 4) as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 208,
+        "line": "mouthfeel: ['Clean', 'Creamy', 'Juicy', 'Silky'][Math.floor(Math.random() * 4)] as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 259,
+        "line": "] as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 279,
+        "line": "dripper: dripper as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 281,
+        "line": "filter: filters[i % filters.length] as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 299,
+        "line": "pourTechnique: pourTechniques[i % pourTechniques.length] as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 303,
+        "line": "agitation: ['none', 'swirl', 'stir'][i % 3] as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 352,
+        "line": "return beginnerExpressions.slice(0, Math.floor(Math.random() * 2) + 1) as any;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 367,
+        "line": "return intermediateExpressions.slice(0, Math.floor(Math.random() * 3) + 2) as any;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 383,
+        "line": "return expertExpressions.slice(0, Math.floor(Math.random() * 4) + 3) as any;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 396,
+        "line": "return homeCafeExpressions as any;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 474,
+        "line": "dripper: expertDrippers[Math.floor(Math.random() * expertDrippers.length)] as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 476,
+        "line": "filter: 'bleached' as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 494,
+        "line": "pourTechnique: expertTechniques[Math.floor(Math.random() * expertTechniques.length)] as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/MockDataService.ts",
+        "lineNumber": 499,
+        "line": "agitation: 'swirl' as any,",
+        "match": "as any"
+      }
+    ],
+    "src/services/PerformanceMonitor.ts": [
+      {
+        "file": "src/services/PerformanceMonitor.ts",
+        "lineNumber": 50,
+        "line": "async reportCrash(error: Error, errorInfo?: any): Promise<void> {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/PerformanceMonitor.ts",
+        "lineNumber": 216,
+        "line": "(global as any).addEventListener?.('unhandledrejection', (event: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/PerformanceMonitor.ts",
+        "lineNumber": 315,
+        "line": "measureFunction<T extends (...args: any[]) => any>(",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/PerformanceMonitor.ts",
+        "lineNumber": 315,
+        "line": "measureFunction<T extends (...args: any[]) => any>(",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/PerformanceMonitor.ts",
+        "lineNumber": 216,
+        "line": "(global as any).addEventListener?.('unhandledrejection', (event: any) => {",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/PerformanceMonitor.ts",
+        "lineNumber": 50,
+        "line": "async reportCrash(error: Error, errorInfo?: any): Promise<void> {",
+        "match": "(error: Error, errorInfo?: any)"
+      },
+      {
+        "file": "src/services/PerformanceMonitor.ts",
+        "lineNumber": 216,
+        "line": "(global as any).addEventListener?.('unhandledrejection', (event: any) => {",
+        "match": "('unhandledrejection', (event: any)"
+      },
+      {
+        "file": "src/services/PerformanceMonitor.ts",
+        "lineNumber": 315,
+        "line": "measureFunction<T extends (...args: any[]) => any>(",
+        "match": "(...args: any[])"
+      }
+    ],
+    "src/services/PhotoService.ts": [
+      {
+        "file": "src/services/PhotoService.ts",
+        "lineNumber": 79,
+        "line": "const imageOptions: any = {",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/PhotoService.ts",
+        "lineNumber": 123,
+        "line": "const imageOptions: any = {",
+        "match": ": any"
+      }
+    ],
+    "src/services/privacy/PrivacyManager.ts": [
+      {
+        "file": "src/services/privacy/PrivacyManager.ts",
+        "lineNumber": 516,
+        "line": "static async exportConsentData(): Promise<any> {",
+        "match": "<any>"
+      }
+    ],
+    "src/services/realm/BaseRealmService.ts": [
+      {
+        "file": "src/services/realm/BaseRealmService.ts",
+        "lineNumber": 48,
+        "line": "const oldRecord = oldTastings[i] as any;",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/realm/BaseRealmService.ts",
+        "lineNumber": 49,
+        "line": "const newRecord = newTastings[i] as any;",
+        "match": "as any"
+      }
+    ],
+    "src/services/realm/CafeService.ts": [
+      {
+        "file": "src/services/realm/CafeService.ts",
+        "lineNumber": 123,
+        "line": "query.forEach((record: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/realm/CafeService.ts",
+        "lineNumber": 145,
+        "line": "tastings.forEach((record: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/realm/CafeService.ts",
+        "lineNumber": 123,
+        "line": "query.forEach((record: any) => {",
+        "match": "((record: any)"
+      },
+      {
+        "file": "src/services/realm/CafeService.ts",
+        "lineNumber": 145,
+        "line": "tastings.forEach((record: any) => {",
+        "match": "((record: any)"
+      }
+    ],
+    "src/services/realm/RoasterService.ts": [
+      {
+        "file": "src/services/realm/RoasterService.ts",
+        "lineNumber": 126,
+        "line": "query.forEach((record: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/realm/RoasterService.ts",
+        "lineNumber": 126,
+        "line": "query.forEach((record: any) => {",
+        "match": "((record: any)"
+      }
+    ],
+    "src/services/realm/schemas.ts": [
+      {
+        "file": "src/services/realm/schemas.ts",
+        "lineNumber": 99,
+        "line": "selectedSensoryExpressions?: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/realm/schemas.ts",
+        "lineNumber": 99,
+        "line": "selectedSensoryExpressions?: any[];",
+        "match": ": any[]"
+      }
+    ],
+    "src/services/realm/TastingService.ts": [
+      {
+        "file": "src/services/realm/TastingService.ts",
+        "lineNumber": 414,
+        "line": "getUnsyncedRecords(): any {",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/realm/TastingService.ts",
+        "lineNumber": 98,
+        "line": "if ((flavorPath as any).level && (flavorPath as any).value) {",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/realm/TastingService.ts",
+        "lineNumber": 98,
+        "line": "if ((flavorPath as any).level && (flavorPath as any).value) {",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/realm/TastingService.ts",
+        "lineNumber": 100,
+        "line": "level: (flavorPath as any).level,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/realm/TastingService.ts",
+        "lineNumber": 101,
+        "line": "value: (flavorPath as any).value,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/realm/TastingService.ts",
+        "lineNumber": 102,
+        "line": "koreanValue: (flavorPath as any).koreanValue,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/realm/TastingService.ts",
+        "lineNumber": 135,
+        "line": "if ((flavorPath as any).level4) {",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/realm/TastingService.ts",
+        "lineNumber": 138,
+        "line": "value: (flavorPath as any).level4,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/realm/TastingService.ts",
+        "lineNumber": 198,
+        "line": "selectedSensoryExpressions: JSON.stringify(safeData.selectedSensoryExpressions || []) as any,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/realm/TastingService.ts",
+        "lineNumber": 298,
+        "line": "return this.baseService.paginateResults(sortedQuery, filter?.limit, filter?.offset) as any;",
+        "match": "as any"
+      }
+    ],
+    "src/services/realm/types.ts": [
+      {
+        "file": "src/services/realm/types.ts",
+        "lineNumber": 34,
+        "line": "homeCafeData?: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/services/ScreenContextService.ts": [
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "lineNumber": 9,
+        "line": "routeParams?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "lineNumber": 11,
+        "line": "navigationState?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "lineNumber": 29,
+        "line": "private static navigationRef: any = null;",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "lineNumber": 31,
+        "line": "static setNavigationRef(ref: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "lineNumber": 73,
+        "line": "private static getCurrentRoute(navigationState: any): any {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "lineNumber": 73,
+        "line": "private static getCurrentRoute(navigationState: any): any {",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "lineNumber": 100,
+        "line": "static updateContext(screenName: string, params?: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "lineNumber": 31,
+        "line": "static setNavigationRef(ref: any) {",
+        "match": "(ref: any)"
+      },
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "lineNumber": 73,
+        "line": "private static getCurrentRoute(navigationState: any): any {",
+        "match": "(navigationState: any)"
+      },
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "lineNumber": 100,
+        "line": "static updateContext(screenName: string, params?: any) {",
+        "match": "(screenName: string, params?: any)"
+      }
+    ],
+    "src/services/SentryService.ts": [
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 30,
+        "line": "static addBreadcrumb(message: string, category: string, data?: any): void {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 36,
+        "line": "static captureException(error: Error, context?: { level?: SeverityLevel; tags?: Record<string, string>; extra?: any }): void {",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 49,
+        "line": "setData: (key: string, value: any) => {},",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 60,
+        "line": "static setContext(key: string, context: any): void {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 67,
+        "line": "static trackBetaFeedback(feedbackType: string, feedbackData: any): void {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 72,
+        "line": "static trackFeatureUsage(featureName: string, metadata?: any): void {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 36,
+        "line": "static captureException(error: Error, context?: { level?: SeverityLevel; tags?: Record<string, string>; extra?: any }): void {",
+        "match": ": { level?: SeverityLevel; tags?: Record<string, string>; extra?: any }"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 30,
+        "line": "static addBreadcrumb(message: string, category: string, data?: any): void {",
+        "match": "(message: string, category: string, data?: any)"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 36,
+        "line": "static captureException(error: Error, context?: { level?: SeverityLevel; tags?: Record<string, string>; extra?: any }): void {",
+        "match": "(error: Error, context?: { level?: SeverityLevel; tags?: Record<string, string>; extra?: any })"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 49,
+        "line": "setData: (key: string, value: any) => {},",
+        "match": "(key: string, value: any)"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 60,
+        "line": "static setContext(key: string, context: any): void {",
+        "match": "(key: string, context: any)"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 67,
+        "line": "static trackBetaFeedback(feedbackType: string, feedbackData: any): void {",
+        "match": "(feedbackType: string, feedbackData: any)"
+      },
+      {
+        "file": "src/services/SentryService.ts",
+        "lineNumber": 72,
+        "line": "static trackFeatureUsage(featureName: string, metadata?: any): void {",
+        "match": "(featureName: string, metadata?: any)"
+      }
+    ],
+    "src/services/supabase/appleAuth.ts": [
+      {
+        "file": "src/services/supabase/appleAuth.ts",
+        "lineNumber": 21,
+        "line": "async signIn(): Promise<any> {",
+        "match": "<any>"
+      }
+    ],
+    "src/services/supabase/auth.ts": [
+      {
+        "file": "src/services/supabase/auth.ts",
+        "lineNumber": 78,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/auth.ts",
+        "lineNumber": 42,
+        "line": "(authError as any).code = 'AUTH_ERROR';",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/supabase/auth.ts",
+        "lineNumber": 61,
+        "line": "const authError = new Error((error as any).message || 'Sign up failed');",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/supabase/auth.ts",
+        "lineNumber": 62,
+        "line": "(authError as any).code = 'AUTH_ERROR';",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/supabase/auth.ts",
+        "lineNumber": 67,
+        "line": "(authError as any).code = 'AUTH_ERROR';",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/supabase/auth.ts",
+        "lineNumber": 78,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/services/supabase/coffeeSearch.ts": [
+      {
+        "file": "src/services/supabase/coffeeSearch.ts",
+        "lineNumber": 35,
+        "line": "let userRoasters: any[] = [];",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/supabase/coffeeSearch.ts",
+        "lineNumber": 35,
+        "line": "let userRoasters: any[] = [];",
+        "match": ": any[]"
+      }
+    ],
+    "src/services/supabase/googleAuth.ts": [
+      {
+        "file": "src/services/supabase/googleAuth.ts",
+        "lineNumber": 8,
+        "line": "user?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/supabase/googleAuth.ts",
+        "lineNumber": 69,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/googleAuth.ts",
+        "lineNumber": 110,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/googleAuth.ts",
+        "lineNumber": 88,
+        "line": "static async getCurrentUser(): Promise<any> {",
+        "match": "<any>"
+      },
+      {
+        "file": "src/services/supabase/googleAuth.ts",
+        "lineNumber": 122,
+        "line": "static async getTokens(): Promise<any> {",
+        "match": "<any>"
+      },
+      {
+        "file": "src/services/supabase/googleAuth.ts",
+        "lineNumber": 69,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/services/supabase/googleAuth.ts",
+        "lineNumber": 110,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/services/supabase/sync.ts": [
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 235,
+        "line": "const flavorNotes: any[] = [];",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 238,
+        "line": "const flavorsByPath: any = {};",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 364,
+        "line": "private async downloadSingleRecord(remoteRecord: any): Promise<void> {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 382,
+        "line": "private async createLocalRecord(remoteRecord: any): Promise<void> {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 389,
+        "line": "remoteRecord.flavor_notes?.forEach((note: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 456,
+        "line": "private async resolveConflict(localRecord: ITastingRecord, remoteRecord: any): Promise<void> {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 475,
+        "line": "private async updateLocalRecord(localRecord: ITastingRecord, remoteRecord: any): Promise<void> {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 504,
+        "line": "remoteRecord.flavor_notes.forEach((note: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 235,
+        "line": "const flavorNotes: any[] = [];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 585,
+        "line": "cafe_name_param: (cafe as any).name,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 594,
+        "line": "roaster_name_param: (roaster as any).name,",
+        "match": "as any"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 364,
+        "line": "private async downloadSingleRecord(remoteRecord: any): Promise<void> {",
+        "match": "(remoteRecord: any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 382,
+        "line": "private async createLocalRecord(remoteRecord: any): Promise<void> {",
+        "match": "(remoteRecord: any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 389,
+        "line": "remoteRecord.flavor_notes?.forEach((note: any) => {",
+        "match": "((note: any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 456,
+        "line": "private async resolveConflict(localRecord: ITastingRecord, remoteRecord: any): Promise<void> {",
+        "match": "(localRecord: ITastingRecord, remoteRecord: any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 475,
+        "line": "private async updateLocalRecord(localRecord: ITastingRecord, remoteRecord: any): Promise<void> {",
+        "match": "(localRecord: ITastingRecord, remoteRecord: any)"
+      },
+      {
+        "file": "src/services/supabase/sync.ts",
+        "lineNumber": 504,
+        "line": "remoteRecord.flavor_notes.forEach((note: any) => {",
+        "match": "((note: any)"
+      }
+    ],
+    "src/services/supabase/tastingService.ts": [
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "lineNumber": 32,
+        "line": "home_cafe_data?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "lineNumber": 35,
+        "line": "selected_sensory_expressions?: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "lineNumber": 72,
+        "line": "async saveTasting(tasting: any): Promise<string> {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "lineNumber": 191,
+        "line": "tasting.flavor_notes.forEach((note: any) => {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "lineNumber": 280,
+        "line": "const coffeeMap: { [key: string]: any } = {};",
+        "match": ": any"
+      },
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "lineNumber": 35,
+        "line": "selected_sensory_expressions?: any[];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "lineNumber": 280,
+        "line": "const coffeeMap: { [key: string]: any } = {};",
+        "match": ": { [key: string]: any }"
+      },
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "lineNumber": 72,
+        "line": "async saveTasting(tasting: any): Promise<string> {",
+        "match": "(tasting: any)"
+      },
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "lineNumber": 191,
+        "line": "tasting.flavor_notes.forEach((note: any) => {",
+        "match": "((note: any)"
+      }
+    ],
+    "src/stores/tastingStore.ts": [
+      {
+        "file": "src/stores/tastingStore.ts",
+        "lineNumber": 163,
+        "line": "if (savedTasting && (savedTasting as any).userId) {",
+        "match": "as any"
+      },
+      {
+        "file": "src/stores/tastingStore.ts",
+        "lineNumber": 169,
+        "line": "tastingId: (savedTasting as any).id,",
+        "match": "as any"
+      },
+      {
+        "file": "src/stores/tastingStore.ts",
+        "lineNumber": 181,
+        "line": "await achievementSystem.checkAndUpdateAchievements((savedTasting as any).userId, action);",
+        "match": "as any"
+      }
+    ],
+    "src/stores/useCoffeeStore.ts": [
+      {
+        "file": "src/stores/useCoffeeStore.ts",
+        "lineNumber": 18,
+        "line": "updateCurrentTasting: (field: keyof CurrentTasting, value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/stores/useCoffeeStore.ts",
+        "lineNumber": 97,
+        "line": "await StorageService.saveTasting(completeTasting as any);",
+        "match": "as any"
+      },
+      {
+        "file": "src/stores/useCoffeeStore.ts",
+        "lineNumber": 118,
+        "line": "set({ tastingSessions: tastings as any, isLoading: false });",
+        "match": "as any"
+      },
+      {
+        "file": "src/stores/useCoffeeStore.ts",
+        "lineNumber": 138,
+        "line": "await StorageService.saveCurrentTasting(currentTasting as any);",
+        "match": "as any"
+      },
+      {
+        "file": "src/stores/useCoffeeStore.ts",
+        "lineNumber": 148,
+        "line": "set({ currentTasting: savedProgress as any });",
+        "match": "as any"
+      },
+      {
+        "file": "src/stores/useCoffeeStore.ts",
+        "lineNumber": 18,
+        "line": "updateCurrentTasting: (field: keyof CurrentTasting, value: any) => void;",
+        "match": "(field: keyof CurrentTasting, value: any)"
+      }
+    ],
+    "src/stores/useFeedbackStore.ts": [
+      {
+        "file": "src/stores/useFeedbackStore.ts",
+        "lineNumber": 65,
+        "line": "const updates: any = { isVisible: true };",
+        "match": ": any"
+      }
+    ],
+    "src/stores/useSimpleCoffeeStore.ts": [
+      {
+        "file": "src/stores/useSimpleCoffeeStore.ts",
+        "lineNumber": 20,
+        "line": "updateCurrentTasting: (field: keyof TastingData, value: any) => void;",
+        "match": ": any)"
+      },
+      {
+        "file": "src/stores/useSimpleCoffeeStore.ts",
+        "lineNumber": 20,
+        "line": "updateCurrentTasting: (field: keyof TastingData, value: any) => void;",
+        "match": "(field: keyof TastingData, value: any)"
+      }
+    ],
+    "src/stores/useUserStore.ts": [
+      {
+        "file": "src/stores/useUserStore.ts",
+        "lineNumber": 34,
+        "line": "createOrUpdateSocialProfile: (authUser: any, provider: 'apple' | 'google') => Promise<void>;",
+        "match": ": any,"
+      },
+      {
+        "file": "src/stores/useUserStore.ts",
+        "lineNumber": 325,
+        "line": "createOrUpdateSocialProfile: async (authUser: any, provider: 'apple' | 'google') => {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/stores/useUserStore.ts",
+        "lineNumber": 34,
+        "line": "createOrUpdateSocialProfile: (authUser: any, provider: 'apple' | 'google') => Promise<void>;",
+        "match": "(authUser: any, provider: 'apple' | 'google')"
+      },
+      {
+        "file": "src/stores/useUserStore.ts",
+        "lineNumber": 325,
+        "line": "createOrUpdateSocialProfile: async (authUser: any, provider: 'apple' | 'google') => {",
+        "match": "(authUser: any, provider: 'apple' | 'google')"
+      }
+    ],
+    "src/styles/common.ts": [
+      {
+        "file": "src/styles/common.ts",
+        "lineNumber": 321,
+        "line": "buttonShadow: Platform.select<any>({",
+        "match": "<any>"
+      },
+      {
+        "file": "src/styles/common.ts",
+        "lineNumber": 336,
+        "line": "cardShadow: Platform.select<any>({",
+        "match": "<any>"
+      }
+    ],
+    "src/types/MarketTestTypes.ts": [
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 19,
+        "line": "data?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 24,
+        "line": "marketConfig: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 25,
+        "line": "deploymentConfig: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 39,
+        "line": "roasters: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 40,
+        "line": "origins: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 41,
+        "line": "flavorProfiles: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 42,
+        "line": "brewMethods: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 39,
+        "line": "roasters: any[];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 40,
+        "line": "origins: any[];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 41,
+        "line": "flavorProfiles: any[];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 42,
+        "line": "brewMethods: any[];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "lineNumber": 38,
+        "line": "data: {",
+        "match": ": {\n    roasters: any[];\n    origins: any[];\n    flavorProfiles: any[];\n    brewMethods: any[];\n  }"
+      }
+    ],
+    "src/types/navigation.ts": [
+      {
+        "file": "src/types/navigation.ts",
+        "lineNumber": 15,
+        "line": "// OCRResult: { parsedInfo: any; rawTexts: string[] }; // Moved to feature_backlog",
+        "match": ": any;"
+      },
+      {
+        "file": "src/types/navigation.ts",
+        "lineNumber": 15,
+        "line": "// OCRResult: { parsedInfo: any; rawTexts: string[] }; // Moved to feature_backlog",
+        "match": ": { parsedInfo: any; rawTexts: string[] }"
+      }
+    ],
+    "src/types/personalTaste.ts": [
+      {
+        "file": "src/types/personalTaste.ts",
+        "lineNumber": 187,
+        "line": "recentAchievements: any[]; // Achievement[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/types/personalTaste.ts",
+        "lineNumber": 225,
+        "line": "unlockedAchievements: any[]; // Achievement[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/types/personalTaste.ts",
+        "lineNumber": 187,
+        "line": "recentAchievements: any[]; // Achievement[];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/types/personalTaste.ts",
+        "lineNumber": 225,
+        "line": "unlockedAchievements: any[]; // Achievement[];",
+        "match": ": any[]"
+      }
+    ],
+    "src/types/tasting.ts": [
+      {
+        "file": "src/types/tasting.ts",
+        "lineNumber": 139,
+        "line": "previousValue: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/types/tasting.ts",
+        "lineNumber": 140,
+        "line": "currentValue: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/types/tasting.ts",
+        "lineNumber": 137,
+        "line": "comparison?: {",
+        "match": ": {\n    variable: string;\n    previousValue: any;\n    currentValue: any;\n    result: string;\n  }"
+      }
+    ],
+    "src/utils/bridgeDebugger.ts": [
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 13,
+        "line": "const debugLog = (...args: any[]) => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 19,
+        "line": "const debugWarn = (...args: any[]) => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 25,
+        "line": "const debugError = (...args: any[]) => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 124,
+        "line": "private logCall(moduleID: number, methodID: number, params: any[]) {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 149,
+        "line": "private sanitizeParams(params: any[]): any[] {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 149,
+        "line": "private sanitizeParams(params: any[]): any[] {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 153,
+        "line": "private sanitizeParam(param: any): any {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 153,
+        "line": "private sanitizeParam(param: any): any {",
+        "match": ": any"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 171,
+        "line": "const sanitized: any = {};",
+        "match": ": any"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 181,
+        "line": "private hasProblematicParams(params: any[]): boolean {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 185,
+        "line": "private isProblematicParam(param: any): boolean {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 201,
+        "line": "private analyzeParams(params: any[]): any {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 201,
+        "line": "private analyzeParams(params: any[]): any {",
+        "match": ": any"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 13,
+        "line": "const debugLog = (...args: any[]) => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 19,
+        "line": "const debugWarn = (...args: any[]) => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 25,
+        "line": "const debugError = (...args: any[]) => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 124,
+        "line": "private logCall(moduleID: number, methodID: number, params: any[]) {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 149,
+        "line": "private sanitizeParams(params: any[]): any[] {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 149,
+        "line": "private sanitizeParams(params: any[]): any[] {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 181,
+        "line": "private hasProblematicParams(params: any[]): boolean {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 201,
+        "line": "private analyzeParams(params: any[]): any {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 51,
+        "line": "if (__DEV__ && (global as any).__fbBatchedBridge) {",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 53,
+        "line": "this.originalBridge = (global as any).__fbBatchedBridge;",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 57,
+        "line": "debugWarn('⚠️ Bridge debugger initialization failed, continuing without debugging:', (error as any).message);",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 109,
+        "line": "error: (error as any).message,",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 218,
+        "line": "return (moduleTable as any).name || `Module${moduleID}`;",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 252,
+        "line": "debugWarn('⚠️ Bridge debugger failed to initialize, continuing without debugging:', (error as any).message);",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 13,
+        "line": "const debugLog = (...args: any[]) => {",
+        "match": "(...args: any[])"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 19,
+        "line": "const debugWarn = (...args: any[]) => {",
+        "match": "(...args: any[])"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 25,
+        "line": "const debugError = (...args: any[]) => {",
+        "match": "(...args: any[])"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 124,
+        "line": "private logCall(moduleID: number, methodID: number, params: any[]) {",
+        "match": "(moduleID: number, methodID: number, params: any[])"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 149,
+        "line": "private sanitizeParams(params: any[]): any[] {",
+        "match": "(params: any[])"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 153,
+        "line": "private sanitizeParam(param: any): any {",
+        "match": "(param: any)"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 181,
+        "line": "private hasProblematicParams(params: any[]): boolean {",
+        "match": "(params: any[])"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 185,
+        "line": "private isProblematicParam(param: any): boolean {",
+        "match": "(param: any)"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 201,
+        "line": "private analyzeParams(params: any[]): any {",
+        "match": "(params: any[])"
+      }
+    ],
+    "src/utils/clearDraftStorage.ts": [
+      {
+        "file": "src/utils/clearDraftStorage.ts",
+        "lineNumber": 41,
+        "line": "(global as any).clearDraftStorage = clearDraftStorage;",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/clearDraftStorage.ts",
+        "lineNumber": 42,
+        "line": "(global as any).inspectDraftStorage = inspectDraftStorage;",
+        "match": "as any"
+      }
+    ],
+    "src/utils/crossMarketTester.ts": [
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "lineNumber": 49,
+        "line": "data?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "lineNumber": 62,
+        "line": "koreanValue: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "lineNumber": 63,
+        "line": "usValue: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "lineNumber": 69,
+        "line": "koreanValue: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "lineNumber": 70,
+        "line": "usValue: any;",
+        "match": ": any;"
+      }
+    ],
+    "src/utils/i18nValidationSuite.ts": [
+      {
+        "file": "src/utils/i18nValidationSuite.ts",
+        "lineNumber": 49,
+        "line": "details?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/utils/i18nValidationSuite.ts",
+        "lineNumber": 458,
+        "line": "testFunction: () => Promise<{ message: string; details?: any; status?: 'pass' | 'warning' }>",
+        "match": ": any;"
+      },
+      {
+        "file": "src/utils/i18nValidationSuite.ts",
+        "lineNumber": 308,
+        "line": "(deploymentConfig.marketConfig as any).us_beta !== undefined :",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/i18nValidationSuite.ts",
+        "lineNumber": 309,
+        "line": "(deploymentConfig.marketConfig as any).korean !== undefined;",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/i18nValidationSuite.ts",
+        "lineNumber": 346,
+        "line": "flagResults[flag] = isFeatureFlagEnabled(flag as any);",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/i18nValidationSuite.ts",
+        "lineNumber": 387,
+        "line": "throw new Error(`Component integration failed: ${(error as any).message}`);",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/i18nValidationSuite.ts",
+        "lineNumber": 484,
+        "line": "errorMessage: (error as any).message,",
+        "match": "as any"
+      },
+      {
+        "file": "src/utils/i18nValidationSuite.ts",
+        "lineNumber": 488,
+        "line": "Logger.error('❌ ${testName}: ${(error as any).message}', 'util', { component: 'i18nValidationSuite' });",
+        "match": "as any"
+      }
+    ],
+    "src/utils/KeyGenerator.ts": [
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 20,
+        "line": "static forItem(item: any, prefix?: string): string {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 52,
+        "line": "static forList(items: any[], prefix?: string): string[] {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 115,
+        "line": "private static generateContentHash(item: any): string {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 173,
+        "line": "static safe(item: any, index: number, prefix?: string): string {",
+        "match": ": any,"
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 203,
+        "line": "export const useUniqueKeys = (items: any[], prefix?: string): string[] => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 52,
+        "line": "static forList(items: any[], prefix?: string): string[] {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 203,
+        "line": "export const useUniqueKeys = (items: any[], prefix?: string): string[] => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 20,
+        "line": "static forItem(item: any, prefix?: string): string {",
+        "match": "(item: any, prefix?: string)"
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 52,
+        "line": "static forList(items: any[], prefix?: string): string[] {",
+        "match": "(items: any[], prefix?: string)"
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 115,
+        "line": "private static generateContentHash(item: any): string {",
+        "match": "(item: any)"
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 173,
+        "line": "static safe(item: any, index: number, prefix?: string): string {",
+        "match": "(item: any, index: number, prefix?: string)"
+      },
+      {
+        "file": "src/utils/KeyGenerator.ts",
+        "lineNumber": 203,
+        "line": "export const useUniqueKeys = (items: any[], prefix?: string): string[] => {",
+        "match": "(items: any[], prefix?: string)"
+      }
+    ],
+    "src/utils/logger.ts": [
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 29,
+        "line": "end(context: any = {}): number {",
+        "match": ": any"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 37,
+        "line": "export const logError = (error: Error, context: any = {}, category = 'error') => {",
+        "match": ": any"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 46,
+        "line": "export const logUserAction = (action: string, screen: string, data: any = {}) => {",
+        "match": ": any"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 55,
+        "line": "data: any = {}",
+        "match": ": any"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 61,
+        "line": "export const devLog = (message: string, data: any = {}) => {",
+        "match": ": any"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 72,
+        "line": "log: (message: string, ...args: any[]) => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 75,
+        "line": "info: (message: string, ...args: any[]) => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 78,
+        "line": "warn: (message: string, ...args: any[]) => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 81,
+        "line": "error: (message: string, ...args: any[]) => {",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 72,
+        "line": "log: (message: string, ...args: any[]) => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 75,
+        "line": "info: (message: string, ...args: any[]) => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 78,
+        "line": "warn: (message: string, ...args: any[]) => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 81,
+        "line": "error: (message: string, ...args: any[]) => {",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 29,
+        "line": "end(context: any = {}): number {",
+        "match": "(context: any = {})"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 37,
+        "line": "export const logError = (error: Error, context: any = {}, category = 'error') => {",
+        "match": "(error: Error, context: any = {}, category = 'error')"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 46,
+        "line": "export const logUserAction = (action: string, screen: string, data: any = {}) => {",
+        "match": "(action: string, screen: string, data: any = {})"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 51,
+        "line": "export const logAPICall = (",
+        "match": "(\n  endpoint: string, \n  method: string, \n  status?: number, \n  data: any = {}\n)"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 61,
+        "line": "export const devLog = (message: string, data: any = {}) => {",
+        "match": "(message: string, data: any = {})"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 72,
+        "line": "log: (message: string, ...args: any[]) => {",
+        "match": "(message: string, ...args: any[])"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 75,
+        "line": "info: (message: string, ...args: any[]) => {",
+        "match": "(message: string, ...args: any[])"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 78,
+        "line": "warn: (message: string, ...args: any[]) => {",
+        "match": "(message: string, ...args: any[])"
+      },
+      {
+        "file": "src/utils/logger.ts",
+        "lineNumber": 81,
+        "line": "error: (message: string, ...args: any[]) => {",
+        "match": "(message: string, ...args: any[])"
+      }
+    ],
+    "src/utils/MarketTestScenarios.ts": [
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 57,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 101,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 149,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 185,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 230,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 278,
+        "line": "} catch (error: any) {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 57,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 101,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 149,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 185,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 230,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      },
+      {
+        "file": "src/utils/MarketTestScenarios.ts",
+        "lineNumber": 278,
+        "line": "} catch (error: any) {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/utils/mockPersonalTasteData.ts": [
+      {
+        "file": "src/utils/mockPersonalTasteData.ts",
+        "lineNumber": 25,
+        "line": "exercises: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/mockPersonalTasteData.ts",
+        "lineNumber": 25,
+        "line": "exercises: any[];",
+        "match": ": any[]"
+      }
+    ],
+    "src/utils/NetworkUtils.ts": [
+      {
+        "file": "src/utils/NetworkUtils.ts",
+        "lineNumber": 204,
+        "line": "private static isRetryableError(error: any): boolean {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/NetworkUtils.ts",
+        "lineNumber": 204,
+        "line": "private static isRetryableError(error: any): boolean {",
+        "match": "(error: any)"
+      }
+    ],
+    "src/utils/performanceAnalysis.ts": [
+      {
+        "file": "src/utils/performanceAnalysis.ts",
+        "lineNumber": 23,
+        "line": "metadata?: any;",
+        "match": ": any;"
+      },
+      {
+        "file": "src/utils/performanceAnalysis.ts",
+        "lineNumber": 50,
+        "line": "recordMetric(name: string, duration: number, success: boolean = true, metadata?: any): void {",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/performanceAnalysis.ts",
+        "lineNumber": 145,
+        "line": "exportData(): any {",
+        "match": ": any"
+      },
+      {
+        "file": "src/utils/performanceAnalysis.ts",
+        "lineNumber": 347,
+        "line": "export function trackPerformance<T extends (...args: any[]) => any>(",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/performanceAnalysis.ts",
+        "lineNumber": 347,
+        "line": "export function trackPerformance<T extends (...args: any[]) => any>(",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/performanceAnalysis.ts",
+        "lineNumber": 50,
+        "line": "recordMetric(name: string, duration: number, success: boolean = true, metadata?: any): void {",
+        "match": "(name: string, duration: number, success: boolean = true, metadata?: any)"
+      },
+      {
+        "file": "src/utils/performanceAnalysis.ts",
+        "lineNumber": 347,
+        "line": "export function trackPerformance<T extends (...args: any[]) => any>(",
+        "match": "(...args: any[])"
+      }
+    ],
+    "src/utils/resetOnboarding.ts": [
+      {
+        "file": "src/utils/resetOnboarding.ts",
+        "lineNumber": 14,
+        "line": "(global as any).resetSensoryOnboarding = resetSensoryOnboarding;",
+        "match": "as any"
+      }
+    ],
+    "src/utils/sentry.ts": [
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 13,
+        "line": "init: (options?: any) => {},",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 14,
+        "line": "setUser: (user: any) => {},",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 15,
+        "line": "captureException: (error: any, context?: any) => {},",
+        "match": ": any,"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 15,
+        "line": "captureException: (error: any, context?: any) => {},",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 17,
+        "line": "withScope: (callback: (scope: any) => void) => callback({",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 20,
+        "line": "startTransaction: (context: any) => ({ finish: () => {} }),",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 21,
+        "line": "reactNativeTracingIntegration: (options?: any) => ({}),",
+        "match": ": any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 13,
+        "line": "init: (options?: any) => {},",
+        "match": "(options?: any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 14,
+        "line": "setUser: (user: any) => {},",
+        "match": "(user: any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 15,
+        "line": "captureException: (error: any, context?: any) => {},",
+        "match": "(error: any, context?: any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 17,
+        "line": "withScope: (callback: (scope: any) => void) => callback({",
+        "match": "(callback: (scope: any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 20,
+        "line": "startTransaction: (context: any) => ({ finish: () => {} }),",
+        "match": "(context: any)"
+      },
+      {
+        "file": "src/utils/sentry.ts",
+        "lineNumber": 21,
+        "line": "reactNativeTracingIntegration: (options?: any) => ({}),",
+        "match": "(options?: any)"
+      }
+    ],
+    "src/utils/testExecutionDemo.ts": [
+      {
+        "file": "src/utils/testExecutionDemo.ts",
+        "lineNumber": 23,
+        "line": "detailedResults?: any[];",
+        "match": ": any["
+      },
+      {
+        "file": "src/utils/testExecutionDemo.ts",
+        "lineNumber": 23,
+        "line": "detailedResults?: any[];",
+        "match": ": any[]"
+      },
+      {
+        "file": "src/utils/testExecutionDemo.ts",
+        "lineNumber": 296,
+        "line": "private async testLanguageSwitchingPerformance(): Promise<any> {",
+        "match": "<any>"
+      },
+      {
+        "file": "src/utils/testExecutionDemo.ts",
+        "lineNumber": 320,
+        "line": "private async testMarketDataLoadingPerformance(): Promise<any> {",
+        "match": "<any>"
+      },
+      {
+        "file": "src/utils/testExecutionDemo.ts",
+        "lineNumber": 351,
+        "line": "private async testNavigationPerformance(): Promise<any> {",
+        "match": "<any>"
+      }
+    ]
+  },
+  "unknownTypes": {
+    "src/services/realm/CafeService.ts": [
+      {
+        "file": "src/services/realm/CafeService.ts",
+        "lineNumber": 48,
+        "line": ".sorted('visitCount', true) as unknown as Realm.Results<ICafeInfo>;",
+        "match": "as unknown"
+      }
+    ],
+    "src/services/realm/CoffeeLibraryService.ts": [
+      {
+        "file": "src/services/realm/CoffeeLibraryService.ts",
+        "lineNumber": 48,
+        "line": ".sorted('useCount', true) as unknown as Realm.Results<ICoffeeLibrary>;",
+        "match": "as unknown"
+      }
+    ],
+    "src/services/realm/RoasterService.ts": [
+      {
+        "file": "src/services/realm/RoasterService.ts",
+        "lineNumber": 48,
+        "line": ".sorted('coffeeCount', true) as unknown as Realm.Results<IRoasterInfo>;",
+        "match": "as unknown"
+      }
+    ],
+    "src/utils/bridgeDebugger.ts": [
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 34,
+        "line": "params: unknown[];",
+        "match": ": unknown["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 39,
+        "line": "enqueueNativeCall: (moduleID: number, methodID: number, params: unknown[], onFail?: Function, onSucc?: Function) => void;",
+        "match": ": unknown["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 67,
+        "line": "this.originalBridge.enqueueNativeCall = (moduleID: number, methodID: number, params: unknown[], onFail?: Function, onSucc?: Function) => {",
+        "match": ": unknown["
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 34,
+        "line": "params: unknown[];",
+        "match": ": unknown[]"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 39,
+        "line": "enqueueNativeCall: (moduleID: number, methodID: number, params: unknown[], onFail?: Function, onSucc?: Function) => void;",
+        "match": ": unknown[]"
+      },
+      {
+        "file": "src/utils/bridgeDebugger.ts",
+        "lineNumber": 67,
+        "line": "this.originalBridge.enqueueNativeCall = (moduleID: number, methodID: number, params: unknown[], onFail?: Function, onSucc?: Function) => {",
+        "match": ": unknown[]"
+      }
+    ],
+    "src/utils/errorHandler.ts": [
+      {
+        "file": "src/utils/errorHandler.ts",
+        "lineNumber": 7,
+        "line": "details?: unknown;",
+        "match": ": unknown;"
+      },
+      {
+        "file": "src/utils/errorHandler.ts",
+        "lineNumber": 22,
+        "line": "static handle(error: unknown, context?: string): void {",
+        "match": ": unknown,"
+      },
+      {
+        "file": "src/utils/errorHandler.ts",
+        "lineNumber": 34,
+        "line": "static getErrorMessage(error: unknown): string {",
+        "match": ": unknown)"
+      },
+      {
+        "file": "src/utils/errorHandler.ts",
+        "lineNumber": 96,
+        "line": "isNetworkError(error: unknown): boolean {",
+        "match": ": unknown)"
+      },
+      {
+        "file": "src/utils/errorHandler.ts",
+        "lineNumber": 113,
+        "line": "let lastError: unknown;",
+        "match": ": unknown;"
+      }
+    ]
+  }
+}

@@ -1,3 +1,4 @@
+import { NavigationProp } from '@react-navigation/native';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   View,
@@ -20,12 +21,12 @@ import { ITastingRecord } from '../services/realm/schemas';
 import { useCoffeeNotifications } from '../hooks/useCoffeeNotifications';
 import { CoffeeDiscoveryAlert } from '../components/CoffeeDiscoveryAlert';
 import { InsightCard } from '../components/stats/InsightCard';
-import StatusBadge from '../components/StatusBadge';
 
+import { Logger } from '../services/LoggingService';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 interface HomeScreenProps {
-  navigation: any;
+  navigation: NavigationProp<any>;
 }
 
 export default function HomeScreen({navigation}: HomeScreenProps) {
@@ -42,7 +43,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     avgScore: 0,
     bestScore: 0,
     newCoffeesThisMonth: 0,
-  });
+});
   const [insights, setInsights] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +54,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     approvalData,
     discoveryStats,
     dismissApprovalAlert,
-  } = useCoffeeNotifications();
+} = useCoffeeNotifications();
   
   // Check if admin
   const isAdmin = currentUser?.email === 'hello@zimojin.com';
@@ -84,35 +85,35 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       try {
         if (!realmService.isInitialized) {
           await realmService.initialize();
-        }
+      }
         loadDashboardData();
-      } catch (error) {
-        console.error('Failed to initialize Realm:', error);
+    } catch (error) {
+        Logger.error('Failed to initialize Realm:', 'general', { component: 'HomeScreen', error: error });
         setError('데이터베이스 초기화에 실패했습니다.');
         setIsLoading(false);
-      }
-    };
+    }
+  };
     
     initializeAndLoad();
-  }, []);
+}, []);
 
   // Reload data when user or developer mode changes
   useEffect(() => {
     if (realmService.isInitialized) {
       loadDashboardData();
-    }
-  }, [currentUser, isDeveloperMode]);
+  }
+}, [currentUser, isDeveloperMode]);
 
   // 화면이 포커스될 때마다 데이터 새로고침
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       if (realmService.isInitialized) {
         loadDashboardData();
-      }
-    });
+    }
+  });
 
     return unsubscribe;
-  }, [navigation]);
+}, [navigation]);
 
   const loadDashboardData = async () => {
     try {
@@ -121,10 +122,10 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       
       // Check if Realm is initialized - don't try to initialize here
       if (!realmService.isInitialized) {
-        console.warn('Realm not initialized yet, skipping data load');
+        Logger.warn('Realm not initialized yet, skipping data load', 'general', { component: 'HomeScreen' });
         setIsLoading(false);
         return;
-      }
+    }
       
       const realm = realmService.getRealm();
       
@@ -145,16 +146,16 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       allTastings.forEach(tasting => {
         if (tasting.roastery) {
           uniqueRoasteries.add(tasting.roastery);
-        }
-      });
+      }
+    });
       
       // 총 카페 수 계산
       const uniqueCafes = new Set();
       allTastings.forEach(tasting => {
         if (tasting.cafeName) {
           uniqueCafes.add(tasting.cafeName);
-        }
-      });
+      }
+    });
       
       setStats({
         totalTastings: total,
@@ -164,26 +165,26 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
         avgScore: Math.round(avgScore),
         bestScore,
         newCoffeesThisMonth: newCoffees,
-      });
+    });
       
       // Load insights
       const insightsData = await generateInsights();
       setInsights(insightsData);
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
+  } catch (error) {
+      Logger.error('Error loading dashboard data:', 'general', { component: 'HomeScreen', error: error });
       setError('데이터를 불러오는 중 오류가 발생했습니다.');
-    } finally {
+  } finally {
       setIsLoading(false);
-    }
-  };
+  }
+};
 
-  const getThisWeekTastings = (tastings: any) => {
+  const getThisWeekTastings = (tastings: unknown) => {
     const now = new Date();
     const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
     return tastings.filtered('createdAt >= $0', weekStart).length;
-  };
+};
 
-  const getNewCoffeesThisMonth = (tastings: any) => {
+  const getNewCoffeesThisMonth = (tastings: unknown) => {
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     
@@ -194,10 +195,10 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     thisMonthTastings.forEach((tasting: ITastingRecord) => {
       const coffeeKey = `${tasting.roastery}-${tasting.coffeeName}`;
       uniqueCoffees.add(coffeeKey);
-    });
+  });
     
     return uniqueCoffees.size;
-  };
+};
 
   // Memoized 이번 주 인사이트 생성 함수
   const generateInsights = useCallback(async () => {
@@ -220,19 +221,19 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
             icon: '📈',
             title: '산미에 대한 선호도가 15% 증가했어요.',
             value: '더 밝은 로스팅의 커피를 시도해보세요!',
-          },
+        },
           {
             icon: '🎯',
             title: '플로럴 향미 식별 정확도가 87%에 달했어요.',
             value: '전문가 수준에 근접합니다!',
-          },
+        },
           {
             icon: '☕',
             title: '새로운 로스터리 3곳을 발견했어요.',
             value: '다양성이 취향 발달에 도움이 됩니다.',
-          },
+        },
         ];
-      }
+    }
 
       // 1. 가장 많이 느낀 향미 분석
       const flavorCounts = new Map<string, number>();
@@ -242,10 +243,10 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
             const flavorKey = typeof flavor === 'string' ? flavor : (flavor.koreanValue || flavor.value || '');
             if (flavorKey) {
               flavorCounts.set(flavorKey, (flavorCounts.get(flavorKey) || 0) + 1);
-            }
-          });
-        }
-      });
+          }
+        });
+      }
+    });
 
       let topFlavor = '';
       let topFlavorCount = 0;
@@ -253,16 +254,16 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
         if (count > topFlavorCount) {
           topFlavor = flavor;
           topFlavorCount = count;
-        }
-      });
+      }
+    });
 
       if (topFlavor) {
         insights.push({
           icon: '🍓',
           title: `${topFlavor} 향미를 가장 많이 느꼈어요.`,
           value: '비슷한 향미의 커피를 더 탐색해보세요!',
-        });
-      }
+      });
+    }
 
       // 2. 평균 점수 분석
       const avgScore = recentTastings.length > 0 
@@ -280,24 +281,24 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
           icon: avgScore >= 85 ? '🌟' : avgScore >= 70 ? '📈' : '🎯',
           title: `이번 주 평균 점수는 ${Math.round(avgScore)}점이에요.`,
           value: scoreMessage,
-        });
-      }
+      });
+    }
 
       // 3. 새로운 로스터리 발견
       const uniqueRoasteries = new Set();
       recentTastings.forEach(tasting => {
         if (tasting.roastery) {
           uniqueRoasteries.add(tasting.roastery);
-        }
-      });
+      }
+    });
 
       if (uniqueRoasteries.size > 0) {
         insights.push({
           icon: '☕',
           title: `새로운 로스터리 ${uniqueRoasteries.size}곳을 발견했어요.`,
           value: '다양성이 취향 발달에 도움이 됩니다.',
-        });
-      }
+      });
+    }
 
       // 최소 3개의 인사이트를 보장
       while (insights.length < 3) {
@@ -306,66 +307,66 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
             icon: '🍓',
             title: '더 많은 기록으로 향미 패턴을 분석해보세요.',
             value: '5개 이상 기록하면 개인화된 인사이트를 제공합니다.',
-          });
-        } else if (!insights.find(i => i.title.includes('점수'))) {
+        });
+      } else if (!insights.find(i => i.title.includes('점수'))) {
           insights.push({
             icon: '📈',
             title: '꾸준한 기록으로 실력을 향상시켜보세요.',
             value: '정기적인 테이스팅이 전문성을 높입니다.',
-          });
-        } else {
+        });
+      } else {
           insights.push({
             icon: '🌟',
             title: '커피 여행을 계속해보세요!',
             value: '새로운 경험이 기다리고 있습니다.',
-          });
-        }
+        });
       }
+    }
 
-    } catch (error) {
-      console.error('Error generating insights:', error);
+  } catch (error) {
+      Logger.error('Error generating insights:', 'general', { component: 'HomeScreen', error: error });
       // 에러 시 기본 인사이트 반환
       return [
         {
           icon: '📈',
           title: '산미에 대한 선호도가 15% 증가했어요.',
           value: '더 밝은 로스팅의 커피를 시도해보세요!',
-        },
+      },
         {
           icon: '🎯',
           title: '플로럴 향미 식별 정확도가 87%에 달했어요.',
           value: '전문가 수준에 근접합니다!',
-        },
+      },
         {
           icon: '☕',
           title: '새로운 로스터리 3곳을 발견했어요.',
           value: '다양성이 취향 발달에 도움이 됩니다.',
-        },
+      },
       ];
-    }
+  }
 
     return insights.slice(0, 3); // 최대 3개만 반환
-  }, [realmService]);
+}, [realmService]);
 
 
   const handleViewHistory = () => {
     navigation.navigate('Journal' as never);
-  };
+};
 
   const handleQuickStats = () => {
     navigation.navigate('Journal' as never, { initialTab: 'stats' } as never);
-  };
+};
 
   // Responsive dimensions
   const isSmallScreen = screenWidth < 375;
   const isLargeScreen = screenWidth > 414;
   
-  // Memoized responsive styles
+  // Memoized responsive styles using typography system
   const responsiveStyles = useMemo(() => ({
     statCardHeight: isSmallScreen ? 65 : isLargeScreen ? 85 : 75,
-    statValueSize: isSmallScreen ? 20 : isLargeScreen ? 28 : 24,
-    statLabelSize: isSmallScreen ? 11 : isLargeScreen ? 13 : 12,
-  }), [isSmallScreen, isLargeScreen]);
+    statValueSize: isSmallScreen ? 20 : isLargeScreen ? 24 : 20, // Research-backed stat values
+    statLabelSize: isSmallScreen ? 16 : isLargeScreen ? 16 : 16,  // 16px - balanced readability for main stat labels
+}), [isSmallScreen, isLargeScreen]);
 
 
 
@@ -388,7 +389,6 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
             <Text style={styles.betaText}>BETA</Text>
           </View>
         </View>
-        <StatusBadge />
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -528,60 +528,60 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
+},
   navigationBar: {
-    height: 44,
+    height: 44, // iOS standard - could be tokenized
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 0.5, // Standard border width
     borderBottomColor: HIGColors.gray4,
-  },
+},
   scrollView: {
     flex: 1,
-  },
+},
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: IOSSpacing.xs,
-  },
+},
   navigationTitle: {
     ...IOSTypography.headline,
     color: IOSColors.label,
-  },
+},
   betaBadge: {
     backgroundColor: IOSColors.systemBlue,
     paddingHorizontal: IOSSpacing.xs,
     paddingVertical: IOSSpacing.xxxs,
     borderRadius: IOSLayout.cornerRadiusSmall,
-  },
+},
   betaText: {
     ...IOSTypography.caption2,
     fontWeight: '700' as const,
     color: IOSColors.systemBackground,
     letterSpacing: 0.5,
-  },
+},
   languageSwitch: {
     // 언어 스위치 스타일은 컴포넌트 내부에서 관리
-  },
+},
   content: {
     flex: 1,
     paddingHorizontal: IOSSpacing.screenPadding,
-  },
+},
   welcomeSection: {
     paddingTop: IOSSpacing.xxxl,
     paddingBottom: IOSSpacing.xxxl,
     alignItems: 'center',
-  },
+},
   statsOverview: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: IOSSpacing.md,
     paddingHorizontal: 0,
     gap: IOSSpacing.sm,
-  },
+},
   statCard: {
     flex: 1,
     backgroundColor: IOSColors.secondarySystemGroupedBackground,
@@ -591,38 +591,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     ...IOSShadows.small,
     minHeight: 75,
-  },
+},
   statValue: {
     ...IOSTypography.title2,
     color: IOSColors.systemBlue,
     marginBottom: IOSSpacing.xxs,
-  },
+},
   statLabel: {
     ...IOSTypography.caption1,
     color: IOSColors.label,
     textAlign: 'center',
-  },
+},
   welcomeTitle: {
     ...IOSTypography.title1,
     color: IOSColors.label,
-  },
+},
   insightsSection: {
     marginBottom: IOSSpacing.sm,
     marginTop: IOSSpacing.sm,
-  },
+},
   insightHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: IOSSpacing.sm,
-  },
+},
   insightIcon: {
     fontSize: IOSLayout.iconSizeMedium,
     marginRight: IOSSpacing.sm,
-  },
+},
   insightTitle: {
     ...IOSTypography.headline,
     color: IOSColors.label,
-  },
+},
   
   // Coffee Discovery Styles
   discoverySection: {
@@ -632,29 +632,29 @@ const styles = StyleSheet.create({
     marginBottom: IOSSpacing.lg,
     borderWidth: IOSLayout.borderWidthThin,
     borderColor: IOSColors.systemPurple,
-  },
+},
   discoverySectionTitle: {
     ...IOSTypography.headline,
     color: IOSColors.label,
     marginBottom: IOSSpacing.sm,
-  },
+},
   discoveryStats: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-  },
+},
   discoveryStatItem: {
     alignItems: 'center',
-  },
+},
   discoveryStatValue: {
     fontSize: 24,
     fontWeight: '700',
     color: HIGColors.blue,
-  },
+},
   discoveryStatLabel: {
     fontSize: 13,
     color: HIGColors.secondaryLabel,
     marginTop: HIGConstants.SPACING_XS,
-  },
+},
   
   // Primary Action Card
   primaryActionCard: {
@@ -663,7 +663,7 @@ const styles = StyleSheet.create({
     padding: IOSSpacing.lg,
     marginBottom: IOSSpacing.md,
     ...IOSShadows.medium,
-  },
+},
   
   // Admin Button
   adminButton: {
@@ -675,13 +675,13 @@ const styles = StyleSheet.create({
     borderWidth: IOSLayout.borderWidthThin,
     borderColor: IOSColors.systemOrange,
     ...IOSShadows.small,
-  },
+},
   adminButtonText: {
     ...IOSTypography.body,
     fontWeight: '700' as const,
     color: IOSColors.label,
     letterSpacing: 0.2,
-  },
+},
   
   // Loading & Error States
   loadingContainer: {
@@ -689,12 +689,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: IOSSpacing.xxxl * 2,
-  },
+},
   loadingText: {
     ...IOSTypography.body,
     color: IOSColors.secondaryLabel,
     marginTop: IOSSpacing.md,
-  },
+},
   errorContainer: {
     backgroundColor: IOSColors.systemRed + '10',
     borderRadius: IOSLayout.cornerRadiusLarge,
@@ -703,47 +703,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: IOSLayout.borderWidthThin,
     borderColor: IOSColors.systemRed + '20',
-  },
+},
   errorIcon: {
     fontSize: 48,
     marginBottom: IOSSpacing.md,
-  },
+},
   errorText: {
     ...IOSTypography.body,
     color: IOSColors.systemRed,
     textAlign: 'center',
     marginBottom: IOSSpacing.lg,
-  },
+},
   retryButton: {
     backgroundColor: IOSColors.systemRed,
     paddingHorizontal: IOSSpacing.lg,
     paddingVertical: IOSSpacing.md,
     borderRadius: IOSLayout.cornerRadiusMedium,
-  },
+},
   retryButtonText: {
     ...IOSTypography.subheadline,
     fontWeight: '600' as const,
     color: IOSColors.systemBackground,
-  },
+},
 
   // Skeleton Loading Styles
   skeletonCard: {
     backgroundColor: IOSColors.systemGray6,
     borderColor: IOSColors.systemGray5,
-  },
+},
   skeletonValue: {
     width: '50%',
     height: 20,
     backgroundColor: IOSColors.systemGray5,
     borderRadius: IOSLayout.cornerRadiusSmall,
     marginBottom: IOSSpacing.xxs,
-  },
+},
   skeletonLabel: {
     width: '70%',
     height: 12,
     backgroundColor: IOSColors.systemGray5,
     borderRadius: IOSLayout.cornerRadiusSmall,
-  },
+},
   insightCard: {
     flexDirection: 'row',
     backgroundColor: '#FFF8F0',
@@ -752,47 +752,47 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_MD,
     borderWidth: 1,
     borderColor: '#FFE5CC',
-  },
+},
   skeletonIcon: {
     width: 32,
     height: 32,
     backgroundColor: '#E9ECEF',
     borderRadius: 16,
     marginRight: HIGConstants.SPACING_LG,
-  },
+},
   skeletonInsightContent: {
     flex: 1,
-  },
+},
   skeletonInsightTitle: {
     width: '80%',
     height: 16,
     backgroundColor: '#E9ECEF',
     borderRadius: 4,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   skeletonInsightSubtitle: {
     width: '60%',
     height: 14,
     backgroundColor: '#E9ECEF',
     borderRadius: 4,
-  },
+},
   skeletonInsightHeader: {
     width: '60%',
     height: 18,
     backgroundColor: '#E9ECEF',
     borderRadius: 4,
-  },
+},
   skeletonButtonTitle: {
     width: '70%',
     height: 18,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: 4,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   skeletonButtonSubtitle: {
     width: '50%',
     height: 14,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 4,
-  },
+},
 });

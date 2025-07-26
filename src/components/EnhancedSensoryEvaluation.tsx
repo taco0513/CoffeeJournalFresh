@@ -59,22 +59,22 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
       key: 'acidity' as keyof SensoryScore,
       dataKey: 'acidity',
       ...koreanSensoryData.acidity,
-    },
+  },
     {
       key: 'sweetness' as keyof SensoryScore,
       dataKey: 'sweetness',
       ...koreanSensoryData.sweetness,
-    },
+  },
     {
       key: 'body' as keyof SensoryScore,
       dataKey: 'body',
       ...koreanSensoryData.body,
-    },
+  },
     {
       key: 'finish' as keyof SensoryScore,
       dataKey: 'aftertaste',
       ...koreanSensoryData.aftertaste,
-    },
+  },
   ];
 
   const getScoreColor = (score: number): string => {
@@ -82,28 +82,28 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
     if (score <= 3) return '#FFA07A';
     if (score <= 4) return '#FFD93D';
     return '#4ECDC4';
-  };
+};
 
   const getScoreLabel = (score: number): string => {
     const labels = ['', 'Very Low', 'Low', 'Medium', 'High', 'Very High'];
     return labels[Math.round(score)] || 'Medium';
-  };
+};
 
   const getScoreLabelKo = (score: number): string => {
     const labelsKo = ['', '매우 약함', '약함', '보통', '강함', '매우 강함'];
     return labelsKo[Math.round(score)] || '보통';
-  };
+};
 
   const toggleExpressionCategory = useCallback((categoryId: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const newExpanded = new Set(expandedExpressions);
     if (newExpanded.has(categoryId)) {
       newExpanded.delete(categoryId);
-    } else {
+  } else {
       newExpanded.add(categoryId);
-    }
+  }
     setExpandedExpressions(newExpanded);
-  }, [expandedExpressions]);
+}, [expandedExpressions]);
 
   const handleExpressionToggle = useCallback((categoryId: string, expression: SensoryExpression) => {
     if (!onExpressionChange) return;
@@ -119,25 +119,25 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
       newExpressions[existingIndex] = {
         ...newExpressions[existingIndex],
         selected: !newExpressions[existingIndex].selected,
-      };
-    } else {
+    };
+  } else {
       // Add new
       newExpressions.push({
         categoryId,
         expression,
         selected: true,
-      });
-    }
+    });
+  }
 
     onExpressionChange(newExpressions);
-  }, [selectedExpressions, onExpressionChange]);
+}, [selectedExpressions, onExpressionChange]);
 
   const isExpressionSelected = useCallback((categoryId: string, expressionId: string): boolean => {
     const item = selectedExpressions.find(
       expr => expr.categoryId === categoryId && expr.expression.id === expressionId
     );
     return item ? item.selected : false;
-  }, [selectedExpressions]);
+}, [selectedExpressions]);
 
   const renderSliderAttribute = (attr: typeof sensoryAttributes[0], index: number) => (
     <View 
@@ -243,7 +243,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                     isSelected && {
                       backgroundColor: `${attr.color}20`,
                       borderColor: attr.color,
-                    }
+                  }
                   ]}
                   onPress={() => handleExpressionToggle(attr.dataKey, expression)}
                   activeOpacity={0.7}
@@ -260,16 +260,16 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                   )}
                 </TouchableOpacity>
               );
-            })}
+          })}
           </View>
         )}
       </View>
     );
-  };
+};
 
   const getSelectedExpressionsCount = () => {
     return selectedExpressions.filter(expr => expr.selected).length;
-  };
+};
 
   return (
     <View style={styles.container}>
@@ -366,8 +366,8 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                           <Text style={styles.selectedExpressionText}>{item.expression.korean}</Text>
                         </View>
                       );
-                    })
-                  }
+                  })
+                }
                 </View>
               </View>
             )}
@@ -382,23 +382,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
+},
   header: {
     padding: 20,
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
-  },
+},
   title: {
     fontSize: 24,
     fontWeight: '700',
     color: '#2C3E50',
     marginBottom: 8,
-  },
+},
   subtitle: {
     fontSize: 16,
     color: '#7F8C8D',
-  },
+},
 
   // Tabs
   tabContainer: {
@@ -408,13 +408,13 @@ const styles = StyleSheet.create({
     marginTop: 16,
     borderRadius: 8,
     padding: 4,
-  },
+},
   tab: {
     flex: 1,
     paddingVertical: 12,
     alignItems: 'center',
     borderRadius: 6,
-  },
+},
   activeTab: {
     backgroundColor: '#FFFFFF',
     shadowColor: '#000',
@@ -422,94 +422,94 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
+},
   tabText: {
     fontSize: 14,
     fontWeight: '500',
     color: '#6C757D',
-  },
+},
   activeTabText: {
     color: '#495057',
     fontWeight: '600',
-  },
+},
 
   content: {
     flex: 1,
-  },
+},
 
   // Sliders section
   slidersContainer: {
     padding: 20,
-  },
+},
   attributeContainer: {
     marginBottom: 30,
     paddingBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ECF0F1',
-  },
+},
   attributeContainerLast: {
     borderBottomWidth: 0,
-  },
+},
   labelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
-  },
+},
   attributeLabels: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-  },
+},
   attributeEmoji: {
     fontSize: 20,
     marginRight: 8,
-  },
+},
   attributeTexts: {
     flex: 1,
-  },
+},
   attributeLabel: {
     fontSize: 18,
     fontWeight: '600',
-  },
+},
   attributeLabelEn: {
     fontSize: 13,
     color: '#7F8C8D',
     marginTop: 2,
-  },
+},
   scoreValue: {
     fontSize: 20,
     fontWeight: '700',
-  },
+},
   description: {
     fontSize: 14,
     color: '#95A5A6',
     marginBottom: 15,
     lineHeight: 20,
-  },
+},
   sliderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-  },
+},
   slider: {
     flex: 1,
     height: 40,
     marginHorizontal: 10,
-  },
+},
   sliderLabel: {
     fontSize: 12,
     color: '#7F8C8D',
     width: 50,
     textAlign: 'center',
-  },
+},
   scoreIndicator: {
     alignItems: 'center',
-  },
+},
   scoreLabel: {
     fontSize: 14,
     fontWeight: '600',
-  },
+},
 
   // Summary
   summaryContainer: {
@@ -517,56 +517,56 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#F8F9FA',
     borderRadius: 12,
-  },
+},
   summaryTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#2C3E50',
     marginBottom: 15,
     textAlign: 'center',
-  },
+},
   summaryScores: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-  },
+},
   summaryItem: {
     alignItems: 'center',
-  },
+},
   summaryLabel: {
     fontSize: 12,
     color: '#7F8C8D',
     marginBottom: 5,
-  },
+},
   summaryBar: {
     width: 60,
     height: 30,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   summaryValue: {
     fontSize: 14,
     fontWeight: '700',
     color: '#FFFFFF',
-  },
+},
 
   // Expressions section
   expressionsContainer: {
     padding: 16,
-  },
+},
   expressionsTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#495057',
     textAlign: 'center',
     marginBottom: 8,
-  },
+},
   expressionsSubtitle: {
     fontSize: 14,
     color: '#6C757D',
     textAlign: 'center',
     marginBottom: 20,
-  },
+},
   expressionCategoryContainer: {
     marginBottom: 16,
     backgroundColor: '#FFFFFF',
@@ -576,32 +576,32 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
-  },
+},
   expressionCategoryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
     borderRadius: 8,
-  },
+},
   categoryHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-  },
+},
   categoryEmoji: {
     fontSize: 20,
     marginRight: 8,
-  },
+},
   categoryNameKo: {
     fontSize: 16,
     fontWeight: '600',
     flex: 1,
-  },
+},
   categoryHeaderRight: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   selectionBadge: {
     minWidth: 20,
     height: 20,
@@ -609,22 +609,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
-  },
+},
   selectionBadgeText: {
     color: '#FFFFFF',
     fontSize: 11,
     fontWeight: '600',
-  },
+},
   expandIcon: {
     fontSize: 12,
     color: '#6C757D',
-  },
+},
   expressionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     padding: 16,
     paddingTop: 8,
-  },
+},
   expressionChip: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -636,19 +636,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E9ECEF',
     backgroundColor: '#F8F9FA',
-  },
+},
   expressionChipEmoji: {
     fontSize: 12,
     marginRight: 4,
-  },
+},
   expressionChipText: {
     fontSize: 12,
     color: '#495057',
-  },
+},
   beginnerStar: {
     fontSize: 10,
     marginLeft: 2,
-  },
+},
 
   // Selected expressions
   selectedExpressionsContainer: {
@@ -656,17 +656,17 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#F8F9FA',
     borderRadius: 8,
-  },
+},
   selectedExpressionsTitle: {
     fontSize: 14,
     fontWeight: '600',
     color: '#495057',
     marginBottom: 12,
-  },
+},
   selectedExpressionsList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
+},
   selectedExpressionItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -676,15 +676,15 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     borderRadius: 8,
     borderWidth: 1,
-  },
+},
   selectedExpressionEmoji: {
     fontSize: 12,
     marginRight: 4,
-  },
+},
   selectedExpressionText: {
     fontSize: 12,
     fontWeight: '500',
-  },
+},
 });
 
 export default EnhancedSensoryEvaluation;

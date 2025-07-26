@@ -16,7 +16,7 @@ const normalizeText = (text: string): string[] => {
       .split(/\s+/)
       .filter(word => word.length > 1); // Allow 2-letter words for Korean
     words.push(...normalized);
-  });
+});
   
   return words;
 };
@@ -36,7 +36,7 @@ const getFlavorVariations = (flavor: string): string[] => {
   const koreanTerm = flavorWheelKorean.translations[flavor as keyof typeof flavorWheelKorean.translations];
   if (koreanTerm) {
     variations.add(koreanTerm.toLowerCase());
-  }
+}
   
   // Add parent categories if this is a subcategory
   Object.entries(flavorWheel).forEach(([parent, children]) => {
@@ -45,9 +45,9 @@ const getFlavorVariations = (flavor: string): string[] => {
       const parentKorean = flavorWheelKorean.level1[parent as keyof typeof flavorWheelKorean.level1];
       if (parentKorean) {
         variations.add(parentKorean.toLowerCase());
-      }
     }
-  });
+  }
+});
   
   // Add child categories if this is a parent
   const children = flavorWheel[flavor as keyof typeof flavorWheel];
@@ -57,9 +57,9 @@ const getFlavorVariations = (flavor: string): string[] => {
       const childKorean = flavorWheelKorean.translations[child as keyof typeof flavorWheelKorean.translations];
       if (childKorean) {
         variations.add(childKorean.toLowerCase());
-      }
-    });
-  }
+    }
+  });
+}
   
   return Array.from(variations);
 };
@@ -71,7 +71,7 @@ const calculateFlavorMatch = (
 ): number => {
   if (!roasterNotes || roasterNotes.trim() === '') {
     return 50; // Default score if no roaster notes
-  }
+}
 
   // Get all user selected flavors with variations
   const userFlavorSet = new Set<string>();
@@ -82,8 +82,8 @@ const calculateFlavorMatch = (
     .forEach(flavor => {
       getFlavorVariations(flavor!).forEach(variation => {
         userFlavorSet.add(variation);
-      });
     });
+  });
 
   // Normalize roaster notes
   const roasterWords = normalizeText(roasterNotes);
@@ -97,17 +97,17 @@ const calculateFlavorMatch = (
     // Direct match
     if (userFlavorSet.has(word)) {
       matchScore += 10;
-    }
+  }
     // Partial match (contains)
     else {
       Array.from(userFlavorSet).forEach(userFlavor => {
         if (word.includes(userFlavor) || userFlavor.includes(word)) {
           matchScore += 5;
-        }
-      });
-    }
+      }
+    });
+  }
     maxPossibleScore += 10;
-  });
+});
   
   // Also check user selections against roaster notes (reverse check)
   const roasterNotesLower = roasterNotes.toLowerCase();
@@ -117,22 +117,22 @@ const calculateFlavorMatch = (
     maxPossibleScore += 8;
     if (roasterNotesLower.includes(selectedFlavors.level1.toLowerCase())) {
       matchScore += 8;
-    }
   }
+}
   
   if (selectedFlavors.level2) {
     maxPossibleScore += 6;
     if (roasterNotesLower.includes(selectedFlavors.level2.toLowerCase())) {
       matchScore += 6;
-    }
   }
+}
   
   if (selectedFlavors.level3) {
     maxPossibleScore += 4;
     if (roasterNotesLower.includes(selectedFlavors.level3.toLowerCase())) {
       matchScore += 4;
-    }
   }
+}
   
   // Calculate percentage
   const percentage = maxPossibleScore > 0 
@@ -151,28 +151,28 @@ const sensoryKeywords = {
     light: ['light', 'delicate', 'tea-like', '가벼운', '가벼움', '라이트', '델리케이트', '차같은'],
     medium: ['medium', 'balanced', '중간', '밸런스', '균형'],
     heavy: ['heavy', 'full', 'bold', 'rich', '무거운', '무거움', '풀바디', '진한', '리치']
-  },
+},
   acidity: {
     low: ['low acid', 'mild', 'smooth', '낮은산미', '마일드', '부드러운'],
     medium: ['balanced acid', 'moderate', '적당한산미', '중간산미'],
     high: ['bright', 'acidic', 'citric', 'tart', 'vibrant', '밝은', '산미', '시트릭', '상큼한', '활발한']
-  },
+},
   sweetness: {
     low: ['dry', 'savory', '드라이', '세이보리'],
     medium: ['subtle sweet', 'mild sweet', '은은한단맛', '약간단'],
     high: ['sweet', 'sugary', 'honey', 'caramel', '달콤한', '단맛', '달달한', '꿀', '카라멜']
-  },
+},
   finish: {
     short: ['short', 'quick', 'clean finish', '짧은', '깔끔한피니시'],
     medium: ['moderate', 'balanced finish', '적당한', '균형잡힌'],
     long: ['long', 'lingering', 'lasting', '긴', '여운', '오래가는', '지속되는']
-  },
+},
   mouthfeel: {
     Clean: ['clean', 'crisp', 'refreshing', '깔끔한', '상쾌한', '클린'],
     Creamy: ['creamy', 'smooth', 'velvety', '크리미한', '부드러운', '벨벳'],
     Juicy: ['juicy', 'succulent', 'mouth-watering', '쥬시한', '즙이많은', '과즙'],
     Silky: ['silky', 'smooth', 'elegant', '실키한', '부드러운', '우아한']
-  }
+}
 };
 
 // Calculate sensory match score (0-100)
@@ -182,7 +182,7 @@ const calculateSensoryMatch = (
 ): number => {
   if (!roasterNotes || roasterNotes.trim() === '') {
     return 60; // Default score if no roaster notes
-  }
+}
 
   const roasterNotesLower = roasterNotes.toLowerCase();
   // const roasterWords = normalizeText(roasterNotes);
@@ -196,19 +196,19 @@ const calculateSensoryMatch = (
     );
     if (hasLightKeyword) matchCount += 2;
     totalChecks += 2;
-  } else if (sensoryAttributes.body >= 4) {
+} else if (sensoryAttributes.body >= 4) {
     const hasHeavyKeyword = sensoryKeywords.body.heavy.some(keyword => 
       roasterNotesLower.includes(keyword.toLowerCase())
     );
     if (hasHeavyKeyword) matchCount += 2;
     totalChecks += 2;
-  } else {
+} else {
     const hasMediumKeyword = sensoryKeywords.body.medium.some(keyword => 
       roasterNotesLower.includes(keyword.toLowerCase())
     );
     if (hasMediumKeyword) matchCount += 1;
     totalChecks += 1;
-  }
+}
 
   // Acidity check
   if (sensoryAttributes.acidity <= 2) {
@@ -217,13 +217,13 @@ const calculateSensoryMatch = (
     );
     if (hasLowKeyword) matchCount += 2;
     totalChecks += 2;
-  } else if (sensoryAttributes.acidity >= 4) {
+} else if (sensoryAttributes.acidity >= 4) {
     const hasHighKeyword = sensoryKeywords.acidity.high.some(keyword => 
       roasterNotesLower.includes(keyword.toLowerCase())
     );
     if (hasHighKeyword) matchCount += 2;
     totalChecks += 2;
-  }
+}
 
   // Sweetness check
   if (sensoryAttributes.sweetness >= 4) {
@@ -232,7 +232,7 @@ const calculateSensoryMatch = (
     );
     if (hasSweetKeyword) matchCount += 2;
     totalChecks += 2;
-  }
+}
 
   // Finish check
   if (sensoryAttributes.finish <= 2) {
@@ -241,13 +241,13 @@ const calculateSensoryMatch = (
     );
     if (hasShortKeyword) matchCount += 1;
     totalChecks += 1;
-  } else if (sensoryAttributes.finish >= 4) {
+} else if (sensoryAttributes.finish >= 4) {
     const hasLongKeyword = sensoryKeywords.finish.long.some(keyword => 
       roasterNotesLower.includes(keyword.toLowerCase())
     );
     if (hasLongKeyword) matchCount += 1;
     totalChecks += 1;
-  }
+}
 
   // Mouthfeel check
   const mouthfeelKeywords = sensoryKeywords.mouthfeel[sensoryAttributes.mouthfeel as keyof typeof sensoryKeywords.mouthfeel];
@@ -257,7 +257,7 @@ const calculateSensoryMatch = (
     );
     if (hasKeyword) matchCount += 2;
     totalChecks += 2;
-  }
+}
 
   // Calculate base score
   const baseScore = totalChecks > 0 
@@ -294,7 +294,7 @@ export const calculateMatchScore = (
     total,
     flavorScore,
     sensoryScore,
-  };
+};
 };
 
 // Additional helper function to parse roaster notes more intelligently
@@ -312,18 +312,18 @@ export const parseRoasterNotes = (notes: string): {
     Object.values(category).forEach(keywords => {
       keywords.forEach(keyword => {
         allSensoryKeywords.add(keyword.toLowerCase());
-      });
     });
   });
+});
   
   // Categorize words
   normalized.forEach(word => {
     if (allSensoryKeywords.has(word)) {
       sensoryTerms.push(word);
-    } else {
+  } else {
       flavors.push(word);
-    }
-  });
+  }
+});
   
   return { flavors, sensoryTerms };
 };
@@ -346,7 +346,7 @@ export const getMatchDetails = (
     .filter(flavor => flavor && flavor.trim() !== '')  // Filter out empty/undefined values
     .forEach(flavor => {
       userFlavorSet.add(flavor!.toLowerCase());
-    });
+  });
   
   const matchedFlavors = roasterWords.filter(word => userFlavorSet.has(word));
   const unmatchedFlavors = Array.from(userFlavorSet).filter(
@@ -362,10 +362,10 @@ export const getMatchDetails = (
       keywords.forEach(keyword => {
         if (roasterNotesLower.includes(keyword.toLowerCase())) {
           sensoryMatches.push(`${attribute}: ${keyword}`);
-        }
-      });
+      }
     });
   });
+});
   
   // Generate suggestions based on roaster notes
   const suggestions: string[] = [];
@@ -376,18 +376,18 @@ export const getMatchDetails = (
         category.forEach(flavor => {
           if (flavor.toLowerCase().includes(word) && !userFlavorSet.has(flavor.toLowerCase())) {
             suggestions.push(flavor);
-          }
-        });
-      }
-    });
+        }
+      });
+    }
   });
+});
   
   return {
     matchedFlavors: [...new Set(matchedFlavors)],
     unmatchedFlavors: [...new Set(unmatchedFlavors)],
     sensoryMatches: [...new Set(sensoryMatches)],
     suggestions: [...new Set(suggestions)].slice(0, 5)
-  };
+};
 };
 
 // Export helper functions for testing

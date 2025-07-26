@@ -49,7 +49,7 @@ const BackButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const NavigationTitle = styled(H3, {
@@ -67,7 +67,7 @@ const SkipButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const SkipText = styled(Text, {
@@ -143,10 +143,10 @@ const OCRNoticeCard = styled(Card, {
     opacity: 0,
     y: -20,
     scale: 0.9,
-  },
+},
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const OCRNoticeText = styled(SizableText, {
@@ -179,14 +179,14 @@ const StyledTextArea = styled(TextArea, {
     borderColor: '$cupBlue',
     backgroundColor: '$backgroundFocus',
     scale: 1.02,
-  },
+},
   variants: {
     hasContent: {
       true: {
         borderColor: '$cupBlueLight',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const BottomContainer = styled(YStack, {
@@ -210,17 +210,17 @@ const NextButton = styled(Button, {
     hasContent: {
       true: {
         backgroundColor: '$cupBlue',
-      },
+    },
       false: {
         backgroundColor: '$gray6',
         color: '$gray11',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     backgroundColor: '$cupBlueDark',
     scale: 0.98,
-  },
+},
 });
 
 const KeyboardDismissWrapper = styled(TouchableWithoutFeedback, {
@@ -256,7 +256,7 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
   const route = useRoute();
   const insets = useSafeAreaInsets();
   const { currentTasting, updateField } = useTastingStore();
-  const scannedRoasterNotes = (route.params as any)?.scannedRoasterNotes;
+  const scannedRoasterNotes = (route.params as unknown)?.scannedRoasterNotes;
   
   // 초기값으로 스캔된 노트 사용
   const [notes, setNotes] = useState(scannedRoasterNotes || currentTasting.roasterNotes || '');
@@ -264,17 +264,17 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
   useEffect(() => {
     if (scannedRoasterNotes) {
       setNotes(scannedRoasterNotes);
-    }
-  }, [scannedRoasterNotes]);
+  }
+}, [scannedRoasterNotes]);
 
   const handleNext = () => {
     updateField('roasterNotes', notes);
     navigation.navigate('Result' as never);
-  };
+};
 
   const handleSkip = () => {
     navigation.navigate('Result' as never);
-  };
+};
 
   const hasContent = notes.trim().length > 0;
 
@@ -316,7 +316,7 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
                   enterStyle={{
                     opacity: 0,
                     y: -30,
-                  }}
+                }}
                   animateOnly={['opacity', 'transform']}
                 >
                   <MainTitle>로스터의 컵 노트</MainTitle>
@@ -344,7 +344,7 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
                   enterStyle={{
                     opacity: 0,
                     y: 30,
-                  }}
+                }}
                   animateOnly={['opacity', 'transform']}
                 >
                   <StyledTextArea

@@ -23,14 +23,14 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
 }) => {
   if (!profile) {
     return null;
-  }
+}
 
   
   const avatarSize = {
     small: 32,
     medium: 48,
     large: 64,
-  }[size];
+}[size];
 
   const renderAvatar = () => {
     if (profile.avatarUrl) {
@@ -40,7 +40,7 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
           style={[styles.avatar, { width: avatarSize, height: avatarSize }]}
         />
       );
-    }
+  }
 
     // Default avatar with first letter of username
     const firstLetter = profile.username.charAt(0).toUpperCase();
@@ -51,12 +51,12 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
         </Text>
       </View>
     );
-  };
+};
 
   const renderBadges = () => {
     if (!profile.badges || profile.badges.length === 0) {
       return null;
-    }
+  }
 
     const badgeEmojis: Record<string, string> = {
       'early-adopter': '🌟',
@@ -64,7 +64,7 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
       'accuracy-master': '🏆',
       'community-builder': '👥',
       'verified': '✓',
-    };
+  };
 
     return (
       <View style={styles.badgesContainer}>
@@ -75,7 +75,7 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
         ))}
       </View>
     );
-  };
+};
 
   const content = (
     <View style={[styles.container, size === 'small' && styles.containerSmall]}>
@@ -124,7 +124,7 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
         {content}
       </TouchableOpacity>
     );
-  }
+}
 
   return content;
 };
@@ -134,82 +134,82 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
-  },
+},
   containerSmall: {
     padding: 8,
-  },
+},
   avatar: {
     borderRadius: 50,
     backgroundColor: '#F0F0F0',
-  },
+},
   avatarPlaceholder: {
     borderRadius: 50,
     backgroundColor: '#E8E8E8',
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   avatarLetter: {
     fontWeight: '600',
     color: '#666',
-  },
+},
   avatarEmoji: {
     textAlign: 'center',
-  },
+},
   infoContainer: {
     flex: 1,
     marginLeft: 12,
-  },
+},
   nameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   displayName: {
     fontSize: 16,
     fontWeight: '600',
     color: '#2C3E50',
-  },
+},
   displayNameSmall: {
     fontSize: 14,
-  },
+},
   username: {
     fontSize: 14,
     color: '#7F8C8D',
     marginTop: 2,
-  },
+},
   verifiedBadge: {
     fontSize: 14,
     color: '#1DA1F2',
     marginLeft: 4,
     fontWeight: '700',
-  },
+},
   statsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 4,
-  },
+},
   stat: {
     fontSize: 12,
     color: '#95A5A6',
-  },
+},
   statSeparator: {
     fontSize: 12,
     color: '#BDC3C7',
     marginHorizontal: 6,
-  },
+},
   bio: {
     fontSize: 14,
     color: '#7F8C8D',
     marginTop: 6,
     lineHeight: 18,
-  },
+},
   badgesContainer: {
     flexDirection: 'row',
     marginLeft: 8,
-  },
+},
   badge: {
     fontSize: 16,
     marginLeft: 4,
-  },
+},
 });
 
 export default UserProfileDisplay;

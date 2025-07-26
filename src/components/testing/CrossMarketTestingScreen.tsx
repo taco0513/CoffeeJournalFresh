@@ -18,6 +18,7 @@ import {
 import { i18nValidationSuite } from '../../utils/i18nValidationSuite';
 import { getCurrentMarketConfig, isBetaMarket } from '../../config/marketConfig';
 import { getCurrentLanguage } from '../../services/i18n';
+import { Logger } from '../../services/LoggingService';
 import { HIGColors, HIGConstants } from '../../styles/common';
 
 /**
@@ -32,11 +33,11 @@ const CrossMarketTestingScreen: React.FC = () => {
   const [selectedTest, setSelectedTest] = useState<string | null>(null);
   const [showDetailedResults, setShowDetailedResults] = useState(false);
   const [showComparison, setShowComparison] = useState(true);
-  const [currentMarketInfo, setCurrentMarketInfo] = useState<any>({});
+  const [currentMarketInfo, setCurrentMarketInfo] = useState<unknown>({});
 
   useEffect(() => {
     loadCurrentMarketInfo();
-  }, []);
+}, []);
 
   /**
    * Load current market information
@@ -52,11 +53,11 @@ const CrossMarketTestingScreen: React.FC = () => {
         currentLang,
         isBeta,
         timestamp: new Date().toISOString(),
-      });
-    } catch (error) {
-      console.error('Failed to load market info:', error);
-    }
-  };
+    });
+  } catch (error) {
+      Logger.error('Failed to load market info:', 'component', { component: 'CrossMarketTestingScreen', error: error });
+  }
+};
 
   /**
    * Run full cross-market test suite
@@ -67,7 +68,7 @@ const CrossMarketTestingScreen: React.FC = () => {
     setSelectedTest(null);
     
     try {
-      console.log('🌍 Starting Cross-Market Test Suite...');
+      Logger.debug('🌍 Starting Cross-Market Test Suite...', 'component', { component: 'CrossMarketTestingScreen' });
       
       const results = await crossMarketTester.runFullTestSuite();
       setTestSuite(results);
@@ -79,19 +80,19 @@ const CrossMarketTestingScreen: React.FC = () => {
         [{ text: 'OK' }]
       );
       
-      console.log('✅ Cross-Market Test Suite completed');
-    } catch (error) {
-      console.error('Cross-market testing failed:', error);
+      Logger.debug('✅ Cross-Market Test Suite completed', 'component', { component: 'CrossMarketTestingScreen' });
+  } catch (error) {
+      Logger.error('Cross-market testing failed:', 'component', { component: 'CrossMarketTestingScreen', error: error });
       
       Alert.alert(
         'Testing Failed',
         `Cross-market testing encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}`,
         [{ text: 'OK' }]
       );
-    } finally {
+  } finally {
       setIsRunning(false);
-    }
-  };
+  }
+};
 
   /**
    * Run individual test category
@@ -108,7 +109,7 @@ const CrossMarketTestingScreen: React.FC = () => {
       const filteredResults = {
         ...results,
         results: results.results.filter(r => r.testName.includes(testName))
-      };
+    };
       
       setTestSuite(filteredResults);
       
@@ -117,17 +118,17 @@ const CrossMarketTestingScreen: React.FC = () => {
         `${filteredResults.results.length} test(s) completed`,
         [{ text: 'OK' }]
       );
-    } catch (error) {
+  } catch (error) {
       Alert.alert(
         'Test Failed',
         `${testName} test failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         [{ text: 'OK' }]
       );
-    } finally {
+  } finally {
       setIsRunning(false);
       setSelectedTest(null);
-    }
-  };
+  }
+};
 
   /**
    * Run validation suite alongside cross-market tests
@@ -136,7 +137,7 @@ const CrossMarketTestingScreen: React.FC = () => {
     setIsRunning(true);
     
     try {
-      console.log('🔍 Running combined validation...');
+      Logger.debug('🔍 Running combined validation...', 'component', { component: 'CrossMarketTestingScreen' });
       
       // Run i18n validation first
       const i18nResults = await i18nValidationSuite.runFullValidation();
@@ -156,16 +157,16 @@ const CrossMarketTestingScreen: React.FC = () => {
         `Total: ${totalPassed}/${totalTests} tests passed\\n\\nI18n: ${i18nResults.passedTests}/${i18nResults.totalTests}\\nCross-Market: ${crossMarketResults.passedTests}/${crossMarketResults.totalTests}\\n\\nApp is ${totalFailed === 0 ? 'ready' : 'not ready'} for dual-market deployment`,
         [{ text: 'OK' }]
       );
-    } catch (error) {
+  } catch (error) {
       Alert.alert(
         'Validation Failed',
         `Combined validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         [{ text: 'OK' }]
       );
-    } finally {
+  } finally {
       setIsRunning(false);
-    }
-  };
+  }
+};
 
   /**
    * Clear test results
@@ -173,7 +174,7 @@ const CrossMarketTestingScreen: React.FC = () => {
   const clearResults = () => {
     setTestSuite(null);
     setSelectedTest(null);
-  };
+};
 
   /**
    * Get status color for test result
@@ -184,8 +185,8 @@ const CrossMarketTestingScreen: React.FC = () => {
       case 'fail': return HIGColors.systemRed;
       case 'warning': return HIGColors.systemOrange;
       default: return HIGColors.systemGray;
-    }
-  };
+  }
+};
 
   /**
    * Get status icon for test result
@@ -196,8 +197,8 @@ const CrossMarketTestingScreen: React.FC = () => {
       case 'fail': return '❌';
       case 'warning': return '⚠️';
       default: return '❓';
-    }
-  };
+  }
+};
 
   /**
    * Individual test categories for targeted testing
@@ -429,7 +430,7 @@ const CrossMarketTestingScreen: React.FC = () => {
                           result.comparison.consistencyScore >= 60 ?
                             HIGColors.systemOrange :
                             HIGColors.systemRed
-                      }
+                    }
                     ]}
                   />
                 </View>
@@ -479,89 +480,89 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   header: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: HIGColors.systemPurple,
-  },
+},
   headerTitle: {
     fontSize: HIGConstants.FONT_SIZE_H1,
     fontWeight: '700',
     color: HIGColors.white,
     marginBottom: 4,
-  },
+},
   headerSubtitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.white,
     opacity: 0.9,
-  },
+},
   section: {
     padding: HIGConstants.SPACING_LG,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray4,
-  },
+},
   sectionTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   statusCard: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
-  },
+},
   statusText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   switchRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   switchLabel: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
-  },
+},
   buttonContainer: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   button: {
     flex: 1,
     paddingVertical: HIGConstants.SPACING_MD,
     paddingHorizontal: HIGConstants.SPACING_LG,
     borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
-  },
+},
   primaryButton: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   accentButton: {
     backgroundColor: HIGColors.systemPurple,
-  },
+},
   secondaryButton: {
     backgroundColor: HIGColors.systemGray5,
     borderWidth: 1,
     borderColor: HIGColors.systemGray4,
-  },
+},
   buttonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.white,
-  },
+},
   secondaryButtonText: {
     color: HIGColors.label,
-  },
+},
   categoryGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: HIGConstants.SPACING_MD,
-  },
+},
   categoryCard: {
     width: '48%',
     backgroundColor: HIGColors.white,
@@ -569,70 +570,70 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_MD,
     borderWidth: 1,
     borderColor: HIGColors.systemGray5,
-  },
+},
   categoryCardActive: {
     borderColor: HIGColors.systemBlue,
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   categoryHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 4,
-  },
+},
   categoryName: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   categoryDescription: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
-  },
+},
   summaryCard: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 4,
-  },
+},
   summaryLabel: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     fontWeight: '600',
-  },
+},
   summaryValue: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     fontFamily: 'Menlo',
-  },
+},
   summaryText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_MD,
     textAlign: 'center',
-  },
+},
   recommendationsContainer: {
     backgroundColor: HIGColors.systemBlue,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
-  },
+},
   recommendationsTitle: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.white,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   recommendationText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.white,
     marginBottom: 4,
-  },
+},
   testResultCard: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.cornerRadiusMedium,
@@ -643,114 +644,114 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
-  },
+},
   testResultHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   testResultName: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
     flex: 1,
-  },
+},
   testResultStatus: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-  },
+},
   statusIcon: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
-  },
+},
   comparisonContainer: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   marketResult: {
     flex: 1,
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusSmall,
     padding: HIGConstants.SPACING_SM,
-  },
+},
   marketTitle: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   marketStatus: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: 4,
-  },
+},
   marketTime: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.tertiaryLabel,
     fontFamily: 'Menlo',
-  },
+},
   consistencyContainer: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   consistencyLabel: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   consistencyBar: {
     height: 4,
     backgroundColor: HIGColors.systemGray5,
     borderRadius: 2,
     overflow: 'hidden',
-  },
+},
   consistencyFill: {
     height: '100%',
     borderRadius: 2,
-  },
+},
   testRecommendations: {
     backgroundColor: HIGColors.systemOrange,
     borderRadius: HIGConstants.cornerRadiusSmall,
     padding: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   testRecommendationsTitle: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     color: HIGColors.white,
     marginBottom: 4,
-  },
+},
   testRecommendationText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.white,
     marginBottom: 2,
-  },
+},
   detailedData: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusSmall,
     padding: HIGConstants.SPACING_SM,
-  },
+},
   detailedDataTitle: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   dataSection: {
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   dataTitle: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     color: HIGColors.secondaryLabel,
     marginBottom: 4,
-  },
+},
   dataText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.tertiaryLabel,
     fontFamily: 'Menlo',
-  },
+},
 });
 
 export default CrossMarketTestingScreen;

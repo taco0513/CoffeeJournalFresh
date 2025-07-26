@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTastingStore } from '../stores/tastingStore';
 import { NavigationButton } from '../components/common';
 import { HIGConstants, hitSlop, HIGColors, commonButtonStyles, commonTextStyles } from '../styles/common';
+import { Logger } from '../services/LoggingService';
 import { flavorWheelKorean } from '../data/flavorWheelKorean';
 
 const PersonalCommentScreen = () => {
@@ -26,7 +27,7 @@ const PersonalCommentScreen = () => {
     const words = text.split(' ').filter(word => word.trim() !== '');
     const uniqueWords = [...new Set(words)];
     return uniqueWords.join(' ');
-  };
+};
 
   const [personalComment, setPersonalComment] = useState(
     deduplicateText(currentTasting.personalComment || '')
@@ -37,9 +38,9 @@ const PersonalCommentScreen = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       textInputRef.current?.focus();
-    }, 500);
+  }, 500);
     return () => clearTimeout(timer);
-  }, []);
+}, []);
 
   const handleNext = async () => {
     // 개인 감상평 저장
@@ -48,18 +49,18 @@ const PersonalCommentScreen = () => {
     try {
       // 로스터 노트 화면으로 이동
       navigation.navigate('RoasterNotes' as never);
-    } catch (error) {
+  } catch (error) {
       // console.error('Error saving tasting:', error);
       // 에러가 발생해도 다음 화면으로 이동
       navigation.navigate('RoasterNotes' as never);
-    }
-  };
+  }
+};
 
   const handleSkip = () => {
     // 빈 감상평으로 저장하고 다음 단계로
     updateField('personalComment', '');
     navigation.navigate('RoasterNotes' as never);
-  };
+};
 
   // 사용자가 선택한 내용 요약
   const getUserSelections = () => {
@@ -69,33 +70,33 @@ const PersonalCommentScreen = () => {
       sensoryByCategory: {} as Record<string, string[]>,
       ratings: {} as Record<string, number>,
       mouthfeel: ''
-    };
+  };
     
     // 향미 선택 (한글로 변환) - selectedFlavors 사용
-    console.log('Current selectedFlavors:', currentTasting.selectedFlavors);
+    Logger.debug('Current selectedFlavors:', 'general', { component: 'PersonalCommentScreen', data: currentTasting.selectedFlavors });
     if (currentTasting.selectedFlavors && currentTasting.selectedFlavors.length > 0) {
       const { translations } = flavorWheelKorean;
       
       // 각 선택된 향미에 대해 처리
-      currentTasting.selectedFlavors.forEach((flavorPath: any) => {
+      currentTasting.selectedFlavors.forEach((flavorPath: unknown) => {
         if (flavorPath.level3) {
           // Level 3는 이미 한글이므로 그대로 사용
           selections.flavors.push(flavorPath.level3);
-        } else if (flavorPath.level2) {
+      } else if (flavorPath.level2) {
           // Level 2는 translations에서 한글 가져오기
           const koreanName2 = translations[flavorPath.level2 as keyof typeof translations] || flavorPath.level2;
           selections.flavors.push(koreanName2);
-        } else if (flavorPath.level1) {
+      } else if (flavorPath.level1) {
           // Level 1은 flavorWheelKorean.level1에서 한글 가져오기
           const koreanName1 = flavorWheelKorean.level1[flavorPath.level1 as keyof typeof flavorWheelKorean.level1] || flavorPath.level1;
           selections.flavors.push(koreanName1);
-        }
-      });
-    }
+      }
+    });
+  }
     
     // 감각 표현 (카테고리별로 그룹화) - Fixed deduplication
     const { selectedSensoryExpressions } = useTastingStore.getState();
-    console.log('🐛 PersonalCommentScreen selectedSensoryExpressions:', selectedSensoryExpressions?.map(e => ({ korean: e.korean, selected: e.selected, categoryId: e.categoryId })));
+    Logger.debug('🐛 PersonalCommentScreen selectedSensoryExpressions:', 'general', { component: 'PersonalCommentScreen', data: selectedSensoryExpressions?.map(e => ({ korean: e.korean, selected: e.selected, categoryId: e.categoryId })) });
     if (selectedSensoryExpressions && selectedSensoryExpressions.length > 0) {
       const categoryNames: Record<string, string> = {
         acidity: '산미',
@@ -104,7 +105,7 @@ const PersonalCommentScreen = () => {
         body: '바디',
         aftertaste: '애프터',
         balance: '밸런스'
-      };
+    };
       
       // Use Set with category tags to allow same Korean text in different categories
       const addedExpressions = new Set<string>();
@@ -122,12 +123,12 @@ const PersonalCommentScreen = () => {
             const categoryKorean = categoryNames[expr.categoryId] || expr.categoryId;
             if (!selections.sensoryByCategory[categoryKorean]) {
               selections.sensoryByCategory[categoryKorean] = [];
-            }
-            selections.sensoryByCategory[categoryKorean].push(expr.korean);
           }
+            selections.sensoryByCategory[categoryKorean].push(expr.korean);
         }
-      });
-    }
+      }
+    });
+  }
     
     // 기본 평가 점수
     selections.ratings = {
@@ -137,45 +138,45 @@ const PersonalCommentScreen = () => {
       '쓴맛': currentTasting.bitterness,
       '여운': currentTasting.finish,
       '밸런스': currentTasting.balance
-    };
+  };
     
     // 마우스필
     selections.mouthfeel = currentTasting.mouthfeel || '';
     
-    console.log('🐛 PersonalCommentScreen final selections.sensory:', selections.sensory);
-    console.log('🐛 PersonalCommentScreen final selections.sensoryByCategory:', selections.sensoryByCategory);
+    Logger.debug('🐛 PersonalCommentScreen final selections.sensory:', 'general', { component: 'PersonalCommentScreen', data: selections.sensory });
+    Logger.debug('🐛 PersonalCommentScreen final selections.sensoryByCategory:', 'general', { component: 'PersonalCommentScreen', data: selections.sensoryByCategory });
     
     return selections;
-  };
+};
   
   const userSelections = getUserSelections();
 
   // 텍스트 추가 함수
   const addTextToComment = (text: string) => {
-    console.log('🐛 addTextToComment called with:', text);
-    console.log('🐛 current personalComment:', personalComment);
+    Logger.debug('🐛 addTextToComment called with:', 'general', { component: 'PersonalCommentScreen', data: text });
+    Logger.debug('🐛 current personalComment:', 'general', { component: 'PersonalCommentScreen', data: personalComment });
     
     const currentText = personalComment.trim();
     
     // Prevent adding duplicate text
     if (currentText.includes(text)) {
-      console.log('🐛 Text already exists, skipping:', text);
+      Logger.debug('🐛 Text already exists, skipping:', 'general', { component: 'PersonalCommentScreen', data: text });
       return;
-    }
+  }
     
     if (currentText) {
       // 마지막 문자가 마침표인지 확인
       if (currentText.endsWith('.')) {
         setPersonalComment(currentText + ' ' + text);
-      } else {
-        setPersonalComment(currentText + ' ' + text);
-      }
     } else {
-      setPersonalComment(text);
+        setPersonalComment(currentText + ' ' + text);
     }
+  } else {
+      setPersonalComment(text);
+  }
     
-    console.log('🐛 personalComment after update will be:', currentText ? currentText + ' ' + text : text);
-  };
+    Logger.debug('🐛 personalComment after update will be:', 'general', { component: 'PersonalCommentScreen', data: currentText ? currentText + ' ' + text : text });
+};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -260,7 +261,7 @@ const PersonalCommentScreen = () => {
                           </Text>
                         </TouchableOpacity>
                       );
-                    })}
+                  })}
                   </View>
                 </View>
               )}
@@ -291,7 +292,7 @@ const PersonalCommentScreen = () => {
                           </Text>
                         </TouchableOpacity>
                       );
-                    })}
+                  })}
                   </View>
                 </View>
               ))}
@@ -325,7 +326,7 @@ const PersonalCommentScreen = () => {
                             </Text>
                           </TouchableOpacity>
                         );
-                      })}
+                    })}
                   </View>
                 </View>
               )}
@@ -377,7 +378,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
+},
   navigationBar: {
     height: 44,
     flexDirection: 'row',
@@ -387,61 +388,61 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.systemGray4,
-  },
+},
   backButton: {
     fontSize: 24,
     color: HIGColors.systemBlue,
-  },
+},
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   skipButton: {
     fontSize: 15,
     color: HIGColors.systemBlue,
-  },
+},
   progressBar: {
     height: 3,
     backgroundColor: HIGColors.systemGray5,
     overflow: 'hidden',
-  },
+},
   progressFill: {
     height: '100%',
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   keyboardAvoidingView: {
     flex: 1,
-  },
+},
   scrollView: {
     flex: 1,
-  },
+},
   content: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_MD,
-  },
+},
   section: {
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   sectionDescription: {
     fontSize: 15,
     color: HIGColors.secondaryLabel,
     lineHeight: 20,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   inputContainer: {
     backgroundColor: '#F8F8F8',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E0E0E0',
     padding: HIGConstants.SPACING_MD,
-  },
+},
   textInput: {
     fontSize: 16,
     color: HIGColors.label,
@@ -449,37 +450,37 @@ const styles = StyleSheet.create({
     minHeight: 88,  // 4줄 높이 (22 * 4)
     maxHeight: 88,  // 고정 높이
     textAlignVertical: 'top',
-  },
+},
   characterCount: {
     fontSize: 13,
     color: HIGColors.tertiaryLabel,
     textAlign: 'right',
     marginTop: HIGConstants.SPACING_XS,
-  },
+},
   selectionsTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   selectionRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   selectionLabel: {
     fontSize: 14,
     fontWeight: '600',
     color: HIGColors.secondaryLabel,
     width: 50,
     marginTop: 4,
-  },
+},
   selectionTags: {
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: HIGConstants.SPACING_XS,
-  },
+},
   selectionTag: {
     backgroundColor: '#E8F0FE',
     paddingHorizontal: 12,
@@ -489,7 +490,7 @@ const styles = StyleSheet.create({
     borderColor: '#D2E3FC',
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   selectionTagSelected: {
     backgroundColor: HIGColors.systemBlue,
     borderColor: HIGColors.systemBlue,
@@ -499,22 +500,22 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   selectionText: {
     fontSize: 14,
     color: HIGColors.label,
     fontWeight: '500',
-  },
+},
   selectionTextSelected: {
     color: '#FFFFFF',
     fontWeight: '600',
-  },
+},
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.systemGray4,
-  },
+},
   bottomSkipButton: {
     flex: 1,
     height: 48,
@@ -524,24 +525,24 @@ const styles = StyleSheet.create({
     borderColor: HIGColors.systemGray4,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   bottomSkipButtonText: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     fontWeight: '500',
-  },
+},
   nextButton: {
     height: 48,
     backgroundColor: HIGColors.systemBlue,
     borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   nextButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
-  },
+},
 });
 
 export default PersonalCommentScreen;

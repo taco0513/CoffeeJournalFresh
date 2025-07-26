@@ -30,17 +30,17 @@ export const TastingSearchCard: React.FC<TastingSearchCardProps> = ({
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-    });
-  };
+  });
+};
 
   const getFlavorNotes = (): string[] => {
     if (tasting.flavorNotes && Array.isArray(tasting.flavorNotes)) {
       return tasting.flavorNotes.map(note => 
         note.koreanValue || note.value || String(note)
       ).filter(Boolean);
-    }
+  }
     return [];
-  };
+};
 
   const flavorNotes = getFlavorNotes();
   const displayedFlavors = flavorNotes.slice(0, 3);

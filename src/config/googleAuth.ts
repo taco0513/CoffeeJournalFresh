@@ -1,3 +1,5 @@
+import { Logger } from '../services/LoggingService';
+
 // Google OAuth Configuration
 // To set up Google Sign-In:
 // 1. Go to https://console.cloud.google.com
@@ -40,9 +42,9 @@ export const validateGoogleConfig = (): boolean => {
   const { iosClientId, webClientId } = GoogleAuthConfig;
   
   if (!iosClientId && !webClientId) {
-    console.warn('Google Sign-In: No client IDs configured. Please set GOOGLE_OAUTH_IOS_CLIENT_ID or GOOGLE_OAUTH_WEB_CLIENT_ID environment variables.');
+    Logger.warn('Google Sign-In: No client IDs configured. Please set GOOGLE_OAUTH_IOS_CLIENT_ID or GOOGLE_OAUTH_WEB_CLIENT_ID environment variables.', 'general', { component: 'googleAuth' });
     return false;
-  }
+}
   
   return true;
 };

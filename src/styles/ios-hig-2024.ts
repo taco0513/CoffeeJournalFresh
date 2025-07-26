@@ -14,7 +14,7 @@ export const IOSTypography = {
     fontWeight: '700' as const,
     lineHeight: 41,
     letterSpacing: 0.374,
-  },
+},
   
   // Title 1 (28pt) - 주요 화면 제목
   title1: {
@@ -22,7 +22,7 @@ export const IOSTypography = {
     fontWeight: '400' as const,
     lineHeight: 34,
     letterSpacing: 0.364,
-  },
+},
   
   // Title 2 (22pt) - 섹션 헤더
   title2: {
@@ -30,7 +30,7 @@ export const IOSTypography = {
     fontWeight: '400' as const,
     lineHeight: 28,
     letterSpacing: 0.352,
-  },
+},
   
   // Title 3 (20pt) - 서브섹션 헤더
   title3: {
@@ -38,7 +38,7 @@ export const IOSTypography = {
     fontWeight: '400' as const,
     lineHeight: 25,
     letterSpacing: 0.38,
-  },
+},
   
   // Headline (17pt Bold) - Navigation Title
   headline: {
@@ -46,7 +46,7 @@ export const IOSTypography = {
     fontWeight: '600' as const,
     lineHeight: 22,
     letterSpacing: -0.408,
-  },
+},
   
   // Body (17pt) - 기본 본문
   body: {
@@ -54,7 +54,7 @@ export const IOSTypography = {
     fontWeight: '400' as const,
     lineHeight: 22,
     letterSpacing: -0.408,
-  },
+},
   
   // Callout (16pt) - 강조 텍스트
   callout: {
@@ -62,7 +62,7 @@ export const IOSTypography = {
     fontWeight: '400' as const,
     lineHeight: 21,
     letterSpacing: -0.32,
-  },
+},
   
   // Subheadline (15pt) - 보조 제목
   subheadline: {
@@ -70,7 +70,7 @@ export const IOSTypography = {
     fontWeight: '400' as const,
     lineHeight: 20,
     letterSpacing: -0.24,
-  },
+},
   
   // Footnote (13pt) - 각주, 보조 정보
   footnote: {
@@ -78,7 +78,7 @@ export const IOSTypography = {
     fontWeight: '400' as const,
     lineHeight: 18,
     letterSpacing: -0.078,
-  },
+},
   
   // Caption 1 (12pt) - 캡션
   caption1: {
@@ -86,7 +86,7 @@ export const IOSTypography = {
     fontWeight: '400' as const,
     lineHeight: 16,
     letterSpacing: 0,
-  },
+},
   
   // Caption 2 (11pt) - 작은 캡션
   caption2: {
@@ -94,7 +94,7 @@ export const IOSTypography = {
     fontWeight: '400' as const,
     lineHeight: 13,
     letterSpacing: 0.066,
-  },
+},
 };
 
 // ===== Color System =====
@@ -198,7 +198,7 @@ export const IOSLayout = {
   statusBarHeight: Platform.select({
     ios: 20,
     android: 0,
-  }),
+}),
   
   // Safe Area (iPhone X+)
   safeAreaTop: 44,
@@ -242,11 +242,11 @@ export const IOSShadows = {
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.1,
       shadowRadius: 2,
-    },
+  },
     android: {
       elevation: 2,
-    },
-  }),
+  },
+}),
   
   // 중간 그림자 (모달, 플로팅 요소)
   medium: Platform.select({
@@ -255,11 +255,11 @@ export const IOSShadows = {
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.15,
       shadowRadius: 4,
-    },
+  },
     android: {
       elevation: 4,
-    },
-  }),
+  },
+}),
   
   // 큰 그림자 (팝업, 드롭다운)
   large: Platform.select({
@@ -268,11 +268,11 @@ export const IOSShadows = {
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.2,
       shadowRadius: 8,
-    },
+  },
     android: {
       elevation: 8,
-    },
-  }),
+  },
+}),
 };
 
 // ===== Animation Constants =====
@@ -293,6 +293,6 @@ export const IOSAnimation = {
     in: 'ease-in',
     out: 'ease-out',
     inOut: 'ease-in-out',
-  },
+},
 };
 

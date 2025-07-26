@@ -7,6 +7,7 @@ import React from 'react';
 import { InteractionManager } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { Logger } from '../services/LoggingService';
 export interface PerformanceMetrics {
   screenName: string;
   renderTime: number;
@@ -26,7 +27,7 @@ export interface PerformanceComparison {
     renderTime: number;
     interactionTime: number;
     memoryUsage?: number;
-  };
+};
 }
 
 class PerformanceTestManager {
@@ -39,8 +40,8 @@ class PerformanceTestManager {
    */
   startRenderMeasurement(screenName: string) {
     this.startTime = performance.now();
-    console.log(`🏁 Starting render measurement for ${screenName}`);
-  }
+    Logger.debug(`🏁 Starting render measurement for ${screenName}`, 'util', { component: 'performanceTestUtils' });
+}
 
   /**
    * End render measurement and record metrics
@@ -52,8 +53,8 @@ class PerformanceTestManager {
     await new Promise(resolve => {
       InteractionManager.runAfterInteractions(() => {
         resolve(true);
-      });
     });
+  });
 
     const interactionTime = performance.now() - this.startTime;
 
@@ -63,19 +64,19 @@ class PerformanceTestManager {
       interactionTime,
       timestamp: new Date(),
       isTamagui,
-    };
+  };
 
     // Store metrics
     await this.storeMetrics(screenName, metrics);
     
-    console.log(`✅ ${screenName} Performance:`, {
+    Logger.debug(`✅ ${screenName} Performance:`, {
       renderTime: `${renderTime.toFixed(2)}ms`,
       interactionTime: `${interactionTime.toFixed(2)}ms`,
       type: isTamagui ? 'Tamagui' : 'Legacy',
-    });
+  });
 
     return metrics;
-  }
+}
 
   /**
    * Store metrics for comparison
@@ -87,9 +88,9 @@ class PerformanceTestManager {
     // Also store in memory
     if (!this.metrics.has(screenName)) {
       this.metrics.set(screenName, []);
-    }
-    this.metrics.get(screenName)!.push(metrics);
   }
+    this.metrics.get(screenName)!.push(metrics);
+}
 
   /**
    * Get comparison between legacy and Tamagui versions
@@ -106,7 +107,7 @@ class PerformanceTestManager {
 
     if (!legacy || !tamagui) {
       return null;
-    }
+  }
 
     return {
       screenName,
@@ -118,9 +119,9 @@ class PerformanceTestManager {
         memoryUsage: legacy.memoryUsage && tamagui.memoryUsage
           ? ((legacy.memoryUsage - tamagui.memoryUsage) / legacy.memoryUsage) * 100
           : undefined,
-      },
-    };
-  }
+    },
+  };
+}
 
   /**
    * Get all comparisons
@@ -133,8 +134,8 @@ class PerformanceTestManager {
       if (key.startsWith('perf_')) {
         const parts = key.split('_');
         screenNames.add(parts[1]);
-      }
-    });
+    }
+  });
 
     const comparisons: PerformanceComparison[] = [];
     
@@ -142,11 +143,11 @@ class PerformanceTestManager {
       const comparison = await this.getComparison(screenName);
       if (comparison) {
         comparisons.push(comparison);
-      }
     }
+  }
 
     return comparisons;
-  }
+}
 
   /**
    * Generate performance report
@@ -156,7 +157,7 @@ class PerformanceTestManager {
     
     if (comparisons.length === 0) {
       return 'No performance comparisons available yet.';
-    }
+  }
 
     let report = '# Tamagui Migration Performance Report\n\n';
     report += `Generated: ${new Date().toISOString()}\n\n`;
@@ -176,7 +177,7 @@ class PerformanceTestManager {
       totalRenderImprovement += comp.improvement.renderTime;
       totalInteractionImprovement += comp.improvement.interactionTime;
       screenCount++;
-    });
+  });
 
     report += '## Summary\n\n';
     report += `- **Average Render Time Improvement**: ${(totalRenderImprovement / screenCount).toFixed(1)}%\n`;
@@ -184,7 +185,7 @@ class PerformanceTestManager {
     report += `- **Screens Tested**: ${screenCount}\n`;
 
     return report;
-  }
+}
 
   /**
    * Clear all stored metrics
@@ -194,8 +195,8 @@ class PerformanceTestManager {
     const perfKeys = keys.filter(key => key.startsWith('perf_'));
     await AsyncStorage.multiRemove(perfKeys);
     this.metrics.clear();
-    console.log('🧹 Cleared all performance metrics');
-  }
+    Logger.debug('🧹 Cleared all performance metrics', 'util', { component: 'performanceTestUtils' });
+}
 }
 
 // Singleton instance
@@ -216,13 +217,13 @@ export function withPerformanceMeasurement<T extends object>(
       // Measure after render completes
       requestAnimationFrame(() => {
         performanceTest.endRenderMeasurement(screenName, isTamagui);
-      });
-    }
+    });
+  }
 
     render() {
       return <WrappedComponent {...this.props} />;
-    }
-  };
+  }
+};
 }
 
 /**
@@ -235,20 +236,20 @@ export function usePerformanceMeasurement(screenName: string, isTamagui: boolean
     // Measure after render completes
     requestAnimationFrame(() => {
       performanceTest.endRenderMeasurement(screenName, isTamagui);
-    });
-  }, [screenName, isTamagui]);
+  });
+}, [screenName, isTamagui]);
 }
 
 /**
  * Utility to run automated performance tests
  */
 export async function runAutomatedPerformanceTests(screens: string[]) {
-  console.log('🚀 Starting automated performance tests...');
+  Logger.debug('🚀 Starting automated performance tests...', 'util', { component: 'performanceTestUtils' });
   
   const results: PerformanceComparison[] = [];
   
   for (const screen of screens) {
-    console.log(`Testing ${screen}...`);
+    Logger.debug('Testing ${screen}...', 'util', { component: 'performanceTestUtils' });
     // Navigation to each screen would happen here in a real test
     // For now, we'll simulate with mock data
     
@@ -257,11 +258,11 @@ export async function runAutomatedPerformanceTests(screens: string[]) {
     const comparison = await performanceTest.getComparison(screen);
     if (comparison) {
       results.push(comparison);
-    }
   }
+}
   
   const report = await performanceTest.generateReport();
-  console.log('\n📊 Performance Report:\n', report);
+  Logger.debug('\n📊 Performance Report:\n', 'util', { component: 'performanceTestUtils', data: report });
   
   return results;
 }
@@ -277,16 +278,16 @@ export async function analyzeBundleSize() {
       totalSize: 5200000, // 5.2MB
       jsSize: 4100000,
       assetsSize: 1100000,
-    },
+  },
     tamagui: {
       totalSize: 4420000, // 4.42MB
       jsSize: 3500000,
       assetsSize: 920000,
-    },
+  },
     improvement: {
       total: 15, // 15% reduction
       js: 14.6,
       assets: 16.4,
-    },
-  };
+  },
+};
 }

@@ -7,6 +7,7 @@ import uuid from 'react-native-uuid';
 // import ViewShot from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
 
+import { Logger } from './LoggingService';
 const FEEDBACK_QUEUE_KEY = '@feedback_queue';
 
 export class FeedbackService {
@@ -19,11 +20,11 @@ export class FeedbackService {
         .single();
       
       return data?.is_active || false;
-    } catch (error) {
-      console.error('Error checking beta status:', error);
+  } catch (error) {
+      Logger.error('Error checking beta status:', 'service', { component: 'FeedbackService', error: error });
       return false;
-    }
   }
+}
 
   static async submitFeedback(feedback: {
     category: FeedbackCategory;
@@ -34,22 +35,22 @@ export class FeedbackService {
     userId?: string;
     userEmail?: string;
     username?: string;
-    context?: any;
-  }): Promise<void> {
+    context?: unknown;
+}): Promise<void> {
     const deviceInfo = {
       platform: Platform.OS,
       osVersion: Platform.Version.toString(),
       appVersion: DeviceInfo.getVersion(),
       model: DeviceInfo.getModel(),
       buildNumber: DeviceInfo.getBuildNumber(),
-    };
+  };
 
     let screenshotUrl: string | undefined;
     
     // Upload screenshot if provided
     if (feedback.screenshotUri) {
       screenshotUrl = await this.uploadScreenshot(feedback.screenshotUri);
-    }
+  }
 
     const feedbackItem: Partial<FeedbackItem> = {
       id: uuid.v4() as string,
@@ -65,7 +66,7 @@ export class FeedbackService {
       context: feedback.context,
       isBetaUser: feedback.userId ? await this.checkBetaStatus(feedback.userId) : false,
       createdAt: new Date(),
-    };
+  };
 
     try {
       const { error } = await supabase
@@ -76,13 +77,13 @@ export class FeedbackService {
 
       // Send email notification to admin
       await this.sendAdminNotification(feedbackItem as FeedbackItem);
-    } catch (error) {
-      console.error('Error submitting feedback:', error);
+  } catch (error) {
+      Logger.error('Error submitting feedback:', 'service', { component: 'FeedbackService', error: error });
       // Queue for offline submission
       await this.queueFeedback(feedbackItem as FeedbackItem);
       throw error;
-    }
   }
+}
 
   static async uploadScreenshot(uri: string): Promise<string> {
     try {
@@ -94,7 +95,7 @@ export class FeedbackService {
         .from('app-assets')
         .upload(filePath, Buffer.from(base64, 'base64'), {
           contentType: 'image/jpeg',
-        });
+      });
 
       if (error) throw error;
 
@@ -103,11 +104,11 @@ export class FeedbackService {
         .getPublicUrl(filePath);
 
       return urlData.publicUrl;
-    } catch (error) {
-      console.error('Error uploading screenshot:', error);
+  } catch (error) {
+      Logger.error('Error uploading screenshot:', 'service', { component: 'FeedbackService', error: error });
       return '';
-    }
   }
+}
 
   static async queueFeedback(feedback: FeedbackItem): Promise<void> {
     try {
@@ -117,13 +118,13 @@ export class FeedbackService {
       queue.push({
         ...feedback,
         isOffline: true,
-      });
+    });
 
       await AsyncStorage.setItem(FEEDBACK_QUEUE_KEY, JSON.stringify(queue));
-    } catch (error) {
-      console.error('Error queuing feedback:', error);
-    }
+  } catch (error) {
+      Logger.error('Error queuing feedback:', 'service', { component: 'FeedbackService', error: error });
   }
+}
 
   static async syncQueuedFeedback(): Promise<void> {
     try {
@@ -141,37 +142,37 @@ export class FeedbackService {
 
           if (error) {
             failedItems.push(feedback);
-          }
-        } catch (error) {
-          failedItems.push(feedback);
         }
+      } catch (error) {
+          failedItems.push(feedback);
       }
+    }
 
       // Keep failed items in queue
       if (failedItems.length > 0) {
         await AsyncStorage.setItem(FEEDBACK_QUEUE_KEY, JSON.stringify(failedItems));
-      } else {
+    } else {
         await AsyncStorage.removeItem(FEEDBACK_QUEUE_KEY);
-      }
-    } catch (error) {
-      console.error('Error syncing queued feedback:', error);
     }
+  } catch (error) {
+      Logger.error('Error syncing queued feedback:', 'service', { component: 'FeedbackService', error: error });
   }
+}
 
   static async sendAdminNotification(feedback: FeedbackItem): Promise<void> {
     try {
       // This would be implemented with your email service
       // For now, we'll just log it
-      console.log('Admin notification for feedback:', feedback);
+      Logger.debug('Admin notification for feedback:', 'service', { component: 'FeedbackService', data: feedback });
       
       // You could use Supabase Edge Functions or integrate with SendGrid/Mailgun
       // await supabase.functions.invoke('send-feedback-email', { body: feedback });
-    } catch (error) {
-      console.error('Error sending admin notification:', error);
-    }
+  } catch (error) {
+      Logger.error('Error sending admin notification:', 'service', { component: 'FeedbackService', error: error });
   }
+}
 
-  static async getFeedbackStats(): Promise<any> {
+  static async getFeedbackStats(): Promise<unknown> {
     try {
       const { data, error } = await supabase
         .from('feedback_analytics')
@@ -180,11 +181,11 @@ export class FeedbackService {
 
       if (error) throw error;
       return data;
-    } catch (error) {
-      console.error('Error getting feedback stats:', error);
+  } catch (error) {
+      Logger.error('Error getting feedback stats:', 'service', { component: 'FeedbackService', error: error });
       return null;
-    }
   }
+}
 
   static async getUserFeedback(userId: string): Promise<FeedbackItem[]> {
     try {
@@ -196,13 +197,13 @@ export class FeedbackService {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      console.error('Error getting user feedback:', error);
+  } catch (error) {
+      Logger.error('Error getting user feedback:', 'service', { component: 'FeedbackService', error: error });
       return [];
-    }
   }
+}
 
-  static async captureScreenshot(viewRef: any): Promise<string | null> {
+  static async captureScreenshot(viewRef: unknown): Promise<string | null> {
     try {
       // Temporarily disabled until ViewShot is properly configured
       // const uri = await ViewShot.captureRef(viewRef, {
@@ -211,9 +212,9 @@ export class FeedbackService {
       // });
       // return uri;
       return null;
-    } catch (error) {
-      console.error('Error capturing screenshot:', error);
+  } catch (error) {
+      Logger.error('Error capturing screenshot:', 'service', { component: 'FeedbackService', error: error });
       return null;
-    }
   }
+}
 }

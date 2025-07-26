@@ -4,6 +4,7 @@ import { ErrorHandler } from '../../utils/errorHandler';
 import NetworkUtils from '../../utils/NetworkUtils';
 import { AuthLogger, logError, PerformanceTimer } from '../../utils/logger';
 
+import { Logger } from '../LoggingService';
 const AUTH_STORAGE_KEY = '@cupnote_auth';
 
 export interface AuthUser {
@@ -20,9 +21,9 @@ class AuthService {
   static getInstance(): AuthService {
     if (!AuthService.instance) {
       AuthService.instance = new AuthService();
-    }
-    return AuthService.instance;
   }
+    return AuthService.instance;
+}
   
   /**
    * Sign up a new user
@@ -34,16 +35,16 @@ class AuthService {
           const result = await supabase.auth.signUp({
             email,
             password,
-          });
+        });
           
           if (result.error) {
             const authError = new Error(result.error.message);
-            (authError as any).code = 'AUTH_ERROR';
+            (authError as unknown).code = 'AUTH_ERROR';
             throw authError;
-          }
+        }
           
           return result;
-        },
+      },
         {
           maxRetries: 2,
           onRetry: (attempt, error) => {
@@ -51,21 +52,21 @@ class AuthService {
               function: 'signUp',
               error,
               data: { attempt, email }
-            });
-          }
+          });
         }
+      }
       );
       
       if (error) {
-        const authError = new Error((error as any).message || 'Sign up failed');
-        (authError as any).code = 'AUTH_ERROR';
+        const authError = new Error((error as Error).message || 'Sign up failed');
+        (authError as unknown).code = 'AUTH_ERROR';
         throw authError;
-      }
+    }
       if (!data.user) {
         const authError = new Error('No user returned from signup');
-        (authError as any).code = 'AUTH_ERROR';
+        (authError as unknown).code = 'AUTH_ERROR';
         throw authError;
-      }
+    }
       
       // Store auth state
       await this.saveAuthState(data.user.id);
@@ -73,14 +74,14 @@ class AuthService {
       return {
         id: data.user.id,
         email: data.user.email,
-      };
-    } catch (error: any) {
+    };
+  } catch (error) {
       if (error.message?.includes('fetch')) {
         error.code = 'NETWORK_ERROR';
-      }
-      throw error;
     }
+      throw error;
   }
+}
   
   /**
    * Sign in an existing user
@@ -92,19 +93,19 @@ class AuthService {
           const result = await supabase.auth.signInWithPassword({
             email,
             password,
-          });
+        });
           
           if (result.error) throw result.error;
           if (!result.data.user) throw new Error('No user returned from signin');
           
           return result;
-        },
+      },
         {
           maxRetries: 2,
           onRetry: (attempt, error) => {
-            console.log(`[Auth] Retrying sign in (attempt ${attempt}):`, error.message);
-          }
+            Logger.debug(`[Auth] Retrying sign in (attempt ${attempt}):`, 'supabase', { component: 'auth', error: error.message });
         }
+      }
       );
       
       if (error) throw error;
@@ -116,11 +117,11 @@ class AuthService {
       return {
         id: data.user.id,
         email: data.user.email,
-      };
-    } catch (error) {
+    };
+  } catch (error) {
       throw error;
-    }
   }
+}
   
   /**
    * Sign out the current user
@@ -132,10 +133,10 @@ class AuthService {
       
       // Clear auth state
       await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
   }
+}
   
   /**
    * Get the current authenticated user
@@ -149,11 +150,11 @@ class AuthService {
       return {
         id: user.id,
         email: user.email || undefined,
-      };
-    } catch (error) {
+    };
+  } catch (error) {
       return null;
-    }
   }
+}
   
   /**
    * Check if user is authenticated
@@ -161,7 +162,7 @@ class AuthService {
   async isAuthenticated(): Promise<boolean> {
     const user = await this.getCurrentUser();
     return user !== null;
-  }
+}
   
   /**
    * Restore auth session on app startup
@@ -176,13 +177,13 @@ class AuthService {
       if (!user || user.id !== storedUserId) {
         await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
         return null;
-      }
+    }
       
       return user;
-    } catch (error) {
+  } catch (error) {
       return null;
-    }
   }
+}
   
   /**
    * Listen to auth state changes
@@ -194,13 +195,13 @@ class AuthService {
         callback({
           id: session.user.id,
           email: session.user.email || undefined,
-        });
-      } else {
+      });
+    } else {
         await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
         callback(null);
-      }
-    });
-  }
+    }
+  });
+}
   
   /**
    * Reset password for a user
@@ -209,13 +210,13 @@ class AuthService {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: 'cupnote://reset-password',
-      });
+    });
       
       if (error) throw error;
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
   }
+}
   
   /**
    * Update user password
@@ -224,20 +225,20 @@ class AuthService {
     try {
       const { error } = await supabase.auth.updateUser({
         password: newPassword,
-      });
+    });
       
       if (error) throw error;
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
   }
+}
   
   private async saveAuthState(userId: string): Promise<void> {
     try {
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, userId);
-    } catch (error) {
-    }
+  } catch (error) {
   }
+}
 }
 
 export default AuthService.getInstance();

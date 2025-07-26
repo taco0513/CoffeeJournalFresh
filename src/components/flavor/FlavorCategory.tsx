@@ -31,11 +31,11 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
     setExpandedSubcategories(prev => {
       if (prev.includes(subcategoryName)) {
         return prev.filter(name => name !== subcategoryName);
-      } else {
+    } else {
         return [...prev, subcategoryName];
-      }
-    });
-  };
+    }
+  });
+};
 
   const checkIsSelected = (level1: string, level2: string, level3?: string): boolean => {
     if (level3) {
@@ -43,20 +43,20 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
       return selectedPaths.some(
         p => p.level1 === level1 && p.level2 === level2 && p.level3 === level3
       );
-    } else {
+  } else {
       // Check for level 2 match (subcategory) OR if any level 3 from this subcategory is selected
       return selectedPaths.some(
         p => p.level1 === level1 && p.level2 === level2 && !p.level3
       ) || selectedPaths.some(
         p => p.level1 === level1 && p.level2 === level2 && p.level3
       );
-    }
-  };
+  }
+};
 
   const renderHighlightedText = (text: string, isSelected: boolean = false) => {
     if (!searchQuery || searchQuery.trim() === '') {
       return text;
-    }
+  }
 
     const query = searchQuery.toLowerCase();
     const textLower = text.toLowerCase();
@@ -64,7 +64,7 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
 
     if (index === -1) {
       return text;
-    }
+  }
 
     const before = text.substring(0, index);
     const match = text.substring(index, index + searchQuery.length);
@@ -77,7 +77,7 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
         {after}
       </>
     );
-  };
+};
 
   return (
     <View style={styles.categoryContainer}>
@@ -119,15 +119,15 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
             onScrollBeginDrag={(e) => {
               isScrolling.current = true;
               scrollStartX.current = e.nativeEvent.contentOffset.x;
-            }}
+          }}
             onScrollEndDrag={() => {
               setTimeout(() => {
                 isScrolling.current = false;
-              }, 100);
-            }}
+            }, 100);
+          }}
             onMomentumScrollEnd={() => {
               isScrolling.current = false;
-            }}
+          }}
             scrollEventThrottle={16}
           >
               {category.subcategories.map(sub => {
@@ -148,8 +148,8 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
                       if (!isScrolling.current) {
                         ReactNativeHapticFeedback.trigger('impactLight');
                         onSelectFlavor(category.category, sub.name, '');
-                      }
-                    }}
+                    }
+                  }}
                     activeOpacity={0.7}
                     accessible={true}
                     accessibilityLabel={`${sub.koreanName} 서브카테고리`}
@@ -172,7 +172,7 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
                     )}
                   </TouchableOpacity>
                 );
-              })}
+            })}
           </ScrollView>
           
           <View style={styles.subcategoryContainer}>
@@ -206,13 +206,13 @@ export const FlavorCategory: React.FC<FlavorCategoryProps> = ({
                       {subcategoriesWithoutFlavors.length === 1 
                         ? `'${subcategoriesWithoutFlavors[0].koreanName}'에 대한 세부 향미가 없습니다`
                         : `'${subcategoriesWithoutFlavors.map(sub => sub.koreanName).join("', '")}'에 대한 세부 향미가 없습니다`
-                      }
+                    }
                     </Text>
                   </View>
                 );
 
                 return [...flavorChips, emptyMessage].filter(Boolean);
-              })()}
+            })()}
             </View>
           </View>
         </>
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   categoryContainer: {
     marginHorizontal: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   categoryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -240,53 +240,53 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2, // Android shadow
-  },
+},
   categoryLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   categoryEmoji: {
     fontSize: 20,
     marginRight: HIGConstants.SPACING_SM,
-  },
+},
   categoryTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   categoryRight: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   selectedBadge: {
     backgroundColor: HIGColors.systemBlue,
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: 2,
     borderRadius: 10,
     marginRight: HIGConstants.SPACING_SM,
-  },
+},
   selectedBadgeText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '600',
-  },
+},
   expandIcon: {
     fontSize: 12,
     color: HIGColors.tertiaryLabel,
-  },
+},
   subcategoryContainer: {
-  },
+},
   subcategoryScrollView: {
     marginHorizontal: -HIGConstants.SPACING_LG,
     marginTop: HIGConstants.SPACING_SM,
-  },
+},
   subcategoryGrid: {
     flexDirection: 'row',
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   subcategory: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   subcategoryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -301,16 +301,16 @@ const styles = StyleSheet.create({
     height: 40, // Increased for better pill proportion
     minWidth: SUBCATEGORY_PILL_WIDTH,
     justifyContent: 'center',
-  },
+},
   subcategoryHeaderSelected: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   subcategoryHeaderHasSelection: {
     backgroundColor: HIGColors.systemGray6,
-  },
+},
   subcategoryCheckbox: {
     paddingRight: HIGConstants.SPACING_SM,
-  },
+},
   checkbox: {
     width: 20,
     height: 20,
@@ -320,86 +320,86 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   checkboxSelected: {
     backgroundColor: HIGColors.systemBlue,
     borderColor: HIGColors.systemBlue,
-  },
+},
   checkboxPartial: {
     backgroundColor: '#FFFFFF',
     borderColor: HIGColors.systemBlue,
-  },
+},
   checkboxCheckmark: {
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '700',
-  },
+},
   checkboxPartialMark: {
     width: 10,
     height: 2,
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   subcategoryContent: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
+},
   subcategoryLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-  },
+},
   subcategoryTitle: {
     fontSize: 14,
     fontWeight: '500',
     color: HIGColors.label,
-  },
+},
   subcategoryTitleSelected: {
     color: '#FFFFFF',
     fontWeight: '500',
-  },
+},
   selectionBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: 2,
     borderRadius: 10,
     marginLeft: HIGConstants.SPACING_SM,
-  },
+},
   selectionBadgeText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '600',
-  },
+},
   expandIconSelected: {
     color: '#FFFFFF',
-  },
+},
   flavorGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: HIGConstants.SPACING_XS,
-  },
+},
   flavorGridTablet: {
     justifyContent: 'flex-start',
     paddingHorizontal: HIGConstants.SPACING_MD,
-  },
+},
   highlightedText: {
     backgroundColor: HIGColors.yellow,
     fontWeight: '700',
-  },
+},
   highlightedTextSelected: {
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-  },
+},
   emptyFlavorContainer: {
     width: '100%',
     paddingVertical: HIGConstants.SPACING_MD,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   emptyFlavorText: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     fontStyle: 'italic',
     textAlign: 'center',
-  },
+},
 });

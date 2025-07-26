@@ -45,48 +45,48 @@ const styles = StyleSheet.create({
   base: {
     borderRadius: Component.card.radius,
     backgroundColor: Colors.background.primary,
-  },
+},
 
   // Size variants
   size_sm: {
     padding: Component.card.padding.sm,
-  },
+},
   size_md: {
     padding: Component.card.padding.md,
-  },
+},
   size_lg: {
     padding: Component.card.padding.lg,
-  },
+},
 
   // Visual variants
   variant_default: {
     backgroundColor: Colors.background.primary,
     borderWidth: 1,
     borderColor: Colors.border.light,
-  },
+},
 
   variant_outlined: {
     backgroundColor: Colors.background.primary,
     borderWidth: 1,
     borderColor: Colors.border.medium,
-  },
+},
 
   variant_elevated: {
     backgroundColor: Colors.background.primary,
     ...Layout.shadow.md,
     borderWidth: 0,
-  },
+},
 
   variant_subtle: {
     backgroundColor: Colors.background.secondary,
     borderWidth: 0,
-  },
+},
 
   variant_primary: {
     backgroundColor: Colors.primary[50],
     borderWidth: 1,
     borderColor: Colors.primary[200],
-  },
+},
 });
 
 // 특화된 카드 컴포넌트들
@@ -147,20 +147,20 @@ export const ResultCard: React.FC<ResultCardProps> = ({
 const inputCardStyles = StyleSheet.create({
   header: {
     marginBottom: 12,
-  },
+},
   title: {
     fontSize: 15,
     fontWeight: '600',
     color: Colors.text.primary,
     marginBottom: 2,
-  },
+},
   description: {
     fontSize: 11,
     color: Colors.text.tertiary,
-  },
+},
   content: {
     // Content styling handled by children
-  },
+},
 });
 
 const resultCardStyles = StyleSheet.create({
@@ -169,18 +169,18 @@ const resultCardStyles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
-  },
+},
   title: {
     fontSize: 15,
     fontWeight: '600',
     color: Colors.text.primary,
-  },
+},
   badge: {
     fontSize: 11,
     fontWeight: '500',
     color: Colors.primary[700],
-  },
+},
   content: {
     // Content styling handled by children
-  },
+},
 });

@@ -62,13 +62,13 @@ const HeaderOverlay = styled(XStack, {
       true: {
         opacity: 1,
         y: 0,
-      },
+    },
       false: {
         opacity: 0,
         y: -50,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const BackButton = styled(Button, {
@@ -80,7 +80,7 @@ const BackButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const BackButtonText = styled(Text, {
@@ -118,7 +118,7 @@ const ShareButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const ShareButtonText = styled(Text, {
@@ -157,13 +157,13 @@ const BottomOverlay = styled(YStack, {
       true: {
         opacity: 1,
         y: 0,
-      },
+    },
       false: {
         opacity: 0,
         y: 50,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const PhotoDetails = styled(YStack, {
@@ -204,17 +204,17 @@ const ActionButton = styled(Button, {
       primary: {
         backgroundColor: 'rgba(255, 255, 255, 0.2)',
         borderColor: 'rgba(255, 255, 255, 0.3)',
-      },
+    },
       destructive: {
         backgroundColor: 'rgba(255, 59, 48, 0.2)',
         borderColor: 'rgba(255, 59, 48, 0.5)',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     scale: 0.98,
     opacity: 0.8,
-  },
+},
 });
 
 const ActionButtonText = styled(Text, {
@@ -226,12 +226,12 @@ const ActionButtonText = styled(Text, {
     type: {
       primary: {
         color: 'white',
-      },
+    },
       destructive: {
         color: '#FF3B30',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const TouchablePhotoContainer = styled(View, {
@@ -241,21 +241,21 @@ const TouchablePhotoContainer = styled(View, {
   alignItems: 'center',
   pressStyle: {
     opacity: 0.9,
-  },
+},
 });
 
 export type PhotoViewerScreenProps = GetProps<typeof Container>;
 
 const PhotoViewerScreen: React.FC<PhotoViewerScreenProps> = () => {
   const theme = useTheme();
-  const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<unknown>>();
   const route = useRoute();
   const { photoItem } = route.params as RouteParams;
   const [showControls, setShowControls] = useState(true);
 
   const handleBackPress = () => {
     navigation.goBack();
-  };
+};
 
   const handleSharePress = async () => {
     try {
@@ -264,12 +264,12 @@ const PhotoViewerScreen: React.FC<PhotoViewerScreenProps> = () => {
         title: `${photoItem.coffeeName} - ${photoItem.roasteryName}`,
         message: `${photoItem.coffeeName} (${photoItem.roasteryName}) 테이스팅 사진`,
         url: photoUri,
-      });
-    } catch (error) {
+    });
+  } catch (error) {
       // console.error('Share error:', error);
       Alert.alert('오류', '사진을 공유하는 중 오류가 발생했습니다.');
-    }
-  };
+  }
+};
 
   const handleDeletePress = () => {
     Alert.alert(
@@ -293,36 +293,36 @@ const PhotoViewerScreen: React.FC<PhotoViewerScreenProps> = () => {
                 await tastingService.updateTastingRecord(photoItem.tastingId, {
                   photoUri: undefined,
                   photoThumbnailUri: undefined,
-                });
+              });
                 
                 // Go back to gallery
                 navigation.goBack();
-              }
-            } catch (error) {
+            }
+          } catch (error) {
               // console.error('Failed to delete photo:', error);
               Alert.alert('오류', '사진을 삭제하는 중 오류가 발생했습니다.');
-            }
           }
-        },
+        }
+      },
       ]
     );
-  };
+};
 
   const handleTastingPress = () => {
     navigation.navigate('TastingDetail', { tastingId: photoItem.tastingId });
-  };
+};
 
   const toggleControls = () => {
     setShowControls(!showControls);
-  };
+};
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('ko-KR', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-    });
-  };
+  });
+};
 
   return (
     <Container>

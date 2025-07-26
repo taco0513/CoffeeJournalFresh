@@ -1,26 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View,
+  YStack,
+  XStack,
   Text,
-  StyleSheet,
+  Button,
+  Input,
+  H1,
+  H2,
+  Paragraph,
+  Spinner,
+  styled,
+  useTheme,
+  Card,
+} from 'tamagui';
+import {
   SafeAreaView,
-  TextInput,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   Alert,
-  ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
-import appleAuth from '@invertase/react-native-apple-authentication';
+import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { useNavigation } from '@react-navigation/native';
-import { HIGColors, HIGConstants, commonButtonStyles, commonTextStyles } from '../../styles/common';
-import AuthService from '../../services/supabase/auth';
+import { Button as DesignButton } from '../../design-system/components/Button';
+import { AuthService } from '../../services/supabase/auth';
 import { useUserStore } from '../../stores/useUserStore';
 import { useDevStore } from '../../stores/useDevStore';
 import { ErrorHandler } from '../../utils/errorHandler';
+import { Logger } from '../../services/LoggingService';
 import { validateGoogleConfig, isGoogleSignInConfigured } from '../../config/googleAuth';
 
+// Styled components with design tokens
+const Container = styled(YStack, {
+  name: 'SignInContainer',
+  flex: 1,
+  backgroundColor: '$background',
+  padding: '$lg',
+});
+
+const HeaderSection = styled(YStack, {
+  name: 'HeaderSection',
+  alignItems: 'center',
+  paddingTop: '$6xl',
+  paddingBottom: '$4xl',
+});
+
+const FormSection = styled(YStack, {
+  name: 'FormSection',
+  gap: '$lg',
+  marginBottom: '$4xl',
+});
+
+const ButtonSection = styled(YStack, {
+  name: 'ButtonSection',
+  gap: '$md',
+  paddingBottom: '$4xl',
+});
+
+const SocialButton = styled(TouchableOpacity, {
+  name: 'SocialButton',
+  height: 44,
+  borderRadius: '$md',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderWidth: 1,
+});
+
 const SignInScreen = () => {
+  const theme = useTheme();
   const navigation = useNavigation();
   const { signIn, signInWithApple, signInWithGoogle, setTestUser } = useUserStore();
   const { bypassLogin, isDeveloperMode } = useDevStore();
@@ -38,60 +85,60 @@ const SignInScreen = () => {
       navigation.reset({
         index: 0,
         routes: [{ name: 'Main' as never }],
-      });
+    });
       return;
-    }
+  }
 
     // Check if Apple Sign-In is supported
     const checkAppleSignInSupport = async () => {
       try {
         const isSupported = await appleAuth.isSupported;
         setIsAppleSignInSupported(isSupported);
-      } catch (error) {
-        console.log('Apple Sign-In not supported:', error);
+    } catch (error) {
+        Logger.debug('Apple Sign-In not supported:', 'screen', { component: 'SignInScreen', error: error });
         setIsAppleSignInSupported(false);
-      }
-    };
+    }
+  };
     
     checkAppleSignInSupport();
     
     // Check if Google Sign-In is configured
     setGoogleSignInEnabled(isGoogleSignInConfigured());
-  }, [bypassLogin, isDeveloperMode, navigation]);
+}, [bypassLogin, isDeveloperMode, navigation]);
 
   const handleSignIn = async () => {
     if (!email.trim() || !password.trim()) {
       Alert.alert('입력 오류', '이메일과 비밀번호를 입력해주세요.');
       return;
-    }
+  }
 
     setLoading(true);
     try {
-      console.log('Attempting sign in with:', email);
+      Logger.debug('Attempting sign in with:', 'screen', { component: 'SignInScreen', data: email });
       // Use the store's signIn method which handles everything
       await signIn(email, password);
 
-      console.log('Sign in successful, navigating to Main');
+      Logger.debug('Sign in successful, navigating to Main', 'screen', { component: 'SignInScreen' });
       // Navigate to main app
       navigation.reset({
         index: 0,
         routes: [{ name: 'Main' as never }],
-      });
-    } catch (error: any) {
-      console.error('Sign in error:', error);
+    });
+  } catch (error) {
+      Logger.error('Sign in error:', 'screen', { component: 'SignInScreen', error: error });
       ErrorHandler.handle(error, '로그인');
-    } finally {
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+};
 
   const handleSignUp = () => {
     navigation.navigate('SignUp' as never);
-  };
+};
 
   const handleForgotPassword = () => {
     Alert.alert('비밀번호 찾기', '이 기능은 준비 중입니다.');
-  };
+};
 
   const handleAppleSignIn = async () => {
     setLoading(true);
@@ -100,13 +147,13 @@ const SignInScreen = () => {
       navigation.reset({
         index: 0,
         routes: [{ name: 'Main' as never }],
-      });
-    } catch (error: any) {
+    });
+  } catch (error) {
       ErrorHandler.handle(error, 'Apple 로그인');
-    } finally {
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+};
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
@@ -115,8 +162,8 @@ const SignInScreen = () => {
       navigation.reset({
         index: 0,
         routes: [{ name: 'Main' as never }],
-      });
-    } catch (error: any) {
+    });
+  } catch (error) {
       // Handle specific Google Sign-In errors
       if (error.message?.includes('configuration is invalid')) {
         Alert.alert(
@@ -124,306 +171,194 @@ const SignInScreen = () => {
           'Google 로그인을 사용하려면 먼저 개발자가 Google OAuth를 설정해야 합니다.\n\nsrc/config/googleAuth.ts 파일을 확인해주세요.',
           [{ text: '확인' }]
         );
-      } else if (error.message?.includes('cancelled')) {
+    } else if (error.message?.includes('cancelled')) {
         // User cancelled - no need to show error
-      } else {
+    } else {
         ErrorHandler.handle(error, 'Google 로그인');
-      }
-    } finally {
-      setLoading(false);
     }
-  };
+  } finally {
+      setLoading(false);
+  }
+};
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background?.val || '#FFFFFF' }}>
       <KeyboardAvoidingView
-        style={styles.keyboardAvoidingView}
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.content}>
+        <Container>
           {/* Logo/Title Section */}
-          <View style={styles.headerSection}>
-            <Text style={styles.logo}>☕</Text>
-            <Text style={styles.title}>CupNote</Text>
-            <Text style={styles.subtitle}>당신의 커피 여정을 기록하세요</Text>
-          </View>
+          <HeaderSection>
+            <Text fontSize="$10" marginBottom="$sm">☕</Text>
+            <H1 color="$color" marginBottom="$xs" fontWeight="700">
+              CupNote
+            </H1>
+            <Paragraph color="$color11" textAlign="center">
+              당신의 커피 여정을 기록하세요
+            </Paragraph>
+          </HeaderSection>
 
           {/* Form Section */}
-          <View style={styles.formSection}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>이메일</Text>
-              <TextInput
-                style={styles.input}
+          <FormSection>
+            <YStack gap="$sm">
+              <Text fontSize="$2" fontWeight="600" color="$color11" paddingHorizontal="$xs">
+                이메일
+              </Text>
+              <Input
                 placeholder="email@example.com"
-                placeholderTextColor="#CCCCCC"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
-                keyboardAppearance="dark"
+                backgroundColor="$backgroundHover"
+                borderColor="$borderColor"
+                height={44}
+                fontSize="$4"
               />
-            </View>
+            </YStack>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>비밀번호</Text>
-              <TextInput
-                style={styles.input}
+            <YStack gap="$sm">
+              <Text fontSize="$2" fontWeight="600" color="$color11" paddingHorizontal="$xs">
+                비밀번호
+              </Text>
+              <Input
                 placeholder="••••••••"
-                placeholderTextColor="#CCCCCC"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
                 autoCapitalize="none"
-                keyboardAppearance="dark"
+                backgroundColor="$backgroundHover"
+                borderColor="$borderColor"
+                height={44}
+                fontSize="$4"
               />
-            </View>
+            </YStack>
 
             <TouchableOpacity onPress={handleForgotPassword}>
-              <Text style={styles.forgotPassword}>비밀번호를 잊으셨나요?</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Buttons Section */}
-          <View style={styles.buttonSection}>
-            <TouchableOpacity
-              style={[commonButtonStyles.buttonPrimary, styles.signInButton]}
-              onPress={handleSignIn}
-              disabled={loading}
-              activeOpacity={0.8}
-            >
-              {loading ? (
-                <ActivityIndicator color="#FFFFFF" />
-              ) : (
-                <Text style={[commonTextStyles.buttonTextLarge, styles.buttonText]}>
-                  로그인
-                </Text>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[commonButtonStyles.buttonSecondary, styles.signUpButton]}
-              onPress={handleSignUp}
-              activeOpacity={0.8}
-            >
-              <Text style={[commonTextStyles.buttonText, styles.signUpButtonText]}>
-                새 계정 만들기
+              <Text fontSize="$3" color="$blue10" textAlign="right" paddingTop="$sm">
+                비밀번호를 잊으셨나요?
               </Text>
             </TouchableOpacity>
+          </FormSection>
+
+          {/* Buttons Section */}
+          <ButtonSection>
+            <DesignButton
+              variant="primary"
+              size="lg"
+              disabled={loading}
+              fullWidth
+              onPress={handleSignIn}
+            >
+              {loading ? '로그인 중...' : '로그인'}
+            </DesignButton>
+
+            <DesignButton
+              variant="secondary"
+              size="lg"
+              fullWidth
+              onPress={handleSignUp}
+            >
+              새 계정 만들기
+            </DesignButton>
 
             {/* 소셜 로그인 구분선 */}
-            <View style={styles.dividerContainer}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>또는</Text>
-              <View style={styles.dividerLine} />
-            </View>
+            <XStack alignItems="center" gap="$md" marginVertical="$md">
+              <YStack flex={1} height={1} backgroundColor="$borderColor" />
+              <Text fontSize="$2" color="$color10">또는</Text>
+              <YStack flex={1} height={1} backgroundColor="$borderColor" />
+            </XStack>
 
             {/* Apple Sign-In */}
             {isAppleSignInSupported ? (
-              <TouchableOpacity
-                style={[styles.socialButton, styles.appleButton]}
+              <SocialButton
                 onPress={handleAppleSignIn}
                 disabled={loading}
-                activeOpacity={0.8}
+                style={{
+                  backgroundColor: '#000000',
+                  borderColor: '#000000',
+              }}
               >
-                <Text style={styles.socialButtonText}>🍎 Apple로 계속하기</Text>
-              </TouchableOpacity>
+                <Text color="white" fontSize="$4" fontWeight="600">
+                  🍎 Apple로 계속하기
+                </Text>
+              </SocialButton>
             ) : (
-              <View style={styles.socialComingSoon}>
-                <Text style={styles.comingSoonText}>Apple Sign-In은 실제 기기에서만 지원됩니다</Text>
-              </View>
+              <Card padding="$md" alignItems="center">
+                <Text color="$color10" fontSize="$3" fontStyle="italic">
+                  Apple Sign-In은 실제 기기에서만 지원됩니다
+                </Text>
+              </Card>
             )}
 
             {/* Google Sign-In */}
             {googleSignInEnabled ? (
-              <TouchableOpacity
-                style={[styles.socialButton, styles.googleButton]}
+              <SocialButton
                 onPress={handleGoogleSignIn}
                 disabled={loading}
-                activeOpacity={0.8}
+                style={{
+                  backgroundColor: '#4285F4',
+                  borderColor: '#4285F4',
+              }}
               >
-                <Text style={styles.socialButtonText}>🔵 Google로 계속하기</Text>
-              </TouchableOpacity>
+                <Text color="white" fontSize="$4" fontWeight="600">
+                  🔵 Google로 계속하기
+                </Text>
+              </SocialButton>
             ) : (
-              <View style={styles.socialComingSoon}>
-                <Text style={styles.comingSoonText}>Google 로그인 설정 필요</Text>
-              </View>
+              <Card padding="$md" alignItems="center">
+                <Text color="$color10" fontSize="$3" fontStyle="italic">
+                  Google 로그인 설정 필요
+                </Text>
+              </Card>
             )}
 
-            {/* Developer Mode Login Bypass - Always show for development */}
-            <View style={styles.developerSection}>
-              <TouchableOpacity
-                style={[styles.socialButton, styles.developerButton]}
+            {/* Developer Mode Login */}
+            <YStack marginTop="$md" paddingTop="$md" borderTopWidth={1} borderTopColor="$borderColor">
+              <SocialButton
                 onPress={async () => {
-                  console.log('Developer login button pressed');
+                  Logger.debug('🔧 Developer login button pressed', 'screen', { component: 'SignInScreen' });
+                  setLoading(true);
                   try {
-                    console.log('Calling setTestUser...');
+                    Logger.debug('🔧 Calling setTestUser...', 'screen', { component: 'SignInScreen' });
                     await setTestUser();
-                    console.log('setTestUser completed successfully');
-                    console.log('Authentication state should now be true - navigation will happen automatically');
+                    Logger.debug('🔧 setTestUser completed successfully', 'screen', { component: 'SignInScreen' });
                     
-                    // Show success message - navigation will happen automatically via isAuthenticated state change
-                    Alert.alert(
-                      '✅ 개발자 로그인 성공!', 
-                      '테스트 계정으로 로그인되었습니다.\n\n화면이 자동으로 전환됩니다.',
-                      [{ text: '확인' }]
-                    );
-                  } catch (error) {
-                    console.error('Developer login error:', error);
-                    console.error('Error details:', JSON.stringify(error));
+                    // 상태 업데이트 후 즉시 네비게이션
+                    Logger.debug('🔧 Navigating to Main...', 'screen', { component: 'SignInScreen' });
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'Main' as never }],
+                  });
+                    
+                    Logger.debug('🔧 Navigation completed', 'screen', { component: 'SignInScreen' });
+                } catch (error) {
+                    Logger.error('🔧 Developer login error:', 'screen', { component: 'SignInScreen', error: error });
                     Alert.alert('오류', `개발자 로그인에 실패했습니다.\n\n${error}`);
-                  }
-                }}
-                activeOpacity={0.8}
+                } finally {
+                    setLoading(false);
+                }
+              }}
+                style={{
+                  backgroundColor: '#FF9500',
+                  borderColor: '#FF9500',
+              }}
               >
-                <Text style={styles.socialButtonText}>🔧 개발자 로그인 패스</Text>
-              </TouchableOpacity>
-            </View>
-
-          </View>
-        </View>
+                <Text color="white" fontSize="$4" fontWeight="600">
+                  🔧 개발자 로그인 패스
+                </Text>
+              </SocialButton>
+            </YStack>
+          </ButtonSection>
+        </Container>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  keyboardAvoidingView: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: HIGConstants.SPACING_LG,
-  },
-  headerSection: {
-    alignItems: 'center',
-    paddingTop: 40,
-    paddingBottom: 30,
-  },
-  logo: {
-    fontSize: 60,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: HIGColors.label,
-    marginBottom: HIGConstants.SPACING_XS,
-  },
-  subtitle: {
-    fontSize: 17,
-    fontWeight: '400',
-    color: HIGColors.secondaryLabel,
-    textAlign: 'center',
-  },
-  formSection: {
-    marginBottom: 30,
-  },
-  inputContainer: {
-    marginBottom: HIGConstants.SPACING_LG,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: HIGColors.secondaryLabel,
-    marginBottom: HIGConstants.SPACING_SM,
-    paddingHorizontal: HIGConstants.SPACING_XS,
-  },
-  input: {
-    height: HIGConstants.MIN_TOUCH_TARGET,
-    backgroundColor: HIGColors.secondarySystemBackground,
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    paddingHorizontal: HIGConstants.SPACING_MD,
-    fontSize: 17,
-    color: '#000000',
-    borderWidth: 1,
-    borderColor: HIGColors.gray4,
-  },
-  forgotPassword: {
-    fontSize: 15,
-    color: HIGColors.blue,
-    textAlign: 'right',
-    paddingTop: HIGConstants.SPACING_SM,
-  },
-  buttonSection: {
-    paddingBottom: 30,
-  },
-  signInButton: {
-    width: '100%',
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-  },
-  signUpButton: {
-    width: '100%',
-    marginBottom: HIGConstants.SPACING_MD,
-  },
-  signUpButtonText: {
-    color: HIGColors.label,
-  },
-  // 소셜 로그인 스타일
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: HIGConstants.SPACING_MD,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: HIGColors.gray4,
-  },
-  dividerText: {
-    fontSize: 13,
-    color: HIGColors.tertiaryLabel,
-    marginHorizontal: HIGConstants.SPACING_MD,
-  },
-  socialButton: {
-    height: HIGConstants.MIN_TOUCH_TARGET,
-    borderRadius: HIGConstants.BORDER_RADIUS,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: HIGConstants.SPACING_SM,
-    borderWidth: 1,
-  },
-  appleButton: {
-    backgroundColor: '#000000',
-    borderColor: '#000000',
-  },
-  googleButton: {
-    backgroundColor: '#4285F4',
-    borderColor: '#4285F4',
-  },
-  socialButtonText: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  socialComingSoon: {
-    alignItems: 'center',
-    paddingVertical: HIGConstants.SPACING_MD,
-    marginBottom: HIGConstants.SPACING_SM,
-  },
-  comingSoonText: {
-    fontSize: 15,
-    color: HIGColors.tertiaryLabel,
-    fontStyle: 'italic',
-  },
-  developerSection: {
-    marginTop: HIGConstants.SPACING_MD,
-    paddingTop: HIGConstants.SPACING_MD,
-    borderTopWidth: 1,
-    borderTopColor: HIGColors.gray4,
-  },
-  developerButton: {
-    backgroundColor: '#FF9500',
-    borderColor: '#FF9500',
-  },
-});
+// All styles are now handled by Tamagui styled components and design tokens
 
 export default SignInScreen;

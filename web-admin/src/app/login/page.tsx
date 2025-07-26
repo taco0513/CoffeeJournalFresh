@@ -44,7 +44,7 @@ export default function LoginPage() {
               <Coffee className="h-8 w-8 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl">Coffee Journal Admin</CardTitle>
+          <CardTitle className="text-2xl">CupNote Admin</CardTitle>
           <CardDescription>관리자 대시보드에 로그인하세요</CardDescription>
         </CardHeader>
         <CardContent>

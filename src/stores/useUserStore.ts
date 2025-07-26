@@ -5,6 +5,7 @@ import authService from '../services/supabase/auth';
 import appleAuthService from '../services/supabase/appleAuth';
 import { GoogleAuthService } from '../services/supabase/googleAuth';
 import { supabase } from '../services/supabase/client';
+import { Logger } from '../services/LoggingService';
 // import { setSentryUser, clearSentryUser } from '../utils/sentry';
 
 interface UserStore {
@@ -30,7 +31,7 @@ interface UserStore {
   changeUsername: (newUsername: string) => Promise<void>;
   
   // Helper functions
-  createOrUpdateSocialProfile: (authUser: any, provider: 'apple' | 'google') => Promise<void>;
+  createOrUpdateSocialProfile: (authUser: unknown, provider: 'apple' | 'google') => Promise<void>;
   
   // Social actions
   followUser: (userId: string) => Promise<void>;
@@ -73,7 +74,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
           followers_count: 0,
           following_count: 0,
           privacy_level: 'public',
-        });
+      });
       
       if (profileError) throw profileError;
       
@@ -92,8 +93,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
             weekly_report: true,
             community_mentions: true,
             achievement_unlocked: true,
-          },
-        });
+        },
+      });
       
       if (prefsError) throw prefsError;
       
@@ -122,22 +123,22 @@ export const useUserStore = create<UserStore>((set, get) => ({
           weeklyReport: true,
           communityMentions: true,
           achievementUnlocked: true,
-        },
+      },
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+    };
       
       set({ currentUser: newUser, user: newUser, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
       
       // Set Sentry user context
       // setSentryUser({ id: newUser.id, username: newUser.username }); // Temporarily disabled
-    } catch (error) {
+  } catch (error) {
       // console.error('Sign up error:', error);
       set({ isLoading: false });
       throw error;
-    }
-  },
+  }
+},
 
   signIn: async (email, password) => {
     set({ isLoading: true });
@@ -154,7 +155,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       
       if (profileError || !userProfile) {
         throw new Error('User profile not found');
-      }
+    }
       
       // Fetch user preferences
       const { data: userPrefs } = await supabase
@@ -191,22 +192,22 @@ export const useUserStore = create<UserStore>((set, get) => ({
           weeklyReport: true,
           communityMentions: true,
           achievementUnlocked: true,
-        },
+      },
         createdAt: new Date(userProfile.created_at),
         updatedAt: new Date(userProfile.updated_at),
-      };
+    };
       
       set({ currentUser: user, user: user, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
       
       // Set Sentry user context
       // setSentryUser({ id: user.id, username: user.username }); // Temporarily disabled
-    } catch (error) {
+  } catch (error) {
       // console.error('Sign in error:', error);
       set({ isLoading: false });
       throw error;
-    }
-  },
+  }
+},
 
 
   signOut: async () => {
@@ -218,16 +219,16 @@ export const useUserStore = create<UserStore>((set, get) => ({
       
       // Clear Sentry user context
       // clearSentryUser(); // Temporarily disabled
-    } catch (error) {
+  } catch (error) {
       // console.error('Sign out error:', error);
       set({ isLoading: false });
       throw error;
-    }
-  },
+  }
+},
 
 
   setTestUser: async () => {
-    console.log('🔧 setTestUser called');
+    Logger.debug('🔧 setTestUser called', 'store', { component: 'useUserStore' });
     // 개발자 테스트용 로그인 바이패스
     const testUser: UserProfile = {
       id: '00000000-0000-4000-8000-000000000001',
@@ -256,32 +257,32 @@ export const useUserStore = create<UserStore>((set, get) => ({
         weeklyReport: true,
         communityMentions: true,
         achievementUnlocked: true,
-      },
+    },
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+  };
 
-    console.log('🔧 Test user created:', testUser.username);
+    Logger.debug('🔧 Test user created:', 'store', { component: 'useUserStore', data: testUser.username });
     
     // Store in AsyncStorage for persistence
     try {
-      console.log('🔧 Storing test user in AsyncStorage...');
+      Logger.debug('🔧 Storing test user in AsyncStorage...', 'store', { component: 'useUserStore' });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(testUser));
-      console.log('🔧 Test user stored successfully');
-    } catch (error) {
-      console.error('🔧 Failed to store test user:', error);
+      Logger.debug('🔧 Test user stored successfully', 'store', { component: 'useUserStore' });
+  } catch (error) {
+      Logger.error('🔧 Failed to store test user:', 'store', { component: 'useUserStore', error: error });
       throw error; // Re-throw to catch in SignInScreen
-    }
+  }
     
-    console.log('🔧 Setting state...');
+    Logger.debug('🔧 Setting state...', 'store', { component: 'useUserStore' });
     set({
       currentUser: testUser,
       user: testUser, // Alias for compatibility
       isAuthenticated: true, // 개발자 모드에서는 인증된 상태
       isLoading: false,
-    });
-    console.log('🔧 State set successfully - isAuthenticated: true');
-  },
+  });
+    Logger.debug('🔧 State set successfully - isAuthenticated: true', 'store', { component: 'useUserStore' });
+},
 
 
   signInWithApple: async () => {
@@ -292,12 +293,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
       
       // 기존 유저 프로필 확인 또는 생성
       await get().createOrUpdateSocialProfile(authUser, 'apple');
-    } catch (error) {
-      console.error('Apple Sign-In error:', error);
+  } catch (error) {
+      Logger.error('Apple Sign-In error:', 'store', { component: 'useUserStore', error: error });
       set({ isLoading: false });
       throw error;
-    }
-  },
+  }
+},
 
   signInWithGoogle: async () => {
     set({ isLoading: true });
@@ -307,21 +308,21 @@ export const useUserStore = create<UserStore>((set, get) => ({
       
       if (!result.success) {
         throw new Error(result.error || 'Google Sign-In failed');
-      }
+    }
       
       const authUser = result.user;
       
       // 기존 유저 프로필 확인 또는 생성
       await get().createOrUpdateSocialProfile(authUser, 'google');
-    } catch (error) {
-      console.error('Google Sign-In error:', error);
+  } catch (error) {
+      Logger.error('Google Sign-In error:', 'store', { component: 'useUserStore', error: error });
       set({ isLoading: false });
       throw error;
-    }
-  },
+  }
+},
 
   // 소셜 로그인 프로필 생성/업데이트 헬퍼 함수
-  createOrUpdateSocialProfile: async (authUser: any, provider: 'apple' | 'google') => {
+  createOrUpdateSocialProfile: async (authUser: unknown, provider: 'apple' | 'google') => {
     try {
       // 기존 유저 프로필 확인
       const { data: existingProfile } = await supabase
@@ -349,7 +350,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
             followers_count: 0,
             following_count: 0,
             privacy_level: 'public',
-          });
+        });
 
         if (profileError) throw profileError;
 
@@ -368,11 +369,11 @@ export const useUserStore = create<UserStore>((set, get) => ({
               weekly_report: true,
               community_mentions: true,
               achievement_unlocked: true,
-            },
-          });
+          },
+        });
 
         if (prefsError) throw prefsError;
-      }
+    }
 
       // 최신 프로필 데이터 가져오기
       const { data: userProfile, error: profileError } = await supabase
@@ -383,7 +384,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
       if (profileError || !userProfile) {
         throw new Error('Failed to fetch user profile');
-      }
+    }
 
       // 유저 기본 설정 가져오기
       const { data: userPrefs } = await supabase
@@ -420,22 +421,22 @@ export const useUserStore = create<UserStore>((set, get) => ({
           weeklyReport: true,
           communityMentions: true,
           achievementUnlocked: true,
-        },
+      },
         createdAt: new Date(userProfile.created_at),
         updatedAt: new Date(userProfile.updated_at),
-      };
+    };
 
       set({ currentUser: user, user: user, isAuthenticated: true, isLoading: false });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
       
       // Set Sentry user context
       // setSentryUser({ id: user.id, username: user.username }); // Temporarily disabled
-    } catch (error) {
-      console.error('Social profile creation/update error:', error);
+  } catch (error) {
+      Logger.error('Social profile creation/update error:', 'store', { component: 'useUserStore', error: error });
       set({ isLoading: false });
       throw error;
-    }
-  },
+  }
+},
 
   updateProfile: async (updates) => {
     const { currentUser } = get();
@@ -446,22 +447,22 @@ export const useUserStore = create<UserStore>((set, get) => ({
         ...currentUser,
         ...updates,
         updatedAt: new Date(),
-      };
+    };
       
       // TODO: Save to Supabase
       set({ currentUser: updatedUser });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser));
-    } catch (error) {
+  } catch (error) {
       // console.error('Update profile error:', error);
       throw error;
-    }
-  },
+  }
+},
 
 
   changeUsername: async (newUsername) => {
     // TODO: Check username availability in Supabase
     await get().updateProfile({ username: newUsername });
-  },
+},
 
   followUser: async (userId) => {
     const { currentUser } = get();
@@ -470,8 +471,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
     // TODO: Implement Supabase follow relationship
     await get().updateProfile({ 
       followingCount: currentUser.followingCount + 1 
-    });
-  },
+  });
+},
 
   unfollowUser: async (userId) => {
     const { currentUser } = get();
@@ -480,8 +481,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
     // TODO: Implement Supabase unfollow
     await get().updateProfile({ 
       followingCount: Math.max(0, currentUser.followingCount - 1) 
-    });
-  },
+  });
+},
 
   getPublicProfile: async (userId) => {
     const { profileCache, currentUser } = get();
@@ -500,13 +501,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
         isVerified: currentUser.isVerified,
         followersCount: currentUser.followersCount,
         joinedAt: currentUser.joinedAt,
-      } as PublicProfile;
-    }
+    } as PublicProfile;
+  }
     
     // Check cache
     if (profileCache.has(userId)) {
       return profileCache.get(userId)!;
-    }
+  }
     
     // TODO: Fetch from Supabase
     // Mock implementation
@@ -520,13 +521,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
       isVerified: false,
       followersCount: 12,
       joinedAt: new Date('2024-06-01'),
-    };
+  };
     
     profileCache.set(userId, mockProfile);
     set({ profileCache: new Map(profileCache) });
     
     return mockProfile;
-  },
+},
 
   loadStoredUser: async () => {
     set({ isLoading: true });
@@ -544,13 +545,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
         
         // Set Sentry user context for restored session
         // setSentryUser({ id: user.id, username: user.username }); // Temporarily disabled
-      }
-    } catch (error) {
-      // console.error('Load stored user error:', error);
-    } finally {
-      set({ isLoading: false });
     }
-  },
+  } catch (error) {
+      // console.error('Load stored user error:', error);
+  } finally {
+      set({ isLoading: false });
+  }
+},
 
   clearStoredUser: async () => {
     await AsyncStorage.removeItem(STORAGE_KEY);
@@ -558,5 +559,5 @@ export const useUserStore = create<UserStore>((set, get) => ({
     
     // Clear Sentry user context
     // clearSentryUser(); // Temporarily disabled
-  },
+},
 }));

@@ -16,15 +16,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../../services/supabase/client';
 import { FeedbackItem, FeedbackCategory, FEEDBACK_CATEGORY_LABELS, FEEDBACK_STATUS_LABELS } from '../../types/feedback';
 import { HIGColors, HIGConstants } from '../../constants/HIG';
+import { Logger } from '../../services/LoggingService';
 import { showToast } from '../../utils/toast';
 
-export default function AdminFeedbackScreen({ navigation }: any) {
+export default function AdminFeedbackScreen({ navigation }: unknown) {
   const [feedbackItems, setFeedbackItems] = useState<FeedbackItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<FeedbackCategory | 'all'>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<unknown>(null);
   const [selectedFeedback, setSelectedFeedback] = useState<FeedbackItem | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
   const [updatingStatus, setUpdatingStatus] = useState(false);
@@ -32,7 +33,7 @@ export default function AdminFeedbackScreen({ navigation }: any) {
   useEffect(() => {
     loadFeedback();
     loadStats();
-  }, [selectedCategory, selectedStatus]);
+}, [selectedCategory, selectedStatus]);
 
   const loadFeedback = async () => {
     try {
@@ -43,24 +44,24 @@ export default function AdminFeedbackScreen({ navigation }: any) {
 
       if (selectedCategory !== 'all') {
         query = query.eq('category', selectedCategory);
-      }
+    }
 
       if (selectedStatus !== 'all') {
         query = query.eq('status', selectedStatus);
-      }
+    }
 
       const { data, error } = await query;
 
       if (error) throw error;
       setFeedbackItems(data || []);
-    } catch (error) {
-      console.error('Error loading feedback:', error);
+  } catch (error) {
+      Logger.error('Error loading feedback:', 'screen', { component: 'AdminFeedbackScreen', error: error });
       showToast('피드백을 불러오는데 실패했습니다', 'error');
-    } finally {
+  } finally {
       setLoading(false);
       setRefreshing(false);
-    }
-  };
+  }
+};
 
   const loadStats = async () => {
     try {
@@ -71,10 +72,10 @@ export default function AdminFeedbackScreen({ navigation }: any) {
 
       if (error) throw error;
       setStats(data);
-    } catch (error) {
-      console.error('Error loading stats:', error);
-    }
-  };
+  } catch (error) {
+      Logger.error('Error loading stats:', 'screen', { component: 'AdminFeedbackScreen', error: error });
+  }
+};
 
   const updateFeedbackStatus = async (feedbackId: string, newStatus: string) => {
     setUpdatingStatus(true);
@@ -85,7 +86,7 @@ export default function AdminFeedbackScreen({ navigation }: any) {
           status: newStatus,
           admin_notes: adminNotes,
           updated_at: new Date().toISOString(),
-        })
+      })
         .eq('id', feedbackId);
 
       if (error) throw error;
@@ -93,13 +94,13 @@ export default function AdminFeedbackScreen({ navigation }: any) {
       showToast('상태가 업데이트되었습니다', 'success');
       setSelectedFeedback(null);
       loadFeedback();
-    } catch (error) {
-      console.error('Error updating feedback:', error);
+  } catch (error) {
+      Logger.error('Error updating feedback:', 'screen', { component: 'AdminFeedbackScreen', error: error });
       showToast('업데이트에 실패했습니다', 'error');
-    } finally {
+  } finally {
       setUpdatingStatus(false);
-    }
-  };
+  }
+};
 
   const renderFeedbackItem = ({ item }: { item: FeedbackItem }) => (
     <TouchableOpacity
@@ -107,7 +108,7 @@ export default function AdminFeedbackScreen({ navigation }: any) {
       onPress={() => {
         setSelectedFeedback(item);
         setAdminNotes(item.adminNotes || '');
-      }}
+    }}
     >
       <View style={styles.cardHeader}>
         <View style={styles.categoryBadge}>
@@ -153,8 +154,8 @@ export default function AdminFeedbackScreen({ navigation }: any) {
       case 'resolved': return '#E8F5E9';
       case 'closed': return '#F5F5F5';
       default: return '#F5F5F5';
-    }
-  };
+  }
+};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -220,8 +221,8 @@ export default function AdminFeedbackScreen({ navigation }: any) {
           <RefreshControl refreshing={refreshing} onRefresh={() => {
             setRefreshing(true);
             loadFeedback();
-          }} />
-        }
+        }} />
+      }
         ListEmptyComponent={
           loading ? (
             <ActivityIndicator size="large" style={styles.loader} />
@@ -230,7 +231,7 @@ export default function AdminFeedbackScreen({ navigation }: any) {
               <Text style={styles.emptyText}>피드백이 없습니다</Text>
             </View>
           )
-        }
+      }
       />
 
       {/* Detail Modal */}
@@ -343,7 +344,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -351,16 +352,16 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_MD,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray6,
-  },
+},
   backButton: {
     fontSize: 24,
     color: HIGColors.label,
-  },
+},
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -368,43 +369,43 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray6,
-  },
+},
   statItem: {
     alignItems: 'center',
-  },
+},
   statValue: {
     fontSize: 24,
     fontWeight: '700',
     color: HIGColors.label,
-  },
+},
   statLabel: {
     fontSize: 12,
     color: HIGColors.secondaryLabel,
     marginTop: 4,
-  },
+},
   filterContainer: {
     paddingVertical: HIGConstants.SPACING_SM,
     paddingHorizontal: HIGConstants.SPACING_MD,
     backgroundColor: '#FFFFFF',
-  },
+},
   filterChip: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
     backgroundColor: HIGColors.systemGray6,
     marginRight: 8,
-  },
+},
   filterChipActive: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   filterText: {
     fontSize: 14,
     color: HIGColors.label,
-  },
+},
   filterTextActive: {
     color: '#FFFFFF',
     fontWeight: '600',
-  },
+},
   feedbackCard: {
     backgroundColor: '#FFFFFF',
     padding: HIGConstants.SPACING_MD,
@@ -416,116 +417,116 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-  },
+},
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   categoryBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   categoryIcon: {
     fontSize: 20,
     marginRight: 6,
-  },
+},
   categoryText: {
     fontSize: 14,
     fontWeight: '500',
     color: HIGColors.label,
-  },
+},
   statusBadge: {
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
-  },
+},
   statusText: {
     fontSize: 12,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   feedbackTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   feedbackDescription: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   cardFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
+},
   userInfo: {
     fontSize: 12,
     color: HIGColors.tertiaryLabel,
-  },
+},
   rating: {
     flexDirection: 'row',
-  },
+},
   loader: {
     marginTop: 50,
-  },
+},
   emptyState: {
     alignItems: 'center',
     marginTop: 100,
-  },
+},
   emptyText: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
-  },
+},
   modalContainer: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
-  },
+},
   modalContent: {
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '80%',
     padding: HIGConstants.SPACING_LG,
-  },
+},
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   modalTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   closeButton: {
     fontSize: 24,
     color: HIGColors.secondaryLabel,
-  },
+},
   detailSection: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   detailLabel: {
     fontSize: 14,
     fontWeight: '600',
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   detailValue: {
     fontSize: 16,
     color: HIGColors.label,
-  },
+},
   screenshot: {
     width: '100%',
     height: 200,
     borderRadius: HIGConstants.BORDER_RADIUS_LG,
     marginTop: HIGConstants.SPACING_SM,
-  },
+},
   adminNotesInput: {
     borderWidth: 1,
     borderColor: HIGColors.systemGray5,
@@ -534,13 +535,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     minHeight: 80,
     textAlignVertical: 'top',
-  },
+},
   statusButtons: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: HIGConstants.SPACING_MD,
     gap: 8,
-  },
+},
   statusButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -548,16 +549,16 @@ const styles = StyleSheet.create({
     backgroundColor: HIGColors.systemGray6,
     marginRight: 8,
     marginBottom: 8,
-  },
+},
   statusButtonActive: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   statusButtonText: {
     fontSize: 14,
     color: HIGColors.label,
-  },
+},
   statusButtonTextActive: {
     color: '#FFFFFF',
     fontWeight: '600',
-  },
+},
 });

@@ -18,11 +18,11 @@ const HomeCafeScreen = () => {
 
   const handleNext = () => {
     navigation.navigate('UnifiedFlavor' as never);
-  };
+};
 
   const handleSkip = () => {
     navigation.navigate('UnifiedFlavor' as never);
-  };
+};
 
   // 필수 필드 검증 - 간소화된 홈카페 모드
   const isValid = 
@@ -38,11 +38,11 @@ const HomeCafeScreen = () => {
         leftAction={{ 
           icon: '←', 
           onPress: () => navigation.goBack() 
-        }}
+      }}
         rightAction={{ 
           text: '건너뛰기', 
           onPress: handleSkip 
-        }}
+      }}
         progressPercent={25} // HomeCafe는 TastingFlow의 25% 지점
       />
 
@@ -81,50 +81,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   content: {
     flex: 1,
-  },
+},
   titleSection: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_LG,
     backgroundColor: HIGColors.white,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   title: {
     fontSize: 24,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   subtitle: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     lineHeight: 22,
-  },
+},
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: HIGColors.white,
     borderTopWidth: 1,
     borderTopColor: HIGColors.systemGray6,
-  },
+},
   nextButton: {
     backgroundColor: HIGColors.systemBlue,
     borderRadius: HIGConstants.cornerRadiusMedium,
     paddingVertical: HIGConstants.SPACING_LG,
     alignItems: 'center',
-  },
+},
   nextButtonDisabled: {
     backgroundColor: HIGColors.systemGray4,
-  },
+},
   nextButtonText: {
     color: HIGColors.white,
     fontSize: 17,
     fontWeight: '600',
-  },
+},
   nextButtonTextDisabled: {
     color: HIGColors.gray2,
-  },
+},
 });
 
 export default HomeCafeScreen;

@@ -19,20 +19,20 @@ export const RealmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         await instance.initialize();
         // console.log('Realm initialized successfully');
         setIsReady(true);
-      } catch (error) {
+    } catch (error) {
         // console.error('Failed to initialize Realm:', error);
         // Still set ready to true to allow app to function
         // Realm might work later or we can show an error
         setIsReady(true);
-      }
-    };
+    }
+  };
 
     initializeRealm();
 
     return () => {
       RealmService.getInstance().close();
-    };
-  }, []);
+  };
+}, []);
 
   return (
     <RealmContext.Provider value={{ isReady, realmService: RealmService.getInstance() }}>
@@ -45,6 +45,6 @@ export const useRealm = () => {
   const context = useContext(RealmContext);
   if (!context) {
     throw new Error('useRealm must be used within a RealmProvider');
-  }
+}
   return context;
 };

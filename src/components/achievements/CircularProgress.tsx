@@ -64,10 +64,10 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
-  },
+},
   childrenContainer: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
 });

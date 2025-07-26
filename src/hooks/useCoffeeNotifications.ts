@@ -11,7 +11,7 @@ export const useCoffeeNotifications = () => {
     approved: 0,
     pending: 0,
     level: 0,
-  });
+});
   
   const { currentUser: user } = useUserStore();
 
@@ -32,20 +32,20 @@ export const useCoffeeNotifications = () => {
 
     return () => {
       // coffeeNotificationService.stopListening();
-    };
-  }, [user?.id]);
+  };
+}, [user?.id]);
 
   const loadDiscoveryStats = async () => {
     if (!user?.id) return;
     
     const stats = await coffeeNotificationService.getCoffeeDiscoveryStats(user.id);
     setDiscoveryStats(stats);
-  };
+};
 
   const dismissApprovalAlert = () => {
     setShowApprovalAlert(false);
     setApprovalData(null);
-  };
+};
 
   return {
     showApprovalAlert,
@@ -53,5 +53,5 @@ export const useCoffeeNotifications = () => {
     discoveryStats,
     dismissApprovalAlert,
     refreshStats: loadDiscoveryStats,
-  };
+};
 };

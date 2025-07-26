@@ -22,9 +22,9 @@ interface AutocompleteInputProps {
   label?: string;
   maxSuggestions?: number;
   disabled?: boolean;
-  style?: any;
-  inputStyle?: any;
-  containerStyle?: any;
+  style?: StyleProp<ViewStyle>;
+  inputStyle?: unknown;
+  containerStyle?: unknown;
 }
 
 // Styled Components
@@ -53,12 +53,12 @@ const StyledInput = styled(Input, {
   focusStyle: {
     borderColor: '$primary',
     borderWidth: 2,
-  },
+},
   
   disabledStyle: {
     opacity: 0.5,
     backgroundColor: '$gray3',
-  },
+},
 })
 
 const SuggestionsContainer = styled(Card, {
@@ -88,20 +88,20 @@ const SuggestionItem = styled(XStack, {
   
   pressStyle: {
     backgroundColor: '$gray3',
-  },
+},
   
   variants: {
     selected: {
       true: {
         backgroundColor: '$cupBlueLight',
-      },
     },
+  },
     isAddNew: {
       true: {
         backgroundColor: '$gray2',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const SuggestionText = styled(Text, {
@@ -114,9 +114,9 @@ const SuggestionText = styled(Text, {
       true: {
         color: '$primary',
         fontWeight: '500',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const AutocompleteInputTamagui: React.FC<AutocompleteInputProps> = ({
@@ -138,52 +138,52 @@ const AutocompleteInputTamagui: React.FC<AutocompleteInputProps> = ({
   const [internalValue, setInternalValue] = useState(value);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   
-  const inputRef = useRef<any>(null);
+  const inputRef = useRef<unknown>(null);
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setInternalValue(value);
-  }, [value]);
+}, [value]);
 
   const handleChangeText = (text: string) => {
     setInternalValue(text);
     
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
-    }
+  }
     
     debounceTimer.current = setTimeout(() => {
       onChangeText(text);
-    }, 150);
+  }, 150);
     
     if (text.length > 0) {
       setShowSuggestions(true);
-    } else {
+  } else {
       setShowSuggestions(false);
-    }
-  };
+  }
+};
 
   const handleSelect = (item: string) => {
     setInternalValue(item);
     onSelect(item);
     setShowSuggestions(false);
     inputRef.current?.blur();
-  };
+};
 
   const handleFocus = () => {
     setInputFocused(true);
     if (internalValue.length > 0 && suggestions.length > 0) {
       setShowSuggestions(true);
-    }
-  };
+  }
+};
 
   const handleBlur = () => {
     setInputFocused(false);
     setTimeout(() => {
       setShowSuggestions(false);
       onBlur?.();
-    }, 200);
-  };
+  }, 200);
+};
 
   const filteredSuggestions = suggestions
     .filter(suggestion => 
@@ -224,12 +224,12 @@ const AutocompleteInputTamagui: React.FC<AutocompleteInputProps> = ({
               opacity: 0,
               scale: 0.95,
               y: -10,
-            }}
+          }}
             exitStyle={{
               opacity: 0,
               scale: 0.95,
               y: -10,
-            }}
+          }}
           >
             <ScrollView
               showsVerticalScrollIndicator={false}
@@ -250,7 +250,7 @@ const AutocompleteInputTamagui: React.FC<AutocompleteInputProps> = ({
                     </SuggestionText>
                   </SuggestionItem>
                 );
-              })}
+            })}
             </ScrollView>
           </SuggestionsContainer>
         )}

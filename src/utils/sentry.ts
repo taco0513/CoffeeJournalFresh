@@ -1,6 +1,7 @@
 // import * as Sentry from '@sentry/react-native';
 import Config from 'react-native-config';
 
+import { Logger } from '../services/LoggingService';
 // Mock Sentry types and functions for when Sentry is disabled
 type SentryEvent = any;
 type SentryEventHint = any;
@@ -9,28 +10,28 @@ type SentryScope = any;
 type SeverityLevel = 'fatal' | 'error' | 'warning' | 'log' | 'info' | 'debug';
 
 const Sentry = {
-  init: (options?: any) => {},
-  setUser: (user: any) => {},
-  captureException: (error: any, context?: any) => {},
+  init: (options?: Record<string, unknown>) => {},
+  setUser: (user: unknown) => {},
+  captureException: (error: Error, context?: unknown) => {},
   captureMessage: (message: string, level?: SeverityLevel) => {},
-  withScope: (callback: (scope: any) => void) => callback({
+  withScope: (callback: (scope: unknown) => void) => callback({
     setContext: () => {},
-  }),
-  startTransaction: (context: any) => ({ finish: () => {} }),
-  reactNativeTracingIntegration: (options?: any) => ({}),
+}),
+  startTransaction: (context: Record<string, unknown>) => ({ finish: () => {} }),
+  reactNativeTracingIntegration: (options?: Record<string, unknown>) => ({}),
   reactNavigationIntegration: () => ({}),
 };
 
 export const initSentry = () => {
   // Temporarily skip Sentry initialization due to build issues
-  console.log('[Sentry] Temporarily disabled for testing');
+  Logger.debug('[Sentry] Temporarily disabled for testing', 'util', { component: 'sentry' });
   return;
   
   // Skip Sentry initialization if no DSN is provided
   if (!Config.SENTRY_DSN || Config.SENTRY_DSN === 'your_sentry_dsn_here') {
-    console.log('[Sentry] Skipping initialization - no DSN provided');
+    Logger.debug('[Sentry] Skipping initialization - no DSN provided', 'util', { component: 'sentry' });
     return;
-  }
+}
   
   Sentry.init({
     dsn: Config.SENTRY_DSN,
@@ -53,7 +54,7 @@ export const initSentry = () => {
       Sentry.reactNativeTracingIntegration({
         routingInstrumentation: Sentry.reactNavigationIntegration(),
         tracingOrigins: ['localhost', /^\//],
-      }),
+    }),
     ],
     
     // 민감 정보 필터링
@@ -61,17 +62,17 @@ export const initSentry = () => {
       // 개발 환경에서는 모든 이벤트 전송
       if (__DEV__) {
         return event;
-      }
+    }
       
       // 민감 정보 제거
       if (event.user?.email) {
         event.user.email = '[REDACTED]';
-      }
+    }
       
       // 토큰, 비밀번호 등 민감 정보 필터링
       if (event.request?.cookies) {
         delete event.request.cookies;
-      }
+    }
       
       // breadcrumbs에서 민감 정보 필터링
       if (event.breadcrumbs) {
@@ -80,8 +81,8 @@ export const initSentry = () => {
           return !message.includes('password') && 
                  !message.includes('token') &&
                  !message.includes('secret');
-        });
-      }
+      });
+    }
       
       // 특정 에러 무시
       const error = hint.originalException;
@@ -89,51 +90,51 @@ export const initSentry = () => {
         // 네트워크 에러는 정보성으로만 기록
         if (error.message?.includes('Network request failed')) {
           event.level = 'info';
-        }
+      }
         
         // 개발 중 의도적인 에러는 무시
         if (error.message?.includes('__DEV__')) {
           return null;
-        }
       }
+    }
       
       return event;
-    },
+  },
     
     // 브레드크럼 설정
     beforeBreadcrumb: (breadcrumb: SentryBreadcrumb) => {
       // console 브레드크럼 필터링
       if (breadcrumb.category === 'console' && !__DEV__) {
         return null;
-      }
+    }
       
       // 민감한 네비게이션 정보 필터링
       if (breadcrumb.category === 'navigation' && breadcrumb.data?.params) {
         delete breadcrumb.data.params;
-      }
+    }
       
       return breadcrumb;
-    },
-  });
+  },
+});
 };
 
 // 사용자 정보 설정 (로그인 후 호출)
 export const setSentryUser = (user: { id: string; username?: string }) => {
   // Temporarily disabled
-  console.log('[Sentry] setSentryUser temporarily disabled');
+  Logger.debug('[Sentry] setSentryUser temporarily disabled', 'util', { component: 'sentry' });
   return;
   
   Sentry.setUser({
     id: user.id,
     username: user.username,
     // email은 의도적으로 제외 (개인정보 보호)
-  });
+});
 };
 
 // 사용자 정보 초기화 (로그아웃 시 호출)
 export const clearSentryUser = () => {
   // Temporarily disabled
-  console.log('[Sentry] clearSentryUser temporarily disabled');
+  Logger.debug('[Sentry] clearSentryUser temporarily disabled', 'util', { component: 'sentry' });
   return;
   
   Sentry.setUser(null);
@@ -142,15 +143,15 @@ export const clearSentryUser = () => {
 // 커스텀 에러 리포팅
 export const reportError = (error: Error, context?: Record<string, any>) => {
   // Temporarily disabled
-  console.error('[Sentry] reportError temporarily disabled:', error);
+  Logger.error('[Sentry] reportError temporarily disabled:', 'util', { component: 'sentry', error: error });
   return;
   
   Sentry.withScope((scope: SentryScope) => {
     if (context) {
       scope.setContext('custom', context);
-    }
+  }
     Sentry.captureException(error);
-  });
+});
 };
 
 // 성능 모니터링용 트랜잭션
@@ -161,7 +162,7 @@ export const startTransaction = (name: string, op: string) => {
 // 커스텀 메시지 (디버깅용)
 export const logMessage = (message: string, level: SeverityLevel = 'info') => {
   if (__DEV__) {
-    console.log(`[Sentry ${level}]:`, message);
-  }
+    Logger.debug('[Sentry ${level}]:', 'util', { component: 'sentry', data: message });
+}
   Sentry.captureMessage(message, level);
 };

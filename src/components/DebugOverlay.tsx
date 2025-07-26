@@ -11,6 +11,7 @@ import { useDevStore } from '../stores/useDevStore';
 import { useUserStore } from '../stores/useUserStore';
 import { useFeedbackStore } from '../stores/useFeedbackStore';
 import RealmService from '../services/realm/RealmService';
+import { Logger } from '../services/LoggingService';
 import { HIGColors } from '../styles/common';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -34,16 +35,16 @@ export const DebugOverlay: React.FC = () => {
         if (realmService.isInitialized) {
           const records = await realmService.getTastingRecords({ isDeleted: false });
           setRealmRecordCount(records.length);
-        }
-      } catch (error) {
-        console.error('Failed to get realm records:', error);
       }
+    } catch (error) {
+        Logger.error('Failed to get realm records:', 'component', { component: 'DebugOverlay', error: error });
+    }
       
       setRenderTime(Date.now() - startTime);
-    };
+  };
     
     loadData();
-  }, []);
+}, []);
 
   if (!showDebugInfo) return null;
 
@@ -56,7 +57,7 @@ export const DebugOverlay: React.FC = () => {
     '렌더 시간': `${renderTime}ms`,
     'React Native': '0.80',
     'Platform': 'iOS',
-  };
+};
 
   return (
     <View style={styles.container} pointerEvents="box-none">
@@ -91,53 +92,53 @@ const styles = StyleSheet.create({
     top: 100,
     right: 10,
     zIndex: 9999,
-  },
+},
   debugPanel: {
     backgroundColor: 'rgba(0, 0, 0, 0.85)',
     borderRadius: 8,
     padding: 10,
     minWidth: 150,
     maxWidth: 250,
-  },
+},
   expandedPanel: {
     maxHeight: 300,
-  },
+},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
+},
   headerText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '600',
-  },
+},
   toggleIcon: {
     color: '#FFFFFF',
     fontSize: 10,
     marginLeft: 10,
-  },
+},
   content: {
     marginTop: 10,
     maxHeight: 250,
-  },
+},
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 4,
     borderBottomWidth: 0.5,
     borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-  },
+},
   infoKey: {
     color: '#FFD700',
     fontSize: 11,
     fontWeight: '500',
     flex: 1,
-  },
+},
   infoValue: {
     color: '#FFFFFF',
     fontSize: 11,
     flex: 1,
     textAlign: 'right',
-  },
+},
 });

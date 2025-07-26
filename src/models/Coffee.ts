@@ -36,8 +36,8 @@ export class Coffee extends Realm.Object<Coffee> {
       aftertaste: 'int?',
       createdAt: { type: 'date', default: () => new Date() },
       updatedAt: { type: 'date', default: () => new Date() },
-    },
-  };
+  },
+};
 }
 
 export class TastingSession extends Realm.Object<TastingSession> {
@@ -80,6 +80,6 @@ export class TastingSession extends Realm.Object<TastingSession> {
       overallScore: 'double?',
       notes: 'string?',
       createdAt: { type: 'date', default: () => new Date() },
-    },
-  };
+  },
+};
 }

@@ -19,30 +19,30 @@ const StyledCard = styled(Card, {
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$backgroundPress',
-  },
+},
   
   variants: {
     compact: {
       true: {
         padding: '$md',
         marginBottom: '$sm',
-      },
     },
+  },
     
     unlocked: {
       true: {
         borderColor: '$green9',
-      },
+    },
       false: {
         opacity: 0.8,
-      },
     },
-  } as const,
+  },
+} as const,
   
   defaultVariants: {
     compact: false,
     unlocked: false,
-  },
+},
 });
 
 const NewBadge = styled(YStack, {
@@ -82,14 +82,14 @@ const IconText = styled(Text, {
     compact: {
       true: {
         fontSize: 20,
-      },
     },
+  },
     locked: {
       true: {
         opacity: 0.5,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const HeaderInfo = styled(YStack, {
@@ -108,14 +108,14 @@ const TitleText = styled(Text, {
     compact: {
       true: {
         fontSize: '$3', // 18px
-      },
     },
+  },
     locked: {
       true: {
         opacity: 0.6,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const RarityBadge = styled(YStack, {
@@ -128,22 +128,22 @@ const RarityBadge = styled(YStack, {
     rarity: {
       common: {
         backgroundColor: '$gray9',
-      },
+    },
       rare: {
         backgroundColor: '$blue9',
-      },
+    },
       epic: {
         backgroundColor: '$purple9',
-      },
+    },
       legendary: {
         backgroundColor: '$orange9',
-      },
     },
-  } as const,
+  },
+} as const,
   
   defaultVariants: {
     rarity: 'common',
-  },
+},
 });
 
 const RarityBadgeText = styled(Text, {
@@ -163,9 +163,9 @@ const RewardText = styled(Text, {
     locked: {
       true: {
         opacity: 0.6,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const DescriptionText = styled(Text, {
@@ -179,9 +179,9 @@ const DescriptionText = styled(Text, {
     locked: {
       true: {
         opacity: 0.6,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const ProgressSection = styled(XStack, {
@@ -195,9 +195,9 @@ const ProgressSection = styled(XStack, {
       true: {
         marginTop: '$sm',
         gap: '$sm',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const ProgressInfo = styled(YStack, {
@@ -229,9 +229,9 @@ const CircularProgressText = styled(Text, {
     compact: {
       true: {
         fontSize: '$1', // 14px
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const UnlockSection = styled(YStack, {
@@ -270,7 +270,7 @@ const getRarityColor = (rarity: string) => {
       return '$orange9';
     default:
       return '$gray9';
-  }
+}
 };
 
 const getRarityLabel = (rarity: string) => {
@@ -285,7 +285,7 @@ const getRarityLabel = (rarity: string) => {
       return '전설';
     default:
       return '일반';
-  }
+}
 };
 
 const formatDate = (date: Date) => {
@@ -293,13 +293,13 @@ const formatDate = (date: Date) => {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-  }).format(date);
+}).format(date);
 };
 
-const formatReward = (reward: any) => {
+const formatReward = (reward: unknown) => {
   if (reward.type === 'points') {
     return `${reward.value}pt`;
-  }
+}
   return reward.value;
 };
 
@@ -348,7 +348,7 @@ export const AchievementCard: React.FC<AchievementCardProps> = ({
           
           {/* Rarity Indicator */}
           <XStack alignItems="center">
-            <RarityBadge rarity={achievement.rarity as any}>
+            <RarityBadge rarity={achievement.rarity as unknown}>
               <RarityBadgeText>
                 {getRarityLabel(achievement.rarity)}
               </RarityBadgeText>

@@ -24,10 +24,10 @@ export const RecipePresets: React.FC<RecipePresetsProps> = ({
 
   if (Object.keys(availablePresets).length === 0) {
     return null;
-  }
+}
 
   const applyPreset = (presetKey: string) => {
-    const preset = availablePresets[presetKey as keyof typeof availablePresets] as any;
+    const preset = availablePresets[presetKey as keyof typeof availablePresets] as unknown;
     if (!preset) return;
 
     // Calculate water amount based on ratio
@@ -46,18 +46,18 @@ export const RecipePresets: React.FC<RecipePresetsProps> = ({
         bloomTime: preset.bloomTime,
         bloomWater,
         totalBrewTime: preset.totalTime,
-        pourTechnique: preset.technique as any,
+        pourTechnique: preset.technique as unknown,
         numberOfPours: 3, // Default number of pours
         bloomAgitation: false,
         pourIntervals: [30, 60, 90], // Default pour intervals
         drawdownTime: 30, // Default drawdown time
         agitation: 'none', // Default agitation
         agitationTiming: '',
-      },
-    };
+    },
+  };
 
     onApplyPreset(presetData);
-  };
+};
 
   return (
     <View style={styles.container}>
@@ -115,26 +115,26 @@ export const RecipePresets: React.FC<RecipePresetsProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_MD,
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   headerIcon: {
     fontSize: 20,
     marginRight: HIGConstants.SPACING_SM,
-  },
+},
   headerTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   presetContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     gap: HIGConstants.SPACING_MD,
-  },
+},
   presetCard: {
     width: 200,
     backgroundColor: HIGColors.systemBackground,
@@ -147,46 +147,46 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-  },
+},
   presetName: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   presetDescription: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_MD,
     lineHeight: 16,
-  },
+},
   presetDetails: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 4,
-  },
+},
   detailLabel: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
-  },
+},
   detailValue: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   applyButton: {
     backgroundColor: HIGColors.systemBlue,
     borderRadius: HIGConstants.cornerRadiusSmall,
     paddingVertical: HIGConstants.SPACING_SM,
     alignItems: 'center',
-  },
+},
   applyButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.white,
-  },
+},
 });

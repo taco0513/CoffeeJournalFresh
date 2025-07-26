@@ -34,13 +34,13 @@ interface DevState {
 }
 
 const initialState = {
-  isDeveloperMode: false,
+  isDeveloperMode: __DEV__, // Enable developer mode in debug builds
   showDebugInfo: false,
   enableNetworkLogs: false,
   enableRealmLogs: false,
   showPerformanceMetrics: false,
   skipAnimations: false,
-  bypassLogin: false,
+  bypassLogin: __DEV__, // Enable bypass login in debug builds
   enableExperimentalFeatures: false,
   enableBetaFeatures: false,
 };
@@ -57,12 +57,12 @@ export const useDevStore = create<DevState>()(
           set({
             ...initialState,
             isDeveloperMode: true,
-          });
-        } else {
+        });
+      } else {
           // Exiting developer mode - reset everything
           set({ ...initialState });
-        }
-      },
+      }
+    },
       
       setDebugInfo: (show: boolean) => set({ showDebugInfo: show }),
       setNetworkLogs: (enable: boolean) => set({ enableNetworkLogs: enable }),
@@ -74,10 +74,10 @@ export const useDevStore = create<DevState>()(
       setBetaFeatures: (enable: boolean) => set({ enableBetaFeatures: enable }),
       
       resetAllSettings: () => set({ ...initialState }),
-    }),
+  }),
     {
       name: 'cupnote-dev-storage',
       storage: createJSONStorage(() => AsyncStorage),
-    }
+  }
   )
 );

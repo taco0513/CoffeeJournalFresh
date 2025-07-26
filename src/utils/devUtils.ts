@@ -21,7 +21,7 @@ export const DevUtils = {
     if (!isDevelopment) {
       // console.warn('이 함수는 개발 환경에서만 사용할 수 있습니다.');
       return;
-    }
+  }
 
     // console.log('🔄 데이터 수집 시작...');
     try {
@@ -31,16 +31,16 @@ export const DevUtils = {
       if (result.success) {
         // console.log('✅ 데이터 수집 성공:', result.message);
         // console.log(`📊 총 레코드: ${result.totalRecords}, 업로드된 레코드: ${result.uploadedRecords}`);
-      } else {
+    } else {
         // console.error('❌ 데이터 수집 실패:', result.message);
-      }
+    }
       
       return result;
-    } catch (error) {
+  } catch (error) {
       // console.error('❌ 데이터 수집 중 오류:', error);
       return { success: false, message: error instanceof Error ? error.message : '알 수 없는 오류' };
-    }
-  },
+  }
+},
 
   /**
    * 기간별 데이터 수집
@@ -50,7 +50,7 @@ export const DevUtils = {
     if (!isDevelopment) {
       // console.warn('이 함수는 개발 환경에서만 사용할 수 있습니다.');
       return;
-    }
+  }
 
     // console.log(`🔄 기간별 데이터 수집 시작: ${startDate} ~ ${endDate}`);
     try {
@@ -64,16 +64,16 @@ export const DevUtils = {
       if (result.success) {
         // console.log('✅ 기간별 데이터 수집 성공:', result.message);
         // console.log(`📊 총 레코드: ${result.totalRecords}, 업로드된 레코드: ${result.uploadedRecords}`);
-      } else {
+    } else {
         // console.error('❌ 기간별 데이터 수집 실패:', result.message);
-      }
+    }
       
       return result;
-    } catch (error) {
+  } catch (error) {
       // console.error('❌ 기간별 데이터 수집 중 오류:', error);
       return { success: false, message: error instanceof Error ? error.message : '알 수 없는 오류' };
-    }
-  },
+  }
+},
 
   /**
    * 데이터 수집 상태 확인
@@ -83,7 +83,7 @@ export const DevUtils = {
     if (!isDevelopment) {
       // console.warn('이 함수는 개발 환경에서만 사용할 수 있습니다.');
       return;
-    }
+  }
 
     // console.log('📊 데이터 수집 상태 확인 중...');
     try {
@@ -95,14 +95,14 @@ export const DevUtils = {
       // console.log(`- 대기 중인 레코드: ${status.pendingRecords}개`);
       if (status.lastCollectionDate) {
         // console.log(`- 마지막 수집 일자: ${status.lastCollectionDate}`);
-      }
+    }
       
       return status;
-    } catch (error) {
+  } catch (error) {
       // console.error('❌ 상태 확인 중 오류:', error);
       return null;
-    }
-  },
+  }
+},
 
   /**
    * 테스트 데이터 생성
@@ -112,7 +112,7 @@ export const DevUtils = {
     if (!isDevelopment) {
       // console.warn('이 함수는 개발 환경에서만 사용할 수 있습니다.');
       return;
-    }
+  }
 
     // console.log(`🧪 테스트 데이터 ${count}개 생성 중...`);
     try {
@@ -122,16 +122,16 @@ export const DevUtils = {
       if (result.success) {
         // console.log('✅ 테스트 데이터 생성 성공:', result.message);
         // console.log(`📊 생성된 레코드: ${result.generatedRecords}개`);
-      } else {
+    } else {
         // console.error('❌ 테스트 데이터 생성 실패:', result.message);
-      }
+    }
       
       return result;
-    } catch (error) {
+  } catch (error) {
       // console.error('❌ 테스트 데이터 생성 중 오류:', error);
       return { success: false, message: error instanceof Error ? error.message : '알 수 없는 오류' };
-    }
-  },
+  }
+},
 
   /**
    * 개발자 도구 도움말
@@ -172,7 +172,7 @@ export const DevUtils = {
     // - collection_logs: 수집 로그 (선택사항)
     // - 다양한 통계 뷰들 (collection_stats, roastery_stats, origin_stats 등)
     // `);
-  }
+}
 };
 
 // 개발 환경에서만 전역 객체에 등록

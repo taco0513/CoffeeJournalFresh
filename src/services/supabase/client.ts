@@ -15,5 +15,5 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     storage: undefined, // React Native 기본 AsyncStorage 사용
-  },
+},
 });

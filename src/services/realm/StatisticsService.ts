@@ -8,20 +8,20 @@ export class StatisticsService {
 
   private constructor() {
     this.baseService = BaseRealmService.getInstance();
-  }
+}
 
   static getInstance(): StatisticsService {
     if (!StatisticsService.instance) {
       StatisticsService.instance = new StatisticsService();
-    }
-    return StatisticsService.instance;
   }
+    return StatisticsService.instance;
+}
 
   async initialize(): Promise<void> {
     if (!this.baseService.isInitialized) {
       await this.baseService.initialize();
-    }
   }
+}
 
   getStatistics(): {
     totalTastings: number;
@@ -30,7 +30,7 @@ export class StatisticsService {
     averageScore: number;
     cafeCount: number;
     homeCafeCount: number;
-  } {
+} {
     const realm = this.baseService.getRealm();
     
     const tastings = realm.objects<ITastingRecord>('TastingRecord')
@@ -47,12 +47,12 @@ export class StatisticsService {
       if (tasting.cafeName) {
         cafes.add(tasting.cafeName);
         cafeCount++;
-      } else {
+    } else {
         // cafeName이 없으면 홈카페로 간주
         homeCafeCount++;
-      }
+    }
       totalScore += tasting.matchScoreTotal || 0;
-    });
+  });
     
     return {
       totalTastings: tastings.length,
@@ -61,8 +61,8 @@ export class StatisticsService {
       averageScore: tastings.length > 0 ? totalScore / tastings.length : 0,
       cafeCount,
       homeCafeCount,
-    };
-  }
+  };
+}
 
   getFlavorProfile(): { flavor: string; count: number; percentage: number }[] {
     const realm = this.baseService.getRealm();
@@ -73,8 +73,8 @@ export class StatisticsService {
     allFlavorNotes.forEach(note => {
       if (note.value) {
         flavorCounts.set(note.value, (flavorCounts.get(note.value) || 0) + 1);
-      }
-    });
+    }
+  });
     
     const totalNotes = allFlavorNotes.length;
     const flavorProfile = Array.from(flavorCounts.entries())
@@ -82,11 +82,11 @@ export class StatisticsService {
         flavor,
         count,
         percentage: totalNotes > 0 ? (count / totalNotes) * 100 : 0,
-      }))
+    }))
       .sort((a, b) => b.count - a.count);
     
     return flavorProfile;
-  }
+}
 
   getTastingStatistics(): {
     totalTastings: number;
@@ -95,7 +95,7 @@ export class StatisticsService {
     monthlyTrend: { month: string; count: number; avgScore: number }[];
     preferredOrigins: { origin: string; count: number; percentage: number }[];
     preferredProcesses: { process: string; count: number; percentage: number }[];
-  } {
+} {
     const realm = this.baseService.getRealm();
     
     const tastings = realm.objects<ITastingRecord>('TastingRecord')
@@ -110,7 +110,7 @@ export class StatisticsService {
       '70-79': 0,
       '60-69': 0,
       '0-59': 0,
-    };
+  };
     
     // Monthly data
     const monthlyData = new Map<string, { count: number; totalScore: number }>();
@@ -140,13 +140,13 @@ export class StatisticsService {
       // Origins
       if (tasting.origin) {
         originCounts.set(tasting.origin, (originCounts.get(tasting.origin) || 0) + 1);
-      }
+    }
       
       // Processes
       if (tasting.process) {
         processCounts.set(tasting.process, (processCounts.get(tasting.process) || 0) + 1);
-      }
-    });
+    }
+  });
     
     const totalTastings = tastings.length;
     const averageScore = totalTastings > 0 ? totalScore / totalTastings : 0;
@@ -155,14 +155,14 @@ export class StatisticsService {
     const scoreDistribution = Object.entries(scoreRanges).map(([range, count]) => ({
       range,
       count,
-    }));
+  }));
     
     const monthlyTrend = Array.from(monthlyData.entries())
       .map(([month, data]) => ({
         month,
         count: data.count,
         avgScore: data.totalScore / data.count,
-      }))
+    }))
       .sort((a, b) => a.month.localeCompare(b.month))
       .slice(-12); // Last 12 months
     
@@ -171,7 +171,7 @@ export class StatisticsService {
         origin,
         count,
         percentage: (count / totalTastings) * 100,
-      }))
+    }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
     
@@ -180,7 +180,7 @@ export class StatisticsService {
         process,
         count,
         percentage: (count / totalTastings) * 100,
-      }))
+    }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
     
@@ -191,14 +191,14 @@ export class StatisticsService {
       monthlyTrend,
       preferredOrigins,
       preferredProcesses,
-    };
-  }
+  };
+}
 
   getLast30DaysStats(): {
     totalTastings: number;
     topOrigin: string | null;
     topFlavors: string[];
-  } {
+} {
     const realm = this.baseService.getRealm();
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -213,17 +213,17 @@ export class StatisticsService {
     recentTastings.forEach(tasting => {
       if (tasting.origin) {
         originCounts.set(tasting.origin, (originCounts.get(tasting.origin) || 0) + 1);
-      }
+    }
       
       // Count flavors from flavor notes
       if (tasting.flavorNotes) {
         tasting.flavorNotes.forEach((note: IFlavorNote) => {
           if (note.value) {
             flavorCounts.set(note.value, (flavorCounts.get(note.value) || 0) + 1);
-          }
-        });
-      }
-    });
+        }
+      });
+    }
+  });
     
     // Get top origin
     let topOrigin: string | null = null;
@@ -232,8 +232,8 @@ export class StatisticsService {
       if (count > maxOriginCount) {
         maxOriginCount = count;
         topOrigin = origin;
-      }
-    });
+    }
+  });
     
     // Get top 3 flavors
     const topFlavors = Array.from(flavorCounts.entries())
@@ -245,14 +245,14 @@ export class StatisticsService {
       totalTastings: recentTastings.length,
       topOrigin,
       topFlavors,
-    };
-  }
+  };
+}
 
   getAchievementProgress(): {
     totalPoints: number;
     unlockedCount: number;
     nextMilestone: number;
-  } {
+} {
     // This is a placeholder - the actual implementation should integrate with AchievementSystem
     const realm = this.baseService.getRealm();
     const tastings = realm.objects<ITastingRecord>('TastingRecord')
@@ -267,8 +267,8 @@ export class StatisticsService {
       totalPoints,
       unlockedCount,
       nextMilestone,
-    };
-  }
+  };
+}
 
   getCoffeeJourneyStats(): {
     firstTastingDate: Date | null;
@@ -276,7 +276,7 @@ export class StatisticsService {
     tastingsPerWeek: number;
     favoriteRoastery: string | null;
     favoriteCafe: string | null;
-  } {
+} {
     const realm = this.baseService.getRealm();
     const tastings = realm.objects<ITastingRecord>('TastingRecord')
       .filtered('isDeleted = false')
@@ -289,8 +289,8 @@ export class StatisticsService {
         tastingsPerWeek: 0,
         favoriteRoastery: null,
         favoriteCafe: null,
-      };
-    }
+    };
+  }
     
     const firstTasting = tastings[0];
     const firstTastingDate = firstTasting.createdAt;
@@ -307,8 +307,8 @@ export class StatisticsService {
       roasteryCounts.set(tasting.roastery, (roasteryCounts.get(tasting.roastery) || 0) + 1);
       if (tasting.cafeName) {
         cafeCounts.set(tasting.cafeName, (cafeCounts.get(tasting.cafeName) || 0) + 1);
-      }
-    });
+    }
+  });
     
     let favoriteRoastery: string | null = null;
     let maxRoasteryCount = 0;
@@ -316,8 +316,8 @@ export class StatisticsService {
       if (count > maxRoasteryCount) {
         maxRoasteryCount = count;
         favoriteRoastery = roastery;
-      }
-    });
+    }
+  });
     
     let favoriteCafe: string | null = null;
     let maxCafeCount = 0;
@@ -325,8 +325,8 @@ export class StatisticsService {
       if (count > maxCafeCount) {
         maxCafeCount = count;
         favoriteCafe = cafe;
-      }
-    });
+    }
+  });
     
     return {
       firstTastingDate,
@@ -334,8 +334,8 @@ export class StatisticsService {
       tastingsPerWeek,
       favoriteRoastery,
       favoriteCafe,
-    };
-  }
+  };
+}
 }
 
 export default StatisticsService.getInstance();

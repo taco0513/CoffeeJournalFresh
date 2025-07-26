@@ -46,7 +46,7 @@ export interface UserProfile {
     lastRoleChange?: Date;
     experimentalFeatures: string[];
     betaOptIn: boolean;
-  };
+};
 }
 
 const STORAGE_KEY = '@user_access_control';
@@ -60,9 +60,9 @@ export class AccessControlService {
   static getInstance(): AccessControlService {
     if (!AccessControlService.instance) {
       AccessControlService.instance = new AccessControlService();
-    }
-    return AccessControlService.instance;
   }
+    return AccessControlService.instance;
+}
 
   /**
    * Initialize user profile based on environment and stored preferences
@@ -75,8 +75,8 @@ export class AccessControlService {
         this.currentUserProfile = JSON.parse(stored);
         Logger.info('User profile loaded from storage', 'access_control', { 
           data: { role: this.currentUserProfile?.role }
-        });
-      }
+      });
+    }
 
       // If no stored profile, create default based on environment
       if (!this.currentUserProfile) {
@@ -85,19 +85,19 @@ export class AccessControlService {
         await this.saveUserProfile();
         Logger.info('Created new user profile', 'access_control', { 
           data: { role: defaultRole, source: 'environment_default' }
-        });
-      }
+      });
+    }
 
       return this.currentUserProfile;
-    } catch (error) {
+  } catch (error) {
       Logger.error('Failed to initialize user profile', 'access_control', { error: error as Error });
       
       // Fallback to safe default
       const fallbackRole = __DEV__ ? UserRole.DEVELOPER : UserRole.REGULAR;
       this.currentUserProfile = this.createUserProfile(fallbackRole);
       return this.currentUserProfile;
-    }
   }
+}
 
   /**
    * Get default user role based on environment
@@ -106,21 +106,21 @@ export class AccessControlService {
     // Development environment
     if (__DEV__) {
       return UserRole.DEVELOPER;
-    }
+  }
     
     // Beta builds (TestFlight, internal testing)
     if (Config.BUILD_TYPE === 'beta' || Config.IS_BETA_BUILD === 'true') {
       return UserRole.BETA;
-    }
+  }
     
     // Check for admin override
     if (Config.FORCE_ADMIN_MODE === 'true') {
       return UserRole.ADMIN;
-    }
+  }
     
     // Production default
     return UserRole.REGULAR;
-  }
+}
 
   /**
    * Create user profile with permissions based on role
@@ -133,9 +133,9 @@ export class AccessControlService {
         isFirstTime: true,
         experimentalFeatures: [],
         betaOptIn: role !== UserRole.REGULAR
-      }
-    };
-  }
+    }
+  };
+}
 
   /**
    * Get permissions matrix for a specific role
@@ -160,14 +160,14 @@ export class AccessControlService {
       canDeleteAllData: false,
       canAccessRealmLogs: false,
       canAccessNetworkLogs: false
-    };
+  };
 
     switch (role) {
       case UserRole.REGULAR:
         return {
           ...basePermissions,
           canExportData: true // Regular users can export their own data
-        };
+      };
 
       case UserRole.BETA:
         return {
@@ -178,7 +178,7 @@ export class AccessControlService {
           canAccessDebugLogs: true,
           canExportData: true,
           canAccessNetworkLogs: true
-        };
+      };
 
       case UserRole.DEVELOPER:
         return {
@@ -195,7 +195,7 @@ export class AccessControlService {
           canDeleteAllData: true,
           canAccessRealmLogs: true,
           canAccessNetworkLogs: true
-        };
+      };
 
       case UserRole.ADMIN:
         return {
@@ -216,26 +216,26 @@ export class AccessControlService {
           canDeleteAllData: true,
           canAccessRealmLogs: true,
           canAccessNetworkLogs: true
-        };
+      };
 
       default:
         return basePermissions;
-    }
   }
+}
 
   /**
    * Get current user profile
    */
   getCurrentUserProfile(): UserProfile | null {
     return this.currentUserProfile;
-  }
+}
 
   /**
    * Get current user role
    */
   getCurrentUserRole(): UserRole {
     return this.currentUserProfile?.role || UserRole.REGULAR;
-  }
+}
 
   /**
    * Check if user has specific permission
@@ -243,24 +243,24 @@ export class AccessControlService {
   hasPermission(permission: keyof UserPermissions): boolean {
     if (!this.currentUserProfile) {
       return false;
-    }
+  }
     
     return this.currentUserProfile.permissions[permission];
-  }
+}
 
   /**
    * Check multiple permissions (AND logic)
    */
   hasAllPermissions(permissions: (keyof UserPermissions)[]): boolean {
     return permissions.every(permission => this.hasPermission(permission));
-  }
+}
 
   /**
    * Check multiple permissions (OR logic)
    */
   hasAnyPermission(permissions: (keyof UserPermissions)[]): boolean {
     return permissions.some(permission => this.hasPermission(permission));
-  }
+}
 
   /**
    * Change user role (with validation)
@@ -269,7 +269,7 @@ export class AccessControlService {
     try {
       if (!this.currentUserProfile) {
         await this.initialize();
-      }
+    }
 
       const oldRole = this.currentUserProfile!.role;
       
@@ -277,9 +277,9 @@ export class AccessControlService {
       if (!this.canChangeToRole(oldRole, newRole)) {
         Logger.warn('Role change denied', 'access_control', { 
           data: { from: oldRole, to: newRole, reason: 'insufficient_permissions' } 
-        });
+      });
         return false;
-      }
+    }
 
       // Update profile
       this.currentUserProfile = {
@@ -290,21 +290,21 @@ export class AccessControlService {
           ...this.currentUserProfile!.metadata,
           lastRoleChange: new Date(),
           isFirstTime: false
-        }
-      };
+      }
+    };
 
       await this.saveUserProfile();
 
       Logger.info('User role changed successfully', 'access_control', { 
         data: { from: oldRole, to: newRole, reason } 
-      });
+    });
 
       return true;
-    } catch (error) {
+  } catch (error) {
       Logger.error('Failed to change user role', 'access_control', { error: error as Error });
       return false;
-    }
   }
+}
 
   /**
    * Check if role change is allowed
@@ -313,25 +313,25 @@ export class AccessControlService {
     // Allow any change in development
     if (__DEV__) {
       return true;
-    }
+  }
 
     // Regular users can become beta users
     if (fromRole === UserRole.REGULAR && toRole === UserRole.BETA) {
       return true;
-    }
+  }
 
     // Beta users can revert to regular
     if (fromRole === UserRole.BETA && toRole === UserRole.REGULAR) {
       return true;
-    }
+  }
 
     // Developer/Admin changes require existing elevated permissions
     if (fromRole === UserRole.DEVELOPER || fromRole === UserRole.ADMIN) {
       return true;
-    }
+  }
 
     return false;
-  }
+}
 
   /**
    * Toggle beta participation
@@ -341,12 +341,12 @@ export class AccessControlService {
     
     if (currentRole === UserRole.REGULAR) {
       return await this.changeUserRole(UserRole.BETA, 'user_opt_in');
-    } else if (currentRole === UserRole.BETA) {
+  } else if (currentRole === UserRole.BETA) {
       return await this.changeUserRole(UserRole.REGULAR, 'user_opt_out');
-    }
+  }
     
     return false;
-  }
+}
 
   /**
    * Enable experimental feature
@@ -354,11 +354,11 @@ export class AccessControlService {
   async enableExperimentalFeature(featureName: string): Promise<boolean> {
     if (!this.hasPermission('canAccessBetaFeatures')) {
       return false;
-    }
+  }
 
     if (!this.currentUserProfile) {
       return false;
-    }
+  }
 
     const features = this.currentUserProfile.metadata.experimentalFeatures;
     if (!features.includes(featureName)) {
@@ -367,11 +367,11 @@ export class AccessControlService {
       
       Logger.info('Experimental feature enabled', 'access_control', { 
         data: { feature: featureName, userRole: this.currentUserProfile.role }
-      });
-    }
+    });
+  }
 
     return true;
-  }
+}
 
   /**
    * Disable experimental feature
@@ -379,7 +379,7 @@ export class AccessControlService {
   async disableExperimentalFeature(featureName: string): Promise<boolean> {
     if (!this.currentUserProfile) {
       return false;
-    }
+  }
 
     const features = this.currentUserProfile.metadata.experimentalFeatures;
     const index = features.indexOf(featureName);
@@ -390,11 +390,11 @@ export class AccessControlService {
       
       Logger.info('Experimental feature disabled', 'access_control', { 
         data: { feature: featureName, userRole: this.currentUserProfile.role }
-      });
-    }
+    });
+  }
 
     return true;
-  }
+}
 
   /**
    * Check if experimental feature is enabled
@@ -402,10 +402,10 @@ export class AccessControlService {
   isExperimentalFeatureEnabled(featureName: string): boolean {
     if (!this.currentUserProfile) {
       return false;
-    }
+  }
 
     return this.currentUserProfile.metadata.experimentalFeatures.includes(featureName);
-  }
+}
 
   /**
    * Get user display badge
@@ -422,8 +422,8 @@ export class AccessControlService {
         return 'ADMIN';
       default:
         return null;
-    }
   }
+}
 
   /**
    * Get user display role name (Korean)
@@ -442,8 +442,8 @@ export class AccessControlService {
         return '관리자';
       default:
         return '알 수 없음';
-    }
   }
+}
 
   /**
    * Save user profile to storage
@@ -451,14 +451,14 @@ export class AccessControlService {
   private async saveUserProfile(): Promise<void> {
     if (!this.currentUserProfile) {
       return;
-    }
+  }
 
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(this.currentUserProfile));
-    } catch (error) {
+  } catch (error) {
       Logger.error('Failed to save user profile', 'access_control', { error: error as Error });
-    }
   }
+}
 
   /**
    * Reset user profile to default
@@ -470,12 +470,12 @@ export class AccessControlService {
       await this.initialize();
       
       Logger.info('User profile reset to default', 'access_control', { 
-        data: { newRole: this.currentUserProfile ? String((this.currentUserProfile as any).role) : undefined } 
-      });
-    } catch (error) {
+        data: { newRole: this.currentUserProfile ? String((this.currentUserProfile as unknown).role) : undefined } 
+    });
+  } catch (error) {
       Logger.error('Failed to reset user profile', 'access_control', { error: error as Error });
-    }
   }
+}
 
   /**
    * Validate current permissions (for security)
@@ -483,7 +483,7 @@ export class AccessControlService {
   validatePermissions(): boolean {
     if (!this.currentUserProfile) {
       return false;
-    }
+  }
 
     const expectedPermissions = this.getPermissionsForRole(this.currentUserProfile.role);
     const currentPermissions = this.currentUserProfile.permissions;
@@ -493,13 +493,13 @@ export class AccessControlService {
       if (currentPermissions[key] !== expectedValue) {
         Logger.warn('Permission mismatch detected', 'access_control', { 
           data: { permission: key, expected: expectedValue, actual: currentPermissions[key], role: this.currentUserProfile.role }
-        });
+      });
         return false;
-      }
     }
+  }
 
     return true;
-  }
+}
 
   /**
    * Repair corrupted permissions
@@ -507,7 +507,7 @@ export class AccessControlService {
   async repairPermissions(): Promise<boolean> {
     if (!this.currentUserProfile) {
       return false;
-    }
+  }
 
     try {
       this.currentUserProfile.permissions = this.getPermissionsForRole(this.currentUserProfile.role);
@@ -515,14 +515,14 @@ export class AccessControlService {
       
       Logger.info('Permissions repaired successfully', 'access_control', { 
         data: { role: this.currentUserProfile.role as string }
-      });
+    });
       
       return true;
-    } catch (error) {
+  } catch (error) {
       Logger.error('Failed to repair permissions', 'access_control', { error: error as Error });
       return false;
-    }
   }
+}
 }
 
 export default AccessControlService.getInstance();

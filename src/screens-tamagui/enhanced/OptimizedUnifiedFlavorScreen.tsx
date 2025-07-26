@@ -76,7 +76,7 @@ const SearchInput = styled(Input, {
   focusStyle: {
     borderColor: '$cupBlue',
     backgroundColor: '$background',
-  },
+},
 });
 
 const ContentContainer = styled(YStack, {
@@ -98,13 +98,13 @@ const SelectedFlavorsContainer = styled(Card, {
       true: {
         opacity: 1,
         scale: 1,
-      },
+    },
       false: {
         opacity: 0.5,
         scale: 0.95,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const FlavorScrollView = styled(ScrollView, {
@@ -124,7 +124,7 @@ const SearchResultsContainer = styled(YStack, {
   enterStyle: {
     opacity: 0,
     y: -10,
-  },
+},
 });
 
 const SearchResultItem = styled(Button, {
@@ -139,7 +139,7 @@ const SearchResultItem = styled(Button, {
   pressStyle: {
     backgroundColor: '$cupBlueLight',
     scale: 0.98,
-  },
+},
   animation: 'quick',
 });
 
@@ -177,7 +177,7 @@ const BackButton = styled(Button, {
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$gray5',
-  },
+},
 });
 
 const NextButton = styled(Button, {
@@ -192,13 +192,13 @@ const NextButton = styled(Button, {
       true: {
         backgroundColor: '$gray6',
         color: '$gray10',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     backgroundColor: '$cupBlueDark',
     scale: 0.98,
-  },
+},
   animation: 'bouncy',
 });
 
@@ -298,7 +298,7 @@ function OptimizedUnifiedFlavorScreen() {
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
     return flavorDataOptimizer.searchFlavors(searchQuery, 20);
-  }, [searchQuery]);
+}, [searchQuery]);
 
   // Optimized search handler with debouncing
   const handleSearchChange = debouncedCallback(
@@ -311,17 +311,17 @@ function OptimizedUnifiedFlavorScreen() {
         searchResults.forEach(result => {
           if (result.category) {
             matchingCategories.add(result.category);
-          }
-        });
+        }
+      });
         setExpandedCategories(matchingCategories);
-      }
-    },
+    }
+  },
     300,
     'search_debounce'
   );
 
   // Optimized flavor selection with performance tracking
-  const handleFlavorSelect = useCallback((flavorPath: any) => {
+  const handleFlavorSelect = useCallback((flavorPath: unknown) => {
     // Track performance start directly
     
     const newSelectedFlavors = [...selectedFlavors];
@@ -333,17 +333,17 @@ function OptimizedUnifiedFlavorScreen() {
 
     if (existingIndex >= 0) {
       newSelectedFlavors.splice(existingIndex, 1);
-    } else {
+  } else {
       if (newSelectedFlavors.length < 5) {
         newSelectedFlavors.push(flavorPath);
-      }
     }
+  }
 
     setSelectedFlavors(newSelectedFlavors);
     updateField('selectedFlavors', newSelectedFlavors);
     
     // Track performance end
-  }, [selectedFlavors, setSelectedFlavors, updateField]);
+}, [selectedFlavors, setSelectedFlavors, updateField]);
 
   // Optimized category expansion
   const handleCategoryExpansion = useCallback((categoryName: string) => {
@@ -351,21 +351,21 @@ function OptimizedUnifiedFlavorScreen() {
       const newSet = new Set(prev);
       if (newSet.has(categoryName)) {
         newSet.delete(categoryName);
-      } else {
+    } else {
         newSet.add(categoryName);
-      }
+    }
       return newSet;
-    });
-  }, []);
+  });
+}, []);
 
   const handleNext = useCallback(() => {
     // Track navigation performance
     navigation.navigate('Sensory' as never);
-  }, [navigation]);
+}, [navigation]);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
-  }, [navigation]);
+}, [navigation]);
 
   const canGoBack = navigation.canGoBack();
   const selectedCount = selectedFlavors.length;
@@ -414,15 +414,15 @@ function OptimizedUnifiedFlavorScreen() {
                 const flavorToRemove = selectedFlavors[index];
                 if (flavorToRemove) {
                   handleFlavorSelect(flavorToRemove);
-                }
-              }}
+              }
+            }}
               onToggleAllCategories={() => {
                 if (expandedCategories.size === flavorData.length) {
                   setExpandedCategories(new Set());
-                } else {
-                  setExpandedCategories(new Set(flavorData.map((cat: any) => cat.category)));
-                }
-              }}
+              } else {
+                  setExpandedCategories(new Set(flavorData.map((cat: unknown) => cat.category)));
+              }
+            }}
               expandedCategoriesCount={expandedCategories.size}
               totalCategoriesCount={flavorData.length}
               maxSelections={5}
@@ -459,14 +459,14 @@ function OptimizedUnifiedFlavorScreen() {
               )}
 
               {/* Category Accordion */}
-              {!searchQuery.trim() && flavorData.map((category: any, categoryIndex: number) => (
+              {!searchQuery.trim() && flavorData.map((category: unknown, categoryIndex: number) => (
                 <View
                   key={category.name}
                   animation="lazy"
                   enterStyle={{
                     opacity: 0,
                     y: 30 + (categoryIndex * 10),
-                  }}
+                }}
                   animateOnly={['opacity', 'transform']}
                 >
                   <CategoryAccordion
@@ -482,12 +482,12 @@ function OptimizedUnifiedFlavorScreen() {
                         const newSet = new Set(prev);
                         if (newSet.has(subCategoryKey)) {
                           newSet.delete(subCategoryKey);
-                        } else {
+                      } else {
                           newSet.add(subCategoryKey);
-                        }
+                      }
                         return newSet;
-                      });
-                    }}
+                    });
+                  }}
                   />
                 </View>
               ))}

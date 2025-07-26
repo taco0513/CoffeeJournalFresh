@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Logger } from '../services/LoggingService';
 /**
  * KeyGenerator Utility - Systematic solution for React key generation
  * 
@@ -16,31 +17,31 @@ export class KeyGenerator {
    * @param prefix - Optional prefix for the key
    * @returns A unique key string
    */
-  static forItem(item: any, prefix?: string): string {
+  static forItem(item: unknown, prefix?: string): string {
     if (!item) {
       return `empty-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    }
+  }
 
     // Try to use item.id first (most reliable)
     if (item.id) {
       return prefix ? `${prefix}-${item.id}` : item.id;
-    }
+  }
 
     // Fallback to other unique identifiers
     if (item.uuid) {
       return prefix ? `${prefix}-${item.uuid}` : item.uuid;
-    }
+  }
 
     if (item._id) {
       return prefix ? `${prefix}-${item._id}` : item._id;
-    }
+  }
 
     // Generate a temporary key based on item content
     const contentHash = this.generateContentHash(item);
     const fallbackKey = `temp-${contentHash}-${Date.now()}`;
     
     return prefix ? `${prefix}-${fallbackKey}` : fallbackKey;
-  }
+}
 
   /**
    * Generate keys for a list of items with uniqueness validation
@@ -48,7 +49,7 @@ export class KeyGenerator {
    * @param prefix - Optional prefix for all keys
    * @returns Array of unique key strings
    */
-  static forList(items: any[], prefix?: string): string[] {
+  static forList(items: unknown[], prefix?: string): string[] {
     const seen = new Set<string>();
     const keys: string[] = [];
 
@@ -66,15 +67,15 @@ export class KeyGenerator {
         if (counter > 1000) {
           key = `fallback-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
           break;
-        }
       }
+    }
       
       seen.add(key);
       keys.push(key);
-    });
+  });
 
     return keys;
-  }
+}
 
   /**
    * Generate a key with guaranteed uniqueness using a counter
@@ -85,7 +86,7 @@ export class KeyGenerator {
   static withUniqueCounter(baseKey: string, context: string = 'default'): string {
     if (!this.keyUsageMap.has(context)) {
       this.keyUsageMap.set(context, new Set());
-    }
+  }
 
     const contextKeys = this.keyUsageMap.get(context)!;
     let uniqueKey = baseKey;
@@ -99,19 +100,19 @@ export class KeyGenerator {
       if (counter > 1000) {
         uniqueKey = `fallback-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         break;
-      }
     }
+  }
 
     contextKeys.add(uniqueKey);
     return uniqueKey;
-  }
+}
 
   /**
    * Generate a content-based hash for an item
    * @param item - Item to hash
    * @returns Hash string
    */
-  private static generateContentHash(item: any): string {
+  private static generateContentHash(item: unknown): string {
     try {
       // Create a stable string representation of the item
       const stableProps = ['name', 'title', 'value', 'text', 'label', 'coffeeName', 'roastery'];
@@ -127,16 +128,16 @@ export class KeyGenerator {
           const char = relevantData.charCodeAt(i);
           hash = ((hash << 5) - hash) + char;
           hash = hash & hash; // Convert to 32-bit integer
-        }
-        return Math.abs(hash).toString(36);
       }
+        return Math.abs(hash).toString(36);
+    }
 
       // Fallback to random
       return Math.random().toString(36).substr(2, 9);
-    } catch (error) {
+  } catch (error) {
       return Math.random().toString(36).substr(2, 9);
-    }
   }
+}
 
   /**
    * Clear key usage tracking for a specific context
@@ -144,7 +145,7 @@ export class KeyGenerator {
    */
   static clearContext(context: string): void {
     this.keyUsageMap.delete(context);
-  }
+}
 
   /**
    * Validate that a list of keys are unique (development helper)
@@ -155,12 +156,12 @@ export class KeyGenerator {
     const duplicates = keys.filter((key, index) => keys.indexOf(key) !== index);
     
     if (duplicates.length > 0 && __DEV__) {
-      console.warn(`[KeyGenerator] Duplicate keys detected in ${context}:`, duplicates);
+      Logger.warn(`[KeyGenerator] Duplicate keys detected in ${context}:`, 'util', { component: 'KeyGenerator', data: duplicates });
       return false;
-    }
+  }
     
     return true;
-  }
+}
 
   /**
    * Safe key generator for React components with automatic fallback
@@ -169,15 +170,15 @@ export class KeyGenerator {
    * @param prefix - Optional prefix
    * @returns Safe key string
    */
-  static safe(item: any, index: number, prefix?: string): string {
+  static safe(item: unknown, index: number, prefix?: string): string {
     try {
       const key = this.forItem(item, prefix);
       return key;
-    } catch (error) {
-      console.warn('[KeyGenerator] Error generating key, using fallback:', error);
+  } catch (error) {
+      Logger.warn('[KeyGenerator] Error generating key, using fallback:', 'util', { component: 'KeyGenerator', error: error });
       return `fallback-${index}-${Date.now()}`;
-    }
   }
+}
 
   /**
    * Simple unique key generator (commonly used method)
@@ -190,7 +191,7 @@ export class KeyGenerator {
     const uniqueKey = `${timestamp}-${random}`;
     
     return prefix ? `${prefix}-${uniqueKey}` : uniqueKey;
-  }
+}
 }
 
 /**
@@ -199,21 +200,21 @@ export class KeyGenerator {
  * @param prefix - Optional prefix
  * @returns Array of unique keys
  */
-export const useUniqueKeys = (items: any[], prefix?: string): string[] => {
+export const useUniqueKeys = (items: unknown[], prefix?: string): string[] => {
   return React.useMemo(() => {
     const keys = KeyGenerator.forList(items, prefix);
     
     if (__DEV__) {
       KeyGenerator.validateUniqueness(keys, `useUniqueKeys-${prefix || 'default'}`);
-    }
+  }
     
     return keys;
-  }, [items, prefix]);
+}, [items, prefix]);
 };
 
 // Development-only key validation
 export const validateKeys = (keys: string[], componentName: string): void => {
   if (__DEV__) {
     KeyGenerator.validateUniqueness(keys, componentName);
-  }
+}
 };

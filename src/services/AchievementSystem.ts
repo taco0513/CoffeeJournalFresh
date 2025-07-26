@@ -1,10 +1,10 @@
 import Realm from 'realm';
+import { UserAction, AchievementDefinition, AchievementReward, UserAchievement, AchievementProgress, AchievementStats } from '../types/achievement';
 import { generateUUID } from '../utils/uuid';
 import { supabase } from './supabase/client';
-import { Logger } from '../utils/logger';
+import { Logger } from './LoggingService';
 import { 
   Achievement, 
-  UserAction, 
   ProgressData, 
   AchievementNotification, 
   AchievementType 
@@ -24,12 +24,12 @@ export class AchievementSystem {
   constructor(realm?: Realm) {
     if (realm) {
       this.realm = realm;
-    }
   }
+}
 
   setRealm(realm: Realm) {
     this.realm = realm;
-  }
+}
 
   /**
    * Initialize achievement definitions in the database
@@ -58,15 +58,15 @@ export class AchievementSystem {
               rewards: JSON.stringify(definition.rewards),
               isActive: true,
               createdAt: new Date(),
-            });
-          }
-        });
+          });
+        }
       });
-    } catch (error) {
+    });
+  } catch (error) {
       Logger.error('Error initializing achievements', 'achievement', { error: error as Error });
       throw error;
-    }
   }
+}
 
   /**
    * Track user action and check for achievements
@@ -88,7 +88,7 @@ export class AchievementSystem {
         
         if (!userAchievement || userAchievement.isUnlocked) {
           continue; // Skip if not exists or already unlocked
-        }
+      }
 
         const progress = this.calculateProgressInternal(definition, action, userId);
         
@@ -101,25 +101,25 @@ export class AchievementSystem {
               celebrationType: this.getCelebrationType(definition.rarity),
               message: `축하합니다! "${achievement.title}" 업적을 달성했습니다!`,
               points: typeof definition.rewards.value === 'number' ? definition.rewards.value : undefined,
-            });
-          }
-        } else {
+          });
+        }
+      } else {
           // Update progress
           await this.updateAchievementProgress(type, userId, progress.percentage);
-        }
       }
+    }
 
       return notifications;
-    } catch (error) {
+  } catch (error) {
       Logger.error('Error tracking user action', 'achievement', { error: error as Error, data: { action: String(action), userId } });
       return [];
-    }
   }
+}
 
   /**
    * Calculate progress for a specific achievement (internal method)
    */
-  private calculateProgressInternal(definition: any, action: UserAction, userId: string): ProgressData {
+  private calculateProgressInternal(definition: AchievementDefinition, action: UserAction, userId: string): ProgressData {
     const req = definition.requirements;
     let currentValue = 0;
     const targetValue = req.value;
@@ -144,7 +144,7 @@ export class AchievementSystem {
       // Add more cases as needed
       default:
         currentValue = 0;
-    }
+  }
 
     const percentage = Math.min(currentValue / targetValue, 1.0);
     
@@ -153,8 +153,8 @@ export class AchievementSystem {
       targetValue,
       percentage,
       lastUpdated: new Date(),
-    };
-  }
+  };
+}
 
   /**
    * Unlock achievement for user
@@ -166,7 +166,7 @@ export class AchievementSystem {
       const definition = ACHIEVEMENT_DEFINITIONS[achievementType];
       if (!definition) return null;
 
-      let userAchievement: any;
+      let userAchievement: UserAchievement;
       
       this.realm.write(() => {
         userAchievement = this.realm!.create('UserAchievement', {
@@ -179,8 +179,8 @@ export class AchievementSystem {
           isNew: true,
           createdAt: new Date(),
           updatedAt: new Date(),
-        }, Realm.UpdateMode.Modified);
-      });
+      }, Realm.UpdateMode.Modified);
+    });
 
       // Award points/rewards
       await this.awardRewards(definition.rewards, userId);
@@ -201,31 +201,31 @@ export class AchievementSystem {
         progress: 1.0,
         unlockedAt: userAchievement.unlockedAt,
         isNew: true,
-      };
-    } catch (error) {
+    };
+  } catch (error) {
       Logger.error('Error unlocking achievement', 'achievement', { error: error as Error, data: { achievementType, userId } });
       return null;
-    }
   }
+}
 
   /**
    * Award rewards to user
    */
-  private async awardRewards(rewards: any, userId: string): Promise<void> {
+  private async awardRewards(rewards: AchievementReward, userId: string): Promise<void> {
     try {
       if (rewards.type === 'points' && typeof rewards.value === 'number') {
         await this.awardPoints(userId, rewards.value);
-      }
+    }
       
       if (rewards.additionalRewards) {
         for (const additionalReward of rewards.additionalRewards) {
           await this.awardRewards(additionalReward, userId);
-        }
       }
-    } catch (error) {
-      Logger.error('Error awarding rewards', 'achievement', { error: error as Error, data: { rewards, userId } });
     }
+  } catch (error) {
+      Logger.error('Error awarding rewards', 'achievement', { error: error as Error, data: { rewards, userId } });
   }
+}
 
   /**
    * Award points to user
@@ -240,14 +240,14 @@ export class AchievementSystem {
           .filtered('userId = $0', userId)[0];
         
         if (userProfile) {
-          (userProfile as any).totalPoints = ((userProfile as any).totalPoints || 0) + points;
-          (userProfile as any).updatedAt = new Date();
-        }
-      });
-    } catch (error) {
+          (userProfile as unknown).totalPoints = ((userProfile as unknown).totalPoints || 0) + points;
+          (userProfile as unknown).updatedAt = new Date();
+      }
+    });
+  } catch (error) {
       Logger.error('Error awarding points', 'achievement', { error: error as Error, data: { userId, points } });
-    }
   }
+}
 
   /**
    * Get celebration type based on rarity
@@ -261,8 +261,8 @@ export class AchievementSystem {
         return 'normal';
       default:
         return 'subtle';
-    }
   }
+}
 
   /**
    * Update achievement progress
@@ -277,9 +277,9 @@ export class AchievementSystem {
           .filtered('userId = $0 AND achievementType = $1', userId, achievementType)[0];
 
         if (existing) {
-          (existing as any).progress = progress;
-          (existing as any).updatedAt = new Date();
-        } else {
+          (existing as unknown).progress = progress;
+          (existing as unknown).updatedAt = new Date();
+      } else {
           this.realm!.create('UserAchievement', {
             id: generateUUID(),
             userId,
@@ -288,18 +288,18 @@ export class AchievementSystem {
             isUnlocked: false,
             createdAt: new Date(),
             updatedAt: new Date(),
-          });
-        }
-      });
-    } catch (error) {
+        });
+      }
+    });
+  } catch (error) {
       Logger.error('Error updating achievement progress', 'achievement', { error: error as Error, data: { achievementType, userId, progress } });
-    }
   }
+}
 
   /**
    * Sync achievement to Supabase
    */
-  private async syncAchievementToSupabase(achievement: any): Promise<void> {
+  private async syncAchievementToSupabase(achievement: unknown): Promise<void> {
     try {
       await supabase
         .from('user_achievements')
@@ -312,17 +312,17 @@ export class AchievementSystem {
           unlocked_at: achievement.unlockedAt?.toISOString(),
           created_at: achievement.createdAt.toISOString(),
           updated_at: achievement.updatedAt.toISOString(),
-        });
-    } catch (error) {
+      });
+  } catch (error) {
       Logger.error('Error syncing achievement to Supabase', 'achievement', { error: error as Error, data: { achievement } });
-    }
   }
+}
 
   // Helper methods for data retrieval
   private getTastingCount(userId: string): number {
     if (!this.realm) return 0;
     return this.realm.objects('TastingRecord').filtered('userId = $0', userId).length;
-  }
+}
 
   private getWeeklyVariety(userId: string): number {
     if (!this.realm) return 0;
@@ -335,12 +335,12 @@ export class AchievementSystem {
     
     const uniqueCoffees = new Set();
     for (const record of records) {
-      const coffeeKey = `${(record as any).roaster}-${(record as any).coffeeName}`;
+      const coffeeKey = `${(record as unknown).roaster}-${(record as unknown).coffeeName}`;
       uniqueCoffees.add(coffeeKey);
-    }
+  }
     
     return uniqueCoffees.size;
-  }
+}
 
   private getUniqueFlavorCount(userId: string): number {
     if (!this.realm) return 0;
@@ -348,30 +348,30 @@ export class AchievementSystem {
     
     const uniqueFlavors = new Set();
     for (const record of records) {
-      if ((record as any).flavorProfile) {
+      if ((record as unknown).flavorProfile) {
         try {
-          const flavors = JSON.parse((record as any).flavorProfile);
-          flavors.forEach((flavor: any) => uniqueFlavors.add(flavor.name || flavor));
-        } catch (error) {
+          const flavors = JSON.parse((record as unknown).flavorProfile);
+          flavors.forEach((flavor: unknown) => uniqueFlavors.add(flavor.name || flavor));
+      } catch (error) {
           // Ignore parsing errors
-        }
       }
     }
+  }
     
     return uniqueFlavors.size;
-  }
+}
 
   private getHomeCafeTastingCount(userId: string): number {
     if (!this.realm) return 0;
     return this.realm
       .objects('TastingRecord')
       .filtered('userId = $0 AND mode = $1', userId, 'home_cafe').length;
-  }
+}
 
   private getCoffeeDiscoveryCount(userId: string): number {
     // This would need to be implemented based on your coffee discovery logic
     return this.userCoffeeDiscoveries.get(userId) || 0;
-  }
+}
 
   /**
    * Get user achievements
@@ -385,33 +385,52 @@ export class AchievementSystem {
         .filtered('userId = $0', userId);
 
       const achievements: Achievement[] = [];
-      const uniqueKeyTracker = new Set<string>();
+      const seenAchievementTypes = new Set<string>();
       const timestamp = Date.now();
       
-      // Process each achievement with enhanced deduplication
+      Logger.debug(`🔍 Processing ${userAchievements.length} achievements for user ${userId}`, 'service', { component: 'AchievementSystem' });
+      
+      // First pass: collect unique achievement types to prevent duplicates at source
+      const achievementTypeMap = new Map<string, any>();
+      
       for (let index = 0; index < userAchievements.length; index++) {
         const userAchievement = userAchievements[index];
-        const achievementType = (userAchievement as any).achievementType;
-        const achievementId = (userAchievement as any).id;
+        const achievementType = (userAchievement as unknown).achievementType;
+        const achievementId = (userAchievement as unknown).id;
+        
+        // Skip if basic validation fails
+        if (!achievementType || !achievementId) {
+          Logger.warn('⚠️ Skipping achievement with missing type or ID:', 'service', { component: 'AchievementSystem', data: { achievementType, achievementId } });
+          continue;
+      }
+        
+        // Keep only the latest/most complete version of each achievement type
+        if (!achievementTypeMap.has(achievementType)) {
+          achievementTypeMap.set(achievementType, userAchievement);
+      } else {
+          const existing = achievementTypeMap.get(achievementType);
+          // Prefer the one with unlockedAt date (completed achievements)
+          if ((userAchievement as unknown).unlockedAt && !(existing as unknown).unlockedAt) {
+            achievementTypeMap.set(achievementType, userAchievement);
+        }
+      }
+    }
+      
+      Logger.debug(`🔍 Deduplicated to ${achievementTypeMap.size} unique achievement types`, 'service', { component: 'AchievementSystem' });
+      
+      // Second pass: create achievement objects from deduplicated map
+      let processedIndex = 0;
+      for (const [achievementType, userAchievement] of achievementTypeMap.entries()) {
         const definition = ACHIEVEMENT_DEFINITIONS[achievementType];
         
-        // Skip if definition doesn't exist or required fields are missing
-        if (!definition || !achievementId || !achievementType) {
-          console.warn('⚠️ Skipping invalid achievement:', { achievementType, achievementId, hasDefinition: !!definition });
+        // Skip if definition doesn't exist
+        if (!definition) {
+          Logger.warn('⚠️ No definition found for achievement type:', 'service', { component: 'AchievementSystem', data: achievementType });
           continue;
-        }
+      }
         
-        // Generate ultra-unique ID that prevents React key duplication
-        let uniqueId = `achievement-${achievementType}-${achievementId}-${index}-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
-        let counter = 0;
-        
-        // Ensure absolute uniqueness with counter fallback
-        while (uniqueKeyTracker.has(uniqueId)) {
-          counter++;
-          uniqueId = `achievement-${achievementType}-${achievementId}-${index}-${timestamp}-${counter}-${Math.random().toString(36).substr(2, 9)}`;
-        }
-        
-        uniqueKeyTracker.add(uniqueId);
+        // Generate guaranteed unique ID using processed index
+        const uniqueId = `ach-${userId.slice(-4)}-${achievementType}-${processedIndex}-${timestamp}-${Math.random().toString(36).substr(2, 6)}`;
         
         // Create achievement object with guaranteed unique ID
         const achievement = {
@@ -424,20 +443,25 @@ export class AchievementSystem {
           category: definition.category,
           requirements: definition.requirements,
           rewards: definition.rewards,
-          progress: (userAchievement as any).progress || 0,
-          unlockedAt: (userAchievement as any).unlockedAt || undefined,
-          isNew: (userAchievement as any).isNew || false,
-        };
+          progress: (userAchievement as unknown).progress || 0,
+          unlockedAt: (userAchievement as unknown).unlockedAt || undefined,
+          isNew: (userAchievement as unknown).isNew || false,
+      };
         
         achievements.push(achievement);
-      }
-
+        processedIndex++;
+        
+        Logger.debug(`✅ Created achievement: ${uniqueId} (${achievementType})`, 'service', { component: 'AchievementSystem' });
+    }
+      
+      Logger.debug(`🎯 Final result: ${achievements.length} achievements created`, 'service', { component: 'AchievementSystem' });
       return achievements;
-    } catch (error) {
+  } catch (error) {
+      Logger.error('❌ Error in getUserAchievements:', 'service', { component: 'AchievementSystem', error: error });
       Logger.error('Error getting user achievements', 'achievement', { error: error as Error, userId });
       return [];
-    }
   }
+}
 
   /**
    * Mark achievement as seen (remove isNew flag)
@@ -452,14 +476,14 @@ export class AchievementSystem {
           .filtered('id = $0', achievementId)[0];
         
         if (achievement) {
-          (achievement as any).isNew = false;
-          (achievement as any).updatedAt = new Date();
-        }
-      });
-    } catch (error) {
+          (achievement as unknown).isNew = false;
+          (achievement as unknown).updatedAt = new Date();
+      }
+    });
+  } catch (error) {
       Logger.error('Error marking achievement as seen', 'achievement', { error: error as Error, data: { achievementId } });
-    }
   }
+}
 
   /**
    * Check and update achievements (wrapper for trackUserAction)
@@ -467,7 +491,7 @@ export class AchievementSystem {
   async checkAndUpdateAchievements(userId: string, action: UserAction): Promise<Achievement[]> {
     const notifications = await this.trackUserAction(action, userId);
     return notifications.map(n => n.achievement);
-  }
+}
 
   /**
    * Calculate progress for a specific achievement type
@@ -481,10 +505,10 @@ export class AchievementSystem {
       type: 'tasting',
       data: {},
       timestamp: new Date(),
-    };
+  };
 
     return this.calculateProgressInternal(definition, dummyAction, userId);
-  }
+}
 
   /**
    * Get achievement statistics for user
@@ -494,15 +518,15 @@ export class AchievementSystem {
     unlockedCount: number;
     totalCount: number;
     completionPercentage: number;
-  }> {
+}> {
     if (!this.realm) {
       return {
         totalPoints: 0,
         unlockedCount: 0,
         totalCount: 0,
         completionPercentage: 0,
-      };
-    }
+    };
+  }
 
     try {
       const userAchievements = await this.getUserAchievements(userId);
@@ -521,22 +545,22 @@ export class AchievementSystem {
         unlockedCount,
         totalCount,
         completionPercentage,
-      };
-    } catch (error) {
+    };
+  } catch (error) {
       Logger.error('Error getting achievement stats', 'achievement', { error: error as Error, userId });
       return {
         totalPoints: 0,
         unlockedCount: 0,
         totalCount: 0,
         completionPercentage: 0,
-      };
-    }
+    };
   }
+}
 
   /**
    * Track coffee discovery for achievements
    */
-  async trackCoffeeDiscovery(userId: string, coffeeData: any): Promise<void> {
+  async trackCoffeeDiscovery(userId: string, coffeeData: unknown): Promise<void> {
     try {
       const action: UserAction = {
         type: 'milestone',
@@ -544,19 +568,19 @@ export class AchievementSystem {
           type: 'coffee_discovery',
           coffeeName: coffeeData.coffeeName,
           roaster: coffeeData.roaster,
-        },
+      },
         timestamp: new Date(),
-      };
+    };
 
       await this.trackUserAction(action, userId);
       
       // Update coffee discovery count
       const currentCount = this.userCoffeeDiscoveries.get(userId) || 0;
       this.userCoffeeDiscoveries.set(userId, currentCount + 1);
-    } catch (error) {
+  } catch (error) {
       Logger.error('Error tracking coffee discovery', 'achievement', { error: error as Error, data: { userId, coffeeData } });
-    }
   }
+}
 }
 
 // Export singleton instance

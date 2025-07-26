@@ -4,8 +4,9 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { IOSLayout, IOSSpacing } from '../../styles/ios-hig-2024';
+import { useNavigation } from '@react-navigation/native';
 import {
   YStack,
   XStack,
@@ -15,7 +16,6 @@ import {
   Input,
   ScrollView,
   styled,
-  AnimatePresence,
   Separator,
 } from 'tamagui';
 import { useTastingStore } from '../../stores/tastingStore';
@@ -25,6 +25,7 @@ import RealmService from '../../services/realm/RealmService';
 import { searchRoasters, searchCoffees } from '../../services/supabase/coffeeSearch';
 import { AddCoffeeModal } from '../../components/AddCoffeeModal';
 import { BetaFeedbackPrompt } from '../../components/beta/BetaFeedbackPrompt';
+import { Logger } from '../../services/LoggingService';
 import { FloatingDummyDataButton } from '../../components/dev/FloatingDummyDataButton';
 
 // Styled Components
@@ -33,18 +34,8 @@ const Container = styled(YStack, {
   backgroundColor: '$background',
 });
 
-const HeaderBar = styled(XStack, {
-  height: 44,
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingHorizontal: '$lg',
-  backgroundColor: '$background',
-  borderBottomWidth: 0.5,
-  borderBottomColor: '$borderColor',
-});
-
 const ProgressBar = styled(XStack, {
-  height: 3,
+  height: '$progressBarHeight',
   backgroundColor: '$gray5',
   width: '100%',
 });
@@ -54,18 +45,6 @@ const ProgressFill = styled(XStack, {
   backgroundColor: '$primary',
 });
 
-const BackButton = styled(Text, {
-  fontSize: 24,
-  color: '$primary',
-  fontFamily: '$body',
-});
-
-const SkipButton = styled(Text, {
-  fontSize: 15,
-  color: '$primary',
-  fontFamily: '$body',
-});
-
 const TitleSection = styled(YStack, {
   paddingHorizontal: '$lg',
   paddingVertical: '$lg',
@@ -73,16 +52,16 @@ const TitleSection = styled(YStack, {
 });
 
 const Title = styled(Text, {
-  fontSize: 24,
+  fontSize: '$4', // 24px (headingFont)
   fontWeight: '700',
   color: '$color',
   marginBottom: '$xs',
 });
 
 const Subtitle = styled(Text, {
-  fontSize: 16,
+  fontSize: '$3', // 16px
   color: '$gray11',
-  lineHeight: 22,
+  lineHeight: '$1', // 22px
 });
 
 const FormCard = styled(Card, {
@@ -95,7 +74,7 @@ const FormCard = styled(Card, {
 });
 
 const FieldLabel = styled(Text, {
-  fontSize: 16,
+  fontSize: '$3', // 16px
   fontWeight: '600',
   color: '$color',
   marginBottom: '$sm',
@@ -107,8 +86,8 @@ const StyledInput = styled(Input, {
   borderColor: '$borderColor',
   borderRadius: '$3',
   paddingHorizontal: '$md',
-  height: 44,
-  fontSize: 16,
+  height: '$inputHeight', // 44px
+  fontSize: '$3', // 16px
   marginBottom: '$md',
 });
 
@@ -126,10 +105,10 @@ const ToggleButton = styled(Button, {
       true: {
         backgroundColor: '$blue2',
         borderColor: '$primary',
-        borderWidth: 2,
-      },
+        borderWidth: '$borderWidthThick', // 2px
     },
-  } as const,
+  },
+} as const,
 });
 
 const DetailsToggle = styled(Button, {
@@ -141,18 +120,13 @@ const DetailsToggle = styled(Button, {
   marginBottom: '$md',
 });
 
-const BottomContainer = styled(XStack, {
-  padding: '$lg',
-  backgroundColor: '$background',
-  borderTopWidth: 1,
-  borderTopColor: '$gray4',
-});
+// BottomContainer는 SafeArea를 고려해서 동적으로 처리
 
 const NextButton = styled(Button, {
   backgroundColor: '$primary',
-  height: 48,
+  height: '$buttonHeight', // 48px
   borderRadius: '$3',
-  fontSize: 17,
+  fontSize: '$5', // 20px (적절한 버튼 텍스트 크기)
   fontWeight: '600',
   color: 'white',
   
@@ -160,10 +134,10 @@ const NextButton = styled(Button, {
     disabled: {
       true: {
         backgroundColor: '$gray8',
-        opacity: 0.6,
-      },
+        opacity: '$opacityDisabled', // 0.6
     },
-  } as const,
+  },
+} as const,
 });
 
 const CoffeeInfoScreenTamagui = () => {
@@ -193,13 +167,13 @@ const CoffeeInfoScreenTamagui = () => {
   // 자동완성 로직
   useEffect(() => {
     loadSuggestions();
-  }, []);
+}, []);
 
   const loadSuggestions = async () => {
     try {
       if (!realmService.isInitialized) {
         await realmService.initialize();
-      }
+    }
 
       const tastings = await realmService.getTastingRecords({ isDeleted: false });
       const tastingArray = Array.from(tastings);
@@ -218,15 +192,17 @@ const CoffeeInfoScreenTamagui = () => {
       setOriginSuggestions(origins.filter((o): o is string => o !== undefined));
       setVarietySuggestions(varieties.filter((v): v is string => v !== undefined));
       setProcessSuggestions([...defaultProcessOptions, ...processes.filter((p): p is string => p !== undefined)]);
-    } catch (error) {
-      console.error('Failed to load suggestions:', error);
-    }
-  };
+  } catch (error) {
+      Logger.error('Failed to load suggestions:', 'screen', { component: 'CoffeeInfoScreen', error: error });
+  }
+};
 
   const handleNext = () => {
     // Determine next screen based on mode
     if (currentTasting.mode === 'home_cafe') {
       navigation.navigate('HomeCafe' as never);
+    } else if (currentTasting.mode === 'lab') {
+      navigation.navigate('LabMode' as never);
     } else {
       navigation.navigate('RoasterNotes' as never);
     }
@@ -234,18 +210,20 @@ const CoffeeInfoScreenTamagui = () => {
 
   const handleSkip = () => {
     navigation.navigate('UnifiedFlavor' as never);
-  };
+};
 
   const handleBack = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
-    } else {
+  } else {
       navigation.navigate('ModeSelection' as never);
-    }
-  };
+  }
+};
 
-  // 필수 필드 검증
-  const isValid = (currentTasting.cafeName?.trim() || currentTasting.roastery?.trim()) && currentTasting.coffeeName?.trim();
+  // 필수 필드 검증 - 온도 필드도 필수로 추가
+  const isValid = (currentTasting.cafeName?.trim() || currentTasting.roastery?.trim()) && 
+                  currentTasting.coffeeName?.trim() && 
+                  currentTasting.temperature;
 
   return (
     <Container>
@@ -254,28 +232,26 @@ const CoffeeInfoScreenTamagui = () => {
         style={{ flex: 1 }}
       >
         <YStack flex={1}>
-          {/* Header */}
-          <HeaderBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
-            <BackButton onPress={handleBack}>←</BackButton>
-            <Text fontSize={17} fontWeight="600" color="$color">
-              커피 정보
-            </Text>
-            <SkipButton onPress={handleSkip}>건너뛰기</SkipButton>
-          </HeaderBar>
 
           {/* Progress Bar */}
           <ProgressBar>
-            <ProgressFill width="10%" animation="lazy" />
+            <ProgressFill width="$progressStep1" />
           </ProgressBar>
 
           {/* Content */}
-          <ScrollView flex={1} showsVerticalScrollIndicator={false}>
+          <ScrollView 
+            flex={1} 
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingBottom: '$lg' // Reasonable padding for bottom button
+            }}
+          >
             <TitleSection>
               <Title>☕ 어떤 커피인가요?</Title>
               <Subtitle>기본 정보를 입력해주세요</Subtitle>
             </TitleSection>
 
-            <FormCard elevate size="$4" animation="lazy">
+            <FormCard elevate size="$4">
               <YStack space="$md">
                 {/* Cafe/Roaster */}
                 <YStack>
@@ -290,11 +266,11 @@ const CoffeeInfoScreenTamagui = () => {
                       backgroundColor: '$backgroundStrong',
                       borderWidth: 1,
                       borderColor: '$borderColor',
-                      borderRadius: 8,
-                      paddingHorizontal: 16,
-                      height: 44,
-                      fontSize: 16,
-                    }}
+                      borderRadius: '$3',
+                      paddingHorizontal: '$md',
+                      height: '$inputHeight',
+                      fontSize: '$3',
+                  }}
                   />
                 </YStack>
 
@@ -311,11 +287,11 @@ const CoffeeInfoScreenTamagui = () => {
                       backgroundColor: '$backgroundStrong',
                       borderWidth: 1,
                       borderColor: '$borderColor',
-                      borderRadius: 8,
-                      paddingHorizontal: 16,
-                      height: 44,
-                      fontSize: 16,
-                    }}
+                      borderRadius: '$3',
+                      paddingHorizontal: '$md',
+                      height: '$inputHeight',
+                      fontSize: '$3',
+                  }}
                   />
                 </YStack>
 
@@ -331,10 +307,9 @@ const CoffeeInfoScreenTamagui = () => {
                           currentTasting.roastLevel === level ? '' : level
                         )}
                         pressStyle={{ scale: 0.95 }}
-                        animation="quick"
                       >
                         <Text 
-                          fontSize={14} 
+                          fontSize="$3" // 16px
                           fontWeight={currentTasting.roastLevel === level ? '600' : '400'}
                           color={currentTasting.roastLevel === level ? '$blue11' : '$color'}
                         >
@@ -345,23 +320,65 @@ const CoffeeInfoScreenTamagui = () => {
                   </XStack>
                 </YStack>
 
+                {/* Temperature */}
+                <YStack>
+                  <FieldLabel>온도 *</FieldLabel>
+                  <XStack flexWrap="wrap">
+                    <ToggleButton
+                      selected={currentTasting.temperature === 'hot'}
+                      onPress={() => updateField('temperature', 
+                        currentTasting.temperature === 'hot' ? undefined : 'hot'
+                      )}
+                      pressStyle={{ scale: 0.95 }}
+                    >
+                      <XStack alignItems="center" space="$xs">
+                        <Text fontSize="$4">☕</Text>
+                        <Text 
+                          fontSize="$3"
+                          fontWeight={currentTasting.temperature === 'hot' ? '600' : '400'}
+                          color={currentTasting.temperature === 'hot' ? '$blue11' : '$color'}
+                        >
+                          Hot
+                        </Text>
+                      </XStack>
+                    </ToggleButton>
+                    <ToggleButton
+                      selected={currentTasting.temperature === 'cold'}
+                      onPress={() => updateField('temperature', 
+                        currentTasting.temperature === 'cold' ? undefined : 'cold'
+                      )}
+                      pressStyle={{ scale: 0.95 }}
+                    >
+                      <XStack alignItems="center" space="$xs">
+                        <Text fontSize="$4">🧊</Text>
+                        <Text 
+                          fontSize="$3"
+                          fontWeight={currentTasting.temperature === 'cold' ? '600' : '400'}
+                          color={currentTasting.temperature === 'cold' ? '$blue11' : '$color'}
+                        >
+                          Ice
+                        </Text>
+                      </XStack>
+                    </ToggleButton>
+                  </XStack>
+                </YStack>
+
                 {/* Coffee Details Toggle */}
                 <DetailsToggle
                   onPress={() => setShowCoffeeDetails(!showCoffeeDetails)}
                   backgroundColor={showCoffeeDetails ? '$blue2' : '$gray2'}
                   borderColor={showCoffeeDetails ? '$primary' : '$borderColor'}
-                  animation="quick"
                 >
                   <XStack alignItems="center" justifyContent="space-between" width="100%">
                     <Text 
-                      fontSize={16} 
+                      fontSize="$3" // 16px
                       fontWeight="500"
                       color={showCoffeeDetails ? '$blue11' : '$color'}
                     >
                       상세 정보 {showCoffeeDetails ? '숨기기' : '더보기'}
                     </Text>
                     <Text 
-                      fontSize={18}
+                      fontSize="$5" // 20px (적절한 아이콘 크기)
                       color={showCoffeeDetails ? '$blue11' : '$gray11'}
                     >
                       {showCoffeeDetails ? '−' : '+'}
@@ -370,14 +387,10 @@ const CoffeeInfoScreenTamagui = () => {
                 </DetailsToggle>
 
                 {/* Detailed Fields */}
-                <AnimatePresence>
-                  {showCoffeeDetails && (
-                    <YStack
-                      space="$md"
-                      animation="lazy"
-                      enterStyle={{ opacity: 0, y: -10 }}
-                      exitStyle={{ opacity: 0, y: -10 }}
-                    >
+                {showCoffeeDetails && (
+                  <YStack
+                    space="$md"
+                  >
                       <Separator borderColor="$borderColor" />
                       
                       {/* Origin */}
@@ -393,11 +406,11 @@ const CoffeeInfoScreenTamagui = () => {
                             backgroundColor: '$backgroundStrong',
                             borderWidth: 1,
                             borderColor: '$borderColor',
-                            borderRadius: 8,
-                            paddingHorizontal: 16,
-                            height: 44,
-                            fontSize: 16,
-                          }}
+                            borderRadius: '$3',
+                            paddingHorizontal: '$md',
+                            height: '$inputHeight',
+                            fontSize: '$3',
+                        }}
                         />
                       </YStack>
 
@@ -414,11 +427,11 @@ const CoffeeInfoScreenTamagui = () => {
                             backgroundColor: '$backgroundStrong',
                             borderWidth: 1,
                             borderColor: '$borderColor',
-                            borderRadius: 8,
-                            paddingHorizontal: 16,
-                            height: 44,
-                            fontSize: 16,
-                          }}
+                            borderRadius: '$3',
+                            paddingHorizontal: '$md',
+                            height: '$inputHeight',
+                            fontSize: '$3',
+                        }}
                         />
                       </YStack>
 
@@ -434,10 +447,9 @@ const CoffeeInfoScreenTamagui = () => {
                                 currentTasting.process === process ? '' : process
                               )}
                               pressStyle={{ scale: 0.95 }}
-                              animation="quick"
-                            >
+                                  >
                               <Text 
-                                fontSize={14} 
+                                fontSize="$3" // 16px
                                 fontWeight={currentTasting.process === process ? '600' : '400'}
                                 color={currentTasting.process === process ? '$blue11' : '$color'}
                               >
@@ -449,29 +461,40 @@ const CoffeeInfoScreenTamagui = () => {
                       </YStack>
                     </YStack>
                   )}
-                </AnimatePresence>
               </YStack>
             </FormCard>
           </ScrollView>
 
           {/* Bottom Button */}
-          <BottomContainer>
+          <XStack
+            padding="$lg"
+            paddingBottom={Math.max(insets.bottom, IOSLayout.safeAreaBottom) + IOSSpacing.md}
+            backgroundColor="$background"
+            borderTopWidth="$borderWidthThin"
+            borderTopColor="$gray4"
+          >
             <Button
               backgroundColor={isValid ? '$cupBlue' : '$gray8'}
               paddingVertical="$md"
               borderRadius="$3"
               alignItems="center"
+              justifyContent="center"
               flex={1}
+              height="$buttonHeight" // 48px
               onPress={handleNext}
               disabled={!isValid}
-              pressStyle={{ scale: 0.98 }}
-              color="white"
-              fontSize="$5"
-              fontWeight="600"
+              pressStyle={{ scale: '$scalePress' }}
             >
-              다음
+              <Text
+                color="white"
+                fontSize="$5"
+                fontWeight="600"
+                textAlign="center"
+              >
+                다음
+              </Text>
             </Button>
-          </BottomContainer>
+          </XStack>
         </YStack>
 
         {/* Modals and Dev Tools */}
@@ -482,7 +505,7 @@ const CoffeeInfoScreenTamagui = () => {
           onCoffeeAdded={(coffeeName) => {
             updateField('coffeeName', coffeeName);
             setShowAddCoffeeModal(false);
-          }}
+        }}
         />
         <BetaFeedbackPrompt screenName="CoffeeInfoScreen" />
         {isDeveloperMode && <FloatingDummyDataButton />}

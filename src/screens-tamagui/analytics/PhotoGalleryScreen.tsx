@@ -108,10 +108,10 @@ const PhotoItem = styled(Card, {
     opacity: 0,
     scale: 0.9,
     y: 20,
-  },
+},
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const PhotoImage = styled(Image, {
@@ -188,12 +188,12 @@ const PhotoModalContainer = styled(Card, {
     opacity: 0,
     scale: 0.8,
     y: -50,
-  },
+},
   exitStyle: {
     opacity: 0,
     scale: 0.8,
     y: -50,
-  },
+},
 });
 
 const ModalTitle = styled(H3, {
@@ -222,27 +222,27 @@ const ModalButton = styled(Button, {
       primary: {
         backgroundColor: '$cupBlue',
         color: 'white',
-      },
+    },
       secondary: {
         backgroundColor: '$gray4',
         color: '$color',
-      },
+    },
       destructive: {
         backgroundColor: '$red9',
         color: 'white',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 export type PhotoGalleryScreenProps = GetProps<typeof Container>;
 
 const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
   const theme = useTheme();
-  const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<unknown>>();
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -250,7 +250,7 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
 
   useEffect(() => {
     loadPhotos();
-  }, []);
+}, []);
 
   const loadPhotos = async (limit = 50, offset = 0) => {
     try {
@@ -259,7 +259,7 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
         isDeleted: false,
         limit,
         offset
-      });
+    });
       
       // Filter tastings with photos and create photo items
       const photoItems: PhotoItem[] = [];
@@ -274,41 +274,40 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
             coffeeName: tasting.coffeeName || '알 수 없음',
             roasteryName: tasting.roastery || '알 수 없음',
             createdAt: tasting.createdAt,
-          });
-        }
+        });
       }
+    }
 
       // Sort by creation date (newest first)
       photoItems.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
       
       setPhotos(photoItems);
-    } catch (error) {
+  } catch (error) {
       // console.error('Failed to load photos:', error);
-    } finally {
+  } finally {
       setLoading(false);
       setRefreshing(false);
-    }
-  };
+  }
+};
 
   const handleRefresh = () => {
     setRefreshing(true);
     loadPhotos();
-  };
+};
 
   const handlePhotoPress = (item: PhotoItem) => {
     // Navigate to full screen photo viewer
-    // TODO: PhotoViewer screen needs to be implemented
-    // navigation.navigate('PhotoViewer', { photoItem: item });
-  };
+    navigation.navigate('PhotoViewer', { photoItem: item });
+};
 
   const handlePhotoLongPress = (item: PhotoItem) => {
     setSelectedPhoto(item);
-  };
+};
 
   const navigateToTasting = (tastingId: string) => {
     navigation.navigate('TastingDetail', { tastingId });
     setSelectedPhoto(null);
-  };
+};
 
   const deletePhoto = async (item: PhotoItem) => {
     try {
@@ -323,18 +322,18 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
         await tastingService.updateTastingRecord(item.tastingId, {
           photoUri: undefined,
           photoThumbnailUri: undefined,
-        });
+      });
         
         // Refresh photos
         loadPhotos();
-      }
-    } catch (error) {
+    }
+  } catch (error) {
       // console.error('Failed to delete photo:', error);
       Alert.alert('오류', '사진을 삭제하는 중 오류가 발생했습니다.');
-    } finally {
+  } finally {
       setSelectedPhoto(null);
-    }
-  };
+  }
+};
 
   const renderPhotoGrid = () => {
     if (photos.length === 0) {
@@ -347,7 +346,7 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
           </EmptySubtext>
         </EmptyContainer>
       );
-    }
+  }
 
     const photoRows = [];
     for (let i = 0; i < photos.length; i += 2) {
@@ -364,7 +363,7 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
                 opacity: 0,
                 scale: 0.9,
                 y: 20 + (i + index) * 5,
-              }}
+            }}
               animateOnly={['opacity', 'transform']}
               pressStyle={{ scale: 0.98 }}
             >
@@ -386,14 +385,14 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
           {row.length === 1 && <View width={ITEM_SIZE} />}
         </XStack>
       );
-    }
+  }
 
     return (
       <AnimatePresence>
         {photoRows}
       </AnimatePresence>
     );
-  };
+};
 
   if (loading) {
     return (
@@ -411,7 +410,7 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
         </SafeAreaView>
       </Container>
     );
-  }
+}
 
   return (
     <Container>
@@ -423,7 +422,7 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
             enterStyle={{
               opacity: 0,
               y: -30,
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
           >
             <HeaderTitle>사진 갤러리</HeaderTitle>
@@ -436,12 +435,12 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
           <GalleryContainer
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-            }
+          }
             animation="lazy"
             enterStyle={{
               opacity: 0,
               y: 30,
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
           >
             {renderPhotoGrid()}
@@ -463,10 +462,10 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
               animation="quick"
               enterStyle={{
                 opacity: 0,
-              }}
+            }}
               exitStyle={{
                 opacity: 0,
-              }}
+            }}
             />
             <PhotoModalContainer>
               <ModalTitle>사진 옵션</ModalTitle>
@@ -492,10 +491,10 @@ const PhotoGalleryScreen: React.FC<PhotoGalleryScreenProps> = () => {
                           text: '삭제', 
                           style: 'destructive', 
                           onPress: () => deletePhoto(selectedPhoto)
-                        },
+                      },
                       ]
                     );
-                  }}
+                }}
                 >
                   사진 삭제
                 </ModalButton>

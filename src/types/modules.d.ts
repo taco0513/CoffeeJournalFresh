@@ -5,7 +5,7 @@ declare module 'react-native-touch-id' {
     title?: string;
     color?: string;
     fallbackTitle?: string;
-  }
+}
 
   export function isSupported(): Promise<boolean>;
   export function authenticate(reason: string, config?: TouchIDConfig): Promise<boolean>;
@@ -18,7 +18,7 @@ declare module 'react-native-keychain' {
     accessControl?: string;
     accessible?: string;
     authenticationPrompt?: string;
-  }
+}
 
   export function setInternetCredentials(
     server: string,
@@ -46,7 +46,7 @@ declare module 'react-native-keychain' {
     WHEN_UNLOCKED_THIS_DEVICE_ONLY: string;
     WHEN_PASSCODE_SET_THIS_DEVICE_ONLY: string;
     AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY: string;
-  };
+};
 }
 
 declare module '@react-native-firebase/auth' {
@@ -55,13 +55,13 @@ declare module '@react-native-firebase/auth' {
     signInWithCredential(credential: any): Promise<any>;
     signOut(): Promise<void>;
     onAuthStateChanged(callback: (user: any) => void): () => void;
-  }
+}
 
   export function auth(): Auth;
   
   export class GoogleAuthProvider {
     static credential(idToken: string | null, accessToken: string | null): any;
-  }
+}
 }
 
 declare module '@react-native-google-signin/google-signin' {
@@ -72,7 +72,7 @@ declare module '@react-native-google-signin/google-signin' {
     forceCodeForRefreshToken?: boolean;
     accountName?: string;
     iosClientId?: string;
-  }
+}
 
   export interface User {
     user: {
@@ -82,10 +82,10 @@ declare module '@react-native-google-signin/google-signin' {
       photo: string | null;
       familyName: string | null;
       givenName: string | null;
-    };
+  };
     idToken: string | null;
     serverAuthCode: string | null;
-  }
+}
 
   export class GoogleSignin {
     static configure(config: GoogleSigninConfig): void;
@@ -96,19 +96,19 @@ declare module '@react-native-google-signin/google-signin' {
     static signOut(): Promise<void>;
     static revokeAccess(): Promise<void>;
     static getCurrentUser(): Promise<User | null>;
-  }
+}
 }
 
 declare module 'crypto-js' {
   export interface CipherHelper {
     encrypt(message: string, key: string): any;
     decrypt(ciphertext: any, key: string): any;
-  }
+}
 
   export const AES: CipherHelper;
   export const enc: {
     Utf8: any;
-  };
+};
   
   export function SHA256(message: string): any;
 }
@@ -121,7 +121,7 @@ declare module 'react-native-vector-icons/Ionicons' {
     size?: number;
     color?: string;
     style?: any;
-  }
+}
   
   export default class Icon extends Component<IconProps> {}
 }
@@ -131,7 +131,7 @@ declare module 'react-native-config' {
     [key: string]: string;
     LOG_LEVEL?: string;
     SENTRY_DSN?: string;
-  }
+}
   
   const Config: Config;
   export default Config;

@@ -17,7 +17,7 @@ const StyledButton = styled(Button, {
   pressStyle: {
     scale: 0.98,
     opacity: 0.8,
-  },
+},
   
   // WCAG 2.4.7 Focus Visible - Enhanced accessibility
   focusStyle: {
@@ -30,7 +30,7 @@ const StyledButton = styled(Button, {
     outlineColor: '$focusRing',
     outlineWidth: 2,
     outlineOffset: 2,
-  },
+},
   
   variants: {
     variant: {
@@ -42,8 +42,8 @@ const StyledButton = styled(Button, {
         fontSize: '$3',
         hoverStyle: {
           backgroundColor: '$cupBlueDark',
-        },
       },
+    },
       secondary: {
         backgroundColor: '$gray4',
         borderWidth: 0,
@@ -52,8 +52,8 @@ const StyledButton = styled(Button, {
         fontSize: '$3',
         hoverStyle: {
           backgroundColor: '$gray5',
-        },
       },
+    },
       outline: {
         backgroundColor: 'transparent',
         borderWidth: 1,
@@ -64,8 +64,8 @@ const StyledButton = styled(Button, {
         hoverStyle: {
           backgroundColor: '$cupBlue',
           color: 'white',
-        },
       },
+    },
       text: {
         backgroundColor: 'transparent',
         borderWidth: 0,
@@ -76,32 +76,32 @@ const StyledButton = styled(Button, {
         hoverStyle: {
           backgroundColor: 'transparent',
           opacity: 0.7,
-        },
       },
     },
+  },
     
     fullWidth: {
       true: {
         width: '100%',
         alignSelf: 'stretch',
-      },
+    },
       false: {
         alignSelf: 'flex-start',
-      },
     },
+  },
     
     disabled: {
       true: {
         opacity: 0.5,
         cursor: 'not-allowed',
-      },
     },
-  } as const,
+  },
+} as const,
   
   defaultVariants: {
     variant: 'primary',
     fullWidth: true,
-  },
+},
 });
 
 // Export the component props type

@@ -11,20 +11,20 @@ export const useAnalytics = () => {
     // Initialize analytics when user changes
     if (currentUser) {
       analyticsService.initialize(currentUser.id);
-    } else {
+  } else {
       analyticsService.initialize();
-    }
-  }, [currentUser?.id]);
+  }
+}, [currentUser?.id]);
 
   useEffect(() => {
     // Handle app state changes
     const handleAppStateChange = (nextAppState: string) => {
       if (nextAppState === 'background' || nextAppState === 'inactive') {
         analyticsService.endSession();
-      } else if (nextAppState === 'active') {
+    } else if (nextAppState === 'active') {
         analyticsService.initialize(currentUser?.id);
-      }
-    };
+    }
+  };
 
     // Note: In a real implementation, you'd want to use AppState from react-native
     // import { AppState } from 'react-native';
@@ -32,41 +32,41 @@ export const useAnalytics = () => {
 
     return () => {
       analyticsService.endSession();
-    };
-  }, [currentUser?.id]);
+  };
+}, [currentUser?.id]);
 
   const trackScreenView = useCallback((screenName: string, properties?: Record<string, any>) => {
     analyticsService.trackScreenView(screenName, properties);
-  }, []);
+}, []);
 
   const trackButtonClick = useCallback((buttonName: string, properties?: Record<string, any>) => {
     analyticsService.trackButtonClick(buttonName, undefined, properties);
-  }, []);
+}, []);
 
   const trackFeatureUse = useCallback((featureName: string, properties?: Record<string, any>) => {
     analyticsService.trackFeatureUse(featureName, properties);
-  }, []);
+}, []);
 
   const trackError = useCallback((errorName: string, errorMessage: string, stackTrace?: string, properties?: Record<string, any>) => {
     analyticsService.trackError(errorName, errorMessage, stackTrace, properties);
-  }, []);
+}, []);
 
   const trackTiming = useCallback((eventName: string, duration: number, properties?: Record<string, any>) => {
     analyticsService.trackTiming(eventName, duration, properties);
-  }, []);
+}, []);
 
   // Coffee-specific tracking
   const trackCoffeeAction = useCallback((action: string, coffeeId?: string, properties?: Record<string, any>) => {
     analyticsService.trackCoffeeAction(action, coffeeId, properties);
-  }, []);
+}, []);
 
   const trackTastingAction = useCallback((action: string, tastingId?: string, properties?: Record<string, any>) => {
     analyticsService.trackTastingAction(action, tastingId, properties);
-  }, []);
+}, []);
 
   const trackSearchAction = useCallback((query: string, results: number, searchType?: string) => {
     analyticsService.trackSearchAction(query, results, searchType);
-  }, []);
+}, []);
 
   return {
     trackScreenView,
@@ -77,7 +77,7 @@ export const useAnalytics = () => {
     trackCoffeeAction,
     trackTastingAction,
     trackSearchAction,
-  };
+};
 };
 
 // HOC for automatic screen view tracking - temporarily disabled due to JSX issues
@@ -87,8 +87,8 @@ export const useAnalytics = () => {
 //
 //     useEffect(() => {
 //       trackScreenView(screenName);
-//     }, [trackScreenView]);
+//   }, [trackScreenView]);
 //
 //     return <WrappedComponent {...props} />;
-//   };
+// };
 // };

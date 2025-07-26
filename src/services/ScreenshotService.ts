@@ -17,7 +17,7 @@ export class ScreenshotService {
     try {
       if (!viewShotRef.current) {
         throw new Error('ViewShot reference is not available');
-      }
+    }
 
       // Generate filename if not provided
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -26,7 +26,7 @@ export class ScreenshotService {
       // Capture screenshot
       if (!viewShotRef.current || !viewShotRef.current.capture) {
         throw new Error('ViewShot ref or capture method is not available');
-      }
+    }
       const uri = await viewShotRef.current.capture();
       
       // Define destination path
@@ -41,18 +41,18 @@ export class ScreenshotService {
       const dirExists = await RNFS.exists(dirPath);
       if (!dirExists) {
         await RNFS.mkdir(dirPath);
-      }
+    }
 
       // Copy file to destination
       await RNFS.copyFile(uri, destinationPath);
 
       Logger.info('Screenshot saved', 'screenshot', { data: { path: destinationPath } });
       return destinationPath;
-    } catch (error) {
+  } catch (error) {
       Logger.error('Error capturing screenshot', 'screenshot', { error: error as Error });
       return null;
-    }
   }
+}
 
   /**
    * Capture multiple screenshots with delay
@@ -75,16 +75,16 @@ export class ScreenshotService {
       
       if (path) {
         savedPaths.push(path);
-      }
+    }
       
       // Wait for delay (except on last iteration)
       if (i < count - 1) {
         await new Promise(resolve => setTimeout(resolve, delay));
-      }
     }
+  }
     
     return savedPaths;
-  }
+}
 
   /**
    * Get all saved screenshots
@@ -100,18 +100,18 @@ export class ScreenshotService {
       const exists = await RNFS.exists(screenshotsPath);
       if (!exists) {
         return [];
-      }
+    }
       
       const files = await RNFS.readDir(screenshotsPath);
       return files
         .filter(file => file.name.endsWith('.png'))
         .map(file => file.path)
         .sort((a, b) => b.localeCompare(a)); // Latest first
-    } catch (error) {
+  } catch (error) {
       Logger.error('Error getting saved screenshots', 'screenshot', { error: error as Error });
       return [];
-    }
   }
+}
 
   /**
    * Delete all screenshots
@@ -127,14 +127,14 @@ export class ScreenshotService {
       const exists = await RNFS.exists(screenshotsPath);
       if (exists) {
         await RNFS.unlink(screenshotsPath);
-      }
+    }
       
       return true;
-    } catch (error) {
+  } catch (error) {
       Logger.error('Error clearing screenshots', 'screenshot', { error: error as Error });
       return false;
-    }
   }
+}
 
   /**
    * Show success alert with screenshot info
@@ -145,7 +145,7 @@ export class ScreenshotService {
       `파일이 저장되었습니다:\n${path}`,
       [{ text: '확인' }]
     );
-  }
+}
 
   /**
    * Show multiple screenshots save success
@@ -156,5 +156,5 @@ export class ScreenshotService {
       `${paths.length}개의 스크린샷이 저장되었습니다.\n\n저장 위치:\nCupNote_Screenshots/`,
       [{ text: '확인' }]
     );
-  }
+}
 }

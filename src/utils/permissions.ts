@@ -80,11 +80,11 @@ export const checkCameraPermission = async (): Promise<PermissionResult> => {
       default:
         // console.log('[Permissions] Unknown permission result:', result);
         return { status: 'denied', canAskAgain: true };
-    }
-  } catch (error) {
+  }
+} catch (error) {
     // console.error('[Permissions] Error checking camera permission:', error);
     return { status: 'denied', canAskAgain: true };
-  }
+}
 };
 
 export const requestCameraPermission = async (): Promise<PermissionResult> => {
@@ -104,11 +104,11 @@ export const requestCameraPermission = async (): Promise<PermissionResult> => {
         return { status: 'blocked', canAskAgain: false };
       default:
         return { status: 'denied', canAskAgain: true };
-    }
-  } catch (error) {
+  }
+} catch (error) {
     // console.error('Error requesting camera permission:', error);
     return { status: 'denied', canAskAgain: false };
-  }
+}
 };
 
 export const handleCameraPermission = async (): Promise<boolean> => {
@@ -125,9 +125,9 @@ export const handleCameraPermission = async (): Promise<boolean> => {
     // console.log('[Permissions] Direct check === RESULTS.GRANTED:', directResult === RESULTS.GRANTED);
     // console.log('[Permissions] Direct check === "limited":', directResult === 'limited');
     // console.log('[Permissions] Direct check === RESULTS.LIMITED:', directResult === RESULTS.LIMITED);
-  } catch (e) {
+} catch (e) {
     // console.log('[Permissions] Direct check error:', e);
-  }
+}
   
   // VisionCamera is temporarily disabled due to compatibility issues
   // console.log('[Permissions] Vision Camera is disabled - using react-native-permissions only');
@@ -135,7 +135,7 @@ export const handleCameraPermission = async (): Promise<boolean> => {
     // Already granted or limited (iOS), no need to ask
     // console.log('[Permissions] ✅ Permission already granted or limited, returning true');
     return true;
-  }
+}
   
   if (checkResult.status === 'unavailable') {
     // console.log('[Permissions] Camera unavailable on this device');
@@ -145,7 +145,7 @@ export const handleCameraPermission = async (): Promise<boolean> => {
       [{ text: '확인' }]
     );
     return false;
-  }
+}
   
   if (checkResult.status === 'blocked' || !checkResult.canAskAgain) {
     // Permission was denied and can't ask again - need to go to settings
@@ -158,11 +158,11 @@ export const handleCameraPermission = async (): Promise<boolean> => {
         { 
           text: '설정으로 이동', 
           onPress: () => openSettings(),
-        },
+      },
       ]
     );
     return false;
-  }
+}
   
   // Permission is denied but we can ask again
   // console.log('[Permissions] Requesting permission...');
@@ -171,7 +171,7 @@ export const handleCameraPermission = async (): Promise<boolean> => {
   if (requestResult.status === 'granted' || requestResult.status === 'limited') {
     // console.log('[Permissions] Permission granted or limited after request');
     return true;
-  }
+}
   
   if (requestResult.status === 'blocked') {
     // User denied and selected "Don't ask again"
@@ -184,10 +184,10 @@ export const handleCameraPermission = async (): Promise<boolean> => {
         { 
           text: '설정으로 이동', 
           onPress: () => openSettings(),
-        },
+      },
       ]
     );
-  }
+}
   
   // console.log('[Permissions] ❌ Permission not granted, returning false');
   // console.log('[Permissions] Final checkResult:', JSON.stringify(checkResult));
@@ -199,9 +199,9 @@ export const handleCameraPermission = async (): Promise<boolean> => {
 export const openAppSettings = () => {
   if (Platform.OS === 'ios') {
     Linking.openURL('app-settings:');
-  } else {
+} else {
     openSettings();
-  }
+}
 };
 
 // Generic permission checker
@@ -222,10 +222,10 @@ export const checkPermission = async (permission: Permission): Promise<Permissio
         return { status: 'blocked', canAskAgain: false };
       default:
         return { status: 'denied', canAskAgain: true };
-    }
-  } catch (error) {
-    return { status: 'denied', canAskAgain: true };
   }
+} catch (error) {
+    return { status: 'denied', canAskAgain: true };
+}
 };
 
 // Generic permission requester
@@ -246,10 +246,10 @@ export const requestPermission = async (permission: Permission): Promise<Permiss
         return { status: 'blocked', canAskAgain: false };
       default:
         return { status: 'denied', canAskAgain: true };
-    }
-  } catch (error) {
-    return { status: 'denied', canAskAgain: false };
   }
+} catch (error) {
+    return { status: 'denied', canAskAgain: false };
+}
 };
 
 // Location permission handler
@@ -258,7 +258,7 @@ export const handleLocationPermission = async (): Promise<boolean> => {
   
   if (checkResult.status === 'granted' || checkResult.status === 'limited') {
     return true;
-  }
+}
   
   if (checkResult.status === 'unavailable') {
     Alert.alert(
@@ -267,7 +267,7 @@ export const handleLocationPermission = async (): Promise<boolean> => {
       [{ text: '확인' }]
     );
     return false;
-  }
+}
   
   if (checkResult.status === 'blocked' || !checkResult.canAskAgain) {
     Alert.alert(
@@ -279,7 +279,7 @@ export const handleLocationPermission = async (): Promise<boolean> => {
       ]
     );
     return false;
-  }
+}
   
   const requestResult = await requestPermission(LOCATION_PERMISSION);
   return requestResult.status === 'granted' || requestResult.status === 'limited';
@@ -291,7 +291,7 @@ export const handlePhotoLibraryPermission = async (): Promise<boolean> => {
   
   if (checkResult.status === 'granted' || checkResult.status === 'limited') {
     return true;
-  }
+}
   
   if (checkResult.status === 'blocked' || !checkResult.canAskAgain) {
     Alert.alert(
@@ -303,7 +303,7 @@ export const handlePhotoLibraryPermission = async (): Promise<boolean> => {
       ]
     );
     return false;
-  }
+}
   
   const requestResult = await requestPermission(PHOTO_LIBRARY_PERMISSION);
   return requestResult.status === 'granted' || requestResult.status === 'limited';
@@ -315,7 +315,7 @@ export const handleNotificationPermission = async (): Promise<boolean> => {
   
   if (checkResult.status === 'granted') {
     return true;
-  }
+}
   
   if (checkResult.status === 'blocked' || !checkResult.canAskAgain) {
     Alert.alert(
@@ -327,7 +327,7 @@ export const handleNotificationPermission = async (): Promise<boolean> => {
       ]
     );
     return false;
-  }
+}
   
   const requestResult = await requestPermission(NOTIFICATION_PERMISSION);
   return requestResult.status === 'granted';

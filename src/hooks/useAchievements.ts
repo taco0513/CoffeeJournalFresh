@@ -4,6 +4,7 @@ import { Achievement, ProgressData, UserAction } from '../types/achievements';
 import { useUserStore } from '../stores/useUserStore';
 import { useRealm } from '../contexts/RealmContext';
 
+import { Logger } from '../services/LoggingService';
 interface AchievementStats {
   totalAchievements: number;
   unlockedAchievements: number;
@@ -31,7 +32,7 @@ export const useAchievements = (): UseAchievementsReturn => {
     unlockedAchievements: 0,
     totalPoints: 0,
     completionPercentage: 0,
-  });
+});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +44,7 @@ export const useAchievements = (): UseAchievementsReturn => {
       if (!currentUser?.id || !isRealmReady) {
         setIsLoading(false);
         return;
-      }
+    }
 
       try {
         setIsLoading(true);
@@ -54,83 +55,114 @@ export const useAchievements = (): UseAchievementsReturn => {
           setError('Database not initialized');
           setIsLoading(false);
           return;
-        }
+      }
         
         const system = new AchievementSystem(realmService.getRealm());
         setAchievementSystem(system);
         
         await system.initializeAchievements();
         await refreshAchievements();
-      } catch (err) {
-        console.error('Failed to initialize achievements:', err);
+    } catch (err) {
+        Logger.error('Failed to initialize achievements:', 'hook', { component: 'useAchievements', error: err });
         setError(err instanceof Error ? err.message : 'Failed to load achievements');
-      } finally {
+    } finally {
         setIsLoading(false);
-      }
-    };
+    }
+  };
 
     initializeAchievements();
-  }, [currentUser?.id, isRealmReady]);
+}, [currentUser?.id, isRealmReady]);
 
   // Refresh achievements data
   const refreshAchievements = useCallback(async () => {
-    if (!currentUser?.id || !achievementSystem) return;
+    if (!currentUser?.id || !achievementSystem) {
+      Logger.debug('🚫 Skipping refresh - missing user or system', 'hook', { component: 'useAchievements' });
+      return;
+  }
 
     try {
       setError(null);
+      Logger.debug('🔄 Starting achievements refresh for user:', 'hook', { component: 'useAchievements', data: currentUser.id });
       
-      // Load user achievements
+      // Load user achievements with improved error handling
       const userAchievements = await achievementSystem.getUserAchievements(currentUser.id);
+      Logger.debug('📦 Received achievements from system:', 'hook', { component: 'useAchievements', data: userAchievements.length });
       
-      // Remove duplicates by ID to prevent React key duplication errors
-      console.log('🔍 Raw achievements count:', userAchievements.length);
-      const duplicateIds = userAchievements.map(a => a.id).filter((id, index, arr) => arr.indexOf(id) !== index);
-      if (duplicateIds.length > 0) {
-        console.warn('⚠️ Duplicate achievement IDs found:', duplicateIds);
+      // Validate achievements data structure
+      const validAchievements = userAchievements.filter((achievement) => {
+        const isValid = achievement && 
+                       achievement.id && 
+                       achievement.type && 
+                       achievement.title && 
+                       typeof achievement.id === 'string';
+        
+        if (!isValid) {
+          Logger.warn('⚠️ Invalid achievement filtered out:', 'hook', { component: 'useAchievements', data: achievement });
       }
+        return isValid;
+    });
       
-      const uniqueAchievements = userAchievements.reduce((acc: Achievement[], current: Achievement) => {
-        const existingAchievement = acc.find(item => item.id === current.id);
-        if (!existingAchievement) {
-          acc.push(current);
-        } else {
-          console.log('🔄 Replacing duplicate achievement:', current.id, current.title);
-          // Keep the more recent/updated version (with unlockedAt if available)
-          if (current.unlockedAt && !existingAchievement.unlockedAt) {
-            const index = acc.findIndex(item => item.id === current.id);
-            acc[index] = current;
-          }
-        }
-        return acc;
-      }, []);
+      Logger.debug('✅ Valid achievements after filtering:', 'hook', { component: 'useAchievements', data: validAchievements.length });
       
-      console.log('✅ Unique achievements count:', uniqueAchievements.length);
+      // Additional safety check: ensure all IDs are truly unique
+      const idSet = new Set<string>();
+      const finalAchievements = validAchievements.filter((achievement) => {
+        if (idSet.has(achievement.id)) {
+          Logger.warn('🔄 Duplicate ID detected and filtered:', 'hook', { component: 'useAchievements', data: achievement.id });
+          return false;
+      }
+        idSet.add(achievement.id);
+        return true;
+    });
       
-      // Calculate stats using unique achievements
-      const totalAchievements = uniqueAchievements.length;
-      const unlockedAchievements = uniqueAchievements.filter(a => a.unlockedAt).length;
-      const totalPoints = uniqueAchievements
-        .filter((a: Achievement) => a.unlockedAt && a.rewards.type === 'points')
-        .reduce((sum: number, a: Achievement) => sum + (a.rewards.value as number), 0);
+      Logger.debug('🎯 Final achievements count:', 'hook', { component: 'useAchievements', data: finalAchievements.length });
+      
+      // Calculate stats using final achievements - create new unique objects to prevent React key conflicts
+      const safeAchievements = finalAchievements.map((achievement, index) => ({
+        ...achievement,
+        // Ensure completely unique ID for stats calculation
+        uniqueStatsId: `stats-${achievement.id}-${index}-${Date.now()}`
+    }));
+      
+      const totalAchievements = safeAchievements.length;
+      const unlockedAchievements = safeAchievements.filter(a => a.unlockedAt).length;
+      const totalPoints = safeAchievements
+        .filter((a: unknown) => a.unlockedAt && a.rewards && a.rewards.type === 'points')
+        .reduce((sum: number, a: unknown) => {
+          const points = typeof a.rewards.value === 'number' ? a.rewards.value : 0;
+          return sum + points;
+      }, 0);
       const completionPercentage = totalAchievements > 0 
         ? Math.round((unlockedAchievements / totalAchievements) * 100)
         : 0;
 
-      // Batch update to prevent intermediate render states
+      const statsData = {
+        totalAchievements,
+        unlockedAchievements,
+        totalPoints,
+        completionPercentage,
+    };
+
+      Logger.debug('📊 Calculated stats:', 'hook', { component: 'useAchievements', data: statsData });
+
+      // Use React.startTransition for non-urgent updates with micro delay to prevent key conflicts
       React.startTransition(() => {
-        setAchievements(uniqueAchievements);
-        setStats({
-          totalAchievements,
-          unlockedAchievements,
-          totalPoints,
-          completionPercentage,
-        });
-      });
-    } catch (err) {
-      console.error('Failed to refresh achievements:', err);
+        Logger.debug('🔄 Updating state with achievements:', 'hook', { component: 'useAchievements', data: finalAchievements.length });
+        
+        // Add micro delay to prevent React from getting confused during rapid updates
+        setTimeout(() => {
+          // Use finalAchievements for state (already has unique IDs)
+          setAchievements(finalAchievements);
+          setStats(statsData);
+      }, 0);
+    });
+      
+      Logger.debug('✅ Achievements refresh completed successfully', 'hook', { component: 'useAchievements' });
+  } catch (err) {
+      Logger.error('❌ Failed to refresh achievements:', 'hook', { component: 'useAchievements', error: err });
       setError(err instanceof Error ? err.message : 'Failed to refresh achievements');
-    }
-  }, [currentUser?.id, achievementSystem]);
+  }
+}, [currentUser?.id, achievementSystem]);
 
   // Check for new achievements
   const checkAchievements = useCallback(async (action: UserAction): Promise<Achievement[]> => {
@@ -147,15 +179,15 @@ export const useAchievements = (): UseAchievementsReturn => {
       if (newAchievements.length > 0) {
         // Refresh achievements list to include the new ones
         await refreshAchievements();
-      }
+    }
       
       return newAchievements;
-    } catch (err) {
-      console.error('Failed to check achievements:', err);
+  } catch (err) {
+      Logger.error('Failed to check achievements:', 'hook', { component: 'useAchievements', error: err });
       setError(err instanceof Error ? err.message : 'Failed to check achievements');
       return [];
-    }
-  }, [currentUser?.id, achievementSystem, refreshAchievements]);
+  }
+}, [currentUser?.id, achievementSystem, refreshAchievements]);
 
   // Get progress for specific achievement
   const getProgress = useCallback(async (achievementType: string): Promise<ProgressData | null> => {
@@ -164,11 +196,11 @@ export const useAchievements = (): UseAchievementsReturn => {
     try {
       const progress = await achievementSystem.calculateProgress(currentUser.id, achievementType);
       return progress;
-    } catch (err) {
-      console.error(`Failed to get progress for ${achievementType}:`, err);
+  } catch (err) {
+      Logger.error('Failed to get progress for ${achievementType}:', 'hook', { component: 'useAchievements', error: err });
       return null;
-    }
-  }, [currentUser?.id, achievementSystem]);
+  }
+}, [currentUser?.id, achievementSystem]);
 
   // Get next achievement to work towards
   const getNextAchievement = useCallback((): Achievement | null => {
@@ -184,8 +216,8 @@ export const useAchievements = (): UseAchievementsReturn => {
       if (progressDiff !== 0) return progressDiff;
       
       return rarityOrder[a.rarity] - rarityOrder[b.rarity];
-    })[0];
-  }, [achievements]);
+  })[0];
+}, [achievements]);
 
   return {
     achievements,
@@ -196,5 +228,5 @@ export const useAchievements = (): UseAchievementsReturn => {
     checkAchievements,
     getProgress,
     getNextAchievement,
-  };
+};
 };

@@ -21,7 +21,7 @@ const ModeSelectionScreen = () => {
   const handleModeSelect = (mode: TastingMode) => {
     setTastingMode(mode);
     navigation.navigate('CoffeeInfo' as never);
-  };
+};
 
   const modes = [
     {
@@ -32,7 +32,7 @@ const ModeSelectionScreen = () => {
       icon: '☕',
       color: HIGColors.systemBlue,
       popular: true,
-    },
+  },
     {
       id: 'home_cafe' as TastingMode,
       title: t('homeCafeMode'),
@@ -42,7 +42,7 @@ const ModeSelectionScreen = () => {
       color: HIGColors.systemGreen,
       popular: false,
       badge: t('comingSoon'),
-    },
+  },
     {
       id: 'lab' as TastingMode,
       title: t('labMode'),
@@ -52,7 +52,7 @@ const ModeSelectionScreen = () => {
       color: HIGColors.systemPurple,
       popular: false,
       badge: t('beta'),
-    },
+  },
   ];
 
   return (
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -136,31 +136,31 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_MD,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray4,
-  },
+},
   backButton: {
     marginRight: HIGConstants.SPACING_MD,
-  },
+},
   backArrow: {
     fontSize: HIGConstants.FONT_SIZE_H2,
     color: HIGColors.systemBlue,
-  },
+},
   headerTitle: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
     flex: 1,
-  },
+},
   languageSwitch: {
     marginLeft: HIGConstants.SPACING_MD,
-  },
+},
   content: {
     flex: 1,
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   titleSection: {
     paddingVertical: HIGConstants.SPACING_XL,
     alignItems: 'center',
-  },
+},
   title: {
     fontSize: HIGConstants.FONT_SIZE_H2,
     fontWeight: '700',
@@ -168,16 +168,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 32,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   subtitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   modeContainer: {
     flex: 1,
     gap: HIGConstants.SPACING_LG,
-  },
+},
   modeCard: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.cornerRadiusMedium,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     position: 'relative',
-  },
+},
   popularBadge: {
     position: 'absolute',
     top: -8,
@@ -201,61 +201,61 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     zIndex: 1,
-  },
+},
   popularText: {
     color: HIGColors.white,
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     fontWeight: '700',
-  },
+},
   recommendBadge: {
     backgroundColor: HIGColors.systemGreen,
-  },
+},
   advancedText: {
     backgroundColor: HIGColors.systemPurple,
-  },
+},
   modeIcon: {
     marginRight: HIGConstants.SPACING_LG,
-  },
+},
   iconText: {
     fontSize: 48,
-  },
+},
   modeInfo: {
     flex: 1,
-  },
+},
   modeTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   modeSubtitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '500',
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   modeDescription: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.tertiaryLabel,
     lineHeight: 20,
-  },
+},
   arrow: {
     marginLeft: HIGConstants.SPACING_MD,
-  },
+},
   arrowText: {
     fontSize: HIGConstants.FONT_SIZE_H2,
     fontWeight: '300',
-  },
+},
   bottomInfo: {
     paddingVertical: HIGConstants.SPACING_XL,
     alignItems: 'center',
-  },
+},
   infoText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     lineHeight: 20,
-  },
+},
 });
 
 export default ModeSelectionScreen;

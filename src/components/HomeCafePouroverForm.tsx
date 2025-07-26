@@ -32,7 +32,7 @@ export const HomeCafePouroverForm: React.FC<HomeCafePouroverFormProps> = ({ onNe
   // Auto-save form data to store
   useEffect(() => {
     updateHomeCafeData(formData);
-  }, [formData, updateHomeCafeData]);
+}, [formData, updateHomeCafeData]);
 
   // Auto-calculate ratio when dose or water changes
   useEffect(() => {
@@ -43,11 +43,11 @@ export const HomeCafePouroverForm: React.FC<HomeCafePouroverFormProps> = ({ onNe
           recipe: {
             ...formData.recipe,
             ratio: newRatio,
-          },
-        });
-      }
+        },
+      });
     }
-  }, [formData.recipe?.doseIn, formData.recipe?.waterAmount]);
+  }
+}, [formData.recipe?.doseIn, formData.recipe?.waterAmount]);
 
   const handleUpdateFormData = (updates: Partial<HomeCafeData>) => {
     setFormData(prevData => ({
@@ -56,24 +56,24 @@ export const HomeCafePouroverForm: React.FC<HomeCafePouroverFormProps> = ({ onNe
       equipment: {
         ...prevData.equipment,
         ...updates.equipment,
-      },
+    },
       recipe: {
         ...prevData.recipe,
         ...updates.recipe,
-      },
+    },
       notes: {
         ...prevData.notes,
         ...updates.notes,
-      },
-    }));
-  };
+    },
+  }));
+};
 
   const handleApplyPreset = (presetData: Partial<HomeCafeData>) => {
     handleUpdateFormData(presetData);
     Alert.alert('레시피 적용됨', '추천 레시피가 적용되었습니다.');
-  };
+};
 
-  const handleTimerComplete = (lapTimes: any[]) => {
+  const handleTimerComplete = (lapTimes: unknown[]) => {
     // Store lap times in experiment notes if needed
     if (lapTimes.length > 0) {
       const lapTimesText = lapTimes
@@ -89,36 +89,36 @@ export const HomeCafePouroverForm: React.FC<HomeCafePouroverFormProps> = ({ onNe
         notes: {
           ...formData.notes,
           tasteResult: updatedNotes,
-        },
-      });
-    }
+      },
+    });
+  }
     setShowTimer(false);
-  };
+};
 
   const validateForm = (): boolean => {
     if (!formData.equipment?.dripper) {
       Alert.alert('필수 입력', '드리퍼를 선택해주세요.');
       return false;
-    }
+  }
 
     if (!formData.recipe?.doseIn || formData.recipe.doseIn <= 0) {
       Alert.alert('필수 입력', '원두량을 입력해주세요.');
       return false;
-    }
+  }
 
     if (!formData.recipe?.waterAmount || formData.recipe.waterAmount <= 0) {
       Alert.alert('필수 입력', '물 양을 입력해주세요.');
       return false;
-    }
+  }
 
     return true;
-  };
+};
 
   const handleNext = () => {
     if (validateForm()) {
       onNext?.();
-    }
-  };
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -193,30 +193,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   scrollView: {
     flex: 1,
-  },
+},
   header: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingTop: HIGConstants.SPACING_LG,
     paddingBottom: HIGConstants.SPACING_MD,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   headerTitle: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   headerSubtitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     lineHeight: 20,
-  },
+},
   timerSection: {
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   timerToggleButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -226,19 +226,19 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_MD,
     marginHorizontal: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   timerToggleIcon: {
     fontSize: 20,
     marginRight: HIGConstants.SPACING_SM,
-  },
+},
   timerToggleText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   bottomSpacing: {
     height: 100, // Space for bottom button
-  },
+},
   bottomButtonContainer: {
     position: 'absolute',
     bottom: 0,
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_MD,
     paddingBottom: HIGConstants.SPACING_LG,
-  },
+},
   nextButton: {
     backgroundColor: HIGColors.systemBlue,
     borderRadius: HIGConstants.cornerRadiusMedium,
@@ -258,12 +258,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 50,
-  },
+},
   nextButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.white,
-  },
+},
 });
 
 export default HomeCafePouroverForm;

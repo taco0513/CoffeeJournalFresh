@@ -40,31 +40,31 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = memo(({
           toValue: 1,
           duration: 400,
           useNativeDriver: true,
-        }),
+      }),
         Animated.spring(scaleAnimation, {
           toValue: 1,
           tension: 50,
           friction: 7,
           useNativeDriver: true,
-        }),
+      }),
       ]);
       animationRef.start();
-    } else {
+  } else {
       animationRef = Animated.timing(animation, {
         toValue: 0,
         duration: 300,
         useNativeDriver: true,
-      });
+    });
       animationRef.start();
-    }
+  }
 
     // Cleanup function to stop animations on unmount
     return () => {
       if (animationRef) {
         animationRef.stop();
-      }
-    };
-  }, [visible, animation, scaleAnimation]);
+    }
+  };
+}, [visible, animation, scaleAnimation]);
 
   const getMessage = useCallback(() => {
     if (type === 'discovered') {
@@ -74,27 +74,27 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = memo(({
         message: '축하합니다! 새로운 커피를 발견하셨네요.\n관리자 검수 후 모든 사용자가 이용할 수 있게 됩니다.',
         badge: '🏆 커피 탐험가',
         gradientColors: ['#FFD700', '#FFA500'],
-      };
-    } else {
+    };
+  } else {
       return {
         title: '✅ 커피가 등록되었습니다!',
         subtitle: `${roasteryName}의 "${coffeeName}"`,
         message: '관리자가 검수를 완료했습니다.\n이제 모든 사용자가 이 커피를 검색할 수 있어요!',
         badge: `🏆 커피 발견자 Lv.${badgeLevel}`,
         gradientColors: ['#4ECDC4', '#44A08D'],
-      };
-    }
-  }, [type, roasteryName, coffeeName, badgeLevel]);
+    };
+  }
+}, [type, roasteryName, coffeeName, badgeLevel]);
 
   const { title, subtitle, message, badge, gradientColors } = getMessage();
 
   const handleOverlayPress = useCallback(() => {
     onClose();
-  }, [onClose]);
+}, [onClose]);
 
   const handleButtonPress = useCallback(() => {
     onClose();
-  }, [onClose]);
+}, [onClose]);
 
   return (
     <Modal
@@ -114,7 +114,7 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = memo(({
             {
               opacity: animation,
               transform: [{ scale: scaleAnimation }],
-            },
+          },
           ]}
         >
           <LinearGradient
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   container: {
     width: '85%',
     maxWidth: 350,
@@ -167,63 +167,63 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 20,
     elevation: 10,
-  },
+},
   gradient: {
     padding: 1,
-  },
+},
   content: {
     backgroundColor: HIGColors.systemBackground,
     margin: 1,
     borderRadius: HIGConstants.BORDER_RADIUS * 2 - 1,
     padding: HIGConstants.SPACING_XL,
     alignItems: 'center',
-  },
+},
   title: {
     fontSize: 24,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
     textAlign: 'center',
-  },
+},
   subtitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_LG,
     textAlign: 'center',
-  },
+},
   badgeContainer: {
     marginVertical: HIGConstants.SPACING_LG,
-  },
+},
   badge: {
     backgroundColor: HIGColors.gray6,
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS * 3,
-  },
+},
   badgeText: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   message: {
     fontSize: 15,
     lineHeight: 22,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   button: {
     backgroundColor: HIGColors.blue,
     paddingHorizontal: HIGConstants.SPACING_XL * 2,
     paddingVertical: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS * 3,
     minWidth: 120,
-  },
+},
   buttonText: {
     fontSize: 17,
     fontWeight: '600',
     color: '#FFFFFF',
     textAlign: 'center',
-  },
+},
 });

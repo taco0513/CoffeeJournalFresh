@@ -5,12 +5,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-} from 'react-native';
+ } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { HIGColors } from '../../styles/common';
 import { useDevStore } from '../../stores/useDevStore';
 import { DummyDataService } from '../../services/DummyDataService';
-import { AutoSelectService } from '../../services/AutoSelectService';
+import { Logger } from '../../services/LoggingService';
+import { AutoSelectService} from '../../services/AutoSelectService';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const BUTTON_SIZE = 56;
@@ -43,6 +44,9 @@ export const FloatingDummyDataButton: React.FC<FloatingDummyDataButtonProps> = (
       case 'Sensory':
       case 'SensoryEvaluation': return '👅';
       case 'PersonalComment': return '📝';
+      case 'Result': return '📋';
+      case 'LabMode': return '🧪';
+      case 'ExperimentalData': return '⚗️';
       case 'ModeSelection': return '🎯';
       case 'Developer': return '🛠️';
       case 'SignUp':
@@ -51,15 +55,33 @@ export const FloatingDummyDataButton: React.FC<FloatingDummyDataButtonProps> = (
       case 'Onboarding': return '👋';
       case 'AchievementGallery': return '🏆';
       case 'Stats': return '📊';
+      case 'TastingDetail': return '📄';
+      case 'PhotoViewer': return '🖼️';
+      case 'PhotoGallery': return '📸';
+      case 'PersonalTaste': return '👤';
+      case 'FlavorCategoryDetail': return '🏷️';
+      case 'PerformanceDashboard': return '⚡';
+      case 'MarketIntelligence': return '🌐';
+      case 'Legal': return '⚖️';
+      case 'SettingsMain': return '⚙️';
+      case 'I18nValidation': return '🌍';
+      case 'MarketConfigurationTester': return '🧪';
+      case 'BetaTesting': return '🧩';
+      case 'CrossMarketTesting': return '🔄';
+      case 'AdminDashboard': return '👑';
+      case 'Home': return '🏠';
+      case 'Journal': return '📖';
+      case 'JournalIntegrated': return '📖';
+      case 'AddRecord': return '➕';
       default: return '🎲';
-    }
-  };
+  }
+};
 
   const handlePress = async () => {
     // Generate both dummy data AND auto-selections for current screen
     await generateDummyDataForCurrentScreen();
     await generateAutoSelectionsForCurrentScreen();
-  };
+};
   
   const generateAutoSelectionsForCurrentScreen = async () => {
     const currentScreen = route.name;
@@ -69,13 +91,13 @@ export const FloatingDummyDataButton: React.FC<FloatingDummyDataButtonProps> = (
       const selections = await AutoSelectService.autoSelectForScreen(currentScreen);
       
       if (selections) {
-        console.log(`🎯 Auto-selections completed for ${currentScreen}:`, selections);
-      }
-      
-    } catch (error) {
-      console.error('❌ Error generating auto-selections:', error);
+        Logger.debug(`🎯 Auto-selections completed for ${currentScreen}:`, 'component', { component: 'FloatingDummyDataButton', data: selections });
     }
-  };
+      
+  } catch (error) {
+      Logger.error('❌ Error generating auto-selections:', 'component', { component: 'FloatingDummyDataButton', error: error });
+  }
+};
 
   const generateDummyDataForCurrentScreen = async () => {
     const currentScreen = route.name;
@@ -111,6 +133,20 @@ export const FloatingDummyDataButton: React.FC<FloatingDummyDataButtonProps> = (
         case 'RoasterNotes':
           await DummyDataService.fillRoasterNotes();
           break;
+          
+        case 'Result':
+          await DummyDataService.fillPersonalComment(); // Result screen shows summary, use comment data
+          break;
+          
+        case 'LabMode':
+          await DummyDataService.fillEnhancedHomeCafeData(); // Lab mode has advanced HomeCafe features
+          await DummyDataService.selectKoreanExpressions(); // Plus detailed sensory evaluation
+          break;
+          
+        case 'ExperimentalData':
+          await DummyDataService.fillSensoryData(); // Experimental data is extension of sensory
+          await DummyDataService.fillEnhancedHomeCafeData(); // Plus detailed brewing data
+          break;
         
         // New High Priority Screens
         case 'Search':
@@ -145,7 +181,7 @@ export const FloatingDummyDataButton: React.FC<FloatingDummyDataButtonProps> = (
         // Authentication Screens
         case 'SignUp':
         case 'SignIn':
-          console.log('Auto-filling authentication form for testing');
+          Logger.debug('Auto-filling authentication form for testing', 'component', { component: 'FloatingDummyDataButton' });
           // Note: Actual implementation would depend on auth form structure
           break;
           
@@ -166,44 +202,110 @@ export const FloatingDummyDataButton: React.FC<FloatingDummyDataButtonProps> = (
           await DummyDataService.generateSampleStats();
           break;
           
+        case 'TastingDetail':
+          await DummyDataService.generateCompleteTastingRecord();
+          break;
+          
+        case 'PhotoViewer':
+        case 'PhotoGallery':
+          Logger.debug('Photo viewing screens - no specific dummy data needed', 'component', { component: 'FloatingDummyDataButton' });
+          break;
+          
+        case 'PersonalTaste':
+          await DummyDataService.generateSampleStats();
+          await DummyDataService.generateCompleteTastingRecord();
+          break;
+          
+        case 'FlavorCategoryDetail':
+          await DummyDataService.selectRandomFlavors();
+          break;
+          
+        case 'PerformanceDashboard':
+          await DummyDataService.fillDeveloperSettings();
+          break;
+          
+        case 'MarketIntelligence':
+          await DummyDataService.generateSampleStats();
+          break;
+          
+        case 'Legal':
+          Logger.debug('Legal screen - no dummy data needed', 'component', { component: 'FloatingDummyDataButton' });
+          break;
+          
+        case 'SettingsMain':
+          await DummyDataService.fillProfileData();
+          break;
+          
+        case 'I18nValidation':
+        case 'MarketConfigurationTester':
+        case 'BetaTesting':
+        case 'CrossMarketTesting':
+          await DummyDataService.fillDeveloperSettings();
+          break;
+          
+        case 'AdminDashboard':
+          await DummyDataService.generateFeedbackData();
+          await DummyDataService.generateSampleStats();
+          break;
+          
         // Special Cases - Complete Tasting Flow
         case 'Home':
+        case 'Journal':
         case 'JournalIntegrated':
           // Generate sample tasting records for better testing
           await DummyDataService.generateCompleteTastingRecord();
-          console.log('Generated complete tasting record for better home/journal testing');
+          Logger.debug('Generated complete tasting record for better home/journal testing', 'component', { component: 'FloatingDummyDataButton' });
+          break;
+          
+        case 'AddRecord':
+          // AddRecord is TastingFlow - start with mode selection
+          await DummyDataService.autoSelectMode();
+          Logger.debug('Auto-selected mode for AddRecord (TastingFlow)', 'component', { component: 'FloatingDummyDataButton' });
           break;
           
         default:
           // Try to detect screen type and provide contextual dummy data
           if (currentScreen.toLowerCase().includes('admin')) {
             await DummyDataService.generateFeedbackData();
-            console.log('Generated admin data for screen:', currentScreen);
-          } else if (currentScreen.toLowerCase().includes('profile')) {
+            Logger.debug('Generated admin data for screen:', 'component', { component: 'FloatingDummyDataButton', data: currentScreen });
+        } else if (currentScreen.toLowerCase().includes('profile')) {
             await DummyDataService.fillProfileData();
-            console.log('Generated profile data for screen:', currentScreen);
-          } else if (currentScreen.toLowerCase().includes('search')) {
+            Logger.debug('Generated profile data for screen:', 'component', { component: 'FloatingDummyDataButton', data: currentScreen });
+        } else if (currentScreen.toLowerCase().includes('search')) {
             await DummyDataService.fillSearchFilters();
-            console.log('Generated search data for screen:', currentScreen);
-          } else {
-            console.log('No specific dummy data available for screen:', currentScreen);
-            console.log('Available screen support:', [
-              'CoffeeInfo', 'HomeCafe', 'UnifiedFlavor', 'Sensory', 'SensoryEvaluation',
-              'PersonalComment', 'RoasterNotes', 'Search', 'AdminCoffeeEdit', 'AdminFeedback',
-              'ProfileSetup', 'ModeSelection', 'Developer', 'DataTest', 'SignUp', 'SignIn',
-              'History', 'Onboarding', 'AchievementGallery', 'Stats'
+            Logger.debug('Generated search data for screen:', 'component', { component: 'FloatingDummyDataButton', data: currentScreen });
+        } else {
+            Logger.debug('No specific dummy data available for screen:', 'component', { component: 'FloatingDummyDataButton', data: currentScreen });
+            Logger.debug('Available screen support:', [
+              // TastingFlow screens
+              'ModeSelection', 'CoffeeInfo', 'HomeCafe', 'LabMode', 'RoasterNotes', 
+              'UnifiedFlavor', 'Sensory', 'ExperimentalData', 'SensoryEvaluation', 
+              'PersonalComment', 'Result',
+              // Main tab screens
+              'Home', 'Journal', 'JournalIntegrated', 'AddRecord',
+              // Analytics & Profile screens  
+              'Search', 'TastingDetail', 'PhotoViewer', 'PhotoGallery', 'PersonalTaste',
+              'FlavorCategoryDetail', 'AchievementGallery', 'Stats', 'SettingsMain',
+              // Admin screens
+              'AdminDashboard', 'AdminCoffeeEdit', 'AdminFeedback',
+              // Developer & Testing screens
+              'Developer', 'DataTest', 'PerformanceDashboard', 'I18nValidation',
+              'MarketConfigurationTester', 'BetaTesting', 'CrossMarketTesting',
+              'MarketIntelligence', 'ProfileSetup', 'Onboarding',
+              // Auth & Legal
+              'SignUp', 'SignIn', 'Legal'
             ]);
-          }
+        }
           break;
-      }
+    }
       
       // Visual feedback for successful data generation
-      console.log(`✅ Generated dummy data for ${currentScreen} screen`);
+      Logger.debug(`✅ Generated dummy data for ${currentScreen} screen`, 'component', { component: 'FloatingDummyDataButton' });
       
-    } catch (error) {
-      console.error('❌ Error generating dummy data for', currentScreen, ':', error);
-    }
-  };
+  } catch (error) {
+      Logger.error(`❌ Error generating dummy data for ${currentScreen}:`, 'component', { component: 'FloatingDummyDataButton', error });
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -234,7 +336,7 @@ const styles = StyleSheet.create({
     bottom: 190, // Above beta feedback button
     right: SAFE_AREA,
     zIndex: 9998,
-  },
+},
   button: {
     width: BUTTON_SIZE,
     height: BUTTON_SIZE,
@@ -247,10 +349,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
-  },
+},
   buttonText: {
     fontSize: 24,
-  },
+},
   devBadge: {
     position: 'absolute',
     top: -5,
@@ -259,12 +361,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     paddingVertical: 1,
     borderRadius: 6,
-  },
+},
   devBadgeText: {
     color: '#FFFFFF',
     fontSize: 8,
     fontWeight: 'bold',
-  },
+},
   screenTooltip: {
     position: 'absolute',
     bottom: BUTTON_SIZE + 8,
@@ -274,11 +376,11 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 6,
     maxWidth: 120,
-  },
+},
   screenTooltipText: {
     color: '#FFFFFF',
     fontSize: 10,
     fontWeight: '500',
     textAlign: 'center',
-  },
+},
 });

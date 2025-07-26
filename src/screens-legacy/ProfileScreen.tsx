@@ -17,7 +17,6 @@ import { HIGConstants, HIGColors, commonButtonStyles } from '../styles/common';
 import { IOSColors, IOSLayout, IOSTypography, IOSSpacing, IOSShadows } from '../styles/ios-hig-2024';
 import AuthService from '../services/supabase/auth';
 import { useDevStore } from '../stores/useDevStore';
-import StatusBadge from '../components/StatusBadge';
 
 // Tab navigation type definition
 type MainTabParamList = {
@@ -45,14 +44,14 @@ const ProfileScreen = () => {
     joinedDaysAgo: 0,
     achievementCount: 0,
     favoriteRoaster: '',
-  });
+});
 
 
   const realmService = RealmService.getInstance();
 
   useEffect(() => {
     loadUserStats();
-  }, []);
+}, []);
 
   const loadUserStats = async () => {
     try {
@@ -62,10 +61,10 @@ const ProfileScreen = () => {
         
         // 가장 많이 방문한 로스터 찾기
         const roasterCounts: Record<string, number> = {};
-        tastings.forEach((tasting: any) => {
+        tastings.forEach((tasting: unknown) => {
           const roaster = tasting.roastery;
           roasterCounts[roaster] = (roasterCounts[roaster] || 0) + 1;
-        });
+      });
         
         const favoriteRoaster = Object.keys(roasterCounts).reduce((a, b) => 
           roasterCounts[a] > roasterCounts[b] ? a : b
@@ -73,19 +72,19 @@ const ProfileScreen = () => {
 
         // 가입일부터 경과 일수 계산 (임시로 테이스팅 데이터 기준)
         const joinedDaysAgo = tastings.length > 0 
-          ? Math.floor((Date.now() - new Date((tastings[tastings.length - 1] as any).createdAt).getTime()) / (1000 * 60 * 60 * 24))
+          ? Math.floor((Date.now() - new Date((tastings[tastings.length - 1] as unknown).createdAt).getTime()) / (1000 * 60 * 60 * 24))
           : 0;
 
         setStats({
           joinedDaysAgo,
           achievementCount: Math.min(tastings.length, 15), // 임시 achievement 계산
           favoriteRoaster,
-        });
-      }
-    } catch (error) {
-      // console.error('Error loading user stats:', error);
+      });
     }
-  };
+  } catch (error) {
+      // console.error('Error loading user stats:', error);
+  }
+};
 
   const handleSignOut = () => {
     Alert.alert(
@@ -101,12 +100,12 @@ const ProfileScreen = () => {
             navigation.reset({
               index: 0,
               routes: [{ name: 'Auth' as never }],
-            });
-          }
-        },
+          });
+        }
+      },
       ]
     );
-  };
+};
 
 
 
@@ -117,16 +116,16 @@ const ProfileScreen = () => {
       icon: '⚙️',
       onPress: () => {
         Alert.alert('설정', '설정 화면은 추후 구현 예정입니다.');
-      }
-    },
+    }
+  },
     isDeveloperMode ? {
       title: '개발자 모드',
       subtitle: '디버깅 및 개발 도구',
       icon: '🔧',
       onPress: () => {
         navigation.navigate('DeveloperScreen' as never);
-      }
-    } : {
+    }
+  } : {
       title: '개발자 모드 활성화',
       subtitle: '개발자 도구 사용하기',
       icon: '🔓',
@@ -141,20 +140,20 @@ const ProfileScreen = () => {
               onPress: () => {
                 toggleDeveloperMode();
                 Alert.alert('완료', '개발자 모드가 활성화되었습니다. 상단의 DEV 배지를 탭하여 비활성화할 수 있습니다.');
-              }
             }
+          }
           ]
         );
-      }
-    },
+    }
+  },
     {
       title: '도움말',
       subtitle: '앱 사용법 및 FAQ',
       icon: '❓',
       onPress: () => {
         Alert.alert('도움말', '도움말 화면은 추후 구현 예정입니다.');
-      }
-    },
+    }
+  },
   ];
 
   return (
@@ -167,7 +166,6 @@ const ProfileScreen = () => {
             <Text style={styles.betaText}>BETA</Text>
           </View>
         </View>
-        <StatusBadge />
       </View>
 
       <ScrollView style={styles.scrollView}>
@@ -228,7 +226,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: IOSColors.systemBackground,
-  },
+},
   navigationBar: {
     height: IOSLayout.navBarHeight,
     flexDirection: 'row',
@@ -238,41 +236,41 @@ const styles = StyleSheet.create({
     backgroundColor: IOSColors.systemBackground,
     borderBottomWidth: IOSLayout.borderWidthThin,
     borderBottomColor: IOSColors.separator,
-  },
+},
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: IOSSpacing.xs,
-  },
+},
   navigationTitle: {
     ...IOSTypography.headline,
     color: IOSColors.label,
-  },
+},
   betaBadge: {
     backgroundColor: IOSColors.systemBlue,
     paddingHorizontal: IOSSpacing.xs,
     paddingVertical: IOSSpacing.xxxs,
     borderRadius: IOSLayout.cornerRadiusSmall,
-  },
+},
   betaText: {
     ...IOSTypography.caption2,
     fontWeight: '700' as const,
     color: IOSColors.systemBackground,
     letterSpacing: 0.5,
-  },
+},
   languageSwitch: {},
   scrollView: {
     flex: 1,
-  },
+},
   profileHeader: {
     alignItems: 'center',
     paddingVertical: IOSSpacing.xl,
     paddingHorizontal: IOSSpacing.screenPadding,
     backgroundColor: IOSColors.systemBackground,
-  },
+},
   avatarContainer: {
     marginBottom: IOSSpacing.md,
-  },
+},
   avatar: {
     width: 80,
     height: 80,
@@ -280,25 +278,25 @@ const styles = StyleSheet.create({
     backgroundColor: IOSColors.systemBlue,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   avatarText: {
     fontSize: 32,
     fontWeight: '600' as const,
     color: IOSColors.systemBackground,
-  },
+},
   username: {
     ...IOSTypography.title2,
     color: IOSColors.label,
     marginBottom: IOSSpacing.xxs,
-  },
+},
   email: {
     ...IOSTypography.callout,
     color: IOSColors.secondaryLabel,
-  },
+},
   statsContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   statsCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: HIGConstants.BORDER_RADIUS,
@@ -308,65 +306,65 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
+},
   statsTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   statsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   statItem: {
     alignItems: 'center',
     flex: 1,
-  },
+},
   statValue: {
     fontSize: 24,
     fontWeight: '700',
     color: HIGColors.blue,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   statLabel: {
     fontSize: 12,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   favoriteRoaster: {
     borderTopWidth: 1,
     borderTopColor: HIGColors.gray4,
     paddingTop: HIGConstants.SPACING_MD,
     alignItems: 'center',
-  },
+},
   favoriteLabel: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   favoriteValue: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   
   // Achievement Styles
   achievementSection: {
     paddingHorizontal: IOSSpacing.screenPadding,
     marginBottom: IOSSpacing.lg,
-  },
+},
   sectionTitle: {
     ...IOSTypography.title3,
     color: IOSColors.label,
     marginBottom: IOSSpacing.md,
-  },
+},
   achievementStatsGrid: {
     flexDirection: 'row',
     gap: IOSSpacing.sm,
     marginBottom: IOSSpacing.lg,
-  },
+},
   achievementStatCard: {
     flex: 1,
     backgroundColor: IOSColors.secondarySystemGroupedBackground,
@@ -376,18 +374,18 @@ const styles = StyleSheet.create({
     borderWidth: IOSLayout.borderWidthThin,
     borderColor: IOSColors.separator,
     ...IOSShadows.small,
-  },
+},
   achievementStatNumber: {
     ...IOSTypography.title2,
     fontWeight: '700' as const,
     color: IOSColors.systemBlue,
     marginBottom: IOSSpacing.xxs,
-  },
+},
   achievementStatLabel: {
     ...IOSTypography.caption1,
     color: IOSColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   nextGoalCard: {
     backgroundColor: IOSColors.secondarySystemGroupedBackground,
     borderRadius: IOSLayout.cornerRadiusMedium,
@@ -396,44 +394,44 @@ const styles = StyleSheet.create({
     borderWidth: IOSLayout.borderWidthThin,
     borderColor: IOSColors.separator,
     ...IOSShadows.small,
-  },
+},
   nextGoalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: IOSSpacing.md,
-  },
+},
   nextGoalIcon: {
     fontSize: IOSLayout.iconSizeMedium,
     marginRight: IOSSpacing.sm,
-  },
+},
   nextGoalTitle: {
     flex: 1,
     ...IOSTypography.headline,
     color: IOSColors.label,
-  },
+},
   nextGoalArrow: {
     fontSize: IOSLayout.iconSizeMedium,
     color: IOSColors.tertiaryLabel,
-  },
+},
   nextGoalContent: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   nextGoalInfo: {
     flex: 1,
     marginLeft: IOSSpacing.md,
-  },
+},
   nextGoalName: {
     ...IOSTypography.subheadline,
     fontWeight: '500' as const,
     color: IOSColors.label,
     marginBottom: IOSSpacing.xxxs,
-  },
+},
   nextGoalProgress: {
     ...IOSTypography.footnote,
     color: IOSColors.systemBlue,
     fontWeight: '500' as const,
-  },
+},
   viewAllAchievementsButton: {
     backgroundColor: IOSColors.systemBlue,
     borderRadius: IOSLayout.cornerRadiusMedium,
@@ -442,17 +440,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     ...IOSShadows.small,
-  },
+},
   viewAllAchievementsText: {
     ...IOSTypography.headline,
     color: IOSColors.systemBackground,
     marginRight: IOSSpacing.sm,
-  },
+},
   viewAllAchievementsArrow: {
     ...IOSTypography.body,
     color: IOSColors.systemBackground,
     fontWeight: '300' as const,
-  },
+},
   quickMenuItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -465,7 +463,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 2,
-  },
+},
   quickMenuIconContainer: {
     width: 44,
     height: 44,
@@ -474,33 +472,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: HIGConstants.SPACING_MD,
-  },
+},
   quickMenuIcon: {
     fontSize: 24,
-  },
+},
   quickMenuContent: {
     flex: 1,
-  },
+},
   quickMenuTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 2,
-  },
+},
   quickMenuDescription: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
-  },
+},
   quickMenuArrow: {
     fontSize: 20,
     color: HIGColors.tertiaryLabel,
     marginLeft: HIGConstants.SPACING_SM,
-  },
+},
   
   menuContainer: {
     paddingHorizontal: IOSSpacing.screenPadding,
     marginBottom: IOSSpacing.lg,
-  },
+},
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -512,7 +510,7 @@ const styles = StyleSheet.create({
     borderWidth: IOSLayout.borderWidthThin,
     borderColor: IOSColors.separator,
     ...IOSShadows.small,
-  },
+},
   menuIconContainer: {
     width: IOSLayout.minTouchTarget,
     height: IOSLayout.minTouchTarget,
@@ -521,71 +519,71 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: IOSSpacing.md,
-  },
+},
   menuIcon: {
     fontSize: IOSLayout.iconSizeMedium,
-  },
+},
   menuContent: {
     flex: 1,
-  },
+},
   menuTitle: {
     ...IOSTypography.body,
     fontWeight: '600' as const,
     color: IOSColors.label,
     marginBottom: IOSSpacing.xxxs,
-  },
+},
   menuSubtitle: {
     ...IOSTypography.footnote,
     color: IOSColors.secondaryLabel,
-  },
+},
   menuArrow: {
     fontSize: IOSLayout.iconSizeMedium,
     color: IOSColors.tertiaryLabel,
-  },
+},
   signOutContainer: {
     paddingHorizontal: IOSSpacing.screenPadding,
     paddingBottom: IOSSpacing.xl,
-  },
+},
   signOutButton: {
     backgroundColor: IOSColors.systemRed,
     minHeight: IOSLayout.buttonHeightLarge,
     borderRadius: IOSLayout.cornerRadiusMedium,
-  },
+},
   signOutText: {
     ...IOSTypography.body,
     fontWeight: '600' as const,
     color: IOSColors.systemBackground,
-  },
+},
   errorContainer: {
     backgroundColor: IOSColors.secondarySystemGroupedBackground,
     borderRadius: IOSLayout.cornerRadiusMedium,
     padding: IOSSpacing.lg,
     borderWidth: IOSLayout.borderWidthThin,
     borderColor: IOSColors.systemRed,
-  },
+},
   errorText: {
     ...IOSTypography.headline,
     color: IOSColors.systemRed,
     textAlign: 'center',
     marginBottom: IOSSpacing.sm,
-  },
+},
   errorSubtext: {
     ...IOSTypography.footnote,
     color: IOSColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   loadingContainer: {
     backgroundColor: IOSColors.secondarySystemGroupedBackground,
     borderRadius: IOSLayout.cornerRadiusMedium,
     padding: IOSSpacing.lg,
     borderWidth: IOSLayout.borderWidthThin,
     borderColor: IOSColors.separator,
-  },
+},
   loadingText: {
     ...IOSTypography.body,
     color: IOSColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
 });
 
 export default ProfileScreen;

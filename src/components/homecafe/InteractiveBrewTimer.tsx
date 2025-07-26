@@ -17,7 +17,7 @@ interface InteractiveBrewTimerProps {
   totalBrewTime: number;
   onTimerComplete?: (lapTimes: number[]) => void;
   onStepComplete?: (stepIndex: number, actualTime: number) => void;
-  recipe?: any;
+  recipe?: unknown;
   onComplete?: (actualBrewTime: number) => void;
   showModal?: boolean;
   onClose?: () => void;
@@ -57,37 +57,37 @@ export const InteractiveBrewTimer: React.FC<InteractiveBrewTimerProps> = ({
               setCurrentStepIndex(currentStepIndex + 1);
               // Vibrate to alert user of next step
               Vibration.vibrate([100, 50, 100]);
-            }
           }
+        }
           
           // Check if timer is complete
           if (newTime >= totalBrewTime) {
             handleTimerComplete();
-          }
+        }
           
           return newTime;
-        });
-      }, 1000);
-    } else {
+      });
+    }, 1000);
+  } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
-      }
     }
+  }
 
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
-      }
-    };
-  }, [isRunning, currentStepIndex, totalBrewTime]);
+    }
+  };
+}, [isRunning, currentStepIndex, totalBrewTime]);
 
   const handleStart = () => {
     setIsRunning(true);
-  };
+};
 
   const handlePause = () => {
     setIsRunning(false);
-  };
+};
 
   const handleReset = () => {
     setIsRunning(false);
@@ -95,7 +95,7 @@ export const InteractiveBrewTimer: React.FC<InteractiveBrewTimerProps> = ({
     setCurrentStepIndex(0);
     setLapTimes([]);
     setCompletedSteps([]);
-  };
+};
 
   const handleStepComplete = () => {
     const newCompletedSteps = [...completedSteps];
@@ -110,8 +110,8 @@ export const InteractiveBrewTimer: React.FC<InteractiveBrewTimerProps> = ({
     // Move to next step if available
     if (currentStepIndex < steps.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1);
-    }
-  };
+  }
+};
 
   const handleTimerComplete = () => {
     setIsRunning(false);
@@ -123,27 +123,27 @@ export const InteractiveBrewTimer: React.FC<InteractiveBrewTimerProps> = ({
       `총 추출 시간: ${formatTime(currentTime)}`,
       [{ text: '확인', style: 'default' }]
     );
-  };
+};
 
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
+};
 
   const getStepStatusColor = (index: number): string => {
     if (completedSteps[index]) return HIGColors.systemGreen;
     if (index === currentStepIndex) return HIGColors.systemBlue;
     if (index < currentStepIndex) return HIGColors.systemOrange;
     return HIGColors.systemGray3;
-  };
+};
 
   const getNextStepPreview = (): BrewingStep | null => {
     if (currentStepIndex < steps.length - 1) {
       return steps[currentStepIndex + 1];
-    }
+  }
     return null;
-  };
+};
 
   return (
     <View style={styles.container}>
@@ -326,20 +326,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
-  },
+},
   title: {
     fontSize: HIGConstants.FONT_SIZE_H2,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   
   // Timer Display
   timerContainer: {
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   progressRing: {
     width: 150,
     height: 150,
@@ -348,48 +348,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   progressFill: {
     position: 'absolute',
     width: 134,
     height: 134,
     borderRadius: 67,
     backgroundColor: HIGColors.systemBlue + '20',
-  },
+},
   timerDisplay: {
     alignItems: 'center',
-  },
+},
   timerText: {
     fontSize: 32,
     fontWeight: '700',
     color: HIGColors.label,
     fontFamily: 'System',
-  },
+},
   totalTimeText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
-  },
+},
   progressBarContainer: {
     alignItems: 'center',
     width: '100%',
-  },
+},
   progressBarBackground: {
     width: 200,
     height: 6,
     backgroundColor: HIGColors.systemGray5,
     borderRadius: 3,
     overflow: 'hidden',
-  },
+},
   progressBarFill: {
     height: '100%',
     backgroundColor: HIGColors.systemBlue,
     borderRadius: 3,
-  },
+},
   progressText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginTop: 4,
-  },
+},
   
   // Current Step
   currentStepContainer: {
@@ -397,35 +397,35 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   stepHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   stepNumberBadge: {
     backgroundColor: HIGColors.systemBlue,
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: HIGConstants.SPACING_XS,
     borderRadius: HIGConstants.cornerRadiusSmall,
-  },
+},
   stepNumberText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.white,
     fontWeight: '600',
-  },
+},
   stepTime: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   stepDescription: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
     lineHeight: 22,
-  },
+},
   waterAmountContainer: {
     backgroundColor: HIGColors.systemBlue + '20',
     paddingHorizontal: HIGConstants.SPACING_SM,
@@ -433,25 +433,25 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusSmall,
     alignSelf: 'flex-start',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   waterAmountText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.systemBlue,
     fontWeight: '600',
-  },
+},
   techniqueContainer: {
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   techniqueText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     fontStyle: 'italic',
-  },
+},
   stepProgressContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
+},
   stepProgressBar: {
     flex: 1,
     height: 4,
@@ -459,29 +459,29 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     marginRight: HIGConstants.SPACING_MD,
     overflow: 'hidden',
-  },
+},
   stepProgressFill: {
     height: '100%',
     backgroundColor: HIGColors.systemGreen,
     borderRadius: 2,
-  },
+},
   stepCompleteButton: {
     backgroundColor: HIGColors.systemGreen,
     paddingHorizontal: HIGConstants.SPACING_MD,
     paddingVertical: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.cornerRadiusSmall,
-  },
+},
   stepCompleteButtonDone: {
     backgroundColor: HIGColors.systemGray4,
-  },
+},
   stepCompleteButtonText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.white,
     fontWeight: '600',
-  },
+},
   stepCompleteButtonTextDone: {
     color: HIGColors.secondaryLabel,
-  },
+},
   
   // Next Step Preview
   nextStepContainer: {
@@ -489,24 +489,24 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusSmall,
     padding: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   nextStepTitle: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.systemOrange,
     fontWeight: '600',
     marginBottom: 2,
-  },
+},
   nextStepDescription: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.label,
-  },
+},
   
   // Controls
   controlsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   controlButton: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_MD,
@@ -514,93 +514,93 @@ const styles = StyleSheet.create({
     marginHorizontal: HIGConstants.SPACING_SM,
     minWidth: 80,
     alignItems: 'center',
-  },
+},
   startButton: {
     backgroundColor: HIGColors.systemGreen,
-  },
+},
   pauseButton: {
     backgroundColor: HIGColors.systemOrange,
-  },
+},
   resetButton: {
     backgroundColor: HIGColors.systemGray4,
-  },
+},
   controlButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
-  },
+},
   startButtonText: {
     color: HIGColors.white,
-  },
+},
   pauseButtonText: {
     color: HIGColors.white,
-  },
+},
   resetButtonText: {
     color: HIGColors.label,
-  },
+},
   
   // Steps Overview
   stepsOverview: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   stepsOverviewTitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   stepsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   stepIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   stepDot: {
     width: 24,
     height: 24,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   stepDotText: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.white,
     fontWeight: '600',
-  },
+},
   stepConnector: {
     width: 20,
     height: 2,
     marginHorizontal: 2,
-  },
+},
   
   // Lap Times
   lapTimesContainer: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusSmall,
     padding: HIGConstants.SPACING_SM,
-  },
+},
   lapTimesTitle: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   lapTimeItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 2,
-  },
+},
   lapTimeStep: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.secondaryLabel,
-  },
+},
   lapTimeValue: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.label,
     fontFamily: 'System',
-  },
+},
 });
 
 export default InteractiveBrewTimer;

@@ -14,7 +14,7 @@ export const showToast = (title: string, message?: string, type: 'success' | 'er
     default:
       store.showInfoToast(title, message);
       break;
-  }
+}
 };
 export const showSuccessToast = (title: string, message?: string) => {
   const { showSuccessToast } = useToastStore.getState();

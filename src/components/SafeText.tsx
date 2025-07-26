@@ -12,25 +12,25 @@ export const SafeText: React.FC<TextProps> = ({ children, style, ...props }) => 
     if (typeof children === 'string') return children;
     if (typeof children === 'number') {
       return isNaN(children) || !isFinite(children) ? '0' : children.toString();
-    }
+  }
     if (Array.isArray(children)) {
       return children.map(child => 
         child == null ? '' : 
         typeof child === 'number' && (isNaN(child) || !isFinite(child)) ? '0' : 
         String(child)
       ).join('');
-    }
+  }
     return String(children);
-  }, [children]);
+}, [children]);
 
   // Sanitize style props to prevent NaN values
   const safeStyle = React.useMemo(() => {
     if (!style) return style;
     if (Array.isArray(style)) {
       return style.map(s => sanitizeStyleObject(s));
-    }
+  }
     return sanitizeStyleObject(style);
-  }, [style]);
+}, [style]);
 
   // Clean accessibility props that can cause bridge errors
   const safeProps = React.useMemo(() => {
@@ -42,12 +42,12 @@ export const SafeText: React.FC<TextProps> = ({ children, style, ...props }) => 
         const value = cleaned.accessibilityState![key as keyof typeof cleaned.accessibilityState];
         if (value === null || value === undefined) {
           delete cleaned.accessibilityState![key as keyof typeof cleaned.accessibilityState];
-        }
-      });
-    }
+      }
+    });
+  }
 
     return cleaned;
-  }, [props]);
+}, [props]);
 
   return (
     <Text {...safeProps} style={safeStyle}>
@@ -57,7 +57,7 @@ export const SafeText: React.FC<TextProps> = ({ children, style, ...props }) => 
 };
 
 // Helper function to sanitize style objects
-function sanitizeStyleObject(styleObj: any): any {
+function sanitizeStyleObject(styleObj: unknown): unknown {
   if (!styleObj || typeof styleObj !== 'object') return styleObj;
   
   const sanitized = { ...styleObj };
@@ -76,9 +76,9 @@ function sanitizeStyleObject(styleObj: any): any {
       const value = sanitized[prop];
       if (typeof value === 'number' && (isNaN(value) || !isFinite(value))) {
         delete sanitized[prop]; // Remove invalid numeric values
-      }
     }
-  });
+  }
+});
   
   return sanitized;
 }

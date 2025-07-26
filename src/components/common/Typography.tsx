@@ -121,25 +121,25 @@ const styles = StyleSheet.create({
     fontSize: HIGConstants.FONT_SIZE_H1,
     fontWeight: 'bold',
     lineHeight: 34,
-  },
+},
   heading2: {
     fontSize: HIGConstants.FONT_SIZE_H2,
     fontWeight: 'bold',
     lineHeight: 30,
-  },
+},
   heading3: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: 'bold',
     lineHeight: 26,
-  },
+},
   bodyText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: 'normal',
     lineHeight: 22,
-  },
+},
   caption: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: 'normal',
     lineHeight: 18,
-  },
+},
 });

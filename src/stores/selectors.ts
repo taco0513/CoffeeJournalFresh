@@ -20,7 +20,7 @@ export const useCoffeeInfo = () => useTastingStore(
     roastLevel: state.currentTasting.roastLevel,
     temperature: state.currentTasting.temperature,
     roasterNotes: state.currentTasting.roasterNotes,
-  }))
+}))
 );
 
 export const useSensoryData = () => useTastingStore(
@@ -32,7 +32,7 @@ export const useSensoryData = () => useTastingStore(
     bitterness: state.currentTasting.bitterness,
     balance: state.currentTasting.balance,
     mouthfeel: state.currentTasting.mouthfeel,
-  }))
+}))
 );
 
 export const useFlavorData = () => useTastingStore(
@@ -41,7 +41,7 @@ export const useFlavorData = () => useTastingStore(
     selectedSensoryExpressions: state.selectedSensoryExpressions,
     setSelectedFlavors: state.setSelectedFlavors,
     setSelectedSensoryExpressions: state.setSelectedSensoryExpressions,
-  }))
+}))
 );
 
 export const useHomeCafeData = () => useTastingStore(
@@ -51,7 +51,7 @@ export const useHomeCafeData = () => useTastingStore(
     simpleHomeCafeData: state.currentTasting.simpleHomeCafeData,
     updateHomeCafeData: state.updateHomeCafeData,
     updateSimpleHomeCafeData: state.updateSimpleHomeCafeData,
-  }))
+}))
 );
 
 export const useTastingActions = () => useTastingStore(
@@ -61,7 +61,7 @@ export const useTastingActions = () => useTastingStore(
     reset: state.reset,
     calculateMatchScore: state.calculateMatchScore,
     autoSave: state.autoSave,
-  }))
+}))
 );
 
 export const useSyncStatus = () => useTastingStore(state => state.syncStatus);
@@ -75,7 +75,7 @@ export const useUserProfile = () => useUserStore(
   useShallow(state => ({
     currentUser: state.currentUser,
     isLoading: state.isLoading,
-  }))
+}))
 );
 
 export const useAuthActions = () => useUserStore(
@@ -83,7 +83,7 @@ export const useAuthActions = () => useUserStore(
     signIn: state.signIn,
     signOut: state.signOut,
     updateProfile: state.updateProfile,
-  }))
+}))
 );
 
 // Composite selectors for specific screens
@@ -96,7 +96,7 @@ export const useResultScreenData = () => useTastingStore(
     saveTasting: state.saveTasting,
     reset: state.reset,
     checkAchievements: state.checkAchievements,
-  }))
+}))
 );
 
 export const useCoffeeInfoScreenData = () => useTastingStore(
@@ -105,7 +105,7 @@ export const useCoffeeInfoScreenData = () => useTastingStore(
     updateField: state.updateField,
     setTastingMode: state.setTastingMode,
     autoSave: state.autoSave,
-  }))
+}))
 );
 
 export const useFlavorScreenData = () => useTastingStore(
@@ -114,7 +114,7 @@ export const useFlavorScreenData = () => useTastingStore(
     selectedFlavors: state.selectedFlavors,
     setSelectedFlavors: state.setSelectedFlavors,
     updateField: state.updateField,
-  }))
+}))
 );
 
 export const useSensoryScreenData = () => useTastingStore(
@@ -124,5 +124,5 @@ export const useSensoryScreenData = () => useTastingStore(
     setSelectedSensoryExpressions: state.setSelectedSensoryExpressions,
     updateField: state.updateField,
     autoSave: state.autoSave,
-  }))
+}))
 );

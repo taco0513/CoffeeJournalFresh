@@ -4,6 +4,7 @@ import { getCurrentMarketConfig, isBetaMarket, getBetaConfig } from '../config/m
 import { supabase } from './supabase/client';
 import { Alert } from 'react-native';
 
+import { Logger } from './LoggingService';
 /**
  * Comprehensive Beta Testing Service
  * Handles feedback collection, user management, and deployment monitoring
@@ -70,13 +71,13 @@ export interface DeploymentStatus {
       status: 'pending' | 'rolling_out' | 'complete';
       percentage: number;
       userCount: number;
-    };
+  };
     us_beta: {
       status: 'pending' | 'rolling_out' | 'complete';
       percentage: number;
       userCount: number;
-    };
   };
+};
   issues: DeploymentIssue[];
   metrics: DeploymentMetrics;
 }
@@ -112,9 +113,9 @@ class BetaTestingService {
   static getInstance(): BetaTestingService {
     if (!BetaTestingService.instance) {
       BetaTestingService.instance = new BetaTestingService();
-    }
-    return BetaTestingService.instance;
   }
+    return BetaTestingService.instance;
+}
 
   /**
    * Initialize beta testing service
@@ -126,19 +127,19 @@ class BetaTestingService {
       if (!isBetaMarket()) {
         // Korean market - not beta, but still track for comparison
         await this.initializeProductionUser(userEmail);
-      } else {
+    } else {
         // US Beta market
         await this.initializeBetaUser(userEmail);
-      }
+    }
       
       this.isInitialized = true;
       performanceMonitor.endTiming(timingId, 'beta_service_init_success');
-    } catch (error) {
+  } catch (error) {
       performanceMonitor.endTiming(timingId, 'beta_service_init_error');
       performanceMonitor.reportError(error as Error, 'beta_service_initialization', 'high');
       throw error;
-    }
   }
+}
 
   /**
    * Initialize production user (Korean market)
@@ -164,11 +165,11 @@ class BetaTestingService {
         feedbackFrequency: 'medium',
         preferredFeedbackChannel: 'in-app',
         betaFeatureAccess: false,
-      }
-    };
+    }
+  };
 
     await this.saveUserData();
-  }
+}
 
   /**
    * Initialize beta user (US market)
@@ -177,13 +178,13 @@ class BetaTestingService {
     const betaConfig = getBetaConfig();
     if (!betaConfig) {
       throw new Error('Beta configuration not available');
-    }
+  }
 
     // Check beta capacity
     const currentBetaUsers = await this.getBetaUserCount();
     if (currentBetaUsers >= betaConfig.maxUsers) {
       throw new Error('Beta testing capacity reached');
-    }
+  }
 
     const deviceInfo = await this.getDeviceInfo();
     
@@ -204,12 +205,12 @@ class BetaTestingService {
         feedbackFrequency: 'high', // Beta users provide more feedback
         preferredFeedbackChannel: 'in-app',
         betaFeatureAccess: true,
-      }
-    };
+    }
+  };
 
     await this.saveUserData();
     await this.registerBetaUser();
-  }
+}
 
   /**
    * Get device information for tracking
@@ -223,8 +224,8 @@ class BetaTestingService {
       osVersion: '17.0', // Would be detected
       appVersion: '1.0.0',
       buildNumber: '1',
-    };
-  }
+  };
+}
 
   /**
    * Register beta user in database
@@ -243,15 +244,15 @@ class BetaTestingService {
           device_info: this.currentUser.deviceInfo,
           preferences: this.currentUser.preferences,
           joined_at: this.currentUser.joinedAt.toISOString(),
-        });
+      });
 
       if (error) {
-        console.error('Failed to register beta user:', error);
-      }
-    } catch (error) {
-      console.error('Beta user registration error:', error);
+        Logger.error('Failed to register beta user:', 'service', { component: 'BetaTestingService', error: error });
     }
+  } catch (error) {
+      Logger.error('Beta user registration error:', 'service', { component: 'BetaTestingService', error: error });
   }
+}
 
   /**
    * Submit feedback
@@ -262,7 +263,7 @@ class BetaTestingService {
     try {
       if (!this.currentUser) {
         throw new Error('User not initialized');
-      }
+    }
 
       const feedbackId = `feedback_${Date.now()}`;
       const marketConfig = getCurrentMarketConfig();
@@ -276,7 +277,7 @@ class BetaTestingService {
         marketContext: `${marketConfig.market} (${marketConfig.language})`,
         timestamp: new Date(),
         status: 'open',
-      };
+    };
 
       // Store locally first
       await this.storeFeedbackLocally(betaFeedback);
@@ -293,15 +294,15 @@ class BetaTestingService {
         category: feedback.category,
         severity: feedback.severity,
         market: this.currentUser.market,
-      });
+    });
 
       return feedbackId;
-    } catch (error) {
+  } catch (error) {
       performanceMonitor.endTiming(timingId, 'feedback_submission_error');
       performanceMonitor.reportError(error as Error, 'feedback_submission', 'medium');
       throw error;
-    }
   }
+}
 
   /**
    * Store feedback locally for offline support
@@ -316,13 +317,13 @@ class BetaTestingService {
       // Keep only last 50 feedback items
       if (feedbackList.length > 50) {
         feedbackList.splice(0, feedbackList.length - 50);
-      }
+    }
       
       await AsyncStorage.setItem('@beta_feedback', JSON.stringify(feedbackList));
-    } catch (error) {
-      console.error('Failed to store feedback locally:', error);
-    }
+  } catch (error) {
+      Logger.error('Failed to store feedback locally:', 'service', { component: 'BetaTestingService', error: error });
   }
+}
 
   /**
    * Submit feedback to database
@@ -347,15 +348,15 @@ class BetaTestingService {
           market_context: feedback.marketContext,
           created_at: feedback.timestamp.toISOString(),
           status: feedback.status,
-        });
+      });
 
       if (error) {
-        console.error('Failed to submit feedback to database:', error);
-      }
-    } catch (error) {
-      console.error('Database feedback submission error:', error);
+        Logger.error('Failed to submit feedback to database:', 'service', { component: 'BetaTestingService', error: error });
     }
+  } catch (error) {
+      Logger.error('Database feedback submission error:', 'service', { component: 'BetaTestingService', error: error });
   }
+}
 
   /**
    * Get beta user count
@@ -368,16 +369,16 @@ class BetaTestingService {
         .eq('market', 'us_beta');
 
       if (error) {
-        console.error('Failed to get beta user count:', error);
+        Logger.error('Failed to get beta user count:', 'service', { component: 'BetaTestingService', error: error });
         return 0;
-      }
+    }
 
       return count || 0;
-    } catch (error) {
-      console.error('Beta user count error:', error);
+  } catch (error) {
+      Logger.error('Beta user count error:', 'service', { component: 'BetaTestingService', error: error });
       return 0;
-    }
   }
+}
 
   /**
    * Save user data locally
@@ -387,10 +388,10 @@ class BetaTestingService {
 
     try {
       await AsyncStorage.setItem('@beta_user', JSON.stringify(this.currentUser));
-    } catch (error) {
-      console.error('Failed to save user data:', error);
-    }
+  } catch (error) {
+      Logger.error('Failed to save user data:', 'service', { component: 'BetaTestingService', error: error });
   }
+}
 
   /**
    * Load user data from storage
@@ -401,19 +402,19 @@ class BetaTestingService {
       if (userData) {
         this.currentUser = JSON.parse(userData);
         return this.currentUser;
-      }
-    } catch (error) {
-      console.error('Failed to load user data:', error);
     }
-    return null;
+  } catch (error) {
+      Logger.error('Failed to load user data:', 'service', { component: 'BetaTestingService', error: error });
   }
+    return null;
+}
 
   /**
    * Get current user
    */
   getCurrentUser(): BetaUser | null {
     return this.currentUser;
-  }
+}
 
   /**
    * Update user preferences
@@ -424,7 +425,7 @@ class BetaTestingService {
     this.currentUser.preferences = {
       ...this.currentUser.preferences,
       ...preferences,
-    };
+  };
 
     await this.saveUserData();
 
@@ -434,10 +435,10 @@ class BetaTestingService {
         .from('beta_users')
         .update({ preferences: this.currentUser.preferences })
         .eq('user_id', this.currentUser.id);
-    } catch (error) {
-      console.error('Failed to update preferences in database:', error);
-    }
+  } catch (error) {
+      Logger.error('Failed to update preferences in database:', 'service', { component: 'BetaTestingService', error: error });
   }
+}
 
   /**
    * Get deployment status
@@ -453,7 +454,7 @@ class BetaTestingService {
 
       if (error || !data) {
         return null;
-      }
+    }
 
       return {
         version: data.version,
@@ -462,12 +463,12 @@ class BetaTestingService {
         marketRollout: data.market_rollout,
         issues: data.issues || [],
         metrics: data.metrics || {},
-      };
-    } catch (error) {
-      console.error('Failed to get deployment status:', error);
+    };
+  } catch (error) {
+      Logger.error('Failed to get deployment status:', 'service', { component: 'BetaTestingService', error: error });
       return null;
-    }
   }
+}
 
   /**
    * Report crash or critical issue
@@ -477,7 +478,7 @@ class BetaTestingService {
     description: string;
     stackTrace?: string;
     reproductionSteps?: string;
-  }): Promise<void> {
+}): Promise<void> {
     if (!this.currentUser) return;
 
     try {
@@ -494,11 +495,11 @@ class BetaTestingService {
           device_info: this.currentUser.deviceInfo,
           reported_at: new Date().toISOString(),
           status: 'investigating',
-        });
+      });
 
       if (error) {
-        console.error('Failed to report critical issue:', error);
-      }
+        Logger.error('Failed to report critical issue:', 'service', { component: 'BetaTestingService', error: error });
+    }
 
       // Show user confirmation
       const marketConfig = getCurrentMarketConfig();
@@ -511,10 +512,10 @@ class BetaTestingService {
         message,
         [{ text: marketConfig.language === 'ko' ? '확인' : 'OK' }]
       );
-    } catch (error) {
-      console.error('Critical issue reporting error:', error);
-    }
+  } catch (error) {
+      Logger.error('Critical issue reporting error:', 'service', { component: 'BetaTestingService', error: error });
   }
+}
 
   /**
    * Quick feedback methods
@@ -526,8 +527,8 @@ class BetaTestingService {
       severity: 'low',
       title: `Quick Feedback - Rating: ${rating}/5`,
       description: comment || `User rated the app ${rating}/5 stars`,
-    });
-  }
+  });
+}
 
   async reportBug(title: string, description: string, severity: 'low' | 'medium' | 'high' = 'medium'): Promise<void> {
     await this.submitFeedback({
@@ -536,8 +537,8 @@ class BetaTestingService {
       severity,
       title,
       description,
-    });
-  }
+  });
+}
 
   async requestFeature(title: string, description: string): Promise<void> {
     await this.submitFeedback({
@@ -546,15 +547,15 @@ class BetaTestingService {
       severity: 'low',
       title,
       description,
-    });
-  }
+  });
+}
 
   /**
    * Check if user can access beta features
    */
   canAccessBetaFeatures(): boolean {
     return this.currentUser?.preferences.betaFeatureAccess || false;
-  }
+}
 
   /**
    * Get feedback statistics
@@ -562,13 +563,13 @@ class BetaTestingService {
   getFeedbackStats(): { count: number; lastSubmitted?: Date } {
     if (!this.currentUser) {
       return { count: 0 };
-    }
+  }
 
     return {
       count: this.currentUser.feedbackCount,
       lastSubmitted: this.currentUser.lastActiveAt,
-    };
-  }
+  };
+}
 }
 
 export const betaTestingService = BetaTestingService.getInstance();

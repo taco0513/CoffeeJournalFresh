@@ -13,7 +13,7 @@ const getTasteIcon = (title: string, intensity: number): string => {
     '쓴맛': ['🌱', '☕', '☕', '🍫', '⚫'],
     '여운': ['〰️', '〰️', '〰️', '〰️〰️', '〰️〰️〰️'],
     '밸런스': ['⚖️', '⚖️', '⚖️', '✨', '🌟'],
-  };
+};
   
   return iconMap[title]?.[intensity - 1] || '☕';
 };
@@ -26,7 +26,7 @@ const getSegmentLabels = (title: string): string[] => {
     '쓴맛': ['1', '2', '3', '4', '5'],
     '여운': ['1', '2', '3', '4', '5'],
     '밸런스': ['1', '2', '3', '4', '5'],
-  };
+};
   
   return labelMap[title] || ['1', '2', '3', '4', '5'];
 };
@@ -40,7 +40,7 @@ const getSmartSuggestion = (title: string): { value: number; text: string } => {
     '쓴맛': { value: 2, text: '스페셜티 커피는 약한 편' },
     '여운': { value: 3, text: '아라비카는 보통 지속' },
     '밸런스': { value: 4, text: '고품질 원두는 조화로운 편' },
-  };
+};
   
   return suggestionMap[title] || { value: 3, text: '평균적으로 보통 수준' };
 };
@@ -63,13 +63,13 @@ export const SliderSection = memo<SliderSectionProps>(({
     ReactNativeHapticFeedback.trigger('impactLight');
     onValueChange(segmentValue);
     setShowSuggestion(false); // Hide suggestion after user interaction
-  };
+};
 
   const handleUseSuggestion = () => {
     ReactNativeHapticFeedback.trigger('impactMedium');
     onValueChange(suggestion.value);
     setShowSuggestion(false);
-  };
+};
 
   return (
     <View style={styles.sliderSection}>
@@ -129,7 +129,7 @@ export const SliderSection = memo<SliderSectionProps>(({
               )}
             </TouchableOpacity>
           );
-        })}
+      })}
       </View>
       
     </View>
@@ -150,38 +150,38 @@ const styles = StyleSheet.create({
     elevation: 2,
     minHeight: 100,
     justifyContent: 'space-between',
-  },
+},
   header: {
     flexDirection: 'column',
     alignItems: 'flex-start',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 4,
-  },
+},
   tasteIcon: {
     fontSize: 20,
     marginRight: 8,
-  },
+},
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
     color: HIGColors.label,
-  },
+},
   description: {
     fontSize: 11,
     lineHeight: 14,
     color: HIGColors.secondaryLabel,
     marginTop: 2,
-  },
+},
   segmentedControl: {
     flexDirection: 'row',
     backgroundColor: HIGColors.systemGray6,
     borderRadius: 8,
     padding: 2,
-  },
+},
   segment: {
     flex: 1,
     paddingVertical: 6,
@@ -189,15 +189,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 28,
-  },
+},
   segmentFirst: {
     borderTopLeftRadius: 6,
     borderBottomLeftRadius: 6,
-  },
+},
   segmentLast: {
     borderTopRightRadius: 6,
     borderBottomRightRadius: 6,
-  },
+},
   segmentSelected: {
     backgroundColor: HIGColors.systemBlue,
     borderRadius: 6,
@@ -206,27 +206,27 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 2,
     elevation: 3,
-  },
+},
   segmentText: {
     fontSize: 14,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
   segmentTextSelected: {
     color: '#FFFFFF',
     fontWeight: '700',
-  },
+},
   labelContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 4,
-  },
+},
   rangeLabel: {
     fontSize: 11,
     color: HIGColors.tertiaryLabel,
     fontWeight: '500',
-  },
+},
   // Suggestion styles
   suggestionContainer: {
     backgroundColor: HIGColors.systemYellow + '15',
@@ -234,36 +234,36 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_SM,
     borderWidth: 1,
     borderColor: HIGColors.systemYellow + '40',
-  },
+},
   suggestionContent: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: HIGConstants.SPACING_SM,
-  },
+},
   suggestionIcon: {
     fontSize: 16,
     marginRight: 8,
-  },
+},
   suggestionText: {
     flex: 1,
     fontSize: 12,
     color: HIGColors.label,
     fontWeight: '500',
-  },
+},
   suggestionAction: {
     fontSize: 11,
     color: HIGColors.systemBlue,
     fontWeight: '600',
-  },
+},
   segmentSuggested: {
     borderWidth: 2,
     borderColor: HIGColors.systemYellow,
     backgroundColor: HIGColors.systemYellow + '10',
-  },
+},
   segmentTextSuggested: {
     color: HIGColors.systemYellow,
     fontWeight: '700',
-  },
+},
   suggestionBadge: {
     position: 'absolute',
     top: -6,
@@ -272,10 +272,10 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingHorizontal: 4,
     paddingVertical: 1,
-  },
+},
   suggestionBadgeText: {
     fontSize: 8,
     color: '#FFFFFF',
     fontWeight: '700',
-  },
+},
 });

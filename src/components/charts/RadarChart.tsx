@@ -8,7 +8,7 @@ interface RadarChartProps {
     label: string;
     value: number; // 0-5 scale
     maxValue?: number;
-  }[];
+}[];
   size?: number;
   strokeWidth?: number;
   fillOpacity?: number;
@@ -41,8 +41,8 @@ export const RadarChart: React.FC<RadarChartProps> = ({
     return {
       x: center + Math.cos(angle) * pointRadius,
       y: center + Math.sin(angle) * pointRadius,
-    };
   };
+};
   
   // Calculate label positions
   const calculateLabelPoint = (index: number) => {
@@ -52,14 +52,14 @@ export const RadarChart: React.FC<RadarChartProps> = ({
     return {
       x: center + Math.cos(angle) * labelRadius,
       y: center + Math.sin(angle) * labelRadius,
-    };
   };
+};
   
   // Create polygon points string
   const polygonPoints = data.map((_, index) => {
     const point = calculatePoint(data[index].value, index);
     return `${point.x},${point.y}`;
-  }).join(' ');
+}).join(' ');
   
   // Create background grid (concentric polygons)
   const gridLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
@@ -73,7 +73,7 @@ export const RadarChart: React.FC<RadarChartProps> = ({
             const angle = (index * 2 * Math.PI) / data.length - Math.PI / 2;
             const gridRadius = radius * level;
             return `${center + Math.cos(angle) * gridRadius},${center + Math.sin(angle) * gridRadius}`;
-          }).join(' ');
+        }).join(' ');
           
           return (
             <Polygon
@@ -85,7 +85,7 @@ export const RadarChart: React.FC<RadarChartProps> = ({
               opacity={0.5}
             />
           );
-        })}
+      })}
         
         {/* Grid lines from center to vertices */}
         {data.map((_, index) => {
@@ -105,7 +105,7 @@ export const RadarChart: React.FC<RadarChartProps> = ({
               opacity={0.5}
             />
           );
-        })}
+      })}
         
         {/* Data polygon */}
         <Polygon
@@ -130,7 +130,7 @@ export const RadarChart: React.FC<RadarChartProps> = ({
               strokeWidth={2}
             />
           );
-        })}
+      })}
         
         {/* Labels */}
         {showLabels && data.map((item, index) => {
@@ -149,7 +149,7 @@ export const RadarChart: React.FC<RadarChartProps> = ({
               {item.label}
             </SvgText>
           );
-        })}
+      })}
         
         {/* Center circle for content */}
         {centerContent && (
@@ -171,7 +171,7 @@ export const RadarChart: React.FC<RadarChartProps> = ({
           top: center - 15,
           width: 60,
           height: 30,
-        }]}>
+      }]}>
           {centerContent}
         </View>
       )}
@@ -183,10 +183,10 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   centerContent: {
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
 });

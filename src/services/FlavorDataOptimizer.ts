@@ -2,7 +2,7 @@ import { performanceMonitor } from './PerformanceMonitor';
 import { flavorWheelKorean } from '../data/flavorWheelKorean';
 
 interface CachedFlavorData {
-  data: any;
+  data: unknown;
   timestamp: number;
   version: string;
 }
@@ -14,7 +14,7 @@ interface FlavorSearchIndex {
     flavor: string;
     level: number;
     path: string[];
-  }[];
+}[];
 }
 
 /**
@@ -32,21 +32,21 @@ class FlavorDataOptimizer {
   static getInstance(): FlavorDataOptimizer {
     if (!FlavorDataOptimizer.instance) {
       FlavorDataOptimizer.instance = new FlavorDataOptimizer();
-    }
-    return FlavorDataOptimizer.instance;
   }
+    return FlavorDataOptimizer.instance;
+}
 
   /**
    * Get transformed flavor data with caching
    */
-  getTransformedFlavorData(): any {
+  getTransformedFlavorData(): unknown {
     const cacheKey = 'transformed_flavor_data';
     const cached = this.cache.get(cacheKey);
     
     // Check cache validity
     if (cached && this.isCacheValid(cached)) {
       return cached.data;
-    }
+  }
 
     const timingId = performanceMonitor.startTiming('flavor_data_transform');
     
@@ -59,20 +59,20 @@ class FlavorDataOptimizer {
         data: transformedData,
         timestamp: Date.now(),
         version: this.VERSION,
-      });
+    });
 
       performanceMonitor.endTiming(timingId, 'flavor_data_transform_success', {
         categories: transformedData.length,
         cached: false,
-      });
+    });
 
       return transformedData;
-    } catch (error) {
+  } catch (error) {
       performanceMonitor.endTiming(timingId, 'flavor_data_transform_error');
       performanceMonitor.reportError(error as Error, 'flavor_data_transform', 'medium');
       throw error;
-    }
   }
+}
 
   /**
    * Build search index for fast flavor lookups
@@ -80,7 +80,7 @@ class FlavorDataOptimizer {
   buildSearchIndex(): FlavorSearchIndex {
     if (this.searchIndex) {
       return this.searchIndex;
-    }
+  }
 
     const timingId = performanceMonitor.startTiming('flavor_search_index');
     
@@ -89,7 +89,7 @@ class FlavorDataOptimizer {
       const flavorData = this.getTransformedFlavorData();
 
       // Build comprehensive search index
-      flavorData.forEach((category: any) => {
+      flavorData.forEach((category: unknown) => {
         const categoryName = category.name;
         
         // Index category name
@@ -98,10 +98,10 @@ class FlavorDataOptimizer {
           flavor: categoryName,
           level: 1,
           path: [categoryName],
-        });
+      });
 
         // Index subcategories and flavors
-        category.subcategories?.forEach((subcategory: any) => {
+        category.subcategories?.forEach((subcategory: unknown) => {
           const subcategoryName = subcategory.name;
           
           // Index subcategory name
@@ -111,10 +111,10 @@ class FlavorDataOptimizer {
             flavor: subcategoryName,
             level: 2,
             path: [categoryName, subcategoryName],
-          });
+        });
 
           // Index individual flavors
-          subcategory.flavors?.forEach((flavor: any) => {
+          subcategory.flavors?.forEach((flavor: unknown) => {
             const flavorName = flavor.name;
             
             this.addToIndex(index, flavorName, {
@@ -123,7 +123,7 @@ class FlavorDataOptimizer {
               flavor: flavorName,
               level: 3,
               path: [categoryName, subcategoryName, flavorName],
-            });
+          });
 
             // Index Korean translations if available
             const koreanName = this.getKoreanTranslation(flavorName);
@@ -134,30 +134,30 @@ class FlavorDataOptimizer {
                 flavor: flavorName,
                 level: 3,
                 path: [categoryName, subcategoryName, flavorName],
-              });
-            }
-          });
+            });
+          }
         });
       });
+    });
 
       this.searchIndex = index;
       
       performanceMonitor.endTiming(timingId, 'flavor_search_index_success', {
         indexSize: Object.keys(index).length,
-      });
+    });
 
       return index;
-    } catch (error) {
+  } catch (error) {
       performanceMonitor.endTiming(timingId, 'flavor_search_index_error');
       performanceMonitor.reportError(error as Error, 'flavor_search_index', 'medium');
       throw error;
-    }
   }
+}
 
   /**
    * Fast flavor search using pre-built index
    */
-  searchFlavors(query: string, maxResults: number = 20): any[] {
+  searchFlavors(query: string, maxResults: number = 20): unknown[] {
     if (!query.trim()) return [];
 
     const timingId = performanceMonitor.startTiming('flavor_search');
@@ -165,7 +165,7 @@ class FlavorDataOptimizer {
     try {
       const index = this.buildSearchIndex();
       const normalizedQuery = query.toLowerCase();
-      const results: any[] = [];
+      const results: unknown[] = [];
       const seen = new Set<string>();
 
       // Search through index
@@ -178,11 +178,11 @@ class FlavorDataOptimizer {
               results.push({
                 ...entry,
                 relevance: this.calculateRelevance(term, normalizedQuery),
-              });
-            }
-          });
-        }
-      });
+            });
+          }
+        });
+      }
+    });
 
       // Sort by relevance
       results.sort((a, b) => b.relevance - a.relevance);
@@ -190,39 +190,39 @@ class FlavorDataOptimizer {
       performanceMonitor.endTiming(timingId, 'flavor_search_success', {
         query: query.substring(0, 50), // Limit logged query length
         results: results.length,
-      });
+    });
 
       return results.slice(0, maxResults);
-    } catch (error) {
+  } catch (error) {
       performanceMonitor.endTiming(timingId, 'flavor_search_error');
       performanceMonitor.reportError(error as Error, 'flavor_search', 'low');
       return [];
-    }
   }
+}
 
   /**
    * Get flavor suggestions based on current selection
    */
-  getFlavorSuggestions(selectedFlavors: string[], maxSuggestions: number = 5): any[] {
+  getFlavorSuggestions(selectedFlavors: string[], maxSuggestions: number = 5): unknown[] {
     const timingId = performanceMonitor.startTiming('flavor_suggestions');
     
     try {
-      const suggestions: any[] = [];
+      const suggestions: unknown[] = [];
       // Implementation would analyze selected flavors and suggest complementary ones
       // This is a placeholder for the actual suggestion algorithm
       
       performanceMonitor.endTiming(timingId, 'flavor_suggestions_success', {
         selectedCount: selectedFlavors.length,
         suggestionsCount: suggestions.length,
-      });
+    });
 
       return suggestions;
-    } catch (error) {
+  } catch (error) {
       performanceMonitor.endTiming(timingId, 'flavor_suggestions_error');
       performanceMonitor.reportError(error as Error, 'flavor_suggestions', 'low');
       return [];
-    }
   }
+}
 
   /**
    * Clear all caches
@@ -230,7 +230,7 @@ class FlavorDataOptimizer {
   clearCache(): void {
     this.cache.clear();
     this.searchIndex = null;
-  }
+}
 
   /**
    * Get cache statistics
@@ -239,22 +239,22 @@ class FlavorDataOptimizer {
     return {
       size: this.cache.size,
       entries: Array.from(this.cache.keys()),
-    };
-  }
+  };
+}
 
   // Private helper methods
   private isCacheValid(cached: CachedFlavorData): boolean {
     const age = Date.now() - cached.timestamp;
     return age < this.CACHE_DURATION && cached.version === this.VERSION;
-  }
+}
 
-  private addToIndex(index: FlavorSearchIndex, term: string, entry: any): void {
+  private addToIndex(index: FlavorSearchIndex, term: string, entry: unknown): void {
     const normalizedTerm = term.toLowerCase();
     if (!index[normalizedTerm]) {
       index[normalizedTerm] = [];
-    }
-    index[normalizedTerm].push(entry);
   }
+    index[normalizedTerm].push(entry);
+}
 
   private calculateRelevance(term: string, query: string): number {
     const termLower = term.toLowerCase();
@@ -271,17 +271,17 @@ class FlavorDataOptimizer {
     
     // Default score
     return 40;
-  }
+}
 
   private getKoreanTranslation(englishName: string): string {
-    return (flavorWheelKorean.translations as any)[englishName] || englishName;
-  }
+    return (flavorWheelKorean.translations as unknown)[englishName] || englishName;
+}
 
-  private transformFlavorData(): any {
+  private transformFlavorData(): unknown {
     // This would contain the existing transformation logic
     // Simplified for demo purposes
     return Object.values(flavorWheelKorean.level1) || [];
-  }
+}
 }
 
 export const flavorDataOptimizer = FlavorDataOptimizer.getInstance();

@@ -21,7 +21,7 @@ export const koreanTranslations = {
   tagline: '나만의 커피 취향을 발견하는 가장 쉬운 방법',
   
   // Home Screen
-  coffeeJournal: '커피 저널',
+  coffeeJournal: 'CupNote',
   hello: '안녕하세요, {{name}}님!',
   howAboutCoffee: '오늘도 좋은 커피 한 잔 어떠세요?',
   totalTastings: '총 테이스팅',

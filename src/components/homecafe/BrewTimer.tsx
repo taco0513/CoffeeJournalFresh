@@ -45,45 +45,45 @@ export const BrewTimer: React.FC<BrewTimerProps> = ({
         // Update phase based on elapsed time
         if (elapsed <= bloomTime) {
           setPhase('bloom');
-        } else if (elapsed <= totalBrewTime) {
+      } else if (elapsed <= totalBrewTime) {
           setPhase('pour');
-        } else {
+      } else {
           setPhase('finished');
           stopTimer();
-        }
-      }, 100);
-    } else {
+      }
+    }, 100);
+  } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
-      }
     }
+  }
 
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
-      }
-    };
-  }, [isRunning, bloomTime, totalBrewTime]);
+    }
+  };
+}, [isRunning, bloomTime, totalBrewTime]);
 
   const startTimer = () => {
     startTimeRef.current = Date.now() - (elapsedTime * 1000);
     setIsRunning(true);
-  };
+};
 
   const stopTimer = () => {
     setIsRunning(false);
     if (phase === 'finished' && onTimerComplete) {
       onTimerComplete(lapTimes);
-    }
-  };
+  }
+};
 
   const resetTimer = () => {
     setIsRunning(false);
     setElapsedTime(0);
     setLapTimes([]);
     setPhase('ready');
-  };
+};
 
   const addLapTime = () => {
     const lapNumber = lapTimes.length + 1;
@@ -91,27 +91,27 @@ export const BrewTimer: React.FC<BrewTimerProps> = ({
     
     if (phase === 'bloom') {
       lapName = '1차 추출(뜸)';
-    } else if (phase === 'pour') {
+  } else if (phase === 'pour') {
       lapName = `${lapNumber}차 추출`;
-    } else {
+  } else {
       lapName = `추가 ${lapNumber}`;
-    }
+  }
 
     const newLap: LapTime = {
       id: `lap-${Date.now()}`,
       name: lapName,
       time: elapsedTime,
       timestamp: new Date(),
-    };
+  };
 
     setLapTimes(prev => [...prev, newLap]);
-  };
+};
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+};
 
   const getPhaseColor = () => {
     switch (phase) {
@@ -123,8 +123,8 @@ export const BrewTimer: React.FC<BrewTimerProps> = ({
         return HIGColors.systemGreen;
       default:
         return HIGColors.systemGray4;
-    }
-  };
+  }
+};
 
   const getPhaseText = () => {
     switch (phase) {
@@ -138,18 +138,18 @@ export const BrewTimer: React.FC<BrewTimerProps> = ({
         return '완료';
       default:
         return '';
-    }
-  };
+  }
+};
 
   const getProgressPercentage = () => {
     if (totalBrewTime === 0) return 0;
     return Math.min((elapsedTime / totalBrewTime) * 100, 100);
-  };
+};
 
   const getBloomProgress = () => {
     if (bloomTime === 0 || phase !== 'bloom') return 0;
     return Math.min((elapsedTime / bloomTime) * 100, 100);
-  };
+};
 
   return (
     <View style={styles.container}>
@@ -181,7 +181,7 @@ export const BrewTimer: React.FC<BrewTimerProps> = ({
                 { 
                   width: `${getProgressPercentage()}%`,
                   backgroundColor: getPhaseColor()
-                }
+              }
               ]} 
             />
           </View>
@@ -265,22 +265,22 @@ export const BrewTimer: React.FC<BrewTimerProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_MD,
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   headerIcon: {
     fontSize: 20,
     marginRight: HIGConstants.SPACING_SM,
-  },
+},
   headerTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   timerDisplay: {
     backgroundColor: HIGColors.systemBackground,
     borderRadius: HIGConstants.cornerRadiusMedium,
@@ -294,63 +294,63 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-  },
+},
   phaseText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   timeText: {
     fontSize: 48,
     fontWeight: '700',
     color: HIGColors.label,
     fontFamily: 'menlo',
-  },
+},
   targetTime: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   progressContainer: {
     width: '100%',
-  },
+},
   progressBackground: {
     height: 6,
     backgroundColor: HIGColors.systemGray5,
     borderRadius: 3,
     overflow: 'hidden',
-  },
+},
   progressFill: {
     height: '100%',
     borderRadius: 3,
-  },
+},
   bloomContainer: {
     marginTop: HIGConstants.SPACING_SM,
     alignItems: 'center',
-  },
+},
   bloomText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.systemOrange,
     fontWeight: '600',
     marginBottom: 4,
-  },
+},
   bloomProgress: {
     width: '60%',
     height: 4,
     backgroundColor: HIGColors.systemGray5,
     borderRadius: 2,
     overflow: 'hidden',
-  },
+},
   bloomFill: {
     height: '100%',
     backgroundColor: HIGColors.systemOrange,
     borderRadius: 2,
-  },
+},
   controlsContainer: {
     flexDirection: 'row',
     paddingHorizontal: HIGConstants.SPACING_LG,
     gap: HIGConstants.SPACING_SM,
-  },
+},
   controlButton: {
     flex: 1,
     paddingVertical: HIGConstants.SPACING_MD,
@@ -358,55 +358,55 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 44,
-  },
+},
   startButton: {
     backgroundColor: HIGColors.systemGreen,
-  },
+},
   startButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.white,
-  },
+},
   stopButton: {
     backgroundColor: HIGColors.systemRed,
-  },
+},
   stopButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.white,
-  },
+},
   lapButton: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   lapButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.white,
-  },
+},
   resetButton: {
     backgroundColor: HIGColors.systemGray5,
-  },
+},
   resetButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   disabledText: {
     opacity: 0.5,
-  },
+},
   lapTimesContainer: {
     marginTop: HIGConstants.SPACING_LG,
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   lapTimesTitle: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   lapTimesList: {
     maxHeight: 120,
-  },
+},
   lapTimeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -414,15 +414,15 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_SM,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.separator,
-  },
+},
   lapTimeName: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
-  },
+},
   lapTimeValue: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.systemBlue,
     fontFamily: 'menlo',
-  },
+},
 });

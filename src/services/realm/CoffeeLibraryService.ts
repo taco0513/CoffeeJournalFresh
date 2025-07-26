@@ -9,20 +9,20 @@ export class CoffeeLibraryService {
 
   private constructor() {
     this.baseService = BaseRealmService.getInstance();
-  }
+}
 
   static getInstance(): CoffeeLibraryService {
     if (!CoffeeLibraryService.instance) {
       CoffeeLibraryService.instance = new CoffeeLibraryService();
-    }
-    return CoffeeLibraryService.instance;
   }
+    return CoffeeLibraryService.instance;
+}
 
   async initialize(): Promise<void> {
     if (!this.baseService.isInitialized) {
       await this.baseService.initialize();
-    }
   }
+}
 
   addCoffeeToLibrary(coffee: Omit<ICoffeeLibrary, 'id' | 'createdAt' | 'updatedAt' | 'useCount'>): ICoffeeLibrary {
     const realm = this.baseService.getRealm();
@@ -35,18 +35,18 @@ export class CoffeeLibraryService {
         updatedAt: new Date(),
         useCount: 0,
         ...coffee,
-      });
     });
+  });
     
     return newCoffee!;
-  }
+}
 
   searchCoffeeLibrary(searchTerm: string): Realm.Results<ICoffeeLibrary> {
     const realm = this.baseService.getRealm();
     return realm.objects<ICoffeeLibrary>('CoffeeLibrary')
       .filtered('coffeeName CONTAINS[c] $0 OR roastery CONTAINS[c] $0', searchTerm)
-      .sorted('useCount', true) as unknown as Realm.Results<ICoffeeLibrary>;
-  }
+      .sorted('useCount', true) as Realm.Results<ICoffeeLibrary>;
+}
 
   incrementCoffeeUseCount(coffeeId: string): void {
     const realm = this.baseService.getRealm();
@@ -56,9 +56,9 @@ export class CoffeeLibraryService {
       if (coffee) {
         coffee.useCount += 1;
         coffee.updatedAt = new Date();
-      }
-    });
-  }
+    }
+  });
+}
 
   updateCoffeeLibrary(coffeeData: {
     roastery: string;
@@ -68,7 +68,7 @@ export class CoffeeLibraryService {
     altitude?: string;
     process?: string;
     roasterNotes?: string;
-  }): void {
+}): void {
     const realm = this.baseService.getRealm();
     
     try {
@@ -85,21 +85,21 @@ export class CoffeeLibraryService {
           // Update fields if they have new values
           if (coffeeData.origin && !existingCoffee.origin) {
             existingCoffee.origin = coffeeData.origin;
-          }
+        }
           if (coffeeData.variety && !existingCoffee.variety) {
             existingCoffee.variety = coffeeData.variety;
-          }
+        }
           if (coffeeData.altitude && !existingCoffee.altitude) {
             existingCoffee.altitude = coffeeData.altitude;
-          }
+        }
           if (coffeeData.process && !existingCoffee.process) {
             existingCoffee.process = coffeeData.process;
-          }
+        }
           if (coffeeData.roasterNotes && !existingCoffee.roasterNotes) {
             existingCoffee.roasterNotes = coffeeData.roasterNotes;
-          }
-        });
-      } else {
+        }
+      });
+    } else {
         // Create new coffee entry
         realm.write(() => {
           realm.create<ICoffeeLibrary>('CoffeeLibrary', {
@@ -114,13 +114,13 @@ export class CoffeeLibraryService {
             useCount: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
-          });
         });
-      }
-    } catch (error) {
-      RealmLogger.error('Failed to update coffee library', { error: error as Error });
+      });
     }
+  } catch (error) {
+      RealmLogger.error('Failed to update coffee library', { error: error as Error });
   }
+}
 
   getCoffeeNameSuggestions(searchText: string): string[] {
     const realm = this.baseService.getRealm();
@@ -133,14 +133,14 @@ export class CoffeeLibraryService {
       const suggestions = new Set<string>();
       coffees.forEach(coffee => {
         suggestions.add(coffee.coffeeName);
-      });
+    });
       
       return Array.from(suggestions).slice(0, 5);
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to get coffee name suggestions', { error: error as Error });
       return [];
-    }
   }
+}
 
   getOriginSuggestions(searchText: string): string[] {
     const realm = this.baseService.getRealm();
@@ -153,15 +153,15 @@ export class CoffeeLibraryService {
       coffees.forEach(coffee => {
         if (coffee.origin) {
           suggestions.add(coffee.origin);
-        }
-      });
+      }
+    });
       
       return Array.from(suggestions).slice(0, 5);
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to get origin suggestions', { error: error as Error });
       return [];
-    }
   }
+}
 
   getVarietySuggestions(searchText: string): string[] {
     const realm = this.baseService.getRealm();
@@ -174,15 +174,15 @@ export class CoffeeLibraryService {
       coffees.forEach(coffee => {
         if (coffee.variety) {
           suggestions.add(coffee.variety);
-        }
-      });
+      }
+    });
       
       return Array.from(suggestions).slice(0, 5);
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to get variety suggestions', { error: error as Error });
       return [];
-    }
   }
+}
 
   getProcessSuggestions(searchText: string): string[] {
     const realm = this.baseService.getRealm();
@@ -195,15 +195,15 @@ export class CoffeeLibraryService {
       coffees.forEach(coffee => {
         if (coffee.process) {
           suggestions.add(coffee.process);
-        }
-      });
+      }
+    });
       
       return Array.from(suggestions).slice(0, 5);
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to get process suggestions', { error: error as Error });
       return [];
-    }
   }
+}
 
   getCoffeeDetails(roasterName: string, coffeeName: string): Partial<ITastingRecord> | null {
     const realm = this.baseService.getRealm();
@@ -220,8 +220,8 @@ export class CoffeeLibraryService {
           altitude: libraryEntry.altitude,
           process: libraryEntry.process,
           roasterNotes: libraryEntry.roasterNotes,
-        };
-      }
+      };
+    }
       
       // If not in library, try to find from recent tasting records
       const recentTasting = realm.objects<ITastingRecord>('TastingRecord')
@@ -235,15 +235,15 @@ export class CoffeeLibraryService {
           altitude: recentTasting.altitude,
           process: recentTasting.process,
           roasterNotes: recentTasting.roasterNotes,
-        };
-      }
+      };
+    }
       
       return null;
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to get coffee details', { error: error as Error });
       return null;
-    }
   }
+}
 
   getTopCoffees(limit: number): { name: string; roastery: string; count: number }[] {
     const realm = this.baseService.getRealm();
@@ -255,8 +255,8 @@ export class CoffeeLibraryService {
       name: coffee.coffeeName,
       roastery: coffee.roastery,
       count: coffee.useCount,
-    }));
-  }
+  }));
+}
 }
 
 export default CoffeeLibraryService.getInstance();

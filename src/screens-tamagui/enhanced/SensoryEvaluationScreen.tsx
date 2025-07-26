@@ -53,7 +53,7 @@ const BackButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const NavigationTitle = styled(H3, {
@@ -71,7 +71,7 @@ const SkipButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const SkipText = styled(Text, {
@@ -141,10 +141,10 @@ const PreviewCard = styled(Card, {
     opacity: 0,
     scale: 0.95,
     y: 20,
-  },
+},
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const PreviewScrollView = styled(ScrollView, {
@@ -162,9 +162,9 @@ const CategorySection = styled(YStack, {
       false: {
         borderBottomWidth: 1,
         borderBottomColor: '$gray4',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const CategoryTitle = styled(SizableText, {
@@ -260,7 +260,7 @@ const NextButton = styled(Button, {
   pressStyle: {
     backgroundColor: '$cupBlueDark',
     scale: 0.98,
-  },
+},
 });
 
 const OnboardingOverlay = styled(View, {
@@ -289,17 +289,17 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
     if (currentTasting.mode === 'home_cafe' || currentTasting.mode === 'lab') {
       setShowOnboarding(false);
       return;
-    }
+  }
     
     checkShouldShowOnboarding().then(shouldShow => {
       setShowOnboarding(shouldShow);
-    });
-  }, [currentTasting.mode]);
+  });
+}, [currentTasting.mode]);
 
   const handleComplete = useCallback(async () => {
     // Navigate to personal comment screen
     navigation.navigate('PersonalComment' as never);
-  }, [navigation]);
+}, [navigation]);
 
   // Convert CompactSensoryEvaluation format to TastingStore format
   const handleExpressionChange = useCallback((expressions: Array<{
@@ -310,8 +310,8 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
       english: string;
       emoji: string;
       intensity?: number;
-    };
-  }>) => {
+  };
+}>) => {
     const converted: SelectedSensoryExpression[] = expressions.map(item => ({
       categoryId: item.categoryId,
       expressionId: item.expression.id,
@@ -320,20 +320,20 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
       emoji: item.expression.emoji,
       intensity: 3, // Default intensity
       selected: true,
-    }));
+  }));
     
     setSelectedSensoryExpressions(converted);
-  }, [setSelectedSensoryExpressions]);
+}, [setSelectedSensoryExpressions]);
 
   // Group expressions by category
   const groupedExpressions = selectedSensoryExpressions.reduce((acc, expr) => {
     const category = expr.categoryId;
     if (!acc[category]) {
       acc[category] = [];
-    }
+  }
     acc[category].push(expr.korean);
     return acc;
-  }, {} as Record<string, string[]>);
+}, {} as Record<string, string[]>);
 
   // Category display names and order
   const categoryNames: Record<string, string> = {
@@ -343,7 +343,7 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
     body: '바디',
     aftertaste: '애프터',
     balance: '밸런스'
-  };
+};
 
   const categoryOrder = ['acidity', 'sweetness', 'bitterness', 'body', 'aftertaste', 'balance'];
   const filteredCategories = categoryOrder.filter(cat => groupedExpressions[cat]);
@@ -357,7 +357,7 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
           </EmptyStateText>
         </EmptyStateContainer>
       );
-    }
+  }
 
     // Compact format for many selections
     if (selectedSensoryExpressions.length > 9) {
@@ -378,7 +378,7 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
           </SelectionCount>
         </YStack>
       );
-    }
+  }
 
     // Normal format for fewer selections
     return filteredCategories.map((category, index) => {
@@ -392,8 +392,8 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
           <CategoryExpressions>{expressions}</CategoryExpressions>
         </CategorySection>
       );
-    });
-  };
+  });
+};
 
   return (
     <Container>
@@ -436,7 +436,7 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
                   enterStyle={{
                     opacity: 0,
                     y: 10,
-                  }}
+                }}
                   animateOnly={['opacity', 'transform']}
                 >
                   {renderPreviewContent()}
@@ -458,8 +458,8 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
                 emoji: item.emoji || '',
                 intensity: (item.intensity || 2) as 1 | 2 | 3,
                 beginner: true,
-              },
-            }))}
+            },
+          }))}
             onExpressionChange={handleExpressionChange}
             beginnerMode={true}
           />
@@ -485,11 +485,11 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
                 enterStyle={{
                   opacity: 0,
                   scale: 0.9,
-                }}
+              }}
                 exitStyle={{
                   opacity: 0,
                   scale: 0.9,
-                }}
+              }}
                 animateOnly={['opacity', 'transform']}
               >
                 <SensoryOnboarding 

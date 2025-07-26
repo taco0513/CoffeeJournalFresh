@@ -3,11 +3,12 @@ import { supabase } from '../supabase/client';
 import { SecureStorage } from './SecureStorage';
 import { BiometricAuth } from './BiometricAuth';
 
+import { Logger } from '../LoggingService';
 export interface SessionData {
   accessToken: string;
   refreshToken: string;
   expiresAt: number;
-  user: any;
+  user: unknown;
   provider: 'email' | 'google' | 'apple';
   createdAt: number;
   lastRefresh: number;
@@ -42,14 +43,14 @@ export class SessionManager {
   private currentSession: SessionData | null = null;
   private refreshTimer?: NodeJS.Timeout;
   private validationTimer?: NodeJS.Timeout;
-  private appStateSubscription?: any;
+  private appStateSubscription?: unknown;
   private lastActiveTime: number = Date.now();
   private config: SessionManagerConfig;
   private isInitialized = false;
 
   private constructor() {
     this.config = this.getDefaultConfig();
-  }
+}
 
   /**
    * Get singleton instance
@@ -57,9 +58,9 @@ export class SessionManager {
   static getInstance(): SessionManager {
     if (!SessionManager.instance) {
       SessionManager.instance = new SessionManager();
-    }
-    return SessionManager.instance;
   }
+    return SessionManager.instance;
+}
 
   /**
    * Initialize session manager
@@ -83,21 +84,21 @@ export class SessionManager {
       // Validate current session
       if (this.currentSession) {
         await this.validateSession();
-      }
+    }
 
       this.isInitialized = true;
-      console.log('SessionManager initialized successfully');
-    } catch (error) {
-      console.error('SessionManager initialization failed:', error);
+      Logger.debug('SessionManager initialized successfully', 'auth', { component: 'SessionManager' });
+  } catch (error) {
+      Logger.error('SessionManager initialization failed:', 'auth', { component: 'SessionManager', error: error });
       throw error;
-    }
   }
+}
 
   /**
    * Create and store a new session
    */
   async createSession(
-    user: any,
+    user: unknown,
     accessToken: string,
     refreshToken: string,
     expiresAt: number,
@@ -115,7 +116,7 @@ export class SessionManager {
         createdAt: Date.now(),
         lastRefresh: Date.now(),
         deviceFingerprint,
-      };
+    };
 
       this.currentSession = sessionData;
       await this.storeSession(sessionData);
@@ -123,19 +124,19 @@ export class SessionManager {
       // Start monitoring this session
       this.startSessionMonitoring();
       
-      console.log('Session created successfully');
-    } catch (error) {
-      console.error('Failed to create session:', error);
+      Logger.debug('Session created successfully', 'auth', { component: 'SessionManager' });
+  } catch (error) {
+      Logger.error('Failed to create session:', 'auth', { component: 'SessionManager', error: error });
       throw error;
-    }
   }
+}
 
   /**
    * Get current session
    */
   getCurrentSession(): SessionData | null {
     return this.currentSession;
-  }
+}
 
   /**
    * Check if user is authenticated
@@ -144,19 +145,19 @@ export class SessionManager {
     try {
       if (!this.currentSession) {
         await this.loadSession();
-      }
+    }
 
       if (!this.currentSession) {
         return false;
-      }
+    }
 
       const validation = await this.validateSession();
       return validation.isValid;
-    } catch (error) {
-      console.error('Authentication check failed:', error);
+  } catch (error) {
+      Logger.error('Authentication check failed:', 'auth', { component: 'SessionManager', error: error });
       return false;
-    }
   }
+}
 
   /**
    * Refresh session if needed
@@ -165,20 +166,20 @@ export class SessionManager {
     try {
       if (!this.currentSession) {
         return false;
-      }
+    }
 
       const validation = await this.validateSession();
       
       if (validation.needsRefresh) {
         return await this.refreshSession();
-      }
+    }
 
       return validation.isValid;
-    } catch (error) {
-      console.error('Session refresh check failed:', error);
+  } catch (error) {
+      Logger.error('Session refresh check failed:', 'auth', { component: 'SessionManager', error: error });
       return false;
-    }
   }
+}
 
   /**
    * Force refresh session
@@ -187,20 +188,20 @@ export class SessionManager {
     try {
       if (!this.currentSession) {
         return false;
-      }
+    }
 
-      console.log('Refreshing session...');
+      Logger.debug('Refreshing session...', 'auth', { component: 'SessionManager' });
 
       // Use Supabase to refresh the session
       const { data, error } = await supabase.auth.refreshSession({
         refresh_token: this.currentSession.refreshToken,
-      });
+    });
 
       if (error || !data.session) {
-        console.error('Session refresh failed:', error);
+        Logger.error('Session refresh failed:', 'auth', { component: 'SessionManager', error: error });
         await this.clearSession();
         return false;
-      }
+    }
 
       // Update session data
       this.currentSession = {
@@ -210,17 +211,17 @@ export class SessionManager {
         expiresAt: new Date(data.session.expires_at || 0).getTime(),
         user: data.user,
         lastRefresh: Date.now(),
-      };
+    };
 
       await this.storeSession(this.currentSession);
-      console.log('Session refreshed successfully');
+      Logger.debug('Session refreshed successfully', 'auth', { component: 'SessionManager' });
       return true;
-    } catch (error) {
-      console.error('Session refresh failed:', error);
+  } catch (error) {
+      Logger.error('Session refresh failed:', 'auth', { component: 'SessionManager', error: error });
       await this.clearSession();
       return false;
-    }
   }
+}
 
   /**
    * Validate current session
@@ -233,8 +234,8 @@ export class SessionManager {
           needsRefresh: false,
           shouldReauthenticate: true,
           error: 'No session found',
-        };
-      }
+      };
+    }
 
       const now = Date.now();
       const expiresAt = this.currentSession.expiresAt;
@@ -249,8 +250,8 @@ export class SessionManager {
           needsRefresh: true,
           shouldReauthenticate: false,
           error: 'Session expired',
-        };
-      }
+      };
+    }
 
       // Check if session needs refresh soon
       const needsRefresh = (expiresAt - now) <= refreshThreshold;
@@ -262,8 +263,8 @@ export class SessionManager {
           needsRefresh: false,
           shouldReauthenticate: true,
           error: 'Session timeout reached',
-        };
-      }
+      };
+    }
 
       // Check inactivity timeout
       if (maxInactive > 0 && (now - this.lastActiveTime) >= maxInactive) {
@@ -272,8 +273,8 @@ export class SessionManager {
           needsRefresh: false,
           shouldReauthenticate: true,
           error: 'Maximum inactivity time exceeded',
-        };
-      }
+      };
+    }
 
       // Validate device fingerprint if enabled
       if (this.config.deviceFingerprintValidation) {
@@ -284,9 +285,9 @@ export class SessionManager {
             needsRefresh: false,
             shouldReauthenticate: true,
             error: 'Device fingerprint mismatch',
-          };
-        }
+        };
       }
+    }
 
       // Validate with Supabase
       const { data, error } = await supabase.auth.getUser(this.currentSession.accessToken);
@@ -297,24 +298,24 @@ export class SessionManager {
           needsRefresh: true,
           shouldReauthenticate: false,
           error: 'Token validation failed',
-        };
-      }
+      };
+    }
 
       return {
         isValid: true,
         needsRefresh,
         shouldReauthenticate: false,
-      };
-    } catch (error) {
-      console.error('Session validation failed:', error);
+    };
+  } catch (error) {
+      Logger.error('Session validation failed:', 'auth', { component: 'SessionManager', error: error });
       return {
         isValid: false,
         needsRefresh: false,
         shouldReauthenticate: true,
         error: 'Validation error',
-      };
-    }
+    };
   }
+}
 
   /**
    * Clear session and clean up
@@ -324,11 +325,11 @@ export class SessionManager {
       this.currentSession = null;
       await SecureStorage.removeItem(SessionManager.SESSION_KEY);
       this.stopSessionMonitoring();
-      console.log('Session cleared');
-    } catch (error) {
-      console.error('Failed to clear session:', error);
-    }
+      Logger.debug('Session cleared', 'auth', { component: 'SessionManager' });
+  } catch (error) {
+      Logger.error('Failed to clear session:', 'auth', { component: 'SessionManager', error: error });
   }
+}
 
   /**
    * Update session configuration
@@ -342,25 +343,25 @@ export class SessionManager {
       this.stopSessionMonitoring();
       this.startSessionMonitoring();
       
-      console.log('Session config updated');
-    } catch (error) {
-      console.error('Failed to update session config:', error);
-    }
+      Logger.debug('Session config updated', 'auth', { component: 'SessionManager' });
+  } catch (error) {
+      Logger.error('Failed to update session config:', 'auth', { component: 'SessionManager', error: error });
   }
+}
 
   /**
    * Get current configuration
    */
   getConfig(): SessionManagerConfig {
     return { ...this.config };
-  }
+}
 
   /**
    * Update last activity time
    */
   updateActivity(): void {
     this.lastActiveTime = Date.now();
-  }
+}
 
   /**
    * Handle app resume - may require biometric authentication
@@ -371,7 +372,7 @@ export class SessionManager {
 
       if (!this.currentSession) {
         return false;
-      }
+    }
 
       // Check if biometric authentication is required
       if (this.config.requireBiometricOnResume) {
@@ -382,16 +383,16 @@ export class SessionManager {
         if (!biometricResult.success) {
           await this.clearSession();
           return false;
-        }
       }
+    }
 
       // Validate and refresh session if needed
       return await this.refreshSessionIfNeeded();
-    } catch (error) {
-      console.error('App resume handling failed:', error);
+  } catch (error) {
+      Logger.error('App resume handling failed:', 'auth', { component: 'SessionManager', error: error });
       return false;
-    }
   }
+}
 
   /**
    * Load session from secure storage
@@ -402,12 +403,12 @@ export class SessionManager {
       
       if (result.success && result.data) {
         this.currentSession = result.data;
-        console.log('Session loaded from storage');
-      }
-    } catch (error) {
-      console.error('Failed to load session:', error);
+        Logger.debug('Session loaded from storage', 'auth', { component: 'SessionManager' });
     }
+  } catch (error) {
+      Logger.error('Failed to load session:', 'auth', { component: 'SessionManager', error: error });
   }
+}
 
   /**
    * Store session to secure storage
@@ -419,11 +420,11 @@ export class SessionManager {
         sessionData,
         this.config.requireBiometricOnResume
       );
-    } catch (error) {
-      console.error('Failed to store session:', error);
+  } catch (error) {
+      Logger.error('Failed to store session:', 'auth', { component: 'SessionManager', error: error });
       throw error;
-    }
   }
+}
 
   /**
    * Load configuration from storage
@@ -435,12 +436,12 @@ export class SessionManager {
       if (result.success && result.value) {
         const storedConfig = JSON.parse(result.value);
         this.config = { ...this.getDefaultConfig(), ...storedConfig };
-      }
-    } catch (error) {
-      console.error('Failed to load config:', error);
-      this.config = this.getDefaultConfig();
     }
+  } catch (error) {
+      Logger.error('Failed to load config:', 'auth', { component: 'SessionManager', error: error });
+      this.config = this.getDefaultConfig();
   }
+}
 
   /**
    * Store configuration
@@ -451,10 +452,10 @@ export class SessionManager {
         SessionManager.CONFIG_KEY,
         JSON.stringify(this.config)
       );
-    } catch (error) {
-      console.error('Failed to store config:', error);
-    }
+  } catch (error) {
+      Logger.error('Failed to store config:', 'auth', { component: 'SessionManager', error: error });
   }
+}
 
   /**
    * Get default configuration
@@ -467,8 +468,8 @@ export class SessionManager {
       requireBiometricOnResume: false,
       sessionTimeoutMinutes: 0, // 0 = no timeout
       deviceFingerprintValidation: true,
-    };
-  }
+  };
+}
 
   /**
    * Start session monitoring
@@ -476,7 +477,7 @@ export class SessionManager {
   private startSessionMonitoring(): void {
     if (!this.config.autoRefreshEnabled) {
       return;
-    }
+  }
 
     // Clear existing timers
     this.stopSessionMonitoring();
@@ -485,10 +486,10 @@ export class SessionManager {
     this.refreshTimer = setInterval(async () => {
       try {
         await this.refreshSessionIfNeeded();
-      } catch (error) {
-        console.error('Auto-refresh failed:', error);
-      }
-    }, 60000);
+    } catch (error) {
+        Logger.error('Auto-refresh failed:', 'auth', { component: 'SessionManager', error: error });
+    }
+  }, 60000);
 
     // Set up validation timer (check every 5 minutes)
     this.validationTimer = setInterval(async () => {
@@ -496,12 +497,12 @@ export class SessionManager {
         const validation = await this.validateSession();
         if (!validation.isValid && validation.shouldReauthenticate) {
           await this.clearSession();
-        }
-      } catch (error) {
-        console.error('Session validation failed:', error);
       }
-    }, 300000);
-  }
+    } catch (error) {
+        Logger.error('Session validation failed:', 'auth', { component: 'SessionManager', error: error });
+    }
+  }, 300000);
+}
 
   /**
    * Stop session monitoring
@@ -510,20 +511,20 @@ export class SessionManager {
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
       this.refreshTimer = undefined;
-    }
+  }
     
     if (this.validationTimer) {
       clearInterval(this.validationTimer);
       this.validationTimer = undefined;
-    }
   }
+}
 
   /**
    * Set up app state monitoring
    */
   private setupAppStateMonitoring(): void {
     this.appStateSubscription = AppState.addEventListener('change', this.handleAppStateChange.bind(this));
-  }
+}
 
   /**
    * Handle app state changes
@@ -532,14 +533,14 @@ export class SessionManager {
     try {
       if (nextAppState === 'active') {
         await this.handleAppResume();
-      } else if (nextAppState === 'background' || nextAppState === 'inactive') {
+    } else if (nextAppState === 'background' || nextAppState === 'inactive') {
         // App going to background - update last active time
         this.updateActivity();
-      }
-    } catch (error) {
-      console.error('App state change handling failed:', error);
     }
+  } catch (error) {
+      Logger.error('App state change handling failed:', 'auth', { component: 'SessionManager', error: error });
   }
+}
 
   /**
    * Generate device fingerprint for security
@@ -555,11 +556,11 @@ export class SessionManager {
       ].join('|');
 
       return fingerprint;
-    } catch (error) {
-      console.error('Failed to generate device fingerprint:', error);
+  } catch (error) {
+      Logger.error('Failed to generate device fingerprint:', 'auth', { component: 'SessionManager', error: error });
       return 'unknown_device';
-    }
   }
+}
 
   /**
    * Clean up resources
@@ -570,9 +571,9 @@ export class SessionManager {
     if (this.appStateSubscription) {
       this.appStateSubscription.remove();
       this.appStateSubscription = undefined;
-    }
+  }
     
     this.currentSession = null;
     this.isInitialized = false;
-  }
+}
 }

@@ -21,7 +21,7 @@ export const englishTranslations = {
   tagline: 'The easiest way to discover your coffee taste',
   
   // Home Screen
-  coffeeJournal: 'Coffee Journal',
+  coffeeJournal: 'CupNote',
   hello: 'Hello, {{name}}!',
   howAboutCoffee: 'How about a nice cup of coffee today?',
   totalTastings: 'Total Tastings',

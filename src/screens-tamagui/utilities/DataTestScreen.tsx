@@ -43,7 +43,7 @@ const BackButton = styled(Button, {
   paddingHorizontal: 0,
   pressStyle: {
     opacity: 0.6,
-  },
+},
 });
 
 const BackButtonText = styled(Text, {
@@ -79,7 +79,7 @@ const Section = styled(YStack, {
   enterStyle: {
     opacity: 0,
     y: 20,
-  },
+},
 });
 
 const SectionTitle = styled(Text, {
@@ -100,7 +100,7 @@ const StatsContainer = styled(Card, {
   enterStyle: {
     opacity: 0,
     scale: 0.95,
-  },
+},
 });
 
 const StatText = styled(Text, {
@@ -122,7 +122,7 @@ const TastingCard = styled(Card, {
   enterStyle: {
     opacity: 0,
     x: -20,
-  },
+},
 });
 
 const TastingCardContent = styled(XStack, {
@@ -180,7 +180,7 @@ const DeleteButton = styled(Button, {
   pressStyle: {
     scale: 0.95,
     backgroundColor: '$red10',
-  },
+},
 });
 
 const DeleteButtonText = styled(Text, {
@@ -202,7 +202,7 @@ const RefreshButton = styled(Button, {
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$cupBlueDark',
-  },
+},
 });
 
 const RefreshButtonText = styled(Text, {
@@ -223,7 +223,7 @@ const ClearButton = styled(Button, {
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$red10',
-  },
+},
 });
 
 const ClearButtonText = styled(Text, {
@@ -275,7 +275,7 @@ interface Statistics {
   uniqueRoasters?: number;
 }
 
-const DataTestScreen: React.FC<DataTestScreenProps & { navigation: any }> = ({ navigation, ...props }) => {
+const DataTestScreen: React.FC<DataTestScreenProps & { navigation: unknown}> = ({ navigation, ...props }) => {
   const theme = useTheme();
   const [recentTastings, setRecentTastings] = useState<TastingData[]>([]);
   const [statistics, setStatistics] = useState<Statistics | null>(null);
@@ -290,33 +290,33 @@ const DataTestScreen: React.FC<DataTestScreenProps & { navigation: any }> = ({ n
       const formattedTastings = tastings.map(t => ({
         ...t,
         createdAt: t.createdAt.toISOString()
-      }));
+    }));
       setRecentTastings(formattedTastings);
       
       // Get statistics
       const realmService = RealmService.getInstance();
       const stats = realmService.getStatistics();
       setStatistics(stats);
-    } catch (error) {
+  } catch (error) {
       Alert.alert('Error', 'Failed to load data');
-    } finally {
+  } finally {
       setIsLoading(false);
-    }
-  };
+  }
+};
 
   useEffect(() => {
     loadData();
-  }, []);
+}, []);
 
   const handleDeleteTasting = async (tastingId: string) => {
     try {
       await RealmService.getInstance().deleteTasting(tastingId);
       Alert.alert('Success', 'Tasting deleted');
       loadData(); // Reload data
-    } catch (error) {
+  } catch (error) {
       Alert.alert('Error', 'Failed to delete tasting');
-    }
-  };
+  }
+};
 
   const handleClearAll = () => {
     Alert.alert(
@@ -333,14 +333,14 @@ const DataTestScreen: React.FC<DataTestScreenProps & { navigation: any }> = ({ n
               realmService.clearAllTastings();
               Alert.alert('Success', 'All tastings deleted');
               loadData();
-            } catch (error) {
+          } catch (error) {
               Alert.alert('Error', 'Failed to clear all tastings');
-            }
-          },
+          }
         },
+      },
       ]
     );
-  };
+};
 
   return (
     <Container {...props}>
@@ -399,7 +399,7 @@ const DataTestScreen: React.FC<DataTestScreenProps & { navigation: any }> = ({ n
                       enterStyle={{
                         opacity: 0,
                         x: -20,
-                      }}
+                    }}
                       animateOnly={['opacity', 'transform']}
                     >
                       <TastingCardContent>

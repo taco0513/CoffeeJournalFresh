@@ -36,15 +36,15 @@ export const QuickFeedbackPanel: React.FC<QuickFeedbackPanelProps> = ({
               await betaTestingService.submitQuickFeedback(rating, comment);
               Alert.alert(t('success'), t('feedbackSubmitted'));
               onFeedbackSubmitted();
-            } catch (error) {
+          } catch (error) {
               Alert.alert(t('error'), t('feedbackError'));
-            }
-          },
+          }
         },
+      },
       ],
       'plain-text'
     );
-  };
+};
 
   const renderRatingButton = (rating: 1 | 2 | 3 | 4 | 5, emoji: string, label: string) => (
     <TouchableOpacity
@@ -79,23 +79,23 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
-  },
+},
   title: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   subtitle: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     marginBottom: 16,
-  },
+},
   ratingGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 8,
-  },
+},
   ratingButton: {
     flex: 1,
     alignItems: 'center',
@@ -104,17 +104,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: HIGColors.separator,
     backgroundColor: HIGColors.systemGray6,
-  },
+},
   ratingEmoji: {
     fontSize: 24,
     marginBottom: 4,
-  },
+},
   ratingLabel: {
     fontSize: 12,
     fontWeight: '500',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
 });
 
 export default QuickFeedbackPanel;

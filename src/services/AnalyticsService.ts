@@ -3,6 +3,7 @@ import DeviceInfo from 'react-native-device-info';
 import { Platform } from 'react-native';
 import { supabase } from './supabase/client';
 
+import { Logger } from './LoggingService';
 export interface AnalyticsEvent {
   id: string;
   userId?: string;
@@ -18,7 +19,7 @@ export interface AnalyticsEvent {
     appVersion: string;
     model: string;
     buildNumber: string;
-  };
+};
 }
 
 export interface SessionData {
@@ -58,14 +59,14 @@ class AnalyticsService {
     recentActions: [],
     screenTimeSpent: 0,
     navigationPath: [],
-  };
+};
   private readonly MAX_RECENT_ACTIONS = 10;
   private readonly MAX_NAVIGATION_PATH = 20;
 
   async initialize(userId?: string): Promise<void> {
     await this.startSession(userId);
     await this.syncQueuedEvents();
-  }
+}
 
   async startSession(userId?: string): Promise<void> {
     const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -77,7 +78,7 @@ class AnalyticsService {
       screenViews: [],
       eventCount: 0,
       isActive: true,
-    };
+  };
 
     await AsyncStorage.setItem(this.SESSION_KEY, JSON.stringify(this.currentSession));
     
@@ -87,9 +88,9 @@ class AnalyticsService {
       properties: {
         userId,
         sessionId,
-      },
-    });
-  }
+    },
+  });
+}
 
   async endSession(): Promise<void> {
     if (!this.currentSession) return;
@@ -105,13 +106,13 @@ class AnalyticsService {
         duration: this.currentSession.endTime.getTime() - this.currentSession.startTime.getTime(),
         screenViews: this.currentSession.screenViews.length,
         eventCount: this.currentSession.eventCount,
-      },
-    });
+    },
+  });
 
     await this.flushQueue();
     await AsyncStorage.removeItem(this.SESSION_KEY);
     this.currentSession = null;
-  }
+}
 
   async trackScreenView(screenName: string, properties?: Record<string, any>): Promise<void> {
     // End previous screen timing
@@ -125,9 +126,9 @@ class AnalyticsService {
         properties: {
           duration,
           previousScreen: this.currentScreen,
-        },
-      });
-    }
+      },
+    });
+  }
 
     // Update user context
     this.userContext.previousScreen = this.userContext.currentScreen;
@@ -137,7 +138,7 @@ class AnalyticsService {
     // Keep navigation path size manageable
     if (this.userContext.navigationPath.length > this.MAX_NAVIGATION_PATH) {
       this.userContext.navigationPath = this.userContext.navigationPath.slice(-this.MAX_NAVIGATION_PATH);
-    }
+  }
 
     // Start new screen timing
     this.currentScreen = screenName;
@@ -145,15 +146,15 @@ class AnalyticsService {
 
     if (this.currentSession) {
       this.currentSession.screenViews.push(screenName);
-    }
+  }
 
     await this.trackEvent({
       eventType: 'screen_view',
       eventName: 'screen_view',
       screenName,
       properties,
-    });
-  }
+  });
+}
 
   async trackButtonClick(buttonName: string, screenName?: string, properties?: Record<string, any>): Promise<void> {
     // Add to recent actions
@@ -167,9 +168,9 @@ class AnalyticsService {
       properties: {
         buttonName,
         ...properties,
-      },
-    });
-  }
+    },
+  });
+}
 
   private addRecentAction(action: string): void {
     this.userContext.recentActions.push(action);
@@ -177,8 +178,8 @@ class AnalyticsService {
     // Keep only recent actions
     if (this.userContext.recentActions.length > this.MAX_RECENT_ACTIONS) {
       this.userContext.recentActions = this.userContext.recentActions.slice(-this.MAX_RECENT_ACTIONS);
-    }
   }
+}
 
   async trackFeatureUse(featureName: string, properties?: Record<string, any>): Promise<void> {
     // Add to recent actions
@@ -189,8 +190,8 @@ class AnalyticsService {
       eventName: featureName,
       screenName: this.currentScreen || undefined,
       properties,
-    });
-  }
+  });
+}
 
   async trackError(errorName: string, errorMessage: string, stackTrace?: string, properties?: Record<string, any>): Promise<void> {
     // Update user context with error info
@@ -205,9 +206,9 @@ class AnalyticsService {
         errorMessage,
         stackTrace,
         ...properties,
-      },
-    });
-  }
+    },
+  });
+}
 
   async trackTiming(eventName: string, duration: number, properties?: Record<string, any>): Promise<void> {
     await this.trackEvent({
@@ -217,15 +218,15 @@ class AnalyticsService {
       properties: {
         duration,
         ...properties,
-      },
-    });
-  }
+    },
+  });
+}
 
   private async trackEvent(event: Omit<AnalyticsEvent, 'id' | 'sessionId' | 'timestamp' | 'deviceInfo' | 'userId'>): Promise<void> {
     if (!this.currentSession) {
-      console.warn('Analytics: No active session, cannot track event');
+      Logger.warn('Analytics: No active session, cannot track event', 'service', { component: 'AnalyticsService' });
       return;
-    }
+  }
 
     const deviceInfo = {
       platform: Platform.OS,
@@ -233,7 +234,7 @@ class AnalyticsService {
       appVersion: DeviceInfo.getVersion(),
       model: DeviceInfo.getModel(),
       buildNumber: DeviceInfo.getBuildNumber(),
-    };
+  };
 
     const analyticsEvent: AnalyticsEvent = {
       id: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -242,7 +243,7 @@ class AnalyticsService {
       timestamp: new Date(),
       deviceInfo,
       ...event,
-    };
+  };
 
     this.eventQueue.push(analyticsEvent);
     this.currentSession.eventCount++;
@@ -250,11 +251,11 @@ class AnalyticsService {
     // Auto-flush if queue is getting large
     if (this.eventQueue.length >= this.MAX_QUEUE_SIZE) {
       await this.flushQueue();
-    }
+  }
 
     // Save queue to storage
     await this.saveQueueToStorage();
-  }
+}
 
   private async flushQueue(): Promise<void> {
     if (this.eventQueue.length === 0) return;
@@ -265,7 +266,7 @@ class AnalyticsService {
       // Clear queue if no session
       this.eventQueue = [];
       return;
-    }
+  }
 
     try {
       const { error } = await supabase
@@ -278,27 +279,27 @@ class AnalyticsService {
             !error.message?.includes('JWT') &&
             !error.message?.includes('auth') &&
             !error.message?.includes('relation')) {
-          console.warn('Analytics: Error sending events to server:', error.message);
-        }
+          Logger.warn('Analytics: Error sending events to server:', 'service', { component: 'AnalyticsService', error: error.message });
+      }
         // Keep events in queue for retry
         return;
-      }
+    }
 
       // Clear queue on successful send
       this.eventQueue = [];
       await AsyncStorage.removeItem(this.QUEUE_KEY);
-    } catch (error) {
-      console.error('Analytics: Error flushing queue:', error);
-    }
+  } catch (error) {
+      Logger.error('Analytics: Error flushing queue:', 'service', { component: 'AnalyticsService', error: error });
   }
+}
 
   private async saveQueueToStorage(): Promise<void> {
     try {
       await AsyncStorage.setItem(this.QUEUE_KEY, JSON.stringify(this.eventQueue));
-    } catch (error) {
-      console.error('Analytics: Error saving queue to storage:', error);
-    }
+  } catch (error) {
+      Logger.error('Analytics: Error saving queue to storage:', 'service', { component: 'AnalyticsService', error: error });
   }
+}
 
   private async syncQueuedEvents(): Promise<void> {
     try {
@@ -306,13 +307,13 @@ class AnalyticsService {
       if (queueData) {
         this.eventQueue = JSON.parse(queueData);
         await this.flushQueue();
-      }
-    } catch (error) {
-      console.error('Analytics: Error syncing queued events:', error);
     }
+  } catch (error) {
+      Logger.error('Analytics: Error syncing queued events:', 'service', { component: 'AnalyticsService', error: error });
   }
+}
 
-  async getSessionStats(): Promise<any> {
+  async getSessionStats(): Promise<unknown> {
     if (!this.currentSession) return null;
 
     return {
@@ -329,36 +330,36 @@ class AnalyticsService {
       screenTimeSpent: this.userContext.screenTimeSpent,
       lastErrorTime: this.userContext.lastErrorTime,
       lastErrorMessage: this.userContext.lastErrorMessage,
-    };
-  }
+  };
+}
 
   // Method for ErrorContextService to access user context directly
   getUserContext(): UserContext {
     return { ...this.userContext };
-  }
+}
 
   // Coffee-specific tracking methods
   async trackCoffeeAction(action: string, coffeeId?: string, properties?: Record<string, any>): Promise<void> {
     await this.trackFeatureUse(`coffee_${action}`, {
       coffeeId,
       ...properties,
-    });
-  }
+  });
+}
 
   async trackTastingAction(action: string, tastingId?: string, properties?: Record<string, any>): Promise<void> {
     await this.trackFeatureUse(`tasting_${action}`, {
       tastingId,
       ...properties,
-    });
-  }
+  });
+}
 
   async trackSearchAction(query: string, results: number, searchType?: string): Promise<void> {
     await this.trackFeatureUse('search', {
       query,
       results,
       searchType,
-    });
-  }
+  });
+}
 }
 
 export const analyticsService = new AnalyticsService();

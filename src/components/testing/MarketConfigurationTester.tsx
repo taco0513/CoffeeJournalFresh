@@ -30,6 +30,7 @@ import { TestScenario, TestResult, MarketInfo } from '../../types/MarketTestType
 import { MarketTestResults } from './MarketTestResults';
 import { MarketInfoPanel } from './MarketInfoPanel';
 import createTestScenarios from '../../utils/MarketTestScenarios';
+import { Logger } from '../../services/LoggingService';
 import { HIGColors, HIGConstants } from '../../constants/HIG';
 
 /**
@@ -48,7 +49,7 @@ const MarketConfigurationTester: React.FC = () => {
 
   useEffect(() => {
     loadCurrentMarketInfo();
-  }, []);
+}, []);
 
   /**
    * Load current market information
@@ -68,28 +69,28 @@ const MarketConfigurationTester: React.FC = () => {
           labMode: isFeatureEnabled('labMode'),
           marketIntelligence: isFeatureEnabled('marketIntelligence'),
           achievements: isFeatureEnabled('achievements'),
-        },
+      },
         deploymentFeatures: {
           performanceDashboard: isFeatureFlagEnabled('performanceDashboard'),
           betaTestingDashboard: isFeatureFlagEnabled('betaTestingDashboard'),
           crashReporting: isFeatureFlagEnabled('crashReporting'),
-        },
+      },
         data: {
           roasters: getMarketRoasters().slice(0, 5),
           origins: getMarketOrigins().slice(0, 5),
           flavorProfiles: getMarketFlavorProfiles().slice(0, 5),
           brewMethods: getSupportedBrewMethods().slice(0, 5),
-        },
+      },
         formatting: {
           currency: formatCurrency(5000),
           date: formatDate(new Date()),
           time: formatTime(new Date()),
-        },
-      });
-    } catch (error) {
-      console.error('Failed to load market info:', error);
-    }
-  };
+      },
+    });
+  } catch (error) {
+      Logger.error('Failed to load market info:', 'component', { component: 'MarketConfigurationTester', error: error });
+  }
+};
 
   /**
    * Run a specific test scenario
@@ -101,19 +102,19 @@ const MarketConfigurationTester: React.FC = () => {
     try {
       const result = await scenario.testFunction();
       setTestResults(prev => [...prev.filter(r => r.scenario !== scenario.name), result]);
-    } catch (error: any) {
+  } catch (error) {
       const failureResult: TestResult = {
         scenario: scenario.name,
         success: false,
         message: 'Test execution failed',
         error: error.message
-      };
+    };
       setTestResults(prev => [...prev.filter(r => r.scenario !== scenario.name), failureResult]);
-    } finally {
+  } finally {
       setIsRunning(false);
       setSelectedScenario(null);
-    }
-  };
+  }
+};
 
   /**
    * Run all test scenarios
@@ -126,7 +127,7 @@ const MarketConfigurationTester: React.FC = () => {
       await runTestScenario(scenario);
       // Small delay between tests
       await new Promise(resolve => setTimeout(resolve, 200));
-    }
+  }
     
     setIsRunning(false);
     
@@ -140,7 +141,7 @@ const MarketConfigurationTester: React.FC = () => {
       `${passCount}/${totalCount} tests passed`,
       [{ text: 'OK' }]
     );
-  };
+};
 
   /**
    * Clear test results
@@ -148,7 +149,7 @@ const MarketConfigurationTester: React.FC = () => {
   const clearResults = () => {
     setTestResults([]);
     setSelectedScenario(null);
-  };
+};
 
   const renderHeader = () => (
     <View style={styles.header}>
@@ -257,53 +258,53 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: HIGColors.systemGroupedBackground,
     padding: 16,
-  },
+},
   header: {
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 12,
     marginBottom: 20,
     alignItems: 'center',
-  },
+},
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
     marginBottom: 8,
-  },
+},
   headerSubtitle: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     lineHeight: 22,
-  },
+},
   section: {
     backgroundColor: 'white',
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
-  },
+},
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 12,
-  },
+},
   controlRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
-  },
+},
   controlLabel: {
     fontSize: 16,
     color: HIGColors.label,
     marginLeft: 12,
-  },
+},
   buttonRow: {
     flexDirection: 'row',
     gap: 12,
-  },
+},
   button: {
     flex: 1,
     paddingVertical: 12,
@@ -312,59 +313,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 44,
-  },
+},
   primaryButton: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   secondaryButton: {
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: HIGColors.systemBlue,
-  },
+},
   disabledButton: {
     backgroundColor: HIGColors.systemGray4,
-  },
+},
   buttonText: {
     fontSize: 16,
     fontWeight: '600',
     color: 'white',
-  },
+},
   secondaryButtonText: {
     color: HIGColors.systemBlue,
-  },
+},
   scenarioItem: {
     padding: 16,
     borderWidth: 1,
     borderColor: HIGColors.separator,
     borderRadius: 8,
     marginBottom: 8,
-  },
+},
   runningScenario: {
     borderColor: HIGColors.systemBlue,
     backgroundColor: HIGColors.systemBlue + '10',
-  },
+},
   scenarioHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
-  },
+},
   scenarioName: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     flex: 1,
-  },
+},
   scenarioMarket: {
     fontSize: 14,
     fontWeight: '500',
     color: HIGColors.systemBlue,
-  },
+},
   scenarioDescription: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     lineHeight: 20,
-  },
+},
   scenarioLoading: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -372,15 +373,15 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: HIGColors.separator,
-  },
+},
   scenarioLoadingText: {
     fontSize: 14,
     color: HIGColors.systemBlue,
     marginLeft: 8,
-  },
+},
   bottomSpacer: {
     height: 40,
-  },
+},
 });
 
 export default MarketConfigurationTester;

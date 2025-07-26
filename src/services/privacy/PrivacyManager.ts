@@ -2,6 +2,7 @@ import { Alert } from 'react-native';
 import { supabase } from '../supabase/client';
 import { SecureStorage } from '../auth/SecureStorage';
 
+import { Logger } from '../LoggingService';
 export interface UserConsent {
   dataCollection: boolean;
   analytics: boolean;
@@ -55,12 +56,12 @@ export class PrivacyManager {
    */
   static async initialize(): Promise<void> {
     try {
-      console.log('PrivacyManager initialized successfully');
-    } catch (error) {
-      console.error('PrivacyManager initialization failed:', error);
+      Logger.debug('PrivacyManager initialized successfully', 'service', { component: 'PrivacyManager' });
+  } catch (error) {
+      Logger.error('PrivacyManager initialization failed:', 'service', { component: 'PrivacyManager', error: error });
       throw error;
-    }
   }
+}
 
   /**
    * Get current user consent
@@ -71,14 +72,14 @@ export class PrivacyManager {
       
       if (result.success && result.value) {
         return JSON.parse(result.value);
-      }
+    }
 
       return null;
-    } catch (error) {
-      console.error('Failed to get user consent:', error);
+  } catch (error) {
+      Logger.error('Failed to get user consent:', 'service', { component: 'PrivacyManager', error: error });
       return null;
-    }
   }
+}
 
   /**
    * Update user consent
@@ -96,7 +97,7 @@ export class PrivacyManager {
         biometricData: consent.biometricData ?? existingConsent?.biometricData ?? false,
         timestamp: Date.now(),
         version: this.CURRENT_CONSENT_VERSION,
-      };
+    };
 
       const storeResult = await SecureStorage.setItem(
         this.CONSENT_KEY,
@@ -107,14 +108,14 @@ export class PrivacyManager {
         // Also store in Supabase for backup and compliance
         await this.syncConsentToServer(updatedConsent);
         return true;
-      }
+    }
 
       return false;
-    } catch (error) {
-      console.error('Failed to update user consent:', error);
+  } catch (error) {
+      Logger.error('Failed to update user consent:', 'service', { component: 'PrivacyManager', error: error });
       return false;
-    }
   }
+}
 
   /**
    * Check if consent is required (new version or missing consent)
@@ -125,25 +126,25 @@ export class PrivacyManager {
       
       if (!consent) {
         return true;
-      }
+    }
 
       // Check if consent version is outdated
       if (consent.version !== this.CURRENT_CONSENT_VERSION) {
         return true;
-      }
+    }
 
       // Check if consent is older than 1 year (re-consent requirement)
       const oneYearAgo = Date.now() - (365 * 24 * 60 * 60 * 1000);
       if (consent.timestamp < oneYearAgo) {
         return true;
-      }
+    }
 
       return false;
-    } catch (error) {
-      console.error('Failed to check consent requirement:', error);
+  } catch (error) {
+      Logger.error('Failed to check consent requirement:', 'service', { component: 'PrivacyManager', error: error });
       return true; // Default to requiring consent on error
-    }
   }
+}
 
   /**
    * Show consent dialog
@@ -158,14 +159,14 @@ export class PrivacyManager {
             text: '거부',
             style: 'cancel',
             onPress: () => resolve(false),
-          },
+        },
           {
             text: '개인정보처리방침',
             onPress: () => {
               this.showPrivacyPolicy();
               resolve(false);
-            },
           },
+        },
           {
             text: '동의',
             onPress: async () => {
@@ -176,15 +177,15 @@ export class PrivacyManager {
                 thirdPartySharing: false,
                 locationData: false,
                 biometricData: false,
-              });
+            });
               resolve(success);
-            },
           },
+        },
         ],
         { cancelable: false }
       );
-    });
-  }
+  });
+}
 
   /**
    * Get privacy settings
@@ -195,15 +196,15 @@ export class PrivacyManager {
       
       if (result.success && result.value) {
         return JSON.parse(result.value);
-      }
+    }
 
       // Return default settings
       return this.getDefaultPrivacySettings();
-    } catch (error) {
-      console.error('Failed to get privacy settings:', error);
+  } catch (error) {
+      Logger.error('Failed to get privacy settings:', 'service', { component: 'PrivacyManager', error: error });
       return this.getDefaultPrivacySettings();
-    }
   }
+}
 
   /**
    * Update privacy settings
@@ -222,14 +223,14 @@ export class PrivacyManager {
         // Sync to server
         await this.syncPrivacySettingsToServer(updatedSettings);
         return true;
-      }
+    }
 
       return false;
-    } catch (error) {
-      console.error('Failed to update privacy settings:', error);
+  } catch (error) {
+      Logger.error('Failed to update privacy settings:', 'service', { component: 'PrivacyManager', error: error });
       return false;
-    }
   }
+}
 
   /**
    * Request data export (GDPR Article 20)
@@ -242,15 +243,15 @@ export class PrivacyManager {
         return {
           success: false,
           error: '사용자 인증이 필요합니다.',
-        };
-      }
+      };
+    }
 
       const exportRequest: Omit<DataExportRequest, 'id'> = {
         userId: userData.user.id,
         requestedAt: Date.now(),
         status: 'pending',
         expiresAt: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 days
-      };
+    };
 
       const { data, error } = await supabase
         .from('data_export_requests')
@@ -262,21 +263,21 @@ export class PrivacyManager {
         return {
           success: false,
           error: '데이터 내보내기 요청에 실패했습니다.',
-        };
-      }
+      };
+    }
 
       return {
         success: true,
         requestId: data.id,
-      };
-    } catch (error) {
-      console.error('Data export request failed:', error);
+    };
+  } catch (error) {
+      Logger.error('Data export request failed:', 'service', { component: 'PrivacyManager', error: error });
       return {
         success: false,
         error: '요청 처리 중 오류가 발생했습니다.',
-      };
-    }
+    };
   }
+}
 
   /**
    * Request account deletion (GDPR Article 17)
@@ -291,7 +292,7 @@ export class PrivacyManager {
             text: '취소',
             style: 'cancel',
             onPress: () => resolve({ success: false }),
-          },
+        },
           {
             text: '삭제 요청',
             style: 'destructive',
@@ -303,9 +304,9 @@ export class PrivacyManager {
                   resolve({
                     success: false,
                     error: '사용자 인증이 필요합니다.',
-                  });
+                });
                   return;
-                }
+              }
 
                 const deletionRequest: Omit<DataDeletionRequest, 'id'> = {
                   userId: userData.user.id,
@@ -313,7 +314,7 @@ export class PrivacyManager {
                   scheduledFor: Date.now() + (30 * 24 * 60 * 60 * 1000), // 30 days
                   status: 'scheduled',
                   reason,
-                };
+              };
 
                 const { data, error } = await supabase
                   .from('data_deletion_requests')
@@ -325,27 +326,27 @@ export class PrivacyManager {
                   resolve({
                     success: false,
                     error: '계정 삭제 요청에 실패했습니다.',
-                  });
+                });
                   return;
-                }
+              }
 
                 resolve({
                   success: true,
                   requestId: data.id,
-                });
-              } catch (error) {
-                console.error('Account deletion request failed:', error);
+              });
+            } catch (error) {
+                Logger.error('Account deletion request failed:', 'service', { component: 'PrivacyManager', error: error });
                 resolve({
                   success: false,
                   error: '요청 처리 중 오류가 발생했습니다.',
-                });
-              }
-            },
+              });
+            }
           },
+        },
         ]
       );
-    });
-  }
+  });
+}
 
   /**
    * Cancel account deletion request
@@ -359,11 +360,11 @@ export class PrivacyManager {
         .eq('status', 'scheduled');
 
       return !error;
-    } catch (error) {
-      console.error('Failed to cancel account deletion:', error);
+  } catch (error) {
+      Logger.error('Failed to cancel account deletion:', 'service', { component: 'PrivacyManager', error: error });
       return false;
-    }
   }
+}
 
   /**
    * Get data processing activities for transparency
@@ -377,28 +378,28 @@ export class PrivacyManager {
           purpose: '서비스 제공 및 계정 관리',
           retention: '계정 삭제 시까지',
           sharing: '없음',
-        },
+      },
         {
           name: '커피 기록',
           data: ['테이스팅 노트', '평점', '선호도', '방문 기록'],
           purpose: '개인화된 추천 및 통계 제공',
           retention: '3년 또는 계정 삭제 시까지',
           sharing: '커뮤니티 기능 사용 시 다른 사용자와 공유',
-        },
+      },
         {
           name: '사용 분석',
           data: ['앱 사용 패턴', '클릭 데이터', '오류 로그'],
           purpose: '서비스 개선 및 버그 수정',
           retention: '2년',
           sharing: '익명화되어 분석 목적으로만 사용',
-        },
+      },
         {
           name: '기기 정보',
           data: ['기기 ID', 'OS 버전', '앱 버전'],
           purpose: '기술 지원 및 호환성 보장',
           retention: '1년',
           sharing: '없음',
-        },
+      },
       ],
       rights: [
         '개인정보 처리 현황 확인 (열람권)',
@@ -411,9 +412,9 @@ export class PrivacyManager {
         email: 'privacy@mycupnote.com',
         phone: '+82-2-0000-0000',
         address: '서울특별시 강남구 테헤란로 xxx번길',
-      },
-    };
-  }
+    },
+  };
+}
 
   /**
    * Show privacy policy
@@ -428,12 +429,12 @@ export class PrivacyManager {
           text: '전체 보기',
           onPress: () => {
             // Navigate to privacy policy screen
-            console.log('Navigate to privacy policy screen');
-          },
+            Logger.debug('Navigate to privacy policy screen', 'service', { component: 'PrivacyManager' });
         },
+      },
       ]
     );
-  }
+}
 
   /**
    * Sync consent to server for compliance
@@ -444,7 +445,7 @@ export class PrivacyManager {
       
       if (userError || !userData.user) {
         return;
-      }
+    }
 
       await supabase
         .from('user_consent_logs')
@@ -453,11 +454,11 @@ export class PrivacyManager {
           consent_data: consent,
           timestamp: consent.timestamp,
           version: consent.version,
-        }]);
-    } catch (error) {
-      console.error('Failed to sync consent to server:', error);
-    }
+      }]);
+  } catch (error) {
+      Logger.error('Failed to sync consent to server:', 'service', { component: 'PrivacyManager', error: error });
   }
+}
 
   /**
    * Sync privacy settings to server
@@ -468,7 +469,7 @@ export class PrivacyManager {
       
       if (userError || !userData.user) {
         return;
-      }
+    }
 
       await supabase
         .from('user_privacy_settings')
@@ -476,11 +477,11 @@ export class PrivacyManager {
           user_id: userData.user.id,
           settings: settings,
           updated_at: new Date().toISOString(),
-        }]);
-    } catch (error) {
-      console.error('Failed to sync privacy settings to server:', error);
-    }
+      }]);
+  } catch (error) {
+      Logger.error('Failed to sync privacy settings to server:', 'service', { component: 'PrivacyManager', error: error });
   }
+}
 
   /**
    * Get default privacy settings
@@ -493,8 +494,8 @@ export class PrivacyManager {
       allowDirectMessages: true,
       showOnlineStatus: false,
       dataRetentionDays: 1095, // 3 years
-    };
-  }
+  };
+}
 
   /**
    * Clear all privacy-related data
@@ -503,16 +504,16 @@ export class PrivacyManager {
     try {
       await SecureStorage.removeItem(this.CONSENT_KEY);
       await SecureStorage.removeItem(this.PRIVACY_SETTINGS_KEY);
-      console.log('Privacy data cleared');
-    } catch (error) {
-      console.error('Failed to clear privacy data:', error);
-    }
+      Logger.debug('Privacy data cleared', 'service', { component: 'PrivacyManager' });
+  } catch (error) {
+      Logger.error('Failed to clear privacy data:', 'service', { component: 'PrivacyManager', error: error });
   }
+}
 
   /**
    * Export user consent data
    */
-  static async exportConsentData(): Promise<any> {
+  static async exportConsentData(): Promise<unknown> {
     try {
       const consent = await this.getUserConsent();
       const settings = await this.getPrivacySettings();
@@ -522,10 +523,10 @@ export class PrivacyManager {
         settings,
         exportedAt: new Date().toISOString(),
         version: this.CURRENT_CONSENT_VERSION,
-      };
-    } catch (error) {
-      console.error('Failed to export consent data:', error);
+    };
+  } catch (error) {
+      Logger.error('Failed to export consent data:', 'service', { component: 'PrivacyManager', error: error });
       return null;
-    }
   }
+}
 }

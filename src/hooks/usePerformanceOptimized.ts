@@ -21,14 +21,14 @@ export function usePerformanceOptimized() {
         'performance_optimization',
         'medium'
       );
-    }
-  });
+  }
+});
 
   /**
    * Memoized callback with performance tracking
    */
   const optimizedCallback = useCallback(
-    <T extends (...args: any[]) => any>(
+    <T extends (...args: unknown[]) => any>(
       callback: T,
       deps: React.DependencyList,
       trackingName?: string
@@ -43,21 +43,21 @@ export function usePerformanceOptimized() {
             if (result instanceof Promise) {
               result.finally(() => {
                 performanceMonitor.endTiming(timingId, `callback_${trackingName}`);
-              });
-            } else {
+            });
+          } else {
               performanceMonitor.endTiming(timingId, `callback_${trackingName}`);
-            }
           }
+        }
           
           return result;
-        } catch (error) {
+      } catch (error) {
           if (timingId && trackingName) {
             performanceMonitor.endTiming(timingId, `callback_${trackingName}_error`);
-          }
-          throw error;
         }
-      }, deps) as T;
-    },
+          throw error;
+      }
+    }, deps) as T;
+  },
     []
   );
 
@@ -65,7 +65,7 @@ export function usePerformanceOptimized() {
    * Debounced function with performance tracking
    */
   const debouncedCallback = useCallback(
-    <T extends (...args: any[]) => any>(
+    <T extends (...args: unknown[]) => any>(
       callback: T,
       delay: number,
       trackingName?: string
@@ -75,7 +75,7 @@ export function usePerformanceOptimized() {
       return useCallback((...args: Parameters<T>) => {
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
-        }
+      }
         
         timeoutRef.current = setTimeout(() => {
           const timingId = trackingName ? performanceMonitor.startTiming(trackingName) : null;
@@ -87,22 +87,22 @@ export function usePerformanceOptimized() {
               if (result instanceof Promise) {
                 result.finally(() => {
                   performanceMonitor.endTiming(timingId, `debounced_${trackingName}`);
-                });
-              } else {
+              });
+            } else {
                 performanceMonitor.endTiming(timingId, `debounced_${trackingName}`);
-              }
             }
+          }
             
             return result;
-          } catch (error) {
+        } catch (error) {
             if (timingId && trackingName) {
               performanceMonitor.endTiming(timingId, `debounced_${trackingName}_error`);
-            }
-            throw error;
           }
-        }, delay);
-      }, [callback, delay, trackingName]) as T;
-    },
+            throw error;
+        }
+      }, delay);
+    }, [callback, delay, trackingName]) as T;
+  },
     []
   );
 
@@ -110,7 +110,7 @@ export function usePerformanceOptimized() {
    * Throttled function with performance tracking
    */
   const throttledCallback = useCallback(
-    <T extends (...args: any[]) => any>(
+    <T extends (...args: unknown[]) => any>(
       callback: T,
       limit: number,
       trackingName?: string
@@ -132,22 +132,22 @@ export function usePerformanceOptimized() {
               if (result instanceof Promise) {
                 result.finally(() => {
                   performanceMonitor.endTiming(timingId, `throttled_${trackingName}`);
-                });
-              } else {
+              });
+            } else {
                 performanceMonitor.endTiming(timingId, `throttled_${trackingName}`);
-              }
             }
+          }
             
             return result;
-          } catch (error) {
+        } catch (error) {
             if (timingId && trackingName) {
               performanceMonitor.endTiming(timingId, `throttled_${trackingName}_error`);
-            }
-            throw error;
           }
+            throw error;
         }
-      }, [callback, limit, trackingName]) as T;
-    },
+      }
+    }, [callback, limit, trackingName]) as T;
+  },
     []
   );
 
@@ -168,17 +168,17 @@ export function usePerformanceOptimized() {
           
           if (timingId && trackingName) {
             performanceMonitor.endTiming(timingId, `computation_${trackingName}`);
-          }
+        }
           
           return result;
-        } catch (error) {
+      } catch (error) {
           if (timingId && trackingName) {
             performanceMonitor.endTiming(timingId, `computation_${trackingName}_error`);
-          }
-          throw error;
         }
-      }, deps);
-    },
+          throw error;
+      }
+    }, deps);
+  },
     []
   );
 
@@ -188,7 +188,7 @@ export function usePerformanceOptimized() {
     throttledCallback,
     memoizedComputation,
     renderCount: renderCountRef.current,
-  };
+};
 }
 
 /**
@@ -201,7 +201,7 @@ export function useLazyLoad<T>(
     trackingName?: string;
     cacheTime?: number;
     retryCount?: number;
-  } = {}
+} = {}
 ) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
@@ -218,8 +218,8 @@ export function useLazyLoad<T>(
       if (isValid) {
         setData(cacheRef.current.data);
         return;
-      }
     }
+  }
 
     setLoading(true);
     setError(null);
@@ -236,29 +236,29 @@ export function useLazyLoad<T>(
       
       if (timingId && trackingName) {
         performanceMonitor.endTiming(timingId, `lazy_load_${trackingName}_success`);
-      }
-    } catch (err) {
+    }
+  } catch (err) {
       const error = err instanceof Error ? err : new Error('Unknown error');
       
       if (retryCountRef.current < retryCount) {
         retryCountRef.current += 1;
         setTimeout(() => loadData(), 1000 * retryCountRef.current); // Exponential backoff
-      } else {
+    } else {
         setError(error);
         performanceMonitor.reportError(error, `lazy_load_${trackingName}`, 'medium');
-      }
+    }
       
       if (timingId && trackingName) {
         performanceMonitor.endTiming(timingId, `lazy_load_${trackingName}_error`);
-      }
-    } finally {
-      setLoading(false);
     }
-  }, [...deps, loadFunction, trackingName, cacheTime, retryCount]);
+  } finally {
+      setLoading(false);
+  }
+}, [...deps, loadFunction, trackingName, cacheTime, retryCount]);
 
   useEffect(() => {
     loadData();
-  }, [loadData]);
+}, [loadData]);
 
   return { data, loading, error, reload: loadData };
 }

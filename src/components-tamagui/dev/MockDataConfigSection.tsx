@@ -31,7 +31,7 @@ export const MockDataConfigSection: React.FC<MockDataConfigSectionProps> = ({
 }) => {
   if (!mockDataEnabled) {
     return null;
-  }
+}
 
   return (
     <MockDataConfig>
@@ -53,7 +53,7 @@ export const MockDataConfigSection: React.FC<MockDataConfigSectionProps> = ({
                 </ScenarioButtonText>
               </ScenarioButton>
             );
-          })}
+        })}
         </ScenarioButtons>
       </ConfigRow>
     </MockDataConfig>

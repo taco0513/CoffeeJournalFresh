@@ -33,7 +33,7 @@ export const UserInfoSection: React.FC<UserInfoSectionProps> = ({
       .join('')
       .toUpperCase()
       .slice(0, 2);
-  };
+};
 
   const getBadges = () => {
     const badges = [];
@@ -42,25 +42,25 @@ export const UserInfoSection: React.FC<UserInfoSectionProps> = ({
       badges.push({
         type: 'developer' as const,
         label: '개발자',
-      });
-    }
+    });
+  }
     
     if (isBetaUser) {
       badges.push({
         type: 'beta' as const,
         label: '베타',
-      });
-    }
+    });
+  }
     
     if (isAdmin) {
       badges.push({
         type: 'admin' as const,
         label: '관리자',
-      });
-    }
+    });
+  }
     
     return badges;
-  };
+};
 
   return (
     <UserInfoCard>

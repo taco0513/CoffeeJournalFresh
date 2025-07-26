@@ -39,17 +39,17 @@ export const BetaFeedbackPrompt: React.FC<BetaFeedbackPromptProps> = ({
         toValue: 1,
         duration: 300,
         useNativeDriver: true,
-      }).start();
-    }, delayMs);
+    }).start();
+  }, delayMs);
 
     return () => clearTimeout(timer);
-  }, [dismissed, hasGivenFeedback, delayMs]);
+}, [dismissed, hasGivenFeedback, delayMs]);
 
   const handleFeedback = () => {
     setHasGivenFeedback(true);
     setVisible(false);
     showFeedback(screenName, context);
-  };
+};
 
   const handleDismiss = () => {
     setDismissed(true);
@@ -57,8 +57,8 @@ export const BetaFeedbackPrompt: React.FC<BetaFeedbackPromptProps> = ({
       toValue: 0,
       duration: 200,
       useNativeDriver: true,
-    }).start(() => setVisible(false));
-  };
+  }).start(() => setVisible(false));
+};
 
   if (!visible) return null;
 
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     left: HIGConstants.SPACING_MD,
     right: HIGConstants.SPACING_MD,
     zIndex: 1000,
-  },
+},
   prompt: {
     backgroundColor: HIGColors.systemBackground,
     borderRadius: HIGConstants.RADIUS_LG,
@@ -118,36 +118,36 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderLeftWidth: 4,
     borderLeftColor: HIGColors.systemBlue,
-  },
+},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   title: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   closeButton: {
     padding: HIGConstants.SPACING_XS,
-  },
+},
   closeText: {
     fontSize: 20,
     color: HIGColors.secondaryLabel,
     fontWeight: '300',
-  },
+},
   message: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     lineHeight: 20,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   actions: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_SM,
-  },
+},
   feedbackButton: {
     flex: 1,
     backgroundColor: HIGColors.systemBlue,
@@ -155,12 +155,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.RADIUS_MD,
     alignItems: 'center',
-  },
+},
   feedbackText: {
     color: HIGColors.white,
     fontSize: 14,
     fontWeight: '600',
-  },
+},
   laterButton: {
     flex: 1,
     backgroundColor: HIGColors.systemGray6,
@@ -168,10 +168,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.RADIUS_MD,
     alignItems: 'center',
-  },
+},
   laterText: {
     color: HIGColors.label,
     fontSize: 14,
     fontWeight: '500',
-  },
+},
 });

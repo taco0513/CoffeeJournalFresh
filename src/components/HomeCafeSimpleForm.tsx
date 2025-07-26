@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTastingStore } from '../stores/tastingStore';
 import { HIGColors, HIGConstants } from '../styles/common';
 import { SimpleHomeCafeData, SimpleDripper } from '../types/tasting';
+import { Logger } from '../services/LoggingService';
 import {
   Card,
   InputCard,
@@ -38,9 +39,9 @@ export const HomeCafeSimpleForm = () => {
     recipe: {
       coffeeAmount: 15,
       waterAmount: 250,
-    },
+  },
     waterTemp: 93,
-  });
+});
 
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -56,35 +57,35 @@ export const HomeCafeSimpleForm = () => {
       const savedRecipe = await AsyncStorage.getItem(HOMECAFE_RECIPE_KEY);
       if (savedRecipe) {
         const parsedRecipe = JSON.parse(savedRecipe);
-        console.log('🔄 HomeCafe: Loaded saved recipe:', parsedRecipe);
+        Logger.debug('🔄 HomeCafe: Loaded saved recipe:', 'component', { component: 'HomeCafeSimpleForm', data: parsedRecipe });
         setFormData(parsedRecipe);
         updateSimpleHomeCafeData(parsedRecipe);
-      }
-    } catch (error) {
-      console.error('❌ HomeCafe: Failed to load saved recipe:', error);
     }
-  };
+  } catch (error) {
+      Logger.error('❌ HomeCafe: Failed to load saved recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
+  }
+};
 
   // 레시피 자동 저장
   const saveRecipe = async (recipeData: SimpleHomeCafeData) => {
     try {
       await AsyncStorage.setItem(HOMECAFE_RECIPE_KEY, JSON.stringify(recipeData));
-      console.log('💾 HomeCafe: Recipe auto-saved:', recipeData);
-    } catch (error) {
-      console.error('❌ HomeCafe: Failed to save recipe:', error);
-    }
-  };
+      Logger.debug('💾 HomeCafe: Recipe auto-saved:', 'component', { component: 'HomeCafeSimpleForm', data: recipeData });
+  } catch (error) {
+      Logger.error('❌ HomeCafe: Failed to save recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
+  }
+};
 
   // '나의 커피' 레시피 저장
   const saveMyCoffeeRecipe = async () => {
     try {
       await AsyncStorage.setItem(MY_COFFEE_RECIPE_KEY, JSON.stringify(formData));
       setMyCoffeeRecipe(formData);
-      console.log('☕ HomeCafe: My Coffee recipe saved:', formData);
-    } catch (error) {
-      console.error('❌ HomeCafe: Failed to save My Coffee recipe:', error);
-    }
-  };
+      Logger.debug('☕ HomeCafe: My Coffee recipe saved:', 'component', { component: 'HomeCafeSimpleForm', data: formData });
+  } catch (error) {
+      Logger.error('❌ HomeCafe: Failed to save My Coffee recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
+  }
+};
 
   // '나의 커피' 레시피 불러오기
   const loadMyCoffeeRecipe = async () => {
@@ -93,12 +94,12 @@ export const HomeCafeSimpleForm = () => {
       if (savedMyCoffee) {
         const parsedMyCoffee = JSON.parse(savedMyCoffee);
         setMyCoffeeRecipe(parsedMyCoffee);
-        console.log('☕ HomeCafe: My Coffee recipe loaded:', parsedMyCoffee);
-      }
-    } catch (error) {
-      console.error('❌ HomeCafe: Failed to load My Coffee recipe:', error);
+        Logger.debug('☕ HomeCafe: My Coffee recipe loaded:', 'component', { component: 'HomeCafeSimpleForm', data: parsedMyCoffee });
     }
-  };
+  } catch (error) {
+      Logger.error('❌ HomeCafe: Failed to load My Coffee recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
+  }
+};
 
   // '나의 커피' 레시피 적용
   const applyMyCoffeeRecipe = () => {
@@ -107,15 +108,15 @@ export const HomeCafeSimpleForm = () => {
       updateSimpleHomeCafeData(myCoffeeRecipe);
       saveRecipe(myCoffeeRecipe); // 마지막 사용 레시피로도 저장
       setSelectedPreset('나의 커피');
-      console.log('☕ HomeCafe: My Coffee recipe applied:', myCoffeeRecipe);
-    }
-  };
+      Logger.debug('☕ HomeCafe: My Coffee recipe applied:', 'component', { component: 'HomeCafeSimpleForm', data: myCoffeeRecipe });
+  }
+};
 
   // 컴포넌트 마운트 시 저장된 레시피들 로드
   useEffect(() => {
     loadSavedRecipe();
     loadMyCoffeeRecipe();
-  }, []);
+}, []);
 
   // 현재 테이스팅 데이터가 있으면 우선 적용
   useEffect(() => {
@@ -123,15 +124,15 @@ export const HomeCafeSimpleForm = () => {
       setFormData(currentTasting.simpleHomeCafeData);
       if (currentTasting.simpleHomeCafeData.recipe.lapTimes) {
         setLapTimes(currentTasting.simpleHomeCafeData.recipe.lapTimes);
-      }
+    }
       // 현재 데이터에서 비율 계산
       const currentRatio = currentTasting.simpleHomeCafeData.recipe.waterAmount / currentTasting.simpleHomeCafeData.recipe.coffeeAmount;
       const roundedRatio = Math.round(currentRatio * 2) / 2; // 0.5 단위로 반올림
       if (roundedRatio >= 15 && roundedRatio <= 18) {
         setSelectedRatio(roundedRatio);
-      }
     }
-  }, [currentTasting.simpleHomeCafeData]);
+  }
+}, [currentTasting.simpleHomeCafeData]);
 
   // formData가 변경될 때 비율 업데이트
   useEffect(() => {
@@ -140,28 +141,28 @@ export const HomeCafeSimpleForm = () => {
       const roundedRatio = Math.round(currentRatio * 2) / 2; // 0.5 단위로 반올림
       if (roundedRatio >= 15 && roundedRatio <= 18) {
         setSelectedRatio(roundedRatio);
-      }
     }
-  }, [formData.recipe.coffeeAmount, formData.recipe.waterAmount]);
+  }
+}, [formData.recipe.coffeeAmount, formData.recipe.waterAmount]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isTimerRunning) {
       interval = setInterval(() => {
         setElapsedTime(prev => prev + 1);
-      }, 1000);
-    }
+    }, 1000);
+  }
     return () => clearInterval(interval);
-  }, [isTimerRunning]);
+}, [isTimerRunning]);
 
-  const updateField = (field: keyof SimpleHomeCafeData, value: any) => {
+  const updateField = (field: keyof SimpleHomeCafeData, value: unknown) => {
     const updatedFormData = { ...formData, [field]: value };
     setFormData(updatedFormData);
     updateSimpleHomeCafeData(updatedFormData);
     // 자동 저장
     saveRecipe(updatedFormData);
-    console.log(`📝 HomeCafe: Updated ${field}:`, value);
-  };
+    Logger.debug('📝 HomeCafe: Updated ${field}:', 'component', { component: 'HomeCafeSimpleForm', data: value });
+};
 
   const handleCoffeeAmountChange = (coffeeAmount: number) => {
     const waterAmount = Math.round(coffeeAmount * selectedRatio);
@@ -171,14 +172,14 @@ export const HomeCafeSimpleForm = () => {
         ...formData.recipe,
         coffeeAmount,
         waterAmount,
-      },
-    };
+    },
+  };
     setFormData(updatedFormData);
     updateSimpleHomeCafeData(updatedFormData);
     // 자동 저장
     saveRecipe(updatedFormData);
-    console.log('📝 HomeCafe: Updated coffee amount and auto-calculated water:', { coffeeAmount, waterAmount });
-  };
+    Logger.debug('📝 HomeCafe: Updated coffee amount and auto-calculated water:', 'component', { component: 'HomeCafeSimpleForm', data: { coffeeAmount, waterAmount } });
+};
 
   const handleRatioChange = (ratio: number) => {
     setSelectedRatio(ratio);
@@ -188,20 +189,20 @@ export const HomeCafeSimpleForm = () => {
       recipe: {
         ...formData.recipe,
         waterAmount,
-      },
-    };
+    },
+  };
     setFormData(updatedFormData);
     updateSimpleHomeCafeData(updatedFormData);
     // 자동 저장
     saveRecipe(updatedFormData);
-    console.log('📝 HomeCafe: Updated ratio and auto-calculated water:', { ratio, waterAmount });
-  };
+    Logger.debug('📝 HomeCafe: Updated ratio and auto-calculated water:', 'component', { component: 'HomeCafeSimpleForm', data: { ratio, waterAmount } });
+};
 
   const handleTimerStart = () => {
     setIsTimerRunning(true);
     setElapsedTime(0);
     setLapTimes([]);
-  };
+};
 
   const handleLapTime = () => {
     const lapLabels = ['1차 추출(뜸)', '2차 추출', '3차 추출', '4차 추출', '5차 추출'];
@@ -209,7 +210,7 @@ export const HomeCafeSimpleForm = () => {
     const label = currentLapIndex < lapLabels.length ? lapLabels[currentLapIndex] : `${currentLapIndex + 1}차 추출`;
     
     setLapTimes([...lapTimes, { time: elapsedTime, label }]);
-  };
+};
 
   const handleTimerStop = () => {
     setIsTimerRunning(false);
@@ -219,30 +220,30 @@ export const HomeCafeSimpleForm = () => {
         ...formData.recipe, 
         brewTime: elapsedTime,
         lapTimes: lapTimes 
-      }
-    };
+    }
+  };
     setFormData(updatedFormData);
     updateSimpleHomeCafeData(updatedFormData);
     // 자동 저장
     saveRecipe(updatedFormData);
-  };
+};
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+};
 
   const calculateRatio = () => {
     const ratio = formData.recipe.waterAmount / formData.recipe.coffeeAmount;
     return `1:${ratio.toFixed(1)}`;
-  };
+};
 
   // 비율 옵션 생성 (1:15 ~ 1:18, 0.5 단위)
   const ratioOptions = [];
   for (let i = 15; i <= 18; i += 0.5) {
     ratioOptions.push({ label: `1:${i}`, value: i });
-  }
+}
 
   const drippers = [
     { label: '🔻 V60', value: 'V60' },
@@ -265,7 +266,7 @@ export const HomeCafeSimpleForm = () => {
           coffee: myCoffeeRecipe.recipe.coffeeAmount, 
           water: myCoffeeRecipe.recipe.waterAmount, 
           temp: myCoffeeRecipe.waterTemp || 93 
-        },
+      },
         ...basePresetRecipes
       ]
     : basePresetRecipes;
@@ -332,7 +333,7 @@ export const HomeCafeSimpleForm = () => {
                       if (isMyCoffeePreset) {
                         // 나의 커피 레시피 적용
                         applyMyCoffeeRecipe();
-                      } else {
+                    } else {
                         // 일반 프리셋 적용
                         const updatedFormData = {
                           ...formData,
@@ -340,16 +341,16 @@ export const HomeCafeSimpleForm = () => {
                             ...formData.recipe,
                             coffeeAmount: preset.coffee,
                             waterAmount: preset.water,
-                          },
+                        },
                           waterTemp: preset.temp,
-                        };
+                      };
                         setFormData(updatedFormData);
                         updateSimpleHomeCafeData(updatedFormData);
                         setSelectedPreset(preset.name);
                         // 자동 저장
                         saveRecipe(updatedFormData);
-                      }
-                    }}
+                    }
+                  }}
                     onLongPress={isMyCoffeePreset ? saveMyCoffeeRecipe : undefined}
                   >
                     <Text style={[
@@ -368,7 +369,7 @@ export const HomeCafeSimpleForm = () => {
                     </Text>
                   </TouchableOpacity>
                 );
-              })}
+            })}
             </View>
           </ScrollView>
         </InputCard>
@@ -541,22 +542,22 @@ export const HomeCafeSimpleForm = () => {
 const styles = createStyles((tokens) => ({
   container: {
     flex: 1,
-  },
+},
   scrollView: {
     flex: 1,
-  },
+},
   section: {
     marginBottom: tokens.spacing.sm,
-  },
+},
   recipeCard: {
     marginBottom: tokens.spacing.sm,
-  },
+},
   
   // Preset recipe styles
   presetContainer: {
     flexDirection: 'row',
     paddingLeft: tokens.spacing.md,
-  },
+},
   presetCard: {
     backgroundColor: tokens.colors.background.primary,
     borderWidth: 1,
@@ -566,55 +567,55 @@ const styles = createStyles((tokens) => ({
     marginRight: tokens.spacing.sm,
     minWidth: 120,
     alignItems: 'center',
-  },
+},
   presetCardSelected: {
     backgroundColor: tokens.colors.primary[50],
     borderColor: tokens.colors.primary[500],
-  },
+},
   myCoffeeCard: {
     borderStyle: 'dashed',
     borderColor: tokens.colors.primary[300],
-  },
+},
   presetName: {
     fontSize: tokens.typography.fontSize.sm,
     fontWeight: tokens.typography.fontWeight.semibold,
     color: tokens.colors.text.primary,
     textAlign: 'center',
     marginBottom: 4,
-  },
+},
   presetNameSelected: {
     color: tokens.colors.primary[700],
-  },
+},
   myCoffeeName: {
     color: tokens.colors.primary[600],
-  },
+},
   presetDetails: {
     fontSize: tokens.typography.fontSize.xs,
     color: tokens.colors.text.secondary,
     textAlign: 'center',
-  },
+},
   presetDetailsSelected: {
     color: tokens.colors.primary[600],
-  },
+},
   myCoffeeDetails: {
     color: tokens.colors.primary[500],
-  },
+},
   saveMyCoffeeCard: {
     borderStyle: 'dashed',
     backgroundColor: tokens.colors.background.secondary,
-  },
+},
   saveMyCoffeeName: {
     fontSize: tokens.typography.fontSize.sm,
     fontWeight: tokens.typography.fontWeight.semibold,
     color: tokens.colors.text.primary,
     textAlign: 'center',
     marginBottom: 4,
-  },
+},
   saveMyCoffeeDetails: {
     fontSize: tokens.typography.fontSize.xs,
     color: tokens.colors.text.tertiary,
     textAlign: 'center',
-  },
+},
   
   // Result display styles
   resultDisplay: {
@@ -622,23 +623,23 @@ const styles = createStyles((tokens) => ({
     alignItems: 'baseline',
     justifyContent: 'center',
     marginBottom: tokens.spacing.sm,
-  },
+},
   resultValue: {
     fontSize: tokens.typography.fontSize['6xl'],
     fontWeight: tokens.typography.fontWeight.bold,
     color: tokens.colors.primary[600],
-  },
+},
   resultUnit: {
     fontSize: tokens.typography.fontSize.lg,
     fontWeight: tokens.typography.fontWeight.medium,
     color: tokens.colors.text.secondary,
     marginLeft: 4,
-  },
+},
   ratioDisplay: {
     fontSize: tokens.typography.fontSize.sm,
     color: tokens.colors.text.secondary,
     textAlign: 'center',
-  },
+},
   
   // Timer styles
   timerButton: {
@@ -649,74 +650,74 @@ const styles = createStyles((tokens) => ({
     padding: tokens.spacing.md,
     borderWidth: 1,
     borderColor: tokens.colors.primary[200],
-  },
+},
   timerIcon: {
     fontSize: 24,
     marginRight: tokens.spacing.md,
-  },
+},
   timerTitle: {
     fontSize: tokens.typography.fontSize.base,
     fontWeight: tokens.typography.fontWeight.semibold,
     color: tokens.colors.text.primary,
-  },
+},
   timerTime: {
     fontSize: tokens.typography.fontSize.sm,
     color: tokens.colors.text.secondary,
-  },
+},
   timerDisplay: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: tokens.spacing.md,
-  },
+},
   runningTime: {
     fontSize: tokens.typography.fontSize['6xl'],
     fontWeight: tokens.typography.fontWeight.bold,
     color: tokens.colors.primary[600],
     marginLeft: tokens.spacing.sm,
-  },
+},
   lapTimesContainer: {
     marginBottom: tokens.spacing.md,
-  },
+},
   lapTimeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 4,
     borderBottomWidth: 0.5,
     borderBottomColor: tokens.colors.border.light,
-  },
+},
   lapLabel: {
     fontSize: tokens.typography.fontSize.sm,
     color: tokens.colors.text.primary,
-  },
+},
   lapTime: {
     fontSize: tokens.typography.fontSize.sm,
     fontWeight: tokens.typography.fontWeight.medium,
     color: tokens.colors.primary[600],
-  },
+},
   timerControls: {
     flexDirection: 'row',
     gap: tokens.spacing.sm,
-  },
+},
   controlButton: {
     flex: 1,
     paddingVertical: tokens.spacing.sm,
     borderRadius: tokens.layout.radius.sm,
     alignItems: 'center',
-  },
+},
   lapButton: {
     backgroundColor: tokens.colors.gray[100],
     borderWidth: 1,
     borderColor: tokens.colors.gray[300],
-  },
+},
   stopButton: {
     backgroundColor: tokens.colors.primary[500],
-  },
+},
   controlButtonText: {
     fontSize: tokens.typography.fontSize.sm,
     fontWeight: tokens.typography.fontWeight.medium,
     color: tokens.colors.text.primary,
-  },
+},
   
   // Advanced toggle
   advancedToggle: {
@@ -725,12 +726,12 @@ const styles = createStyles((tokens) => ({
     paddingHorizontal: tokens.spacing.lg,
     alignItems: 'center',
     marginBottom: tokens.spacing.sm,
-  },
+},
   advancedToggleText: {
     fontSize: tokens.typography.fontSize.sm,
     fontWeight: tokens.typography.fontWeight.medium,
     color: tokens.colors.text.secondary,
-  },
+},
 }));
 
 export default HomeCafeSimpleForm;

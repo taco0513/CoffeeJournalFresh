@@ -4,6 +4,7 @@ import { View, Text, Button, styled } from 'tamagui';
 import { useFeedbackStore } from '../../stores/useFeedbackStore';
 import ScreenContextService from '../../services/ScreenContextService';
 
+import { Logger } from '../../services/LoggingService';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const BUTTON_SIZE = 56;
 const SAFE_AREA = 20;
@@ -39,9 +40,9 @@ const FloatingButton = styled(Button, {
         width: 120,
         height: 50,
         borderRadius: 25,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const ExpandedContent = styled(View, {
@@ -96,22 +97,22 @@ export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible
         const screenContext = await ScreenContextService.getCurrentContext();
         if (screenContext) {
           setScreenContext(screenContext);
-        }
+      }
         
         // Auto-capture screenshot of current screen
         await captureCurrentScreen();
-      } catch (error) {
-        console.error('Error capturing screen context:', error);
-      }
+    } catch (error) {
+        Logger.error('Error capturing screen context:', 'component', { component: 'FloatingFeedbackButton', error: error });
+    }
       
       showSmartFeedback();
       setExpanded(false);
-    } else {
+  } else {
       setExpanded(true);
       // Auto collapse after 5 seconds
       setTimeout(() => setExpanded(false), 5000);
-    }
-  };
+  }
+};
 
   const captureCurrentScreen = async () => {
     try {
@@ -123,18 +124,18 @@ export const FloatingFeedbackButton: React.FC<{ visible: boolean }> = ({ visible
         format: 'jpg',
         quality: 0.8,
         result: 'tmpfile',
-      });
+    });
       
       if (uri) {
         const { setScreenshot } = useFeedbackStore.getState();
         setScreenshot(uri);
-        console.log('Screen captured automatically:', uri);
-      }
-    } catch (error) {
-      console.log('Auto screenshot capture failed, will allow manual capture:', error);
-      // Don't show error to user, just log it
+        Logger.debug('Screen captured automatically:', 'component', { component: 'FloatingFeedbackButton', data: uri });
     }
-  };
+  } catch (error) {
+      Logger.debug('Auto screenshot capture failed, will allow manual capture:', 'component', { component: 'FloatingFeedbackButton', error: error });
+      // Don't show error to user, just log it
+  }
+};
 
   if (!visible) return null;
 

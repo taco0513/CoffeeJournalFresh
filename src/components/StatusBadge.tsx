@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Text, styled } from 'tamagui';
+import { XStack, Text } from 'tamagui';
 import { useDevStore } from '../stores/useDevStore';
 import { useFeedbackStore } from '../stores/useFeedbackStore';
 
@@ -10,22 +10,22 @@ const StatusBadge = () => {
   // 둘 다 없으면 아무것도 표시하지 않음
   if (!isDeveloperMode && !isBetaUser) {
     return null;
-  }
+}
 
   const handleTogglePress = () => {
     // 현재 상태에 따라 다음 상태로 전환
     if (isDeveloperMode && isBetaUser) {
       // 둘 다 ON -> DEV만 ON
       setBetaStatus(false);
-    } else if (isDeveloperMode && !isBetaUser) {
+  } else if (isDeveloperMode && !isBetaUser) {
       // DEV만 ON -> BETA만 ON
       toggleDeveloperMode();
       setBetaStatus(true);
-    } else if (!isDeveloperMode && isBetaUser) {
+  } else if (!isDeveloperMode && isBetaUser) {
       // BETA만 ON -> 둘 다 ON
       toggleDeveloperMode();
-    }
-  };
+  }
+};
 
   // 현재 상태에 따른 배지 색상
   const getBadgeColor = () => {
@@ -41,29 +41,38 @@ const StatusBadge = () => {
   const getBadgeText = () => {
     if (isDeveloperMode && isBetaUser) {
       return 'DEV+BETA';
-    } else if (isDeveloperMode) {
+  } else if (isDeveloperMode) {
       return 'DEV';
-    } else {
+  } else {
       return 'BETA';
-    }
-  };
+  }
+};
 
   return (
-    <Button
+    <XStack
       onPress={handleTogglePress}
       backgroundColor={getBadgeColor()}
-      paddingHorizontal="$1"
-      paddingVertical="$1"
-      borderRadius="$1"
-      borderWidth={0}
+      paddingHorizontal="$3"
+      paddingVertical="$1.5"
+      borderRadius="$3"
+      minWidth={80}
+      height={36}
+      alignItems="center"
+      justifyContent="center"
       pressStyle={{ opacity: 0.7 }}
-      fontSize="$1"
-      fontWeight="700"
-      color="white"
-      letterSpacing={0.5}
+      hoverStyle={{ opacity: 0.8 }}
+      cursor="pointer"
     >
-      {getBadgeText()}
-    </Button>
+      <Text
+        fontSize="$4"
+        fontWeight="700"
+        color="white"
+        letterSpacing={0.3}
+        textAlign="center"
+      >
+        {getBadgeText()}
+      </Text>
+    </XStack>
   );
 };
 

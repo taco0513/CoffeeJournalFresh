@@ -2,9 +2,10 @@ import { supabase } from '../supabase/client';
 import { GoogleAuthService } from '../supabase/googleAuth';
 import AppleAuthService from '../supabase/appleAuth';
 
+import { Logger } from '../LoggingService';
 export interface AuthResult {
   success: boolean;
-  user?: any;
+  user?: { id: string; email?: string; [key: string]: unknown };
   error?: string;
   requiresVerification?: boolean;
 }
@@ -29,8 +30,8 @@ export class EnhancedAuthService {
         return {
           success: false,
           error: googleResult.error || 'Google Sign-In failed',
-        };
-      }
+      };
+    }
 
       const user = googleResult.user;
       
@@ -39,20 +40,20 @@ export class EnhancedAuthService {
         await this.performPostAuthSecurityCheck(user.id);
         await this.updateLastLoginTimestamp(user.id);
         await this.checkAccountSuspension(user.id);
-      }
+    }
 
       return {
         success: true,
         user,
-      };
-    } catch (error: any) {
-      console.error('Enhanced Google Sign-In error:', error);
+    };
+  } catch (error) {
+      Logger.error('Enhanced Google Sign-In error:', 'auth', { component: 'EnhancedAuthService', error: error });
       return {
         success: false,
         error: error.message || 'Authentication failed',
-      };
-    }
+    };
   }
+}
 
   /**
    * Enhanced Apple Sign-In with additional security checks
@@ -65,8 +66,8 @@ export class EnhancedAuthService {
         return {
           success: false,
           error: appleResult.error || 'Apple Sign-In failed',
-        };
-      }
+      };
+    }
 
       const user = appleResult.user;
       
@@ -75,44 +76,44 @@ export class EnhancedAuthService {
         await this.performPostAuthSecurityCheck(user.id);
         await this.updateLastLoginTimestamp(user.id);
         await this.checkAccountSuspension(user.id);
-      }
+    }
 
       return {
         success: true,
         user,
-      };
-    } catch (error: any) {
-      console.error('Enhanced Apple Sign-In error:', error);
+    };
+  } catch (error) {
+      Logger.error('Enhanced Apple Sign-In error:', 'auth', { component: 'EnhancedAuthService', error: error });
       return {
         success: false,
         error: error.message || 'Authentication failed',
-      };
-    }
+    };
   }
+}
 
   /**
    * Validate Google ID token directly with Google
    */
-  static async validateGoogleToken(idToken: string): Promise<any> {
+  static async validateGoogleToken(idToken: string): Promise<unknown> {
     try {
       const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
       const tokenInfo = await response.json();
       
       if (tokenInfo.error) {
         throw new Error(`Invalid Google token: ${tokenInfo.error}`);
-      }
+    }
       
       // Additional validation
       if (tokenInfo.aud !== process.env.GOOGLE_OAUTH_WEB_CLIENT_ID) {
         throw new Error('Token audience mismatch');
-      }
+    }
       
       return tokenInfo;
-    } catch (error) {
-      console.error('Google token validation failed:', error);
+  } catch (error) {
+      Logger.error('Google token validation failed:', 'auth', { component: 'EnhancedAuthService', error: error });
       throw error;
-    }
   }
+}
 
   /**
    * Check account security status
@@ -127,20 +128,20 @@ export class EnhancedAuthService {
 
       if (error && error.code !== 'PGRST116') {
         throw error;
-      }
+    }
 
       const defaultSecurity: SecurityCheckResult = {
         isSecure: true,
         securityLevel: 'basic',
         recommendations: [],
         lastSecurityCheck: new Date(),
-      };
+    };
 
       if (!data) {
         // Create initial security record
         await this.createUserSecurityRecord(userId);
         return defaultSecurity;
-      }
+    }
 
       // Analyze security level
       const securityLevel = this.calculateSecurityLevel(data);
@@ -151,17 +152,17 @@ export class EnhancedAuthService {
         securityLevel,
         recommendations,
         lastSecurityCheck: new Date(data.last_security_check),
-      };
-    } catch (error) {
-      console.error('Error checking account security:', error);
+    };
+  } catch (error) {
+      Logger.error('Error checking account security:', 'auth', { component: 'EnhancedAuthService', error: error });
       return {
         isSecure: true,
         securityLevel: 'basic',
         recommendations: ['Unable to verify security status'],
         lastSecurityCheck: new Date(),
-      };
-    }
+    };
   }
+}
 
   /**
    * Perform post-authentication security check
@@ -176,15 +177,15 @@ export class EnhancedAuthService {
           last_login: new Date().toISOString(),
           login_count: supabase.rpc('increment_login_count', { user_id: userId }),
           last_security_check: new Date().toISOString(),
-        });
+      });
 
       if (error) {
-        console.error('Error updating security record:', error);
-      }
-    } catch (error) {
-      console.error('Post-auth security check failed:', error);
+        Logger.error('Error updating security record:', 'auth', { component: 'EnhancedAuthService', error: error });
     }
+  } catch (error) {
+      Logger.error('Post-auth security check failed:', 'auth', { component: 'EnhancedAuthService', error: error });
   }
+}
 
   /**
    * Update last login timestamp
@@ -196,16 +197,16 @@ export class EnhancedAuthService {
         .update({ 
           last_login: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        })
+      })
         .eq('id', userId);
 
       if (error) {
-        console.error('Error updating last login:', error);
-      }
-    } catch (error) {
-      console.error('Failed to update last login timestamp:', error);
+        Logger.error('Error updating last login:', 'auth', { component: 'EnhancedAuthService', error: error });
     }
+  } catch (error) {
+      Logger.error('Failed to update last login timestamp:', 'auth', { component: 'EnhancedAuthService', error: error });
   }
+}
 
   /**
    * Check if account is suspended or restricted
@@ -219,20 +220,20 @@ export class EnhancedAuthService {
         .single();
 
       if (error) {
-        console.error('Error checking account suspension:', error);
+        Logger.error('Error checking account suspension:', 'auth', { component: 'EnhancedAuthService', error: error });
         return;
-      }
+    }
 
       if (data?.is_suspended) {
         // Sign out suspended user
         await supabase.auth.signOut();
         throw new Error(`Account suspended: ${data.suspension_reason || 'Contact support'}`);
-      }
-    } catch (error) {
-      console.error('Account suspension check failed:', error);
-      throw error;
     }
+  } catch (error) {
+      Logger.error('Account suspension check failed:', 'auth', { component: 'EnhancedAuthService', error: error });
+      throw error;
   }
+}
 
   /**
    * Create initial user security record
@@ -249,20 +250,20 @@ export class EnhancedAuthService {
           last_login: new Date().toISOString(),
           last_security_check: new Date().toISOString(),
           created_at: new Date().toISOString(),
-        });
+      });
 
       if (error) {
-        console.error('Error creating user security record:', error);
-      }
-    } catch (error) {
-      console.error('Failed to create user security record:', error);
+        Logger.error('Error creating user security record:', 'auth', { component: 'EnhancedAuthService', error: error });
     }
+  } catch (error) {
+      Logger.error('Failed to create user security record:', 'auth', { component: 'EnhancedAuthService', error: error });
   }
+}
 
   /**
    * Calculate user security level based on various factors
    */
-  private static calculateSecurityLevel(securityData: any): 'basic' | 'enhanced' | 'premium' {
+  private static calculateSecurityLevel(securityData: unknown): 'basic' | 'enhanced' | 'premium' {
     let score = 0;
 
     // Base score
@@ -294,12 +295,12 @@ export class EnhancedAuthService {
     if (score >= 60) return 'premium';
     if (score >= 40) return 'enhanced';
     return 'basic';
-  }
+}
 
   /**
    * Generate security recommendations based on user data
    */
-  private static generateSecurityRecommendations(securityData: any): string[] {
+  private static generateSecurityRecommendations(securityData: unknown): string[] {
     const recommendations: string[] = [];
 
     const daysSinceLastLogin = securityData.last_login 
@@ -308,15 +309,15 @@ export class EnhancedAuthService {
 
     if (daysSinceLastLogin > 30) {
       recommendations.push('Welcome back! Consider reviewing your coffee preferences.');
-    }
+  }
 
     if (!securityData.email_verified) {
       recommendations.push('Verify your email address for enhanced security.');
-    }
+  }
 
     if ((securityData.login_count || 0) < 5) {
       recommendations.push('Complete your profile setup for better coffee recommendations.');
-    }
+  }
 
     const daysSinceSecurityCheck = securityData.last_security_check
       ? Math.floor((Date.now() - new Date(securityData.last_security_check).getTime()) / (1000 * 60 * 60 * 24))
@@ -324,10 +325,10 @@ export class EnhancedAuthService {
 
     if (daysSinceSecurityCheck > 90) {
       recommendations.push('Consider reviewing your account security settings.');
-    }
+  }
 
     return recommendations;
-  }
+}
 
   /**
    * Enhanced sign out with cleanup
@@ -337,17 +338,17 @@ export class EnhancedAuthService {
       // Sign out from Google if applicable
       try {
         await GoogleAuthService.signOut();
-      } catch (error) {
-        console.warn('Google sign out failed (expected if not signed in via Google):', error);
-      }
+    } catch (error) {
+        Logger.warn('Google sign out failed (expected if not signed in via Google):', 'auth', { component: 'EnhancedAuthService', error: error });
+    }
 
       // Sign out from Apple if applicable
       try {
         // AppleAuthService doesn't have signOut method - Apple sign out is handled by Supabase
         // await AppleAuthService.signOut();
-      } catch (error) {
-        console.warn('Apple sign out failed (expected if not signed in via Apple):', error);
-      }
+    } catch (error) {
+        Logger.warn('Apple sign out failed (expected if not signed in via Apple):', 'auth', { component: 'EnhancedAuthService', error: error });
+    }
 
       // Sign out from Supabase
       const { error } = await supabase.auth.signOut();
@@ -356,18 +357,18 @@ export class EnhancedAuthService {
         return {
           success: false,
           error: error.message,
-        };
-      }
+      };
+    }
 
       return {
         success: true,
-      };
-    } catch (error: any) {
-      console.error('Enhanced sign out error:', error);
+    };
+  } catch (error) {
+      Logger.error('Enhanced sign out error:', 'auth', { component: 'EnhancedAuthService', error: error });
       return {
         success: false,
         error: error.message || 'Sign out failed',
-      };
-    }
+    };
   }
+}
 }

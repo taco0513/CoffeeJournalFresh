@@ -18,7 +18,7 @@ const getTabIcon = (name: string, focused: boolean) => {
     AddCoffee: { default: '+', focused: '+' },
     Achievements: { default: '☆', focused: '★' },
     Profile: { default: '○', focused: '●' },
-  };
+};
   
   return icons[name]?.[focused ? 'focused' : 'default'] || '?';
 };
@@ -43,17 +43,17 @@ export const SimpleTabBar: React.FC<BottomTabBarProps> = ({
             type: 'tabPress',
             target: route.key,
             canPreventDefault: true,
-          });
+        });
 
           if (!isFocused && !event.defaultPrevented) {
             if (isAddCoffee) {
               // Navigate to TastingFlow for Add Coffee
               navigation.navigate('TastingFlow', { screen: 'ModeSelection' });
-            } else {
+          } else {
               navigation.navigate(route.name);
-            }
           }
-        };
+        }
+      };
 
         if (isAddCoffee) {
           // Special center button - floating style
@@ -69,7 +69,7 @@ export const SimpleTabBar: React.FC<BottomTabBarProps> = ({
               </TouchableOpacity>
             </View>
           );
-        }
+      }
 
         return (
           <TouchableOpacity
@@ -92,7 +92,7 @@ export const SimpleTabBar: React.FC<BottomTabBarProps> = ({
             </Text>
           </TouchableOpacity>
         );
-      })}
+    })}
     </View>
   );
 };
@@ -104,33 +104,33 @@ const styles = StyleSheet.create({
     borderTopWidth: IOSLayout.borderWidthThin,
     borderTopColor: IOSColors.separator,
     height: IOSLayout.tabBarHeight,
-  },
+},
   tab: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 6,
-  },
+},
   centerTabContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
-  },
+},
   icon: {
     fontSize: 22,
     color: IOSColors.secondaryLabel,
     marginBottom: 2,
-  },
+},
   iconFocused: {
     color: IOSColors.systemBrown,
-  },
+},
   label: {
     ...IOSTypography.caption2,
     color: IOSColors.secondaryLabel,
-  },
+},
   labelFocused: {
     color: IOSColors.systemBrown,
-  },
+},
   floatingButton: {
     position: 'absolute',
     bottom: 10,
@@ -141,11 +141,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     ...IOSShadows.medium,
-  },
+},
   floatingButtonText: {
     fontSize: 28,
     color: IOSColors.systemBackground,
-  },
+},
   plusIcon: {
     position: 'absolute',
     top: 8,
@@ -153,5 +153,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700' as const,
     color: IOSColors.systemBackground,
-  },
+},
 });

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import { Logger } from '../../services/LoggingService';
 import {
   koreanSensoryData,
   getSensoryExpressionsByCategory,
@@ -33,7 +34,7 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
   onExpressionChange,
   beginnerMode = true,
 }) => {
-  console.log('🚀 CompactSensoryEvaluation rendered with selectedExpressions:', selectedExpressions?.length || 0);
+  Logger.debug('🚀 CompactSensoryEvaluation rendered with selectedExpressions:', 'component', { component: 'CompactSensoryEvaluation', data: selectedExpressions?.length || 0 });
   const [activeCategory, setActiveCategory] = useState('acidity');
 
   // Ensure selectedExpressions is always an array
@@ -63,18 +64,18 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
     if (existingIndex >= 0) {
       // Deselecting - remove the existing selection
       newExpressions.splice(existingIndex, 1);
-    } else {
+  } else {
       // Attempting to select
       if (categorySelections.length >= MAX_PER_CATEGORY) {
         return; // Category limit reached
-      }
+    }
       
       // Add new selection
       newExpressions.push({ categoryId, expression });
-    }
+  }
 
     onExpressionChange(newExpressions);
-  }, [selectedExpressions, onExpressionChange]);
+}, [selectedExpressions, onExpressionChange]);
 
   const isExpressionSelected = useCallback((
     categoryId: string,
@@ -83,11 +84,11 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
     return safeSelectedExpressions.some(
       item => item.categoryId === categoryId && item.expression.id === expressionId
     );
-  }, [safeSelectedExpressions]);
+}, [safeSelectedExpressions]);
 
   const getSelectedCount = useCallback((categoryId: string): number => {
     return safeSelectedExpressions.filter(item => item.categoryId === categoryId).length;
-  }, [safeSelectedExpressions]);
+}, [safeSelectedExpressions]);
 
 
 
@@ -140,7 +141,7 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
               </Text>
             </TouchableOpacity>
           );
-        })}
+      })}
         </ScrollView>
         {/* 스크롤 가능 표시 */}
         <View style={styles.scrollIndicator} pointerEvents="none">
@@ -182,7 +183,7 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
               </Text>
             </TouchableOpacity>
           );
-        })}
+      })}
       </ScrollView>
 
       {/* Limit indicator */}
@@ -199,36 +200,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
+},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 12,
-  },
+},
   title: {
     fontSize: 20,
     fontWeight: '700',
     color: '#1A1A1A',
-  },
+},
   selectedCount: {
     fontSize: 14,
     color: '#666666',
     fontWeight: '500',
-  },
+},
   categoryTabsWrapper: {
     position: 'relative',
-  },
+},
   categoryTabs: {
     maxHeight: 44,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
-  },
+},
   categoryTabsContent: {
     paddingHorizontal: 16,
     paddingRight: 40, // 스크롤 인디케이터 공간
-  },
+},
   scrollIndicator: {
     position: 'absolute',
     right: 0,
@@ -238,12 +239,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   scrollIndicatorText: {
     fontSize: 24,
     color: '#8E8E93',
     fontWeight: '300',
-  },
+},
   categoryTab: {
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -253,35 +254,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
-  },
+},
   categoryTabActive: {
     borderBottomWidth: 2,
-  },
+},
   categoryTabSelected: {
     borderRadius: 8,
-  },
+},
   categoryTabText: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
     color: '#8E8E93',
-  },
+},
   categoryTabTextActive: {
     fontWeight: '700',
-  },
+},
   categoryTabTextSelected: {
     fontWeight: '800',
-  },
+},
   categoryTabWithSelection: {
     backgroundColor: '#F0F7FF',
-  },
+},
   expressionContainer: {
     flex: 1,
     padding: 12,
-  },
+},
   expressionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
+},
   expressionButton: {
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -294,39 +295,39 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-  },
+},
   expressionText: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#1A1A1A',
     fontWeight: '500',
-  },
+},
   expressionTextSelected: {
     color: '#FFFFFF',
     fontWeight: '600',
-  },
+},
   expressionButtonDisabled: {
     opacity: 0.3,
-  },
+},
   expressionTextDisabled: {
     color: '#8E8E93',
-  },
+},
   footer: {
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderTopWidth: 1,
     borderTopColor: '#F0F0F0',
-  },
+},
   limitText: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#8E8E93',
     textAlign: 'center',
-  },
+},
   // New selected state styles
   expressionButtonSelected: {
     backgroundColor: '#007AFF',
     borderColor: '#007AFF',
     borderWidth: 1,
-  },
+},
 });
 
 export default CompactSensoryEvaluation;

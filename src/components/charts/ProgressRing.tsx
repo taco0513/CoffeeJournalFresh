@@ -27,7 +27,7 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
   children,
 }) => {
   const animatedValue = useRef(new Animated.Value(0)).current;
-  const circleRef = useRef<any>(null);
+  const circleRef = useRef<unknown>(null);
   
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
@@ -39,7 +39,7 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
       toValue: progress,
       duration,
       useNativeDriver: false,
-    }).start();
+  }).start();
     
     // Update the stroke dash offset
     animatedValue.addListener(({ value }) => {
@@ -47,14 +47,14 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
       if (circleRef.current) {
         circleRef.current.setNativeProps({
           strokeDashoffset,
-        });
-      }
-    });
+      });
+    }
+  });
     
     return () => {
       animatedValue.removeAllListeners();
-    };
-  }, [progress, circumference, animatedValue, duration]);
+  };
+}, [progress, circumference, animatedValue, duration]);
   
   return (
     <View style={[styles.container, { width: size, height: size }]}>
@@ -101,14 +101,14 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   centerContent: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   percentageText: {
     fontSize: 24,
     fontWeight: '700',
-  },
+},
 });

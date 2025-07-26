@@ -6,6 +6,7 @@ import { useUserStore } from '../stores/useUserStore';
 import { FeedbackService } from '../services/FeedbackService';
 import ScreenContextService from '../services/ScreenContextService';
 
+import { Logger } from '../services/LoggingService';
 export function useShakeToFeedback() {
   const { showSmartFeedback, enableShakeToFeedback, setBetaStatus, setScreenContext, setScreenshot } = useFeedbackStore();
   const { currentUser } = useUserStore();
@@ -30,13 +31,13 @@ export function useShakeToFeedback() {
           const screenContext = await ScreenContextService.getCurrentContext();
           if (screenContext) {
             setScreenContext(screenContext);
-          }
+        }
 
           // Auto-capture screenshot
           await captureScreenOnShake();
-        } catch (error) {
-          console.error('Error capturing context on shake:', error);
-        }
+      } catch (error) {
+          Logger.error('Error capturing context on shake:', 'hook', { component: 'useShakeToFeedback', error: error });
+      }
         
         // Use smart feedback instead of regular feedback
         showSmartFeedback();
@@ -44,19 +45,19 @@ export function useShakeToFeedback() {
         // Reset flag after a delay
         setTimeout(() => {
           isHandlingShake.current = false;
-        }, 1000);
-      })();
-    });
+      }, 1000);
+    })();
+  });
 
     // Cleanup
     return () => {
       if (Platform.OS === 'ios') {
         subscription?.remove();
-      } else {
+    } else {
         RNShake.removeAllListeners();
-      }
-    };
-  }, [enableShakeToFeedback, currentUser?.id, showSmartFeedback, setBetaStatus, setScreenContext, setScreenshot]);
+    }
+  };
+}, [enableShakeToFeedback, currentUser?.id, showSmartFeedback, setBetaStatus, setScreenContext, setScreenshot]);
 
   const captureScreenOnShake = async () => {
     try {
@@ -68,17 +69,17 @@ export function useShakeToFeedback() {
         format: 'jpg',
         quality: 0.8,
         result: 'tmpfile',
-      });
+    });
       
       if (uri) {
         setScreenshot(uri);
-        console.log('Screen captured on shake:', uri);
-      }
-    } catch (error) {
-      console.log('Auto screenshot on shake failed:', error);
-      // Don't show error to user
+        Logger.debug('Screen captured on shake:', 'hook', { component: 'useShakeToFeedback', data: uri });
     }
-  };
+  } catch (error) {
+      Logger.debug('Auto screenshot on shake failed:', 'hook', { component: 'useShakeToFeedback', error: error });
+      // Don't show error to user
+  }
+};
 }
 
 // Hook to initialize shake detection when app starts

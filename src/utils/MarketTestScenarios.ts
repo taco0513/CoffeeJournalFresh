@@ -36,7 +36,7 @@ export const createTestScenarios = (): TestScenario[] => [
           labMode: isFeatureEnabled('labMode'),
           marketIntelligence: isFeatureEnabled('marketIntelligence'),
           achievements: isFeatureEnabled('achievements'),
-        };
+      };
         
         const roasters = getMarketRoasters();
         const currencyFormat = formatCurrency(5000);
@@ -53,17 +53,17 @@ export const createTestScenarios = (): TestScenario[] => [
           success,
           message: success ? 'Korean market configuration working correctly' : 'Korean market configuration issues detected',
           data: { features, roasters: roasters.slice(0, 3), currencyFormat, hasKoreanRoasters, isKoreanCurrency }
-        };
-      } catch (error: any) {
+      };
+    } catch (error) {
         return {
           scenario: 'Korean Market - Full Features',
           success: false,
           message: 'Test failed with error',
           error: error.message
-        };
-      }
+      };
     }
-  },
+  }
+},
 
   {
     id: 'us_beta_config',
@@ -79,7 +79,7 @@ export const createTestScenarios = (): TestScenario[] => [
           labMode: isFeatureEnabled('labMode'), // Should be false for beta
           marketIntelligence: isFeatureEnabled('marketIntelligence'),
           achievements: isFeatureEnabled('achievements'),
-        };
+      };
         
         const roasters = getMarketRoasters();
         const currencyFormat = formatCurrency(25.99);
@@ -97,17 +97,17 @@ export const createTestScenarios = (): TestScenario[] => [
           success,
           message: success ? 'US beta configuration working correctly' : 'US beta configuration issues detected',
           data: { features, roasters: roasters.slice(0, 3), currencyFormat, hasUSRoasters, isUSCurrency }
-        };
-      } catch (error: any) {
+      };
+    } catch (error) {
         return {
           scenario: 'US Beta Market - Limited Features',
           success: false,
           message: 'Test failed with error',
           error: error.message
-        };
-      }
+      };
     }
-  },
+  }
+},
 
   {
     id: 'data_consistency',
@@ -144,18 +144,18 @@ export const createTestScenarios = (): TestScenario[] => [
             hasKoreanRoasters,
             hasKoreanOrigins,
             consistency
-          }
-        };
-      } catch (error: any) {
+        }
+      };
+    } catch (error) {
         return {
           scenario: 'Market Data Consistency',
           success: false,
           message: 'Test failed with error',
           error: error.message
-        };
-      }
+      };
     }
-  },
+  }
+},
 
   {
     id: 'beta_testing_functionality',
@@ -181,17 +181,17 @@ export const createTestScenarios = (): TestScenario[] => [
           success,
           message: success ? 'Beta testing functionality available' : 'Beta testing functionality issues',
           data: { feedbackStats, canAccessBeta, hasBetaConfig, betaEnabled }
-        };
-      } catch (error: any) {
+      };
+    } catch (error) {
         return {
           scenario: 'Beta Testing Functionality',
           success: false,
           message: 'Test failed with error',
           error: error.message
-        };
-      }
+      };
     }
-  },
+  }
+},
 
   {
     id: 'performance_monitoring',
@@ -225,18 +225,18 @@ export const createTestScenarios = (): TestScenario[] => [
             crashReportingFlag, 
             performanceDashboard,
             rateLimits: { korean: koreanRateLimit, us: usRateLimit }
-          }
-        };
-      } catch (error: any) {
+        }
+      };
+    } catch (error) {
         return {
           scenario: 'Performance Monitoring',
           success: false,
           message: 'Test failed with error',
           error: error.message
-        };
-      }
+      };
     }
-  },
+  }
+},
 
   {
     id: 'api_endpoints',
@@ -273,18 +273,18 @@ export const createTestScenarios = (): TestScenario[] => [
             hasEndpoints,
             hasMarketEndpoints,
             endpointsDiffer
-          }
-        };
-      } catch (error: any) {
+        }
+      };
+    } catch (error) {
         return {
           scenario: 'API Endpoints Configuration',
           success: false,
           message: 'Test failed with error',
           error: error.message
-        };
-      }
+      };
     }
   }
+}
 ];
 
 export default createTestScenarios;

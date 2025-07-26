@@ -4,6 +4,7 @@ import * as RNLocalize from 'react-native-localize';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { performanceMonitor } from './PerformanceMonitor';
 
+import { Logger } from './LoggingService';
 // Translation resources
 const resources = {
   en: {
@@ -99,8 +100,8 @@ const resources = {
       betaMarket: 'US Beta Market',
       betaWelcome: 'Welcome to CupNote US Beta!',
       betaFeedback: 'Share your feedback to help us improve',
-    },
   },
+},
   ko: {
     translation: {
       // Navigation
@@ -194,8 +195,8 @@ const resources = {
       betaMarket: '한국 시장',
       betaWelcome: '컵노트에 오신 것을 환영합니다!',
       betaFeedback: '피드백을 공유해서 저희가 개선할 수 있도록 도와주세요',
-    },
   },
+},
 };
 
 const LANGUAGE_STORAGE_KEY = '@app_language';
@@ -211,10 +212,10 @@ const getDeviceLanguage = (): 'ko' | 'en' => {
       const deviceLanguage = locales[0].languageCode;
       // Korean market gets Korean by default, others get English
       return deviceLanguage === 'ko' ? 'ko' : 'en';
-    }
-  } catch (error) {
-    console.warn('Failed to get device language:', error);
   }
+} catch (error) {
+    Logger.warn('Failed to get device language:', 'service', { component: 'i18n', error: error });
+}
   return DEFAULT_LANGUAGE;
 };
 
@@ -229,10 +230,10 @@ export const isKoreanMarket = (): boolean => {
       const languageCode = locales[0].languageCode;
       // Korean market: Korea + Korean language
       return countryCode === 'KR' || languageCode === 'ko';
-    }
-  } catch (error) {
-    console.warn('Failed to detect market:', error);
   }
+} catch (error) {
+    Logger.warn('Failed to detect market:', 'service', { component: 'i18n', error: error });
+}
   return true; // Default to Korean market
 };
 
@@ -247,9 +248,9 @@ const initializeI18n = async (): Promise<void> => {
     let savedLanguage: string | null = null;
     try {
       savedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
-    } catch (error) {
-      console.warn('Failed to load saved language:', error);
-    }
+  } catch (error) {
+      Logger.warn('Failed to load saved language:', 'service', { component: 'i18n', error: error });
+  }
     
     // Determine initial language
     const initialLanguage = savedLanguage || getDeviceLanguage();
@@ -264,23 +265,23 @@ const initializeI18n = async (): Promise<void> => {
         
         interpolation: {
           escapeValue: false,
-        },
+      },
         
         react: {
           useSuspense: false,
-        },
-      });
+      },
+    });
     
     performanceMonitor.endTiming(timingId, 'i18n_initialization_success', {
       language: initialLanguage,
       isKoreanMarket: isKoreanMarket(),
       hasStoredLanguage: !!savedLanguage,
-    });
-  } catch (error) {
+  });
+} catch (error) {
     performanceMonitor.endTiming(timingId, 'i18n_initialization_error');
     performanceMonitor.reportError(error as Error, 'i18n_initialization', 'high');
     throw error;
-  }
+}
 };
 
 /**
@@ -296,12 +297,12 @@ export const changeLanguage = async (language: 'ko' | 'en'): Promise<void> => {
     performanceMonitor.endTiming(timingId, 'language_change_success', {
       newLanguage: language,
       previousLanguage: i18n.language,
-    });
-  } catch (error) {
+  });
+} catch (error) {
     performanceMonitor.endTiming(timingId, 'language_change_error');
     performanceMonitor.reportError(error as Error, 'language_change', 'medium');
     throw error;
-  }
+}
 };
 
 /**
@@ -334,7 +335,7 @@ export const getMarketConfig = () => {
     supportedRoasters: isKorean 
       ? ['Coffee Libre', 'Anthracite', 'Terarosa', 'Momos Coffee']
       : ['Blue Bottle', 'Stumptown', 'Counter Culture', 'Intelligentsia'],
-  };
+};
 };
 
 /**
@@ -356,13 +357,13 @@ export const getBetaConfig = () => {
       marketIntelligence: true,
       achievements: true,
       socialFeatures: false, // Disabled for beta
-    },
-  };
+  },
+};
 };
 
 // Initialize i18n system
 initializeI18n().catch(error => {
-  console.error('Failed to initialize i18n:', error);
+  Logger.error('Failed to initialize i18n:', 'service', { component: 'i18n', error: error });
 });
 
 export default i18n;

@@ -42,59 +42,59 @@ export const LabModeDataEntry: React.FC<LabModeDataEntryProps> = ({
   const [selectedVariable, setSelectedVariable] = useState(data?.comparison?.variable || '');
   const [customVariable, setCustomVariable] = useState('');
 
-  const updateData = useCallback((field: keyof LabModeData, value: any) => {
+  const updateData = useCallback((field: keyof LabModeData, value: unknown) => {
     const currentData = data || {} as LabModeData;
     const updatedData = { ...currentData, [field]: value };
     onChange(updatedData);
-  }, [data, onChange]);
+}, [data, onChange]);
 
-  const updateComparison = useCallback((field: keyof NonNullable<LabModeData['comparison']>, value: any) => {
+  const updateComparison = useCallback((field: keyof NonNullable<LabModeData['comparison']>, value: unknown) => {
     const currentData = data || {} as LabModeData;
     const currentComparison = currentData.comparison || {
       variable: '',
       previousValue: '',
       currentValue: '',
       result: '',
-    };
+  };
     
     const updatedComparison = { ...currentComparison, [field]: value };
     onChange({ ...currentData, comparison: updatedComparison });
-  }, [data, onChange]);
+}, [data, onChange]);
 
-  const updateAgitation = useCallback((field: keyof NonNullable<LabModeData['agitation']>, value: any) => {
+  const updateAgitation = useCallback((field: keyof NonNullable<LabModeData['agitation']>, value: unknown) => {
     const currentData = data || {} as LabModeData;
     const currentAgitation = currentData.agitation || {
       method: 'none' as const,
       timing: [],
-    };
+  };
     
     const updatedAgitation = { ...currentAgitation, [field]: value };
     onChange({ ...currentData, agitation: updatedAgitation });
-  }, [data, onChange]);
+}, [data, onChange]);
 
   const addTimingEntry = useCallback(() => {
     const timing = data?.agitation?.timing || [];
     const newTiming = [...timing, ''];
     updateAgitation('timing', newTiming);
-  }, [data?.agitation?.timing, updateAgitation]);
+}, [data?.agitation?.timing, updateAgitation]);
 
   const updateTimingEntry = useCallback((index: number, value: string) => {
     const timing = data?.agitation?.timing || [];
     const newTiming = [...timing];
     newTiming[index] = value;
     updateAgitation('timing', newTiming);
-  }, [data?.agitation?.timing, updateAgitation]);
+}, [data?.agitation?.timing, updateAgitation]);
 
   const removeTimingEntry = useCallback((index: number) => {
     const timing = data?.agitation?.timing || [];
     const newTiming = timing.filter((_, i) => i !== index);
     updateAgitation('timing', newTiming);
-  }, [data?.agitation?.timing, updateAgitation]);
+}, [data?.agitation?.timing, updateAgitation]);
 
   const handleVariableSelection = useCallback((variable: string) => {
     setSelectedVariable(variable);
     updateComparison('variable', variable);
-  }, [updateComparison]);
+}, [updateComparison]);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -183,8 +183,8 @@ export const LabModeDataEntry: React.FC<LabModeDataEntryProps> = ({
               setCustomVariable(text);
               if (text.trim()) {
                 handleVariableSelection(text.trim());
-              }
-            }}
+            }
+          }}
             placeholder="또는 직접 입력"
           />
         </View>
@@ -298,49 +298,49 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   section: {
     marginBottom: 24,
     paddingHorizontal: 16,
-  },
+},
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
-  },
+},
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 12,
-  },
+},
   toggleIcon: {
     fontSize: 16,
     color: HIGColors.systemBlue,
     fontWeight: '600',
-  },
+},
   sectionContent: {
     paddingTop: 8,
-  },
+},
   subsection: {
     marginBottom: 16,
-  },
+},
   measurementRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 12,
-  },
+},
   measurementItem: {
     flex: 1,
     marginHorizontal: 4,
-  },
+},
   measurementLabel: {
     fontSize: 14,
     fontWeight: '500',
     color: HIGColors.label,
     marginBottom: 6,
-  },
+},
   measurementInput: {
     height: 44,
     borderWidth: 1,
@@ -350,26 +350,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: HIGColors.systemBackground,
     textAlign: 'center',
-  },
+},
   measurementUnit: {
     fontSize: 12,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     marginTop: 4,
-  },
+},
   measurementHint: {
     fontSize: 12,
     color: HIGColors.systemBlue,
     fontStyle: 'italic',
     marginTop: 8,
     paddingHorizontal: 8,
-  },
+},
   fieldLabel: {
     fontSize: 16,
     fontWeight: '500',
     color: HIGColors.label,
     marginBottom: 8,
-  },
+},
   textInput: {
     height: 44,
     borderWidth: 1,
@@ -378,54 +378,54 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   multilineInput: {
     height: 80,
     paddingTop: 12,
     textAlignVertical: 'top',
-  },
+},
   variableScroll: {
     marginBottom: 12,
-  },
+},
   variableChip: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: HIGColors.systemGray6,
     borderRadius: 16,
     marginRight: 8,
-  },
+},
   variableChipSelected: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   variableChipText: {
     fontSize: 14,
     color: HIGColors.label,
-  },
+},
   variableChipTextSelected: {
     color: HIGColors.systemBackground,
     fontWeight: '500',
-  },
+},
   comparisonRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
-  },
+},
   comparisonItem: {
     flex: 1,
-  },
+},
   comparisonArrow: {
     width: 40,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   arrowText: {
     fontSize: 20,
     color: HIGColors.systemBlue,
     fontWeight: '600',
-  },
+},
   agitationMethods: {
     marginBottom: 16,
-  },
+},
   agitationMethod: {
     padding: 16,
     borderWidth: 1,
@@ -433,54 +433,54 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   agitationMethodSelected: {
     borderColor: HIGColors.systemBlue,
     backgroundColor: HIGColors.systemBlue + '10',
-  },
+},
   agitationMethodTitle: {
     fontSize: 16,
     fontWeight: '500',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   agitationMethodTitleSelected: {
     color: HIGColors.systemBlue,
     fontWeight: '600',
-  },
+},
   agitationMethodDesc: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
-  },
+},
   agitationMethodDescSelected: {
     color: HIGColors.systemBlue,
-  },
+},
   timingHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
-  },
+},
   addButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: HIGColors.systemBlue,
     borderRadius: 16,
-  },
+},
   addButtonText: {
     color: HIGColors.systemBackground,
     fontSize: 14,
     fontWeight: '500',
-  },
+},
   timingEntry: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
-  },
+},
   timingInput: {
     flex: 1,
     marginRight: 8,
-  },
+},
   removeButton: {
     width: 32,
     height: 32,
@@ -488,10 +488,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   removeButtonText: {
     color: HIGColors.systemBackground,
     fontSize: 16,
     fontWeight: '600',
-  },
+},
 });

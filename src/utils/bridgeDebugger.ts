@@ -1,3 +1,6 @@
+import { Logger } from '../services/LoggingService';
+import { BridgeParam, BridgeCall, BridgeCallback, NativeBridge } from '../types/bridge';
+
 /**
  * Bridge Error Debugger for React Native 0.80+
  * Helps identify sources of "Malformed calls from JS" errors
@@ -8,37 +11,27 @@ const DEBUG_ENABLED = __DEV__ && !process.env.DISABLE_BRIDGE_DEBUGGER;
 const LOG_PREFIX = '[BridgeDebugger]';
 
 // Debug logging wrapper
-const debugLog = (...args: any[]) => {
+const debugLog = (...args: unknown[]) => {
   if (DEBUG_ENABLED) {
-    console.log(LOG_PREFIX, ...args);
-  }
-};
-
-const debugWarn = (...args: any[]) => {
-  if (DEBUG_ENABLED) {
-    console.warn(LOG_PREFIX, ...args);
-  }
-};
-
-const debugError = (...args: any[]) => {
-  if (DEBUG_ENABLED) {
-    console.error(LOG_PREFIX, ...args);
-  }
-};
-
-interface BridgeCall {
-  moduleId: number;
-  methodId: number;
-  params: unknown[];
-  timestamp: number;
+    Logger.debug(LOG_PREFIX, ...args);
 }
+};
 
-interface NativeBridge {
-  enqueueNativeCall: (moduleID: number, methodID: number, params: unknown[], onFail?: Function, onSucc?: Function) => void;
-  getCallableModule: (name: string) => { [key: string]: number } | null;
-  _remoteModuleTable: { [key: string]: { moduleID: number; methods: { [key: string]: number } } };
-  _remoteMethodTable: { [key: string]: string[] };
+const debugWarn = (...args: unknown[]) => {
+  if (DEBUG_ENABLED) {
+    Logger.warn(LOG_PREFIX, ...args);
 }
+};
+
+const debugError = (...args: unknown[]) => {
+  if (DEBUG_ENABLED) {
+    Logger.error(LOG_PREFIX, ...args);
+}
+};
+
+// Using BridgeCall from types/bridge.ts
+
+// Using NativeBridge from types/bridge.ts
 
 class BridgeDebugger {
   private calls: BridgeCall[] = [];
@@ -46,23 +39,23 @@ class BridgeDebugger {
   private maxCalls = 50; // Keep last 50 calls for debugging
 
   init() {
-    if (__DEV__ && (global as any).__fbBatchedBridge) {
+    if (__DEV__ && (global as { __fbBatchedBridge?: NativeBridge }).__fbBatchedBridge) {
       try {
-        this.originalBridge = (global as any).__fbBatchedBridge;
+        this.originalBridge = (global as { __fbBatchedBridge?: NativeBridge }).__fbBatchedBridge!;
         this.interceptBridgeCalls();
         debugLog('🔍 Bridge debugger initialized');
-      } catch (error) {
-        debugWarn('⚠️ Bridge debugger initialization failed, continuing without debugging:', (error as any).message);
-      }
+    } catch (error) {
+        debugWarn('⚠️ Bridge debugger initialization failed, continuing without debugging:', (error as Error).message);
     }
   }
+}
 
   private interceptBridgeCalls() {
     if (!this.originalBridge) return;
 
     const originalEnqueueNativeCall = this.originalBridge.enqueueNativeCall;
     
-    this.originalBridge.enqueueNativeCall = (moduleID: number, methodID: number, params: unknown[], onFail?: Function, onSucc?: Function) => {
+    this.originalBridge.enqueueNativeCall = (moduleID: number, methodID: number, params: BridgeParam[], onFail?: BridgeCallback, onSucc?: BridgeCallback) => {
       // Log the call
       this.logCall(moduleID, methodID, params);
       
@@ -81,14 +74,14 @@ class BridgeDebugger {
           moduleName,
           methodName,
           reason: 'Method likely does not exist in native binary'
-        });
+      });
         
         // Call onFail if provided to handle gracefully
         if (onFail && typeof onFail === 'function') {
           onFail(new Error(`Method ${methodName} not found in native binary`));
-        }
-        return;
       }
+        return;
+    }
       
       try {
         return originalEnqueueNativeCall.call(
@@ -99,40 +92,40 @@ class BridgeDebugger {
           onFail, 
           onSucc
         );
-      } catch (error) {
+    } catch (error) {
         debugError('🚨 Bridge call failed:', {
           moduleID,
           methodID,
           params,
-          error: (error as any).message,
+          error: (error as Error).message,
           moduleName: this.getModuleName(moduleID),
           methodName: this.getMethodName(moduleID, methodID)
-        });
+      });
         
         // Handle the error gracefully instead of throwing
         if (onFail && typeof onFail === 'function') {
           onFail(error);
-        } else {
+      } else {
           debugWarn('🔄 Bridge call failed but no error handler provided, continuing...');
-        }
       }
-    };
-  }
+    }
+  };
+}
 
-  private logCall(moduleID: number, methodID: number, params: any[]) {
+  private logCall(moduleID: number, methodID: number, params: BridgeParam[]) {
     const call: BridgeCall = {
       moduleId: moduleID,
       methodId: methodID,
       params,
       timestamp: Date.now()
-    };
+  };
 
     this.calls.push(call);
     
     // Keep only recent calls
     if (this.calls.length > this.maxCalls) {
       this.calls = this.calls.slice(-this.maxCalls);
-    }
+  }
 
     // Log potentially problematic calls
     if (this.hasProblematicParams(params)) {
@@ -140,104 +133,104 @@ class BridgeDebugger {
         module: this.getModuleName(moduleID),
         method: this.getMethodName(moduleID, methodID),
         params: this.analyzeParams(params)
-      });
-    }
+    });
   }
+}
 
-  private sanitizeParams(params: any[]): any[] {
+  private sanitizeParams(params: BridgeParam[]): BridgeParam[] {
     return params.map(param => this.sanitizeParam(param));
-  }
+}
 
-  private sanitizeParam(param: any): any {
+  private sanitizeParam(param: BridgeParam): BridgeParam {
     if (param === null || param === undefined) {
       return param;
-    }
+  }
 
     if (typeof param === 'number') {
       if (isNaN(param) || !isFinite(param)) {
         debugWarn('🔧 Sanitized invalid number:', param, '→ 0');
         return 0;
-      }
-      return param;
     }
+      return param;
+  }
 
     if (Array.isArray(param)) {
       return param.map(item => this.sanitizeParam(item));
-    }
+  }
 
     if (typeof param === 'object') {
-      const sanitized: any = {};
+      const sanitized: { [key: string]: BridgeParam } = {};
       for (const [key, value] of Object.entries(param)) {
         sanitized[key] = this.sanitizeParam(value);
-      }
-      return sanitized;
     }
+      return sanitized;
+  }
 
     return param;
-  }
+}
 
-  private hasProblematicParams(params: any[]): boolean {
+  private hasProblematicParams(params: BridgeParam[]): boolean {
     return params.some(param => this.isProblematicParam(param));
-  }
+}
 
-  private isProblematicParam(param: any): boolean {
+  private isProblematicParam(param: BridgeParam): boolean {
     if (typeof param === 'number' && (isNaN(param) || !isFinite(param))) {
       return true;
-    }
+  }
     
     if (Array.isArray(param)) {
       return param.some(item => this.isProblematicParam(item));
-    }
+  }
     
     if (param && typeof param === 'object') {
       return Object.values(param).some(value => this.isProblematicParam(value));
-    }
+  }
     
     return false;
-  }
+}
 
-  private analyzeParams(params: any[]): any {
+  private analyzeParams(params: BridgeParam[]): (string | BridgeParam)[] {
     return params.map(param => {
       if (typeof param === 'number' && (isNaN(param) || !isFinite(param))) {
         return `[INVALID NUMBER: ${param}]`;
-      }
+    }
       if (Array.isArray(param)) {
         return param.map(item => typeof item === 'number' && (isNaN(item) || !isFinite(item)) ? `[INVALID: ${item}]` : item);
-      }
+    }
       return param;
-    });
-  }
+  });
+}
 
   private getModuleName(moduleID: number): string {
     if (!this.originalBridge?._remoteModuleTable) return `Module${moduleID}`;
     const moduleTable = this.originalBridge._remoteModuleTable[moduleID];
     if (typeof moduleTable === 'object' && moduleTable !== null) {
       // If it's an object with a name property, try to get the name
-      return (moduleTable as any).name || `Module${moduleID}`;
-    }
-    return `Module${moduleID}`;
+      return moduleTable.name || `Module${moduleID}`;
   }
+    return `Module${moduleID}`;
+}
 
   private getMethodName(moduleID: number, methodID: number): string {
     if (!this.originalBridge?._remoteMethodTable) return `Method${methodID}`;
     const methods = this.originalBridge._remoteMethodTable[moduleID];
     return methods?.[methodID] || `Method${methodID}`;
-  }
+}
 
   getRecentCalls(count = 10): BridgeCall[] {
     return this.calls.slice(-count);
-  }
+}
 
   printRecentCalls(count = 10) {
     const recent = this.getRecentCalls(count);
     if (DEBUG_ENABLED) {
       console.group(LOG_PREFIX + ' 🔍 Recent Bridge Calls');
       recent.forEach((call, index) => {
-        console.log(`${index + 1}. ${this.getModuleName(call.moduleId)}.${this.getMethodName(call.moduleId, call.methodId)}`, call.params);
-      });
+        Logger.debug(`${index + 1}. ${this.getModuleName(call.moduleId)}.${this.getMethodName(call.moduleId, call.methodId)}`, 'util', { component: 'bridgeDebugger', data: call.params });
+    });
       console.groupEnd();
-    }
   }
+}
 }
 
 export const bridgeDebugger = new BridgeDebugger();
@@ -246,7 +239,7 @@ export const bridgeDebugger = new BridgeDebugger();
 if (DEBUG_ENABLED) {
   try {
     bridgeDebugger.init();
-  } catch (error) {
-    debugWarn('⚠️ Bridge debugger failed to initialize, continuing without debugging:', (error as any).message);
-  }
+} catch (error) {
+    debugWarn('⚠️ Bridge debugger failed to initialize, continuing without debugging:', (error as Error).message);
+}
 }

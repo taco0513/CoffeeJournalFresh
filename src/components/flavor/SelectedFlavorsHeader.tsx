@@ -58,10 +58,10 @@ export const SelectedFlavorsHeader: React.FC<SelectedFlavorsHeaderProps> = React
             if (!path.level3) {
               displayName = subcategoryData?.koreanName || path.level2 || '';
               isSubcategorySelection = true;
-            } else {
+          } else {
               const flavorItem = subcategoryData?.flavors.find(f => f.name === path.level3);
               displayName = flavorItem?.koreanName || path.level3 || '';
-            }
+          }
             
             return (
               <View 
@@ -88,7 +88,7 @@ export const SelectedFlavorsHeader: React.FC<SelectedFlavorsHeaderProps> = React
                 </TouchableOpacity>
               </View>
             );
-          })}
+        })}
         </ScrollView>
       ) : (
         <View style={styles.emptyStateContainer}>

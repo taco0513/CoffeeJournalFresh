@@ -23,12 +23,12 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
           toValue: 1,
           duration: 1500,
           useNativeDriver: true,
-        }),
+      }),
         Animated.timing(shimmerValue, {
           toValue: 0,
           duration: 1500,
           useNativeDriver: true,
-        }),
+      }),
       ])
     );
     
@@ -37,24 +37,24 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
     // Cleanup function to stop animation on unmount
     return () => {
       animationLoop.stop();
-    };
-  }, [shimmerValue]);
+  };
+}, [shimmerValue]);
 
   const opacity = shimmerValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0.3, 0.7],
-  });
+});
 
   return (
     <Animated.View
       style={[
         styles.skeleton,
         {
-          width: width as any,
-          height: height as any,
+          width: width as unknown,
+          height: height as unknown,
           borderRadius,
           opacity,
-        },
+      },
         style,
       ]}
     />
@@ -97,7 +97,7 @@ export const SkeletonText: React.FC<{ lines?: number }> = ({ lines = 3 }) => (
 const styles = StyleSheet.create({
   skeleton: {
     backgroundColor: '#E0E0E0',
-  },
+},
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
@@ -108,14 +108,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-  },
+},
   cardContent: {
     marginTop: 12,
-  },
+},
   spacing: {
     marginBottom: 8,
-  },
+},
   textSpacing: {
     marginTop: 8,
-  },
+},
 });

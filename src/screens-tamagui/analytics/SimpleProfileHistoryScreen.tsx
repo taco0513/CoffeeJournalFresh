@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { 
   YStack, 
   XStack, 
@@ -12,18 +12,19 @@ import {
 import { SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import RealmService from '../../services/realm/RealmService';
-import { ITastingRecord } from '../../services/realm/schemas';
+import { RealmService } from '../../services/realm/RealmService';
+import { Logger} from '../../services/LoggingService';
+import { ITastingRecord} from '../../services/realm/schemas';
 
 const SimpleProfileHistoryScreen: React.FC = () => {
-  const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<unknown>>();
   const [allTastings, setAllTastings] = useState<ITastingRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
 
   useEffect(() => {
     loadData();
-  }, []);
+}, []);
 
   const loadData = async () => {
     try {
@@ -32,10 +33,25 @@ const SimpleProfileHistoryScreen: React.FC = () => {
       
       if (!realmService.isInitialized) {
         await realmService.initialize();
-      }
+    }
       
-      const tastings = await realmService.getTastingRecords({ isDeleted: false });
-      const tastingsArray = Array.from(tastings);
+      // Use direct Realm access like HomeScreen does
+      const realm = realmService.getRealm();
+      const allTastings = realm.objects<ITastingRecord>('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
+      
+      Logger.debug('📊 SimpleProfileHistoryScreen data load:', {
+        component: 'SimpleProfileHistoryScreen',
+        totalRecords: allTastings.length,
+        recentRecords: Array.from(allTastings).slice(0, 3).map(r => ({
+          id: r.id,
+          coffeeName: r.coffeeName,
+          roastery: r.roastery,
+          createdAt: r.createdAt
+        }))
+      });
+      
+      // Convert to array for state
+      const tastingsArray = Array.from(allTastings);
       
       // Remove duplicates
       const uniqueTastings = [];
@@ -45,27 +61,27 @@ const SimpleProfileHistoryScreen: React.FC = () => {
         if (tasting && tasting.id && !seenIds.has(tasting.id)) {
           seenIds.add(tasting.id);
           uniqueTastings.push(tasting);
-        }
       }
+    }
       
       setAllTastings(uniqueTastings);
-    } catch (error) {
-      console.error('Failed to load data:', error);
-    } finally {
+  } catch (error) {
+      Logger.error('Failed to load data:', 'screen', { component: 'SimpleProfileHistoryScreen', error: error });
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+};
 
   const renderTastingItem = (item: ITastingRecord, index: number) => {
     if (!item || !item.id || !item.coffeeName) {
       return null;
-    }
+  }
 
     const formattedDate = item.createdAt 
       ? new Date(item.createdAt).toLocaleDateString('ko-KR', { 
           month: 'long', 
           day: 'numeric' 
-        })
+      })
       : '날짜 없음';
 
     return (
@@ -73,8 +89,8 @@ const SimpleProfileHistoryScreen: React.FC = () => {
         onPress={() => {
           navigation.navigate('TastingDetail', { 
             tastingId: item.id
-          });
-        }}
+        });
+      }}
         backgroundColor="$background"
         marginHorizontal="$md"
         marginBottom="$xs"
@@ -110,7 +126,7 @@ const SimpleProfileHistoryScreen: React.FC = () => {
         </Text>
       </Card>
     );
-  };
+};
 
   if (loading) {
     return (
@@ -124,12 +140,7 @@ const SimpleProfileHistoryScreen: React.FC = () => {
           borderBottomWidth={0.5} 
           borderBottomColor="$borderColor"
         >
-          <XStack alignItems="center" gap="$xs">
-            <Text fontSize="$5" fontWeight="600" color="$color">테이스팅 기록</Text>
-            <Card backgroundColor="$blue10" paddingHorizontal="$xs" paddingVertical="$xxs" borderRadius="$1">
-              <Text fontSize="$1" fontWeight="700" color="white" letterSpacing={0.5}>BETA</Text>
-            </Card>
-          </XStack>
+          <Text fontSize="$5" fontWeight="600" color="$color">테이스팅 기록</Text>
         </XStack>
         
         <YStack flex={1} justifyContent="center" alignItems="center" gap="$md">
@@ -138,7 +149,7 @@ const SimpleProfileHistoryScreen: React.FC = () => {
         </YStack>
       </SafeAreaView>
     );
-  }
+}
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.background.val }}>
@@ -152,12 +163,7 @@ const SimpleProfileHistoryScreen: React.FC = () => {
         borderBottomWidth={0.5} 
         borderBottomColor="$borderColor"
       >
-        <XStack alignItems="center" gap="$xs">
-          <Text fontSize="$5" fontWeight="600" color="$color">테이스팅 기록</Text>
-          <Card backgroundColor="$blue10" paddingHorizontal="$xs" paddingVertical="$xxs" borderRadius="$1">
-            <Text fontSize="$1" fontWeight="700" color="white" letterSpacing={0.5}>BETA</Text>
-          </Card>
-        </XStack>
+        <Text fontSize="$5" fontWeight="600" color="$color">테이스팅 기록</Text>
       </XStack>
 
       {/* Header */}

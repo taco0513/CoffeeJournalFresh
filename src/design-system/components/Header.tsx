@@ -22,12 +22,12 @@ export interface HeaderProps {
     icon?: string;
     text?: string;
     onPress: () => void;
-  };
+};
   rightAction?: {
     icon?: string;
     text?: string;
     onPress: () => void;
-  };
+};
   showBorder?: boolean;
   progressPercent?: number;
   style?: ViewStyle;
@@ -108,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
 const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: Colors.background.primary,
-  },
+},
 
   header: {
     height: Component.header.height,
@@ -116,63 +116,63 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: Component.header.padding,
     backgroundColor: Colors.background.primary,
-  },
+},
 
   headerWithBorder: {
     borderBottomWidth: Component.header.borderWidth,
     borderBottomColor: Colors.border.light,
-  },
+},
 
   leftContainer: {
     width: 80,
     alignItems: 'flex-start',
-  },
+},
 
   titleContainer: {
     flex: 1,
     alignItems: 'center',
-  },
+},
 
   rightContainer: {
     width: 80,
     alignItems: 'flex-end',
-  },
+},
 
   actionButton: {
     minHeight: 44,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
 
   actionIcon: {
     fontSize: Typography.fontSize['2xl'],
     color: Colors.primary[500],
-  },
+},
 
   actionText: {
     fontSize: Typography.fontSize.base,
     fontWeight: Typography.fontWeight.medium,
     color: Colors.primary[500],
-  },
+},
 
   title: {
     fontSize: Typography.fontSize.lg,
     fontWeight: Typography.fontWeight.semibold,
     color: Colors.text.primary,
     textAlign: 'center',
-  },
+},
 
   // Progress Bar
   progressContainer: {
     height: 3,
     backgroundColor: Colors.gray[200],
     overflow: 'hidden',
-  },
+},
 
   progressBar: {
     height: '100%',
     backgroundColor: Colors.primary[500],
-  },
+},
 });
 
 // 기본 헤더 프리셋들

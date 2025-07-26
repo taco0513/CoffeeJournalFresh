@@ -5,6 +5,7 @@
  * Demonstrates Korean + US dual-market strategy implementation
  */
 
+import { NavigationProp } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, RefreshControl, Alert } from 'react-native';
 import {
@@ -28,15 +29,15 @@ import {
 } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { 
-  useFirecrawlCoffeeData,
+import { Logger } from '../../services/LoggingService';
+import useFirecrawlCoffeeData, {
   RoasterProfile,
   MarketTrends,
   CompetitorAnalysis 
 } from '../../services/FirecrawlCoffeeService';
 
 interface MarketIntelligenceScreenProps {
-  navigation: any;
+  navigation: NavigationProp<any>;
 }
 
 // Styled Components
@@ -101,12 +102,12 @@ const Tab = styled(Button, {
     active: {
       true: {
         backgroundColor: 'white',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const TabText = styled(Text, {
@@ -117,12 +118,12 @@ const TabText = styled(Text, {
     active: {
       true: {
         color: '$cupBlue',
-      },
+    },
       false: {
         color: 'rgba(255, 255, 255, 0.8)',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const ContentSection = styled(YStack, {
@@ -158,7 +159,7 @@ const TrendCard = styled(Card, {
     opacity: 0,
     scale: 0.9,
     y: 20,
-  },
+},
 });
 
 const TrendLabel = styled(Text, {
@@ -188,11 +189,11 @@ const RoasterCard = styled(Card, {
     opacity: 0,
     scale: 0.95,
     y: 20,
-  },
+},
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$backgroundPress',
-  },
+},
 });
 
 const RoasterHeader = styled(XStack, {
@@ -259,7 +260,7 @@ const CompetitorCard = styled(Card, {
     opacity: 0,
     scale: 0.95,
     y: 20,
-  },
+},
 });
 
 const CompetitorHeader = styled(XStack, {
@@ -330,7 +331,7 @@ const PrimaryButton = styled(Button, {
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$cupBlueDark',
-  },
+},
 });
 
 const PrimaryButtonText = styled(Text, {
@@ -351,7 +352,7 @@ const SecondaryButton = styled(Button, {
   pressStyle: {
     scale: 0.98,
     backgroundColor: '$backgroundPress',
-  },
+},
 });
 
 const SecondaryButtonText = styled(Text, {
@@ -405,12 +406,12 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
     getMarketTrends, 
     getCompetitors,
     getEducationalContent 
-  } = useFirecrawlCoffeeData();
+} = useFirecrawlCoffeeData();
 
   // Load initial data
   useEffect(() => {
     loadMarketData();
-  }, []);
+}, []);
 
   const loadMarketData = async () => {
     try {
@@ -437,22 +438,22 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
       setUSTrends(usTrendsData);
       setCompetitors(competitorsData);
 
-    } catch (error) {
-      console.error('Error loading market data:', error);
+  } catch (error) {
+      Logger.error('Error loading market data:', 'screen', { component: 'MarketIntelligenceScreen', error: error });
       Alert.alert(
         'Data Load Error',
         'Failed to load market intelligence data. Please check your connection and try again.'
       );
-    } finally {
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+};
 
   const handleRefresh = async () => {
     setRefreshing(true);
     await loadMarketData();
     setRefreshing(false);
-  };
+};
 
   const currentTrends = activeTab === 'korea' ? koreanTrends : usTrends;
   const currentRoasters = activeTab === 'korea' ? koreanRoasters : usRoasters;
@@ -463,7 +464,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
       enterStyle={{
         opacity: 0,
         y: -30,
-      }}
+    }}
       animateOnly={['opacity', 'transform']}
     >
       <HeaderTitle>☕ CupNote 시장 분석</HeaderTitle>
@@ -502,7 +503,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
         enterStyle={{
           opacity: 0,
           y: 20,
-        }}
+      }}
         animateOnly={['opacity', 'transform']}
       >
         <SectionTitle>📊 시장 트렌드</SectionTitle>
@@ -531,7 +532,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
         </TrendsContainer>
       </ContentSection>
     );
-  };
+};
 
   const renderRoasterProfiles = () => (
     <ContentSection
@@ -539,7 +540,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
       enterStyle={{
         opacity: 0,
         y: 20,
-      }}
+    }}
       animateOnly={['opacity', 'transform']}
     >
       <SectionTitle>🏪 주요 로스터리</SectionTitle>
@@ -553,12 +554,12 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
               opacity: 0,
               scale: 0.95,
               y: 20 + (index * 5),
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
             pressStyle={{ scale: 0.98 }}
             onPress={() => {
               // Handle roaster selection if needed
-            }}
+          }}
           >
             <RoasterHeader>
               <RoasterName numberOfLines={1}>
@@ -590,7 +591,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
       enterStyle={{
         opacity: 0,
         y: 20,
-      }}
+    }}
       animateOnly={['opacity', 'transform']}
     >
       <SectionTitle>🎯 경쟁사 분석</SectionTitle>
@@ -604,7 +605,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
               opacity: 0,
               scale: 0.95,
               y: 20 + (index * 5),
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
           >
             <CompetitorHeader>
@@ -636,7 +637,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
       enterStyle={{
         opacity: 0,
         y: 20,
-      }}
+    }}
       animateOnly={['opacity', 'transform']}
     >
       <PrimaryButton
@@ -646,7 +647,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
             'Firecrawl 실시간 업데이트',
             '최신 데이터를 수집하고 있습니다...\n\n• 로스터리 신제품 정보\n• 가격 변동 추적\n• 트렌드 분석\n• 경쟁사 모니터링'
           );
-        }}
+      }}
       >
         <PrimaryButtonText>🔄 실시간 업데이트</PrimaryButtonText>
       </PrimaryButton>
@@ -655,7 +656,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
         unstyled
         onPress={() => {
           navigation.navigate('DeveloperScreen');
-        }}
+      }}
       >
         <SecondaryButtonText>⚙️ 개발자 도구</SecondaryButtonText>
       </SecondaryButton>
@@ -673,7 +674,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
         </SafeAreaView>
       </Container>
     );
-  }
+}
 
   return (
     <Container>
@@ -682,7 +683,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
+        }
         >
           <AnimatePresence>
             {renderHeader()}
@@ -696,7 +697,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
               enterStyle={{
                 opacity: 0,
                 y: 20,
-              }}
+            }}
               animateOnly={['opacity', 'transform']}
             >
               <FooterText>

@@ -33,14 +33,14 @@ export const useToastStore = create<ToastState & ToastActions>((set) => ({
       title,
       message,
       duration,
-    });
-  },
+  });
+},
 
   hideToast: () => {
     set({
       visible: false,
-    });
-  },
+  });
+},
 
   showSuccessToast: (title, message) => {
     set({
@@ -49,8 +49,8 @@ export const useToastStore = create<ToastState & ToastActions>((set) => ({
       title,
       message,
       duration: 2000,
-    });
-  },
+  });
+},
 
   showErrorToast: (title, message) => {
     set({
@@ -59,8 +59,8 @@ export const useToastStore = create<ToastState & ToastActions>((set) => ({
       title,
       message,
       duration: 3000, // 에러 메시지는 조금 더 길게
-    });
-  },
+  });
+},
 
   showInfoToast: (title, message) => {
     set({
@@ -69,6 +69,6 @@ export const useToastStore = create<ToastState & ToastActions>((set) => ({
       title,
       message,
       duration: 2000,
-    });
-  },
+  });
+},
 }));

@@ -19,7 +19,7 @@ interface UserState {
     isLoading: boolean;
     isAuthenticated: boolean;
     error: string | null;
-  }) => void;
+}) => void;
   reset: () => void;
 }
 
@@ -34,29 +34,29 @@ export const useUserStore = create<UserState>((set) => ({
     set((state) => ({
       user,
       isAuthenticated: !!user,
-    })),
+  })),
 
   setSession: (session) =>
     set((state) => ({
       session,
       user: session?.user || null,
       isAuthenticated: !!session,
-    })),
+  })),
 
   setLoading: (isLoading) =>
     set((state) => ({
       isLoading,
-    })),
+  })),
 
   setError: (error) =>
     set((state) => ({
       error,
-    })),
+  })),
 
   setAuthState: (authState) =>
     set(() => ({
       ...authState,
-    })),
+  })),
 
   reset: () =>
     set(() => ({
@@ -65,5 +65,5 @@ export const useUserStore = create<UserState>((set) => ({
       isLoading: false,
       isAuthenticated: false,
       error: null,
-    })),
+  })),
 }));

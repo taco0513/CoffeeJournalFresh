@@ -29,10 +29,10 @@ export interface TastingRecord {
   mode?: 'cafe' | 'home_cafe';
   
   // 홈카페 데이터
-  home_cafe_data?: any;
+  home_cafe_data?: unknown;
   
   // 선택된 감각 표현
-  selected_sensory_expressions?: any[];
+  selected_sensory_expressions?: unknown[];
 }
 
 export interface FlavorNote {
@@ -65,11 +65,11 @@ export interface CoffeeComparison {
     acidity: number;
     sweetness: number;
     finish: number;
-  };
+};
 }
 
 class TastingService {
-  async saveTasting(tasting: any): Promise<string> {
+  async saveTasting(tasting: unknown): Promise<string> {
     try {
       // 1. 메인 테이스팅 레코드 준비
       // Realm 데이터에서 Supabase에 필요한 필드만 선택적으로 복사
@@ -90,7 +90,7 @@ class TastingService {
         home_cafe_data: tasting.homeCafeData,
         selected_sensory_expressions: tasting.selectedSensoryExpressions,
         // user_id, created_at, updated_at는 Supabase가 자동 처리
-      };
+    };
 
       const { data: savedTasting, error: tastingError } = await supabase
         .from('tasting_records')
@@ -113,8 +113,8 @@ class TastingService {
             level2: flavor.level2 || null,
             level3: flavor.level3 || null,
             level4: flavor.level4 || null,
-          } as FlavorNote);
-        }
+        } as FlavorNote);
+      }
 
         if (flavorNotes.length > 0) {
           const { error: flavorError } = await supabase
@@ -122,8 +122,8 @@ class TastingService {
             .insert(flavorNotes);
 
           if (flavorError) throw flavorError;
-        }
       }
+    }
 
       // 3. 감각 속성 저장
       const sensoryAttribute: SensoryAttribute = {
@@ -133,7 +133,7 @@ class TastingService {
         sweetness: tasting.sweetness || 3,
         finish: tasting.finish || 3,
         mouthfeel: tasting.mouthfeel || 'Clean',
-      };
+    };
 
       const { error: sensoryError } = await supabase
         .from('sensory_attributes')
@@ -142,11 +142,11 @@ class TastingService {
       if (sensoryError) throw sensoryError;
 
       return savedTasting.id;
-    } catch (error) {
+  } catch (error) {
       // console.error('Error saving tasting to Supabase:', error);
       throw error;
-    }
   }
+}
 
   async getCoffeeComparison(
     coffeeName: string,
@@ -188,33 +188,33 @@ class TastingService {
 
       tastings.forEach(tasting => {
         if (tasting.flavor_notes) {
-          tasting.flavor_notes.forEach((note: any) => {
+          tasting.flavor_notes.forEach((note: unknown) => {
             // Count each level flavor note
             if (note.level1) {
               flavorCounts[note.level1] = (flavorCounts[note.level1] || 0) + 1;
               totalFlavorNotes++;
-            }
+          }
             if (note.level2) {
               flavorCounts[note.level2] = (flavorCounts[note.level2] || 0) + 1;
               totalFlavorNotes++;
-            }
+          }
             if (note.level3) {
               flavorCounts[note.level3] = (flavorCounts[note.level3] || 0) + 1;
               totalFlavorNotes++;
-            }
+          }
             if (note.level4) {
               flavorCounts[note.level4] = (flavorCounts[note.level4] || 0) + 1;
               totalFlavorNotes++;
-            }
-          });
-        }
-      });
+          }
+        });
+      }
+    });
 
       const popularFlavors = Object.entries(flavorCounts)
         .map(([value, count]) => ({
           value,
           percentage: Math.round((count / tastings.length) * 100),
-        }))
+      }))
         .sort((a, b) => b.percentage - a.percentage)
         .slice(0, 5);
 
@@ -230,27 +230,27 @@ class TastingService {
           sweetnessSum += sensory.sweetness || 3;
           finishSum += sensory.finish || 3;
           sensoryCount++;
-        }
-      });
+      }
+    });
 
       const sensoryAverages = {
         body: sensoryCount > 0 ? Number((bodySum / sensoryCount).toFixed(1)) : 3,
         acidity: sensoryCount > 0 ? Number((aciditySum / sensoryCount).toFixed(1)) : 3,
         sweetness: sensoryCount > 0 ? Number((sweetnessSum / sensoryCount).toFixed(1)) : 3,
         finish: sensoryCount > 0 ? Number((finishSum / sensoryCount).toFixed(1)) : 3,
-      };
+    };
 
       return {
         averageScore,
         totalTastings: tastings.length,
         popularFlavors,
         sensoryAverages,
-      };
-    } catch (error) {
+    };
+  } catch (error) {
       // console.error('Error getting coffee comparison:', error);
       return null;
-    }
   }
+}
 
   async getSimilarCoffees(
     coffeeName: string,
@@ -266,10 +266,10 @@ class TastingService {
       // 원산지가 있으면 같은 원산지 우선
       if (origin) {
         query = query.eq('origin', origin);
-      } else {
+    } else {
         // 원산지가 없으면 같은 로스터리
         query = query.eq('roaster_name', roaster_name);
-      }
+    }
 
       const { data: tastings, error } = await query;
 
@@ -277,7 +277,7 @@ class TastingService {
       if (!tastings || tastings.length === 0) return [];
 
       // 커피별로 그룹화하고 평균 계산
-      const coffeeMap: { [key: string]: any } = {};
+      const coffeeMap: { [key: string]: unknown} = {};
 
       tastings.forEach(tasting => {
         const key = `${tasting.coffee_name}-${tasting.roaster_name}`;
@@ -288,27 +288,27 @@ class TastingService {
             origin: tasting.origin,
             totalScore: 0,
             tastingCount: 0,
-          };
-        }
+        };
+      }
         coffeeMap[key].totalScore += tasting.match_score || 0;
         coffeeMap[key].tastingCount += 1;
-      });
+    });
 
       // 평균 점수 계산하고 정렬
       const similarCoffees = Object.values(coffeeMap)
         .map(coffee => ({
           ...coffee,
           averageScore: Math.round(coffee.totalScore / coffee.tastingCount),
-        }))
+      }))
         .sort((a, b) => b.averageScore - a.averageScore)
         .slice(0, 3);
 
       return similarCoffees;
-    } catch (error) {
+  } catch (error) {
       // console.error('Error getting similar coffees:', error);
       return [];
-    }
   }
+}
 }
 
 export default new TastingService();

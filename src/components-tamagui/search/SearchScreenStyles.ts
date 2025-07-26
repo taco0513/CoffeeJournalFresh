@@ -66,9 +66,9 @@ export const SearchBar = styled(XStack, {
         shadowOpacity: 0.2,
         shadowRadius: 4,
         elevation: 2,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 export const SearchIcon = styled(Text, {
@@ -121,9 +121,9 @@ export const FilterButton = styled(Button, {
       true: {
         backgroundColor: '$blue4',
         borderColor: '$blue9',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 export const FilterIcon = styled(Text, {
@@ -207,11 +207,11 @@ export const TastingCard = styled(Card, {
   pressStyle: {
     backgroundColor: '$backgroundHover',
     scale: 0.98,
-  },
+},
   
   hoverStyle: {
     backgroundColor: '$backgroundHover',
-  },
+},
 });
 
 export const CardHeader = styled(XStack, {
@@ -407,9 +407,9 @@ export const FilterChip = styled(Button, {
       true: {
         backgroundColor: '$blue9',
         borderColor: '$blue9',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 export const FilterChipText = styled(Text, {
@@ -421,8 +421,8 @@ export const FilterChipText = styled(Text, {
     selected: {
       true: { color: '$white' },
       false: { color: '$gray11' },
-    },
-  } as const,
+  },
+} as const,
 });
 
 // Score Range Styles

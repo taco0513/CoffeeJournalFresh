@@ -67,22 +67,22 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
     return selectedPaths.some(
       path => path.level1 === level1 && path.level2 === level2 && path.level3 === level3
     );
-  };
+};
 
   const isSubcategorySelected = (level1: string, level2: string) => {
     return selectedPaths.some(
       path => path.level1 === level1 && path.level2 === level2
     );
-  };
+};
 
   const getCategorySelectedCount = () => {
     return selectedPaths.filter(path => path.level1 === category).length;
-  };
+};
 
   const getSubcategoryPreview = () => {
     const names = categoryData.subcategories.slice(0, 3).map(sub => sub.koreanName);
     return names.join(', ') + (categoryData.subcategories.length > 3 ? ' 등' : '');
-  };
+};
 
   return (
     <View style={styles.categoryContainer}>
@@ -156,14 +156,14 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
                       onSelectSubcategory?.(category, sub.name);
                       if (expandedSubCategories.has(subcategoryKey)) {
                         onToggleSubcategory?.(subcategoryKey);
-                      }
-                    } else {
+                    }
+                  } else {
                       onToggleSubcategory?.(subcategoryKey);
                       if (!expandedSubCategories.has(subcategoryKey) && !hasSelectedFlavors) {
                         onSelectSubcategory?.(category, sub.name);
-                      }
                     }
-                  }}
+                  }
+                }}
                 >
                   <Text
                     style={[
@@ -177,14 +177,14 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
                   </Text>
                 </TouchableOpacity>
               );
-            })}
+          })}
           </ScrollView>
 
           {(() => {
             const expandedSubs = filteredSubCategories.filter(sub => expandedSubCategories.has(`${category}-${sub.name}`));
             
-            const subsWithFlavors: Array<{sub: any, filteredFlavors: any[]}> = [];
-            const subsWithoutFlavors: any[] = [];
+            const subsWithFlavors: Array<{sub: unknown, filteredFlavors: unknown[]}> = [];
+            const subsWithoutFlavors: unknown[] = [];
             
             expandedSubs.forEach(sub => {
               const filteredFlavors = sub.flavors.filter(f =>
@@ -196,10 +196,10 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
               
               if (filteredFlavors.length > 0) {
                 subsWithFlavors.push({ sub, filteredFlavors });
-              } else {
+            } else {
                 subsWithoutFlavors.push(sub);
-              }
-            });
+            }
+          });
             
             return (
               <>
@@ -207,7 +207,7 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
                   <View key={sub.name} style={styles.flavorGrid}>
                     <Text style={styles.subcategoryLabel}>{sub.koreanName} 세부 향미:</Text>
                     <View style={styles.flavorRow}>
-                      {filteredFlavors.map((flavor: any) => {
+                      {filteredFlavors.map((flavor: unknown) => {
                         const isSelected = isFlavorSelected(category, sub.name, flavor.name);
                         const isDisabled = !isSelected && selectedPaths.length >= 5;
                         return (
@@ -224,9 +224,9 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
                                   level1: category,
                                   level2: sub.name,
                                   level3: flavor.name,
-                                });
-                              }
-                            }}
+                              });
+                            }
+                          }}
                             activeOpacity={isDisabled ? 1 : 0.7}
                             disabled={isDisabled}
                           >
@@ -241,7 +241,7 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
                             </Text>
                           </TouchableOpacity>
                         );
-                      })}
+                    })}
                     </View>
                   </View>
                 ))}
@@ -253,14 +253,14 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
                         {subsWithoutFlavors.length === 1 
                           ? `'${subsWithoutFlavors[0].koreanName}'은 더 세부적인 향미가 없습니다.`
                           : `'${subsWithoutFlavors.map(sub => sub.koreanName).join('\', \'')}'은 더 세부적인 향미가 없습니다.`
-                        }
+                      }
                       </Text>
                     </View>
                   </View>
                 )}
               </>
             );
-          })()}
+        })()}
         </View>
       )}
     </View>

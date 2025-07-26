@@ -21,7 +21,7 @@ export const PerformanceOptimizedWrapper = memo<PerformanceWrapperProps>(({
 }) => {
   const renderCountRef = useRef(0);
   const mountTimeRef = useRef<string | null>(null);
-  const lastPropsRef = useRef<any>(null);
+  const lastPropsRef = useRef<unknown>(null);
 
   // Track component mount
   useEffect(() => {
@@ -36,10 +36,10 @@ export const PerformanceOptimizedWrapper = memo<PerformanceWrapperProps>(({
             `${componentName}_unmount`,
             { renderCount: renderCountRef.current }
           );
-        }
-      };
-    }
-  }, [componentName, trackMounts]);
+      }
+    };
+  }
+}, [componentName, trackMounts]);
 
   // Track renders
   useEffect(() => {
@@ -52,10 +52,10 @@ export const PerformanceOptimizedWrapper = memo<PerformanceWrapperProps>(({
       setTimeout(() => {
         performanceMonitor.endTiming(timingId, `${componentName}_render_complete`, {
           renderNumber: renderCountRef.current,
-        });
-      }, 0);
-    }
-  });
+      });
+    }, 0);
+  }
+});
 
   // Track prop updates
   useEffect(() => {
@@ -65,12 +65,12 @@ export const PerformanceOptimizedWrapper = memo<PerformanceWrapperProps>(({
       setTimeout(() => {
         performanceMonitor.endTiming(timingId, `${componentName}_update_complete`, {
           renderNumber: renderCountRef.current,
-        });
-      }, 0);
-    }
+      });
+    }, 0);
+  }
     
     lastPropsRef.current = { children, componentName };
-  }, [children, componentName, trackUpdates]);
+}, [children, componentName, trackUpdates]);
 
   return <>{children}</>;
 });
@@ -90,11 +90,11 @@ export function withPerformanceMonitoring<P extends object>(
         <Component {...props} />
       </PerformanceOptimizedWrapper>
     );
-  });
+});
 
   WrappedComponent.displayName = `withPerformanceMonitoring(${
     componentName || Component.displayName || Component.name || 'Component'
-  })`;
+})`;
 
   return WrappedComponent;
 }
@@ -126,8 +126,8 @@ export function LazyComponentWrapper({
           timingIdRef.current,
           `${componentName}_lazy_load_complete`
         );
-      }
-    }, 0);
+    }
+  }, 0);
 
     return () => {
       clearTimeout(timer);
@@ -136,13 +136,13 @@ export function LazyComponentWrapper({
           timingIdRef.current,
           `${componentName}_lazy_load_cancelled`
         );
-      }
-    };
-  }, [componentName]);
+    }
+  };
+}, [componentName]);
 
   if (!isLoaded && fallback) {
     return <>{fallback}</>;
-  }
+}
 
   return (
     <PerformanceOptimizedWrapper 
@@ -180,10 +180,10 @@ export const VirtualizedItemWrapper = memo<{
             timingIdRef.current,
             `${componentName}_item_${index}_hidden`
           );
-        }
-      };
-    }
-  }, [componentName, index]);
+      }
+    };
+  }
+}, [componentName, index]);
 
   return <>{children}</>;
 });

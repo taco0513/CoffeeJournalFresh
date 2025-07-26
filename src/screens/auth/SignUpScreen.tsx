@@ -37,34 +37,34 @@ const SignUpScreen = () => {
     if (!email.trim() || !password.trim() || !confirmPassword.trim() || !username.trim()) {
       Alert.alert('입력 오류', '모든 필드를 입력해주세요.');
       return false;
-    }
+  }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert('입력 오류', '올바른 이메일 주소를 입력해주세요.');
       return false;
-    }
+  }
 
     // Password validation
     if (password.length < 6) {
       Alert.alert('입력 오류', '비밀번호는 최소 6자 이상이어야 합니다.');
       return false;
-    }
+  }
 
     if (password !== confirmPassword) {
       Alert.alert('입력 오류', '비밀번호가 일치하지 않습니다.');
       return false;
-    }
+  }
 
     // Username validation
     if (username.length < 3) {
       Alert.alert('입력 오류', '사용자 이름은 최소 3자 이상이어야 합니다.');
       return false;
-    }
+  }
 
     return true;
-  };
+};
 
   const handleSignUp = async () => {
     // Dismiss keyboard before validation
@@ -87,21 +87,21 @@ const SignUpScreen = () => {
             navigation.reset({
               index: 0,
               routes: [{ name: 'MainTabs' as never }],
-            });
-          }
-        }]
+          });
+        }
+      }]
       );
-    } catch (error: any) {
+  } catch (error) {
       // console.error('Sign up error:', error);
       ErrorHandler.handle(error, '회원가입');
-    } finally {
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+};
 
   const handleBackToSignIn = () => {
     navigation.goBack();
-  };
+};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -244,13 +244,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
+},
   scrollView: {
     flex: 1,
-  },
+},
   scrollViewContent: {
     flexGrow: 1,
-  },
+},
   navigationBar: {
     height: HIGConstants.MIN_TOUCH_TARGET,
     flexDirection: 'row',
@@ -260,55 +260,55 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
-  },
+},
   backButton: {
     minWidth: HIGConstants.MIN_TOUCH_TARGET,
     height: HIGConstants.MIN_TOUCH_TARGET,
     justifyContent: 'center',
     alignItems: 'flex-start',
-  },
+},
   backButtonText: {
     fontSize: 17,
     fontWeight: '400',
     color: HIGColors.blue,
-  },
+},
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   headerSection: {
     alignItems: 'center',
     paddingTop: HIGConstants.SPACING_XL,
     paddingBottom: HIGConstants.SPACING_XL,
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   title: {
     fontSize: 28,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   subtitle: {
     fontSize: 17,
     fontWeight: '400',
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   formSection: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   inputContainer: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   label: {
     fontSize: 13,
     fontWeight: '600',
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
     paddingHorizontal: HIGConstants.SPACING_XS,
-  },
+},
   input: {
     height: HIGConstants.MIN_TOUCH_TARGET,
     backgroundColor: HIGColors.secondarySystemBackground,
@@ -318,37 +318,37 @@ const styles = StyleSheet.create({
     color: '#000000',
     borderWidth: 1,
     borderColor: HIGColors.gray4,
-  },
+},
   hint: {
     fontSize: 13,
     color: HIGColors.tertiaryLabel,
     marginTop: HIGConstants.SPACING_XS,
     paddingHorizontal: HIGConstants.SPACING_XS,
-  },
+},
   termsSection: {
     paddingHorizontal: HIGConstants.SPACING_LG + HIGConstants.SPACING_XS,
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   termsText: {
     fontSize: 13,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     lineHeight: 18,
-  },
+},
   termsLink: {
     color: HIGColors.blue,
     textDecorationLine: 'underline',
-  },
+},
   buttonSection: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingBottom: HIGConstants.SPACING_XL,
-  },
+},
   signUpButton: {
     width: '100%',
-  },
+},
   buttonText: {
     color: '#FFFFFF',
-  },
+},
 });
 
 export default SignUpScreen;

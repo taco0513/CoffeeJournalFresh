@@ -29,7 +29,7 @@ interface FlavorRadarChartProps {
     nutty: number;
     chocolate: number;
     spices: number;
-  };
+};
   interactive?: boolean;
   showComparison?: boolean;
   comparisonData?: {
@@ -39,9 +39,9 @@ interface FlavorRadarChartProps {
     nutty: number;
     chocolate: number;
     spices: number;
-  };
+};
   onFlavorTap?: (flavor: string) => void;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
@@ -73,8 +73,8 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
     return {
       x: CENTER + r * Math.cos(angle),
       y: CENTER + r * Math.sin(angle),
-    };
   };
+};
 
   // Create polygon points
   const createPolygonPoints = (data: typeof preferences) => {
@@ -82,9 +82,9 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
       .map((cat, index) => {
         const coord = getCoordinate(data[cat.key as keyof typeof data], index);
         return `${coord.x},${coord.y}`;
-      })
+    })
       .join(' ');
-  };
+};
 
   // Draw grid lines
   const renderGrid = () => {
@@ -105,7 +105,7 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
           opacity={0.5}
         />
       );
-    }
+  }
 
     // Radial lines
     categories.forEach((_, index) => {
@@ -124,10 +124,10 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
           opacity={0.5}
         />
       );
-    });
+  });
 
     return lines;
-  };
+};
 
   // Render category labels
   const renderLabels = () => {
@@ -140,8 +140,8 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
       const handlePress = () => {
         if (interactive && onFlavorTap) {
           onFlavorTap(cat.key);
-        }
-      };
+      }
+    };
 
       return (
         <G key={`label-${cat.key}`}>
@@ -172,8 +172,8 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
           )}
         </G>
       );
-    });
-  };
+  });
+};
 
   const userPolygonPoints = createPolygonPoints(preferences);
   const comparisonPolygonPoints = showComparison && comparisonData
@@ -225,7 +225,7 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
                 strokeWidth={2}
               />
             );
-          })}
+        })}
         </Svg>
 
         {/* Labels */}
@@ -243,7 +243,7 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
             <View style={[styles.legendColor, { 
               backgroundColor: HIGColors.gray,
               borderStyle: 'dashed',
-            }]} />
+          }]} />
             <Text style={styles.legendText}>평균 선호도</Text>
           </View>
         </View>
@@ -261,59 +261,59 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     paddingVertical: HIGConstants.SPACING_MD,
-  },
+},
   chartContainer: {
     width: CHART_SIZE,
     height: CHART_SIZE,
     position: 'relative',
-  },
+},
   svg: {
     position: 'absolute',
     top: 0,
     left: 0,
-  },
+},
   labelContainer: {
     position: 'absolute',
     width: 60,
     alignItems: 'center',
-  },
+},
   labelEmoji: {
     fontSize: 24,
     marginBottom: 2,
-  },
+},
   labelText: {
     fontSize: 12,
     fontWeight: '600',
     marginBottom: 2,
-  },
+},
   labelValue: {
     fontSize: 11,
     color: HIGColors.secondaryLabel,
-  },
+},
   legend: {
     flexDirection: 'row',
     justifyContent: 'center',
     gap: HIGConstants.SPACING_LG,
     marginTop: HIGConstants.SPACING_MD,
-  },
+},
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: HIGConstants.SPACING_XS,
-  },
+},
   legendColor: {
     width: 16,
     height: 16,
     borderRadius: 2,
-  },
+},
   legendText: {
     fontSize: 12,
     color: HIGColors.secondaryLabel,
-  },
+},
   hint: {
     fontSize: 12,
     color: HIGColors.tertiaryLabel,
     fontStyle: 'italic',
     marginTop: HIGConstants.SPACING_SM,
-  },
+},
 });

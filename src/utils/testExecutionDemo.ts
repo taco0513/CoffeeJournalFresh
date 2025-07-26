@@ -5,6 +5,7 @@ import { getCurrentLanguage, changeLanguage } from '../services/i18n';
 import { getCurrentMarketConfig, isBetaMarket } from '../config/marketConfig';
 import { performanceMonitor } from '../services/PerformanceMonitor';
 
+import { Logger } from '../services/LoggingService';
 /**
  * Test Execution Demo
  * Demonstrates comprehensive cross-market testing functionality
@@ -19,7 +20,7 @@ export interface TestExecutionResult {
   warningTests: number;
   summary: string;
   recommendations: string[];
-  detailedResults?: any[];
+  detailedResults?: unknown[];
 }
 
 export class TestExecutionDemo {
@@ -30,9 +31,9 @@ export class TestExecutionDemo {
   static getInstance(): TestExecutionDemo {
     if (!TestExecutionDemo.instance) {
       TestExecutionDemo.instance = new TestExecutionDemo();
-    }
-    return TestExecutionDemo.instance;
   }
+    return TestExecutionDemo.instance;
+}
 
   /**
    * Run comprehensive test suite with all validations
@@ -40,21 +41,21 @@ export class TestExecutionDemo {
   async runFullTestSuite(): Promise<TestExecutionResult> {
     const startTime = performance.now();
     
-    console.log('🚀 Starting Full Test Suite...');
-    console.log('📊 Current Market Status:', {
+    Logger.debug('🚀 Starting Full Test Suite...', 'util', { component: 'testExecutionDemo' });
+    Logger.debug('📊 Current Market Status:', {
       language: getCurrentLanguage(),
       market: getCurrentMarketConfig().market,
       isBeta: isBetaMarket(),
       timestamp: new Date().toISOString()
-    });
+  });
 
     try {
       // Run i18n validation first
-      console.log('🔤 Running I18n Validation Suite...');
+      Logger.debug('🔤 Running I18n Validation Suite...', 'util', { component: 'testExecutionDemo' });
       const i18nResults = await i18nValidationSuite.runFullValidation();
       
       // Run cross-market testing
-      console.log('🌍 Running Cross-Market Test Suite...');
+      Logger.debug('🌍 Running Cross-Market Test Suite...', 'util', { component: 'testExecutionDemo' });
       const crossMarketResults = await crossMarketTester.runFullTestSuite();
       
       const endTime = performance.now();
@@ -80,11 +81,11 @@ export class TestExecutionDemo {
       const isReadyForDeployment = failedTests === 0 && warningTests < 3;
       if (isReadyForDeployment) {
         recommendations.unshift('🎉 App is ready for dual-market deployment!');
-      } else {
+    } else {
         recommendations.unshift(`⚠️ Address ${failedTests} failures and ${warningTests} warnings before deployment`);
-      }
+    }
       
-      console.log('✅ Full Test Suite completed:', summary);
+      Logger.debug('✅ Full Test Suite completed:', 'util', { component: 'testExecutionDemo', data: summary });
       
       // Report to performance monitor (for future implementation)
       // if (performanceMonitor) {
@@ -105,9 +106,9 @@ export class TestExecutionDemo {
           { type: 'i18n', results: i18nResults },
           { type: 'cross-market', results: crossMarketResults }
         ]
-      };
-    } catch (error) {
-      console.error('❌ Full Test Suite failed:', error);
+    };
+  } catch (error) {
+      Logger.error('❌ Full Test Suite failed:', 'util', { component: 'testExecutionDemo', error: error });
       
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
@@ -122,9 +123,9 @@ export class TestExecutionDemo {
         warningTests: 0,
         summary: `Full Test Suite failed: ${errorMessage}`,
         recommendations: [`Fix test suite execution error: ${errorMessage}`]
-      };
-    }
+    };
   }
+}
 
   /**
    * Run only i18n validation tests
@@ -132,7 +133,7 @@ export class TestExecutionDemo {
   async runI18nValidationOnly(): Promise<TestExecutionResult> {
     const startTime = performance.now();
     
-    console.log('🔤 Starting I18n Validation Only...');
+    Logger.debug('🔤 Starting I18n Validation Only...', 'util', { component: 'testExecutionDemo' });
     
     try {
       const results = await i18nValidationSuite.runFullValidation();
@@ -140,7 +141,7 @@ export class TestExecutionDemo {
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
       
-      console.log('✅ I18n Validation completed:', results.summary);
+      Logger.debug('✅ I18n Validation completed:', 'util', { component: 'testExecutionDemo', data: results.summary });
       
       return {
         testType: 'i18n-only',
@@ -152,9 +153,9 @@ export class TestExecutionDemo {
         summary: results.summary,
         recommendations: results.recommendations,
         detailedResults: [{ type: 'i18n', results }]
-      };
-    } catch (error) {
-      console.error('❌ I18n Validation failed:', error);
+    };
+  } catch (error) {
+      Logger.error('❌ I18n Validation failed:', 'util', { component: 'testExecutionDemo', error: error });
       
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
@@ -168,9 +169,9 @@ export class TestExecutionDemo {
         warningTests: 0,
         summary: `I18n Validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         recommendations: [`Fix i18n validation error: ${error instanceof Error ? error.message : 'Unknown error'}`]
-      };
-    }
+    };
   }
+}
 
   /**
    * Run only cross-market tests
@@ -178,7 +179,7 @@ export class TestExecutionDemo {
   async runCrossMarketTestsOnly(): Promise<TestExecutionResult> {
     const startTime = performance.now();
     
-    console.log('🌍 Starting Cross-Market Tests Only...');
+    Logger.debug('🌍 Starting Cross-Market Tests Only...', 'util', { component: 'testExecutionDemo' });
     
     try {
       const results = await crossMarketTester.runFullTestSuite();
@@ -186,7 +187,7 @@ export class TestExecutionDemo {
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
       
-      console.log('✅ Cross-Market Tests completed:', results.summary);
+      Logger.debug('✅ Cross-Market Tests completed:', 'util', { component: 'testExecutionDemo', data: results.summary });
       
       return {
         testType: 'cross-market-only',
@@ -198,9 +199,9 @@ export class TestExecutionDemo {
         summary: results.summary,
         recommendations: results.recommendations,
         detailedResults: [{ type: 'cross-market', results }]
-      };
-    } catch (error) {
-      console.error('❌ Cross-Market Tests failed:', error);
+    };
+  } catch (error) {
+      Logger.error('❌ Cross-Market Tests failed:', 'util', { component: 'testExecutionDemo', error: error });
       
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
@@ -214,9 +215,9 @@ export class TestExecutionDemo {
         warningTests: 0,
         summary: `Cross-Market Tests failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         recommendations: [`Fix cross-market testing error: ${error instanceof Error ? error.message : 'Unknown error'}`]
-      };
-    }
+    };
   }
+}
 
   /**
    * Run performance-focused tests
@@ -224,7 +225,7 @@ export class TestExecutionDemo {
   async runPerformanceTestsOnly(): Promise<TestExecutionResult> {
     const startTime = performance.now();
     
-    console.log('⚡ Starting Performance Tests Only...');
+    Logger.debug('⚡ Starting Performance Tests Only...', 'util', { component: 'testExecutionDemo' });
     
     try {
       // Test language switching performance
@@ -250,14 +251,14 @@ export class TestExecutionDemo {
       allResults.forEach(result => {
         if (!result.success) {
           recommendations.push(`Fix ${result.testName}: ${result.message}`);
-        }
-      });
+      }
+    });
       
       if (recommendations.length === 0) {
         recommendations.push('🚀 All performance tests passed! App performance is optimal.');
-      }
+    }
       
-      console.log('✅ Performance Tests completed:', summary);
+      Logger.debug('✅ Performance Tests completed:', 'util', { component: 'testExecutionDemo', data: summary });
       
       return {
         testType: 'performance-only',
@@ -269,9 +270,9 @@ export class TestExecutionDemo {
         summary,
         recommendations,
         detailedResults: [{ type: 'performance', results: allResults }]
-      };
-    } catch (error) {
-      console.error('❌ Performance Tests failed:', error);
+    };
+  } catch (error) {
+      Logger.error('❌ Performance Tests failed:', 'util', { component: 'testExecutionDemo', error: error });
       
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
@@ -285,14 +286,14 @@ export class TestExecutionDemo {
         warningTests: 0,
         summary: `Performance Tests failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         recommendations: [`Fix performance testing error: ${error instanceof Error ? error.message : 'Unknown error'}`]
-      };
-    }
+    };
   }
+}
 
   /**
    * Test language switching performance
    */
-  private async testLanguageSwitchingPerformance(): Promise<any> {
+  private async testLanguageSwitchingPerformance(): Promise<unknown> {
     const originalLang = getCurrentLanguage();
     const targetLang = originalLang === 'ko' ? 'en' : 'ko';
     
@@ -310,13 +311,13 @@ export class TestExecutionDemo {
       message: `${Math.round(switchTime)}ms (target: <200ms)`,
       executionTime: switchTime,
       data: { originalLang, targetLang, switchTime }
-    };
-  }
+  };
+}
 
   /**
    * Test market data loading performance
    */
-  private async testMarketDataLoadingPerformance(): Promise<any> {
+  private async testMarketDataLoadingPerformance(): Promise<unknown> {
     const startTime = performance.now();
     
     // Import market functions dynamically to simulate real loading
@@ -340,14 +341,14 @@ export class TestExecutionDemo {
       data: {
         dataSize: roasters.length + origins.length + flavorProfiles.length,
         loadTime
-      }
-    };
-  }
+    }
+  };
+}
 
   /**
    * Test navigation performance (simulated)
    */
-  private async testNavigationPerformance(): Promise<any> {
+  private async testNavigationPerformance(): Promise<unknown> {
     const startTime = performance.now();
     
     // Simulate navigation operations
@@ -364,8 +365,8 @@ export class TestExecutionDemo {
       message: `${Math.round(navTime)}ms (target: <50ms)`,
       executionTime: navTime,
       data: { navTime }
-    };
-  }
+  };
+}
 
   /**
    * Generate deployment readiness report
@@ -376,8 +377,8 @@ export class TestExecutionDemo {
     report: string;
     criticalIssues: string[];
     recommendations: string[];
-  }> {
-    console.log('📋 Generating Deployment Readiness Report...');
+}> {
+    Logger.debug('📋 Generating Deployment Readiness Report...', 'util', { component: 'testExecutionDemo' });
     
     try {
       const testResults = await this.runFullTestSuite();
@@ -398,13 +399,13 @@ export class TestExecutionDemo {
       const criticalIssues: string[] = [];
       if (testResults.failedTests > 0) {
         criticalIssues.push(`${testResults.failedTests} test failures must be resolved`);
-      }
+    }
       if (testResults.warningTests > 5) {
         criticalIssues.push(`${testResults.warningTests} warnings should be reviewed`);
-      }
+    }
       if (testResults.executionTime > 10000) {
         criticalIssues.push(`Test execution time too slow: ${testResults.executionTime}ms`);
-      }
+    }
       
       const report = `
 Deployment Readiness Report
@@ -432,17 +433,17 @@ ${ready ?
         report,
         criticalIssues,
         recommendations: testResults.recommendations
-      };
-    } catch (error) {
+    };
+  } catch (error) {
       return {
         ready: false,
         score: 0,
         report: `Deployment readiness check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         criticalIssues: ['Unable to run deployment readiness tests'],
         recommendations: ['Fix test execution issues before attempting deployment']
-      };
-    }
+    };
   }
+}
 
   /**
    * Show interactive test results
@@ -456,11 +457,11 @@ ${ready ?
       `${statusEmoji} Test Results`,
       `${results.summary}\n\nDeployment Status: ${deploymentStatus}\n\nTop Recommendations:\n${results.recommendations.slice(0, 3).join('\n')}`,
       [
-        { text: 'View Details', onPress: () => console.log('Detailed Results:', results.detailedResults) },
+        { text: 'View Details', onPress: () => Logger.debug('Detailed Results:', 'util', { component: 'testExecutionDemo', data: results.detailedResults }) },
         { text: 'OK' }
       ]
     );
-  }
+}
 }
 
 export const testExecutionDemo = TestExecutionDemo.getInstance();

@@ -51,7 +51,7 @@ export const TEST_LOGGING_CONFIG: LoggingConfig = {
 export const getLoggingConfig = (): LoggingConfig => {
   if (__DEV__) {
     return DEV_LOGGING_CONFIG;
-  }
+}
   
   // You can add more environment checks here
   // For example, staging environment
@@ -111,11 +111,11 @@ export const SENSITIVE_PATTERNS = [
 export const redactSensitiveData = <T>(data: T): T => {
   if (typeof data !== 'object' || data === null) {
     return data;
-  }
+}
   
   if (Array.isArray(data)) {
     return data.map(redactSensitiveData) as T;
-  }
+}
   
   const redacted: Record<string, unknown> = {};
   
@@ -124,12 +124,12 @@ export const redactSensitiveData = <T>(data: T): T => {
     
     if (isSensitive) {
       redacted[key] = '[REDACTED]';
-    } else if (typeof value === 'object' && value !== null) {
+  } else if (typeof value === 'object' && value !== null) {
       redacted[key] = redactSensitiveData(value);
-    } else {
+  } else {
       redacted[key] = value;
-    }
   }
+}
   
   return redacted as T;
 };

@@ -19,28 +19,21 @@ import tastingService from '../services/supabase/tastingService';
 import { ErrorHandler, NetworkUtils } from '../utils/errorHandler';
 import { useAchievementNotification } from '../contexts/AchievementContext';
 import { performanceMonitor } from '../services/PerformanceMonitor';
-import { useUserStore } from '../stores/useUserStore';
+import { Logger } from '../services/LoggingService';
+import useUserStore from '../stores/useUserStore';
+import { loadCoffeeComparisonData } from '../utils/comparison';
+import { getEncouragementMessage } from '../utils/messages';
 const ENABLE_SYNC = true; // Enable sync for now
 
-const getEncouragementMessage = (score: number): string => {
-  if (score < 50) {
-    return "사람마다 느끼는 맛이 달라요. 당신의 표현도 정답이에요!";
-  } else if (score < 75) {
-    return "좋은 시도예요! 점점 더 섬세하게 느끼고 계시네요!";
-  } else if (score < 90) {
-    return "훌륭해요! 🎉 감각이 정말 좋으세요!";
-  } else {
-    return "로스터와 비슷하게 느끼셨네요! 감각이 정말 좋으세요!";
-  }
-};
+// Using shared getEncouragementMessage from utils/messages
 
-export default function ResultScreen({navigation}: any) {
+export default function ResultScreen({navigation}: unknown) {
   const {currentTasting, matchScoreTotal, reset, saveTasting, checkAchievements} = useTastingStore();
   const {showSuccessToast, showErrorToast} = useToastStore();
   const { showMultipleAchievements } = useAchievementNotification();
   const { currentUser } = useUserStore();
   const [isSaving, setIsSaving] = useState(false);
-  const [comparison, setComparison] = useState<any>(null);
+  const [comparison, setComparison] = useState<unknown>(null);
   const [isLoadingComparison, setIsLoadingComparison] = useState(false);
   const [isSaved, setIsSaved] = useState(false); // 저장 완료 상태 추가
 
@@ -56,27 +49,27 @@ export default function ResultScreen({navigation}: any) {
               ...currentTasting,
               id: `tasting_${Date.now()}`,
               matchScore: matchScoreTotal || 0,
-            };
+          };
             
             if (ENABLE_SYNC) {
               await tastingService.saveTasting(tastingData);
-            }
-          } catch (supabaseError: any) {
+          }
+        } catch (supabaseError: unknown) {
             if (NetworkUtils.isNetworkError(supabaseError)) {
               showErrorToast('오프라인 모드', '네트워크 연결이 없어 로컬에만 저장되었습니다.');
-            }
           }
+        }
           
           if (currentUser?.id) {
             try {
               const newAchievements = await checkAchievements(currentUser.id);
               if (newAchievements.length > 0) {
-                showMultipleAchievements(newAchievements as any);
-              }
-            } catch (error) {
-              console.warn('Failed to check achievements:', error);
+                showMultipleAchievements(newAchievements as unknown);
             }
+          } catch (error) {
+              Logger.warn('Failed to check achievements:', 'general', { component: 'ResultScreen', error: error });
           }
+        }
           
           showSuccessToast('저장 완료', '테이스팅이 자동으로 저장되었습니다');
           setIsSaved(true);
@@ -85,88 +78,43 @@ export default function ResultScreen({navigation}: any) {
             mode: currentTasting.mode,
             hasAchievements: currentUser?.id ? true : false,
             syncEnabled: ENABLE_SYNC
-          });
-        } catch (error: any) {
+        });
+      } catch (error) {
           await performanceMonitor.endTiming(saveTimingId, 'tasting_save_error', {
             mode: currentTasting.mode,
             error: error.message
-          });
+        });
           ErrorHandler.handle(error, '테이스팅 자동 저장');
-        }
       }
-    };
+    }
+  };
     
     autoSave();
-  }, [isSaved, currentTasting, saveTasting, matchScoreTotal, checkAchievements, currentUser, showSuccessToast, showErrorToast, showMultipleAchievements]);
+}, [isSaved, currentTasting, saveTasting, matchScoreTotal, checkAchievements, currentUser, showSuccessToast, showErrorToast, showMultipleAchievements]);
 
   useEffect(() => {
-    const loadComparisonData = async () => {
-      if (!currentTasting?.coffeeName || !currentTasting?.roastery) {
-        return;
-      }
-
+    const loadData = async () => {
       setIsLoadingComparison(true);
-      const comparisonTimingId = performanceMonitor.startTiming('comparison_load');
       
       try {
-        if (ENABLE_SYNC) {
-          try {
-            const supabaseComparison = await tastingService.getCoffeeComparison(
-              currentTasting.coffeeName,
-              currentTasting.roastery
-            );
-            
-
-            if (supabaseComparison) {
-              setComparison(supabaseComparison);
-            } else {
-              const realmService = RealmService.getInstance();
-              
-              const comparisonData = realmService.getSameCoffeeComparison(
-                currentTasting.coffeeName,
-                currentTasting.roastery
-              );
-              
-              setComparison(comparisonData);
-            }
-          } catch (error) {
-            try {
-              const realmService = RealmService.getInstance();
-              const comparisonData = realmService.getSameCoffeeComparison(
-                currentTasting.coffeeName,
-                currentTasting.roastery
-              );
-              setComparison(comparisonData);
-            } catch (realmError) {
-            }
-          }
-        } else {
-          const realmService = RealmService.getInstance();
-          const comparisonData = realmService.getSameCoffeeComparison(
-            currentTasting.coffeeName,
-            currentTasting.roastery
-          );
-          setComparison(comparisonData);
-        }
-      } catch (error) {
+        const comparisonData = await loadCoffeeComparisonData(
+          currentTasting?.coffeeName,
+          currentTasting?.roastery
+        );
+        setComparison(comparisonData);
+    } catch (error) {
+        Logger.error('Failed to load comparison data', 'screen', {
+          component: 'ResultScreen',
+          error: error
+      });
         setComparison(null);
-        await performanceMonitor.endTiming(comparisonTimingId, 'comparison_load_error', {
-          coffee: currentTasting.coffeeName,
-          roastery: currentTasting.roastery,
-          error: (error as Error).message
-        });
-      } finally {
+    } finally {
         setIsLoadingComparison(false);
-        await performanceMonitor.endTiming(comparisonTimingId, 'comparison_load_complete', {
-          coffee: currentTasting.coffeeName,
-          roastery: currentTasting.roastery,
-          syncEnabled: ENABLE_SYNC
-        });
-      }
-    };
+    }
+  };
 
-    loadComparisonData();
-  }, [currentTasting?.coffeeName, currentTasting?.roastery, currentTasting?.origin]);
+    loadData();
+}, [currentTasting?.coffeeName, currentTasting?.roastery, currentTasting?.origin]);
 
   const handleNewTasting = () => {
     reset();
@@ -177,18 +125,18 @@ export default function ResultScreen({navigation}: any) {
         state: {
           routes: [{name: 'CoffeeInfo'}],
           index: 0,
-        },
-      }],
-    });
-  };
+      },
+    }],
+  });
+};
 
   const handleGoHome = () => {
     reset();
     navigation.reset({
       index: 0,
       routes: [{name: 'MainTabs'}],
-    });
-  };
+  });
+};
 
   if (!currentTasting) {
     return (
@@ -196,21 +144,21 @@ export default function ResultScreen({navigation}: any) {
         <Text style={styles.title}>데이터 로드 중...</Text>
       </SafeAreaView>
     );
-  }
+}
 
   const getKoreanName = (englishName: string): string => {
-    return (flavorWheelKorean.translations as any)[englishName] || englishName;
-  };
+    return (flavorWheelKorean.translations as unknown)[englishName] || englishName;
+};
 
   const selectedFlavorNotes = currentTasting.selectedFlavors || [];
-  const flavorList = selectedFlavorNotes.map((path: any) => {
+  const flavorList = selectedFlavorNotes.map((path: unknown) => {
     const parts = [];
     if (path.level1) parts.push(getKoreanName(path.level1));
     if (path.level2) parts.push(getKoreanName(path.level2));
     if (path.level3) parts.push(path.level3); // level3는 이미 한글
     if (path.level4) parts.push(path.level4);
     return parts.join(' > ');
-  });
+});
 
   return (
     <SafeAreaView style={styles.container}>
@@ -361,7 +309,7 @@ export default function ResultScreen({navigation}: any) {
             <View style={styles.popularFlavorsContainer}>
               <Text style={styles.popularFlavorsTitle}>인기 맛 노트</Text>
               <View style={styles.flavorTagsContainer}>
-                {comparison.popularFlavors.map((flavor: any, index: number) => (
+                {comparison.popularFlavors.map((flavor: unknown, index: number) => (
                   <View key={index} style={styles.flavorTag}>
                     <Text style={styles.flavorTagText}>{flavor.value}</Text>
                     <Text style={styles.flavorTagPercent}>{flavor.percentage}%</Text>
@@ -447,7 +395,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.secondarySystemBackground,
-  },
+},
   navigationBar: {
     height: 44,
     flexDirection: 'row',
@@ -457,56 +405,56 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.systemGray4,
-  },
+},
   backButton: {
     fontSize: 24,
     color: HIGColors.systemBlue,
-  },
+},
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   rightSection: {
     width: 24,
-  },
+},
   progressBar: {
     height: 3,
     backgroundColor: HIGColors.systemGray5,
     overflow: 'hidden',
-  },
+},
   progressFill: {
     height: '100%',
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   scrollView: {
     flex: 1,
-  },
+},
   scrollContent: {
     paddingBottom: 100, // Space for sticky bottom button
-  },
+},
   header: {
     alignItems: 'center',
     padding: HIGConstants.SPACING_XL,
     backgroundColor: '#FFFFFF',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   headerIcon: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   title: {
     fontSize: 28,
     fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   score: {
     fontSize: 32,
     fontWeight: '700',
     color: HIGColors.green,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   encouragement: {
     fontSize: 17,
     fontWeight: '400',
@@ -514,7 +462,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: HIGConstants.SPACING_LG,
     lineHeight: 24,
-  },
+},
   section: {
     backgroundColor: '#FFFFFF',
     padding: HIGConstants.SPACING_LG,
@@ -525,70 +473,70 @@ const styles = StyleSheet.create({
     shadowOffset: {
       width: 0,
       height: 1,
-    },
+  },
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
-  },
+},
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   info: {
     fontSize: 15,
     fontWeight: '400',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   infoLast: {
     marginBottom: 0,
-  },
+},
   flavorItem: {
     fontSize: 15,
     fontWeight: '400',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.systemGray4,
-  },
+},
   actionButtonGroup: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_SM,
     width: '100%',
-  },
+},
   actionButton: {
     flex: 1,
     minHeight: HIGConstants.MIN_TOUCH_TARGET,
-  },
+},
   actionButtonText: {
     fontSize: 15,
     fontWeight: '600',
-  },
+},
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
-  },
+},
   sectionIcon: {
     marginRight: 8,
-  },
+},
   comparisonSubtitle: {
     ...TEXT_STYLES.BODY_SMALL,
     color: Colors.TEXT_SECONDARY,
     marginBottom: 16,
     fontStyle: 'italic',
-  },
+},
   comparisonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
-  },
+},
   comparisonItem: {
     flex: 1,
     alignItems: 'center',
@@ -596,31 +544,31 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
     borderRadius: 8,
     marginHorizontal: 5,
-  },
+},
   comparisonLabel: {
     ...TEXT_STYLES.CAPTION,
     color: Colors.TEXT_SECONDARY,
     marginBottom: 8,
-  },
+},
   comparisonValue: {
     ...TEXT_STYLES.BODY_LARGE,
     fontWeight: 'bold',
     color: Colors.TEXT_PRIMARY,
-  },
+},
   popularFlavorsContainer: {
     marginBottom: 20,
-  },
+},
   popularFlavorsTitle: {
     ...TEXT_STYLES.BODY,
     fontWeight: '600',
     marginBottom: 12,
     color: Colors.TEXT_PRIMARY,
-  },
+},
   flavorTagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-  },
+},
   flavorTag: {
     backgroundColor: Colors.FLAVOR_TAG_BG,
     paddingHorizontal: 12,
@@ -628,70 +576,70 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   flavorTagText: {
     ...TEXT_STYLES.CAPTION,
     color: Colors.TEXT_PRIMARY,
     marginRight: 6,
-  },
+},
   flavorTagPercent: {
     fontSize: FONT_SIZE.TINY,
     color: Colors.TEXT_SECONDARY,
     fontWeight: '500',
-  },
+},
   sensoryComparisonContainer: {
     marginTop: 10,
-  },
+},
   sensoryComparisonTitle: {
     ...TEXT_STYLES.BODY,
     fontWeight: '600',
     marginBottom: 12,
     color: Colors.TEXT_PRIMARY,
-  },
+},
   sensoryComparisonGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-  },
+},
   sensoryComparisonItem: {
     width: '48%',
     marginBottom: 10,
     padding: 10,
     backgroundColor: '#f8f9fa',
     borderRadius: 6,
-  },
+},
   sensoryLabel: {
     ...TEXT_STYLES.CAPTION,
     color: Colors.TEXT_SECONDARY,
     marginBottom: 4,
-  },
+},
   sensoryValue: {
     ...TEXT_STYLES.BODY_SMALL,
     fontWeight: '600',
     color: Colors.TEXT_PRIMARY,
-  },
+},
   sensoryMyValue: {
     ...TEXT_STYLES.CAPTION,
     color: Colors.PRIMARY,
     fontWeight: 'normal',
-  },
+},
   emptyComparisonContainer: {
     padding: 20,
     alignItems: 'center',
     backgroundColor: HIGColors.secondarySystemBackground,
     borderRadius: 8,
     marginTop: 10,
-  },
+},
   emptyComparisonText: {
     ...TEXT_STYLES.BODY_SMALL,
     color: Colors.TEXT_SECONDARY,
     textAlign: 'center',
-  },
+},
   emptyComparisonSubtext: {
     ...TEXT_STYLES.CAPTION,
     color: Colors.TEXT_TERTIARY,
     textAlign: 'center',
     marginTop: 8,
     lineHeight: 18,
-  },
+},
 });

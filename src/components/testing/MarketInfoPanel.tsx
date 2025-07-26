@@ -17,7 +17,7 @@ export const MarketInfoPanel: React.FC<MarketInfoPanelProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const renderInfoSection = (title: string, data: any) => (
+  const renderInfoSection = (title: string, data: unknown) => (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
       <View style={styles.sectionContent}>
@@ -31,7 +31,7 @@ export const MarketInfoPanel: React.FC<MarketInfoPanelProps> = ({
                   : Array.isArray(value)
                   ? `[${value.length} items]`
                   : String(value)
-                }
+              }
               </Text>
             </View>
           ))
@@ -88,14 +88,14 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     marginBottom: 20,
-  },
+},
   title: {
     fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 16,
     color: HIGColors.label,
-  },
+},
   marketBadge: {
     backgroundColor: HIGColors.systemBlue,
     paddingVertical: 8,
@@ -103,67 +103,67 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: 'center',
     marginBottom: 16,
-  },
+},
   marketBadgeText: {
     color: 'white',
     fontWeight: '600',
     fontSize: 16,
-  },
+},
   section: {
     marginBottom: 16,
-  },
+},
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
     color: HIGColors.label,
-  },
+},
   sectionContent: {
     backgroundColor: HIGColors.systemGray6,
     padding: 12,
     borderRadius: 6,
-  },
+},
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 4,
-  },
+},
   infoKey: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     flex: 1,
-  },
+},
   infoValue: {
     fontSize: 14,
     color: HIGColors.label,
     fontWeight: '500',
     flex: 1,
     textAlign: 'right',
-  },
+},
   dataSection: {
     marginBottom: 16,
-  },
+},
   dataGrid: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     backgroundColor: HIGColors.systemGray6,
     padding: 16,
     borderRadius: 6,
-  },
+},
   dataItem: {
     alignItems: 'center',
-  },
+},
   dataLabel: {
     fontSize: 12,
     color: HIGColors.secondaryLabel,
     marginBottom: 4,
-  },
+},
   dataCount: {
     fontSize: 18,
     fontWeight: '700',
     color: HIGColors.systemBlue,
-  },
+},
 });
 
 export default MarketInfoPanel;

@@ -37,18 +37,18 @@ const PhotoPicker: React.FC<PhotoPickerProps> = ({
         quality: 0.8,
         maxWidth: 1024,
         maxHeight: 1024,
-      });
+    });
       
       if (result) {
         onPhotoSelected(result.uri);
-      }
-    } catch (error) {
+    }
+  } catch (error) {
       // console.error('Photo selection error:', error);
       Alert.alert('오류', '사진을 선택하는 중 오류가 발생했습니다.');
-    } finally {
+  } finally {
       setIsSelecting(false);
-    }
-  };
+  }
+};
 
   const handlePhotoRemove = () => {
     Alert.alert(
@@ -59,7 +59,7 @@ const PhotoPicker: React.FC<PhotoPickerProps> = ({
         { text: '삭제', style: 'destructive', onPress: onPhotoRemoved },
       ]
     );
-  };
+};
 
   if (photoUri) {
     return (
@@ -86,7 +86,7 @@ const PhotoPicker: React.FC<PhotoPickerProps> = ({
         </TouchableOpacity>
       </View>
     );
-  }
+}
 
   return (
     <View style={styles.photoContainer}>
@@ -111,13 +111,13 @@ const PhotoPicker: React.FC<PhotoPickerProps> = ({
 const styles = StyleSheet.create({
   photoContainer: {
     marginBottom: 20,
-  },
+},
   label: {
     fontSize: 16,
     fontWeight: '600',
     color: Colors.TEXT_PRIMARY,
     marginBottom: 12,
-  },
+},
   selectButton: {
     backgroundColor: 'white',
     borderRadius: 12,
@@ -126,34 +126,34 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.BACKGROUND_GRAY,
     borderStyle: 'dashed',
-  },
+},
   selectIcon: {
     fontSize: 40,
     marginBottom: 12,
-  },
+},
   selectText: {
     fontSize: 16,
     fontWeight: '600',
     color: Colors.TEXT_PRIMARY,
     marginBottom: 4,
-  },
+},
   selectSubtext: {
     fontSize: 12,
     color: Colors.TEXT_SECONDARY,
     textAlign: 'center',
-  },
+},
   imageContainer: {
     position: 'relative',
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: Colors.BACKGROUND_GRAY,
-  },
+},
   image: {
     width: width - 40,
     height: 200,
     borderRadius: 12,
     backgroundColor: Colors.BACKGROUND_GRAY,
-  },
+},
   removeButton: {
     position: 'absolute',
     top: 8,
@@ -164,27 +164,27 @@ const styles = StyleSheet.create({
     height: 32,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   removeButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
-  },
+},
   changeButton: {
     backgroundColor: Colors.GRADIENT_BROWN,
     borderRadius: 8,
     padding: 12,
     alignItems: 'center',
     marginTop: 12,
-  },
+},
   changeButtonText: {
     color: 'white',
     fontSize: 14,
     fontWeight: '500',
-  },
+},
   disabledButton: {
     opacity: 0.6,
-  },
+},
 });
 
 export default PhotoPicker;

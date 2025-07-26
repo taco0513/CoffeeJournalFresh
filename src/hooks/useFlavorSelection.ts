@@ -7,7 +7,7 @@ const flavorData = transformFlavorData();
 
 export const useFlavorSelection = (
   selectedPaths: FlavorPath[],
-  updateField: (field: string, value: any) => void
+  updateField: (field: string, value: unknown) => void
 ) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
@@ -23,7 +23,7 @@ export const useFlavorSelection = (
     if (existingSubcategoryIndex >= 0) {
       currentPaths.splice(existingSubcategoryIndex, 1);
       updateField('selectedFlavors', currentPaths);
-    } else {
+  } else {
       const filteredPaths = currentPaths.filter(
         p => !(p.level1 === level1 && p.level2 === level2 && p.level3)
       );
@@ -33,11 +33,11 @@ export const useFlavorSelection = (
           level1,
           level2,
           level3: '',
-        });
+      });
         updateField('selectedFlavors', filteredPaths);
-      }
     }
-  }, [selectedPaths, updateField]);
+  }
+}, [selectedPaths, updateField]);
 
   const handleSelectFlavor = useCallback((path: FlavorPath) => {
     const currentPaths = [...selectedPaths];
@@ -48,18 +48,18 @@ export const useFlavorSelection = (
     if (existingIndex >= 0) {
       currentPaths.splice(existingIndex, 1);
       updateField('selectedFlavors', currentPaths);
-    } else if (currentPaths.length < 5) {
+  } else if (currentPaths.length < 5) {
       const indexToRemove = currentPaths.findIndex(
         p => p.level1 === path.level1 && p.level2 === path.level2 && !p.level3
       );
       if (indexToRemove >= 0) {
         currentPaths.splice(indexToRemove, 1);
-      }
+    }
       
       currentPaths.push(path);
       updateField('selectedFlavors', currentPaths);
-    }
-  }, [selectedPaths, updateField]);
+  }
+}, [selectedPaths, updateField]);
 
   const handleRemoveFlavor = useCallback((index: number) => {
     const currentPaths = [...selectedPaths];
@@ -73,22 +73,22 @@ export const useFlavorSelection = (
         const newSet = new Set(prev);
         if (newSet.has(subcategoryKey)) {
           newSet.delete(subcategoryKey);
-        }
+      }
         return newSet;
-      });
-    }
-  }, [selectedPaths, updateField]);
+    });
+  }
+}, [selectedPaths, updateField]);
 
   const toggleCategory = useCallback((category: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpandedCategories(prev => {
       if (prev.includes(category)) {
         return prev.filter(c => c !== category);
-      } else {
+    } else {
         return [...prev, category];
-      }
-    });
-  }, []);
+    }
+  });
+}, []);
   
   const toggleSubcategory = useCallback((subcategoryKey: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -96,23 +96,23 @@ export const useFlavorSelection = (
       const newSet = new Set(prev);
       if (newSet.has(subcategoryKey)) {
         newSet.delete(subcategoryKey);
-      } else {
+    } else {
         newSet.add(subcategoryKey);
-      }
+    }
       return newSet;
-    });
-  }, []);
+  });
+}, []);
   
   const toggleAllCategories = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpandedCategories(prev => {
       if (prev.length === flavorData.length) {
         return [];
-      } else {
+    } else {
         return flavorData.map(item => item.category);
-      }
-    });
-  }, []);
+    }
+  });
+}, []);
 
   return {
     searchQuery,
@@ -125,5 +125,5 @@ export const useFlavorSelection = (
     toggleCategory,
     toggleSubcategory,
     toggleAllCategories,
-  };
+};
 };

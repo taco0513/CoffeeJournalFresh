@@ -1,5 +1,6 @@
 import { Alert, Platform } from 'react-native';
 
+import { Logger } from '../services/LoggingService';
 export interface AppError {
   message: string;
   code?: string;
@@ -18,48 +19,48 @@ export const ErrorMessages = {
 };
 
 export class ErrorHandler {
-  static handle(error: unknown, context?: string): void {
+  static handle(error: Error, context?: string): void {
     const errorMessage = this.getErrorMessage(error);
     
     // Log error for debugging (in production, send to error tracking service)
     if (__DEV__) {
-      console.error(`[${context || 'App'}] Error:`, error);
-    }
+      Logger.error(`[${context || 'App'}] Error:`, 'util', { component: 'errorHandler', error: error });
+  }
     
     // Show user-friendly error message
     this.showErrorAlert(errorMessage, context);
-  }
+}
   
-  static getErrorMessage(error: unknown): string {
+  static getErrorMessage(error: Error): string {
     const err = error as Error & { code?: string; source?: string };
     // Network errors
     if (err?.message?.includes('Network') || err?.code === 'NETWORK_ERROR') {
       return ErrorMessages.NETWORK_ERROR;
-    }
+  }
     
     // Supabase errors
     if (err?.message?.includes('Supabase') || err?.source === 'supabase') {
       return ErrorMessages.SUPABASE_ERROR;
-    }
+  }
     
     // Auth errors
     if (err?.code === 'AUTH_ERROR' || err?.message?.includes('authentication')) {
       return ErrorMessages.AUTH_ERROR;
-    }
+  }
     
     // Realm errors
     if (err?.message?.includes('Realm') || err?.source === 'realm') {
       return ErrorMessages.REALM_ERROR;
-    }
+  }
     
     // Permission errors
     if (err?.code === 'PERMISSION_DENIED') {
       return ErrorMessages.PERMISSION_ERROR;
-    }
+  }
     
     // Default error message
     return err?.message || ErrorMessages.UNKNOWN_ERROR;
-  }
+}
   
   static showErrorAlert(message: string, context?: string): void {
     const title = context ? `${context} 오류` : '오류';
@@ -71,11 +72,11 @@ export class ErrorHandler {
         {
           text: '확인',
           style: 'default',
-        },
+      },
       ],
       { cancelable: true }
     );
-  }
+}
   
   static async handleAsync<T>(
     promise: Promise<T>,
@@ -83,16 +84,16 @@ export class ErrorHandler {
   ): Promise<T | null> {
     try {
       return await promise;
-    } catch (error) {
+  } catch (error) {
       this.handle(error, context);
       return null;
-    }
   }
+}
 }
 
 // Network status utility
 export const NetworkUtils = {
-  isNetworkError(error: unknown): boolean {
+  isNetworkError(error: Error): boolean {
     const err = error as Error;
     const errorMessage = err?.message?.toLowerCase() || '';
     const errorWithCode = error as { code?: string };
@@ -102,7 +103,7 @@ export const NetworkUtils = {
       errorWithCode?.code === 'NETWORK_ERROR' ||
       errorWithCode?.code === 'ECONNABORTED'
     );
-  },
+},
   
   async retry<T>(
     fn: () => Promise<T>,
@@ -114,14 +115,14 @@ export const NetworkUtils = {
     for (let i = 0; i < retries; i++) {
       try {
         return await fn();
-      } catch (error) {
+    } catch (error) {
         lastError = error;
         if (i < retries - 1) {
           await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
-        }
       }
     }
+  }
     
     throw lastError;
-  },
+},
 };

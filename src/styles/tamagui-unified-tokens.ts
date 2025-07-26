@@ -143,7 +143,7 @@ export const stylePatterns = {
     shadowOpacity: 0.1,
     shadowRadius: 3,
     `,
-  },
+},
   
   // Button styles
   primaryButton: {
@@ -157,7 +157,7 @@ export const stylePatterns = {
     borderRadius: '$2',
     padding: '$md',
     `,
-  },
+},
   
   // Text styles
   titleText: {
@@ -171,7 +171,7 @@ export const stylePatterns = {
     fontWeight: '600',
     color: '$color',
     `,
-  },
+},
 } as const;
 
 // Component-specific token usage guidelines
@@ -180,7 +180,7 @@ export const componentGuidelines = {
     backgroundColor: '$background',
     padding: '$lg',
     flex: 1,
-  },
+},
   
   Card: {
     backgroundColor: '$backgroundStrong',
@@ -188,38 +188,38 @@ export const componentGuidelines = {
     padding: '$md',
     borderWidth: 1,
     borderColor: '$borderColor',
-  },
+},
   
   Button: {
     primary: {
       backgroundColor: '$cupBlue',
       pressStyle: { backgroundColor: '$cupBlueDark' },
-    },
+  },
     danger: {
       backgroundColor: '$red9',
       pressStyle: { backgroundColor: '$red10' },
-    },
+  },
     success: {
       backgroundColor: '$green9',
       pressStyle: { backgroundColor: '$green10' },
-    },
   },
+},
   
   Text: {
     title: {
       fontSize: '$5',
       fontWeight: '600',
       color: '$color',
-    },
+  },
     body: {
       fontSize: '$3',
       color: '$color',
-    },
+  },
     caption: {
       fontSize: '$2',
       color: '$gray11',
-    },
   },
+},
   
   Input: {
     borderWidth: 1,
@@ -230,8 +230,8 @@ export const componentGuidelines = {
     focusStyle: {
       borderColor: '$cupBlue',
       backgroundColor: '$backgroundFocus',
-    },
   },
+},
 } as const;
 
 // Animation presets (already in Tamagui config)
@@ -270,27 +270,29 @@ export const unifiedTokens = {
   // Focus indicator for accessibility
   focusRing: '#0D47A1',      // High contrast focus indicator ✅
   
-  // Spacing Scale
+  // Spacing Scale - Consistent with research-backed spacing
   spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-    xxl: 48,
-  },
+    xxs: 2,   // Micro spacing
+    xs: 4,    // Extra small
+    sm: 8,    // Small
+    md: 16,   // Medium (base unit)
+    lg: 24,   // Large
+    xl: 32,   // Extra large
+    xxl: 48,  // Double extra large
+    xxxl: 64, // Triple extra large
+},
   
-  // Font Sizes - WCAG minimum 16px
+  // Font Sizes - Research-backed typography scale
   fontSize: {
-    1: 16,  // Small - WCAG minimum ✅
-    2: 16,  // Caption - WCAG minimum ✅
-    3: 18,  // Body
-    4: 20,  // Title
-    5: 24,  // H3
-    6: 28,  // H2
-    7: 32,  // H1
-    8: 36,  // Large H1
-  },
+    1: 11,  // Micro - Status badges, metadata only ✅
+    2: 13,  // Caption - Secondary info, helper text ✅  
+    3: 16,  // Body - Primary content, main labels (baseline) ✅
+    4: 18,  // Subtitle - Section headers, important labels ✅
+    5: 22,  // Heading - Page headings, stat values ✅
+    6: 26,  // Title - Screen titles ✅
+    7: 30,  // Display - Hero text ✅
+    8: 34,  // Hero - Large display text ✅
+},
   
   // Border Radius
   radius: {
@@ -300,6 +302,49 @@ export const unifiedTokens = {
     4: 16,  // Large
     5: 20,  // Extra Large
     6: 24,  // Pill
+},
+
+  // Component Sizes - Standardized dimensions
+  componentSizes: {
+    // Navigation
+    navBarHeight: 44,         // iOS standard
+    tabBarHeight: 49,         // iOS standard
+    
+    // Buttons
+    buttonHeight: {
+      sm: 32,
+      md: 40,
+      lg: 48,
+      xl: 56,
+    },
+    
+    // Touch Targets
+    touchTargetMinimum: 44,   // WCAG requirement
+    
+    // Status Badges
+    badgeHeight: {
+      sm: 20,
+      md: 24,
+      lg: 32,
+      xl: 40,
+    },
+    
+    // Cards and Containers
+    cardMinHeight: {
+      sm: 60,
+      md: 80,
+      lg: 120,
+    },
+    
+    // Icons
+    iconSize: {
+      xs: 12,
+      sm: 16,
+      md: 20,
+      lg: 24,
+      xl: 32,
+      xxl: 48,
+    },
   },
 } as const;
 
@@ -309,29 +354,29 @@ export function migrateStyleValue(value: string): string {
   for (const [oldValue, newValue] of Object.entries(colorMapping)) {
     if (value === oldValue) {
       return newValue;
-    }
   }
+}
   
   // Check spacing mappings
   for (const [oldValue, newValue] of Object.entries(spacingMapping)) {
     if (value === oldValue) {
       return newValue;
-    }
   }
+}
   
   // Check font size mappings
   for (const [oldValue, newValue] of Object.entries(fontSizeMapping)) {
     if (value === oldValue) {
       return newValue;
-    }
   }
+}
   
   // Check radius mappings
   for (const [oldValue, newValue] of Object.entries(radiusMapping)) {
     if (value === oldValue) {
       return newValue;
-    }
   }
+}
   
   return value;
 }

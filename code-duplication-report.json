@@ -1,0 +1,283 @@
+{
+  "summary": {
+    "totalFiles": 367,
+    "totalLines": 91801,
+    "duplicatedLines": 1543,
+    "duplicationRatio": "1.68%",
+    "duplicateGroups": 63,
+    "potentialSavings": 1543
+  },
+  "topDuplicates": [
+    {
+      "type": "function",
+      "name": "useAchievements",
+      "lineCount": 208,
+      "instances": 2,
+      "totalDuplicatedLines": 208,
+      "locations": [
+        {
+          "file": "src/hooks/useAchievements.ts",
+          "lines": "25-233"
+        },
+        {
+          "file": "src/hooks/useAchievements.ts",
+          "lines": "26-233"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "useFlavorSelection",
+      "lineCount": 123,
+      "instances": 2,
+      "totalDuplicatedLines": 123,
+      "locations": [
+        {
+          "file": "src/hooks/useFlavorSelection.ts",
+          "lines": "7-130"
+        },
+        {
+          "file": "src/hooks/useFlavorSelection.ts",
+          "lines": "8-130"
+        }
+      ]
+    },
+    {
+      "type": "jsx",
+      "name": "JSX Component",
+      "lineCount": 59,
+      "instances": 3,
+      "totalDuplicatedLines": 118,
+      "locations": [
+        {
+          "file": "src/navigation/AppNavigator-tamagui.tsx",
+          "lines": "100-159"
+        },
+        {
+          "file": "src/navigation/AppNavigator.tsx",
+          "lines": "100-159"
+        },
+        {
+          "file": "src/navigation/TastingFlowNavigator.tsx",
+          "lines": "23-82"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "usePersonalTaste",
+      "lineCount": 102,
+      "instances": 2,
+      "totalDuplicatedLines": 102,
+      "locations": [
+        {
+          "file": "src/hooks/usePersonalTaste.ts",
+          "lines": "31-133"
+        },
+        {
+          "file": "src/hooks/usePersonalTaste.ts",
+          "lines": "31-133"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "useAnalytics",
+      "lineCount": 77,
+      "instances": 2,
+      "totalDuplicatedLines": 77,
+      "locations": [
+        {
+          "file": "src/hooks/useAnalytics.ts",
+          "lines": "5-82"
+        },
+        {
+          "file": "src/hooks/useAnalytics.ts",
+          "lines": "6-82"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "useAchievements",
+      "lineCount": 69,
+      "instances": 2,
+      "totalDuplicatedLines": 69,
+      "locations": [
+        {
+          "file": "src/hooks/usePersonalTaste.ts",
+          "lines": "185-254"
+        },
+        {
+          "file": "src/hooks/usePersonalTaste.ts",
+          "lines": "185-254"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "TastingFlow",
+      "lineCount": 61,
+      "instances": 2,
+      "totalDuplicatedLines": 61,
+      "locations": [
+        {
+          "file": "src/navigation/AppNavigator-tamagui.tsx",
+          "lines": "99-160"
+        },
+        {
+          "file": "src/navigation/AppNavigator.tsx",
+          "lines": "99-160"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "useTheme",
+      "lineCount": 55,
+      "instances": 2,
+      "totalDuplicatedLines": 55,
+      "locations": [
+        {
+          "file": "src/design-system/hooks/useTheme.ts",
+          "lines": "10-65"
+        },
+        {
+          "file": "src/design-system/hooks/useTheme.ts",
+          "lines": "11-65"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "useFlavorMastery",
+      "lineCount": 55,
+      "instances": 2,
+      "totalDuplicatedLines": 55,
+      "locations": [
+        {
+          "file": "src/hooks/usePersonalTaste.ts",
+          "lines": "256-311"
+        },
+        {
+          "file": "src/hooks/usePersonalTaste.ts",
+          "lines": "256-311"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "useCoffeeNotifications",
+      "lineCount": 54,
+      "instances": 2,
+      "totalDuplicatedLines": 54,
+      "locations": [
+        {
+          "file": "src/hooks/useCoffeeNotifications.ts",
+          "lines": "4-58"
+        },
+        {
+          "file": "src/hooks/useCoffeeNotifications.ts",
+          "lines": "5-58"
+        }
+      ]
+    }
+  ],
+  "byType": {
+    "function": {
+      "count": 51,
+      "totalLines": 1288,
+      "examples": [
+        {
+          "name": "useAchievements",
+          "lineCount": 208,
+          "instances": 2
+        },
+        {
+          "name": "useFlavorSelection",
+          "lineCount": 123,
+          "instances": 2
+        },
+        {
+          "name": "usePersonalTaste",
+          "lineCount": 102,
+          "instances": 2
+        }
+      ]
+    },
+    "jsx": {
+      "count": 2,
+      "totalLines": 131,
+      "examples": [
+        {
+          "name": "JSX Component",
+          "lineCount": 59,
+          "instances": 3
+        },
+        {
+          "name": "JSX Component",
+          "lineCount": 13,
+          "instances": 2
+        }
+      ]
+    },
+    "hook": {
+      "count": 2,
+      "totalLines": 56,
+      "examples": [
+        {
+          "name": "useLiteAICoach",
+          "lineCount": 48,
+          "instances": 2
+        },
+        {
+          "name": "user",
+          "lineCount": 8,
+          "instances": 2
+        }
+      ]
+    },
+    "object": {
+      "count": 8,
+      "totalLines": 68,
+      "examples": [
+        {
+          "name": "features",
+          "lineCount": 6,
+          "instances": 4
+        },
+        {
+          "name": "updatedFormData",
+          "lineCount": 9,
+          "instances": 2
+        },
+        {
+          "name": "updatedFormData",
+          "lineCount": 8,
+          "instances": 2
+        }
+      ]
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "category": "Styles",
+      "issue": "Found 8 duplicate style/object definitions",
+      "solution": "Create a shared styles file or use a design system",
+      "estimatedSavings": 68
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Functions",
+      "issue": "Found 51 duplicate functions",
+      "solution": "Create utility modules for shared functions",
+      "estimatedSavings": 1288
+    }
+  ],
+  "similarityAnalysis": {
+    "count": 0,
+    "averageSimilarity": 0,
+    "potentialRefactoring": 0
+  }
+}

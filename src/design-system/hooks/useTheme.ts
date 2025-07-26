@@ -21,27 +21,27 @@ export const useTheme = () => {
       primaryButton: {
         backgroundColor: Colors.primary[500],
         color: Colors.text.inverse,
-      },
+    },
       secondaryButton: {
         backgroundColor: Colors.gray[100],
         color: Colors.text.primary,
-      },
+    },
       inputField: {
         backgroundColor: Colors.background.secondary,
         borderColor: Colors.border.light,
         color: Colors.text.primary,
-      },
+    },
       card: {
         backgroundColor: Colors.background.primary,
         borderColor: Colors.border.light,
         shadow: Layout.shadow.sm,
-      },
+    },
       header: {
         backgroundColor: Colors.background.primary,
         borderColor: Colors.border.light,
         height: Component.header.height,
-      },
     },
+  },
     
     // 유틸리티 함수들
     utils: {
@@ -56,9 +56,9 @@ export const useTheme = () => {
       responsive: {
         fontSize: (size: keyof typeof Typography.fontSize) => Typography.fontSize[size],
         spacing: (size: keyof typeof Spacing) => Spacing[size],
-      },
     },
-  }), []);
+  },
+}), []);
 
   return theme;
 };

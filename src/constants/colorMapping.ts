@@ -144,25 +144,25 @@ export const needsMapping = (colorValue: string): boolean => {
 };
 
 // Helper to replace HIGColors in style objects
-export const replaceHIGColorsInObject = (obj: any): any => {
+export const replaceHIGColorsInObject = (obj: unknown): unknown => {
   if (typeof obj !== 'object' || obj === null) {
     return obj;
-  }
+}
   
   if (Array.isArray(obj)) {
     return obj.map(replaceHIGColorsInObject);
-  }
+}
   
-  const result: any = {};
+  const result: unknown = {};
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'string' && needsMapping(value)) {
       result[key] = getTamaguiToken(value);
-    } else if (typeof value === 'object') {
+  } else if (typeof value === 'object') {
       result[key] = replaceHIGColorsInObject(value);
-    } else {
+  } else {
       result[key] = value;
-    }
   }
+}
   
   return result;
 };

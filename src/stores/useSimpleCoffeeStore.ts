@@ -17,7 +17,7 @@ interface SimpleCoffeeStore {
   tastingSessions: TastingData[];
   
   // Actions
-  updateCurrentTasting: (field: keyof TastingData, value: any) => void;
+  updateCurrentTasting: (field: keyof TastingData, value: unknown) => void;
   resetCurrentTasting: () => void;
   saveTasting: () => void;
 }
@@ -36,7 +36,7 @@ export const useSimpleCoffeeStore = create<SimpleCoffeeStore>((set, get) => ({
 
   updateCurrentTasting: (field, value) => set((state) => ({
     currentTasting: { ...state.currentTasting, [field]: value }
-  })),
+})),
 
   resetCurrentTasting: () => set({ currentTasting: { ...initialTastingData } }),
 
@@ -49,11 +49,11 @@ export const useSimpleCoffeeStore = create<SimpleCoffeeStore>((set, get) => ({
       brewMethod: currentTasting.brewMethod || '',
       flavors: currentTasting.flavors || [],
       createdAt: new Date(),
-    };
+  };
     
     set({ 
       tastingSessions: [...tastingSessions, newTasting],
       currentTasting: { ...initialTastingData }
-    });
-  },
+  });
+},
 }));

@@ -36,34 +36,34 @@ const ToastCard = styled(XStack, {
     opacity: 0,
     y: -20,
     scale: 0.95,
-  },
+},
   
   exitStyle: {
     opacity: 0,
     y: -20,
     scale: 0.95,
-  },
+},
   
   variants: {
     type: {
       success: {
         backgroundColor: '$green9',
         borderColor: '$green10',
-      },
+    },
       error: {
         backgroundColor: '$red9',
         borderColor: '$red10',
-      },
+    },
       info: {
         backgroundColor: '$blue9',
         borderColor: '$blue10',
-      },
     },
-  } as const,
+  },
+} as const,
   
   defaultVariants: {
     type: 'success',
-  },
+},
 });
 
 const IconContainer = styled(YStack, {
@@ -127,7 +127,7 @@ const getIconForType = (type: ToastType): string => {
       return 'i';
     default:
       return '✓';
-  }
+}
 };
 
 // Main component
@@ -143,11 +143,11 @@ const Toast: React.FC<ToastProps> = ({
     if (visible) {
       const timer = setTimeout(() => {
         onHide();
-      }, duration);
+    }, duration);
 
       return () => clearTimeout(timer);
-    }
-  }, [visible, duration, onHide]);
+  }
+}, [visible, duration, onHide]);
 
   return (
     <ToastContainer>

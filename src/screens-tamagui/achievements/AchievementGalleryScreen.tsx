@@ -22,7 +22,6 @@ import {
 } from 'tamagui';
 import { AchievementCard } from '../../components-tamagui';
 import { useAchievements } from '../../hooks/useAchievements';
-import StatusBadge from '../../components/StatusBadge';
 import { AchievementType } from '../../types/achievements';
 
 type FilterType = 'all' | 'unlocked' | 'locked' | AchievementType;
@@ -115,10 +114,10 @@ const StatCard = styled(Card, {
     opacity: 0,
     scale: 0.9,
     y: 20,
-  },
+},
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const StatNumber = styled(Text, {
@@ -146,7 +145,7 @@ const NextAchievementCard = styled(Card, {
     opacity: 0,
     y: 30,
     scale: 0.9,
-  },
+},
 });
 
 const NextAchievementName = styled(Text, {
@@ -177,12 +176,12 @@ const FilterPill = styled(Button, {
     active: {
       true: {
         backgroundColor: '$cupBlue',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     scale: 0.95,
-  },
+},
   animation: 'quick',
 });
 
@@ -201,9 +200,9 @@ const FilterText = styled(Text, {
       true: {
         color: 'white',
         fontWeight: '600',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const AchievementList = styled(YStack, {
@@ -275,7 +274,7 @@ const RetryButton = styled(Button, {
   pressStyle: {
     backgroundColor: '$cupBlueDark',
     scale: 0.95,
-  },
+},
 });
 
 const LoadingContainer = styled(YStack, {
@@ -297,16 +296,17 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
     error, 
     refreshAchievements,
     getNextAchievement 
-  } = useAchievements();
+} = useAchievements();
   
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('all');
   const [refreshing, setRefreshing] = useState(false);
 
   const nextAchievement = getNextAchievement();
 
-  // Filter achievements based on selected filter
+  // Filter achievements based on selected filter with fresh array to prevent key conflicts
   const filteredAchievements = useMemo(() => {
-    let filtered = [...achievements];
+    // Create completely fresh array to prevent React key conflicts
+    let filtered = achievements.map(achievement => ({ ...achievement }));
 
     switch (selectedFilter) {
       case 'unlocked':
@@ -320,7 +320,7 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
       default:
         filtered = filtered.filter(a => a.category === selectedFilter);
         break;
-    }
+  }
 
     // Sort: unlocked achievements first, then by rarity, then by progress
     return filtered.sort((a, b) => {
@@ -335,17 +335,17 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
       
       // Finally by progress (higher progress first)
       return (b.progress || 0) - (a.progress || 0);
-    });
-  }, [achievements, selectedFilter]);
+  });
+}, [achievements, selectedFilter]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
       await refreshAchievements();
-    } finally {
+  } finally {
       setRefreshing(false);
-    }
-  };
+  }
+};
 
   const renderStatsHeader = () => (
     <StatsContainer>
@@ -367,12 +367,11 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
       </StatsGrid>
 
       {nextAchievement && (
-        <NextAchievementCard key={`next-achievement-${nextAchievement.id}-${Date.now()}`}>
+        <NextAchievementCard key={`next-achievement-${nextAchievement.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`}>
           <NextAchievementName>🎯 다음 목표</NextAchievementName>
           <AchievementCard 
             achievement={nextAchievement}
             compact
-            key={`next-achievement-card-${nextAchievement.id}-${Date.now()}`}
           />
         </NextAchievementCard>
       )}
@@ -419,11 +418,11 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
               : selectedFilter === 'locked'
               ? '진행 중인 업적이 없습니다.'
               : '이 카테고리에는 업적이 없습니다.'
-            }
+          }
           </EmptyStateText>
         </EmptyStateContainer>
       );
-    }
+  }
 
     return (
       <AchievementList>
@@ -440,7 +439,7 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
                   opacity: 0,
                   y: 30 + (index * 10), // Staggered entrance
                   scale: 0.9,
-                }}
+              }}
                 animateOnly={['opacity', 'transform']}
               >
                 <AchievementCard
@@ -448,11 +447,11 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
                 />
               </View>
             );
-          })}
+        })}
         </AnimatePresence>
       </AchievementList>
     );
-  };
+};
 
   if (isLoading) {
     return (
@@ -465,7 +464,6 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
                 <BetaText>BETA</BetaText>
               </BetaBadge>
             </TitleContainer>
-            <StatusBadge />
           </NavigationBar>
         )}
         
@@ -475,7 +473,7 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
         </LoadingContainer>
       </Container>
     );
-  }
+}
 
   if (error) {
     return (
@@ -488,7 +486,6 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
                 <BetaText>BETA</BetaText>
               </BetaBadge>
             </TitleContainer>
-            <StatusBadge />
           </NavigationBar>
         )}
         
@@ -502,7 +499,7 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
         </ErrorContainer>
       </Container>
     );
-  }
+}
 
   return (
     <Container>
@@ -524,7 +521,7 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
+      }
       >
         <AnimatePresence>
           {renderStatsHeader()}

@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { HIGColors, HIGConstants } from '../../styles/common';
-import HomeCafeEnhancedService, { GrindGuide } from '../../services/HomeCafeEnhancedService';
+import { HomeCafeEnhancedService } from '../../services/HomeCafeEnhancedService';
+import type { GrindGuide } from '../../services/HomeCafeEnhancedService';
 
 interface GrindSizeGuideProps {
   selectedDripper: string;
@@ -40,17 +41,17 @@ export const GrindSizeGuide: React.FC<GrindSizeGuideProps> = ({
         </Text>
       </View>
     );
-  }
+}
 
   const handleGrindSizeSelect = () => {
     onGrindSizeSelect?.(grindGuide.grindSize);
-  };
+};
 
   const getGrindSizeIcon = (grindSize: string): string => {
     if (grindSize.includes('fine')) return '🔹'; // Fine
     if (grindSize.includes('coarse')) return '🔸'; // Coarse
     return '◾'; // Medium
-  };
+};
 
   return (
     <View style={styles.container}>
@@ -243,16 +244,16 @@ export const GrindSizeGuide: React.FC<GrindSizeGuideProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginVertical: HIGConstants.SPACING_MD,
-  },
+},
   emptyContainer: {
     padding: HIGConstants.SPACING_LG,
     alignItems: 'center',
-  },
+},
   emptyText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   
   // Header
   header: {
@@ -260,16 +261,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   title: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   subtitle: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
-  },
+},
   helpButton: {
     width: 28,
     height: 28,
@@ -277,12 +278,12 @@ const styles = StyleSheet.create({
     backgroundColor: HIGColors.systemBlue,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   helpButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.white,
     fontWeight: '600',
-  },
+},
   
   // Grind Size Card
   grindSizeCard: {
@@ -292,64 +293,64 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: HIGColors.systemGray4,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   selectedGrindSize: {
     borderColor: HIGColors.systemBlue,
     backgroundColor: HIGColors.systemBlue + '10',
-  },
+},
   grindSizeHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   grindSizeIcon: {
     fontSize: 24,
     marginRight: HIGConstants.SPACING_SM,
-  },
+},
   grindSizeInfo: {
     flex: 1,
-  },
+},
   grindSizeName: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   grindSizeEnglish: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
-  },
+},
   recommendedBadge: {
     backgroundColor: HIGColors.systemGreen,
     paddingHorizontal: HIGConstants.SPACING_XS,
     paddingVertical: 2,
     borderRadius: 4,
-  },
+},
   recommendedText: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.white,
     fontWeight: '600',
-  },
+},
   grindSizeDescription: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   visualReference: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     fontStyle: 'italic',
-  },
+},
   
   // Settings Section
   settingsSection: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   settingsTitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   settingCard: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusSmall,
@@ -357,34 +358,34 @@ const styles = StyleSheet.create({
     marginRight: HIGConstants.SPACING_SM,
     alignItems: 'center',
     minWidth: 80,
-  },
+},
   grinderName: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     marginBottom: 2,
-  },
+},
   grinderSetting: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
   
   // Adjustment Section
   adjustmentSection: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   adjustmentTitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   adjustmentGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
+},
   adjustmentCard: {
     flex: 1,
     backgroundColor: HIGColors.systemGray6,
@@ -392,29 +393,29 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_SM,
     marginHorizontal: HIGConstants.SPACING_XS,
     alignItems: 'center',
-  },
+},
   adjustmentIcon: {
     fontSize: 20,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   adjustmentLabel: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   adjustmentTip: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     lineHeight: 16,
-  },
+},
   
   // Modal Styles
   modalContainer: {
     flex: 1,
     backgroundColor: HIGColors.white,
-  },
+},
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -422,14 +423,14 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_MD,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray5,
-  },
+},
   closeButton: {
     padding: HIGConstants.SPACING_SM,
-  },
+},
   closeButtonText: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     color: HIGColors.systemGray,
-  },
+},
   modalTitle: {
     flex: 1,
     fontSize: HIGConstants.FONT_SIZE_H3,
@@ -437,27 +438,27 @@ const styles = StyleSheet.create({
     color: HIGColors.label,
     textAlign: 'center',
     marginRight: 44, // Balance close button
-  },
+},
   modalContent: {
     flex: 1,
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   sectionHeader: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
     marginTop: HIGConstants.SPACING_LG,
-  },
+},
   
   // Visual Section
   visualSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   visualGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
+},
   visualItem: {
     flex: 1,
     alignItems: 'center',
@@ -465,63 +466,63 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusSmall,
     padding: HIGConstants.SPACING_MD,
     marginHorizontal: HIGConstants.SPACING_XS,
-  },
+},
   visualIcon: {
     fontSize: 32,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   visualLabel: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 2,
-  },
+},
   visualDesc: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   
   // Recommendations Section
   recommendationsSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   dripperGuideCard: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusSmall,
     padding: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   currentDripperCard: {
     backgroundColor: HIGColors.systemBlue + '20',
     borderWidth: 1,
     borderColor: HIGColors.systemBlue,
-  },
+},
   dripperGuideHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   dripperGuideName: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   dripperGuideSize: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.systemBlue,
     fontWeight: '500',
-  },
+},
   dripperGuideDesc: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
-  },
+},
   
   // Troubleshooting Section
   troubleshootingSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   troubleCard: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.cornerRadiusSmall,
@@ -529,50 +530,50 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_SM,
     borderWidth: 1,
     borderColor: HIGColors.systemGray4,
-  },
+},
   troubleTitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   troubleSymptom: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: 2,
-  },
+},
   troubleSolution: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.systemBlue,
     fontWeight: '500',
     marginBottom: 2,
-  },
+},
   troubleReason: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     fontStyle: 'italic',
-  },
+},
   
   // Tips Section
   tipsSection: {
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   tipItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   tipIcon: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     marginRight: HIGConstants.SPACING_SM,
     lineHeight: 22,
-  },
+},
   tipText: {
     flex: 1,
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     lineHeight: 22,
-  },
+},
 });
 
 export default GrindSizeGuide;

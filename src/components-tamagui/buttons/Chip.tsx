@@ -1,3 +1,4 @@
+import { StyleProp, ViewStyle, TextStyle } from 'react-native';
 import React from 'react';
 import { styled, Stack, Text, GetProps } from 'tamagui';
 
@@ -8,19 +9,19 @@ const ChipSizeConfig = {
     paddingHorizontal: '$3',
     fontSize: '$1', // 14px
     borderRadius: 16,
-  },
+},
   medium: {
     height: 36,
     paddingHorizontal: '$4',
     fontSize: '$2', // 16px
     borderRadius: 18,
-  },
+},
   large: {
     height: 40,
     paddingHorizontal: '$5',
     fontSize: '$3', // 18px
     borderRadius: 20,
-  },
+},
 } as const;
 
 // Styled chip container
@@ -35,38 +36,38 @@ const ChipContainer = styled(Stack, {
   pressStyle: {
     scale: 0.96,
     opacity: 0.8,
-  },
+},
   
   variants: {
     size: {
       small: ChipSizeConfig.small,
       medium: ChipSizeConfig.medium,
       large: ChipSizeConfig.large,
-    },
+  },
     
     variant: {
       default: {
         backgroundColor: '$gray6',
-      },
+    },
       selected: {
         backgroundColor: '$cupBlue',
-      },
+    },
       outline: {
         backgroundColor: 'transparent',
         borderWidth: 1,
         borderColor: '$cupBlue',
-      },
+    },
       subtle: {
         backgroundColor: '$blue2',
-      },
     },
+  },
     
     disabled: {
       true: {
         opacity: 0.6,
         cursor: 'not-allowed',
-      },
     },
+  },
     
     clickable: {
       false: {
@@ -74,15 +75,15 @@ const ChipContainer = styled(Stack, {
         pressStyle: {
           scale: 1,
           opacity: 1,
-        },
       },
     },
-  } as const,
+  },
+} as const,
   
   defaultVariants: {
     size: 'medium',
     variant: 'default',
-  },
+},
 });
 
 // Styled text component
@@ -96,44 +97,44 @@ const ChipText = styled(Text, {
     size: {
       small: {
         fontSize: '$1',
-      },
+    },
       medium: {
         fontSize: '$2',
-      },
+    },
       large: {
         fontSize: '$3',
-      },
     },
+  },
     
     variant: {
       default: {
         color: '$color',
-      },
+    },
       selected: {
         color: 'white',
         fontWeight: '600',
-      },
+    },
       outline: {
         color: '$cupBlue',
         fontWeight: '600',
-      },
+    },
       subtle: {
         color: '$cupBlue',
         fontWeight: '500',
-      },
     },
+  },
     
     disabled: {
       true: {
         color: '$gray10',
-      },
     },
-  } as const,
+  },
+} as const,
   
   defaultVariants: {
     size: 'medium',
     variant: 'default',
-  },
+},
 });
 
 // Export types
@@ -146,8 +147,8 @@ export interface ChipProps {
   variant?: ChipVariant;
   onPress?: () => void;
   disabled?: boolean;
-  style?: any;
-  textStyle?: any;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }
 
 // Main component

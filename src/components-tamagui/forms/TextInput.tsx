@@ -19,8 +19,8 @@ interface TextInputProps extends GetProps<typeof StyledInput> {
   variant?: TextInputVariant;
   size?: TextInputSize;
   required?: boolean;
-  containerStyle?: any;
-  labelStyle?: any;
+  containerStyle?: unknown;
+  labelStyle?: unknown;
 }
 
 export type { TextInputProps };
@@ -32,19 +32,19 @@ const sizeConfig = {
     fontSize: '$2', // 16px - WCAG minimum
     paddingHorizontal: '$sm',
     paddingVertical: '$xs',
-  },
+},
   medium: {
     minHeight: 44, // WCAG minimum touch target
     fontSize: '$3', // 16px
     paddingHorizontal: '$md',
     paddingVertical: '$sm',
-  },
+},
   large: {
     minHeight: 52,
     fontSize: '$4', // 18px
     paddingHorizontal: '$lg',
     paddingVertical: '$md',
-  },
+},
 };
 
 // Styled Components
@@ -63,17 +63,17 @@ const StyledLabel = styled(Label, {
     required: {
       true: {
         // Add required indicator via pseudo element (not directly supported, handled in component)
-      },
     },
+  },
     variant: {
       error: {
         color: '$red9',
-      },
+    },
       warning: {
         color: '$orange9',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const StyledInput = styled(Input, {
@@ -96,13 +96,13 @@ const StyledInput = styled(Input, {
     outlineColor: '$focusRing',
     outlineWidth: 2,
     outlineOffset: 2,
-  },
+},
   
   disabledStyle: {
     opacity: 0.5,
     backgroundColor: '$gray3',
     color: '$gray10',
-  },
+},
   
   variants: {
     variant: {
@@ -110,34 +110,34 @@ const StyledInput = styled(Input, {
         borderColor: '$borderColor',
         focusStyle: {
           borderColor: '$cupBlue',
-        },
       },
+    },
       error: {
         borderColor: '$red8',
         backgroundColor: '$red1',
         focusStyle: {
           borderColor: '$red9',
-        },
       },
+    },
       warning: {
         borderColor: '$orange8',
         backgroundColor: '$orange1',
         focusStyle: {
           borderColor: '$orange9',
-        },
       },
     },
+  },
     size: {
       small: sizeConfig.small,
       medium: sizeConfig.medium,
       large: sizeConfig.large,
-    },
-  } as const,
+  },
+} as const,
   
   defaultVariants: {
     variant: 'default',
     size: 'medium',
-  },
+},
 })
 
 const HelperText = styled(Text, {
@@ -149,15 +149,15 @@ const HelperText = styled(Text, {
     variant: {
       default: {
         color: '$gray11',
-      },
+    },
       error: {
         color: '$red9',
-      },
+    },
       warning: {
         color: '$orange9',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const RequiredIndicator = styled(Text, {
@@ -179,7 +179,7 @@ export const TextInput = forwardRef<any, TextInputProps>((
     containerStyle,
     labelStyle,
     ...inputProps
-  },
+},
   ref
 ) => {
   // Determine final variant based on error state

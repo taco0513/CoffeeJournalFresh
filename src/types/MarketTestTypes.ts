@@ -16,36 +16,36 @@ export interface TestResult {
   scenario: string;
   success: boolean;
   message: string;
-  data?: any;
+  data?: unknown;
   error?: string;
 }
 
 export interface MarketInfo {
-  marketConfig: any;
-  deploymentConfig: any;
+  marketConfig: unknown;
+  deploymentConfig: unknown;
   isBeta: boolean;
   features: {
     homeCafeMode: boolean;
     labMode: boolean;
     marketIntelligence: boolean;
     achievements: boolean;
-  };
+};
   deploymentFeatures: {
     performanceDashboard: boolean;
     betaTestingDashboard: boolean;
     crashReporting: boolean;
-  };
+};
   data: {
-    roasters: any[];
-    origins: any[];
-    flavorProfiles: any[];
-    brewMethods: any[];
-  };
+    roasters: unknown[];
+    origins: unknown[];
+    flavorProfiles: unknown[];
+    brewMethods: unknown[];
+};
   formatting: {
     currency: string;
     date: string;
     time: string;
-  };
+};
 }
 
 export interface TestSuiteStats {

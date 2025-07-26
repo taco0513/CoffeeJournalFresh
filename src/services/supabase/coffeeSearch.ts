@@ -1,5 +1,6 @@
 import { supabase } from '@/services/supabase/client';
 
+import { Logger } from '../LoggingService';
 export interface RoasterSearchResult {
   id: string;
   name: string;
@@ -31,7 +32,7 @@ export async function searchRoasters(query: string): Promise<RoasterSearchResult
   try {
     // Search user's personal roasters first
     // Note: roaster_info table might not exist yet, so we'll handle the error
-    let userRoasters: any[] = [];
+    let userRoasters: unknown[] = [];
     try {
       const { data, error } = await supabase
         .from('roaster_info')
@@ -43,11 +44,11 @@ export async function searchRoasters(query: string): Promise<RoasterSearchResult
       
       if (!error) {
         userRoasters = data || [];
-      }
-    } catch (e) {
-      // Table might not exist, continue without user roasters
-      console.log('roaster_info table not available');
     }
+  } catch (e) {
+      // Table might not exist, continue without user roasters
+      Logger.debug('roaster_info table not available', 'supabase', { component: 'coffeeSearch' });
+  }
 
     // Search community coffee catalog for unique roasters
     const { data: catalogRoasters, error: catalogError } = await supabase
@@ -64,7 +65,7 @@ export async function searchRoasters(query: string): Promise<RoasterSearchResult
     // Add user's personal roasters first (higher priority)
     userRoasters?.forEach(roaster => {
       roasterMap.set(roaster.name.toLowerCase(), roaster);
-    });
+  });
 
     // Add catalog roasters if not already present
     catalogRoasters?.forEach(item => {
@@ -73,15 +74,15 @@ export async function searchRoasters(query: string): Promise<RoasterSearchResult
         roasterMap.set(key, {
           id: `catalog-${item.roastery}`,
           name: item.roastery,
-        });
-      }
-    });
+      });
+    }
+  });
 
     return Array.from(roasterMap.values()).slice(0, 10);
-  } catch (error) {
-    console.error('Error searching roasters:', error);
+} catch (error) {
+    Logger.error('Error searching roasters:', 'supabase', { component: 'coffeeSearch', error: error });
     return [];
-  }
+}
 }
 
 /**
@@ -101,7 +102,7 @@ export async function searchCoffees(
 
     if (coffeeQuery && coffeeQuery.length >= 2) {
       query = query.ilike('coffee_name', `%${coffeeQuery}%`);
-    }
+  }
 
     const { data, error } = await query
       .order('avg_rating', { ascending: false, nullsFirst: false })
@@ -110,10 +111,10 @@ export async function searchCoffees(
 
     if (error) throw error;
     return data || [];
-  } catch (error) {
-    console.error('Error searching coffees:', error);
+} catch (error) {
+    Logger.error('Error searching coffees:', 'supabase', { component: 'coffeeSearch', error: error });
     return [];
-  }
+}
 }
 
 /**
@@ -129,10 +130,10 @@ export async function getCoffeeDetails(coffeeId: string): Promise<CoffeeSearchRe
 
     if (error) throw error;
     return data;
-  } catch (error) {
-    console.error('Error getting coffee details:', error);
+} catch (error) {
+    Logger.error('Error getting coffee details:', 'supabase', { component: 'coffeeSearch', error: error });
     return null;
-  }
+}
 }
 
 /**
@@ -147,7 +148,7 @@ export async function addCoffeeToCatalog(coffee: Omit<CoffeeSearchResult, 'id' |
     if (!user) {
       // Not authenticated
       throw new Error('로그인이 필요합니다. 커피를 추가하려면 회원가입 또는 로그인해주세요.');
-    }
+  }
 
     // Add coffee with user info and pending verification status
     const { data: newCoffee, error } = await supabase
@@ -156,7 +157,7 @@ export async function addCoffeeToCatalog(coffee: Omit<CoffeeSearchResult, 'id' |
         ...coffee,
         first_added_by: user.id,
         verified_by_moderator: false, // Needs admin review
-      }])
+    }])
       .select()
       .single();
 
@@ -172,15 +173,15 @@ export async function addCoffeeToCatalog(coffee: Omit<CoffeeSearchResult, 'id' |
           message: `${user.email} added a new coffee: ${coffee.roastery} - ${coffee.coffee_name}`,
           data: { coffee_id: newCoffee.id },
           created_by: user.id,
-        }]);
-    } catch (notifError) {
+      }]);
+  } catch (notifError) {
       // Notification table might not exist yet, continue anyway
-      console.log('Admin notification skipped:', notifError);
-    }
+      Logger.debug('Admin notification skipped:', 'supabase', { component: 'coffeeSearch', data: notifError });
+  }
 
     return newCoffee;
-  } catch (error) {
-    console.error('Error adding coffee to catalog:', error);
+} catch (error) {
+    Logger.error('Error adding coffee to catalog:', 'supabase', { component: 'coffeeSearch', error: error });
     throw error;
-  }
+}
 }

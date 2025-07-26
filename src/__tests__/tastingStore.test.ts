@@ -7,10 +7,10 @@ function deduplicateExpressions(expressions: SelectedSensoryExpression[]): Selec
     const uniqueKey = expr.korean;
     if (seen.has(uniqueKey)) {
       return false;
-    }
+  }
     seen.add(uniqueKey);
     return true;
-  });
+});
 }
 
 describe('Sensory Expression Deduplication Logic', () => {
@@ -25,7 +25,7 @@ describe('Sensory Expression Deduplication Logic', () => {
         emoji: '💪',
         intensity: 3,
         selected: true,
-      },
+    },
       {
         categoryId: 'body',
         expressionId: 'expr2', // Different ID
@@ -34,7 +34,7 @@ describe('Sensory Expression Deduplication Logic', () => {
         emoji: '💪',
         intensity: 3,
         selected: true,
-      },
+    },
       {
         categoryId: 'sweetness',
         expressionId: 'expr3',
@@ -43,7 +43,7 @@ describe('Sensory Expression Deduplication Logic', () => {
         emoji: '🍦',
         intensity: 3,
         selected: true,
-      },
+    },
     ];
 
     // Apply deduplication
@@ -57,7 +57,7 @@ describe('Sensory Expression Deduplication Logic', () => {
     expect(koreanTexts).toContain('묵직한');
     expect(koreanTexts).toContain('바닐라');
     expect(koreanTexts.filter(text => text === '묵직한')).toHaveLength(1);
-  });
+});
 
   test('should allow different Korean expressions', () => {
     const expressions: SelectedSensoryExpression[] = [
@@ -69,7 +69,7 @@ describe('Sensory Expression Deduplication Logic', () => {
         emoji: '🌿',
         intensity: 3,
         selected: true,
-      },
+    },
       {
         categoryId: 'sweetness',
         expressionId: 'expr2',
@@ -78,20 +78,20 @@ describe('Sensory Expression Deduplication Logic', () => {
         emoji: '🍯',
         intensity: 3,
         selected: true,
-      },
+    },
     ];
 
     const deduplicated = deduplicateExpressions(expressions);
 
     // Should have both expressions since they have different Korean text
     expect(deduplicated).toHaveLength(2);
-  });
+});
 
   test('should handle empty array', () => {
     const expressions: SelectedSensoryExpression[] = [];
     const deduplicated = deduplicateExpressions(expressions);
     expect(deduplicated).toHaveLength(0);
-  });
+});
 
   test('should preserve first occurrence when duplicates exist', () => {
     const expressions: SelectedSensoryExpression[] = [
@@ -103,7 +103,7 @@ describe('Sensory Expression Deduplication Logic', () => {
         emoji: '💪',
         intensity: 3,
         selected: true,
-      },
+    },
       {
         categoryId: 'body',
         expressionId: 'expr2',
@@ -112,7 +112,7 @@ describe('Sensory Expression Deduplication Logic', () => {
         emoji: '💪',
         intensity: 2, // Different intensity
         selected: true,
-      },
+    },
     ];
 
     const deduplicated = deduplicateExpressions(expressions);
@@ -120,5 +120,5 @@ describe('Sensory Expression Deduplication Logic', () => {
     expect(deduplicated).toHaveLength(1);
     expect(deduplicated[0].categoryId).toBe('acidity'); // First occurrence
     expect(deduplicated[0].intensity).toBe(3); // First occurrence values
-  });
+});
 });

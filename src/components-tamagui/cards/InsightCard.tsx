@@ -16,12 +16,12 @@ const StyledCard = styled(Card, {
   enterStyle: {
     opacity: 0,
     y: 10,
-  },
+},
   
   pressStyle: {
     scale: 0.99,
     backgroundColor: '$backgroundPress',
-  },
+},
   
   // WCAG 2.4.7 Focus Visible - Enhanced accessibility
   focusStyle: {
@@ -33,7 +33,7 @@ const StyledCard = styled(Card, {
     outlineColor: '$focusRing',
     outlineWidth: 2,
     outlineOffset: 2,
-  },
+},
 });
 
 const IconText = styled(Text, {
@@ -64,15 +64,15 @@ const TrendIcon = styled(Text, {
     trend: {
       up: {
         color: '$success', // WCAG compliant success color
-      },
+    },
       down: {
         color: '$error', // WCAG compliant error color
-      },
+    },
       stable: {
         color: '$color',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const DetailText = styled(Text, {
@@ -107,14 +107,14 @@ export const InsightCard: React.FC<InsightCardProps> = ({
       up: '↑',
       down: '↓',
       stable: '→',
-    }[trend];
+  }[trend];
     
     return (
       <TrendIcon trend={trend}>
         {trendSymbol}
       </TrendIcon>
     );
-  };
+};
 
   return (
     <StyledCard>

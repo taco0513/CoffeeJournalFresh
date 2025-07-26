@@ -47,11 +47,11 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
     const newExpanded = new Set(expandedCategories);
     if (newExpanded.has(categoryId)) {
       newExpanded.delete(categoryId);
-    } else {
+  } else {
       newExpanded.add(categoryId);
-    }
+  }
     setExpandedCategories(newExpanded);
-  }, [expandedCategories]);
+}, [expandedCategories]);
 
   const handleExpressionSelect = useCallback((
     categoryId: string,
@@ -70,18 +70,18 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
     if (existingIndex >= 0) {
       // Already selected - remove it
       newExpressions.splice(existingIndex, 1);
-    } else {
+  } else {
       // Check if category limit reached
       if (categorySelections.length >= maxSelectionsPerCategory) {
         // Optionally show a message or haptic feedback
         return;
-      }
+    }
       // New expression - add it
       newExpressions.push({ categoryId, expression });
-    }
+  }
 
     onExpressionChange(newExpressions);
-  }, [selectedExpressions, onExpressionChange]);
+}, [selectedExpressions, onExpressionChange]);
 
   const isExpressionSelected = useCallback((
     categoryId: string,
@@ -90,7 +90,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
     return selectedExpressions.some(
       item => item.categoryId === categoryId && item.expression.id === expressionId
     );
-  }, [selectedExpressions]);
+}, [selectedExpressions]);
 
   const renderExpressionButton = (
     categoryId: string,
@@ -106,7 +106,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
           isSelected && { 
             backgroundColor: category?.color || '#007AFF',
             borderColor: category?.color || '#007AFF'
-          }
+        }
         ]}
         onPress={() => handleExpressionSelect(categoryId, expression)}
         activeOpacity={0.7}
@@ -119,7 +119,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
         </Text>
       </TouchableOpacity>
     );
-  };
+};
 
   // Remove the old renderExpressionCard function - we'll use renderExpressionButton directly
 
@@ -155,7 +155,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
           <View style={styles.categoryHeaderRight}>
             <View style={[styles.selectionBadge, { 
               backgroundColor: selectedCount > 0 ? category?.color || '#007AFF' : '#E0E0E0' 
-            }]}>
+          }]}>
               <Text style={[
                 styles.selectionBadgeText,
                 selectedCount === 0 && { color: '#666666' }
@@ -202,7 +202,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                       isExpressionSelected(category.id, expression.id) && { 
                         backgroundColor: category?.color || '#007AFF',
                         borderColor: category?.color || '#007AFF'
-                      },
+                    },
                       isDisabled && styles.expressionButtonDisabled
                     ]}
                     onPress={() => !isDisabled && handleExpressionSelect(category.id, expression)}
@@ -218,7 +218,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                     </Text>
                   </TouchableOpacity>
                 );
-              })}
+            })}
             </View>
             {expressions.length === 0 && (
               <Text style={styles.noExpressionsText}>
@@ -236,17 +236,17 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
         )}
       </View>
     );
-  };
+};
 
   const getSelectedSummary = () => {
     const categoryGroups = selectedExpressions.reduce((acc, item) => {
       if (!acc[item.categoryId]) acc[item.categoryId] = [];
       acc[item.categoryId].push(item);
       return acc;
-    }, {} as Record<string, SelectedExpression[]>);
+  }, {} as Record<string, SelectedExpression[]>);
 
     return Object.entries(categoryGroups);
-  };
+};
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -289,7 +289,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                     <Text style={styles.summaryItemRemove}>×</Text>
                   </TouchableOpacity>
                 );
-              })}
+            })}
             </View>
           </ScrollView>
         ) : (
@@ -312,36 +312,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
+},
   header: {
     padding: 20,
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
-  },
+},
   title: {
     fontSize: 24,
     fontWeight: '700',
     color: '#2C3E50',
     marginBottom: 8,
-  },
+},
   subtitle: {
     fontSize: 16,
     color: '#7F8C8D',
     marginBottom: 8,
-  },
+},
   headerGuide: {
     backgroundColor: '#E3F2FD',
     borderRadius: 8,
     padding: 12,
     marginTop: 8,
-  },
+},
   headerGuideText: {
     fontSize: 14,
     color: '#1976D2',
     textAlign: 'center',
     fontWeight: '500',
-  },
+},
 
   // Summary section
   summaryContainer: {
@@ -349,27 +349,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F9FA',
     borderBottomWidth: 1,
     borderBottomColor: '#E9ECEF',
-  },
+},
   summaryContainerEmpty: {
     backgroundColor: '#FFF3E0',
-  },
+},
   summaryEmptyText: {
     fontSize: 14,
     color: '#F57C00',
     textAlign: 'center',
     marginTop: 8,
     fontStyle: 'italic',
-  },
+},
   summaryTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#495057',
     marginBottom: 12,
-  },
+},
   summaryItems: {
     flexDirection: 'row',
     paddingHorizontal: 4,
-  },
+},
   summaryItem: {
     marginRight: 12,
     paddingHorizontal: 12,
@@ -380,13 +380,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minWidth: 60,
     minHeight: 32,
-  },
+},
   summaryItemText: {
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
     color: '#2C3E50',
-  },
+},
   summaryItemRemove: {
     position: 'absolute',
     top: -4,
@@ -405,12 +405,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 2,
-  },
+},
 
   // Categories
   categoriesContainer: {
     padding: 16,
-  },
+},
   categoryContainer: {
     marginBottom: 16,
     borderRadius: 12,
@@ -420,39 +420,39 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
-  },
+},
   categoryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
     borderRadius: 12,
-  },
+},
   categoryHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-  },
+},
   categoryEmoji: {
     fontSize: 24,
     marginRight: 12,
-  },
+},
   categoryTitles: {
     flex: 1,
-  },
+},
   categoryNameKo: {
     fontSize: 18,
     fontWeight: '700',
-  },
+},
   categoryNameEn: {
     fontSize: 14,
     color: '#6C757D',
     marginTop: 2,
-  },
+},
   categoryHeaderRight: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   selectionBadge: {
     minWidth: 40,
     height: 24,
@@ -461,29 +461,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12,
     paddingHorizontal: 8,
-  },
+},
   selectionBadgeText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '600',
-  },
+},
   expandIcon: {
     fontSize: 16,
     color: '#6C757D',
-  },
+},
   categoryDescription: {
     paddingHorizontal: 16,
     paddingBottom: 8,
     fontSize: 14,
     color: '#6C757D',
     lineHeight: 20,
-  },
+},
 
   // Expressions
   expressionsContainer: {
     padding: 16,
     paddingTop: 8,
-  },
+},
   expressionCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
@@ -491,55 +491,55 @@ const styles = StyleSheet.create({
     borderColor: '#E9ECEF',
     padding: 12,
     marginBottom: 12,
-  },
+},
   expressionHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     marginBottom: 8,
-  },
+},
   expressionLabels: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-  },
+},
   expressionTexts: {
     flex: 1,
-  },
+},
   expressionKorean: {
     fontSize: 16,
     fontWeight: '600',
     color: '#2C3E50',
-  },
+},
   expressionEnglish: {
     fontSize: 13,
     color: '#6C757D',
     marginTop: 2,
-  },
+},
   beginnerBadge: {
     backgroundColor: '#28A745',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
-  },
+},
   beginnerBadgeText: {
     color: '#FFFFFF',
     fontSize: 10,
     fontWeight: '500',
-  },
+},
   expressionDescription: {
     fontSize: 12,
     color: '#6C757D',
     marginBottom: 8,
     lineHeight: 16,
-  },
+},
 
   // Expression Button
   expressionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-  },
+},
   expressionButton: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -552,44 +552,44 @@ const styles = StyleSheet.create({
     marginRight: 8,
     marginBottom: 8,
     minHeight: 36,
-  },
+},
   expressionButtonText: {
     fontSize: 15,
     color: '#495057',
     fontWeight: '600',
-  },
+},
   expressionButtonTextSelected: {
     color: '#FFFFFF',
     fontWeight: '600',
-  },
+},
   expressionButtonDisabled: {
     opacity: 0.5,
     backgroundColor: '#F5F5F5',
-  },
+},
   expressionButtonTextDisabled: {
     color: '#BDBDBD',
-  },
+},
   guideTextContainer: {
     marginBottom: 12,
-  },
+},
   guideText: {
     fontSize: 13,
     color: '#666666',
     textAlign: 'center',
     fontStyle: 'italic',
-  },
+},
   emptyStateContainer: {
     marginTop: 16,
     padding: 16,
     backgroundColor: '#F8F9FA',
     borderRadius: 8,
     alignItems: 'center',
-  },
+},
   emptyStateText: {
     fontSize: 14,
     color: '#6C757D',
     textAlign: 'center',
-  },
+},
 
   noExpressionsText: {
     textAlign: 'center',
@@ -597,7 +597,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: 20,
     fontStyle: 'italic',
-  },
+},
 });
 
 export default EnhancedSensoryEvaluation;

@@ -2,6 +2,7 @@ import uuid from 'react-native-uuid';
 import { BaseRealmService } from './BaseRealmService';
 import { ICafeInfo } from './schemas';
 import { RealmLogger } from '../../utils/logger';
+import { TastingRecord } from '../types';
 
 export class CafeService {
   private static instance: CafeService;
@@ -9,20 +10,20 @@ export class CafeService {
 
   private constructor() {
     this.baseService = BaseRealmService.getInstance();
-  }
+}
 
   static getInstance(): CafeService {
     if (!CafeService.instance) {
       CafeService.instance = new CafeService();
-    }
-    return CafeService.instance;
   }
+    return CafeService.instance;
+}
 
   async initialize(): Promise<void> {
     if (!this.baseService.isInitialized) {
       await this.baseService.initialize();
-    }
   }
+}
 
   addCafe(cafe: Omit<ICafeInfo, 'id' | 'createdAt' | 'updatedAt' | 'visitCount'>): ICafeInfo {
     const realm = this.baseService.getRealm();
@@ -35,18 +36,18 @@ export class CafeService {
         updatedAt: new Date(),
         visitCount: 0,
         ...cafe,
-      });
     });
+  });
     
     return newCafe!;
-  }
+}
 
   searchCafes(searchTerm: string): Realm.Results<ICafeInfo> {
     const realm = this.baseService.getRealm();
     return realm.objects<ICafeInfo>('CafeInfo')
       .filtered('name CONTAINS[c] $0', searchTerm)
-      .sorted('visitCount', true) as unknown as Realm.Results<ICafeInfo>;
-  }
+      .sorted('visitCount', true) as Realm.Results<ICafeInfo>;
+}
 
   getCafesByName(searchText: string, limit: number = 10): ICafeInfo[] {
     const realm = this.baseService.getRealm();
@@ -57,11 +58,11 @@ export class CafeService {
         .sorted('visitCount', true);
       
       return Array.from(cafes.slice(0, limit));
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to get cafes by name', { error: error as Error });
       return [];
-    }
   }
+}
 
   getCafeSuggestions(searchText: string): ICafeInfo[] {
     const realm = this.baseService.getRealm();
@@ -72,11 +73,11 @@ export class CafeService {
         .sorted('visitCount', true);
       
       return Array.from(cafes.slice(0, 5));
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to get cafe suggestions', { error: error as Error });
       return [];
-    }
   }
+}
 
   incrementCafeVisit(cafeName: string): void {
     const realm = this.baseService.getRealm();
@@ -90,7 +91,7 @@ export class CafeService {
           cafe.visitCount += 1;
           cafe.lastVisitedAt = new Date();
           cafe.updatedAt = new Date();
-        } else {
+      } else {
           // Create new cafe entry if it doesn't exist
           realm.create<ICafeInfo>('CafeInfo', {
             id: uuid.v4() as string,
@@ -99,13 +100,13 @@ export class CafeService {
             updatedAt: new Date(),
             visitCount: 1,
             lastVisitedAt: new Date(),
-          });
-        }
-      });
-    } catch (error) {
+        });
+      }
+    });
+  } catch (error) {
       RealmLogger.error('Failed to increment cafe visit', { error: error as Error });
-    }
   }
+}
 
   getCafeRoasters(cafeName: string, searchText?: string): string[] {
     const realm = this.baseService.getRealm();
@@ -116,22 +117,22 @@ export class CafeService {
       
       if (searchText) {
         query = query.filtered('roastery CONTAINS[c] $0', searchText);
-      }
+    }
       
       // Get unique roasters
       const roasters = new Set<string>();
-      query.forEach((record: any) => {
+      query.forEach((record: TastingRecord) => {
         if (record.roastery) {
           roasters.add(record.roastery);
-        }
-      });
+      }
+    });
       
       return Array.from(roasters).sort();
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to get cafe roasters', { error: error as Error });
       return [];
-    }
   }
+}
 
   getRoastersByCafe(cafeName: string): string[] {
     const realm = this.baseService.getRealm();
@@ -142,18 +143,18 @@ export class CafeService {
       
       // Get unique roasters
       const roasters = new Set<string>();
-      tastings.forEach((record: any) => {
+      tastings.forEach((record: TastingRecord) => {
         if (record.roastery) {
           roasters.add(record.roastery);
-        }
-      });
+      }
+    });
       
       return Array.from(roasters).sort();
-    } catch (error) {
+  } catch (error) {
       RealmLogger.error('Failed to get roasters by cafe', { error: error as Error });
       return [];
-    }
   }
+}
 
   getTopCafes(limit: number): { name: string; count: number }[] {
     const realm = this.baseService.getRealm();
@@ -164,8 +165,8 @@ export class CafeService {
     return Array.from(cafes).map(cafe => ({
       name: cafe.name,
       count: cafe.visitCount,
-    }));
-  }
+  }));
+}
 
   updateCafeFromTasting(cafeName: string): void {
     if (!cafeName) return;
@@ -180,8 +181,8 @@ export class CafeService {
         existingCafe.visitCount += 1;
         existingCafe.lastVisitedAt = new Date();
         existingCafe.updatedAt = new Date();
-      });
-    } else {
+    });
+  } else {
       // Create new cafe entry
       realm.write(() => {
         realm.create<ICafeInfo>('CafeInfo', {
@@ -191,10 +192,10 @@ export class CafeService {
           updatedAt: new Date(),
           visitCount: 1,
           lastVisitedAt: new Date(),
-        });
       });
-    }
+    });
   }
+}
 }
 
 export default CafeService.getInstance();

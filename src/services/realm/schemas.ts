@@ -74,11 +74,11 @@ export interface ITastingRecord {
         brand: string;
         model?: string;
         setting: string;
-      };
+    };
       brewingMethod: string;
       filter?: string;
       other?: string;
-    };
+  };
     recipe: {
       doseIn: number;
       waterAmount: number;
@@ -87,16 +87,16 @@ export interface ITastingRecord {
       bloomTime?: number;
       totalBrewTime: number;
       pourPattern?: string;
-    };
+  };
     notes?: {
       previousChange?: string;
       result?: string;
       nextExperiment?: string;
-    };
   };
+};
   
   // Selected Sensory Expressions (Korean)
-  selectedSensoryExpressions?: any[];
+  selectedSensoryExpressions?: unknown[];
 }
 
 export interface ICoffeeLibrary {
@@ -151,7 +151,7 @@ export const FlavorNoteSchema: Realm.ObjectSchema = {
     level: 'int',
     value: 'string',
     koreanValue: 'string?',
-  },
+},
 };
 
 export const SensoryAttributeSchema: Realm.ObjectSchema = {
@@ -165,7 +165,7 @@ export const SensoryAttributeSchema: Realm.ObjectSchema = {
     mouthfeel: 'string',
     bitterness: 'int?',
     balance: 'int?',
-  },
+},
 };
 
 export const TastingRecordSchema: Realm.ObjectSchema = {
@@ -222,7 +222,7 @@ export const TastingRecordSchema: Realm.ObjectSchema = {
     
     // Selected Sensory Expressions (stored as JSON string)
     selectedSensoryExpressions: 'string?',
-  },
+},
 };
 
 export const CoffeeLibrarySchema: Realm.ObjectSchema = {
@@ -243,7 +243,7 @@ export const CoffeeLibrarySchema: Realm.ObjectSchema = {
     updatedAt: 'date',
     useCount: { type: 'int', default: 0 },
     lastUsedAt: 'date?',
-  },
+},
 };
 
 export const CafeInfoSchema: Realm.ObjectSchema = {
@@ -260,7 +260,7 @@ export const CafeInfoSchema: Realm.ObjectSchema = {
     updatedAt: 'date',
     visitCount: { type: 'int', default: 0 },
     lastVisitedAt: 'date?',
-  },
+},
 };
 
 export const RoasterInfoSchema: Realm.ObjectSchema = {
@@ -278,7 +278,7 @@ export const RoasterInfoSchema: Realm.ObjectSchema = {
     updatedAt: 'date',
     coffeeCount: { type: 'int', default: 0 },
     averageScore: 'double?',
-  },
+},
 };
 
 // All schemas for Realm configuration

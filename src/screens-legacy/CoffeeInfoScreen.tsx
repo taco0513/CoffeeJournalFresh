@@ -72,41 +72,41 @@ const CoffeeInfoScreen = () => {
     
     if (parsed.origin && !currentTasting.origin) {
       updates.origin = parsed.origin;
-    }
+  }
     
     if (parsed.variety && !currentTasting.variety) {
       updates.variety = parsed.variety;
-    }
+  }
     
     if (parsed.process && !currentTasting.process) {
       updates.process = parsed.process;
-    }
+  }
     
     Object.keys(updates).forEach(key => {
       updateField(key as keyof CurrentTasting, updates[key as keyof typeof updates]);
-    });
-  };
+  });
+};
 
   const handleNext = () => {
     if (isValid) {
       // 방문 횟수 증가
       if (currentTasting.cafeName && currentTasting.cafeName.trim().length > 0) {
         realmService.incrementCafeVisit(currentTasting.cafeName);
-      }
+    }
       if (currentTasting.roastery && currentTasting.roastery.trim().length > 0) {
         realmService.incrementRoasterVisit(currentTasting.roastery);
-      }
+    }
       
       // Navigate based on mode
       if (currentTasting.mode === 'home_cafe') {
         navigation.navigate('HomeCafe' as never);
-      } else if (currentTasting.mode === 'lab') {
+    } else if (currentTasting.mode === 'lab') {
         navigation.navigate('ExperimentalData' as never);
-      } else {
+    } else {
         navigation.navigate('UnifiedFlavor' as never);
-      }
     }
-  };
+  }
+};
 
 
   return (
@@ -124,17 +124,17 @@ const CoffeeInfoScreen = () => {
         <TouchableOpacity onPress={() => {
           // Just go back - navigation should handle it
           navigation.goBack();
-        }}>
+      }}>
           <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.navigationTitle}>커피 정보</Text>
         <TouchableOpacity onPress={() => {
           if (currentTasting.mode === 'home_cafe') {
             navigation.navigate('HomeCafe' as never);
-          } else {
+        } else {
             navigation.navigate('UnifiedFlavor' as never);
-          }
-        }}>
+        }
+      }}>
           <Text style={styles.skipButton}>건너뛰기</Text>
         </TouchableOpacity>
       </View>
@@ -179,8 +179,8 @@ const CoffeeInfoScreen = () => {
                         !currentTasting.roastery) {
                       // Auto-fill roastery if cafe name matches a roastery name
                       updateField('roastery', item);
-                    }
-                  }}
+                  }
+                }}
                   suggestions={['Home', ...cafeSuggestions]}
                   placeholder="예: 블루보틀 (집에서는 'Home' 선택)"
                   label="카페 이름 *"
@@ -210,7 +210,7 @@ const CoffeeInfoScreen = () => {
                     if (item.startsWith('+ "') && item.includes('새 커피 등록')) {
                       setShowAddCoffeeModal(true);
                       return;
-                    }
+                  }
                     
                     // Update coffee name
                     updateField('coffeeName', item);
@@ -225,7 +225,7 @@ const CoffeeInfoScreen = () => {
                         if (details.altitude) updateField('altitude', details.altitude);
                         if (details.process) updateField('process', details.process);
                         if (details.roasterNotes) updateField('roasterNotes', details.roasterNotes);
-                      } else {
+                    } else {
                         // Check Supabase for coffee details
                         const supabaseCoffees = await searchCoffees(currentTasting.roastery, item);
                         const matchedCoffee = supabaseCoffees.find(c => c.coffee_name === item);
@@ -241,23 +241,23 @@ const CoffeeInfoScreen = () => {
                               ? `${matchedCoffee.origin} / ${matchedCoffee.region}`
                               : matchedCoffee.region;
                             updateField('origin', origin);
-                          }
-                        } else {
+                        }
+                      } else {
                           // If no data found, try parsing the coffee name
                           handleCoffeeNameParse(item);
-                        }
                       }
-                    } else {
+                    }
+                  } else {
                       // If no roastery selected, try parsing the coffee name
                       handleCoffeeNameParse(item);
-                    }
-                  }}
+                  }
+                }}
                   onBlur={() => {
                     // Parse coffee name when user finishes typing
                     if (currentTasting.coffeeName) {
                       handleCoffeeNameParse(currentTasting.coffeeName);
-                    }
-                  }}
+                  }
+                }}
                   suggestions={coffeeNameSuggestions}
                   placeholder="예: 에티오피아 예가체프 G1"
                   label="커피 이름 *"
@@ -411,7 +411,7 @@ const CoffeeInfoScreen = () => {
         onCoffeeAdded={(coffeeName) => {
           updateField('coffeeName', coffeeName);
           setShowAddCoffeeModal(false);
-        }}
+      }}
       />
     </SafeAreaView>
   );
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
+},
   navigationBar: {
     height: 44,
     flexDirection: 'row',
@@ -431,49 +431,49 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.systemGray4,
-  },
+},
   backButton: {
     fontSize: 24,
     color: HIGColors.systemBlue,
-  },
+},
   navigationTitle: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   skipButton: {
     fontSize: 15,
     color: HIGColors.systemBlue,
-  },
+},
   progressBar: {
     height: 3,
     backgroundColor: HIGColors.systemGray5,
     overflow: 'hidden',
-  },
+},
   progressFill: {
     height: '100%',
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   scrollView: {
     flex: 1,
-  },
+},
   scrollContent: {
     flexGrow: 1,
-  },
+},
   form: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingTop: HIGConstants.SPACING_SM,
     paddingBottom: HIGConstants.SPACING_MD,
-  },
+},
   inputGroup: {
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   label: {
     fontSize: 13,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   input: {
     minHeight: 40,
     borderWidth: 1,
@@ -484,12 +484,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#000000',
     backgroundColor: '#FFFFFF',
-  },
+},
   temperatureButtons: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_SM,
     marginTop: HIGConstants.SPACING_XS,
-  },
+},
   tempButton: {
     flex: 1,
     minHeight: 36,
@@ -500,25 +500,25 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_XS,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   tempButtonActive: {
     backgroundColor: HIGColors.systemBlue,
     borderColor: HIGColors.systemBlue,
-  },
+},
   tempButtonText: {
     fontSize: 17,
     fontWeight: '400',
     color: HIGColors.label,
-  },
+},
   tempButtonTextActive: {
     color: '#FFFFFF',
-  },
+},
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.systemGray4,
-  },
+},
   hintText: {
     fontSize: 12,
     color: HIGColors.secondaryLabel,
@@ -531,12 +531,12 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.BORDER_RADIUS / 2,
     borderLeftWidth: 2,
     borderLeftColor: HIGColors.systemBlue,
-  },
+},
   roastLevelButtons: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_SM,
     marginTop: HIGConstants.SPACING_XS,
-  },
+},
   roastButton: {
     flex: 1,
     minHeight: 36,
@@ -547,48 +547,48 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_XS,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   roastButtonActive: {
     backgroundColor: HIGColors.systemBrown,
     borderColor: HIGColors.systemBrown,
-  },
+},
   roastButtonText: {
     fontSize: 15,
     fontWeight: '500',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
   roastButtonTextActive: {
     color: '#FFFFFF',
-  },
+},
   guideSection: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_MD,
     backgroundColor: '#E3F2FD',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.systemGray5,
-  },
+},
   guideText: {
     fontSize: 15,
     color: HIGColors.systemBlue,
     textAlign: 'center',
     fontWeight: '500',
-  },
+},
   nextButton: {
     height: 48,
     backgroundColor: HIGColors.systemBlue,
     borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   nextButtonDisabled: {
     backgroundColor: HIGColors.systemGray4,
-  },
+},
   nextButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
-  },
+},
   accordionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -599,29 +599,29 @@ const styles = StyleSheet.create({
     marginVertical: HIGConstants.SPACING_SM,
     borderWidth: 1,
     borderColor: HIGColors.systemGray5,
-  },
+},
   accordionHeaderContent: {
     flex: 1,
-  },
+},
   accordionTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   accordionSubtitle: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     lineHeight: 18,
-  },
+},
   accordionIcon: {
     fontSize: 20,
     color: HIGColors.tertiaryLabel,
     marginLeft: HIGConstants.SPACING_SM,
-  },
+},
   accordionIconExpanded: {
     transform: [{ rotate: '90deg' }],
-  },
+},
   accordionContent: {
     backgroundColor: '#FFFFFF',
     borderRadius: HIGConstants.cornerRadiusMedium,
@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: HIGColors.systemGray5,
     borderTopWidth: 0,
-  },
+},
 });
 
 export default CoffeeInfoScreen;

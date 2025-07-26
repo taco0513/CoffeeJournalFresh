@@ -84,19 +84,19 @@ export const USERNAME_RULES = {
 export function validateUsername(username: string): { valid: boolean; error?: string } {
   if (username.length < USERNAME_RULES.minLength) {
     return { valid: false, error: `Username must be at least ${USERNAME_RULES.minLength} characters` };
-  }
+}
   
   if (username.length > USERNAME_RULES.maxLength) {
     return { valid: false, error: `Username must be no more than ${USERNAME_RULES.maxLength} characters` };
-  }
+}
   
   if (!USERNAME_RULES.pattern.test(username)) {
     return { valid: false, error: 'Username can only contain letters, numbers, underscore, and hyphen' };
-  }
+}
   
   if (USERNAME_RULES.reserved.includes(username.toLowerCase())) {
     return { valid: false, error: 'This username is reserved' };
-  }
+}
   
   return { valid: true };
 }

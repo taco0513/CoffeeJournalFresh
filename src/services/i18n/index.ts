@@ -7,16 +7,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { koreanTranslations } from './translations/korean';
 import { englishTranslations } from './translations/english';
 
+import { Logger } from '../LoggingService';
 const STORAGE_KEY = '@cupnote_language';
 
 // Translation resources
 const resources = {
   ko: {
     translation: koreanTranslations,
-  },
+},
   en: {
     translation: englishTranslations,
-  },
+},
 };
 
 // Detect device language
@@ -27,7 +28,7 @@ const detectLanguage = (): string => {
   // Check if device is Korean
   if (primaryLocale.languageCode === 'ko') {
     return 'ko';
-  }
+}
   
   // For all other locales, default to English (US beta strategy)
   return 'en';
@@ -48,17 +49,17 @@ const initializeI18n = async (): Promise<void> => {
         fallbackLng: 'en', // English fallback for beta users
         interpolation: {
           escapeValue: false, // React already escapes
-        },
+      },
         react: {
           useSuspense: false,
-        },
+      },
         // Enable debugging in development
         debug: __DEV__,
-      });
+    });
       
-    console.log(`[i18n] Initialized with language: ${defaultLanguage}`);
-  } catch (error) {
-    console.error('[i18n] Initialization failed:', error);
+    Logger.debug(`[i18n] Initialized with language: ${defaultLanguage}`, 'service', { component: 'index' });
+} catch (error) {
+    Logger.error('[i18n] Initialization failed:', 'service', { component: 'index', error: error });
     // Fallback initialization
     await i18n
       .use(initReactI18next)
@@ -68,8 +69,8 @@ const initializeI18n = async (): Promise<void> => {
         fallbackLng: 'en',
         interpolation: { escapeValue: false },
         react: { useSuspense: false },
-      });
-  }
+    });
+}
 };
 
 // Change language
@@ -77,10 +78,10 @@ export const changeLanguage = async (language: 'ko' | 'en'): Promise<void> => {
   try {
     await AsyncStorage.setItem(STORAGE_KEY, language);
     await i18n.changeLanguage(language);
-    console.log(`[i18n] Language changed to: ${language}`);
-  } catch (error) {
-    console.error('[i18n] Failed to change language:', error);
-  }
+    Logger.debug(`[i18n] Language changed to: ${language}`, 'service', { component: 'index' });
+} catch (error) {
+    Logger.error('[i18n] Failed to change language:', 'service', { component: 'index', error: error });
+}
 };
 
 // Get current language

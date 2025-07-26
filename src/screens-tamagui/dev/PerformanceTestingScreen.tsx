@@ -16,7 +16,8 @@ import {
 import { RefreshControl, Alert } from 'react-native';
 // Using react-native-vector-icons instead of @tamagui/lucide-icons
 import Icon from 'react-native-vector-icons/Ionicons';
-import { 
+import { Logger } from '../../services/LoggingService';
+import {
   performanceTest, 
   runAutomatedPerformanceTests, 
   analyzeBundleSize,
@@ -27,7 +28,7 @@ export default function PerformanceTestingScreen() {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [comparisons, setComparisons] = useState<PerformanceComparison[]>([]);
-  const [bundleAnalysis, setBundleAnalysis] = useState<any>(null);
+  const [bundleAnalysis, setBundleAnalysis] = useState<unknown>(null);
   const [report, setReport] = useState<string>('');
 
   const loadComparisons = useCallback(async () => {
@@ -41,16 +42,16 @@ export default function PerformanceTestingScreen() {
       
       const bundle = await analyzeBundleSize();
       setBundleAnalysis(bundle);
-    } catch (error) {
-      console.error('Error loading comparisons:', error);
-    } finally {
+  } catch (error) {
+      Logger.error('Error loading comparisons:', 'screen', { component: 'PerformanceTestingScreen', error: error });
+  } finally {
       setIsLoading(false);
-    }
-  }, []);
+  }
+}, []);
 
   React.useEffect(() => {
     loadComparisons();
-  }, [loadComparisons]);
+}, [loadComparisons]);
 
   const runTests = async () => {
     Alert.alert(
@@ -79,16 +80,16 @@ export default function PerformanceTestingScreen() {
               await loadComparisons();
               
               Alert.alert('Success', 'Performance tests completed!');
-            } catch (error) {
+          } catch (error) {
               Alert.alert('Error', 'Failed to run performance tests');
-            } finally {
+          } finally {
               setIsLoading(false);
-            }
-          },
+          }
         },
+      },
       ]
     );
-  };
+};
 
   const clearData = async () => {
     Alert.alert(
@@ -105,11 +106,11 @@ export default function PerformanceTestingScreen() {
             setReport('');
             setBundleAnalysis(null);
             Alert.alert('Success', 'Performance data cleared');
-          },
         },
+      },
       ]
     );
-  };
+};
 
   const renderComparison = (comp: PerformanceComparison) => {
     const renderImprovement = comp.improvement.renderTime;
@@ -175,7 +176,7 @@ export default function PerformanceTestingScreen() {
         </YStack>
       </Card>
     );
-  };
+};
 
   const calculateAverageImprovement = () => {
     if (comparisons.length === 0) return { render: 0, interaction: 0 };
@@ -186,8 +187,8 @@ export default function PerformanceTestingScreen() {
     return {
       render: totalRender / comparisons.length,
       interaction: totalInteraction / comparisons.length,
-    };
   };
+};
 
   const averages = calculateAverageImprovement();
 
@@ -195,7 +196,7 @@ export default function PerformanceTestingScreen() {
     <ScrollView
       refreshControl={
         <RefreshControl refreshing={isLoading} onRefresh={loadComparisons} />
-      }
+    }
     >
       <YStack flex={1} padding="$4" space="$4">
         <YStack space="$2">

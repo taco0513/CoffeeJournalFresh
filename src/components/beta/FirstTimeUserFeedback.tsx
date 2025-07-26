@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFeedbackStore } from '../../stores/useFeedbackStore';
+import { Logger } from '../../services/LoggingService';
 import { HIGColors, HIGConstants } from '../../constants/HIG';
 
 const FIRST_TIME_FEEDBACK_KEY = '@first_time_feedback_shown';
@@ -21,7 +22,7 @@ export const FirstTimeUserFeedback: React.FC = () => {
 
   useEffect(() => {
     checkFirstTimeUser();
-  }, []);
+}, []);
 
   const checkFirstTimeUser = async () => {
     try {
@@ -36,23 +37,23 @@ export const FirstTimeUserFeedback: React.FC = () => {
             toValue: 1,
             duration: 500,
             useNativeDriver: true,
-          }).start();
-        }, 30000); // 30 seconds
-      }
-    } catch (error) {
-      console.error('Error checking first time user:', error);
+        }).start();
+      }, 30000); // 30 seconds
     }
-  };
+  } catch (error) {
+      Logger.error('Error checking first time user:', 'component', { component: 'FirstTimeUserFeedback', error: error });
+  }
+};
 
   const handleFeedback = async () => {
     try {
       await AsyncStorage.setItem(FIRST_TIME_FEEDBACK_KEY, 'true');
       setVisible(false);
       showFeedback('App First Impression', 'First-time user experience after 30 seconds');
-    } catch (error) {
-      console.error('Error storing first time feedback flag:', error);
-    }
-  };
+  } catch (error) {
+      Logger.error('Error storing first time feedback flag:', 'component', { component: 'FirstTimeUserFeedback', error: error });
+  }
+};
 
   const handleDismiss = async () => {
     try {
@@ -61,11 +62,11 @@ export const FirstTimeUserFeedback: React.FC = () => {
         toValue: 0,
         duration: 300,
         useNativeDriver: true,
-      }).start(() => setVisible(false));
-    } catch (error) {
-      console.error('Error storing first time feedback flag:', error);
-    }
-  };
+    }).start(() => setVisible(false));
+  } catch (error) {
+      Logger.error('Error storing first time feedback flag:', 'component', { component: 'FirstTimeUserFeedback', error: error });
+  }
+};
 
   if (hasShown || !visible) return null;
 
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: HIGConstants.SPACING_LG,
-  },
+},
   modal: {
     backgroundColor: HIGColors.systemBackground,
     borderRadius: HIGConstants.RADIUS_LG,
@@ -136,40 +137,40 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 8,
-  },
+},
   header: {
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   emoji: {
     fontSize: 48,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   title: {
     fontSize: 20,
     fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
   message: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     lineHeight: 24,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   features: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   featureText: {
     fontSize: 14,
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
     textAlign: 'center',
-  },
+},
   actions: {
     gap: HIGConstants.SPACING_SM,
-  },
+},
   feedbackButton: {
     backgroundColor: HIGColors.systemBlue,
     paddingVertical: HIGConstants.SPACING_MD,
@@ -181,20 +182,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 3,
-  },
+},
   feedbackText: {
     color: HIGColors.white,
     fontSize: 16,
     fontWeight: '600',
-  },
+},
   laterButton: {
     paddingVertical: HIGConstants.SPACING_MD,
     paddingHorizontal: HIGConstants.SPACING_LG,
     alignItems: 'center',
-  },
+},
   laterText: {
     color: HIGColors.secondaryLabel,
     fontSize: 16,
     fontWeight: '500',
-  },
+},
 });

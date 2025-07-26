@@ -1,0 +1,1043 @@
+{
+  "summary": {
+    "totalInterfaces": 456,
+    "incompleteInterfaces": 34,
+    "completionRate": "92.5%",
+    "filesAnalyzed": 367,
+    "filesWithIssues": 26
+  },
+  "byIssue": {
+    "Contains 2 'unknown' types": [
+      {
+        "file": "src/components-tamagui/forms/AutocompleteInput.tsx",
+        "name": "AutocompleteInputProps",
+        "line": 18,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface AutocompleteInputProps {\n  value: string;\n  onChangeText: (text: string) => void;\n  onSelect: (item: string) => void;\n  onBlur?: () => void;\n  suggestions: string[];\n  placeholder: string;\n ..."
+      },
+      {
+        "file": "src/components-tamagui/forms/FormField.tsx",
+        "name": "FormFieldProps",
+        "line": 12,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface FormFieldProps {\n  label?: string;\n  required?: boolean;\n  errorMessage?: string;\n  helperText?: string;\n  children: React.ReactNode;\n  horizontal?: boolean;\n  labelWidth?: number | string;\n..."
+      },
+      {
+        "file": "src/components-tamagui/forms/SelectInput.tsx",
+        "name": "SelectInputProps",
+        "line": 22,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface SelectInputProps {\n  value?: string;\n  onValueChange: (value: string) => void;\n  options: SelectOption[];\n  placeholder?: string;\n  label?: string;\n  disabled?: boolean;\n  multiple?: boolean..."
+      },
+      {
+        "file": "src/components-tamagui/forms/TextInput.tsx",
+        "name": "TextInputProps",
+        "line": 15,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface TextInputProps extends GetProps<typeof StyledInput> {\n  label?: string;\n  errorMessage?: string;\n  helperText?: string;\n  variant?: TextInputVariant;\n  size?: TextInputSize;\n  required?: boo..."
+      },
+      {
+        "file": "src/components/common/AutocompleteInput.tsx",
+        "name": "AutocompleteInputProps",
+        "line": 14,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface AutocompleteInputProps {\n  value: string;\n  onChangeText: (text: string) => void;\n  onSelect: (item: string) => void;\n  onBlur?: () => void;\n  suggestions: string[];\n  placeholder: string;\n ..."
+      },
+      {
+        "file": "src/components/common/AutocompleteInputTamagui.tsx",
+        "name": "AutocompleteInputProps",
+        "line": 15,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface AutocompleteInputProps {\n  value: string;\n  onChangeText: (text: string) => void;\n  onSelect: (item: string) => void;\n  onBlur?: () => void;\n  suggestions: string[];\n  placeholder: string;\n ..."
+      },
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "name": "ScreenContext",
+        "line": 6,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface ScreenContext {\n  screenName: string;\n  routeName: string;\n  routeParams?: unknown;\n  timestamp: string;\n  navigationState?: unknown;\n  userLocation?: string;\n  deviceInfo: {\n    platform: s..."
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "name": "MarketInfo",
+        "line": 23,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface MarketInfo {\n  marketConfig: unknown;\n  deploymentConfig: unknown;\n  isBeta: boolean;\n  features: {\n    homeCafeMode: boolean;\n    labMode: boolean;\n    marketIntelligence: boolean;\n    achi..."
+      },
+      {
+        "file": "src/types/tasting.ts",
+        "name": "LabModeData",
+        "line": 134,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface LabModeData extends HomeCafeData {\n  tds?: number;\n  extractionYield?: number;\n  comparison?: {\n    variable: string;\n    previousValue: unknown;\n    currentValue: unknown;\n    result: strin..."
+      },
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "name": "ExpectedDifference",
+        "line": 60,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface ExpectedDifference {\n  field: string;\n  koreanValue: unknown;\n  usValue: unknown;\n  reason: string;\n}"
+      },
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "name": "UnexpectedDifference",
+        "line": 67,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface UnexpectedDifference {\n  field: string;\n  koreanValue: unknown;\n  usValue: unknown;\n  severity: 'low' | 'medium' | 'high';\n}"
+      }
+    ],
+    "Contains 1 'unknown' types": [
+      {
+        "file": "src/components/homecafe/InteractiveBrewTimer.tsx",
+        "name": "InteractiveBrewTimerProps",
+        "line": 15,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface InteractiveBrewTimerProps {\n  steps: BrewingStep[];\n  totalBrewTime: number;\n  onTimerComplete?: (lapTimes: number[]) => void;\n  onStepComplete?: (stepIndex: number, actualTime: number) => v..."
+      },
+      {
+        "file": "src/components/journal/detail/TastingDetailCoffeeInfo.tsx",
+        "name": "CoffeeInfoData",
+        "line": 14,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface CoffeeInfoData {\n  roastery: string;\n  coffeeName: string;\n  mode?: 'cafe' | 'home_cafe' | 'lab';\n  cafeName?: string;\n  origin?: string;\n  variety?: string;\n  altitude?: string;\n  process?:..."
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "name": "WheelPickerProps",
+        "line": 20,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface WheelPickerProps {\n  items: Array<{ label: string; value: string | number | boolean | null }>;\n  selectedValue: unknown;\n  onValueChange: (value: string | number | boolean | null) => void;\n ..."
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "name": "SegmentedPickerProps",
+        "line": 67,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface SegmentedPickerProps {\n  items: Array<{ label: string; value: string | number | boolean | null }>;\n  selectedValue: unknown;\n  onValueChange: (value: string | number | boolean | null) => voi..."
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "name": "ButtonGroupProps",
+        "line": 113,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface ButtonGroupProps {\n  buttons: Array<{ \n    label: string; \n    value: string | number | boolean | null; \n    variant?: 'default' | 'custom' | 'preset';\n  }>;\n  selectedValue: unknown;\n  onVa..."
+      },
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "name": "AuthResult",
+        "line": 6,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface AuthResult {\n  success: boolean;\n  user?: { id: string; email?: string; [key: string]: unknown };\n  error?: string;\n  requiresVerification?: boolean;\n}"
+      },
+      {
+        "file": "src/services/auth/SessionManager.ts",
+        "name": "SessionData",
+        "line": 7,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface SessionData {\n  accessToken: string;\n  refreshToken: string;\n  expiresAt: number;\n  user: unknown;\n  provider: 'email' | 'google' | 'apple';\n  createdAt: number;\n  lastRefresh: number;\n  dev..."
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "name": "AuthResult",
+        "line": 10,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface AuthResult {\n  success: boolean;\n  user?: { id: string; email?: string; [key: string]: unknown };\n  error?: string;\n  requiresBiometric?: boolean;\n  needsProfileUpdate?: boolean;\n}"
+      },
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "name": "CachedFlavorData",
+        "line": 4,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface CachedFlavorData {\n  data: unknown;\n  timestamp: number;\n  version: string;\n}"
+      },
+      {
+        "file": "src/services/realm/types.ts",
+        "name": "TastingData",
+        "line": 4,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface TastingData {\n  coffeeInfo: {\n    cafeName?: string;\n    roastery: string;\n    coffeeName: string;\n    origin?: string;\n    variety?: string;\n    altitude?: string;\n    process?: string;\n   ..."
+      },
+      {
+        "file": "src/services/supabase/googleAuth.ts",
+        "name": "GoogleSignInResult",
+        "line": 6,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface GoogleSignInResult {\n  success: boolean;\n  user?: { id: string; email?: string; [key: string]: unknown };\n  error?: string;\n}"
+      },
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "name": "TastingRecord",
+        "line": 3,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface TastingRecord {\n  // Supabase 자동 생성 필드\n  id?: string;                    // UUID, Supabase가 자동 생성\n  user_id?: string;               // 인증 사용자 ID\n  created_at?: string;            // Supabase..."
+      },
+      {
+        "file": "src/stores/useUserStore.ts",
+        "name": "UserStore",
+        "line": 11,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface UserStore {\n  // Current user\n  currentUser: UserProfile | null;\n  user: UserProfile | null; // Alias for compatibility\n  isAuthenticated: boolean;\n  isLoading: boolean;\n  \n  // Profile cach..."
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "name": "TestResult",
+        "line": 15,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface TestResult {\n  scenario: string;\n  success: boolean;\n  message: string;\n  data?: unknown;\n  error?: string;\n}"
+      },
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "name": "MarketTestResult",
+        "line": 44,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface MarketTestResult {\n  market: 'korean' | 'us_beta';\n  language: 'ko' | 'en';\n  success: boolean;\n  message: string;\n  data?: unknown;\n  error?: string;\n  executionTime: number;\n}"
+      },
+      {
+        "file": "src/utils/errorHandler.ts",
+        "name": "AppError",
+        "line": 4,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface AppError {\n  message: string;\n  code?: string;\n  details?: unknown;\n}"
+      },
+      {
+        "file": "src/utils/i18nValidationSuite.ts",
+        "name": "ValidationTestResult",
+        "line": 44,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface ValidationTestResult {\n  testName: string;\n  category: 'core' | 'market' | 'integration' | 'performance';\n  status: 'pass' | 'fail' | 'warning';\n  message: string;\n  details?: unknown;\n  err..."
+      },
+      {
+        "file": "src/utils/performanceAnalysis.ts",
+        "name": "StoredMetric",
+        "line": 18,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface StoredMetric {\n  name: string;\n  duration: number;\n  timestamp: number;\n  success: boolean;\n  metadata?: unknown;\n}"
+      }
+    ],
+    "Contains 1 'any' types": [
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "name": "UserSession",
+        "line": 18,
+        "issues": [
+          "Contains 1 'any' types",
+          "Index signature with any"
+        ],
+        "body": "interface UserSession {\n  user: { id: string; email?: string; [key: string]: any };\n  accessToken: string;\n  refreshToken: string;\n  expiresAt: number;\n  provider: 'email' | 'google' | 'apple';\n}"
+      },
+      {
+        "file": "src/types/common.ts",
+        "name": "UserData",
+        "line": 30,
+        "issues": [
+          "Contains 1 'any' types",
+          "Index signature with any"
+        ],
+        "body": "interface UserData {\n  id: string;\n  email?: string;\n  username?: string;\n  [key: string]: any;\n}"
+      },
+      {
+        "file": "src/types/modules.d.ts",
+        "name": "Auth",
+        "line": 53,
+        "issues": [
+          "Contains 1 'any' types"
+        ],
+        "body": "interface Auth {\n    currentUser: any;\n    signInWithCredential(credential: any): Promise<any>;\n    signOut(): Promise<void>;\n    onAuthStateChanged(callback: (user: any) => void): () => void;\n  }"
+      },
+      {
+        "file": "src/types/modules.d.ts",
+        "name": "IconProps",
+        "line": 119,
+        "issues": [
+          "Contains 1 'any' types"
+        ],
+        "body": "interface IconProps {\n    name: string;\n    size?: number;\n    color?: string;\n    style?: any;\n  }"
+      }
+    ],
+    "Index signature with any": [
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "name": "UserSession",
+        "line": 18,
+        "issues": [
+          "Contains 1 'any' types",
+          "Index signature with any"
+        ],
+        "body": "interface UserSession {\n  user: { id: string; email?: string; [key: string]: any };\n  accessToken: string;\n  refreshToken: string;\n  expiresAt: number;\n  provider: 'email' | 'google' | 'apple';\n}"
+      },
+      {
+        "file": "src/types/common.ts",
+        "name": "UserData",
+        "line": 30,
+        "issues": [
+          "Contains 1 'any' types",
+          "Index signature with any"
+        ],
+        "body": "interface UserData {\n  id: string;\n  email?: string;\n  username?: string;\n  [key: string]: any;\n}"
+      }
+    ],
+    "Contains 3 'any' types": [
+      {
+        "file": "src/types/modules.d.ts",
+        "name": "CipherHelper",
+        "line": 103,
+        "issues": [
+          "Contains 3 'any' types"
+        ],
+        "body": "interface CipherHelper {\n    encrypt(message: string, key: string): any;\n    decrypt(ciphertext: any, key: string): any;\n  }"
+      }
+    ]
+  },
+  "byFile": {
+    "src/components-tamagui/forms/AutocompleteInput.tsx": [
+      {
+        "file": "src/components-tamagui/forms/AutocompleteInput.tsx",
+        "name": "AutocompleteInputProps",
+        "line": 18,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface AutocompleteInputProps {\n  value: string;\n  onChangeText: (text: string) => void;\n  onSelect: (item: string) => void;\n  onBlur?: () => void;\n  suggestions: string[];\n  placeholder: string;\n ..."
+      }
+    ],
+    "src/components-tamagui/forms/FormField.tsx": [
+      {
+        "file": "src/components-tamagui/forms/FormField.tsx",
+        "name": "FormFieldProps",
+        "line": 12,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface FormFieldProps {\n  label?: string;\n  required?: boolean;\n  errorMessage?: string;\n  helperText?: string;\n  children: React.ReactNode;\n  horizontal?: boolean;\n  labelWidth?: number | string;\n..."
+      }
+    ],
+    "src/components-tamagui/forms/SelectInput.tsx": [
+      {
+        "file": "src/components-tamagui/forms/SelectInput.tsx",
+        "name": "SelectInputProps",
+        "line": 22,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface SelectInputProps {\n  value?: string;\n  onValueChange: (value: string) => void;\n  options: SelectOption[];\n  placeholder?: string;\n  label?: string;\n  disabled?: boolean;\n  multiple?: boolean..."
+      }
+    ],
+    "src/components-tamagui/forms/TextInput.tsx": [
+      {
+        "file": "src/components-tamagui/forms/TextInput.tsx",
+        "name": "TextInputProps",
+        "line": 15,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface TextInputProps extends GetProps<typeof StyledInput> {\n  label?: string;\n  errorMessage?: string;\n  helperText?: string;\n  variant?: TextInputVariant;\n  size?: TextInputSize;\n  required?: boo..."
+      }
+    ],
+    "src/components/common/AutocompleteInput.tsx": [
+      {
+        "file": "src/components/common/AutocompleteInput.tsx",
+        "name": "AutocompleteInputProps",
+        "line": 14,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface AutocompleteInputProps {\n  value: string;\n  onChangeText: (text: string) => void;\n  onSelect: (item: string) => void;\n  onBlur?: () => void;\n  suggestions: string[];\n  placeholder: string;\n ..."
+      }
+    ],
+    "src/components/common/AutocompleteInputTamagui.tsx": [
+      {
+        "file": "src/components/common/AutocompleteInputTamagui.tsx",
+        "name": "AutocompleteInputProps",
+        "line": 15,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface AutocompleteInputProps {\n  value: string;\n  onChangeText: (text: string) => void;\n  onSelect: (item: string) => void;\n  onBlur?: () => void;\n  suggestions: string[];\n  placeholder: string;\n ..."
+      }
+    ],
+    "src/components/homecafe/InteractiveBrewTimer.tsx": [
+      {
+        "file": "src/components/homecafe/InteractiveBrewTimer.tsx",
+        "name": "InteractiveBrewTimerProps",
+        "line": 15,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface InteractiveBrewTimerProps {\n  steps: BrewingStep[];\n  totalBrewTime: number;\n  onTimerComplete?: (lapTimes: number[]) => void;\n  onStepComplete?: (stepIndex: number, actualTime: number) => v..."
+      }
+    ],
+    "src/components/journal/detail/TastingDetailCoffeeInfo.tsx": [
+      {
+        "file": "src/components/journal/detail/TastingDetailCoffeeInfo.tsx",
+        "name": "CoffeeInfoData",
+        "line": 14,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface CoffeeInfoData {\n  roastery: string;\n  coffeeName: string;\n  mode?: 'cafe' | 'home_cafe' | 'lab';\n  cafeName?: string;\n  origin?: string;\n  variety?: string;\n  altitude?: string;\n  process?:..."
+      }
+    ],
+    "src/design-system/components/Picker.tsx": [
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "name": "WheelPickerProps",
+        "line": 20,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface WheelPickerProps {\n  items: Array<{ label: string; value: string | number | boolean | null }>;\n  selectedValue: unknown;\n  onValueChange: (value: string | number | boolean | null) => void;\n ..."
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "name": "SegmentedPickerProps",
+        "line": 67,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface SegmentedPickerProps {\n  items: Array<{ label: string; value: string | number | boolean | null }>;\n  selectedValue: unknown;\n  onValueChange: (value: string | number | boolean | null) => voi..."
+      },
+      {
+        "file": "src/design-system/components/Picker.tsx",
+        "name": "ButtonGroupProps",
+        "line": 113,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface ButtonGroupProps {\n  buttons: Array<{ \n    label: string; \n    value: string | number | boolean | null; \n    variant?: 'default' | 'custom' | 'preset';\n  }>;\n  selectedValue: unknown;\n  onVa..."
+      }
+    ],
+    "src/services/auth/EnhancedAuthService.ts": [
+      {
+        "file": "src/services/auth/EnhancedAuthService.ts",
+        "name": "AuthResult",
+        "line": 6,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface AuthResult {\n  success: boolean;\n  user?: { id: string; email?: string; [key: string]: unknown };\n  error?: string;\n  requiresVerification?: boolean;\n}"
+      }
+    ],
+    "src/services/auth/SessionManager.ts": [
+      {
+        "file": "src/services/auth/SessionManager.ts",
+        "name": "SessionData",
+        "line": 7,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface SessionData {\n  accessToken: string;\n  refreshToken: string;\n  expiresAt: number;\n  user: unknown;\n  provider: 'email' | 'google' | 'apple';\n  createdAt: number;\n  lastRefresh: number;\n  dev..."
+      }
+    ],
+    "src/services/auth/UnifiedAuthService.ts": [
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "name": "AuthResult",
+        "line": 10,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface AuthResult {\n  success: boolean;\n  user?: { id: string; email?: string; [key: string]: unknown };\n  error?: string;\n  requiresBiometric?: boolean;\n  needsProfileUpdate?: boolean;\n}"
+      },
+      {
+        "file": "src/services/auth/UnifiedAuthService.ts",
+        "name": "UserSession",
+        "line": 18,
+        "issues": [
+          "Contains 1 'any' types",
+          "Index signature with any"
+        ],
+        "body": "interface UserSession {\n  user: { id: string; email?: string; [key: string]: any };\n  accessToken: string;\n  refreshToken: string;\n  expiresAt: number;\n  provider: 'email' | 'google' | 'apple';\n}"
+      }
+    ],
+    "src/services/FlavorDataOptimizer.ts": [
+      {
+        "file": "src/services/FlavorDataOptimizer.ts",
+        "name": "CachedFlavorData",
+        "line": 4,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface CachedFlavorData {\n  data: unknown;\n  timestamp: number;\n  version: string;\n}"
+      }
+    ],
+    "src/services/realm/types.ts": [
+      {
+        "file": "src/services/realm/types.ts",
+        "name": "TastingData",
+        "line": 4,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface TastingData {\n  coffeeInfo: {\n    cafeName?: string;\n    roastery: string;\n    coffeeName: string;\n    origin?: string;\n    variety?: string;\n    altitude?: string;\n    process?: string;\n   ..."
+      }
+    ],
+    "src/services/ScreenContextService.ts": [
+      {
+        "file": "src/services/ScreenContextService.ts",
+        "name": "ScreenContext",
+        "line": 6,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface ScreenContext {\n  screenName: string;\n  routeName: string;\n  routeParams?: unknown;\n  timestamp: string;\n  navigationState?: unknown;\n  userLocation?: string;\n  deviceInfo: {\n    platform: s..."
+      }
+    ],
+    "src/services/supabase/googleAuth.ts": [
+      {
+        "file": "src/services/supabase/googleAuth.ts",
+        "name": "GoogleSignInResult",
+        "line": 6,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface GoogleSignInResult {\n  success: boolean;\n  user?: { id: string; email?: string; [key: string]: unknown };\n  error?: string;\n}"
+      }
+    ],
+    "src/services/supabase/tastingService.ts": [
+      {
+        "file": "src/services/supabase/tastingService.ts",
+        "name": "TastingRecord",
+        "line": 3,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface TastingRecord {\n  // Supabase 자동 생성 필드\n  id?: string;                    // UUID, Supabase가 자동 생성\n  user_id?: string;               // 인증 사용자 ID\n  created_at?: string;            // Supabase..."
+      }
+    ],
+    "src/stores/useUserStore.ts": [
+      {
+        "file": "src/stores/useUserStore.ts",
+        "name": "UserStore",
+        "line": 11,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface UserStore {\n  // Current user\n  currentUser: UserProfile | null;\n  user: UserProfile | null; // Alias for compatibility\n  isAuthenticated: boolean;\n  isLoading: boolean;\n  \n  // Profile cach..."
+      }
+    ],
+    "src/types/common.ts": [
+      {
+        "file": "src/types/common.ts",
+        "name": "UserData",
+        "line": 30,
+        "issues": [
+          "Contains 1 'any' types",
+          "Index signature with any"
+        ],
+        "body": "interface UserData {\n  id: string;\n  email?: string;\n  username?: string;\n  [key: string]: any;\n}"
+      }
+    ],
+    "src/types/MarketTestTypes.ts": [
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "name": "TestResult",
+        "line": 15,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface TestResult {\n  scenario: string;\n  success: boolean;\n  message: string;\n  data?: unknown;\n  error?: string;\n}"
+      },
+      {
+        "file": "src/types/MarketTestTypes.ts",
+        "name": "MarketInfo",
+        "line": 23,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface MarketInfo {\n  marketConfig: unknown;\n  deploymentConfig: unknown;\n  isBeta: boolean;\n  features: {\n    homeCafeMode: boolean;\n    labMode: boolean;\n    marketIntelligence: boolean;\n    achi..."
+      }
+    ],
+    "src/types/modules.d.ts": [
+      {
+        "file": "src/types/modules.d.ts",
+        "name": "Auth",
+        "line": 53,
+        "issues": [
+          "Contains 1 'any' types"
+        ],
+        "body": "interface Auth {\n    currentUser: any;\n    signInWithCredential(credential: any): Promise<any>;\n    signOut(): Promise<void>;\n    onAuthStateChanged(callback: (user: any) => void): () => void;\n  }"
+      },
+      {
+        "file": "src/types/modules.d.ts",
+        "name": "CipherHelper",
+        "line": 103,
+        "issues": [
+          "Contains 3 'any' types"
+        ],
+        "body": "interface CipherHelper {\n    encrypt(message: string, key: string): any;\n    decrypt(ciphertext: any, key: string): any;\n  }"
+      },
+      {
+        "file": "src/types/modules.d.ts",
+        "name": "IconProps",
+        "line": 119,
+        "issues": [
+          "Contains 1 'any' types"
+        ],
+        "body": "interface IconProps {\n    name: string;\n    size?: number;\n    color?: string;\n    style?: any;\n  }"
+      }
+    ],
+    "src/types/tasting.ts": [
+      {
+        "file": "src/types/tasting.ts",
+        "name": "LabModeData",
+        "line": 134,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface LabModeData extends HomeCafeData {\n  tds?: number;\n  extractionYield?: number;\n  comparison?: {\n    variable: string;\n    previousValue: unknown;\n    currentValue: unknown;\n    result: strin..."
+      }
+    ],
+    "src/utils/crossMarketTester.ts": [
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "name": "MarketTestResult",
+        "line": 44,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface MarketTestResult {\n  market: 'korean' | 'us_beta';\n  language: 'ko' | 'en';\n  success: boolean;\n  message: string;\n  data?: unknown;\n  error?: string;\n  executionTime: number;\n}"
+      },
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "name": "ExpectedDifference",
+        "line": 60,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface ExpectedDifference {\n  field: string;\n  koreanValue: unknown;\n  usValue: unknown;\n  reason: string;\n}"
+      },
+      {
+        "file": "src/utils/crossMarketTester.ts",
+        "name": "UnexpectedDifference",
+        "line": 67,
+        "issues": [
+          "Contains 2 'unknown' types"
+        ],
+        "body": "interface UnexpectedDifference {\n  field: string;\n  koreanValue: unknown;\n  usValue: unknown;\n  severity: 'low' | 'medium' | 'high';\n}"
+      }
+    ],
+    "src/utils/errorHandler.ts": [
+      {
+        "file": "src/utils/errorHandler.ts",
+        "name": "AppError",
+        "line": 4,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface AppError {\n  message: string;\n  code?: string;\n  details?: unknown;\n}"
+      }
+    ],
+    "src/utils/i18nValidationSuite.ts": [
+      {
+        "file": "src/utils/i18nValidationSuite.ts",
+        "name": "ValidationTestResult",
+        "line": 44,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface ValidationTestResult {\n  testName: string;\n  category: 'core' | 'market' | 'integration' | 'performance';\n  status: 'pass' | 'fail' | 'warning';\n  message: string;\n  details?: unknown;\n  err..."
+      }
+    ],
+    "src/utils/performanceAnalysis.ts": [
+      {
+        "file": "src/utils/performanceAnalysis.ts",
+        "name": "StoredMetric",
+        "line": 18,
+        "issues": [
+          "Contains 1 'unknown' types"
+        ],
+        "body": "interface StoredMetric {\n  name: string;\n  duration: number;\n  timestamp: number;\n  success: boolean;\n  metadata?: unknown;\n}"
+      }
+    ]
+  },
+  "topIssues": [
+    {
+      "issue": "Contains 1 'unknown' types",
+      "count": 18
+    },
+    {
+      "issue": "Contains 2 'unknown' types",
+      "count": 11
+    },
+    {
+      "issue": "Contains 1 'any' types",
+      "count": 4
+    },
+    {
+      "issue": "Index signature with any",
+      "count": 2
+    },
+    {
+      "issue": "Contains 3 'any' types",
+      "count": 1
+    }
+  ],
+  "interfaces": [
+    {
+      "file": "src/components-tamagui/forms/AutocompleteInput.tsx",
+      "name": "AutocompleteInputProps",
+      "line": 18,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface AutocompleteInputProps {\n  value: string;\n  onChangeText: (text: string) => void;\n  onSelect: (item: string) => void;\n  onBlur?: () => void;\n  suggestions: string[];\n  placeholder: string;\n ..."
+    },
+    {
+      "file": "src/components-tamagui/forms/FormField.tsx",
+      "name": "FormFieldProps",
+      "line": 12,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface FormFieldProps {\n  label?: string;\n  required?: boolean;\n  errorMessage?: string;\n  helperText?: string;\n  children: React.ReactNode;\n  horizontal?: boolean;\n  labelWidth?: number | string;\n..."
+    },
+    {
+      "file": "src/components-tamagui/forms/SelectInput.tsx",
+      "name": "SelectInputProps",
+      "line": 22,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface SelectInputProps {\n  value?: string;\n  onValueChange: (value: string) => void;\n  options: SelectOption[];\n  placeholder?: string;\n  label?: string;\n  disabled?: boolean;\n  multiple?: boolean..."
+    },
+    {
+      "file": "src/components-tamagui/forms/TextInput.tsx",
+      "name": "TextInputProps",
+      "line": 15,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface TextInputProps extends GetProps<typeof StyledInput> {\n  label?: string;\n  errorMessage?: string;\n  helperText?: string;\n  variant?: TextInputVariant;\n  size?: TextInputSize;\n  required?: boo..."
+    },
+    {
+      "file": "src/components/common/AutocompleteInput.tsx",
+      "name": "AutocompleteInputProps",
+      "line": 14,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface AutocompleteInputProps {\n  value: string;\n  onChangeText: (text: string) => void;\n  onSelect: (item: string) => void;\n  onBlur?: () => void;\n  suggestions: string[];\n  placeholder: string;\n ..."
+    },
+    {
+      "file": "src/components/common/AutocompleteInputTamagui.tsx",
+      "name": "AutocompleteInputProps",
+      "line": 15,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface AutocompleteInputProps {\n  value: string;\n  onChangeText: (text: string) => void;\n  onSelect: (item: string) => void;\n  onBlur?: () => void;\n  suggestions: string[];\n  placeholder: string;\n ..."
+    },
+    {
+      "file": "src/components/homecafe/InteractiveBrewTimer.tsx",
+      "name": "InteractiveBrewTimerProps",
+      "line": 15,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface InteractiveBrewTimerProps {\n  steps: BrewingStep[];\n  totalBrewTime: number;\n  onTimerComplete?: (lapTimes: number[]) => void;\n  onStepComplete?: (stepIndex: number, actualTime: number) => v..."
+    },
+    {
+      "file": "src/components/journal/detail/TastingDetailCoffeeInfo.tsx",
+      "name": "CoffeeInfoData",
+      "line": 14,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface CoffeeInfoData {\n  roastery: string;\n  coffeeName: string;\n  mode?: 'cafe' | 'home_cafe' | 'lab';\n  cafeName?: string;\n  origin?: string;\n  variety?: string;\n  altitude?: string;\n  process?:..."
+    },
+    {
+      "file": "src/design-system/components/Picker.tsx",
+      "name": "WheelPickerProps",
+      "line": 20,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface WheelPickerProps {\n  items: Array<{ label: string; value: string | number | boolean | null }>;\n  selectedValue: unknown;\n  onValueChange: (value: string | number | boolean | null) => void;\n ..."
+    },
+    {
+      "file": "src/design-system/components/Picker.tsx",
+      "name": "SegmentedPickerProps",
+      "line": 67,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface SegmentedPickerProps {\n  items: Array<{ label: string; value: string | number | boolean | null }>;\n  selectedValue: unknown;\n  onValueChange: (value: string | number | boolean | null) => voi..."
+    },
+    {
+      "file": "src/design-system/components/Picker.tsx",
+      "name": "ButtonGroupProps",
+      "line": 113,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface ButtonGroupProps {\n  buttons: Array<{ \n    label: string; \n    value: string | number | boolean | null; \n    variant?: 'default' | 'custom' | 'preset';\n  }>;\n  selectedValue: unknown;\n  onVa..."
+    },
+    {
+      "file": "src/services/auth/EnhancedAuthService.ts",
+      "name": "AuthResult",
+      "line": 6,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface AuthResult {\n  success: boolean;\n  user?: { id: string; email?: string; [key: string]: unknown };\n  error?: string;\n  requiresVerification?: boolean;\n}"
+    },
+    {
+      "file": "src/services/auth/SessionManager.ts",
+      "name": "SessionData",
+      "line": 7,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface SessionData {\n  accessToken: string;\n  refreshToken: string;\n  expiresAt: number;\n  user: unknown;\n  provider: 'email' | 'google' | 'apple';\n  createdAt: number;\n  lastRefresh: number;\n  dev..."
+    },
+    {
+      "file": "src/services/auth/UnifiedAuthService.ts",
+      "name": "AuthResult",
+      "line": 10,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface AuthResult {\n  success: boolean;\n  user?: { id: string; email?: string; [key: string]: unknown };\n  error?: string;\n  requiresBiometric?: boolean;\n  needsProfileUpdate?: boolean;\n}"
+    },
+    {
+      "file": "src/services/auth/UnifiedAuthService.ts",
+      "name": "UserSession",
+      "line": 18,
+      "issues": [
+        "Contains 1 'any' types",
+        "Index signature with any"
+      ],
+      "body": "interface UserSession {\n  user: { id: string; email?: string; [key: string]: any };\n  accessToken: string;\n  refreshToken: string;\n  expiresAt: number;\n  provider: 'email' | 'google' | 'apple';\n}"
+    },
+    {
+      "file": "src/services/FlavorDataOptimizer.ts",
+      "name": "CachedFlavorData",
+      "line": 4,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface CachedFlavorData {\n  data: unknown;\n  timestamp: number;\n  version: string;\n}"
+    },
+    {
+      "file": "src/services/realm/types.ts",
+      "name": "TastingData",
+      "line": 4,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface TastingData {\n  coffeeInfo: {\n    cafeName?: string;\n    roastery: string;\n    coffeeName: string;\n    origin?: string;\n    variety?: string;\n    altitude?: string;\n    process?: string;\n   ..."
+    },
+    {
+      "file": "src/services/ScreenContextService.ts",
+      "name": "ScreenContext",
+      "line": 6,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface ScreenContext {\n  screenName: string;\n  routeName: string;\n  routeParams?: unknown;\n  timestamp: string;\n  navigationState?: unknown;\n  userLocation?: string;\n  deviceInfo: {\n    platform: s..."
+    },
+    {
+      "file": "src/services/supabase/googleAuth.ts",
+      "name": "GoogleSignInResult",
+      "line": 6,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface GoogleSignInResult {\n  success: boolean;\n  user?: { id: string; email?: string; [key: string]: unknown };\n  error?: string;\n}"
+    },
+    {
+      "file": "src/services/supabase/tastingService.ts",
+      "name": "TastingRecord",
+      "line": 3,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface TastingRecord {\n  // Supabase 자동 생성 필드\n  id?: string;                    // UUID, Supabase가 자동 생성\n  user_id?: string;               // 인증 사용자 ID\n  created_at?: string;            // Supabase..."
+    },
+    {
+      "file": "src/stores/useUserStore.ts",
+      "name": "UserStore",
+      "line": 11,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface UserStore {\n  // Current user\n  currentUser: UserProfile | null;\n  user: UserProfile | null; // Alias for compatibility\n  isAuthenticated: boolean;\n  isLoading: boolean;\n  \n  // Profile cach..."
+    },
+    {
+      "file": "src/types/common.ts",
+      "name": "UserData",
+      "line": 30,
+      "issues": [
+        "Contains 1 'any' types",
+        "Index signature with any"
+      ],
+      "body": "interface UserData {\n  id: string;\n  email?: string;\n  username?: string;\n  [key: string]: any;\n}"
+    },
+    {
+      "file": "src/types/MarketTestTypes.ts",
+      "name": "TestResult",
+      "line": 15,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface TestResult {\n  scenario: string;\n  success: boolean;\n  message: string;\n  data?: unknown;\n  error?: string;\n}"
+    },
+    {
+      "file": "src/types/MarketTestTypes.ts",
+      "name": "MarketInfo",
+      "line": 23,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface MarketInfo {\n  marketConfig: unknown;\n  deploymentConfig: unknown;\n  isBeta: boolean;\n  features: {\n    homeCafeMode: boolean;\n    labMode: boolean;\n    marketIntelligence: boolean;\n    achi..."
+    },
+    {
+      "file": "src/types/modules.d.ts",
+      "name": "Auth",
+      "line": 53,
+      "issues": [
+        "Contains 1 'any' types"
+      ],
+      "body": "interface Auth {\n    currentUser: any;\n    signInWithCredential(credential: any): Promise<any>;\n    signOut(): Promise<void>;\n    onAuthStateChanged(callback: (user: any) => void): () => void;\n  }"
+    },
+    {
+      "file": "src/types/modules.d.ts",
+      "name": "CipherHelper",
+      "line": 103,
+      "issues": [
+        "Contains 3 'any' types"
+      ],
+      "body": "interface CipherHelper {\n    encrypt(message: string, key: string): any;\n    decrypt(ciphertext: any, key: string): any;\n  }"
+    },
+    {
+      "file": "src/types/modules.d.ts",
+      "name": "IconProps",
+      "line": 119,
+      "issues": [
+        "Contains 1 'any' types"
+      ],
+      "body": "interface IconProps {\n    name: string;\n    size?: number;\n    color?: string;\n    style?: any;\n  }"
+    },
+    {
+      "file": "src/types/tasting.ts",
+      "name": "LabModeData",
+      "line": 134,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface LabModeData extends HomeCafeData {\n  tds?: number;\n  extractionYield?: number;\n  comparison?: {\n    variable: string;\n    previousValue: unknown;\n    currentValue: unknown;\n    result: strin..."
+    },
+    {
+      "file": "src/utils/crossMarketTester.ts",
+      "name": "MarketTestResult",
+      "line": 44,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface MarketTestResult {\n  market: 'korean' | 'us_beta';\n  language: 'ko' | 'en';\n  success: boolean;\n  message: string;\n  data?: unknown;\n  error?: string;\n  executionTime: number;\n}"
+    },
+    {
+      "file": "src/utils/crossMarketTester.ts",
+      "name": "ExpectedDifference",
+      "line": 60,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface ExpectedDifference {\n  field: string;\n  koreanValue: unknown;\n  usValue: unknown;\n  reason: string;\n}"
+    },
+    {
+      "file": "src/utils/crossMarketTester.ts",
+      "name": "UnexpectedDifference",
+      "line": 67,
+      "issues": [
+        "Contains 2 'unknown' types"
+      ],
+      "body": "interface UnexpectedDifference {\n  field: string;\n  koreanValue: unknown;\n  usValue: unknown;\n  severity: 'low' | 'medium' | 'high';\n}"
+    },
+    {
+      "file": "src/utils/errorHandler.ts",
+      "name": "AppError",
+      "line": 4,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface AppError {\n  message: string;\n  code?: string;\n  details?: unknown;\n}"
+    },
+    {
+      "file": "src/utils/i18nValidationSuite.ts",
+      "name": "ValidationTestResult",
+      "line": 44,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface ValidationTestResult {\n  testName: string;\n  category: 'core' | 'market' | 'integration' | 'performance';\n  status: 'pass' | 'fail' | 'warning';\n  message: string;\n  details?: unknown;\n  err..."
+    },
+    {
+      "file": "src/utils/performanceAnalysis.ts",
+      "name": "StoredMetric",
+      "line": 18,
+      "issues": [
+        "Contains 1 'unknown' types"
+      ],
+      "body": "interface StoredMetric {\n  name: string;\n  duration: number;\n  timestamp: number;\n  success: boolean;\n  metadata?: unknown;\n}"
+    }
+  ]
+}

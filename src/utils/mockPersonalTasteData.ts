@@ -22,7 +22,7 @@ interface LearningPath {
   currentFocus: string;
   nextMilestone: string;
   estimatedTime: string;
-  exercises: any[];
+  exercises: unknown[];
 }
 
 export const getMockTastePattern = (): TastePattern => ({
@@ -46,7 +46,7 @@ export const getMockTastePattern = (): TastePattern => ({
     flavorDiversityIndex: 0.7,
     consistencyScore: 0.85,
     weeklyProgress: 0.8,
-  },
+},
   recommendations: [
     '더 진한 초콜릿 향의 커피를 시도해보세요',
     '브라질 원두로 달콤함을 경험해보세요',
@@ -78,7 +78,7 @@ export const getMockRecommendations = (): CoffeeRecommendation[] => [
     predictedMatch: 92,
     reason: 'Based on your love for fruity and floral notes',
     similarityScore: 0.92,
-  },
+},
   {
     coffeeName: 'Colombia Geisha',
     roastery: 'Stumptown Coffee',
@@ -87,7 +87,7 @@ export const getMockRecommendations = (): CoffeeRecommendation[] => [
     predictedMatch: 87,
     reason: 'Perfect balance of sweetness and acidity',
     similarityScore: 0.87,
-  },
+},
 ];
 
 export const getMockPersonalInsights = (): PersonalInsights => ({
@@ -131,19 +131,19 @@ export const getMockLearningPath = (): LearningPath => ({
       description: '서로 다른 브라질 농장의 초콜릿 향 차이 식별하기',
       targetFlavor: 'chocolate',
       difficulty: 3,
-    },
+  },
     {
       type: 'quiz',
       title: '초콜릿 향미 퀴즈',
       description: '다양한 초콜릿 향미를 구분하는 능력 테스트',
       difficulty: 2,
-    },
+  },
     {
       type: 'exploration',
       title: '새로운 로스터 탐험',
       description: '초콜릿 향으로 유명한 새로운 로스터 커피 시도',
       difficulty: 1,
-    },
+  },
   ],
 });
 
@@ -159,7 +159,7 @@ export const getMockMasteryLevels = (): MasteryLevel[] => [
     accuracyRate: 0.85,
     progressToNext: 0.7,
     nextMilestone: 'Master - 15 more correct identifications',
-  },
+},
   {
     category: 'fruity',
     level: 3,
@@ -173,7 +173,7 @@ export const getMockMasteryLevels = (): MasteryLevel[] => [
     // lastImprovement: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
     progressToNext: 0.3,
     nextMilestone: 'Expert - Practice with African coffees',
-  },
+},
   {
     category: 'floral',
     level: 2,
@@ -187,7 +187,7 @@ export const getMockMasteryLevels = (): MasteryLevel[] => [
     // lastImprovement: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
     progressToNext: 0.6,
     nextMilestone: 'Proficient - Try more light roasts',
-  },
+},
 ];
 
 export const getMockPersonalStats = (): PersonalStatsData => ({

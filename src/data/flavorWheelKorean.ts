@@ -9,7 +9,7 @@ export const flavorWheelKorean = {
     'Roasted': '로스팅',
     'Spices': '향신료',
     'Other': '기타'
-  },
+},
   
   level2: {
     'Fruity': ['Berry', 'Dried Fruit', 'Other Fruit', 'Citrus Fruit'],
@@ -21,7 +21,7 @@ export const flavorWheelKorean = {
     'Nutty/Cocoa': ['Nutty', 'Chocolate'],
     'Sweet': ['Caramel/Brown Sugar', 'Vanilla', 'Vanillin', 'Overall Sweet', 'Sweet Aromatics'],
     'Floral': ['Black Tea', 'Floral']
-  },
+},
   
   level3: {
     // 과일 향/프루티
@@ -69,7 +69,7 @@ export const flavorWheelKorean = {
     // 꽃향기/플로럴
     'Black Tea': [],
     'Floral': ['카모마일', '장미', '자스민']
-  },
+},
   
   translations: {
     // Level 2 한글 번역
@@ -120,5 +120,5 @@ export const flavorWheelKorean = {
     'Short': '짧은',
     'Long': '긴',
     'None': '없음'
-  }
+}
 };

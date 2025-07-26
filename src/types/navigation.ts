@@ -12,7 +12,7 @@ export type RootStackParamList = {
     CoffeeInfo: { ocrText?: string } | undefined;
     HomeCafe: undefined;
     // OCRScan: undefined; // Moved to feature_backlog
-    // OCRResult: { parsedInfo: any; rawTexts: string[] }; // Moved to feature_backlog
+    // OCRResult: { parsedInfo: unknown; rawTexts: string[] }; // Moved to feature_backlog
     RoasterNotes: undefined;
     UnifiedFlavor: undefined;
     Sensory: undefined;
@@ -32,7 +32,7 @@ export type RootStackParamList = {
     PerformanceDashboard: undefined;
     I18nValidation: undefined;
     Testing: undefined;
-  };
+};
 
 // Main tab navigation
 export type MainTabParamList = {
@@ -41,4 +41,4 @@ export type MainTabParamList = {
     AddCoffee: undefined;
     Achievements: undefined;
     Profile: undefined;
-  };
+};

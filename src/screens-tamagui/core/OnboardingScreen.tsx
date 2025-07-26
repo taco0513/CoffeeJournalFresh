@@ -16,6 +16,7 @@ import {
 } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../../types/navigation';
 
@@ -34,19 +35,19 @@ const slides: OnboardingSlide[] = [
     description: '개인의 고유한 커피 취향을 발견하고\n데이터 기반 인사이트로 성장해보세요',
     emoji: '☕',
     backgroundColor: '$cream',
-  },
+},
   {
     title: '향미 분석 시스템',
     description: 'SCA 플레이버 휠 기반의\n전문적인 향미 분석을 경험하세요',
     emoji: '🎯',
     backgroundColor: '$green2',
-  },
+},
   {
     title: '커뮤니티와 함께',
     description: '베타 테스터로서 앱을 함께 만들어가요\n흔들어서 피드백을 보내주세요!',
     emoji: '🚀',
     backgroundColor: '$blue2',
-  },
+},
 ];
 
 // Styled Components
@@ -69,7 +70,7 @@ const SkipButton = styled(Button, {
   pressStyle: {
     scale: 0.95,
     opacity: 0.7,
-  },
+},
   animation: 'quick',
 });
 
@@ -99,7 +100,7 @@ const SlideContent = styled(YStack, {
     opacity: 0,
     y: 50,
     scale: 0.9,
-  },
+},
 });
 
 const SlideEmoji = styled(Text, {
@@ -110,11 +111,11 @@ const SlideEmoji = styled(Text, {
   enterStyle: {
     scale: 0.5,
     rotate: '-10deg',
-  },
+},
   exitStyle: {
     scale: 0.5,
     rotate: '10deg',
-  },
+},
 });
 
 const SlideTitle = styled(H1, {
@@ -127,7 +128,7 @@ const SlideTitle = styled(H1, {
   enterStyle: {
     opacity: 0,
     y: 30,
-  },
+},
 });
 
 const SlideDescription = styled(Paragraph, {
@@ -140,13 +141,12 @@ const SlideDescription = styled(Paragraph, {
   enterStyle: {
     opacity: 0,
     y: 40,
-  },
+},
 });
 
 const BottomContainer = styled(YStack, {
   name: 'BottomContainer',
   position: 'absolute',
-  bottom: 50,
   left: 0,
   right: 0,
   alignItems: 'center',
@@ -173,12 +173,12 @@ const PaginationDot = styled(View, {
         backgroundColor: '$cupBlue',
         width: 24,
         scale: 1.2,
-      },
+    },
       false: {
         scale: 1,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const NextButton = styled(Button, {
@@ -193,12 +193,12 @@ const NextButton = styled(Button, {
   pressStyle: {
     backgroundColor: '$cupBlueDark',
     scale: 0.95,
-  },
+},
   enterStyle: {
     opacity: 0,
     y: 30,
     scale: 0.9,
-  },
+},
 });
 
 const NextButtonText = styled(Text, {
@@ -215,11 +215,12 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const insets = useSafeAreaInsets();
 
-  const handleScroll = (event: any) => {
+  const handleScroll = (event: unknown) => {
     const slideIndex = Math.round(event.nativeEvent.contentOffset.x / SCREEN_WIDTH);
     setCurrentIndex(slideIndex);
-  };
+};
 
   const handleSkip = async () => {
     await AsyncStorage.setItem('hasLaunched', 'true');
@@ -227,26 +228,26 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = () => {
     // This is a temporary solution - ideally we'd use a context or state management
     if (navigation.canGoBack()) {
       navigation.goBack();
-    } else {
+  } else {
       // Force reload the app to update the navigation state
       // @ts-ignore
       navigation.reset({
         index: 0,
         routes: [{ name: 'Auth' }],
-      });
-    }
-  };
+    });
+  }
+};
 
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
       scrollViewRef.current?.scrollTo({
         x: (currentIndex + 1) * SCREEN_WIDTH,
         animated: true,
-      });
-    } else {
+    });
+  } else {
       handleSkip();
-    }
-  };
+  }
+};
 
   return (
     <Container>
@@ -304,7 +305,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = () => {
         </ScrollView>
 
         {/* Bottom Container */}
-        <BottomContainer>
+        <BottomContainer style={{ bottom: Math.max(insets.bottom + 20, 50) }}>
           {/* Pagination Dots */}
           <Pagination>
             {slides.map((_, index) => (

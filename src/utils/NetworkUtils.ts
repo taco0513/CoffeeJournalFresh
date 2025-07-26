@@ -1,4 +1,5 @@
 import NetInfo from '@react-native-community/netinfo';
+import { Logger } from '../services/LoggingService';
 // import { reportError } from './sentry';
 
 interface RetryOptions {
@@ -14,7 +15,7 @@ class NetworkError extends Error {
   constructor(message: string, public statusCode?: number) {
     super(message);
     this.name = 'NetworkError';
-  }
+}
 }
 
 export class NetworkUtils {
@@ -33,9 +34,9 @@ export class NetworkUtils {
       
       if (wasOnline !== this.isOnline) {
         this.listeners.forEach(listener => listener(this.isOnline));
-      }
-    });
-  }
+    }
+  });
+}
 
   /**
    * 네트워크 상태 리스너 추가
@@ -44,7 +45,7 @@ export class NetworkUtils {
     this.initialize();
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
-  }
+}
 
   /**
    * 현재 네트워크 연결 상태 확인
@@ -53,7 +54,7 @@ export class NetworkUtils {
     this.initialize();
     const state = await NetInfo.fetch();
     return Boolean(state.isConnected && state.isInternetReachable);
-  }
+}
 
   /**
    * 네트워크 연결 대기
@@ -66,17 +67,17 @@ export class NetworkUtils {
       const timer = setTimeout(() => {
         unsubscribe();
         resolve(false);
-      }, timeout);
+    }, timeout);
 
       const unsubscribe = this.addConnectionListener((isOnline) => {
         if (isOnline) {
           clearTimeout(timer);
           unsubscribe();
           resolve(true);
-        }
-      });
+      }
     });
-  }
+  });
+}
 
   /**
    * Exponential backoff를 사용한 재시도 로직
@@ -92,7 +93,7 @@ export class NetworkUtils {
       backoffFactor = 2,
       timeout = 60000,
       onRetry
-    } = options;
+  } = options;
 
     let lastError: Error = new Error('Unknown network error');
 
@@ -101,18 +102,18 @@ export class NetworkUtils {
         // 타임아웃 적용
         const result = await this.withTimeout(fn(), timeout);
         return result;
-      } catch (error) {
+    } catch (error) {
         lastError = error as Error;
 
         // 재시도 불가능한 에러는 즉시 throw
         if (!this.isRetryableError(error)) {
           throw error;
-        }
+      }
 
         // 마지막 시도였으면 에러 throw
         if (attempt === maxRetries) {
           break;
-        }
+      }
 
         // 재시도 전 대기
         const delay = Math.min(
@@ -123,21 +124,21 @@ export class NetworkUtils {
         // 재시도 콜백 호출
         if (onRetry) {
           onRetry(attempt + 1, lastError);
-        }
+      }
 
         // 네트워크 연결 대기
         if (!await this.isConnected()) {
-          console.log(`[NetworkUtils] Waiting for network connection...`);
+          Logger.debug('[NetworkUtils] Waiting for network connection...', 'util', { component: 'NetworkUtils' });
           const connected = await this.waitForConnection(delay);
           if (!connected) {
             throw new NetworkError('Network connection timeout');
-          }
-        } else {
+        }
+      } else {
           // Exponential backoff delay
           await new Promise(resolve => setTimeout(resolve, delay));
-        }
       }
     }
+  }
 
     // 모든 재시도 실패
     // reportError(lastError!, {
@@ -145,10 +146,10 @@ export class NetworkUtils {
     //   maxRetries,
     //   lastAttempt: maxRetries + 1
     // });
-    console.error('[NetworkUtils] All retries exhausted:', lastError);
+    Logger.error('[NetworkUtils] All retries exhausted:', 'util', { component: 'NetworkUtils', error: lastError });
 
     throw lastError!;
-  }
+}
 
   /**
    * fetch with retry
@@ -165,8 +166,8 @@ export class NetworkUtils {
           headers: {
             'Content-Type': 'application/json',
             ...options.headers,
-          },
-        });
+        },
+      });
 
         // 4xx 에러는 재시도하지 않음
         if (response.status >= 400 && response.status < 500) {
@@ -175,7 +176,7 @@ export class NetworkUtils {
             response.status
           );
           throw error;
-        }
+      }
 
         // 5xx 에러는 재시도
         if (!response.ok) {
@@ -183,24 +184,24 @@ export class NetworkUtils {
             `HTTP ${response.status}: ${response.statusText}`,
             response.status
           );
-        }
+      }
 
         return response;
-      },
+    },
       {
         ...retryOptions,
         onRetry: (attempt, error) => {
-          console.log(`[NetworkUtils] Retry attempt ${attempt} after error:`, error.message);
+          Logger.debug('[NetworkUtils] Retry attempt ${attempt} after error:', 'util', { component: 'NetworkUtils', error: error.message });
           retryOptions?.onRetry?.(attempt, error);
-        }
       }
+    }
     );
-  }
+}
 
   /**
    * 재시도 가능한 에러인지 확인
    */
-  private static isRetryableError(error: any): boolean {
+  private static isRetryableError(error: Error): boolean {
     // 네트워크 에러
     if (error.message?.includes('Network request failed')) return true;
     if (error.message?.includes('fetch error')) return true;
@@ -218,7 +219,7 @@ export class NetworkUtils {
     if (error.code === 'ENOTFOUND') return true;
     
     return false;
-  }
+}
 
   /**
    * Promise에 타임아웃 적용
@@ -236,7 +237,7 @@ export class NetworkUtils {
         )
       ),
     ]);
-  }
+}
 
   /**
    * 네트워크 품질 확인
@@ -246,7 +247,7 @@ export class NetworkUtils {
     
     if (!state.isConnected || !state.isInternetReachable) {
       return 'offline';
-    }
+  }
 
     // 셀룰러 연결인 경우
     if (state.type === 'cellular') {
@@ -254,11 +255,11 @@ export class NetworkUtils {
       if (cellularGeneration === '2g') return 'low';
       if (cellularGeneration === '3g') return 'medium';
       return 'high'; // 4g, 5g
-    }
+  }
 
     // WiFi 또는 기타 연결
     return 'high';
-  }
+}
 
   /**
    * 네트워크 상태에 따른 요청 최적화
@@ -276,18 +277,18 @@ export class NetworkUtils {
       maxRetries: quality === 'low' ? 5 : 3,
       initialDelay: quality === 'low' ? 2000 : 1000,
       timeout: quality === 'low' ? 120000 : 60000,
-    };
+  };
 
     // 저품질 네트워크에서는 헤더 추가
     if (quality === 'low' || quality === 'medium') {
       options.headers = {
         ...options.headers,
         'X-Network-Quality': quality,
-      };
-    }
+    };
+  }
 
     return this.fetchWithRetry(url, options, optimizedRetryOptions);
-  }
+}
 }
 
 // 기본 export

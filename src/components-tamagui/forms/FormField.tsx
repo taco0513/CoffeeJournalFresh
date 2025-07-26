@@ -17,8 +17,8 @@ interface FormFieldProps {
   children: React.ReactNode;
   horizontal?: boolean;
   labelWidth?: number | string;
-  containerStyle?: any;
-  labelStyle?: any;
+  containerStyle?: unknown;
+  labelStyle?: unknown;
 }
 
 export type { FormFieldProps };
@@ -32,9 +32,9 @@ const Container = styled(YStack, {
     horizontal: {
       true: {
         // Will be converted to XStack in component
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const HorizontalContainer = styled(XStack, {
@@ -51,9 +51,9 @@ const LabelContainer = styled(YStack, {
       true: {
         justifyContent: 'center',
         paddingTop: '$sm',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const StyledLabel = styled(Label, {
@@ -68,14 +68,14 @@ const StyledLabel = styled(Label, {
       true: {
         marginBottom: 0,
         marginRight: '$md',
-      },
     },
+  },
     hasError: {
       true: {
         color: '$red9',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const RequiredIndicator = styled(Text, {
@@ -100,12 +100,12 @@ const HelperText = styled(Text, {
     type: {
       error: {
         color: '$red9',
-      },
+    },
       helper: {
         color: '$gray11',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 // Main Component
@@ -154,7 +154,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         {FieldContent}
       </HorizontalContainer>
     );
-  }
+}
   
   return (
     <Container style={containerStyle}>

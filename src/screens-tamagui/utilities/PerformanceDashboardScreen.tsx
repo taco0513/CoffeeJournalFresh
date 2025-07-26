@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback} from 'react';
 import { SafeAreaView, RefreshControl, Alert } from 'react-native';
 import {
   View,
@@ -21,7 +21,8 @@ import {
 } from 'tamagui';
 import { performanceAnalyzer, PerformanceReport } from '../../utils/performanceAnalysis';
 import { performanceMonitor } from '../../services/PerformanceMonitor';
-import { flavorDataOptimizer } from '../../services/FlavorDataOptimizer';
+import { Logger } from '../../services/LoggingService';
+import { flavorDataOptimizer} from '../../services/FlavorDataOptimizer';
 
 interface MetricCardProps {
   title: string;
@@ -79,7 +80,7 @@ const RefreshButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.98,
-  },
+},
 });
 
 const RefreshButtonText = styled(Text, {
@@ -109,13 +110,13 @@ const Tab = styled(Button, {
     active: {
       true: {
         borderBottomColor: '$cupBlue',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     scale: 1,
     backgroundColor: '$backgroundHover',
-  },
+},
 });
 
 const TabText = styled(Text, {
@@ -126,12 +127,12 @@ const TabText = styled(Text, {
     active: {
       true: {
         color: '$cupBlue',
-      },
+    },
       false: {
         color: '$gray11',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const TabContent = styled(ScrollView, {
@@ -171,7 +172,7 @@ const MetricCardContainer = styled(Card, {
     opacity: 0,
     scale: 0.9,
     y: 20,
-  },
+},
   variants: {
     clickable: {
       true: {
@@ -179,10 +180,10 @@ const MetricCardContainer = styled(Card, {
         pressStyle: {
           scale: 0.98,
           backgroundColor: '$backgroundPress',
-        },
       },
     },
-  } as const,
+  },
+} as const,
 });
 
 const MetricTitle = styled(Text, {
@@ -221,7 +222,7 @@ const OperationCard = styled(Card, {
     opacity: 0,
     scale: 0.95,
     y: 10,
-  },
+},
 });
 
 const OperationHeader = styled(XStack, {
@@ -258,7 +259,7 @@ const IssueCard = styled(Card, {
     opacity: 0,
     scale: 0.95,
     y: 15,
-  },
+},
 });
 
 const IssueHeader = styled(XStack, {
@@ -284,15 +285,15 @@ const SeverityBadge = styled(View, {
     severity: {
       high: {
         backgroundColor: '$red9',
-      },
+    },
       medium: {
         backgroundColor: '$orange9',
-      },
+    },
       low: {
         backgroundColor: '$yellow9',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const SeverityText = styled(Text, {
@@ -323,7 +324,7 @@ const RecommendationCard = styled(Card, {
     opacity: 0,
     scale: 0.95,
     y: 10,
-  },
+},
 });
 
 const RecommendationText = styled(Text, {
@@ -343,15 +344,15 @@ const ActionButton = styled(Button, {
     variant: {
       primary: {
         backgroundColor: '$cupBlue',
-      },
+    },
       danger: {
         backgroundColor: '$red9',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const ActionButtonText = styled(Text, {
@@ -362,12 +363,12 @@ const ActionButtonText = styled(Text, {
     variant: {
       primary: {
         color: 'white',
-      },
+    },
       danger: {
         color: 'white',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const CacheEntryCard = styled(Card, {
@@ -383,7 +384,7 @@ const CacheEntryCard = styled(Card, {
     opacity: 0,
     scale: 0.95,
     y: 5,
-  },
+},
 });
 
 const CacheEntryName = styled(Text, {
@@ -410,7 +411,7 @@ const TamaguiMetricCard: React.FC<MetricCardProps> = ({
       opacity: 0,
       scale: 0.9,
       y: 20,
-    }}
+  }}
     animateOnly={['opacity', 'transform']}
   >
     <MetricTitle>{title}</MetricTitle>
@@ -447,17 +448,17 @@ const PerformanceDashboardScreen: React.FC<PerformanceDashboardScreenProps> = ()
     try {
       const newReport = performanceAnalyzer.generateReport();
       setReport(newReport);
-    } catch (error) {
-      console.error('Failed to load performance report:', error);
+  } catch (error) {
+      Logger.error('Failed to load performance report:', 'screen', { component: 'PerformanceDashboardScreen', error: error });
       Alert.alert('Error', 'Failed to load performance data');
-    }
-  }, []);
+  }
+}, []);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
     await loadReport();
     setRefreshing(false);
-  }, [loadReport]);
+}, [loadReport]);
 
   const handleClearCache = useCallback(() => {
     Alert.alert(
@@ -473,53 +474,53 @@ const PerformanceDashboardScreen: React.FC<PerformanceDashboardScreenProps> = ()
             flavorDataOptimizer.clearCache();
             loadReport();
             Alert.alert('Success', 'Cache cleared successfully');
-          },
         },
+      },
       ]
     );
-  }, [loadReport]);
+}, [loadReport]);
 
   const handleExportData = useCallback(() => {
     const exportData = performanceAnalyzer.exportData();
-    console.log('Performance Export:', JSON.stringify(exportData, null, 2));
+    Logger.debug('Performance Export:', 'screen', { component: 'PerformanceDashboardScreen', data: JSON.stringify(exportData, null, 2) });
     Alert.alert(
       'Data Exported',
       'Performance data has been logged to console. In production, this would be shared or uploaded.'
     );
-  }, []);
+}, []);
 
   const handleFlushQueue = useCallback(async () => {
     try {
       await performanceMonitor.flushQueue();
       Alert.alert('Success', 'Performance queue flushed successfully');
-    } catch (error) {
+  } catch (error) {
       Alert.alert('Error', 'Failed to flush performance queue');
-    }
-  }, []);
+  }
+}, []);
 
   useEffect(() => {
     loadReport();
-  }, [loadReport]);
+}, [loadReport]);
 
   const getOperationTimeColor = (duration: number) => {
     if (duration > 2000) return '$red9';
     if (duration > 1000) return '$orange9';
     return '$green9';
-  };
+};
 
   const getErrorRateColor = (rate: number) => {
     return rate > 0.05 ? '$red9' : '$green9';
-  };
+};
 
   const getMemoryIssueColor = (issues: number) => {
     return issues > 0 ? '$orange9' : '$green9';
-  };
+};
 
   const renderOverview = () => (
     <TabContent
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-      }
+    }
     >
       <AnimatePresence>
         {/* Summary Metrics */}
@@ -732,7 +733,7 @@ const PerformanceDashboardScreen: React.FC<PerformanceDashboardScreenProps> = ()
         </AnimatePresence>
       </TabContent>
     );
-  };
+};
 
   if (!report) {
     return (
@@ -745,7 +746,7 @@ const PerformanceDashboardScreen: React.FC<PerformanceDashboardScreenProps> = ()
         </SafeAreaView>
       </Container>
     );
-  }
+}
 
   return (
     <Container>

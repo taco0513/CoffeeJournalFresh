@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { HIGColors, HIGConstants } from '../../styles/common';
 import { supabase } from '../../services/supabase/client';
+import { Logger } from '../../services/LoggingService';
 import { useUserStore } from '../../stores/useUserStore';
 
 interface PendingCoffee {
@@ -33,7 +34,7 @@ interface AdminStats {
   totalContributors: number;
 }
 
-export const AdminDashboardScreen = ({ navigation }: any) => {
+export const AdminDashboardScreen = ({ navigation }: unknown) => {
   const { currentUser: user } = useUserStore();
   const [isAdmin, setIsAdmin] = useState(false);
   const [pendingCoffees, setPendingCoffees] = useState<PendingCoffee[]>([]);
@@ -42,29 +43,29 @@ export const AdminDashboardScreen = ({ navigation }: any) => {
     pendingReviews: 0,
     approvedToday: 0,
     totalContributors: 0,
-  });
+});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     checkAdminStatus();
-  }, [user]);
+}, [user]);
 
   useEffect(() => {
     if (isAdmin) {
       loadDashboardData();
-    }
-  }, [isAdmin]);
+  }
+}, [isAdmin]);
 
   const checkAdminStatus = async () => {
     if (user?.email === 'hello@zimojin.com') {
       setIsAdmin(true);
-    } else {
+  } else {
       setIsAdmin(false);
       Alert.alert('접근 거부', '관리자만 접근할 수 있습니다.');
       navigation.goBack();
-    }
-  };
+  }
+};
 
   const loadDashboardData = async () => {
     try {
@@ -73,13 +74,13 @@ export const AdminDashboardScreen = ({ navigation }: any) => {
         loadPendingCoffees(),
         loadStats(),
       ]);
-    } catch (error) {
-      console.error('Error loading dashboard:', error);
+  } catch (error) {
+      Logger.error('Error loading dashboard:', 'screen', { component: 'AdminDashboardScreen', error: error });
       Alert.alert('오류', '데이터를 불러오는 중 오류가 발생했습니다.');
-    } finally {
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+};
 
   const loadPendingCoffees = async () => {
     const { data, error } = await supabase
@@ -98,8 +99,8 @@ export const AdminDashboardScreen = ({ navigation }: any) => {
     setPendingCoffees(data?.map(coffee => ({
       ...coffee,
       user_email: coffee.user?.email,
-    })) || []);
-  };
+  })) || []);
+};
 
   const loadStats = async () => {
     // Total coffees
@@ -135,8 +136,8 @@ export const AdminDashboardScreen = ({ navigation }: any) => {
       pendingReviews: pendingReviews || 0,
       approvedToday: approvedToday || 0,
       totalContributors: uniqueContributors.size,
-    });
-  };
+  });
+};
 
   const handleApprove = async (coffeeId: string) => {
     try {
@@ -149,11 +150,11 @@ export const AdminDashboardScreen = ({ navigation }: any) => {
 
       Alert.alert('승인 완료', '커피가 승인되었습니다.');
       loadDashboardData();
-    } catch (error) {
-      console.error('Error approving coffee:', error);
+  } catch (error) {
+      Logger.error('Error approving coffee:', 'screen', { component: 'AdminDashboardScreen', error: error });
       Alert.alert('오류', '승인 중 오류가 발생했습니다.');
-    }
-  };
+  }
+};
 
   const handleReject = async (coffeeId: string) => {
     Alert.alert(
@@ -175,29 +176,29 @@ export const AdminDashboardScreen = ({ navigation }: any) => {
 
               Alert.alert('거절 완료', '커피가 거절되었습니다.');
               loadDashboardData();
-            } catch (error) {
-              console.error('Error rejecting coffee:', error);
+          } catch (error) {
+              Logger.error('Error rejecting coffee:', 'screen', { component: 'AdminDashboardScreen', error: error });
               Alert.alert('오류', '거절 중 오류가 발생했습니다.');
-            }
-          },
+          }
         },
+      },
       ]
     );
-  };
+};
 
   const handleEdit = (coffee: PendingCoffee) => {
     navigation.navigate('AdminCoffeeEdit', { coffee });
-  };
+};
 
   const onRefresh = async () => {
     setRefreshing(true);
     await loadDashboardData();
     setRefreshing(false);
-  };
+};
 
   if (!isAdmin) {
     return null;
-  }
+}
 
   if (loading) {
     return (
@@ -207,7 +208,7 @@ export const AdminDashboardScreen = ({ navigation }: any) => {
         </View>
       </SafeAreaView>
     );
-  }
+}
 
   return (
     <SafeAreaView style={styles.container}>
@@ -215,7 +216,7 @@ export const AdminDashboardScreen = ({ navigation }: any) => {
         style={styles.scrollView}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+      }
       >
         {/* Header */}
         <View style={styles.header}>
@@ -314,35 +315,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   scrollView: {
     flex: 1,
-  },
+},
   header: {
     padding: HIGConstants.SPACING_LG,
     paddingTop: HIGConstants.SPACING_XL,
-  },
+},
   title: {
     fontSize: 34,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   subtitle: {
     fontSize: 17,
     color: HIGColors.secondaryLabel,
-  },
+},
   statsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     paddingHorizontal: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   statCard: {
     width: '48%',
     backgroundColor: HIGColors.gray6,
@@ -351,38 +352,38 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_SM,
     marginRight: '2%',
     alignItems: 'center',
-  },
+},
   pendingCard: {
     backgroundColor: '#FFF3CD',
-  },
+},
   statValue: {
     fontSize: 28,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   statLabel: {
     fontSize: 13,
     color: HIGColors.secondaryLabel,
-  },
+},
   section: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   emptyState: {
     padding: HIGConstants.SPACING_XL,
     alignItems: 'center',
-  },
+},
   emptyText: {
     fontSize: 17,
     color: HIGColors.tertiaryLabel,
-  },
+},
   coffeeCard: {
     backgroundColor: HIGColors.systemBackground,
     borderRadius: HIGConstants.BORDER_RADIUS,
@@ -390,69 +391,69 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_MD,
     borderWidth: 1,
     borderColor: HIGColors.gray4,
-  },
+},
   coffeeHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   roasteryName: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.blue,
-  },
+},
   timestamp: {
     fontSize: 13,
     color: HIGColors.tertiaryLabel,
-  },
+},
   coffeeName: {
     fontSize: 20,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   coffeeDetails: {
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   detailText: {
     fontSize: 15,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   submittedBy: {
     fontSize: 13,
     color: HIGColors.tertiaryLabel,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   actionButtons: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_SM,
-  },
+},
   actionButton: {
     flex: 1,
     paddingVertical: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.BORDER_RADIUS,
     alignItems: 'center',
-  },
+},
   approveButton: {
     backgroundColor: HIGColors.green,
-  },
+},
   approveButtonText: {
     color: '#FFFFFF',
     fontWeight: '600',
-  },
+},
   editButton: {
     backgroundColor: HIGColors.gray5,
-  },
+},
   editButtonText: {
     color: HIGColors.label,
     fontWeight: '600',
-  },
+},
   rejectButton: {
     backgroundColor: HIGColors.red,
-  },
+},
   rejectButtonText: {
     color: '#FFFFFF',
     fontWeight: '600',
-  },
+},
 });

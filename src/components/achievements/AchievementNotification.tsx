@@ -35,7 +35,7 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
       translateY: new Animated.Value(0),
       rotation: new Animated.Value(0),
       opacity: new Animated.Value(0),
-    }))
+  }))
   ).current;
 
   const screenWidth = Dimensions.get('window').width;
@@ -53,24 +53,24 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
           toValue: 1,
           duration: 300,
           useNativeDriver: true,
-        }),
+      }),
         Animated.spring(scaleAnim, {
           toValue: 1,
           tension: 100,
           friction: 8,
           useNativeDriver: true,
-        }),
+      }),
       ]).start();
 
       // Confetti animation for epic achievements
       if (celebrationType === 'epic') {
         startConfettiAnimation();
-      }
+    }
 
       // Auto dismiss after 5 seconds
       const timer = setTimeout(() => {
         handleDismiss();
-      }, 5000);
+    }, 5000);
 
       return () => {
         clearTimeout(timer);
@@ -83,9 +83,9 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
           anim.translateY.stopAnimation();
           anim.rotation.stopAnimation();
           anim.opacity.stopAnimation();
-        });
-      };
-    } else {
+      });
+    };
+  } else {
       // Exit animation
       // Stop any running animations before starting new ones
       fadeAnim.stopAnimation();
@@ -96,15 +96,15 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
           toValue: 0,
           duration: 200,
           useNativeDriver: true,
-        }),
+      }),
         Animated.timing(scaleAnim, {
           toValue: 0.5,
           duration: 200,
           useNativeDriver: true,
-        }),
+      }),
       ]).start();
-    }
-  }, [visible, achievement, celebrationType, onDismiss]);
+  }
+}, [visible, achievement, celebrationType, onDismiss]);
 
   const startConfettiAnimation = () => {
     // Reset confetti animations
@@ -113,7 +113,7 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
       anim.translateY.setValue(0);
       anim.rotation.setValue(0);
       anim.opacity.setValue(0);
-    });
+  });
     
     const animations = confettiAnims.map((anim, index) => {
       const randomX = Math.random() * screenWidth;
@@ -127,33 +127,33 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
             toValue: 1,
             duration: 100,
             useNativeDriver: true,
-          }),
+        }),
           Animated.timing(anim.translateX, {
             toValue: randomX - screenWidth / 2,
             duration: 0,
             useNativeDriver: true,
-          }),
+        }),
           Animated.timing(anim.translateY, {
             toValue: screenHeight,
             duration: 3000,
             useNativeDriver: true,
-          }),
+        }),
           Animated.timing(anim.rotation, {
             toValue: randomRotation,
             duration: 3000,
             useNativeDriver: true,
-          }),
+        }),
         ]),
         Animated.timing(anim.opacity, {
           toValue: 0,
           duration: 500,
           useNativeDriver: true,
-        }),
+      }),
       ]);
-    });
+  });
 
     Animated.parallel(animations).start();
-  };
+};
 
   const handleDismiss = () => {
     Animated.parallel([
@@ -161,16 +161,16 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
         toValue: 0,
         duration: 200,
         useNativeDriver: true,
-      }),
+    }),
       Animated.timing(scaleAnim, {
         toValue: 0.5,
         duration: 200,
         useNativeDriver: true,
-      }),
+    }),
     ]).start(() => {
       onDismiss();
-    });
-  };
+  });
+};
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -184,15 +184,15 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
         return HIGColors.systemOrange;
       default:
         return HIGColors.systemGray4;
-    }
-  };
+  }
+};
 
-  const formatReward = (reward: any) => {
+  const formatReward = (reward: unknown) => {
     if (reward.type === 'points') {
       return `+${reward.value} 포인트`;
-    }
+  }
     return reward.value;
-  };
+};
 
   const getContainerStyle = () => {
     switch (celebrationType) {
@@ -202,8 +202,8 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
         return styles.epicContainer;
       default:
         return styles.normalContainer;
-    }
-  };
+  }
+};
 
   if (!achievement) return null;
 
@@ -230,7 +230,7 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
                   transform: [
                     { scale: scaleAnim },
                   ],
-                },
+              },
               ]}
             >
               {/* Confetti Particles */}
@@ -248,10 +248,10 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
                             { rotate: anim.rotation.interpolate({
                               inputRange: [0, 360],
                               outputRange: ['0deg', '360deg'],
-                            }) },
+                          }) },
                           ],
                           opacity: anim.opacity,
-                        },
+                      },
                       ]}
                     />
                   ))}
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: HIGConstants.SPACING_LG,
-  },
+},
   container: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.BORDER_RADIUS_LG,
@@ -331,11 +331,11 @@ const styles = StyleSheet.create({
     maxWidth: 320,
     width: '100%',
     alignItems: 'center',
-  },
+},
   subtleContainer: {
     borderWidth: 2,
     borderColor: HIGColors.systemGray4,
-  },
+},
   normalContainer: {
     borderWidth: 2,
     borderColor: HIGColors.systemBlue,
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
-  },
+},
   epicContainer: {
     borderWidth: 3,
     borderColor: HIGColors.systemOrange,
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 12,
     elevation: 12,
-  },
+},
   confettiContainer: {
     position: 'absolute',
     top: 0,
@@ -361,88 +361,88 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: -1,
-  },
+},
   confettiParticle: {
     position: 'absolute',
     width: 8,
     height: 8,
     backgroundColor: HIGColors.systemOrange,
     borderRadius: 4,
-  },
+},
   content: {
     alignItems: 'center',
-  },
+},
   header: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   headerText: {
     fontSize: 20,
     fontWeight: '700',
     color: HIGColors.label,
-  },
+},
   achievementInfo: {
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   achievementIcon: {
     fontSize: 60,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   achievementTitle: {
     fontSize: 24,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   achievementDescription: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   rarityBadge: {
     paddingHorizontal: HIGConstants.SPACING_MD,
     paddingVertical: HIGConstants.SPACING_XS,
     borderRadius: HIGConstants.cornerRadiusSmall,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   rarityText: {
     color: HIGColors.white,
     fontSize: 12,
     fontWeight: '700',
-  },
+},
   rewardText: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.systemGreen,
-  },
+},
   actionButtons: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_MD,
-  },
+},
   replayButton: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.cornerRadiusMedium,
     borderWidth: 1,
     borderColor: HIGColors.systemBlue,
-  },
+},
   replayButtonText: {
     color: HIGColors.systemBlue,
     fontSize: 16,
     fontWeight: '600',
-  },
+},
   dismissButton: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.cornerRadiusMedium,
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   dismissButtonText: {
     color: HIGColors.white,
     fontSize: 16,
     fontWeight: '600',
-  },
+},
 });

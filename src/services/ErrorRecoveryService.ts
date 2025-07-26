@@ -66,14 +66,14 @@ export class ErrorRecoveryService {
 
   private constructor() {
     this.loadErrorPatterns();
-  }
+}
 
   static getInstance(): ErrorRecoveryService {
     if (!ErrorRecoveryService.instance) {
       ErrorRecoveryService.instance = new ErrorRecoveryService();
-    }
-    return ErrorRecoveryService.instance;
   }
+    return ErrorRecoveryService.instance;
+}
 
   /**
    * Main error recovery entry point
@@ -95,7 +95,7 @@ export class ErrorRecoveryService {
         memoryUsage: await this.getMemoryUsage(),
         networkStatus: await this.getNetworkStatus(),
         realmStatus: this.getRealmStatus()
-      };
+    };
 
       // Check if recovery is already in progress for this error type
       if (this.recoveryInProgress.has(errorType)) {
@@ -105,8 +105,8 @@ export class ErrorRecoveryService {
           message: 'Recovery already in progress',
           shouldRetry: false,
           shouldNotifyUser: false
-        };
-      }
+      };
+    }
 
       // Update error patterns
       await this.updateErrorPattern(errorType);
@@ -124,7 +124,7 @@ export class ErrorRecoveryService {
 
       return result;
 
-    } catch (recoveryError) {
+  } catch (recoveryError) {
       Logger.error('Error recovery failed', 'error_recovery', { error: recoveryError as Error });
 
       return {
@@ -134,11 +134,11 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '문제를 해결할 수 없습니다. 앱을 다시 시작해주세요.'
-      };
-    } finally {
+    };
+  } finally {
       timer.end();
-    }
   }
+}
 
   /**
    * Classify error into known types
@@ -150,40 +150,40 @@ export class ErrorRecoveryService {
     // Realm errors
     if (message.includes('realm') || message.includes('database') || message.includes('sqlite')) {
       return ErrorType.REALM_CONNECTION;
-    }
+  }
 
     // Network errors
     if (message.includes('network') || message.includes('timeout') || message.includes('connection')) {
       return ErrorType.NETWORK_TIMEOUT;
-    }
+  }
 
     // Authentication errors
     if (message.includes('auth') || message.includes('unauthorized') || message.includes('token')) {
       return ErrorType.AUTH_EXPIRED;
-    }
+  }
 
     // Storage errors
     if (message.includes('storage') || message.includes('disk') || message.includes('quota')) {
       return ErrorType.STORAGE_FULL;
-    }
+  }
 
     // Memory errors
     if (message.includes('memory') || message.includes('allocation') || message.includes('out of memory')) {
       return ErrorType.MEMORY_PRESSURE;
-    }
+  }
 
     // Sync errors
     if (message.includes('sync') || message.includes('conflict') || message.includes('merge')) {
       return ErrorType.SYNC_CONFLICT;
-    }
+  }
 
     // React Native bridge errors
     if (message.includes('bridge') || message.includes('native') || stack.includes('rctbridge')) {
       return ErrorType.BRIDGE_ERROR;
-    }
+  }
 
     return ErrorType.UNKNOWN;
-  }
+}
 
   /**
    * Execute appropriate recovery strategy
@@ -215,8 +215,8 @@ export class ErrorRecoveryService {
       
       default:
         return await this.handleGenericError(context);
-    }
   }
+}
 
   /**
    * Handle Realm database errors
@@ -240,9 +240,9 @@ export class ErrorRecoveryService {
             message: 'Realm connection restored',
             shouldRetry: false,
             shouldNotifyUser: false
-          };
-        }
+        };
       }
+    }
 
       // Strategy 2: Reinitialize Realm
       if (retryCount < MAX_RETRY_ATTEMPTS) {
@@ -260,8 +260,8 @@ export class ErrorRecoveryService {
           message: 'Realm reinitialized successfully',
           shouldRetry: false,
           shouldNotifyUser: false
-        };
-      }
+      };
+    }
 
       // Strategy 3: Fallback mode
       return {
@@ -271,9 +271,9 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '데이터베이스 연결에 문제가 있습니다. 일부 기능이 제한될 수 있습니다.'
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       Logger.error('Realm recovery failed', 'error_recovery', { error: error as Error });
       
       return {
@@ -283,9 +283,9 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '데이터베이스를 복구할 수 없습니다. 앱을 재시작해주세요.'
-      };
-    }
+    };
   }
+}
 
   /**
    * Handle network-related errors
@@ -305,8 +305,8 @@ export class ErrorRecoveryService {
           shouldRetry: true,
           shouldNotifyUser: true,
           userMessage: '인터넷 연결을 확인해주세요.'
-        };
-      }
+      };
+    }
 
       // Retry with exponential backoff
       if (retryCount < MAX_RETRY_ATTEMPTS) {
@@ -318,8 +318,8 @@ export class ErrorRecoveryService {
           message: 'Network retry scheduled',
           shouldRetry: true,
           shouldNotifyUser: false
-        };
-      }
+      };
+    }
 
       return {
         success: false,
@@ -328,9 +328,9 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '네트워크 연결이 불안정합니다. 잠시 후 다시 시도해주세요.'
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       return {
         success: false,
         strategy: RecoveryStrategy.FALLBACK,
@@ -338,9 +338,9 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '네트워크 오류가 발생했습니다.'
-      };
-    }
+    };
   }
+}
 
   /**
    * Handle authentication errors
@@ -361,9 +361,9 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '인증이 만료되었습니다. 다시 로그인해주세요.'
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       return {
         success: false,
         strategy: RecoveryStrategy.FALLBACK,
@@ -371,9 +371,9 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '인증 오류가 발생했습니다. 앱을 재시작해주세요.'
-      };
-    }
+    };
   }
+}
 
   /**
    * Handle storage full errors
@@ -394,9 +394,9 @@ export class ErrorRecoveryService {
         shouldRetry: true,
         shouldNotifyUser: true,
         userMessage: '저장공간이 부족하여 일부 캐시를 정리했습니다.'
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       return {
         success: false,
         strategy: RecoveryStrategy.FALLBACK,
@@ -404,9 +404,9 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '저장공간이 부족합니다. 기기의 저장공간을 정리해주세요.'
-      };
-    }
+    };
   }
+}
 
   /**
    * Handle memory pressure errors
@@ -423,9 +423,9 @@ export class ErrorRecoveryService {
         message: 'Memory pressure relieved',
         shouldRetry: true,
         shouldNotifyUser: false
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       return {
         success: false,
         strategy: RecoveryStrategy.FALLBACK,
@@ -433,9 +433,9 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '메모리 부족으로 일부 기능이 제한될 수 있습니다.'
-      };
-    }
+    };
   }
+}
 
   /**
    * Handle sync conflict errors
@@ -451,9 +451,9 @@ export class ErrorRecoveryService {
         message: 'Sync conflict resolved',
         shouldRetry: false,
         shouldNotifyUser: false
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       return {
         success: false,
         strategy: RecoveryStrategy.FALLBACK,
@@ -461,9 +461,9 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '데이터 동기화에 문제가 있습니다. 네트워크를 확인해주세요.'
-      };
-    }
+    };
   }
+}
 
   /**
    * Handle React Native bridge errors
@@ -484,9 +484,9 @@ export class ErrorRecoveryService {
         message: 'Bridge error logged, continuing',
         shouldRetry: false,
         shouldNotifyUser: false
-      };
+    };
 
-    } catch (error) {
+  } catch (error) {
       return {
         success: false,
         strategy: RecoveryStrategy.RESET,
@@ -494,9 +494,9 @@ export class ErrorRecoveryService {
         shouldRetry: false,
         shouldNotifyUser: true,
         userMessage: '시스템 오류가 발생했습니다. 앱을 재시작해주세요.'
-      };
-    }
+    };
   }
+}
 
   /**
    * Handle generic/unknown errors
@@ -519,8 +519,8 @@ export class ErrorRecoveryService {
         message: 'Generic retry attempted',
         shouldRetry: true,
         shouldNotifyUser: false
-      };
-    }
+    };
+  }
 
     return {
       success: false,
@@ -529,8 +529,8 @@ export class ErrorRecoveryService {
       shouldRetry: false,
       shouldNotifyUser: true,
       userMessage: '예상치 못한 오류가 발생했습니다. 계속 문제가 발생하면 앱을 재시작해주세요.'
-    };
-  }
+  };
+}
 
   /**
    * Get system information for diagnostics
@@ -539,32 +539,32 @@ export class ErrorRecoveryService {
     try {
       // This would require a native module in a real implementation
       // For now, return a mock value based on JS heap usage if available
-      if ((global.performance as any)?.memory) {
-        return Math.round((global.performance as any).memory.usedJSHeapSize / 1024 / 1024); // MB
-      }
-      return Math.floor(Math.random() * 100);
-    } catch {
-      return 0;
+      if ((global.performance as unknown)?.memory) {
+        return Math.round((global.performance as unknown).memory.usedJSHeapSize / 1024 / 1024); // MB
     }
+      return Math.floor(Math.random() * 100);
+  } catch {
+      return 0;
   }
+}
 
   private async getNetworkStatus(): Promise<boolean> {
     try {
       const netInfo: NetInfoState = await NetInfo.fetch();
       return netInfo.isConnected ?? false;
-    } catch {
+  } catch {
       return false;
-    }
   }
+}
 
   private getRealmStatus(): boolean {
     try {
       const realmService = RealmService.getInstance();
       return realmService.isInitialized;
-    } catch {
+  } catch {
       return false;
-    }
   }
+}
 
   /**
    * Update error pattern tracking
@@ -576,21 +576,21 @@ export class ErrorRecoveryService {
       if (existing) {
         existing.frequency += 1;
         existing.lastOccurrence = new Date();
-      } else {
+    } else {
         this.errorPatterns.set(errorType, {
           errorType,
           frequency: 1,
           lastOccurrence: new Date(),
           recoverySuccessRate: 0,
           preferredStrategy: RecoveryStrategy.RETRY
-        });
-      }
+      });
+    }
 
       await this.saveErrorPatterns();
-    } catch (error) {
+  } catch (error) {
       Logger.error(`Failed to update error pattern for ${errorType}`, 'error_recovery', { error: error as Error });
-    }
   }
+}
 
   /**
    * Load error patterns from storage
@@ -600,13 +600,13 @@ export class ErrorRecoveryService {
       const stored = await AsyncStorage.getItem(ERROR_PATTERNS_KEY);
       if (stored) {
         const patterns = JSON.parse(stored);
-        this.errorPatterns = new Map(Object.entries(patterns) as any);
+        this.errorPatterns = new Map(Object.entries(patterns) as unknown);
         Logger.debug(`Error patterns loaded from storage: ${this.errorPatterns.size}`, 'error_recovery');
-      }
-    } catch (error) {
-      Logger.error('Failed to load error patterns', 'error_recovery', { error: error as Error });
     }
+  } catch (error) {
+      Logger.error('Failed to load error patterns', 'error_recovery', { error: error as Error });
   }
+}
 
   /**
    * Save error patterns to storage
@@ -615,10 +615,10 @@ export class ErrorRecoveryService {
     try {
       const patterns = Object.fromEntries(this.errorPatterns);
       await AsyncStorage.setItem(ERROR_PATTERNS_KEY, JSON.stringify(patterns));
-    } catch (error) {
+  } catch (error) {
       Logger.error('Failed to save error patterns', 'error_recovery', { error: error as Error });
-    }
   }
+}
 
   /**
    * Get error analytics
@@ -628,8 +628,8 @@ export class ErrorRecoveryService {
     errorsByType: Record<ErrorType, number>;
     mostCommonError: ErrorType | null;
     recentErrors: ErrorPattern[];
-  } {
-    const errorsByType: Record<ErrorType, number> = {} as any;
+} {
+    const errorsByType: Record<ErrorType, number> = {};
     let totalErrors = 0;
     let mostCommonError: ErrorType | null = null;
     let maxFrequency = 0;
@@ -641,8 +641,8 @@ export class ErrorRecoveryService {
       if (pattern.frequency > maxFrequency) {
         maxFrequency = pattern.frequency;
         mostCommonError = errorType;
-      }
     }
+  }
 
     const recentErrors = Array.from(this.errorPatterns.values())
       .sort((a, b) => b.lastOccurrence.getTime() - a.lastOccurrence.getTime())
@@ -653,15 +653,15 @@ export class ErrorRecoveryService {
       errorsByType,
       mostCommonError,
       recentErrors
-    };
-  }
+  };
+}
 
   /**
    * Utility: Delay execution
    */
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
-  }
+}
 
   /**
    * Clear all error patterns (for testing)
@@ -671,10 +671,10 @@ export class ErrorRecoveryService {
       this.errorPatterns.clear();
       await AsyncStorage.removeItem(ERROR_PATTERNS_KEY);
       Logger.info('Error patterns cleared', 'error_recovery');
-    } catch (error) {
+  } catch (error) {
       Logger.error('Failed to clear error patterns', 'error_recovery', { error: error as Error });
-    }
   }
+}
 }
 
 export default ErrorRecoveryService.getInstance();

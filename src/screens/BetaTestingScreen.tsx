@@ -16,6 +16,7 @@ import { BetaTestingTab } from '../types/BetaTestingTypes';
 import { BetaStatusPanel } from '../components/beta/BetaStatusPanel';
 import { QuickFeedbackPanel } from '../components/beta/QuickFeedbackPanel';
 import { BetaTabNavigation } from '../components/beta/BetaTabNavigation';
+import { Logger } from '../services/LoggingService';
 import { HIGColors } from '../constants/HIG';
 
 /**
@@ -35,7 +36,7 @@ const BetaTestingScreen: React.FC = () => {
 
   useEffect(() => {
     loadBetaData();
-  }, []);
+}, []);
 
   /**
    * Load beta testing data
@@ -52,12 +53,12 @@ const BetaTestingScreen: React.FC = () => {
       const deployment = await betaTestingService.getDeploymentStatus();
       setDeploymentStatus(deployment);
       
-    } catch (error) {
-      console.error('Failed to load beta data:', error);
-    } finally {
+  } catch (error) {
+      Logger.error('Failed to load beta data:', 'screen', { component: 'BetaTestingScreen', error: error });
+  } finally {
       setIsLoading(false);
-    }
-  };
+  }
+};
 
   /**
    * Refresh data
@@ -66,7 +67,7 @@ const BetaTestingScreen: React.FC = () => {
     setRefreshing(true);
     await loadBetaData();
     setRefreshing(false);
-  };
+};
 
   /**
    * Handle bug report submission
@@ -82,11 +83,11 @@ const BetaTestingScreen: React.FC = () => {
           onPress: () => {
             // In a real implementation, this would open a detailed bug report form
             Alert.alert('Success', 'Bug report submitted successfully!');
-          },
         },
+      },
       ]
     );
-  };
+};
 
   const renderTabContent = () => {
     switch (selectedTab) {
@@ -161,8 +162,8 @@ const BetaTestingScreen: React.FC = () => {
       
       default:
         return null;
-    }
-  };
+  }
+};
 
   if (isLoading) {
     return (
@@ -171,14 +172,14 @@ const BetaTestingScreen: React.FC = () => {
         <Text style={styles.loadingText}>Loading beta testing data...</Text>
       </View>
     );
-  }
+}
 
   return (
     <ScrollView
       style={styles.container}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-      }
+    }
     >
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Beta Testing Dashboard</Text>
@@ -204,49 +205,49 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: HIGColors.systemGroupedBackground,
     padding: 16,
-  },
+},
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: HIGColors.systemGroupedBackground,
-  },
+},
   loadingText: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     marginTop: 12,
-  },
+},
   header: {
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 12,
     marginBottom: 20,
     alignItems: 'center',
-  },
+},
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: HIGColors.label,
     textAlign: 'center',
     marginBottom: 8,
-  },
+},
   headerSubtitle: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   section: {
     backgroundColor: 'white',
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
-  },
+},
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 12,
-  },
+},
   bugReportButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -255,71 +256,71 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: HIGColors.separator,
-  },
+},
   bugReportIcon: {
     fontSize: 24,
     marginRight: 12,
-  },
+},
   bugReportContent: {
     flex: 1,
-  },
+},
   bugReportTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   bugReportDescription: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
-  },
+},
   deploymentInfo: {
     backgroundColor: HIGColors.systemGray6,
     padding: 16,
     borderRadius: 8,
-  },
+},
   deploymentTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 8,
-  },
+},
   deploymentDetail: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     marginBottom: 4,
-  },
+},
   deploymentStatus: {
     fontSize: 14,
     fontWeight: '600',
     marginTop: 8,
-  },
+},
   featuresContainer: {
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: HIGColors.separator,
-  },
+},
   featuresTitle: {
     fontSize: 14,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 8,
-  },
+},
   featureItem: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     marginBottom: 4,
-  },
+},
   noDataText: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     fontStyle: 'italic',
-  },
+},
   bottomSpacer: {
     height: 40,
-  },
+},
 });
 
 export default BetaTestingScreen;

@@ -1,74 +1,69 @@
 // Sentry stub - replace this when adding @sentry/react-native package
-// TODO: When implementing @sentry/react-native:
-// 1. Install package: bun add @sentry/react-native
-// 2. Run setup wizard: npx @sentry/wizard@latest -i reactNative
-// 3. Remove all console statements from this file
-// 4. Replace stub methods with actual Sentry SDK calls
-// 5. Update LoggingService to use real Sentry integration
-// 6. Add proper error boundaries and performance monitoring
-// 7. Configure source maps for production debugging
+// For complete setup instructions, see: docs/SENTRY_SETUP.md
+// This mock implementation provides local error logging during development
 
 import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
-const SENTRY_DSN = process.env.SENTRY_DSN || ''; // TODO: Add your Sentry DSN from https://sentry.io
+import { Logger } from './LoggingService';
+const SENTRY_DSN = process.env.SENTRY_DSN || ''; // Configure in .env file - see docs/SENTRY_SETUP.md
 
 type SeverityLevel = 'fatal' | 'error' | 'warning' | 'log' | 'info' | 'debug';
 
 export class SentryService {
   static initialize(): void {
-    console.log('Sentry is currently disabled. Install @sentry/react-native to enable crash reporting.');
-  }
+    Logger.debug('Sentry is currently disabled. Install @sentry/react-native to enable crash reporting.', 'service', { component: 'SentryService' });
+}
 
   static setUser(user: { id: string; email?: string; username?: string } | null): void {
     if (__DEV__) {
-      console.log('Sentry.setUser:', user);
-    }
+      Logger.debug('Sentry.setUser:', 'service', { component: 'SentryService', data: user });
   }
+}
 
-  static addBreadcrumb(message: string, category: string, data?: any): void {
+  static addBreadcrumb(message: string, category: string, data?: unknown): void {
     if (__DEV__) {
-      console.log(`Sentry breadcrumb [${category}]:`, message, data);
-    }
+      Logger.debug(`Sentry breadcrumb [${category}]:`, 'service', { component: 'SentryService', data: message, data });
   }
+}
 
-  static captureException(error: Error, context?: { level?: SeverityLevel; tags?: Record<string, string>; extra?: any }): void {
-    console.error('Sentry.captureException:', error, context);
-  }
+  static captureException(error: Error, context?: { level?: SeverityLevel; tags?: Record<string, string>; extra?: unknown }): void {
+    Logger.error('Sentry.captureException:', 'service', { component: 'SentryService', error: error, context });
+}
 
   static captureMessage(message: string, level: SeverityLevel = 'info'): void {
     if (__DEV__) {
-      console.log(`Sentry.captureMessage [${level}]:`, message);
-    }
+      Logger.debug(`Sentry.captureMessage [${level}]:`, 'service', { component: 'SentryService', data: message });
   }
+}
 
   static startTransaction(name: string, op: string) {
     return {
       finish: () => {},
-      setData: (key: string, value: any) => {},
+      setData: (key: string, value: unknown) => {},
       setStatus: (status: string) => {},
-    };
-  }
+  };
+}
 
   static setTag(key: string, value: string): void {
     if (__DEV__) {
-      console.log(`Sentry.setTag: ${key}=${value}`);
-    }
+      Logger.debug(`Sentry.setTag: ${key}=${value}`, 'service', { component: 'SentryService' });
   }
+}
 
-  static setContext(key: string, context: any): void {
+  static setContext(key: string, context: Record<string, unknown>): void {
     if (__DEV__) {
-      console.log(`Sentry.setContext [${key}]:`, context);
-    }
+      Logger.debug(`Sentry.setContext [${key}]:`, 'service', { component: 'SentryService', data: context });
   }
+}
 
   // Beta user specific tracking
-  static trackBetaFeedback(feedbackType: string, feedbackData: any): void {
+  static trackBetaFeedback(feedbackType: string, feedbackData: unknown): void {
     this.addBreadcrumb(`Beta feedback submitted: ${feedbackType}`, 'beta-feedback', feedbackData);
-  }
+}
 
   // Track feature usage for beta
-  static trackFeatureUsage(featureName: string, metadata?: any): void {
+  static trackFeatureUsage(featureName: string, metadata?: unknown): void {
     this.addBreadcrumb(`Feature used: ${featureName}`, 'feature-usage', metadata);
-  }
+}
 }

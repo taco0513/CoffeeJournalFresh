@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { HIGColors, HIGConstants } from '../../styles/common';
+import { getDifficultyColor, getDifficultyText } from '../../utils/difficulty';
 
 interface PourPatternGuideProps {
   selectedPattern?: string;
@@ -64,7 +65,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
       visualization: '●',
       icon: '🎯',
       compatibleDrippers: ['V60', 'KalitaWave', 'Origami', 'Chemex']
-    },
+  },
     {
       id: 'spiral',
       name: 'Spiral Pour',
@@ -86,7 +87,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
       visualization: '🌀',
       icon: '🌪️',
       compatibleDrippers: ['V60', 'Origami', 'Chemex']
-    },
+  },
     {
       id: 'pulse',
       name: 'Pulse Pour',
@@ -108,7 +109,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
       visualization: '●●●',
       icon: '⚡',
       compatibleDrippers: ['V60', 'KalitaWave', 'Origami', 'Chemex']
-    },
+  },
     {
       id: 'continuous',
       name: 'Continuous Pour',
@@ -130,7 +131,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
       visualization: '━━━',
       icon: '🌊',
       compatibleDrippers: ['KalitaWave', 'Chemex']
-    },
+  },
     {
       id: 'multiStage',
       name: 'Multi-Stage Pour',
@@ -152,7 +153,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
       visualization: '①②③④',
       icon: '🎭',
       compatibleDrippers: ['V60', 'Origami']
-    }
+  }
   ];
 
   // Filter patterns compatible with selected dripper
@@ -162,38 +163,14 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
 
   const handlePatternSelect = (pattern: PourPattern) => {
     onPatternSelect?.(pattern.id);
-  };
+};
 
   const handlePatternDetail = (pattern: PourPattern) => {
     setSelectedPatternDetail(pattern);
     setShowGuide(true);
-  };
+};
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return HIGColors.systemGreen;
-      case 'intermediate':
-        return HIGColors.systemOrange;
-      case 'advanced':
-        return HIGColors.systemRed;
-      default:
-        return HIGColors.systemGray;
-    }
-  };
-
-  const getDifficultyText = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return '초보자';
-      case 'intermediate':
-        return '중급자';
-      case 'advanced':
-        return '고급자';
-      default:
-        return difficulty;
-    }
-  };
+  // Using shared utility functions from utils/difficulty
 
   return (
     <View style={styles.container}>
@@ -278,8 +255,8 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
                 if (selectedPatternDetail) {
                   handlePatternSelect(selectedPatternDetail);
                   setShowGuide(false);
-                }
-              }}
+              }
+            }}
             >
               <Text style={styles.useButtonText}>사용</Text>
             </TouchableOpacity>
@@ -392,27 +369,27 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginVertical: HIGConstants.SPACING_MD,
-  },
+},
   title: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   subtitle: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   scrollContainer: {
     paddingHorizontal: HIGConstants.SPACING_SM,
-  },
+},
   
   // Pattern Cards
   patternCard: {
     marginRight: HIGConstants.SPACING_MD,
     alignItems: 'center',
-  },
+},
   patternButton: {
     width: 120,
     backgroundColor: HIGColors.white,
@@ -426,27 +403,27 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
+},
   selectedPattern: {
     borderColor: HIGColors.systemBlue,
     backgroundColor: HIGColors.systemBlue + '10',
-  },
+},
   patternIcon: {
     fontSize: 32,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   patternName: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   patternVisualization: {
     fontSize: 24,
     color: HIGColors.systemBlue,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   difficultyBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -454,27 +431,27 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     backgroundColor: HIGColors.systemGray6,
     borderRadius: 8,
-  },
+},
   difficultyDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
     marginRight: 4,
-  },
+},
   difficultyText: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.secondaryLabel,
-  },
+},
   detailButton: {
     marginTop: HIGConstants.SPACING_XS,
     paddingVertical: 4,
     paddingHorizontal: HIGConstants.SPACING_SM,
-  },
+},
   detailButtonText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.systemBlue,
     fontWeight: '500',
-  },
+},
   
   // Tips Section
   tipsSection: {
@@ -482,27 +459,27 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusSmall,
     padding: HIGConstants.SPACING_MD,
     marginTop: HIGConstants.SPACING_MD,
-  },
+},
   tipsTitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   tipsList: {
     gap: 4,
-  },
+},
   tipItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 8,
-  },
+},
   
   // Modal Styles
   modalContainer: {
     flex: 1,
     backgroundColor: HIGColors.white,
-  },
+},
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -510,65 +487,65 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_MD,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray5,
-  },
+},
   closeButton: {
     padding: HIGConstants.SPACING_SM,
-  },
+},
   closeButtonText: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     color: HIGColors.systemGray,
-  },
+},
   modalTitle: {
     flex: 1,
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
   useButton: {
     backgroundColor: HIGColors.systemBlue,
     paddingHorizontal: HIGConstants.SPACING_MD,
     paddingVertical: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.cornerRadiusSmall,
-  },
+},
   useButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.white,
     fontWeight: '600',
-  },
+},
   modalContent: {
     flex: 1,
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   
   // Pattern Header
   patternHeader: {
     alignItems: 'center',
     paddingVertical: HIGConstants.SPACING_LG,
-  },
+},
   modalPatternIcon: {
     fontSize: 64,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   modalPatternName: {
     fontSize: HIGConstants.FONT_SIZE_H1,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
     marginBottom: 4,
-  },
+},
   modalPatternEnglish: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   patternDescription: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   modalDifficultyBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -576,12 +553,12 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_XS,
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusSmall,
-  },
+},
   modalDifficultyText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     fontWeight: '500',
-  },
+},
   
   // Section Headers
   sectionHeader: {
@@ -590,37 +567,37 @@ const styles = StyleSheet.create({
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
     marginTop: HIGConstants.SPACING_LG,
-  },
+},
   
   // Visualization Section
   visualizationSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   visualizationContainer: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_LG,
     alignItems: 'center',
-  },
+},
   visualizationDisplay: {
     fontSize: 48,
     color: HIGColors.systemBlue,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   visualizationDesc: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   
   // Best For Section
   bestForSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   tagContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
+},
   tag: {
     backgroundColor: HIGColors.systemGreen,
     paddingHorizontal: HIGConstants.SPACING_SM,
@@ -628,22 +605,22 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusSmall,
     marginRight: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   tagText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.white,
     fontWeight: '500',
-  },
+},
   
   // Steps Section
   stepsSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   stepItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   stepNumber: {
     width: 24,
     height: 24,
@@ -653,43 +630,43 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: HIGConstants.SPACING_SM,
     marginTop: 2,
-  },
+},
   stepNumberText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.white,
     fontWeight: '600',
-  },
+},
   stepText: {
     flex: 1,
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     lineHeight: 22,
-  },
+},
   
   // Modal Tips Section
   modalTipsSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   tipBullet: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     marginRight: HIGConstants.SPACING_SM,
     lineHeight: 22,
-  },
+},
   tipText: {
     flex: 1,
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     lineHeight: 22,
-  },
+},
   
   // Compatible Section
   compatibleSection: {
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   dripperList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
+},
   dripperBadge: {
     backgroundColor: HIGColors.systemGray6,
     paddingHorizontal: HIGConstants.SPACING_SM,
@@ -697,18 +674,18 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusSmall,
     marginRight: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   currentDripperBadge: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   dripperBadgeText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     fontWeight: '500',
-  },
+},
   currentDripperText: {
     color: HIGColors.white,
-  },
+},
 });
 
 export default PourPatternGuide;

@@ -12,7 +12,7 @@ import { HIGColors } from '../../constants/HIG';
 interface BetaStatusPanelProps {
   currentUser: BetaUser | null;
   deploymentStatus: DeploymentStatus | null;
-  marketConfig: any;
+  marketConfig: { market: string; features: Record<string, boolean> } | null;
   isBeta: boolean;
 }
 
@@ -86,28 +86,28 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
-  },
+},
   title: {
     fontSize: 20,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: 16,
     textAlign: 'center',
-  },
+},
   section: {
     marginBottom: 20,
-  },
+},
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 12,
-  },
+},
   statusGrid: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: 8,
     padding: 12,
-  },
+},
   statusItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -115,19 +115,19 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.separator,
-  },
+},
   statusLabel: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     flex: 1,
-  },
+},
   statusValue: {
     fontSize: 14,
     fontWeight: '500',
     color: HIGColors.label,
     textAlign: 'right',
     flex: 1,
-  },
+},
 });
 
 export default BetaStatusPanel;

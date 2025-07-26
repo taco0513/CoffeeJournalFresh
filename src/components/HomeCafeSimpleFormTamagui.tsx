@@ -19,6 +19,7 @@ import {
 } from 'tamagui';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTastingStore } from '../stores/tastingStore';
+import { Logger } from '../services/LoggingService';
 import { SimpleHomeCafeData, SimpleDripper } from '../types/tasting';
 
 const HOMECAFE_RECIPE_KEY = '@homecafe_last_recipe';
@@ -65,15 +66,15 @@ const PresetButton = styled(Button, {
         backgroundColor: '$blue2',
         borderColor: '$primary',
         borderWidth: 2,
-      },
     },
+  },
     myCoffee: {
       true: {
         borderStyle: 'dashed',
         borderColor: '$blue8',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const DripperButton = styled(Button, {
@@ -91,9 +92,9 @@ const DripperButton = styled(Button, {
         backgroundColor: '$blue2',
         borderColor: '$primary',
         borderWidth: 2,
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const NumberInput = styled(Input, {
@@ -137,12 +138,12 @@ const ControlButton = styled(Button, {
         backgroundColor: '$gray3',
         borderWidth: 1,
         borderColor: '$gray8',
-      },
+    },
       stop: {
         backgroundColor: '$primary',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const ResultCard = styled(Card, {
@@ -161,9 +162,9 @@ export const HomeCafeSimpleFormTamagui = () => {
     recipe: {
       coffeeAmount: 15,
       waterAmount: 250,
-    },
+  },
     waterTemp: 93,
-  });
+});
 
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -177,7 +178,7 @@ export const HomeCafeSimpleFormTamagui = () => {
   useEffect(() => {
     loadSavedRecipe();
     loadMyCoffeeRecipe();
-  }, []);
+}, []);
 
   // Load current tasting data
   useEffect(() => {
@@ -185,9 +186,9 @@ export const HomeCafeSimpleFormTamagui = () => {
       setFormData(currentTasting.simpleHomeCafeData);
       if (currentTasting.simpleHomeCafeData.recipe.lapTimes) {
         setLapTimes(currentTasting.simpleHomeCafeData.recipe.lapTimes);
-      }
     }
-  }, [currentTasting.simpleHomeCafeData]);
+  }
+}, [currentTasting.simpleHomeCafeData]);
 
   // Timer effect
   useEffect(() => {
@@ -195,10 +196,10 @@ export const HomeCafeSimpleFormTamagui = () => {
     if (isTimerRunning) {
       interval = setInterval(() => {
         setElapsedTime(prev => prev + 1);
-      }, 1000);
-    }
+    }, 1000);
+  }
     return () => clearInterval(interval);
-  }, [isTimerRunning]);
+}, [isTimerRunning]);
 
   const loadSavedRecipe = async () => {
     try {
@@ -207,46 +208,46 @@ export const HomeCafeSimpleFormTamagui = () => {
         const parsedRecipe = JSON.parse(savedRecipe);
         setFormData(parsedRecipe);
         updateSimpleHomeCafeData(parsedRecipe);
-      }
-    } catch (error) {
-      console.error('Failed to load saved recipe:', error);
     }
-  };
+  } catch (error) {
+      Logger.error('Failed to load saved recipe:', 'component', { component: 'HomeCafeSimpleFormTamagui', error: error });
+  }
+};
 
   const saveRecipe = async (recipeData: SimpleHomeCafeData) => {
     try {
       await AsyncStorage.setItem(HOMECAFE_RECIPE_KEY, JSON.stringify(recipeData));
-    } catch (error) {
-      console.error('Failed to save recipe:', error);
-    }
-  };
+  } catch (error) {
+      Logger.error('Failed to save recipe:', 'component', { component: 'HomeCafeSimpleFormTamagui', error: error });
+  }
+};
 
   const loadMyCoffeeRecipe = async () => {
     try {
       const savedMyCoffee = await AsyncStorage.getItem(MY_COFFEE_RECIPE_KEY);
       if (savedMyCoffee) {
         setMyCoffeeRecipe(JSON.parse(savedMyCoffee));
-      }
-    } catch (error) {
-      console.error('Failed to load My Coffee recipe:', error);
     }
-  };
+  } catch (error) {
+      Logger.error('Failed to load My Coffee recipe:', 'component', { component: 'HomeCafeSimpleFormTamagui', error: error });
+  }
+};
 
   const saveMyCoffeeRecipe = async () => {
     try {
       await AsyncStorage.setItem(MY_COFFEE_RECIPE_KEY, JSON.stringify(formData));
       setMyCoffeeRecipe(formData);
-    } catch (error) {
-      console.error('Failed to save My Coffee recipe:', error);
-    }
-  };
+  } catch (error) {
+      Logger.error('Failed to save My Coffee recipe:', 'component', { component: 'HomeCafeSimpleFormTamagui', error: error });
+  }
+};
 
-  const updateField = (field: keyof SimpleHomeCafeData, value: any) => {
+  const updateField = (field: keyof SimpleHomeCafeData, value: unknown) => {
     const updatedFormData = { ...formData, [field]: value };
     setFormData(updatedFormData);
     updateSimpleHomeCafeData(updatedFormData);
     saveRecipe(updatedFormData);
-  };
+};
 
   const handleCoffeeAmountChange = (value: string) => {
     const coffeeAmount = parseInt(value) || 0;
@@ -257,18 +258,18 @@ export const HomeCafeSimpleFormTamagui = () => {
         ...formData.recipe,
         coffeeAmount,
         waterAmount,
-      },
-    };
+    },
+  };
     setFormData(updatedFormData);
     updateSimpleHomeCafeData(updatedFormData);
     saveRecipe(updatedFormData);
-  };
+};
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+};
 
   const drippers: { label: string; value: SimpleDripper }[] = [
     { label: '🔻 V60', value: 'V60' },
@@ -354,14 +355,14 @@ export const HomeCafeSimpleFormTamagui = () => {
                             ...formData.recipe,
                             coffeeAmount: preset.coffee,
                             waterAmount: preset.water,
-                          },
+                        },
                           waterTemp: preset.temp,
-                        };
+                      };
                         setFormData(updatedFormData);
                         updateSimpleHomeCafeData(updatedFormData);
                         setSelectedPreset(preset.name);
                         saveRecipe(updatedFormData);
-                      }}
+                    }}
                       pressStyle={{ scale: 0.95 }}
                       animation="quick"
                     >
@@ -381,7 +382,7 @@ export const HomeCafeSimpleFormTamagui = () => {
                       </Text>
                     </PresetButton>
                   );
-                })}
+              })}
               </XStack>
             </ScrollView>
           </Section>
@@ -434,7 +435,7 @@ export const HomeCafeSimpleFormTamagui = () => {
                   setIsTimerRunning(true);
                   setElapsedTime(0);
                   setLapTimes([]);
-                }}
+              }}
                 pressStyle={{ scale: 0.95 }}
                 animation="quick"
               >
@@ -477,7 +478,7 @@ export const HomeCafeSimpleFormTamagui = () => {
                         const currentLapIndex = lapTimes.length;
                         const label = currentLapIndex < lapLabels.length ? lapLabels[currentLapIndex] : `${currentLapIndex + 1}차 추출`;
                         setLapTimes([...lapTimes, { time: elapsedTime, label }]);
-                      }}
+                    }}
                     >
                       <Text fontSize={14} fontWeight="500">추출타임</Text>
                     </ControlButton>
@@ -492,12 +493,12 @@ export const HomeCafeSimpleFormTamagui = () => {
                           ...formData.recipe, 
                           brewTime: elapsedTime,
                           lapTimes: lapTimes 
-                        }
-                      };
+                      }
+                    };
                       setFormData(updatedFormData);
                       updateSimpleHomeCafeData(updatedFormData);
                       saveRecipe(updatedFormData);
-                    }}
+                  }}
                   >
                     <Text fontSize={14} fontWeight="600" color="white">
                       {isTimerRunning ? '정지' : '완료'}

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { APP_CONFIG } from '../config/appConfig';
+import { Logger } from '../services/LoggingService';
 import { HIGColors, HIGConstants } from '../styles/common';
 
 /**
@@ -23,16 +24,16 @@ const LegalScreen: React.FC = () => {
       const supported = await Linking.canOpenURL(url);
       if (supported) {
         await Linking.openURL(url);
-      }
-    } catch (error) {
-      console.error('Failed to open URL:', error);
     }
-  };
+  } catch (error) {
+      Logger.error('Failed to open URL:', 'screen', { component: 'LegalScreen', error: error });
+  }
+};
 
   const sendEmail = async (email: string) => {
     const url = `mailto:${email}`;
     await openUrl(url);
-  };
+};
 
   return (
     <ScrollView style={styles.container}>
@@ -107,46 +108,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   section: {
     padding: HIGConstants.SPACING_LG,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray4,
-  },
+},
   sectionTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   linkButton: {
     paddingVertical: HIGConstants.SPACING_MD,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: HIGColors.systemGray5,
-  },
+},
   linkText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.systemBlue,
     fontWeight: '500',
-  },
+},
   linkSubtext: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginTop: 2,
-  },
+},
   aboutText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   footer: {
     padding: HIGConstants.SPACING_LG,
     alignItems: 'center',
-  },
+},
   footerText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.tertiaryLabel,
-  },
+},
 });
 
 export default LegalScreen;

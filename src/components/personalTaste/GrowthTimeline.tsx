@@ -16,14 +16,14 @@ interface GrowthMilestone {
   description: string;
   type: 'achievement' | 'discovery' | 'level_up' | 'milestone';
   icon: string;
-  data?: any;
+  data?: Record<string, string | number | boolean>;
 }
 
 interface GrowthTimelineProps {
   milestones: GrowthMilestone[];
   currentWeek: number;
   onMilestoneTap?: (milestone: GrowthMilestone) => void;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const GrowthTimeline: React.FC<GrowthTimelineProps> = ({
@@ -40,16 +40,16 @@ export const GrowthTimeline: React.FC<GrowthTimelineProps> = ({
       toValue: 1,
       duration: 600,
       useNativeDriver: true,
-    }).start();
+  }).start();
 
     // Scroll to current week
     setTimeout(() => {
       scrollViewRef.current?.scrollTo({
         x: currentWeek * 100 - 50,
         animated: true,
-      });
-    }, 100);
-  }, [currentWeek]);
+    });
+  }, 100);
+}, [currentWeek]);
 
   const getTypeColor = (type: GrowthMilestone['type']): string => {
     switch (type) {
@@ -63,8 +63,8 @@ export const GrowthTimeline: React.FC<GrowthTimelineProps> = ({
         return HIGColors.orange;
       default:
         return HIGColors.gray;
-    }
-  };
+  }
+};
 
   const formatDate = (date: Date): string => {
     const now = new Date();
@@ -78,8 +78,8 @@ export const GrowthTimeline: React.FC<GrowthTimelineProps> = ({
     return date.toLocaleDateString('ko-KR', {
       month: 'short',
       day: 'numeric',
-    });
-  };
+  });
+};
 
   const renderMilestone = (milestone: GrowthMilestone, index: number) => {
     const isLast = index === milestones.length - 1;
@@ -97,10 +97,10 @@ export const GrowthTimeline: React.FC<GrowthTimelineProps> = ({
                 translateY: fadeAnim.interpolate({
                   inputRange: [0, 1],
                   outputRange: [20, 0],
-                }),
-              },
+              }),
+            },
             ],
-          },
+        },
         ]}
       >
         {/* Timeline Line */}
@@ -154,7 +154,7 @@ export const GrowthTimeline: React.FC<GrowthTimelineProps> = ({
         </TouchableOpacity>
       </Animated.View>
     );
-  };
+};
 
   // Group milestones by week
   const groupedMilestones = milestones.reduce((acc, milestone) => {
@@ -163,10 +163,10 @@ export const GrowthTimeline: React.FC<GrowthTimelineProps> = ({
     );
     if (!acc[weekNumber]) {
       acc[weekNumber] = [];
-    }
+  }
     acc[weekNumber].push(milestone);
     return acc;
-  }, {} as Record<number, GrowthMilestone[]>);
+}, {} as Record<number, GrowthMilestone[]>);
 
   return (
     <Animated.View style={[styles.container, style]}>
@@ -215,32 +215,32 @@ export const GrowthTimeline: React.FC<GrowthTimelineProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
+},
   weekIndicator: {
     paddingVertical: HIGConstants.SPACING_MD,
     paddingHorizontal: HIGConstants.SPACING_LG,
     backgroundColor: HIGColors.secondarySystemBackground,
     borderRadius: HIGConstants.BORDER_RADIUS,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   weekText: {
     fontSize: 18,
     fontWeight: '700',
     color: HIGColors.label,
-  },
+},
   weekSubtext: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     marginTop: 2,
-  },
+},
   timelineContainer: {
     paddingHorizontal: HIGConstants.SPACING_MD,
-  },
+},
   milestoneContainer: {
     flexDirection: 'row',
     marginBottom: HIGConstants.SPACING_LG,
     position: 'relative',
-  },
+},
   timelineLine: {
     position: 'absolute',
     left: 20,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     bottom: -HIGConstants.SPACING_LG,
     width: 2,
     backgroundColor: HIGColors.gray5,
-  },
+},
   milestoneNode: {
     width: 40,
     height: 40,
@@ -259,104 +259,104 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: HIGConstants.SPACING_MD,
     zIndex: 1,
-  },
+},
   nodeInner: {
     width: 30,
     height: 30,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   nodeIcon: {
     fontSize: 16,
-  },
+},
   milestoneContent: {
     flex: 1,
     backgroundColor: HIGColors.secondarySystemBackground,
     borderRadius: HIGConstants.BORDER_RADIUS,
     padding: HIGConstants.SPACING_MD,
-  },
+},
   contentHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   milestoneDate: {
     fontSize: 12,
     color: HIGColors.tertiaryLabel,
-  },
+},
   typeBadge: {
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: 2,
     borderRadius: 10,
-  },
+},
   typeBadgeText: {
     fontSize: 10,
     fontWeight: '600',
     color: HIGColors.white,
     textTransform: 'uppercase',
-  },
+},
   milestoneTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   milestoneDescription: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     lineHeight: 18,
-  },
+},
   milestoneData: {
     marginTop: HIGConstants.SPACING_SM,
     paddingTop: HIGConstants.SPACING_SM,
     borderTopWidth: 1,
     borderTopColor: HIGColors.gray5,
-  },
+},
   dataText: {
     fontSize: 12,
     color: HIGColors.tertiaryLabel,
     marginBottom: 2,
-  },
+},
   emptyState: {
     alignItems: 'center',
     paddingVertical: HIGConstants.SPACING_XL * 2,
-  },
+},
   emptyStateIcon: {
     fontSize: 48,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   emptyStateText: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   futureMilestone: {
     flexDirection: 'row',
     marginBottom: HIGConstants.SPACING_XL,
     opacity: 0.5,
-  },
+},
   futureNode: {
     borderStyle: 'dashed',
     borderColor: HIGColors.gray,
-  },
+},
   futureIcon: {
     fontSize: 20,
     color: HIGColors.gray,
-  },
+},
   futureContent: {
     flex: 1,
     padding: HIGConstants.SPACING_MD,
-  },
+},
   futureTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   futureText: {
     fontSize: 14,
     color: HIGColors.tertiaryLabel,
-  },
+},
 });

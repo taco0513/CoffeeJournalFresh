@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     marginBottom: 8,
     minHeight: 32,
-  },
+},
   selectedMouthfeel: {
     backgroundColor: HIGColors.systemBlue,
     borderColor: HIGColors.systemBlue,
@@ -49,15 +49,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 4,
-  },
+},
   mouthfeelText: {
     fontSize: 13,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
   selectedMouthfeelText: {
     color: '#FFFFFF',
     fontWeight: '700',
-  },
+},
 });

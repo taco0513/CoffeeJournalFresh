@@ -1,6 +1,6 @@
 import React from 'react';
-import { SafeAreaView, Alert, DeviceEventEmitter, View } from 'react-native';
-import { ScrollView, XStack } from 'tamagui';
+import { SafeAreaView, Alert, DeviceEventEmitter, View} from 'react-native';
+import { ScrollView, XStack, Card, Text } from 'tamagui';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
@@ -9,7 +9,7 @@ import { useUserStore } from '../../stores/useUserStore';
 import { useFeedbackStore } from '../../stores/useFeedbackStore';
 import RealmService from '../../services/realm/RealmService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MockDataService, MockDataScenario } from '../../services/MockDataService';
+import { SimpleMockDataService } from '../../services/SimpleMockDataService';
 import { AccessControlService } from '../../services/AccessControlService';
 import { useFirecrawlDemo } from '../../services/FirecrawlDemo';
 
@@ -30,7 +30,8 @@ import {
 } from '../../components-tamagui/dev/DeveloperScreenStyles';
 import { UserInfoSection } from '../../components-tamagui/dev/UserInfoSection';
 import { DeveloperSettingSections } from '../../components-tamagui/dev/DeveloperSettingSections';
-import { MockDataConfigSection } from '../../components-tamagui/dev/MockDataConfigSection';
+import { Logger } from '../../services/LoggingService';
+// MockDataConfigSection 제거됨 - SimpleMockDataService 사용
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -54,123 +55,112 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
     setSkipAnimations,
     setBypassLogin,
     resetAllSettings,
-  } = useDevStore();
+} = useDevStore();
 
-  // State
-  const [mockDataCount, setMockDataCount] = React.useState(0);
+  // Simplified State
+  const [dataCount, setDataCount] = React.useState(0);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [userRole, setUserRole] = React.useState('');
   const [canAccessMockData, setCanAccessMockData] = React.useState(false);
-  const [selectedScenario, setSelectedScenario] = React.useState<MockDataScenario>(MockDataScenario.INTERMEDIATE);
+  // selectedScenario 제거됨 - SimpleMockDataService는 시나리오 불필요
   const [showPerformanceInfo, setShowPerformanceInfo] = React.useState(false);
   const [enableVerboseLogging, setEnableVerboseLogging] = React.useState(false);
   const [showDeveloperToasts, setShowDeveloperToasts] = React.useState(false);
 
-  // Load data count
-  const loadDataCount = async () => {
+  // 단순한 데이터 개수 확인
+  const checkDataCount = async () => {
     try {
-      const realmService = RealmService.getInstance();
-      if (!realmService.isInitialized) {
-        await realmService.initialize();
-      }
-      const tastings = await realmService.getTastingRecords({ isDeleted: false });
-      const count = Array.from(tastings).length;
-      setMockDataCount(count);
+      const count = await SimpleMockDataService.getDataCount();
+      setDataCount(count);
       return count;
     } catch (error) {
-      console.error('Error loading data count:', error);
+      Logger.error('Error checking data count:', 'screen', { component: 'DeveloperScreen', error });
+      setDataCount(0);
       return 0;
     }
   };
 
-  // Initialize access control
+  // Simple initialization
   React.useEffect(() => {
-    const initializeAccessControl = async () => {
+    const init = async () => {
       try {
         const accessControl = AccessControlService.getInstance();
         await accessControl.initialize();
-        
         const role = accessControl.getCurrentUserRole();
         setUserRole(role);
-        // Access control doesn't expose permissions directly, check role instead
         setCanAccessMockData(role === 'developer' || role === 'admin');
+        await checkDataCount();
       } catch (error) {
-        console.error('Error initializing access control:', error);
+        Logger.error('Error initializing:', 'screen', { component: 'DeveloperScreen', error });
       }
     };
+    init();
+  }, []);
 
-    initializeAccessControl();
-    loadDataCount();
-  }, [isDeveloperMode, currentUser?.id]);
-
-  // Mock data toggle
-  const toggleMockData = async () => {
+  // 단순한 mock data 생성 함수
+  const createMockData = async () => {
     if (!canAccessMockData) {
       Alert.alert('권한 없음', '베타 사용자는 목 데이터에 접근할 수 없습니다.');
       return;
     }
 
-    const currentCount = await loadDataCount();
-    
-    if (currentCount > 0) {
-      // Clear existing data
-      Alert.alert(
-        '데이터 초기화',
-        `현재 ${currentCount}개의 기록이 있습니다. 목 데이터를 생성하기 전에 기존 데이터를 삭제하시겠습니까?`,
-        [
-          { text: '취소', style: 'cancel' },
-          {
-            text: '삭제 후 생성',
-            style: 'destructive',
-            onPress: async () => {
-              await clearData();
-              await createMockData();
-            },
-          },
-        ]
-      );
-    } else {
-      await createMockData();
-    }
-  };
-
-  const createMockData = async () => {
+    setIsLoading(true);
     try {
-      await MockDataService.createMockData({ scenario: selectedScenario, count: 5 });
+      Logger.debug('Creating simple mock record...', 'screen', { component: 'DeveloperScreen' });
+      const success = await SimpleMockDataService.createOneSimpleRecord();
       
-      await loadDataCount();
-      Alert.alert('완료', '목 데이터가 생성되었습니다.');
-      
-      // Emit refresh event
-      DeviceEventEmitter.emit('refreshData');
+      if (success) {
+        await checkDataCount();
+        Alert.alert('완료', '1개의 테스트 데이터가 생성되었습니다.');
+        DeviceEventEmitter.emit('refreshData');
+      } else {
+        Alert.alert('오류', '테스트 데이터 생성에 실패했습니다.');
+      }
     } catch (error) {
-      console.error('Error creating mock data:', error);
-      Alert.alert('오류', '목 데이터 생성 중 오류가 발생했습니다.');
+      Logger.error('Error creating mock data:', 'screen', { component: 'DeveloperScreen', error });
+      Alert.alert('오류', '테스트 데이터 생성 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Data management actions
-  const clearData = async () => {
+  // Simple clear data function
+  const clearAllData = async () => {
+    if (!canAccessMockData) {
+      Alert.alert('권한 없음', '베타 사용자는 목 데이터에 접근할 수 없습니다.');
+      return;
+    }
+
+    const currentCount = await checkDataCount();
+    if (currentCount === 0) {
+      Alert.alert('정보', '삭제할 데이터가 없습니다.');
+      return;
+    }
+
     Alert.alert(
       '데이터 삭제',
-      '모든 테이스팅 기록을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
+      `현재 ${currentCount}개의 테스트 기록을 삭제하시겠습니까?`,
       [
         { text: '취소', style: 'cancel' },
         {
           text: '삭제',
           style: 'destructive',
           onPress: async () => {
+            setIsLoading(true);
             try {
-              const realmService = RealmService.getInstance();
-              if (!realmService.isInitialized) {
-                await realmService.initialize();
+              const success = await SimpleMockDataService.clearAllData();
+              if (success) {
+                await checkDataCount();
+                Alert.alert('완료', '모든 데이터가 삭제되었습니다.');
+                DeviceEventEmitter.emit('refreshData');
+              } else {
+                Alert.alert('오류', '데이터 삭제에 실패했습니다.');
               }
-              await realmService.clearAllTastings();
-              await loadDataCount();
-              Alert.alert('완료', '모든 데이터가 삭제되었습니다.');
-              DeviceEventEmitter.emit('refreshData');
             } catch (error) {
-              console.error('Error clearing data:', error);
+              Logger.error('Error clearing data:', 'screen', { component: 'DeveloperScreen', error });
               Alert.alert('오류', '데이터 삭제 중 오류가 발생했습니다.');
+            } finally {
+              setIsLoading(false);
             }
           },
         },
@@ -178,9 +168,10 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
     );
   };
 
+
   const exportLogs = async () => {
     Alert.alert('정보', '로그 내보내기 기능은 아직 구현되지 않았습니다.');
-  };
+};
 
   const resetApp = async () => {
     Alert.alert(
@@ -196,49 +187,49 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
               await AsyncStorage.clear();
               resetAllSettings();
               Alert.alert('완료', '앱이 초기화되었습니다. 다시 시작해주세요.');
-            } catch (error) {
-              console.error('Error resetting app:', error);
+          } catch (error) {
+              Logger.error('Error resetting app:', 'screen', { component: 'DeveloperScreen', error: error });
               Alert.alert('오류', '앱 리셋 중 오류가 발생했습니다.');
-            }
-          },
+          }
         },
+      },
       ]
     );
-  };
+};
 
   // Navigation actions
   const navigateToMarketTester = () => {
     navigation.navigate('MarketConfigurationTester');
-  };
+};
 
   const navigateToPerformanceDashboard = () => {
     navigation.navigate('PerformanceDashboard');
-  };
+};
 
   const navigateToI18nValidation = () => {
     navigation.navigate('I18nValidation');
-  };
+};
 
   const navigateToTesting = () => {
     navigation.navigate('Testing');
-  };
+};
 
   const navigateToFirecrawlDemo = () => {
     runAllDemos();
-  };
+};
 
   const goBack = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
-    } else {
+  } else {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
           routes: [{ name: 'Main' }],
-        })
+      })
       );
-    }
-  };
+  }
+};
 
   // Check if developer mode is enabled
   if (!isDeveloperMode) {
@@ -268,7 +259,7 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
         </SafeAreaView>
       </Container>
     );
-  }
+}
 
   return (
     <Container>
@@ -301,51 +292,83 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
             isAdmin={userRole === 'admin'}
           />
 
-          {/* Developer Settings */}
-          <DeveloperSettingSections
-            // Debug settings
-            enableDebugMode={showDebugInfo}
-            setDebugMode={setDebugInfo}
-            showPerformanceInfo={showPerformanceInfo}
-            setPerformanceInfo={setShowPerformanceInfo}
-            enableVerboseLogging={enableVerboseLogging}
-            setVerboseLogging={setEnableVerboseLogging}
-            
-            // Feature toggles
-            mockDataEnabled={mockDataCount > 0}
-            toggleMockData={toggleMockData}
-            showDeveloperToasts={showDeveloperToasts}
-            setDeveloperToasts={setShowDeveloperToasts}
-            
-            // Authentication & User
-            bypassLogin={bypassLogin}
-            setBypassLogin={setBypassLogin}
-            enableShakeToFeedback={enableShakeToFeedback}
-            toggleShakeToFeedback={toggleShakeToFeedback}
-            isBetaUser={isBetaUser}
-            setBetaStatus={setBetaStatus}
-            setTestUser={setTestUser}
-            
-            // Actions
-            showFeedback={showFeedback}
-            clearData={clearData}
-            exportLogs={exportLogs}
-            resetApp={resetApp}
-            
-            // Navigation
-            onNavigateToMarketTester={navigateToMarketTester}
-            onNavigateToPerformanceDashboard={navigateToPerformanceDashboard}
-            onNavigateToI18nValidation={navigateToI18nValidation}
-            onNavigateToTesting={navigateToTesting}
-            onNavigateToFirecrawlDemo={navigateToFirecrawlDemo}
-          />
+          {/* Simple Data Status Card */}
+          <Card
+            backgroundColor="$blue2"
+            borderColor="$blue5"
+            padding="$lg"
+            marginBottom="$md"
+            borderRadius="$4"
+          >
+            <Text fontSize="$4" fontWeight="700" color="$blue11" marginBottom="$md">
+              📊 데이터 상태
+            </Text>
+            <Text fontSize="$3" color="$blue11" marginBottom="$sm">
+              현재 기록 수: {dataCount}개
+            </Text>
+            {isLoading && (
+              <Text fontSize="$2" color="$blue9">
+                처리 중...
+              </Text>
+            )}
+          </Card>
 
-          {/* Mock Data Config */}
-          <MockDataConfigSection
-            selectedScenario={selectedScenario}
-            onScenarioChange={setSelectedScenario}
-            mockDataEnabled={mockDataCount > 0}
-          />
+          {/* Simple Actions */}
+          <Card
+            backgroundColor="$green2"
+            borderColor="$green5"
+            padding="$lg"
+            marginBottom="$md"
+            borderRadius="$4"
+          >
+            <Text fontSize="$4" fontWeight="700" color="$green11" marginBottom="$md">
+              🛠️ 테스트 데이터 관리
+            </Text>
+            
+            <XStack gap="$md" marginBottom="$md">
+              <Text 
+                fontSize="$3" 
+                color="$green11" 
+                backgroundColor="$green4"
+                paddingVertical="$sm"
+                paddingHorizontal="$md"
+                borderRadius="$2"
+                textAlign="center"
+                onPress={createMockData}
+                disabled={isLoading}
+              >
+                📝 1개 생성
+              </Text>
+              
+              <Text 
+                fontSize="$3" 
+                color="$red11" 
+                backgroundColor="$red4"
+                paddingVertical="$sm"
+                paddingHorizontal="$md"
+                borderRadius="$2"
+                textAlign="center"
+                onPress={clearAllData}
+                disabled={isLoading}
+              >
+                🗑️ 전체 삭제
+              </Text>
+            </XStack>
+            
+            <Text 
+              fontSize="$3" 
+              color="$blue11" 
+              backgroundColor="$blue4"
+              paddingVertical="$sm"
+              paddingHorizontal="$md"
+              borderRadius="$2"
+              textAlign="center"
+              onPress={checkDataCount}
+              disabled={isLoading}
+            >
+              🔄 새로고침
+            </Text>
+          </Card>
         </ScrollView>
       </SafeAreaView>
     </Container>

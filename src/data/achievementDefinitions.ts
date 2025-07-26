@@ -15,7 +15,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.FIRST_STEPS,
     requirements: { type: 'tasting_count', value: 1 },
     rewards: { type: 'points', value: 10 },
-  },
+},
   first_week: {
     type: 'first_week',
     title: '첫 주간 탐험가',
@@ -25,7 +25,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.FIRST_STEPS,
     requirements: { type: 'weekly_variety', value: 3 },
     rewards: { type: 'points', value: 50 },
-  },
+},
   first_flavor_match: {
     type: 'first_flavor_match',
     title: '첫 향미 매치',
@@ -35,7 +35,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.FIRST_STEPS,
     requirements: { type: 'flavor_match', value: 1 },
     rewards: { type: 'points', value: 15 },
-  },
+},
 
   // Flavor Explorer Series
   flavor_explorer_bronze: {
@@ -47,7 +47,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.FLAVOR_EXPLORER,
     requirements: { type: 'unique_flavors', value: 10 },
     rewards: { type: 'badge', value: 'flavor_explorer_bronze' },
-  },
+},
   flavor_explorer_silver: {
     type: 'flavor_explorer_silver',
     title: '향미 탐험가 실버',
@@ -57,7 +57,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.FLAVOR_EXPLORER,
     requirements: { type: 'unique_flavors', value: 25 },
     rewards: { type: 'badge', value: 'flavor_explorer_silver' },
-  },
+},
   flavor_explorer_gold: {
     type: 'flavor_explorer_gold',
     title: '향미 탐험가 골드',
@@ -67,7 +67,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.FLAVOR_EXPLORER,
     requirements: { type: 'unique_flavors', value: 50 },
     rewards: { type: 'badge', value: 'flavor_explorer_gold' },
-  },
+},
   flavor_category_master: {
     type: 'flavor_category_master',
     title: '카테고리 마스터',
@@ -77,7 +77,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.FLAVOR_EXPLORER,
     requirements: { type: 'category_completion', value: 1 },
     rewards: { type: 'title', value: 'Category Master' },
-  },
+},
 
   // Taste Accuracy Series
   taste_novice: {
@@ -89,7 +89,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.TASTE_ACCURACY,
     requirements: { type: 'quiz_accuracy', value: 0.7 },
     rewards: { type: 'title', value: 'Taste Novice' },
-  },
+},
   taste_expert: {
     type: 'taste_expert',
     title: '미각 전문가',
@@ -99,7 +99,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.TASTE_ACCURACY,
     requirements: { type: 'quiz_accuracy', value: 0.85 },
     rewards: { type: 'title', value: 'Taste Expert' },
-  },
+},
   taste_master: {
     type: 'taste_master',
     title: '미각 마스터',
@@ -109,7 +109,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.TASTE_ACCURACY,
     requirements: { type: 'quiz_accuracy', value: 0.95 },
     rewards: { type: 'title', value: 'Taste Master' },
-  },
+},
 
   // Consistency Series
   week_warrior: {
@@ -123,9 +123,9 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
       type: 'weekly_tastings', 
       value: 5,
       additionalConditions: { weeks: 4 }
-    },
-    rewards: { type: 'points', value: 100 },
   },
+    rewards: { type: 'points', value: 100 },
+},
   month_master: {
     type: 'month_master',
     title: '월간 큐레이터',
@@ -135,7 +135,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.CONSISTENCY,
     requirements: { type: 'monthly_quality', value: 10 },
     rewards: { type: 'points', value: 200 },
-  },
+},
   hundred_tastings: {
     type: 'hundred_tastings',
     title: '백 잔의 커피',
@@ -145,7 +145,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.CONSISTENCY,
     requirements: { type: 'total_tastings', value: 100 },
     rewards: { type: 'badge', value: 'centurion' },
-  },
+},
 
   // Vocabulary Series
   word_collector: {
@@ -157,7 +157,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.VOCABULARY,
     requirements: { type: 'unique_words', value: 50 },
     rewards: { type: 'points', value: 75 },
-  },
+},
   vocabulary_virtuoso: {
     type: 'vocabulary_virtuoso',
     title: '어휘 거장',
@@ -167,7 +167,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.VOCABULARY,
     requirements: { type: 'unique_words', value: 100 },
     rewards: { type: 'title', value: 'Vocabulary Virtuoso' },
-  },
+},
 
   // Hidden Achievements
   early_bird: {
@@ -181,9 +181,9 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
       type: 'tasting_time', 
       value: 7,
       additionalConditions: { before: true }
-    },
-    rewards: { type: 'points', value: 50 },
   },
+    rewards: { type: 'points', value: 50 },
+},
   night_owl: {
     type: 'night_owl',
     title: '올빼미',
@@ -195,9 +195,9 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
       type: 'tasting_time', 
       value: 22,
       additionalConditions: { after: true }
-    },
-    rewards: { type: 'points', value: 50 },
   },
+    rewards: { type: 'points', value: 50 },
+},
   perfect_match: {
     type: 'perfect_match',
     title: '완벽한 매치',
@@ -210,8 +210,8 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
       type: 'title', 
       value: 'Perfect Matcher',
       additionalRewards: [{ type: 'points', value: 1000 }]
-    },
   },
+},
   weekend_warrior: {
     type: 'weekend_warrior',
     title: '주말 커피 애호가',
@@ -222,9 +222,9 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     requirements: { 
       type: 'weekend_specials', 
       value: 10 
-    },
-    rewards: { type: 'badge', value: 'weekend_warrior' },
   },
+    rewards: { type: 'badge', value: 'weekend_warrior' },
+},
   
   // Coffee Discovery Achievements
   coffee_discoverer_1: {
@@ -236,7 +236,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.COFFEE_EXPLORER,
     requirements: { type: 'coffee_discovery', value: 1 },
     rewards: { type: 'title', value: 'Coffee Discoverer' },
-  },
+},
   coffee_discoverer_5: {
     type: 'coffee_discoverer_5',
     title: '커피 탐험가 Lv.2',
@@ -246,7 +246,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.COFFEE_EXPLORER,
     requirements: { type: 'coffee_discovery', value: 5 },
     rewards: { type: 'title', value: 'Coffee Explorer' },
-  },
+},
   coffee_discoverer_10: {
     type: 'coffee_discoverer_10',
     title: '커피 탐험가 Lv.3',
@@ -256,7 +256,7 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     category: AchievementType.COFFEE_EXPLORER,
     requirements: { type: 'coffee_discovery', value: 10 },
     rewards: { type: 'title', value: 'Coffee Pioneer' },
-  },
+},
 
   // Home Cafe Achievements
   home_cafe_starter: {
@@ -269,9 +269,9 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     requirements: { 
       type: 'home_cafe_tasting', 
       value: 1 
-    },
-    rewards: { type: 'points', value: 20 },
   },
+    rewards: { type: 'points', value: 20 },
+},
   home_barista: {
     type: 'home_barista',
     title: '☕ 꾸준한 바리스타',
@@ -282,9 +282,9 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     requirements: { 
       type: 'home_cafe_streak', 
       value: 7 
-    },
-    rewards: { type: 'badge', value: 'home_barista' },
   },
+    rewards: { type: 'badge', value: 'home_barista' },
+},
   recipe_experimenter: {
     type: 'recipe_experimenter',
     title: '🔬 실험가',
@@ -295,9 +295,9 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     requirements: { 
       type: 'recipe_variations', 
       value: 5 
-    },
-    rewards: { type: 'title', value: 'Recipe Experimenter' },
   },
+    rewards: { type: 'title', value: 'Recipe Experimenter' },
+},
   brewing_method_explorer: {
     type: 'brewing_method_explorer',
     title: '📚 학습자',
@@ -308,9 +308,9 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     requirements: { 
       type: 'brewing_methods', 
       value: 3 
-    },
-    rewards: { type: 'points', value: 50 },
   },
+    rewards: { type: 'points', value: 50 },
+},
   perfect_brew: {
     type: 'perfect_brew',
     title: '🎯 정확한 손맛',
@@ -322,9 +322,9 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
       type: 'consistent_recipe', 
       value: 3,
       additionalConditions: { minScore: 90 }
-    },
-    rewards: { type: 'title', value: 'Perfect Brewer' },
   },
+    rewards: { type: 'title', value: 'Perfect Brewer' },
+},
   home_cafe_master: {
     type: 'home_cafe_master',
     title: '⭐ 홈카페 마스터',
@@ -335,11 +335,11 @@ export const ACHIEVEMENT_DEFINITIONS: Record<string, AchievementDefinition> = {
     requirements: { 
       type: 'home_cafe_badges', 
       value: 5 
-    },
+  },
     rewards: { 
       type: 'title', 
       value: 'Home Cafe Master',
       additionalRewards: [{ type: 'points', value: 500 }]
-    },
   },
+},
 };

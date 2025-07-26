@@ -98,18 +98,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
+},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-  },
+},
   iconContainer: {
     width: 48,
     height: 48,
@@ -118,31 +118,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: HIGConstants.SPACING_MD,
-  },
+},
   icon: {
     fontSize: 24,
-  },
+},
   titleInfo: {
     flex: 1,
-  },
+},
   title: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 2,
-  },
+},
   subtitle: {
     fontSize: 13,
     color: HIGColors.secondaryLabel,
-  },
+},
   chevron: {
     marginLeft: HIGConstants.SPACING_SM,
-  },
+},
   chevronText: {
     fontSize: 20,
     color: HIGColors.systemGray4,
     fontWeight: '300',
-  },
+},
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -151,41 +151,41 @@ const styles = StyleSheet.create({
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusSmall,
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   statItem: {
     alignItems: 'center',
     flex: 1,
-  },
+},
   statNumber: {
     fontSize: 20,
     fontWeight: '700',
     color: HIGColors.systemBlue,
     marginBottom: 2,
-  },
+},
   statLabel: {
     fontSize: 12,
     color: HIGColors.secondaryLabel,
-  },
+},
   divider: {
     width: 1,
     height: 24,
     backgroundColor: HIGColors.systemGray4,
-  },
+},
   nextAchievementSection: {
     borderTopWidth: 1,
     borderTopColor: HIGColors.systemGray6,
     paddingTop: HIGConstants.SPACING_MD,
-  },
+},
   nextTitle: {
     fontSize: 14,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   nextAchievementRow: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   nextIconContainer: {
     width: 36,
     height: 36,
@@ -194,22 +194,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: HIGConstants.SPACING_MD,
-  },
+},
   nextIcon: {
     fontSize: 18,
-  },
+},
   nextInfo: {
     flex: 1,
-  },
+},
   nextAchievementTitle: {
     fontSize: 15,
     fontWeight: '500',
     color: HIGColors.label,
     marginBottom: 2,
-  },
+},
   nextProgress: {
     fontSize: 12,
     color: HIGColors.systemBlue,
     fontWeight: '500',
-  },
+},
 });

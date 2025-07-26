@@ -1,5 +1,6 @@
 import { supabase } from '../supabase/client';
 
+import { Logger } from '../LoggingService';
 export enum Permission {
   // Profile permissions
   READ_PROFILE = 'read:profile',
@@ -68,7 +69,7 @@ export class PermissionService {
     const cached = this.permissionCache.get(userId);
     if (cached) {
       return cached;
-    }
+  }
 
     try {
       // Get user role and associated permissions
@@ -87,16 +88,16 @@ export class PermissionService {
         .single();
 
       if (userError) {
-        console.error('Error fetching user permissions:', userError);
+        Logger.error('Error fetching user permissions:', 'auth', { component: 'PermissionService', error: userError });
         return [];
-      }
+    }
 
       // Get role-based permissions
       const rolePermissions = await this.getRolePermissions(userData.role || 'user');
       
       // Get user-specific permissions
       const userSpecificPermissions = userData.user_permissions?.map(
-        (p: any) => p.permission as Permission
+        (p: unknown) => p.permission as Permission
       ) || [];
 
       // Add special permissions based on user status
@@ -115,11 +116,11 @@ export class PermissionService {
       this.permissionCache.set(userId, uniquePermissions);
       
       return uniquePermissions;
-    } catch (error) {
-      console.error('Error getting user permissions:', error);
+  } catch (error) {
+      Logger.error('Error getting user permissions:', 'auth', { component: 'PermissionService', error: error });
       return [];
-    }
   }
+}
 
   /**
    * Check if user has specific permission
@@ -131,7 +132,7 @@ export class PermissionService {
       
       if (hasPermission) {
         return { hasPermission: true };
-      }
+    }
 
       // Get required role for this permission
       const requiredRole = await this.getRequiredRoleForPermission(permission);
@@ -140,15 +141,15 @@ export class PermissionService {
         hasPermission: false,
         reason: `Permission '${permission}' requires role '${requiredRole}' or higher`,
         requiredRole,
-      };
-    } catch (error) {
-      console.error('Error checking permission:', error);
+    };
+  } catch (error) {
+      Logger.error('Error checking permission:', 'auth', { component: 'PermissionService', error: error });
       return {
         hasPermission: false,
         reason: 'Error checking permissions',
-      };
-    }
+    };
   }
+}
 
   /**
    * Check multiple permissions at once
@@ -162,27 +163,27 @@ export class PermissionService {
       for (const permission of permissions) {
         if (userPermissions.includes(permission)) {
           results.set(permission, { hasPermission: true });
-        } else {
+      } else {
           const requiredRole = await this.getRequiredRoleForPermission(permission);
           results.set(permission, {
             hasPermission: false,
             reason: `Permission '${permission}' requires role '${requiredRole}' or higher`,
             requiredRole,
-          });
-        }
+        });
       }
-    } catch (error) {
-      console.error('Error checking multiple permissions:', error);
+    }
+  } catch (error) {
+      Logger.error('Error checking multiple permissions:', 'auth', { component: 'PermissionService', error: error });
       for (const permission of permissions) {
         results.set(permission, {
           hasPermission: false,
           reason: 'Error checking permissions',
-        });
-      }
+      });
     }
+  }
     
     return results;
-  }
+}
 
   /**
    * Get permissions for a specific role
@@ -192,7 +193,7 @@ export class PermissionService {
     const cached = this.roleCache.get(roleName);
     if (cached) {
       return cached.permissions;
-    }
+  }
 
     try {
       const { data, error } = await supabase
@@ -209,12 +210,12 @@ export class PermissionService {
         .single();
 
       if (error) {
-        console.error('Error fetching role permissions:', error);
+        Logger.error('Error fetching role permissions:', 'auth', { component: 'PermissionService', error: error });
         return this.getDefaultPermissions(roleName);
-      }
+    }
 
       const permissions = data.role_permissions?.map(
-        (rp: any) => rp.permission as Permission
+        (rp: unknown) => rp.permission as Permission
       ) || [];
 
       // Cache the role
@@ -223,19 +224,19 @@ export class PermissionService {
         name: data.name,
         permissions,
         level: data.level,
-      });
+    });
 
       return permissions;
-    } catch (error) {
-      console.error('Error getting role permissions:', error);
+  } catch (error) {
+      Logger.error('Error getting role permissions:', 'auth', { component: 'PermissionService', error: error });
       return this.getDefaultPermissions(roleName);
-    }
   }
+}
 
   /**
    * Get status-based permissions (admin, moderator, verified)
    */
-  private static getStatusBasedPermissions(userData: any): Permission[] {
+  private static getStatusBasedPermissions(userData: unknown): Permission[] {
     const permissions: Permission[] = [];
 
     if (userData.is_admin) {
@@ -250,7 +251,7 @@ export class PermissionService {
         Permission.READ_USER_ANALYTICS,
         Permission.DEVELOPER_MODE
       );
-    }
+  }
 
     if (userData.is_moderator) {
       permissions.push(
@@ -258,7 +259,7 @@ export class PermissionService {
         Permission.APPROVE_COFFEE_SUBMISSIONS,
         Permission.READ_ANALYTICS
       );
-    }
+  }
 
     if (userData.is_verified) {
       permissions.push(
@@ -266,10 +267,10 @@ export class PermissionService {
         Permission.WRITE_COFFEE_CATALOG,
         Permission.BETA_FEATURES
       );
-    }
+  }
 
     return permissions;
-  }
+}
 
   /**
    * Get default permissions for roles (fallback)
@@ -348,10 +349,10 @@ export class PermissionService {
         Permission.NOTIFICATIONS,
         Permission.SOCIAL_SHARING,
       ],
-    };
+  };
 
     return rolePermissions[roleName] || rolePermissions.user;
-  }
+}
 
   /**
    * Get required role for a permission
@@ -367,7 +368,7 @@ export class PermissionService {
       Permission.DEVELOPER_MODE,
     ].includes(permission)) {
       return 'admin';
-    }
+  }
 
     // Moderator-level permissions
     if ([
@@ -376,7 +377,7 @@ export class PermissionService {
       Permission.READ_ANALYTICS,
     ].includes(permission)) {
       return 'moderator';
-    }
+  }
 
     // Verified user permissions
     if ([
@@ -385,11 +386,11 @@ export class PermissionService {
       Permission.BETA_FEATURES,
     ].includes(permission)) {
       return 'verified_user';
-    }
+  }
 
     // Basic user permissions
     return 'user';
-  }
+}
 
   /**
    * Clear permission cache (useful after role changes)
@@ -397,11 +398,11 @@ export class PermissionService {
   static clearPermissionCache(userId?: string): void {
     if (userId) {
       this.permissionCache.delete(userId);
-    } else {
+  } else {
       this.permissionCache.clear();
       this.roleCache.clear();
-    }
   }
+}
 
   /**
    * Grant permission to user
@@ -415,21 +416,21 @@ export class PermissionService {
           permission,
           granted_by: grantedBy,
           granted_at: new Date().toISOString(),
-        });
+      });
 
       if (error) {
-        console.error('Error granting permission:', error);
+        Logger.error('Error granting permission:', 'auth', { component: 'PermissionService', error: error });
         return false;
-      }
+    }
 
       // Clear cache for this user
       this.clearPermissionCache(userId);
       return true;
-    } catch (error) {
-      console.error('Error granting permission:', error);
+  } catch (error) {
+      Logger.error('Error granting permission:', 'auth', { component: 'PermissionService', error: error });
       return false;
-    }
   }
+}
 
   /**
    * Revoke permission from user
@@ -443,9 +444,9 @@ export class PermissionService {
         .eq('permission', permission);
 
       if (error) {
-        console.error('Error revoking permission:', error);
+        Logger.error('Error revoking permission:', 'auth', { component: 'PermissionService', error: error });
         return false;
-      }
+    }
 
       // Log the revocation
       await supabase
@@ -456,16 +457,16 @@ export class PermissionService {
           action: 'revoked',
           performed_by: revokedBy,
           performed_at: new Date().toISOString(),
-        });
+      });
 
       // Clear cache for this user
       this.clearPermissionCache(userId);
       return true;
-    } catch (error) {
-      console.error('Error revoking permission:', error);
+  } catch (error) {
+      Logger.error('Error revoking permission:', 'auth', { component: 'PermissionService', error: error });
       return false;
-    }
   }
+}
 
   /**
    * Check if user can perform action on resource
@@ -479,7 +480,7 @@ export class PermissionService {
     // Users can always perform actions on their own resources (except moderate)
     if (resourceOwnerId && resourceOwnerId === userId && action !== 'moderate') {
       return { hasPermission: true };
-    }
+  }
 
     // Map action + resource to permission
     const permissionMap: Record<string, Permission> = {
@@ -495,7 +496,7 @@ export class PermissionService {
       'read_coffee_catalog': Permission.READ_COFFEE_CATALOG,
       'write_coffee_catalog': Permission.WRITE_COFFEE_CATALOG,
       'read_analytics': Permission.READ_ANALYTICS,
-    };
+  };
 
     const permissionKey = `${action}_${resource}`;
     const requiredPermission = permissionMap[permissionKey];
@@ -504,9 +505,9 @@ export class PermissionService {
       return {
         hasPermission: false,
         reason: `Unknown action '${action}' on resource '${resource}'`,
-      };
-    }
+    };
+  }
 
     return await this.hasPermission(userId, requiredPermission);
-  }
+}
 }

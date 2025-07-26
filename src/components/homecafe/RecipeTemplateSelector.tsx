@@ -10,7 +10,9 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { HIGColors, HIGConstants } from '../../styles/common';
-import HomeCafeEnhancedService, { RecipeTemplate } from '../../services/HomeCafeEnhancedService';
+import { HomeCafeEnhancedService } from '../../services/HomeCafeEnhancedService';
+import type { RecipeTemplate } from '../../services/HomeCafeEnhancedService';
+import { getDifficultyColor, getDifficultyText } from '../../utils/difficulty';
 
 interface RecipeTemplateSelectorProps {
   selectedDripper: string;
@@ -41,46 +43,22 @@ export const RecipeTemplateSelector: React.FC<RecipeTemplateSelectorProps> = ({
   const handleRecipePress = (recipe: RecipeTemplate) => {
     setSelectedRecipe(recipe);
     setShowRecipeDetail(true);
-  };
+};
 
   const handleUseRecipe = () => {
     if (selectedRecipe) {
       onRecipeSelect(selectedRecipe);
       setShowRecipeDetail(false);
-    }
-  };
+  }
+};
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return HIGColors.systemGreen;
-      case 'intermediate':
-        return HIGColors.systemOrange;
-      case 'advanced':
-        return HIGColors.systemRed;
-      default:
-        return HIGColors.systemGray;
-    }
-  };
-
-  const getDifficultyText = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return '초보자';
-      case 'intermediate':
-        return '중급자';
-      case 'advanced':
-        return '고급자';
-      default:
-        return difficulty;
-    }
-  };
+  // Using shared utility functions from utils/difficulty
 
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
+};
 
   if (availableRecipes.length === 0) {
     return (
@@ -90,7 +68,7 @@ export const RecipeTemplateSelector: React.FC<RecipeTemplateSelectorProps> = ({
         </Text>
       </View>
     );
-  }
+}
 
   return (
     <View style={styles.container}>
@@ -295,30 +273,30 @@ export const RecipeTemplateSelector: React.FC<RecipeTemplateSelectorProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginVertical: HIGConstants.SPACING_MD,
-  },
+},
   sectionTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   sectionSubtitle: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   scrollContainer: {
     paddingHorizontal: HIGConstants.SPACING_SM,
-  },
+},
   emptyContainer: {
     padding: HIGConstants.SPACING_LG,
     alignItems: 'center',
-  },
+},
   emptyText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   
   // Recipe Cards
   recipeCard: {
@@ -334,7 +312,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
+},
   championBadge: {
     backgroundColor: HIGColors.systemYellow,
     paddingHorizontal: HIGConstants.SPACING_XS,
@@ -342,59 +320,59 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignSelf: 'flex-start',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   championText: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.black,
     fontWeight: '600',
-  },
+},
   recipeName: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 2,
-  },
+},
   recipeAuthor: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   recipeSpecs: {
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   specItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 2,
-  },
+},
   specLabel: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
-  },
+},
   specValue: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.label,
     fontWeight: '500',
-  },
+},
   difficultyBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   difficultyDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
     marginRight: 4,
-  },
+},
   difficultyText: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.secondaryLabel,
-  },
+},
   tagContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
+},
   tag: {
     backgroundColor: HIGColors.systemGray6,
     paddingHorizontal: HIGConstants.SPACING_XS,
@@ -402,17 +380,17 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginRight: 4,
     marginBottom: 2,
-  },
+},
   tagText: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.secondaryLabel,
-  },
+},
   
   // Modal Styles
   modalContainer: {
     flex: 1,
     backgroundColor: HIGColors.white,
-  },
+},
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -420,110 +398,110 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_MD,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray5,
-  },
+},
   closeButton: {
     padding: HIGConstants.SPACING_SM,
-  },
+},
   closeButtonText: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     color: HIGColors.systemGray,
-  },
+},
   modalTitle: {
     flex: 1,
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
   useButton: {
     backgroundColor: HIGColors.systemBlue,
     paddingHorizontal: HIGConstants.SPACING_MD,
     paddingVertical: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.cornerRadiusSmall,
-  },
+},
   useButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.white,
     fontWeight: '600',
-  },
+},
   modalContent: {
     flex: 1,
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   
   // Recipe Header
   recipeHeader: {
     alignItems: 'center',
     paddingVertical: HIGConstants.SPACING_LG,
-  },
+},
   championshipBadge: {
     backgroundColor: HIGColors.systemYellow,
     paddingHorizontal: HIGConstants.SPACING_SM,
     paddingVertical: HIGConstants.SPACING_XS,
     borderRadius: HIGConstants.cornerRadiusSmall,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   championshipText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.black,
     fontWeight: '600',
-  },
+},
   modalRecipeName: {
     fontSize: HIGConstants.FONT_SIZE_H1,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
     marginBottom: 4,
-  },
+},
   modalRecipeAuthor: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   recipeDescription: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     textAlign: 'center',
     lineHeight: 22,
-  },
+},
   
   // Overview Section
   overviewSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   sectionHeader: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   overviewGrid: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
+},
   overviewItem: {
     width: '33.33%',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   overviewLabel: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: 2,
-  },
+},
   overviewValue: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   
   // Steps Section
   stepsSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   stepCard: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.cornerRadiusSmall,
@@ -531,12 +509,12 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_SM,
     borderWidth: 1,
     borderColor: HIGColors.systemGray4,
-  },
+},
   stepHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   stepNumber: {
     width: 24,
     height: 24,
@@ -545,74 +523,74 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: HIGConstants.SPACING_SM,
-  },
+},
   stepNumberText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.white,
     fontWeight: '600',
-  },
+},
   stepInfo: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
+},
   stepTime: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   stepWater: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.systemBlue,
     fontWeight: '500',
-  },
+},
   stepDescription: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     lineHeight: 20,
-  },
+},
   stepTechnique: {
     marginTop: HIGConstants.SPACING_XS,
     paddingTop: HIGConstants.SPACING_XS,
     borderTopWidth: 1,
     borderTopColor: HIGColors.systemGray5,
-  },
+},
   stepTechniqueText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     fontStyle: 'italic',
-  },
+},
   
   // Notes Section
   notesSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   noteItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   bullet: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     marginRight: HIGConstants.SPACING_SM,
     lineHeight: 22,
-  },
+},
   noteText: {
     flex: 1,
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     lineHeight: 22,
-  },
+},
   
   // Tags Section
   tagsSection: {
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   modalTagContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
+},
   modalTag: {
     backgroundColor: HIGColors.systemBlue,
     paddingHorizontal: HIGConstants.SPACING_SM,
@@ -620,12 +598,12 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusSmall,
     marginRight: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   modalTagText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.white,
     fontWeight: '500',
-  },
+},
 });
 
 export default RecipeTemplateSelector;

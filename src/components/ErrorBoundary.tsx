@@ -9,36 +9,37 @@ import {
   Alert,
 } from 'react-native';
 import { HIGColors, HIGConstants } from '../styles/common';
-import { performanceMonitor } from '../services/PerformanceMonitor';
+import { Logger } from '../services/LoggingService';
+import performanceMonitor from '../services/PerformanceMonitor';
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
-  onError?: (error: Error, errorInfo: any) => void;
+  onError?: (error: Error, errorInfo: unknown) => void;
 }
 
 interface State {
   hasError: boolean;
   error: Error | null;
-  errorInfo: any;
+  errorInfo: React.ErrorInfo | null;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false, error: null, errorInfo: null };
-  }
+}
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error, errorInfo: null };
-  }
+}
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    Logger.error('ErrorBoundary caught an error:', 'component', { component: 'ErrorBoundary', error: error, errorInfo });
     
     this.setState({
       errorInfo,
-    });
+  });
 
     // Report to performance monitor
     performanceMonitor.reportCrash(error, errorInfo);
@@ -46,12 +47,12 @@ export class ErrorBoundary extends Component<Props, State> {
     // Call custom error handler if provided
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
-    }
   }
+}
 
   handleReset = () => {
     this.setState({ hasError: false, error: null, errorInfo: null });
-  };
+};
 
   handleReportIssue = () => {
     const errorMessage = this.state.error?.message || 'Unknown error';
@@ -65,18 +66,18 @@ export class ErrorBoundary extends Component<Props, State> {
         {
           text: '신고하기',
           onPress: () => {
-            console.log('Error reported:', { errorMessage, stackTrace });
-          },
+            Logger.debug('Error reported:', 'component', { component: 'ErrorBoundary', error: { errorMessage, stackTrace } });
         },
+      },
       ]
     );
-  };
+};
 
   render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return <>{this.props.fallback}</>;
-      }
+    }
 
       return (
         <SafeAreaView style={styles.container}>
@@ -124,104 +125,104 @@ export class ErrorBoundary extends Component<Props, State> {
           </ScrollView>
         </SafeAreaView>
       );
-    }
+  }
 
     return this.props.children;
-  }
+}
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   content: {
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   errorContainer: {
     alignItems: 'center',
     paddingVertical: HIGConstants.SPACING_XL,
-  },
+},
   title: {
     fontSize: 24,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
     textAlign: 'center',
-  },
+},
   subtitle: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     marginBottom: HIGConstants.SPACING_XL,
     lineHeight: 24,
-  },
+},
   betaNotice: {
     backgroundColor: HIGColors.systemGray6,
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.RADIUS_MD,
     marginBottom: HIGConstants.SPACING_XL,
     width: '100%',
-  },
+},
   betaTitle: {
     fontSize: 14,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   betaText: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     lineHeight: 20,
-  },
+},
   errorDetails: {
     backgroundColor: HIGColors.systemGray6,
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.RADIUS_MD,
     marginBottom: HIGConstants.SPACING_XL,
     width: '100%',
-  },
+},
   errorTitle: {
     fontSize: 12,
     fontWeight: '600',
     color: HIGColors.systemRed,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   errorText: {
     fontSize: 12,
     color: HIGColors.systemRed,
     fontFamily: 'Courier',
-  },
+},
   buttonContainer: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_MD,
-  },
+},
   resetButton: {
     backgroundColor: HIGColors.accent,
     paddingHorizontal: HIGConstants.SPACING_XL,
     paddingVertical: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.RADIUS_LG,
     flex: 1,
-  },
+},
   resetButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.white,
     textAlign: 'center',
-  },
+},
   reportButton: {
     backgroundColor: HIGColors.systemGray6,
     paddingHorizontal: HIGConstants.SPACING_XL,
     paddingVertical: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.RADIUS_LG,
     flex: 1,
-  },
+},
   reportButtonText: {
     fontSize: 16,
     fontWeight: '500',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
 });

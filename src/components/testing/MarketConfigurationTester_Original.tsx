@@ -31,7 +31,9 @@ import {
   getRolloutPercentage,
 } from '../../config/deploymentConfig';
 import { betaTestingService } from '../../services/BetaTestingService';
+import { Logger } from '../../services/LoggingService';
 import { HIGColors, HIGConstants } from '../../constants/HIG';
+import { MarketInfo, CompetitorData, PriceData } from '../../types/market';
 
 /**
  * Market Configuration Tester
@@ -51,7 +53,7 @@ interface TestResult {
   scenario: string;
   success: boolean;
   message: string;
-  data?: any;
+  data?: Record<string, any>;
   error?: string;
 }
 
@@ -61,11 +63,11 @@ const MarketConfigurationTester: React.FC = () => {
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
   const [showDetailedResults, setShowDetailedResults] = useState(false);
-  const [currentMarketInfo, setCurrentMarketInfo] = useState<any>({});
+  const [currentMarketInfo, setCurrentMarketInfo] = useState<unknown>({});
 
   useEffect(() => {
     loadCurrentMarketInfo();
-  }, []);
+}, []);
 
   /**
    * Load current market information
@@ -85,37 +87,37 @@ const MarketConfigurationTester: React.FC = () => {
           labMode: isFeatureEnabled('labMode'),
           marketIntelligence: isFeatureEnabled('marketIntelligence'),
           achievements: isFeatureEnabled('achievements'),
-        },
+      },
         deploymentFeatures: {
           performanceDashboard: isFeatureFlagEnabled('performanceDashboard'),
           betaTestingDashboard: isFeatureFlagEnabled('betaTestingDashboard'),
           crashReporting: isFeatureFlagEnabled('crashReporting'),
-        },
+      },
         data: {
           roasters: getMarketRoasters().slice(0, 5),
           origins: getMarketOrigins().slice(0, 5),
           flavorProfiles: getMarketFlavorProfiles().slice(0, 5),
           brewMethods: getSupportedBrewMethods().slice(0, 5),
-        },
+      },
         formatting: {
           currency: formatCurrency(5000),
           date: formatDate(new Date()),
           time: formatTime(new Date()),
-        },
+      },
         technical: {
           apiEndpoint: getApiEndpoint(),
           rateLimits: {
             apiCalls: getRateLimit('apiCalls', 'requestsPerMinute'),
             feedback: getRateLimit('feedback', 'requestsPerHour'),
-          },
+        },
           maintenanceMode: isMaintenanceMode(),
           rolloutPercentage: getRolloutPercentage(),
-        },
-      });
-    } catch (error: any) {
-      console.error('Failed to load market info:', error);
-    }
-  };
+      },
+    });
+  } catch (error) {
+      Logger.error('Failed to load market info:', 'component', { component: 'MarketConfigurationTester_Original', error: error });
+  }
+};
 
   /**
    * Test scenarios for different market configurations
@@ -135,7 +137,7 @@ const MarketConfigurationTester: React.FC = () => {
             labMode: isFeatureEnabled('labMode'),
             marketIntelligence: isFeatureEnabled('marketIntelligence'),
             achievements: isFeatureEnabled('achievements'),
-          };
+        };
           
           // Test Korean data
           const roasters = getMarketRoasters();
@@ -154,17 +156,17 @@ const MarketConfigurationTester: React.FC = () => {
             success,
             message: success ? 'All Korean market features working' : 'Some features missing or incorrect',
             data: { features, roasters: roasters.slice(0, 3), currencyFormat, hasKoreanRoasters, isKoreanCurrency }
-          };
-        } catch (error: any) {
+        };
+      } catch (error) {
           return {
             scenario: 'Korean Market - Full Features',
             success: false,
             message: 'Test failed with error',
             error: error.message
-          };
-        }
+        };
       }
-    },
+    }
+  },
     
     {
       id: 'us_beta_limited_features',
@@ -181,7 +183,7 @@ const MarketConfigurationTester: React.FC = () => {
             marketIntelligence: isFeatureEnabled('marketIntelligence'),
             achievements: isFeatureEnabled('achievements'),
             betaTestingDashboard: isFeatureFlagEnabled('betaTestingDashboard'),
-          };
+        };
           
           // Test US data
           const roasters = getMarketRoasters();
@@ -200,17 +202,17 @@ const MarketConfigurationTester: React.FC = () => {
             success,
             message: success ? 'US beta configuration working correctly' : 'US beta configuration issues detected',
             data: { features, roasters: roasters.slice(0, 3), currencyFormat, hasUSRoasters, isUSCurrency }
-          };
-        } catch (error: any) {
+        };
+      } catch (error) {
           return {
             scenario: 'US Beta Market - Limited Features',
             success: false,
             message: 'Test failed with error',
             error: error.message
-          };
-        }
+        };
       }
-    },
+    }
+  },
     
     {
       id: 'data_consistency',
@@ -247,18 +249,18 @@ const MarketConfigurationTester: React.FC = () => {
               hasKoreanRoasters,
               hasKoreanOrigins,
               consistency
-            }
-          };
-        } catch (error: any) {
+          }
+        };
+      } catch (error) {
           return {
             scenario: 'Market Data Consistency',
             success: false,
             message: 'Test failed with error',
             error: error.message
-          };
-        }
+        };
       }
-    },
+    }
+  },
     
     {
       id: 'beta_testing_functionality',
@@ -288,17 +290,17 @@ const MarketConfigurationTester: React.FC = () => {
             success,
             message: success ? 'Beta testing functionality available' : 'Beta testing functionality issues',
             data: { feedbackStats, canAccessBeta, hasBetaConfig, betaEnabled }
-          };
-        } catch (error: any) {
+        };
+      } catch (error) {
           return {
             scenario: 'Beta Testing Functionality',
             success: false,
             message: 'Test failed with error',
             error: error.message
-          };
-        }
+        };
       }
-    },
+    }
+  },
     
     {
       id: 'performance_monitoring',
@@ -332,18 +334,18 @@ const MarketConfigurationTester: React.FC = () => {
               crashReportingFlag, 
               performanceDashboard,
               rateLimits: { korean: koreanRateLimit, us: usRateLimit }
-            }
-          };
-        } catch (error: any) {
+          }
+        };
+      } catch (error) {
           return {
             scenario: 'Performance Monitoring',
             success: false,
             message: 'Test failed with error',
             error: error.message
-          };
-        }
+        };
       }
-    },
+    }
+  },
     
     {
       id: 'api_endpoints',
@@ -380,18 +382,18 @@ const MarketConfigurationTester: React.FC = () => {
               hasEndpoints,
               hasMarketEndpoints,
               endpointsDiffer
-            }
-          };
-        } catch (error: any) {
+          }
+        };
+      } catch (error) {
           return {
             scenario: 'API Endpoints Configuration',
             success: false,
             message: 'Test failed with error',
             error: error.message
-          };
-        }
+        };
       }
     }
+  }
   ];
 
   /**
@@ -404,19 +406,19 @@ const MarketConfigurationTester: React.FC = () => {
     try {
       const result = await scenario.testFunction();
       setTestResults(prev => [...prev.filter(r => r.scenario !== scenario.name), result]);
-    } catch (error: any) {
+  } catch (error) {
       const failureResult: TestResult = {
         scenario: scenario.name,
         success: false,
         message: 'Test execution failed',
         error: error.message
-      };
+    };
       setTestResults(prev => [...prev.filter(r => r.scenario !== scenario.name), failureResult]);
-    } finally {
+  } finally {
       setIsRunning(false);
       setSelectedScenario(null);
-    }
-  };
+  }
+};
 
   /**
    * Run all test scenarios
@@ -429,7 +431,7 @@ const MarketConfigurationTester: React.FC = () => {
       await runTestScenario(scenario);
       // Small delay between tests
       await new Promise(resolve => setTimeout(resolve, 200));
-    }
+  }
     
     setIsRunning(false);
     
@@ -442,7 +444,7 @@ const MarketConfigurationTester: React.FC = () => {
       `${passCount}/${totalCount} tests passed`,
       [{ text: 'OK' }]
     );
-  };
+};
 
   /**
    * Clear test results
@@ -450,7 +452,7 @@ const MarketConfigurationTester: React.FC = () => {
   const clearResults = () => {
     setTestResults([]);
     setSelectedScenario(null);
-  };
+};
 
   return (
     <ScrollView style={styles.container}>
@@ -615,109 +617,109 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   header: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: HIGColors.systemGreen,
-  },
+},
   headerTitle: {
     fontSize: HIGConstants.fontSizeTitle1,
     fontWeight: '700',
     color: HIGColors.white,
     marginBottom: 4,
-  },
+},
   headerSubtitle: {
     fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.white,
     opacity: 0.9,
-  },
+},
   section: {
     padding: HIGConstants.SPACING_LG,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.separator,
-  },
+},
   sectionTitle: {
     fontSize: HIGConstants.fontSizeHeadline,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   infoCard: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
-  },
+},
   infoText: {
     fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   featureGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: HIGConstants.SPACING_SM,
-  },
+},
   featureChip: {
     paddingHorizontal: HIGConstants.SPACING_MD,
     paddingVertical: HIGConstants.SPACING_SM,
     borderRadius: HIGConstants.cornerRadiusSmall,
     borderWidth: 1,
-  },
+},
   featureEnabled: {
     backgroundColor: HIGColors.systemGreen,
     borderColor: HIGColors.systemGreen,
-  },
+},
   featureDisabled: {
     backgroundColor: HIGColors.systemGray5,
     borderColor: HIGColors.systemGray4,
-  },
+},
   featureText: {
     fontSize: HIGConstants.fontSizeCaption1,
     fontWeight: '600',
-  },
+},
   featureEnabledText: {
     color: HIGColors.white,
-  },
+},
   featureDisabledText: {
     color: HIGColors.secondaryLabel,
-  },
+},
   controlRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   controlLabel: {
     fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.label,
     marginLeft: HIGConstants.SPACING_MD,
-  },
+},
   buttonContainer: {
     flexDirection: 'row',
     gap: HIGConstants.SPACING_MD,
-  },
+},
   button: {
     flex: 1,
     paddingVertical: HIGConstants.SPACING_MD,
     paddingHorizontal: HIGConstants.SPACING_LG,
     borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
-  },
+},
   primaryButton: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   secondaryButton: {
     backgroundColor: HIGColors.systemGray5,
     borderWidth: 1,
     borderColor: HIGColors.systemGray4,
-  },
+},
   buttonText: {
     fontSize: HIGConstants.fontSizeBody,
     fontWeight: '600',
     color: HIGColors.white,
-  },
+},
   secondaryButtonText: {
     color: HIGColors.label,
-  },
+},
   scenarioCard: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.cornerRadiusMedium,
@@ -728,31 +730,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
-  },
+},
   scenarioHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
+},
   scenarioInfo: {
     flex: 1,
     marginRight: HIGConstants.SPACING_MD,
-  },
+},
   scenarioName: {
     fontSize: HIGConstants.fontSizeSubheadline,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   scenarioDescription: {
     fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.secondaryLabel,
     marginBottom: 4,
-  },
+},
   scenarioMeta: {
     fontSize: HIGConstants.fontSizeCaption1,
     color: HIGColors.tertiaryLabel,
-  },
+},
   scenarioButton: {
     backgroundColor: HIGColors.systemBlue,
     paddingVertical: HIGConstants.SPACING_SM,
@@ -760,85 +762,85 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusSmall,
     minWidth: 60,
     alignItems: 'center',
-  },
+},
   scenarioButtonActive: {
     backgroundColor: HIGColors.systemOrange,
-  },
+},
   scenarioButtonText: {
     fontSize: HIGConstants.fontSizeBody,
     fontWeight: '600',
     color: HIGColors.white,
-  },
+},
   resultCard: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
     marginBottom: HIGConstants.SPACING_SM,
     borderLeftWidth: 4,
-  },
+},
   resultSuccess: {
     borderLeftColor: HIGColors.systemGreen,
-  },
+},
   resultFailure: {
     borderLeftColor: HIGColors.systemRed,
-  },
+},
   resultHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   resultScenario: {
     fontSize: HIGConstants.fontSizeSubheadline,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   resultStatus: {
     fontSize: HIGConstants.fontSizeBody,
-  },
+},
   resultMessage: {
     fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   resultError: {
     fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.systemRed,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   resultDetails: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusSmall,
     padding: HIGConstants.SPACING_SM,
-  },
+},
   resultDetailsTitle: {
     fontSize: HIGConstants.fontSizeCaption1,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   resultDetailsText: {
     fontSize: HIGConstants.fontSizeCaption1,
     color: HIGColors.secondaryLabel,
     fontFamily: 'Menlo',
-  },
+},
   dataContainer: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_MD,
-  },
+},
   dataLabel: {
     fontSize: HIGConstants.fontSizeBody,
     fontWeight: '600',
     color: HIGColors.label,
     marginTop: HIGConstants.SPACING_SM,
     marginBottom: 4,
-  },
+},
   dataValue: {
     fontSize: HIGConstants.fontSizeBody,
     color: HIGColors.secondaryLabel,
     fontFamily: 'Menlo',
-  },
+},
 });
 
 export default MarketConfigurationTester;

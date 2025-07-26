@@ -17,6 +17,7 @@ import {
   MasteryLevel,
 } from '../types/personalTaste';
 import RealmService from '../services/realm/RealmService';
+import { Logger } from '../services/LoggingService';
 import {
   getMockTastePattern,
   getMockGrowthMetrics,
@@ -45,7 +46,7 @@ export const usePersonalTaste = () => {
     try {
       if (!realmService.isInitialized) {
         return null;
-      }
+    }
       const realm = realmService.getRealm();
       // const analysisService = new PersonalTasteAnalysisService(realm); // Moved to feature_backlog
       // const learningEngine = new FlavorLearningEngine(realm); // Moved to feature_backlog
@@ -55,12 +56,12 @@ export const usePersonalTaste = () => {
         // analysisService, // Moved to feature_backlog
         // learningEngine, // Moved to feature_backlog
         achievementSystem,
-      };
-    } catch (error) {
-      console.error('Error initializing personal taste services:', error);
+    };
+  } catch (error) {
+      Logger.error('Error initializing personal taste services:', 'hook', { component: 'usePersonalTaste', error: error });
       return null;
-    }
-  });
+  }
+});
 
   const loadPersonalTasteData = useCallback(async () => {
     try {
@@ -77,7 +78,7 @@ export const usePersonalTaste = () => {
         setInsights(getMockPersonalInsights());
         setLoading(false);
         return;
-      }
+    }
 
       // 실제 분석 수행 - Moved to feature_backlog
       // const [pattern, growth, recs, personalInsights] = await Promise.all([
@@ -97,26 +98,26 @@ export const usePersonalTaste = () => {
       setGrowthMetrics(getMockGrowthMetrics());
       setRecommendations(getMockRecommendations());
       setInsights(getMockPersonalInsights());
-    } catch (err) {
-      console.error('Error loading personal taste data:', err);
+  } catch (err) {
+      Logger.error('Error loading personal taste data:', 'hook', { component: 'usePersonalTaste', error: err });
       // Fall back to mock data on error
       setTastePattern(getMockTastePattern());
       setGrowthMetrics(getMockGrowthMetrics());
       setRecommendations(getMockRecommendations());
       setInsights(getMockPersonalInsights());
       setError('Using demo data - database not available');
-    } finally {
+  } finally {
       setLoading(false);
-    }
-  }, [userId, services]);
+  }
+}, [userId, services]);
 
   useEffect(() => {
     loadPersonalTasteData();
-  }, [loadPersonalTasteData]);
+}, [loadPersonalTasteData]);
 
   const refresh = useCallback(() => {
     return loadPersonalTasteData();
-  }, [loadPersonalTasteData]);
+}, [loadPersonalTasteData]);
 
   return {
     loading,
@@ -127,7 +128,7 @@ export const usePersonalTaste = () => {
     insights,
     services,
     refresh,
-  };
+};
 };
 
 // Hook for AI Coach features - Moved to Future Roadmap
@@ -152,24 +153,24 @@ export const usePersonalTaste = () => {
 
 //         setDailyInsight(insight);
 //         setLearningPath(path);
-//       } else {
+//     } else {
 //         // Use mock data when services are not available
 //         setDailyInsight(getMockDailyInsight());
 //         setLearningPath(getMockLearningPath());
-//       }
-//     } catch (error) {
+//     }
+//   } catch (error) {
 //       console.error('Error loading coach data:', error);
 //       // Fall back to mock data on error
 //       setDailyInsight(getMockDailyInsight());
 //       setLearningPath(getMockLearningPath());
-//     } finally {
+//   } finally {
 //       setLoading(false);
-//     }
-//   }, [userId, services]);
+//   }
+// }, [userId, services]);
 
 //   useEffect(() => {
 //     loadCoachData();
-//   }, [loadCoachData]);
+// }, [loadCoachData]);
 
 //   return {
 //     dailyInsight,
@@ -177,7 +178,7 @@ export const usePersonalTaste = () => {
 //     loading,
 //     coachService: services?.coachService,
 //     refresh: loadCoachData,
-//   };
+// };
 // };
 
 // Hook for achievements
@@ -187,7 +188,7 @@ export const useAchievements = () => {
   const userId = currentUser?.id || '';
 
   const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
 
   const loadAchievements = useCallback(async () => {
@@ -198,7 +199,7 @@ export const useAchievements = () => {
       if (!userId || !services) {
         setLoading(false);
         return;
-      }
+    }
       
       const [userAchievements, achievementStats] = await Promise.all([
         services.achievementSystem.getUserAchievements(userId),
@@ -207,19 +208,19 @@ export const useAchievements = () => {
 
       setAchievements(userAchievements);
       setStats(achievementStats);
-    } catch (error) {
-      console.error('Error loading achievements:', error);
-    } finally {
+  } catch (error) {
+      Logger.error('Error loading achievements:', 'hook', { component: 'usePersonalTaste', error: error });
+  } finally {
       setLoading(false);
-    }
-  }, [userId, services]);
+  }
+}, [userId, services]);
 
   useEffect(() => {
     loadAchievements();
-  }, [loadAchievements]);
+}, [loadAchievements]);
 
   const checkForNewAchievements = useCallback(
-    async (action: any) => {
+    async (action: unknown) => {
       if (!userId || !services) return [];
 
       try {
@@ -231,14 +232,14 @@ export const useAchievements = () => {
         if (newAchievements.length > 0) {
           // Refresh achievements list
           await loadAchievements();
-        }
+      }
         
         return newAchievements;
-      } catch (error) {
-        console.error('Error checking achievements:', error);
+    } catch (error) {
+        Logger.error('Error checking achievements:', 'hook', { component: 'usePersonalTaste', error: error });
         return [];
-      }
-    },
+    }
+  },
     [userId, services, loadAchievements]
   );
 
@@ -248,7 +249,7 @@ export const useAchievements = () => {
     loading,
     checkForNewAchievements,
     refresh: loadAchievements,
-  };
+};
 };
 
 // Hook for flavor mastery
@@ -268,35 +269,35 @@ export const useFlavorMastery = () => {
       if (!userId || !services) {
         setLoading(false);
         return;
-      }
+    }
       
       // const mastery = await services.learningEngine.getUserFlavorMasterySummary(userId); // Moved to feature_backlog
       const mastery = new Map(); // Return empty map for MVP
       setFlavorMastery(mastery);
-    } catch (error) {
-      console.error('Error loading flavor mastery:', error);
-    } finally {
+  } catch (error) {
+      Logger.error('Error loading flavor mastery:', 'hook', { component: 'usePersonalTaste', error: error });
+  } finally {
       setLoading(false);
-    }
-  }, [userId, services]);
+  }
+}, [userId, services]);
 
   useEffect(() => {
     loadFlavorMastery();
-  }, [loadFlavorMastery]);
+}, [loadFlavorMastery]);
 
   const updateFlavorProgress = useCallback(
-    async (flavorIdentification: any) => {
+    async (flavorIdentification: unknown) => {
       if (!userId || !services) return;
 
       try {
         // await services.learningEngine.updateFlavorProgress(userId, flavorIdentification); // Moved to feature_backlog
-        console.log('Flavor progress update skipped - feature moved to backlog');
+        Logger.debug('Flavor progress update skipped - feature moved to backlog', 'hook', { component: 'usePersonalTaste' });
         // Refresh mastery data
         await loadFlavorMastery();
-      } catch (error) {
-        console.error('Error updating flavor progress:', error);
-      }
-    },
+    } catch (error) {
+        Logger.error('Error updating flavor progress:', 'hook', { component: 'usePersonalTaste', error: error });
+    }
+  },
     [userId, services, loadFlavorMastery]
   );
 
@@ -305,5 +306,5 @@ export const useFlavorMastery = () => {
     loading,
     updateFlavorProgress,
     refresh: loadFlavorMastery,
-  };
+};
 };

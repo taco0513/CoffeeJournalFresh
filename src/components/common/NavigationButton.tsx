@@ -49,18 +49,18 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
       case 'text':
         baseStyle.push(styles.textButton);
         break;
-    }
+  }
 
     if (disabled) {
       baseStyle.push(commonButtonStyles.buttonDisabled);
-    }
+  }
 
     if (style) {
       baseStyle.push(style);
-    }
+  }
 
     return StyleSheet.flatten(baseStyle);
-  };
+};
 
   const getTextStyle = (): TextStyle => {
     const baseTextStyle: TextStyle[] = [commonTextStyles.buttonText];
@@ -76,18 +76,18 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
       case 'text':
         baseTextStyle.push(styles.textButtonText);
         break;
-    }
+  }
 
     if (disabled) {
       baseTextStyle.push(commonTextStyles.buttonTextDisabled);
-    }
+  }
 
     if (textStyle) {
       baseTextStyle.push(textStyle);
-    }
+  }
 
     return StyleSheet.flatten(baseTextStyle);
-  };
+};
 
 
   return (
@@ -110,22 +110,22 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS_LARGE,
     marginVertical: HIGConstants.SPACING_SM,
-  },
+},
   fullWidth: {
     width: '100%',
     alignSelf: 'stretch',
-  },
+},
   textButton: {
     backgroundColor: 'transparent',
     borderWidth: 0,
     paddingHorizontal: HIGConstants.SPACING_MD,
-  },
+},
   textButtonText: {
     color: HIGColors.blue,
     fontSize: HIGConstants.FONT_SIZE_MEDIUM,
     fontWeight: '600',
     textAlign: 'center',
-  },
+},
 });
 
 export default NavigationButton;

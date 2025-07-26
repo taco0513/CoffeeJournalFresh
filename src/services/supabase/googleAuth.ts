@@ -2,9 +2,10 @@
 import { supabase } from './client';
 import { GoogleAuthConfig, validateGoogleConfig, isGoogleSignInConfigured } from '@/config/googleAuth';
 
+import { Logger } from '../LoggingService';
 export interface GoogleSignInResult {
   success: boolean;
-  user?: any;
+  user?: { id: string; email?: string; [key: string]: unknown };
   error?: string;
 }
 
@@ -24,28 +25,28 @@ export class GoogleAuthService {
   static configure(): void {
     try {
       if (!isGoogleSignInConfigured()) {
-        console.warn('Google Sign-In: Configuration not found. Please install @react-native-google-signin/google-signin and set environment variables.');
+        Logger.warn('Google Sign-In: Configuration not found. Please install @react-native-google-signin/google-signin and set environment variables.', 'supabase', { component: 'googleAuth' });
         return;
-      }
+    }
 
       this.isConfigured = true;
-      console.log('Google Sign-In stub configured');
-    } catch (error) {
-      console.error('Google Sign-In configuration failed:', error);
+      Logger.debug('Google Sign-In stub configured', 'supabase', { component: 'googleAuth' });
+  } catch (error) {
+      Logger.error('Google Sign-In configuration failed:', 'supabase', { component: 'googleAuth', error: error });
       throw error;
-    }
   }
+}
 
   /**
    * Perform Google Sign-In
    */
   static async signIn(): Promise<GoogleSignInResult> {
-    console.log('Google Sign-In is not available. Please install @react-native-google-signin/google-signin package.');
+    Logger.debug('Google Sign-In is not available. Please install @react-native-google-signin/google-signin package.', 'supabase', { component: 'googleAuth' });
     return {
       success: false,
       error: 'Google Sign-In is not installed. Please install the required package.',
-    };
-  }
+  };
+}
 
   /**
    * Sign out from Google
@@ -59,34 +60,34 @@ export class GoogleAuthService {
         return {
           success: false,
           error: error.message,
-        };
-      }
+      };
+    }
 
       return {
         success: true,
-      };
-    } catch (error: any) {
-      console.error('Sign-Out error:', error);
+    };
+  } catch (error) {
+      Logger.error('Sign-Out error:', 'supabase', { component: 'googleAuth', error: error });
       return {
         success: false,
         error: error.message || 'Sign-out failed',
-      };
-    }
+    };
   }
+}
 
   /**
    * Check if user is signed in to Google
    */
   static async isSignedIn(): Promise<boolean> {
     return false;
-  }
+}
 
   /**
    * Get current Google user info
    */
-  static async getCurrentUser(): Promise<any> {
+  static async getCurrentUser(): Promise<unknown> {
     return null;
-  }
+}
 
   /**
    * Revoke access (stronger than sign out)
@@ -100,25 +101,25 @@ export class GoogleAuthService {
         return {
           success: false,
           error: error.message,
-        };
-      }
+      };
+    }
 
       return {
         success: true,
-      };
-    } catch (error: any) {
-      console.error('Revoke access error:', error);
+    };
+  } catch (error) {
+      Logger.error('Revoke access error:', 'supabase', { component: 'googleAuth', error: error });
       return {
         success: false,
         error: error.message || 'Revoke access failed',
-      };
-    }
+    };
   }
+}
 
   /**
    * Get available scopes
    */
-  static async getTokens(): Promise<any> {
+  static async getTokens(): Promise<unknown> {
     return null;
-  }
+}
 }

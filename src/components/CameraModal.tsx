@@ -14,7 +14,7 @@ import { Colors } from '../constants/colors';
 interface CameraModalProps {
   visible: boolean;
   onClose: () => void;
-  onTextRecognized?: (info: any) => void; // OCR functionality moved to feature_backlog
+  onTextRecognized?: (info: unknown) => void; // OCR functionality moved to feature_backlog
 }
 
 const CameraModal: React.FC<CameraModalProps> = ({ visible, onClose }) => {
@@ -47,39 +47,39 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.BLACK,
-  },
+},
   header: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     padding: 20,
     paddingTop: 10,
-  },
+},
   closeButton: {
     padding: 10,
-  },
+},
   closeButtonText: {
     color: Colors.WHITE,
     fontSize: 16,
     fontWeight: '600',
-  },
+},
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
-  },
+},
   message: {
     color: Colors.WHITE,
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: 10,
-  },
+},
   submessage: {
     color: Colors.PLACEHOLDER,
     fontSize: 14,
     textAlign: 'center',
-  },
+},
 });
 
 export default CameraModal;

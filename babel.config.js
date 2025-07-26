@@ -1,6 +1,8 @@
 module.exports = {
   presets: ['module:@react-native/babel-preset'],
   plugins: [
+    // Add react-native-web plugin - Only for web builds
+    ...(process.env.TARGET === 'web' ? ['react-native-web'] : []),
     // Tamagui configuration - TEMPORARILY DISABLED due to React 19 compatibility issue
     // [
     //   '@tamagui/babel-plugin',

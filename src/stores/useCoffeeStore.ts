@@ -15,7 +15,7 @@ interface CoffeeStore {
   isSaving: boolean;
   
   // Actions
-  updateCurrentTasting: (field: keyof CurrentTasting, value: any) => void;
+  updateCurrentTasting: (field: keyof CurrentTasting, value: unknown) => void;
   resetCurrentTasting: () => void;
   saveTasting: () => Promise<void>;
   loadTastings: () => Promise<void>;
@@ -55,15 +55,15 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
   updateCurrentTasting: (field, value) => {
     set((state) => ({
       currentTasting: { ...state.currentTasting, [field]: value }
-    }));
+  }));
     // Auto-save progress
     get().saveProgress();
-  },
+},
 
   resetCurrentTasting: () => {
     set({ currentTasting: { ...initialTastingData } });
     StorageService.clearCurrentTasting();
-  },
+},
 
   saveTasting: async () => {
     set({ isSaving: true });
@@ -92,9 +92,9 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
         homeCafeData: currentTasting.homeCafeData,
         simpleHomeCafeData: currentTasting.simpleHomeCafeData,
         labModeData: currentTasting.labModeData,
-      };
+    };
       
-      await StorageService.saveTasting(completeTasting as any);
+      await StorageService.saveTasting(completeTasting as unknown);
       await StorageService.clearCurrentTasting();
       
       // Reload tastings to update UI
@@ -103,52 +103,52 @@ export const useCoffeeStore = create<CoffeeStore>((set, get) => ({
       set({ 
         currentTasting: { ...initialTastingData },
         isSaving: false 
-      });
-    } catch (error) {
+    });
+  } catch (error) {
       // console.error('Error saving tasting:', error);
       set({ isSaving: false });
       throw error;
-    }
-  },
+  }
+},
 
   loadTastings: async () => {
     set({ isLoading: true });
     try {
       const tastings = await StorageService.getTastings();
-      set({ tastingSessions: tastings as any, isLoading: false });
-    } catch (error) {
+      set({ tastingSessions: tastings as unknown, isLoading: false });
+  } catch (error) {
       // console.error('Error loading tastings:', error);
       set({ isLoading: false });
-    }
-  },
+  }
+},
 
   deleteTasting: async (id: string) => {
     try {
       await StorageService.deleteTasting(id);
       await get().loadTastings();
-    } catch (error) {
+  } catch (error) {
       // console.error('Error deleting tasting:', error);
       throw error;
-    }
-  },
+  }
+},
 
   saveProgress: async () => {
     try {
       const { currentTasting } = get();
-      await StorageService.saveCurrentTasting(currentTasting as any);
-    } catch (error) {
+      await StorageService.saveCurrentTasting(currentTasting as unknown);
+  } catch (error) {
       // console.error('Error saving progress:', error);
-    }
-  },
+  }
+},
 
   loadProgress: async () => {
     try {
       const savedProgress = await StorageService.getCurrentTasting();
       if (savedProgress) {
-        set({ currentTasting: savedProgress as any });
-      }
-    } catch (error) {
-      // console.error('Error loading progress:', error);
+        set({ currentTasting: savedProgress as unknown });
     }
+  } catch (error) {
+      // console.error('Error loading progress:', error);
   }
+}
 }));

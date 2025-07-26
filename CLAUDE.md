@@ -114,6 +114,93 @@ src/
 └── navigation/       # React Navigation setup
 ```
 
+## 🎨 Design System Guidelines (2025-07-26)
+### **MANDATORY**: All UI components must follow unified Tamagui design system
+
+**Core Principle**: Consistent, accessible, and scalable UI through research-backed design tokens
+
+#### **Typography System** ✅ RESEARCH-BACKED
+Based on Material Design and data-heavy interface best practices:
+
+**Primary Scale** (Main Content):
+- **Body Text**: $3 (16px) - WCAG minimum for main content
+- **Headings**: $4-$8 (20px-36px) - Clear hierarchy
+- **Subtitles**: $4 (20px) - Secondary headings
+
+**Secondary Scale** (Metadata & Labels):
+- **Captions**: $2 (14px) - Secondary information, acceptable minimum
+- **Overline**: $1 (12px) - Labels, badges, metadata only
+- **Micro**: 10px - Reserved for timestamps, version info, status indicators
+
+#### **Small Text Usage Guidelines** ✅ PROFESSIONAL STANDARDS
+**✅ 12px ($1) - Use sparingly:**
+- Status badges (DEV, BETA)  
+- Floating button subtext
+- Form helper text
+- Achievement badges
+
+**✅ 14px ($2) - Minimum for user-facing:**
+- Navigation labels
+- Statistics labels  
+- Secondary information
+- Captions and footnotes
+
+**❌ Never use 12px or smaller for:**
+- Main navigation text
+- Primary content body
+- Critical actionable text
+- Error messages
+
+#### **Design Token Usage Rules** ✅ ENFORCED
+1. **Typography**: Use Tamagui tokens ($1-$8) with appropriate semantic meaning
+2. **Spacing**: Use spacing tokens ($xs, $sm, $md, $lg, $xl, $xxl) 
+3. **Colors**: Use semantic color tokens ($cupBlue, $red9, $green9, etc.)
+4. **Border Radius**: Use radius tokens ($1-$6) for consistent styling
+5. **Component Sizing**: Use predefined size tokens for consistency
+
+#### **Accessibility Requirements** ✅ WCAG AA COMPLIANT
+- **Contrast Ratio**: 4.5:1 minimum for all text sizes
+- **Touch Targets**: Minimum 44px for interactive elements
+- **Focus Indicators**: Visible focus states with $focusRing color
+- **Text Scaling**: Support system font scaling preferences
+
+#### **Implementation Strategy**
+1. **Primary System**: Tamagui tokens as single source of truth
+2. **Legacy Migration**: Phase out HIGColors/HIGConstants gradually  
+3. **Consistency Validation**: Regular audits for hardcoded values
+4. **Component Library**: Build reusable components with proper tokens
+
+#### **MVP Animation Policy** ❌ **NO ANIMATIONS FOR BETA**
+**베타 테스트 기간 중 모든 애니메이션 비활성화**
+
+**✅ 허용되는 것:**
+- 기본 React Native 전환 (화면 간 이동)
+- 시스템 기본 터치 피드백
+- Loading indicators (스피너)
+
+**❌ 금지되는 것:**
+- Custom animations (Animated API)
+- Tamagui animations ($animations)
+- Third-party animation libraries
+- Transition effects
+- Gesture animations
+- 버튼/카드 hover effects
+
+**이유**: 베타 테스트에서 핵심 기능 검증에 집중, 성능 최적화, 버그 최소화
+
+#### **Code Review Checklist**
+- ❌ fontSize: 10, 11, 12 (hardcoded values)
+- ❌ '#FF0000', 'blue', 'red' (hardcoded colors)  
+- ❌ margin: 5, padding: 15 (hardcoded spacing)
+- ❌ height: 44 (hardcoded dimensions)
+- ❌ Animated.*, useSharedValue, withSpring (animations)
+- ✅ fontSize: '$2', color: '$cupBlue', padding: '$md', height: '$navBarHeight'
+
+**Reference Files**:
+- Design tokens: `src/styles/tamagui-unified-tokens.ts`
+- Component guidelines: See `componentGuidelines` section
+- Typography examples: StatusBadge.tsx (properly implemented)
+
 ## Development History Archive
 **📚 Complete development history and detailed technical documentation has been archived**
 

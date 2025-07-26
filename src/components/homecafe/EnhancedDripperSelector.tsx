@@ -10,7 +10,9 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { HIGColors, HIGConstants } from '../../styles/common';
-import HomeCafeEnhancedService, { DripperSpec } from '../../services/HomeCafeEnhancedService';
+import { HomeCafeEnhancedService } from '../../services/HomeCafeEnhancedService';
+import type { DripperSpec } from '../../services/HomeCafeEnhancedService';
+import { getDifficultyColor, getDifficultyText } from '../../utils/difficulty';
 
 interface EnhancedDripperSelectorProps {
   selectedDripper: string;
@@ -37,38 +39,14 @@ export const EnhancedDripperSelector: React.FC<EnhancedDripperSelectorProps> = (
 
   const handleDripperPress = (dripper: string) => {
     onDripperSelect(dripper);
-  };
+};
 
   const handleSpecPress = (spec: DripperSpec) => {
     setSelectedSpec(spec);
     setShowSpecs(true);
-  };
+};
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return HIGColors.systemGreen;
-      case 'intermediate':
-        return HIGColors.systemOrange;
-      case 'advanced':
-        return HIGColors.systemRed;
-      default:
-        return HIGColors.systemGray;
-    }
-  };
-
-  const getDifficultyText = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return '초보자';
-      case 'intermediate':
-        return '중급자';
-      case 'advanced':
-        return '고급자';
-      default:
-        return difficulty;
-    }
-  };
+  // Using shared utility functions from utils/difficulty
 
   return (
     <View style={styles.container}>
@@ -249,20 +227,20 @@ export const EnhancedDripperSelector: React.FC<EnhancedDripperSelectorProps> = (
 const styles = StyleSheet.create({
   container: {
     marginVertical: HIGConstants.SPACING_MD,
-  },
+},
   sectionTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   scrollContainer: {
     paddingHorizontal: HIGConstants.SPACING_SM,
-  },
+},
   dripperCard: {
     marginRight: HIGConstants.SPACING_MD,
     alignItems: 'center',
-  },
+},
   dripperButton: {
     width: 120,
     backgroundColor: HIGColors.white,
@@ -276,26 +254,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
+},
   selectedDripper: {
     borderColor: HIGColors.systemBlue,
     backgroundColor: HIGColors.systemBlue + '10',
-  },
+},
   dripperIcon: {
     fontSize: 32,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   dripperName: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     textAlign: 'center',
-  },
+},
   dripperBrand: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginTop: 2,
-  },
+},
   difficultyBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -304,42 +282,42 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     backgroundColor: HIGColors.systemGray6,
     borderRadius: 8,
-  },
+},
   difficultyDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
     marginRight: 4,
-  },
+},
   difficultyText: {
     fontSize: HIGConstants.FONT_SIZE_FOOTNOTE,
     color: HIGColors.secondaryLabel,
-  },
+},
   specsButton: {
     marginTop: HIGConstants.SPACING_XS,
     paddingVertical: 4,
     paddingHorizontal: HIGConstants.SPACING_SM,
-  },
+},
   specsButtonText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.systemBlue,
     fontWeight: '500',
-  },
+},
   
   // Size Selection
   sizeSection: {
     marginTop: HIGConstants.SPACING_LG,
-  },
+},
   sizeTitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   sizeContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
+},
   sizeButton: {
     backgroundColor: HIGColors.systemGray6,
     paddingVertical: HIGConstants.SPACING_SM,
@@ -348,29 +326,29 @@ const styles = StyleSheet.create({
     marginRight: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_XS,
     alignItems: 'center',
-  },
+},
   selectedSize: {
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   sizeText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   selectedSizeText: {
     color: HIGColors.white,
-  },
+},
   sizeCapacity: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginTop: 2,
-  },
+},
   
   // Modal Styles
   modalContainer: {
     flex: 1,
     backgroundColor: HIGColors.white,
-  },
+},
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -378,14 +356,14 @@ const styles = StyleSheet.create({
     paddingVertical: HIGConstants.SPACING_MD,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray5,
-  },
+},
   closeButton: {
     padding: HIGConstants.SPACING_SM,
-  },
+},
   closeButtonText: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     color: HIGColors.systemGray,
-  },
+},
   modalTitle: {
     flex: 1,
     fontSize: HIGConstants.FONT_SIZE_H3,
@@ -393,90 +371,90 @@ const styles = StyleSheet.create({
     color: HIGColors.label,
     textAlign: 'center',
     marginRight: 44, // Balance close button
-  },
+},
   modalContent: {
     flex: 1,
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   specCard: {
     backgroundColor: HIGColors.systemGray6,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: HIGConstants.SPACING_LG,
     marginVertical: HIGConstants.SPACING_MD,
     alignItems: 'center',
-  },
+},
   specIcon: {
     fontSize: 48,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   specName: {
     fontSize: HIGConstants.FONT_SIZE_H2,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   specBrand: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   specRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   specLabel: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
-  },
+},
   specValue: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '500',
     color: HIGColors.label,
-  },
+},
   difficultyContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+},
   sectionHeader: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
     marginTop: HIGConstants.SPACING_LG,
-  },
+},
   
   // Characteristics
   characteristicsSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   characteristicItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   bullet: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.systemBlue,
     marginRight: HIGConstants.SPACING_SM,
     lineHeight: 22,
-  },
+},
   characteristicText: {
     flex: 1,
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     lineHeight: 22,
-  },
+},
   
   // Techniques
   techniquesSection: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   techniqueContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
+},
   techniqueBadge: {
     backgroundColor: HIGColors.systemBlue,
     paddingVertical: HIGConstants.SPACING_XS,
@@ -484,17 +462,17 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusSmall,
     marginRight: HIGConstants.SPACING_SM,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   techniqueText: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.white,
     fontWeight: '500',
-  },
+},
   
   // Size Details
   sizesSection: {
     marginBottom: HIGConstants.SPACING_XL,
-  },
+},
   sizeDetailCard: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.cornerRadiusSmall,
@@ -502,36 +480,36 @@ const styles = StyleSheet.create({
     marginBottom: HIGConstants.SPACING_SM,
     borderWidth: 1,
     borderColor: HIGColors.systemGray4,
-  },
+},
   sizeDetailHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   sizeDetailTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   sizeDetailCapacity: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
-  },
+},
   sizeDetailFilter: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: 2,
-  },
+},
   sizeDetailRatio: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginBottom: 2,
-  },
+},
   sizeDetailDose: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
-  },
+},
 });
 
 export default EnhancedDripperSelector;

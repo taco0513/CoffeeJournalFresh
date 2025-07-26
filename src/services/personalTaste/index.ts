@@ -16,6 +16,7 @@ import Realm from 'realm';
 // import { FlavorLearningEngine } from '../FlavorLearningEngine'; // Moved to backlog
 import { AchievementSystem } from '../AchievementSystem';
 
+import { Logger } from '../LoggingService';
 export interface PersonalTasteServices {
   // analysisService: PersonalTasteAnalysisService; // Moved to backlog
   // learningEngine: FlavorLearningEngine; // Moved to backlog
@@ -29,12 +30,12 @@ export const initializePersonalTasteServices = (realm: Realm): PersonalTasteServ
 
   // Initialize achievement definitions
   achievementSystem.initializeAchievements().catch(error => {
-    console.error('Error initializing achievements:', error);
-  });
+    Logger.error('Error initializing achievements:', 'service', { component: 'index', error: error });
+});
 
   return {
     // analysisService, // Moved to backlog
     // learningEngine, // Moved to backlog
     achievementSystem,
-  };
+};
 };

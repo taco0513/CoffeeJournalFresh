@@ -16,7 +16,8 @@ import { HIGColors, HIGConstants } from '../styles/common';
 import { addCoffeeToCatalog } from '../services/supabase/coffeeSearch';
 import { CoffeeDiscoveryAlert } from './CoffeeDiscoveryAlert';
 import { AchievementSystem } from '../services/AchievementSystem';
-import { useUserStore } from '../stores/userStore';
+import { Logger } from '../services/LoggingService';
+import { useUserStore } from '../stores/useUserStore';
 
 interface AddCoffeeModalProps {
   visible: boolean;
@@ -47,7 +48,7 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
     if (!coffeeName.trim()) {
       Alert.alert('오류', '커피 이름을 입력해주세요.');
       return;
-    }
+  }
 
     setIsSubmitting(true);
     try {
@@ -60,7 +61,7 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
         process: process.trim() || undefined,
         altitude: altitude.trim() || undefined,
         harvest_year: harvestYear ? parseInt(harvestYear) : undefined,
-      };
+    };
 
       await addCoffeeToCatalog(newCoffee);
       
@@ -68,14 +69,14 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
       try {
         const achievementSystem = new AchievementSystem();
         await achievementSystem.trackCoffeeDiscovery(user?.id || 'anonymous', newCoffee);
-      } catch (error) {
-        console.log('Achievement tracking skipped:', error);
-      }
+    } catch (error) {
+        Logger.debug('Achievement tracking skipped:', 'component', { component: 'AddCoffeeModal', error: error });
+    }
       
       // Show discovery alert instead of default alert
       setShowDiscoveryAlert(true);
-    } catch (error: any) {
-      console.error('Error adding coffee:', error);
+  } catch (error) {
+      Logger.error('Error adding coffee:', 'component', { component: 'AddCoffeeModal', error: error });
       
       // Check if it's an authentication error
       if (error.message && error.message.includes('로그인이 필요합니다')) {
@@ -90,17 +91,17 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
                 onClose();
                 // Navigate to profile screen (login is handled there)
                 navigation.navigate('Profile' as never);
-              }
             }
+          }
           ]
         );
-      } else {
+    } else {
         Alert.alert('오류', '커피 추가 중 오류가 발생했습니다.');
-      }
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  } finally {
+      setIsSubmitting(false);
+  }
+};
 
   const resetForm = () => {
     setCoffeeName('');
@@ -110,7 +111,7 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
     setProcess('');
     setAltitude('');
     setHarvestYear('');
-  };
+};
 
   return (
     <>
@@ -254,7 +255,7 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
         onCoffeeAdded(coffeeName.trim());
         resetForm();
         onClose();
-      }}
+    }}
     />
   </>
   );
@@ -266,7 +267,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
+},
   modalContent: {
     backgroundColor: '#FFFFFF',
     borderRadius: HIGConstants.BORDER_RADIUS * 2,
@@ -277,7 +278,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-  },
+},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -285,50 +286,50 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_LG,
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
-  },
+},
   title: {
     fontSize: 20,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   closeButton: {
     width: HIGConstants.MIN_TOUCH_TARGET,
     height: HIGConstants.MIN_TOUCH_TARGET,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   closeButtonText: {
     fontSize: 24,
     color: HIGColors.secondaryLabel,
-  },
+},
   form: {
     padding: HIGConstants.SPACING_LG,
-  },
+},
   roasteryInfo: {
     backgroundColor: HIGColors.gray6,
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS,
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   roasteryLabel: {
     fontSize: 13,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   roasteryName: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   inputGroup: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   label: {
     fontSize: 13,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   input: {
     minHeight: HIGConstants.MIN_TOUCH_TARGET,
     borderWidth: 1,
@@ -339,49 +340,49 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: HIGColors.label,
     backgroundColor: '#FFFFFF',
-  },
+},
   notice: {
     backgroundColor: HIGColors.gray6,
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.BORDER_RADIUS,
     marginTop: HIGConstants.SPACING_SM,
-  },
+},
   noticeText: {
     fontSize: 13,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   buttonContainer: {
     flexDirection: 'row',
     padding: HIGConstants.SPACING_LG,
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.gray4,
     gap: HIGConstants.SPACING_SM,
-  },
+},
   button: {
     flex: 1,
     minHeight: HIGConstants.MIN_TOUCH_TARGET,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: HIGConstants.BORDER_RADIUS,
-  },
+},
   cancelButton: {
     backgroundColor: HIGColors.gray5,
-  },
+},
   cancelButtonText: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   submitButton: {
     backgroundColor: HIGColors.blue,
-  },
+},
   submitButtonText: {
     fontSize: 17,
     fontWeight: '600',
     color: '#FFFFFF',
-  },
+},
   disabledButton: {
     opacity: 0.5,
-  },
+},
 });

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { IOSLayout, IOSSpacing } from '../../styles/ios-hig-2024';
 import {
   YStack,
   XStack,
@@ -22,29 +23,7 @@ const Container = styled(YStack, {
   backgroundColor: '$background',
 })
 
-const HeaderBar = styled(XStack, {
-  height: 44,
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingHorizontal: '$lg',
-  backgroundColor: '$background',
-  borderBottomWidth: 0.5,
-  borderBottomColor: '$borderColor',
-})
-
-const BackButton = styled(Text, {
-  fontSize: 24,
-  color: '$primary',
-  fontFamily: '$body',
-  pressStyle: { opacity: 0.7 },
-})
-
-const HeaderTitle = styled(Text, {
-  fontSize: 17,
-  fontWeight: '600',
-  color: '$color',
-  fontFamily: '$heading',
-})
+// HeaderBar, BackButton, HeaderTitle 제거됨 - 네비게이션 헤더 사용
 
 const SkipButton = styled(Text, {
   fontSize: 15,
@@ -110,7 +89,7 @@ const StyledTextArea = styled(TextArea, {
   borderWidth: 0,
   focusStyle: {
     borderWidth: 0,
-  },
+},
 })
 
 const CharacterCount = styled(Text, {
@@ -160,16 +139,16 @@ const SelectionTag = styled(Button, {
   pressStyle: {
     scale: 0.95,
     backgroundColor: '$primary',
-  },
+},
   
   variants: {
     selected: {
       true: {
         backgroundColor: '$primary',
         borderColor: '$primary',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const SelectionText = styled(Text, {
@@ -182,17 +161,12 @@ const SelectionText = styled(Text, {
       true: {
         color: 'white',
         fontWeight: '600',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
-const BottomContainer = styled(XStack, {
-  padding: '$lg',
-  backgroundColor: '$background',
-  borderTopWidth: 0.5,
-  borderTopColor: '$borderColor',
-})
+// BottomContainer는 SafeArea를 고려해서 동적으로 처리
 
 const NextButton = styled(Button, {
   height: 48,
@@ -202,7 +176,7 @@ const NextButton = styled(Button, {
   pressStyle: {
     backgroundColor: '$primaryHover',
     scale: 0.98,
-  },
+},
 })
 
 const NextButtonText = styled(Text, {
@@ -222,35 +196,35 @@ const PersonalCommentScreenTamagui = () => {
     const words = text.split(' ').filter(word => word.trim() !== '');
     const uniqueWords = [...new Set(words)];
     return uniqueWords.join(' ');
-  };
+};
 
   const [personalComment, setPersonalComment] = useState(
     deduplicateText(currentTasting.personalComment || '')
   );
-  const textInputRef = useRef<any>(null);
+  const textInputRef = useRef<unknown>(null);
 
   // Auto-focus on the input field when screen loads
   useEffect(() => {
     const timer = setTimeout(() => {
       textInputRef.current?.focus();
-    }, 500);
+  }, 500);
     return () => clearTimeout(timer);
-  }, []);
+}, []);
 
   const handleNext = async () => {
     updateField('personalComment', personalComment.trim());
     
     try {
       navigation.navigate('RoasterNotes' as never);
-    } catch (error) {
+  } catch (error) {
       navigation.navigate('RoasterNotes' as never);
-    }
-  };
+  }
+};
 
   const handleSkip = () => {
     updateField('personalComment', '');
     navigation.navigate('RoasterNotes' as never);
-  };
+};
 
   // Get user selections summary
   const getUserSelections = () => {
@@ -260,24 +234,24 @@ const PersonalCommentScreenTamagui = () => {
       sensoryByCategory: {} as Record<string, string[]>,
       ratings: {} as Record<string, number>,
       mouthfeel: ''
-    };
+  };
     
     // Flavor selections (convert to Korean)
     if (currentTasting.selectedFlavors && currentTasting.selectedFlavors.length > 0) {
       const { translations } = flavorWheelKorean;
       
-      currentTasting.selectedFlavors.forEach((flavorPath: any) => {
+      currentTasting.selectedFlavors.forEach((flavorPath: unknown) => {
         if (flavorPath.level3) {
           selections.flavors.push(flavorPath.level3);
-        } else if (flavorPath.level2) {
+      } else if (flavorPath.level2) {
           const koreanName2 = translations[flavorPath.level2 as keyof typeof translations] || flavorPath.level2;
           selections.flavors.push(koreanName2);
-        } else if (flavorPath.level1) {
+      } else if (flavorPath.level1) {
           const koreanName1 = flavorWheelKorean.level1[flavorPath.level1 as keyof typeof flavorWheelKorean.level1] || flavorPath.level1;
           selections.flavors.push(koreanName1);
-        }
-      });
-    }
+      }
+    });
+  }
     
     // Sensory expressions (grouped by category)
     const { selectedSensoryExpressions } = useTastingStore.getState();
@@ -289,7 +263,7 @@ const PersonalCommentScreenTamagui = () => {
         body: '바디',
         aftertaste: '애프터',
         balance: '밸런스'
-      };
+    };
       
       const addedExpressions = new Set<string>();
       
@@ -304,12 +278,12 @@ const PersonalCommentScreenTamagui = () => {
             const categoryKorean = categoryNames[expr.categoryId] || expr.categoryId;
             if (!selections.sensoryByCategory[categoryKorean]) {
               selections.sensoryByCategory[categoryKorean] = [];
-            }
-            selections.sensoryByCategory[categoryKorean].push(expr.korean);
           }
+            selections.sensoryByCategory[categoryKorean].push(expr.korean);
         }
-      });
-    }
+      }
+    });
+  }
     
     // Basic evaluation scores
     selections.ratings = {
@@ -319,13 +293,13 @@ const PersonalCommentScreenTamagui = () => {
       '쓴맛': currentTasting.bitterness,
       '여운': currentTasting.finish,
       '밸런스': currentTasting.balance
-    };
+  };
     
     // Mouthfeel
     selections.mouthfeel = currentTasting.mouthfeel || '';
     
     return selections;
-  };
+};
   
   const userSelections = getUserSelections();
 
@@ -336,18 +310,18 @@ const PersonalCommentScreenTamagui = () => {
     // Prevent adding duplicate text
     if (currentText.includes(text)) {
       return;
-    }
+  }
     
     if (currentText) {
       if (currentText.endsWith('.')) {
         setPersonalComment(currentText + ' ' + text);
-      } else {
-        setPersonalComment(currentText + ' ' + text);
-      }
     } else {
-      setPersonalComment(text);
+        setPersonalComment(currentText + ' ' + text);
     }
-  };
+  } else {
+      setPersonalComment(text);
+  }
+};
 
   const hasSelections = userSelections.flavors.length > 0 || 
     Object.keys(userSelections.sensoryByCategory).length > 0 ||
@@ -356,14 +330,7 @@ const PersonalCommentScreenTamagui = () => {
 
   return (
     <Container>
-      <SafeAreaView style={{ flex: 1 }}>
-        <YStack flex={1}>
-          {/* Navigation Bar */}
-          <HeaderBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
-            <BackButton onPress={() => navigation.goBack()}>←</BackButton>
-            <HeaderTitle>개인 노트</HeaderTitle>
-            <SkipButton onPress={handleSkip}>건너뛰기</SkipButton>
-          </HeaderBar>
+      <YStack flex={1}>
 
           {/* Progress Bar */}
           <ProgressBar>
@@ -427,7 +394,7 @@ const PersonalCommentScreenTamagui = () => {
                                 </SelectionText>
                               </SelectionTag>
                             );
-                          })}
+                        })}
                         </SelectionTags>
                       </SelectionRow>
                     )}
@@ -452,7 +419,7 @@ const PersonalCommentScreenTamagui = () => {
                                 </SelectionText>
                               </SelectionTag>
                             );
-                          })}
+                        })}
                         </SelectionTags>
                       </SelectionRow>
                     ))}
@@ -480,7 +447,7 @@ const PersonalCommentScreenTamagui = () => {
                                   </SelectionText>
                                 </SelectionTag>
                               );
-                            })}
+                          })}
                         </SelectionTags>
                       </SelectionRow>
                     )}
@@ -509,7 +476,13 @@ const PersonalCommentScreenTamagui = () => {
             </ScrollView>
 
             {/* Bottom Button */}
-            <BottomContainer>
+            <XStack
+              padding="$lg"
+              paddingBottom={Math.max(insets.bottom, IOSLayout.safeAreaBottom) + IOSSpacing.md}
+              backgroundColor="$background"
+              borderTopWidth={0.5}
+              borderTopColor="$borderColor"
+            >
               <NextButton
                 flex={1}
                 onPress={handleNext}
@@ -517,10 +490,9 @@ const PersonalCommentScreenTamagui = () => {
               >
                 <NextButtonText>완료</NextButtonText>
               </NextButton>
-            </BottomContainer>
+            </XStack>
           </KeyboardAvoidingView>
         </YStack>
-      </SafeAreaView>
     </Container>
   );
 };

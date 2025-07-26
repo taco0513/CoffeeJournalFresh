@@ -29,7 +29,7 @@ export const CompactSensoryGrid = memo<CompactSensoryGridProps>(({ attributes })
   const rows = [];
   for (let i = 0; i < attributes.length; i += itemsPerRow) {
     rows.push(attributes.slice(i, i + itemsPerRow));
-  }
+}
 
   return (
     <View style={styles.container}>
@@ -70,12 +70,12 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
-  },
+},
   row: {
     flexDirection: 'row',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   attributeContainer: {
     flex: 0,
-  },
+},
 });

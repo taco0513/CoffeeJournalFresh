@@ -20,8 +20,8 @@ interface JournalIntegratedScreenProps {
   route?: {
     params?: {
       initialTab?: TabType;
-    };
   };
+};
 }
 
 // Styled Components
@@ -51,15 +51,15 @@ const TabButton = styled(Button, {
   pressStyle: {
     backgroundColor: '$gray2',
     opacity: 0.8,
-  },
+},
   
   variants: {
     active: {
       true: {
         borderBottomColor: '$bean',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const TabText = styled(Text, {
@@ -73,9 +73,9 @@ const TabText = styled(Text, {
       true: {
         color: '$bean',
         fontWeight: '600',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const ContentContainer = styled(YStack, {
@@ -106,12 +106,12 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
         animation="quick"
         pressStyle={{
           scale: 0.98,
-        }}
+      }}
       >
         <TabText active={isActive}>{label}</TabText>
       </TabButton>
     );
-  };
+};
 
   const renderContent = () => {
     switch (activeTab) {
@@ -128,8 +128,8 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
             </Text>
           </YStack>
         );
-    }
-  };
+  }
+};
 
   return (
     <Container>
@@ -148,11 +148,11 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
               enterStyle={{
                 opacity: 0,
                 x: -10,
-              }}
+            }}
               exitStyle={{
                 opacity: 0,
                 x: 10,
-              }}
+            }}
             />
           </TabContainer>
 
@@ -166,11 +166,11 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
                 enterStyle={{
                   opacity: 0,
                   x: activeTab === 'history' ? -20 : 20,
-                }}
+              }}
                 exitStyle={{
                   opacity: 0,
                   x: activeTab === 'history' ? 20 : -20,
-                }}
+              }}
               >
                 {renderContent()}
               </YStack>

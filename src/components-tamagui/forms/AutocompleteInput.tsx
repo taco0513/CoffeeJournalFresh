@@ -26,9 +26,9 @@ interface AutocompleteInputProps {
   maxSuggestions?: number;
   disabled?: boolean;
   showAddNew?: boolean;
-  style?: any;
-  inputStyle?: any;
-  containerStyle?: any;
+  style?: StyleProp<ViewStyle>;
+  inputStyle?: unknown;
+  containerStyle?: unknown;
 }
 
 export type AutocompleteInputVariant = 'default' | 'error' | 'success';
@@ -68,29 +68,29 @@ const StyledInput = styled(Input, {
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
-  },
+},
   
   disabledStyle: {
     opacity: 0.5,
     backgroundColor: '$gray3',
     color: '$gray10',
-  },
+},
   
   variants: {
     variant: {
       default: {
         borderColor: '$borderColor',
-      },
+    },
       error: {
         borderColor: '$red8',
         backgroundColor: '$red1',
-      },
+    },
       success: {
         borderColor: '$green8',
         backgroundColor: '$green1',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const SuggestionsContainer = styled(Card, {
@@ -129,31 +129,31 @@ const SuggestionItem = styled(XStack, {
   pressStyle: {
     backgroundColor: '$gray3',
     scale: 0.98,
-  },
+},
   
   hoverStyle: {
     backgroundColor: '$gray2',
-  },
+},
   
   variants: {
     selected: {
       true: {
         backgroundColor: '$cupBlueLight',
-      },
     },
+  },
     isAddNew: {
       true: {
         backgroundColor: '$gray2',
         borderLeftWidth: 3,
         borderLeftColor: '$cupBlue',
-      },
     },
+  },
     isLast: {
       true: {
         borderBottomWidth: 0,
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const SuggestionText = styled(Text, {
@@ -167,14 +167,14 @@ const SuggestionText = styled(Text, {
       true: {
         color: '$cupBlue',
         fontWeight: '500',
-      },
     },
+  },
     selected: {
       true: {
         fontWeight: '500',
-      },
     },
-  } as const,
+  },
+} as const,
 })
 
 const AddIcon = styled(Text, {
@@ -206,13 +206,13 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   const [internalValue, setInternalValue] = useState(value);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   
-  const inputRef = useRef<any>(null);
+  const inputRef = useRef<unknown>(null);
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Sync internal value with prop value
   useEffect(() => {
     setInternalValue(value);
-  }, [value]);
+}, [value]);
 
   // Show/hide suggestions based on focus and input
   useEffect(() => {
@@ -225,17 +225,17 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
     // Reset selected index when suggestions change
     if (shouldShow) {
       setSelectedIndex(-1);
-    }
-  }, [inputFocused, internalValue, disabled]);
+  }
+}, [inputFocused, internalValue, disabled]);
 
   // Cleanup debounce timer on unmount
   useEffect(() => {
     return () => {
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);
-      }
-    };
-  }, []);
+    }
+  };
+}, []);
 
   const handleChangeText = (text: string) => {
     // Update internal value immediately for smooth typing
@@ -244,13 +244,13 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
     // Clear previous debounce timer
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
-    }
+  }
     
     // Debounce the actual update to parent
     debounceTimer.current = setTimeout(() => {
       onChangeText(text);
-    }, 200); // 200ms delay for smooth typing
-  };
+  }, 200); // 200ms delay for smooth typing
+};
 
   const handleSelect = (item: string) => {
     const selectedValue = item.startsWith('+ "') 
@@ -266,22 +266,22 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
     // Clear any pending debounce
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
-    }
+  }
     
     inputRef.current?.blur();
-  };
+};
 
   const handleFocus = () => {
     if (disabled) return;
     setInputFocused(true);
-  };
+};
 
   const handleBlur = () => {
     // Clear any pending debounce and update immediately
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
       onChangeText(internalValue);
-    }
+  }
     
     // Delay hiding suggestions to allow for touch events
     setTimeout(() => {
@@ -290,8 +290,8 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
       setSelectedIndex(-1);
       
       onBlur?.();
-    }, 150);
-  };
+  }, 150);
+};
 
   // Filter and prepare suggestions
   const filteredSuggestions = suggestions
@@ -336,12 +336,12 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
               opacity: 0,
               scale: 0.95,
               y: -10,
-            }}
+          }}
             exitStyle={{
               opacity: 0,
               scale: 0.95,
               y: -10,
-            }}
+          }}
           >
             <ScrollView
               showsVerticalScrollIndicator={false}
@@ -371,7 +371,7 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
                     {isAddNew && <AddIcon>+</AddIcon>}
                   </SuggestionItem>
                 );
-              })}
+            })}
             </ScrollView>
           </SuggestionsContainer>
         )}

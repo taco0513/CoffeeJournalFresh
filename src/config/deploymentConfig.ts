@@ -74,7 +74,7 @@ export interface RolloutStrategy {
     errorRate: number;
     performanceDegradation: number;
     userComplaintRate: number;
-  };
+};
   autoRollback: boolean;
   notificationChannels: string[];
 }
@@ -137,16 +137,16 @@ export interface RateLimits {
     requestsPerMinute: number;
     requestsPerHour: number;
     requestsPerDay: number;
-  };
+};
   feedback: {
     submissionsPerHour: number;
     submissionsPerDay: number;
-  };
+};
   uploads: {
     filesPerHour: number;
     maxFileSize: number; // in MB
     totalSizePerDay: number; // in MB
-  };
+};
 }
 
 /**
@@ -175,18 +175,18 @@ const PRODUCTION_CONFIG: DeploymentConfig = {
           requestsPerMinute: 60,
           requestsPerHour: 1000,
           requestsPerDay: 10000,
-        },
+      },
         feedback: {
           submissionsPerHour: 5,
           submissionsPerDay: 20,
-        },
+      },
         uploads: {
           filesPerHour: 10,
           maxFileSize: 10,
           totalSizePerDay: 100,
-        },
       },
     },
+  },
     us_beta: {
       enabled: true,
       maxUsers: 500,
@@ -203,19 +203,19 @@ const PRODUCTION_CONFIG: DeploymentConfig = {
           requestsPerMinute: 30,
           requestsPerHour: 500,
           requestsPerDay: 5000,
-        },
+      },
         feedback: {
           submissionsPerHour: 10,
           submissionsPerDay: 50,
-        },
+      },
         uploads: {
           filesPerHour: 20,
           maxFileSize: 20,
           totalSizePerDay: 200,
-        },
       },
     },
   },
+},
   
   featureFlags: {
     // Core Features - Enabled for both markets
@@ -242,7 +242,7 @@ const PRODUCTION_CONFIG: DeploymentConfig = {
     betaTestingDashboard: true,
     crashReporting: true,
     remoteConfig: true,
-  },
+},
   
   rolloutStrategy: {
     type: 'gradual',
@@ -256,8 +256,8 @@ const PRODUCTION_CONFIG: DeploymentConfig = {
           maxErrorRate: 0.05,
           minUserSatisfaction: 4.0,
           requiredSuccessMetrics: ['app_start_success', 'tasting_save_success'],
-        },
       },
+    },
       {
         name: 'early_rollout',
         percentage: 25,
@@ -267,8 +267,8 @@ const PRODUCTION_CONFIG: DeploymentConfig = {
           maxErrorRate: 0.03,
           minUserSatisfaction: 4.2,
           requiredSuccessMetrics: ['app_start_success', 'tasting_save_success', 'search_performance'],
-        },
       },
+    },
       {
         name: 'full_rollout',
         percentage: 100,
@@ -278,18 +278,18 @@ const PRODUCTION_CONFIG: DeploymentConfig = {
           maxErrorRate: 0.02,
           minUserSatisfaction: 4.0,
           requiredSuccessMetrics: ['app_start_success', 'tasting_save_success', 'search_performance', 'user_retention'],
-        },
       },
+    },
     ],
     rollbackThreshold: {
       crashRate: 0.02,
       errorRate: 0.1,
       performanceDegradation: 0.3,
       userComplaintRate: 0.05,
-    },
+  },
     autoRollback: true,
     notificationChannels: ['email', 'slack'],
-  },
+},
   
   monitoring: {
     enabled: true,
@@ -301,13 +301,13 @@ const PRODUCTION_CONFIG: DeploymentConfig = {
         endpoint: 'alerts@cupnote.app',
         enabled: true,
         severity: 'critical',
-      },
+    },
       {
         type: 'slack',
         endpoint: 'https://hooks.slack.com/services/...',
         enabled: true,
         severity: 'high',
-      },
+    },
     ],
     healthCheckInterval: 30,
     metricsRetention: 90,
@@ -319,7 +319,7 @@ const PRODUCTION_CONFIG: DeploymentConfig = {
       'daily_active_users',
       'retention_rate',
     ],
-  },
+},
   
   apiEndpoints: {
     production: 'https://api.cupnote.app/v1',
@@ -329,7 +329,7 @@ const PRODUCTION_CONFIG: DeploymentConfig = {
     analytics: 'https://analytics.cupnote.app',
     crashReporting: 'https://crashreporting.cupnote.app',
     featureFlags: 'https://featureflags.cupnote.app',
-  },
+},
   
   crashReporting: {
     enabled: true,
@@ -339,7 +339,7 @@ const PRODUCTION_CONFIG: DeploymentConfig = {
     performanceTracking: true,
     networkTracking: true,
     automaticSessionTracking: true,
-  },
+},
 };
 
 /**
@@ -356,14 +356,14 @@ const STAGING_CONFIG: DeploymentConfig = {
       maxUsers: 1000,
       apiBaseUrl: 'https://staging-api.cupnote.app',
       cdnUrl: 'https://staging-cdn.cupnote.app',
-    },
+  },
     us_beta: {
       ...PRODUCTION_CONFIG.marketConfig.us_beta,
       maxUsers: 100,
       apiBaseUrl: 'https://staging-beta-api.cupnote.app',
       cdnUrl: 'https://staging-beta-cdn.cupnote.app',
-    },
   },
+},
   
   featureFlags: {
     ...PRODUCTION_CONFIG.featureFlags,
@@ -372,12 +372,12 @@ const STAGING_CONFIG: DeploymentConfig = {
     photoOCR: true,
     aiCoaching: true,
     exportData: true,
-  },
+},
   
   crashReporting: {
     ...PRODUCTION_CONFIG.crashReporting,
     environment: 'staging',
-  },
+},
 };
 
 /**
@@ -395,15 +395,15 @@ const DEVELOPMENT_CONFIG: DeploymentConfig = {
       apiBaseUrl: 'http://localhost:3000',
       cdnUrl: 'http://localhost:3001',
       rolloutPercentage: 100,
-    },
+  },
     us_beta: {
       ...PRODUCTION_CONFIG.marketConfig.us_beta,
       maxUsers: 20,
       apiBaseUrl: 'http://localhost:3000',
       cdnUrl: 'http://localhost:3001',
       rolloutPercentage: 100,
-    },
   },
+},
   
   featureFlags: {
     ...PRODUCTION_CONFIG.featureFlags,
@@ -415,19 +415,19 @@ const DEVELOPMENT_CONFIG: DeploymentConfig = {
     exportData: true,
     performanceDashboard: true,
     betaTestingDashboard: true,
-  },
+},
   
   rolloutStrategy: {
     ...PRODUCTION_CONFIG.rolloutStrategy,
     type: 'immediate',
     autoRollback: false,
-  },
+},
   
   crashReporting: {
     ...PRODUCTION_CONFIG.crashReporting,
     enabled: false, // Disable in development
     environment: 'development',
-  },
+},
 };
 
 /**
@@ -441,25 +441,25 @@ export const getCurrentDeploymentConfig = (): DeploymentConfig => {
     
     if (__DEV__) {
       config = DEVELOPMENT_CONFIG;
-    } else {
+  } else {
       // In production, you might determine this from build settings or environment variables
       const isStaging = false; // This would be determined by your build process
       config = isStaging ? STAGING_CONFIG : PRODUCTION_CONFIG;
-    }
+  }
     
     performanceMonitor.endTiming(timingId, 'deployment_config_success', {
       environment: config.environment,
       version: config.version,
-    });
+  });
     
     return config;
-  } catch (error) {
+} catch (error) {
     performanceMonitor.endTiming(timingId, 'deployment_config_error');
     performanceMonitor.reportError(error as Error, 'deployment_config_load', 'high');
     
     // Fallback to development config
     return DEVELOPMENT_CONFIG;
-  }
+}
 };
 
 /**
@@ -489,11 +489,11 @@ export const getApiEndpoint = (type: keyof ApiEndpoints = 'production'): string 
   // Use environment-specific endpoint
   if (config.environment === 'development') {
     return config.apiEndpoints.development;
-  } else if (config.environment === 'staging') {
+} else if (config.environment === 'staging') {
     return config.apiEndpoints.staging;
-  } else {
+} else {
     return config.apiEndpoints.production;
-  }
+}
 };
 
 /**
@@ -505,11 +505,11 @@ export const getRateLimit = (type: keyof RateLimits, period: string): number => 
   
   if (type === 'apiCalls') {
     return (rateLimits as RateLimits['apiCalls'])[period as keyof RateLimits['apiCalls']] || 0;
-  } else if (type === 'feedback') {
+} else if (type === 'feedback') {
     return (rateLimits as RateLimits['feedback'])[period as keyof RateLimits['feedback']] || 0;
-  } else if (type === 'uploads') {
+} else if (type === 'uploads') {
     return (rateLimits as RateLimits['uploads'])[period as keyof RateLimits['uploads']] || 0;
-  }
+}
   
   return 0;
 };
@@ -538,7 +538,7 @@ export const shouldReceiveRollout = (userId: string): boolean => {
   
   if (rolloutPercentage >= 100) {
     return true;
-  }
+}
   
   // Consistent rollout based on user ID hash
   const hash = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);

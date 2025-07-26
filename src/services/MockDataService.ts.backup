@@ -2,7 +2,9 @@ import { TastingData } from './realm/types';
 import { HomeCafeData, PouroverDripper, FilterType, PourTechnique } from '../types/tasting';
 import { SelectedSensoryExpression } from '../types/tasting';
 import RealmService from './realm/RealmService';
-import { RealmLogger } from '../utils/logger';
+import { Logger } from '../utils/logger';
+import { MouthfeelType, AgitationType } from '../types/tasting';
+import { TastingRecord } from './realm/types';
 
 export enum MockDataScenario {
   BEGINNER = 'beginner',
@@ -39,8 +41,8 @@ export class MockDataService {
         return this.generateStatisticsTestData(count, includeHomeCafe);
       default:
         return this.generateIntermediateData(count, includeHomeCafe);
-    }
   }
+}
 
   /**
    * Beginner-friendly data with simple flavor expressions
@@ -73,9 +75,9 @@ export class MockDataService {
           altitude: ['1200m', '1500m', '1800m'][i % 3],
           process: ['워시드', '내추럴', '허니'][i % 3],
           temperature: ['hot', 'cold'][i % 2] as 'hot' | 'cold'
-        },
+      },
         roasterNotes: `초보자를 위한 ${i + 1}번째 커피 테이스팅`,
-        selectedFlavors: beginnerFlavors.slice(0, Math.floor(Math.random() * 3) + 1) as any,
+        selectedFlavors: beginnerFlavors.slice(0, Math.floor(Math.random() * 3) + 1),
         selectedSensoryExpressions: this.generateBeginnerSensoryData(),
         sensoryAttributes: {
           body: Math.floor(Math.random() * 3) + 2, // 2-4 range
@@ -85,20 +87,20 @@ export class MockDataService {
           mouthfeel: ['Clean', 'Creamy'][Math.floor(Math.random() * 2)] as 'Clean' | 'Creamy',
           bitterness: Math.floor(Math.random() * 3) + 2,
           balance: Math.floor(Math.random() * 3) + 2
-        },
+      },
         matchScore: {
           total: Math.floor(Math.random() * 30) + 60, // 60-90 range
           flavorScore: Math.floor(Math.random() * 15) + 30,
           sensoryScore: Math.floor(Math.random() * 15) + 30
-        },
+      },
         personalComment: `초보자 관점에서 ${i + 1}번째 커피 경험`,
         mode: isHomeCafe ? 'home_cafe' : 'cafe',
         homeCafeData: isHomeCafe ? this.generateSimpleHomeCafeData() : undefined
-      });
-    }
+    });
+  }
 
     return data;
-  }
+}
 
   /**
    * Intermediate data with moderate complexity
@@ -133,32 +135,32 @@ export class MockDataService {
           altitude: ['1600m', '1800m', '2000m', '2200m'][i % 4],
           process: ['Washed', 'Natural', 'Honey', 'Anaerobic'][i % 4],
           temperature: ['hot', 'cold'][i % 2] as 'hot' | 'cold'
-        },
+      },
         roasterNotes: `중급자를 위한 스페셜티 커피 #${i + 1}. 복합적인 향미 프로필을 가진 커피`,
-        selectedFlavors: intermediateFlavors.slice(0, Math.floor(Math.random() * 5) + 2) as any,
+        selectedFlavors: intermediateFlavors.slice(0, Math.floor(Math.random() * 5) + 2),
         selectedSensoryExpressions: this.generateIntermediateSensoryData(),
         sensoryAttributes: {
           body: Math.floor(Math.random() * 5) + 1,
           acidity: Math.floor(Math.random() * 5) + 1,
           sweetness: Math.floor(Math.random() * 5) + 1,
           finish: Math.floor(Math.random() * 5) + 1,
-          mouthfeel: ['Clean', 'Creamy', 'Juicy', 'Silky'][Math.floor(Math.random() * 4)] as any,
+          mouthfeel: ['Clean', 'Creamy', 'Juicy', 'Silky'][Math.floor(Math.random() * 4)] as MouthfeelType,
           bitterness: Math.floor(Math.random() * 5) + 1,
           balance: Math.floor(Math.random() * 5) + 1
-        },
+      },
         matchScore: {
           total: Math.floor(Math.random() * 40) + 70, // 70-100 range
           flavorScore: Math.floor(Math.random() * 20) + 35,
           sensoryScore: Math.floor(Math.random() * 20) + 35
-        },
+      },
         personalComment: `중급자 테이스팅 노트 #${i + 1}: 향미의 복합성과 균형감이 인상적`,
         mode: isHomeCafe ? 'home_cafe' : 'cafe',
         homeCafeData: isHomeCafe ? this.generateDetailedHomeCafeData() : undefined
-      });
-    }
+    });
+  }
 
     return data;
-  }
+}
 
   /**
    * Expert data with complex flavor profiles
@@ -196,32 +198,32 @@ export class MockDataService {
           altitude: ['1800m', '2000m', '2200m', '2400m'][i % 4],
           process: ['Washed', 'Natural', 'Honey', 'Carbonic Maceration'][i % 4],
           temperature: 'hot' as const
-        },
+      },
         roasterNotes: `프리미엄 스페셜티 커피 #${i + 1}. 테루아의 특성과 가공법의 조화가 만들어낸 복합적 향미`,
-        selectedFlavors: expertFlavors.slice(0, Math.floor(Math.random() * 8) + 4) as any,
+        selectedFlavors: expertFlavors.slice(0, Math.floor(Math.random() * 8) + 4),
         selectedSensoryExpressions: this.generateExpertSensoryData(),
         sensoryAttributes: {
           body: Math.floor(Math.random() * 5) + 1,
           acidity: Math.floor(Math.random() * 5) + 1,
           sweetness: Math.floor(Math.random() * 5) + 1,
           finish: Math.floor(Math.random() * 5) + 1,
-          mouthfeel: ['Clean', 'Creamy', 'Juicy', 'Silky'][Math.floor(Math.random() * 4)] as any,
+          mouthfeel: ['Clean', 'Creamy', 'Juicy', 'Silky'][Math.floor(Math.random() * 4)] as MouthfeelType,
           bitterness: Math.floor(Math.random() * 5) + 1,
           balance: Math.floor(Math.random() * 5) + 1
-        },
+      },
         matchScore: {
           total: Math.floor(Math.random() * 30) + 80, // 80-100 range
           flavorScore: Math.floor(Math.random() * 15) + 40,
           sensoryScore: Math.floor(Math.random() * 15) + 40
-        },
+      },
         personalComment: `전문가 큐핑 노트 #${i + 1}: 테루아의 독창성과 가공법의 정교함이 조화롭게 표현된 exceptional coffee`,
         mode: isHomeCafe ? 'home_cafe' : 'cafe',
         homeCafeData: isHomeCafe ? this.generateExpertHomeCafeData() : undefined
-      });
-    }
+    });
+  }
 
     return data;
-  }
+}
 
   /**
    * HomeCafe focused data
@@ -251,12 +253,12 @@ export class MockDataService {
           altitude: ['1600m', '1800m', '2000m'][i % 3],
           process: ['Washed', 'Natural', 'Honey'][i % 3],
           temperature: 'hot' as const
-        },
+      },
         roasterNotes: `홈카페 실험 #${i + 1} - ${dripper} 추출법 테스트`,
         selectedFlavors: [
           { level: 1, value: 'Fruity', koreanValue: '과일향' },
           { level: 2, value: 'Berry', koreanValue: '베리류' }
-        ] as any,
+        ],
         selectedSensoryExpressions: this.generateHomeCafeSensoryData(),
         sensoryAttributes: {
           body: Math.floor(Math.random() * 5) + 1,
@@ -266,28 +268,28 @@ export class MockDataService {
           mouthfeel: 'Clean' as const,
           bitterness: Math.floor(Math.random() * 5) + 1,
           balance: Math.floor(Math.random() * 5) + 1
-        },
+      },
         matchScore: {
           total: Math.floor(Math.random() * 50) + 50,
           flavorScore: Math.floor(Math.random() * 25) + 25,
           sensoryScore: Math.floor(Math.random() * 25) + 25
-        },
+      },
         personalComment: `홈카페 실험 기록 #${i + 1}`,
         mode: 'home_cafe',
         homeCafeData: {
           equipment: {
-            dripper: dripper as any,
+            dripper: dripper,
             dripperSize: dripper === 'V60' ? '02' : dripper === 'KalitaWave' ? '185' : undefined,
-            filter: filters[i % filters.length] as any,
+            filter: filters[i % filters.length],
             grinder: {
               brand: grinder.brand,
               model: grinder.model,
               setting: `${Math.floor(Math.random() * 20) + 10}클릭`
-            },
+          },
             server: '하리오 서버 600ml',
             scale: 'Acaia Pearl',
             kettle: '펠로우 스태그 EKG'
-          },
+        },
           recipe: {
             doseIn: Math.floor(Math.random() * 5) + 15, // 15-20g
             waterAmount: Math.floor(Math.random() * 50) + 240, // 240-290ml
@@ -296,26 +298,26 @@ export class MockDataService {
             bloomWater: 30 + Math.floor(Math.random() * 10), // 30-40g
             bloomTime: 30 + Math.floor(Math.random() * 15), // 30-45s
             bloomAgitation: Math.random() > 0.5,
-            pourTechnique: pourTechniques[i % pourTechniques.length] as any,
+            pourTechnique: pourTechniques[i % pourTechniques.length],
             numberOfPours: Math.floor(Math.random() * 3) + 2, // 2-4 pours
             totalBrewTime: Math.floor(Math.random() * 60) + 150, // 2.5-3.5 minutes
             drawdownTime: Math.floor(Math.random() * 30) + 20, // 20-50s
-            agitation: ['none', 'swirl', 'stir'][i % 3] as any,
+            agitation: ['none', 'swirl', 'stir'][i % 3] as AgitationType,
             agitationTiming: '마지막 붓기 후'
-          },
+        },
           notes: {
             grindAdjustment: `${Math.floor(Math.random() * 3) + 1}클릭 더 굵게`,
             channeling: Math.random() > 0.8,
             mudBed: Math.random() > 0.9,
             tasteResult: '산미가 밝아지고 단맛이 더 선명해짐',
             nextExperiment: '물온도를 2도 낮춰서 시도해보기'
-          }
         }
-      });
-    }
+      }
+    });
+  }
 
     return data;
-  }
+}
 
   /**
    * Large dataset for statistics testing
@@ -329,15 +331,15 @@ export class MockDataService {
       
       if (scenario === 0) {
         data.push(...this.generateBeginnerData(1, includeHomeCafe));
-      } else if (scenario === 1) {
+    } else if (scenario === 1) {
         data.push(...this.generateIntermediateData(1, includeHomeCafe));
-      } else {
+    } else {
         data.push(...this.generateExpertData(1, includeHomeCafe));
-      }
     }
+  }
 
     return data;
-  }
+}
 
   /**
    * Generate beginner-level sensory expressions
@@ -349,8 +351,8 @@ export class MockDataService {
       { category: '바디', expression: '부드러운', isSelected: true }
     ];
     
-    return beginnerExpressions.slice(0, Math.floor(Math.random() * 2) + 1) as any;
-  }
+    return beginnerExpressions.slice(0, Math.floor(Math.random() * 2) + 1);
+}
 
   /**
    * Generate intermediate-level sensory expressions
@@ -364,8 +366,8 @@ export class MockDataService {
       { category: '애프터', expression: '길게 남는', isSelected: true }
     ];
     
-    return intermediateExpressions.slice(0, Math.floor(Math.random() * 3) + 2) as any;
-  }
+    return intermediateExpressions.slice(0, Math.floor(Math.random() * 3) + 2);
+}
 
   /**
    * Generate expert-level sensory expressions
@@ -380,8 +382,8 @@ export class MockDataService {
       { category: '밸런스', expression: '조화로운', isSelected: true }
     ];
     
-    return expertExpressions.slice(0, Math.floor(Math.random() * 4) + 3) as any;
-  }
+    return expertExpressions.slice(0, Math.floor(Math.random() * 4) + 3);
+}
 
   /**
    * Generate HomeCafe-specific sensory expressions
@@ -393,8 +395,8 @@ export class MockDataService {
       { category: '바디', expression: '깔끔한', isSelected: true }
     ];
     
-    return homeCafeExpressions as any;
-  }
+    return homeCafeExpressions;
+}
 
   /**
    * Generate simple HomeCafe data for beginners
@@ -408,8 +410,8 @@ export class MockDataService {
           brand: '하리오',
           model: 'Mini Mill',
           setting: '중간'
-        }
-      },
+      }
+    },
       recipe: {
         doseIn: 20,
         waterAmount: 300,
@@ -420,12 +422,12 @@ export class MockDataService {
         totalBrewTime: 240,
         pourTechnique: 'center' as PourTechnique,
         numberOfPours: 3
-      },
+    },
       notes: {
         tasteResult: '처음 시도해본 홈브루잉, 생각보다 괜찮았음'
-      }
-    };
-  }
+    }
+  };
+}
 
   /**
    * Generate detailed HomeCafe data for intermediate users
@@ -438,11 +440,11 @@ export class MockDataService {
           brand: '커맨단테',
           model: 'C40',
           setting: '18클릭'
-        },
+      },
         filter: 'bleached' as FilterType,
         kettle: '구스넥 주전자',
         scale: '디지털 저울'
-      },
+    },
       recipe: {
         doseIn: 22,
         waterAmount: 350,
@@ -453,14 +455,14 @@ export class MockDataService {
         totalBrewTime: 180,
         pourTechnique: 'pulse' as PourTechnique,
         numberOfPours: 3
-      },
+    },
       notes: {
         grindAdjustment: '그라인딩을 1클릭 더 굵게 조정',
         tasteResult: '산미가 더 밝아지고 균형감이 좋아짐',
         nextExperiment: '블룸 시간을 15초 더 늘려보기'
-      }
-    };
-  }
+    }
+  };
+}
 
   /**
    * Generate expert-level HomeCafe data
@@ -471,18 +473,18 @@ export class MockDataService {
     
     return {
       equipment: {
-        dripper: expertDrippers[Math.floor(Math.random() * expertDrippers.length)] as any,
+        dripper: expertDrippers[Math.floor(Math.random() * expertDrippers.length)],
         dripperSize: '02',
-        filter: 'bleached' as any,
+        filter: 'bleached',
         grinder: {
           brand: 'EK43',
           model: 'Mahlkonig',
           setting: '8.5'
-        },
+      },
         server: 'Hario V60 Range Server',
         scale: 'Acaia Lunar',
         kettle: 'Fellow Stagg EKG Pro'
-      },
+    },
       recipe: {
         doseIn: 20,
         waterAmount: 320,
@@ -491,55 +493,121 @@ export class MockDataService {
         bloomWater: 40,
         bloomTime: 45,
         bloomAgitation: true,
-        pourTechnique: expertTechniques[Math.floor(Math.random() * expertTechniques.length)] as any,
+        pourTechnique: expertTechniques[Math.floor(Math.random() * expertTechniques.length)],
         numberOfPours: 5,
         pourIntervals: [45, 30, 30, 30, 30],
         totalBrewTime: 210,
         drawdownTime: 25,
-        agitation: 'swirl' as any,
+        agitation: 'swirl',
         agitationTiming: '블룸 후, 마지막 붓기 후'
-      },
+    },
       notes: {
         grindAdjustment: 'TDS 1.35 목표, 0.2 미세 조정',
         channeling: false,
         mudBed: false,
         tasteResult: '향미의 복합성이 극대화되면서도 클린한 피니시 달성',
         nextExperiment: '물의 미네랄 함량 조정을 통한 산미 밸런스 최적화'
-      }
-    };
-  }
+    }
+  };
+}
 
   /**
    * Create mock data in the database
    */
   static async createMockData(options: MockDataOptions): Promise<number> {
     try {
-      const mockRecords = this.generateTastingRecords(options);
-      const realmService = RealmService.getInstance();
+      Logger.info('🎯 Starting mock data creation', 'service', { data: { options } });
       
+      // Step 1: Generate mock records
+      Logger.debug('📝 Step 1: Generating mock records...', 'service');
+      const mockRecords = this.generateTastingRecords(options);
+      Logger.info(`📝 Generated ${mockRecords.length} mock records`, 'service', { data: { count: mockRecords.length } });
+      
+      // Step 2: Get realm service
+      Logger.debug('🔧 Step 2: Getting RealmService instance...', 'service');
+      const realmService = RealmService.getInstance();
+      Logger.debug('✅ RealmService instance obtained', 'service');
+      
+      // Step 3: Initialize if needed
       if (!realmService.isInitialized) {
+        Logger.info('🔧 Step 3: Initializing RealmService...', 'service');
         await realmService.initialize();
+        Logger.info('✅ RealmService initialized', 'service');
+      } else {
+        Logger.debug('✅ RealmService already initialized', 'service');
       }
 
       let successCount = 0;
       
-      for (const record of mockRecords) {
+      // Step 4: Save records one by one
+      Logger.debug(`💾 Step 4: Saving ${mockRecords.length} records...`, 'service');
+      
+      for (let i = 0; i < mockRecords.length; i++) {
+        const record = mockRecords[i];
         try {
-          await realmService.saveTasting(record);
+          Logger.debug(`💾 Saving record ${i + 1}/${mockRecords.length}`, 'service', { 
+            data: { 
+              recordIndex: i, 
+              coffeeName: record.coffeeInfo?.coffeeName,
+              roastery: record.coffeeInfo?.roastery,
+              mode: record.mode,
+              hasMatchScore: !!record.matchScore,
+              hasSensoryAttributes: !!record.sensoryAttributes
+            } 
+          });
+          
+          // Validate record before saving
+          const isValid = this.validateTastingData(record);
+          if (!isValid) {
+            Logger.error(`❌ Record ${i + 1} validation failed`, 'service', { data: { record } });
+            continue;
+          }
+          
+          const saved = await realmService.saveTasting(record);
           successCount++;
-        } catch (error) {
-          RealmLogger.error(`Failed to save mock record: ${error}`, { error: error instanceof Error ? error : new Error(String(error)) });
-        }
+          
+          Logger.debug(`✅ Successfully saved record ${i + 1}`, 'service', { 
+            data: { 
+              recordId: saved.id,
+              coffeeName: saved.coffeeName,
+              roastery: saved.roastery
+            } 
+          });
+      } catch (error) {
+          Logger.error(`❌ Failed to save mock record ${i + 1}`, 'service', { 
+            error: error instanceof Error ? error : new Error(String(error)),
+            errorMessage: error instanceof Error ? error.message : String(error),
+            errorStack: error instanceof Error ? error.stack : undefined,
+            data: { 
+              recordIndex: i, 
+              recordSummary: {
+                coffeeName: record.coffeeInfo?.coffeeName,
+                roastery: record.coffeeInfo?.roastery,
+                mode: record.mode
+              }
+            }
+          });
       }
+    }
 
-      RealmLogger.info(`Created ${successCount} mock tasting records`, { data: { successCount } });
+      Logger.info(`🎉 Mock data creation completed: ${successCount}/${mockRecords.length} records saved`, 'service', { data: { successCount, total: mockRecords.length } });
 
       return successCount;
-    } catch (error) {
-      RealmLogger.error('Failed to create mock data', { error: error instanceof Error ? error : new Error(String(error)) });
-      throw error;
-    }
+  } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      
+      Logger.error('💥 Failed to create mock data', 'service', { 
+        error: error instanceof Error ? error : new Error(String(error)),
+        errorMessage,
+        errorStack,
+        data: { options }
+      });
+      
+      // Don't re-throw, return 0 to indicate failure
+      return 0;
   }
+}
 
   /**
    * Clear all mock data from database
@@ -550,16 +618,16 @@ export class MockDataService {
       
       if (!realmService.isInitialized) {
         await realmService.initialize();
-      }
+    }
 
       await realmService.clearAllTastings();
       
-      RealmLogger.info('Cleared all mock data successfully', { action: 'clearMockData' });
-    } catch (error) {
-      RealmLogger.error('Failed to clear mock data', { error: error instanceof Error ? error : new Error(String(error)) });
+      Logger.info('Cleared all mock data successfully', 'service', { action: 'clearMockData' });
+  } catch (error) {
+      Logger.error('Failed to clear mock data', 'service', { error: error instanceof Error ? error : new Error(String(error)) });
       throw error;
-    }
   }
+}
 
   /**
    * Validate mock data structure
@@ -568,36 +636,36 @@ export class MockDataService {
     try {
       // Check required fields
       if (!data.coffeeInfo?.roastery || !data.coffeeInfo?.coffeeName) {
-        RealmLogger.warn('Invalid coffee info', { data: { roastery: data.coffeeInfo?.roastery, coffeeName: data.coffeeInfo?.coffeeName } });
+        Logger.warn('Invalid coffee info', 'service', { data: { roastery: data.coffeeInfo?.roastery, coffeeName: data.coffeeInfo?.coffeeName } });
         return false;
-      }
+    }
 
       // Check sensory attributes
       if (!data.sensoryAttributes?.body || !data.sensoryAttributes?.acidity) {
-        RealmLogger.error('Invalid sensory attributes', { error: new Error('Invalid sensory attributes') });
+        Logger.error('Invalid sensory attributes', 'service', { error: new Error('Invalid sensory attributes') });
         return false;
-      }
+    }
 
       // Check match score
       if (!data.matchScore?.total || data.matchScore.total < 0 || data.matchScore.total > 100) {
-        RealmLogger.error('Invalid match score', { error: new Error('Invalid match score') });
+        Logger.error('Invalid match score', 'service', { error: new Error('Invalid match score') });
         return false;
-      }
+    }
 
       // Check HomeCafe data if present
       if (data.mode === 'home_cafe' && data.homeCafeData) {
         if (!data.homeCafeData.equipment?.dripper || !data.homeCafeData.recipe?.doseIn) {
-          RealmLogger.error('Invalid HomeCafe data', { error: new Error('Invalid HomeCafe data') });
+          Logger.error('Invalid HomeCafe data', 'service', { error: new Error('Invalid HomeCafe data') });
           return false;
-        }
       }
+    }
 
       return true;
-    } catch (error) {
-      RealmLogger.error('Error validating mock data', { error: error instanceof Error ? error : new Error(String(error)) });
+  } catch (error) {
+      Logger.error('Error validating mock data', 'service', { error: error instanceof Error ? error : new Error(String(error)) });
       return false;
-    }
   }
+}
 
   /**
    * Get current mock data count
@@ -608,13 +676,13 @@ export class MockDataService {
       
       if (!realmService.isInitialized) {
         await realmService.initialize();
-      }
+    }
 
       const tastings = await realmService.getTastingRecords({ isDeleted: false });
       return Array.from(tastings).length;
-    } catch (error) {
-      RealmLogger.error('Failed to get mock data count', { error: error instanceof Error ? error : new Error(String(error)) });
+  } catch (error) {
+      Logger.error('Failed to get mock data count', 'service', { error: error instanceof Error ? error : new Error(String(error)) });
       return 0;
-    }
   }
+}
 }

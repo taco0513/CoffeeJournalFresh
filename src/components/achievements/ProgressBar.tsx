@@ -32,18 +32,18 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         toValue: clampedProgress,
         duration: 800,
         useNativeDriver: false,
-      }).start();
-    } else {
+    }).start();
+  } else {
       animatedValue.setValue(clampedProgress);
-    }
-  }, [clampedProgress, animated, animatedValue]);
+  }
+}, [clampedProgress, animated, animatedValue]);
 
   const progressWidth = animated 
     ? animatedValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['0%', '100%'],
         extrapolate: 'clamp',
-      })
+    })
     : `${clampedProgress * 100}%`;
 
   return (
@@ -54,7 +54,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
           backgroundColor, 
           height, 
           borderRadius: cornerRadius 
-        }
+      }
       ]}
     >
       <Animated.View
@@ -62,9 +62,9 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
           styles.progressFill,
           {
             backgroundColor: color,
-            width: progressWidth as any,
+            width: progressWidth as unknown,
             borderRadius: cornerRadius,
-          },
+        },
         ]}
       />
     </View>
@@ -74,8 +74,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
-  },
+},
   progressFill: {
     height: '100%',
-  },
+},
 });

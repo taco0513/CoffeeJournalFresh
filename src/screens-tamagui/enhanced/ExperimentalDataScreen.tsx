@@ -57,7 +57,7 @@ const BackButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const NavigationTitle = styled(H3, {
@@ -75,7 +75,7 @@ const SkipButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const SkipText = styled(Text, {
@@ -125,12 +125,12 @@ const Tab = styled(Button, {
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 3,
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const TabText = styled(SizableText, {
@@ -143,12 +143,12 @@ const TabText = styled(SizableText, {
       true: {
         fontWeight: '600',
         color: '$color',
-      },
+    },
       false: {
         color: '$gray11',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const GuideSection = styled(YStack, {
@@ -208,10 +208,10 @@ const MouthfeelCard = styled(Card, {
     opacity: 0,
     y: 20,
     scale: 0.95,
-  },
+},
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const MouthfeelHeader = styled(YStack, {
@@ -273,7 +273,7 @@ const NextButton = styled(Button, {
   pressStyle: {
     backgroundColor: '$cupBlueDark',
     scale: 0.98,
-  },
+},
 });
 
 const LabModeContainer = styled(View, {
@@ -297,7 +297,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
     sensoryData,
     updateNumericValue,
     setMouthfeel,
-  } = useSensoryState({
+} = useSensoryState({
     body: currentTasting.body,
     acidity: currentTasting.acidity,
     sweetness: currentTasting.sweetness,
@@ -305,13 +305,13 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
     bitterness: currentTasting.bitterness,
     balance: currentTasting.balance,
     mouthfeel: (currentTasting.mouthfeel as MouthfeelType) || 'Clean',
-  });
+});
 
   const mouthfeelOptions: MouthfeelType[] = useMemo(() => ['Clean', 'Creamy', 'Juicy', 'Silky'], []);
 
   const handleLabDataChange = useCallback((labData: LabModeData) => {
     updateField('labModeData', labData);
-  }, [updateField]);
+}, [updateField]);
 
   // Calculate completion progress for gamification
   const getCompletionProgress = useCallback(() => {
@@ -319,13 +319,13 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
     const completedFields = requiredFields.filter(field => {
       const value = sensoryData[field as keyof typeof sensoryData];
       return value && value !== 3; // 3 is default/neutral value
-    });
+  });
     return {
       completed: completedFields.length,
       total: requiredFields.length,
       percentage: Math.round((completedFields.length / requiredFields.length) * 100)
-    };
-  }, [sensoryData]);
+  };
+}, [sensoryData]);
 
   const progress = getCompletionProgress();
 
@@ -333,15 +333,15 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
     // Update all sensory fields in the store
     Object.entries(sensoryData).forEach(([key, value]) => {
       updateField(key as keyof CurrentTasting, value);
-    });
+  });
     
     // Navigate to Korean sensory evaluation screen
     navigation.navigate('SensoryEvaluation' as never);
-  }, [sensoryData, updateField, navigation]);
+}, [sensoryData, updateField, navigation]);
 
   const handleTabChange = (tab: 'basic' | 'lab') => {
     setActiveTab(tab);
-  };
+};
 
   const renderBasicTab = () => (
     <ContentContainer>
@@ -352,7 +352,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
             enterStyle={{
               opacity: 0,
               y: 30,
-            }}
+          }}
             animateOnly={['opacity', 'transform']}
           >
             <CompactSensoryGrid
@@ -364,7 +364,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
                   leftLabel: "가벼움",
                   rightLabel: "무거움",
                   description: "입안에서 느껴지는 질감과 무게감"
-                },
+              },
                 {
                   title: "산미",
                   value: sensoryData.acidity,
@@ -372,7 +372,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
                   leftLabel: "약함",
                   rightLabel: "강함",
                   description: "밝고 상큼한 신맛의 강도"
-                },
+              },
                 {
                   title: "단맛",
                   value: sensoryData.sweetness,
@@ -380,7 +380,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
                   leftLabel: "없음",
                   rightLabel: "강함",
                   description: "자연스러운 당도와 단맛"
-                },
+              },
                 {
                   title: "쓴맛",
                   value: sensoryData.bitterness,
@@ -388,7 +388,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
                   leftLabel: "약함",
                   rightLabel: "강함",
                   description: "다크 초콜릿같은 쓴맛"
-                },
+              },
                 {
                   title: "여운",
                   value: sensoryData.finish,
@@ -396,7 +396,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
                   leftLabel: "짧음",
                   rightLabel: "길음",
                   description: "입안에 남는 맛의 지속시간"
-                },
+              },
                 {
                   title: "밸런스",
                   value: sensoryData.balance,
@@ -404,7 +404,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
                   leftLabel: "불균형",
                   rightLabel: "조화로운",
                   description: "맛과 향의 전체적 균형"
-                }
+              }
               ]}
             />
 
@@ -448,7 +448,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
           enterStyle={{
             opacity: 0,
             x: 30,
-          }}
+        }}
           animateOnly={['opacity', 'transform']}
         >
           <LabModeDataEntry
@@ -512,13 +512,13 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
                 {activeTab === 'basic' 
                   ? '커피의 강도를 측정해보세요' 
                   : '전문적인 분석 데이터를 기록하세요'
-                }
+              }
               </GuideTitle>
               <GuideSubtitle>
                 {activeTab === 'basic'
                   ? `${progress.completed}/${progress.total} 항목 완료`
                   : 'TDS, 추출수율, 실험 변수를 정밀하게 기록할 수 있습니다'
-                }
+              }
               </GuideSubtitle>
             </GuideTextContainer>
           </GuideContent>

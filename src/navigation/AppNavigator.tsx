@@ -83,6 +83,7 @@ import { AchievementProvider } from '../contexts/AchievementContext';
 import { RealmProvider } from '../contexts/RealmContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { Logger } from '../services/LoggingService';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -91,7 +92,7 @@ const commonHeaderOptions = {
   headerRight: () => <StatusBadge />,
   headerRightContainerStyle: {
     paddingRight: 16,
-  },
+},
 };
 
 // 테이스팅 플로우 스택 네비게이터
@@ -101,7 +102,7 @@ function TastingFlow() {
       screenOptions={{
         headerShown: false,
         presentation: 'card',
-      }}
+    }}
     >
       <Stack.Screen 
         name="ModeSelection" 
@@ -170,36 +171,36 @@ function HistoryStack() {
           backgroundColor: theme.background.val,
           borderBottomWidth: 0.5,
           borderBottomColor: theme.borderColor.val,
-        },
+      },
         headerTitleStyle: {
           fontSize: 17,
           fontWeight: '600',
           color: theme.color.val,
-        },
+      },
         headerTintColor: theme.blue10.val,
         ...commonHeaderOptions,
-      }}
+    }}
     >
       <Stack.Screen 
         name="Profile" 
         component={NavigationHistoryScreen}
         options={{
           title: '내 프로필',
-        }}
+      }}
       />
       <Stack.Screen 
         name="TastingDetail" 
         component={TastingDetailScreen}
         options={{
           title: '상세 기록',
-        }}
+      }}
       />
       <Stack.Screen 
         name="Search" 
         component={SearchScreen}
         options={{
           title: '검색',
-        }}
+      }}
       />
       <Stack.Screen 
         name="PhotoViewer" 
@@ -207,7 +208,7 @@ function HistoryStack() {
         options={{
           title: '사진 보기',
           headerShown: false,
-        }}
+      }}
       />
     </Stack.Navigator>
   );
@@ -225,120 +226,120 @@ function ProfileStack() {
           backgroundColor: theme.background.val,
           borderBottomWidth: 0.5,
           borderBottomColor: theme.borderColor.val,
-        },
+      },
         headerTitleStyle: {
           fontSize: 17,
           fontWeight: '600',
           color: theme.color.val,
-        },
+      },
         headerTintColor: theme.blue10.val,
         ...commonHeaderOptions,
-      }}
+    }}
     >
       <Stack.Screen 
         name="SettingsMain" 
         component={ProfileScreen}
         options={{
           title: '세팅',
-        }}
+      }}
       />
       <Stack.Screen 
         name="Developer" 
         component={DeveloperScreen}
         options={{
           title: '개발자 옵션',
-        }}
+      }}
       />
       <Stack.Screen 
         name="DataTest" 
         component={DataTestScreen}
         options={{
           title: '데이터 테스트',
-        }}
+      }}
       />
       <Stack.Screen 
         name="I18nValidation" 
         component={I18nValidationScreen}
         options={{
           title: 'i18n 검증',
-        }}
+      }}
       />
       <Stack.Screen 
         name="MarketConfigurationTester" 
         component={MarketConfigurationTester}
         options={{
           title: '마켓 설정 테스터',
-        }}
+      }}
       />
       <Stack.Screen 
         name="BetaTesting" 
         component={BetaTestingScreen}
         options={{
           title: '베타 테스팅',
-        }}
+      }}
       />
       <Stack.Screen 
         name="CrossMarketTesting" 
         component={CrossMarketTestingScreen}
         options={{
           title: '크로스 마켓 테스팅',
-        }}
+      }}
       />
       <Stack.Screen 
         name="PhotoGallery" 
         component={PhotoGalleryScreen}
         options={{
           title: '사진 갤러리',
-        }}
+      }}
       />
       <Stack.Screen 
         name="Stats" 
         component={StatsScreen}
         options={{
           title: '통계',
-        }}
+      }}
       />
       <Stack.Screen 
         name="PersonalTaste" 
         component={PersonalTasteDashboard}
         options={{
           title: '내 취향 분석',
-        }}
+      }}
       />
       <Stack.Screen 
         name="AchievementGallery" 
         component={AchievementGalleryScreen}
         options={{
           title: '성취',
-        }}
+      }}
       />
       <Stack.Screen 
         name="PerformanceDashboard" 
         component={PerformanceDashboardScreen}
         options={{
           title: '성능 대시보드',
-        }}
+      }}
       />
       <Stack.Screen 
         name="PerformanceTesting" 
         component={PerformanceTestingScreen}
         options={{
           title: '성능 테스트',
-        }}
+      }}
       />
       <Stack.Screen 
         name="MarketIntelligence" 
         component={MarketIntelligenceScreen}
         options={{
           title: '시장 인텔리전스',
-        }}
+      }}
       />
       <Stack.Screen 
         name="Legal" 
         component={LegalScreen}
         options={{
           title: '법적 고지',
-        }}
+      }}
       />
     </Stack.Navigator>
   );
@@ -360,12 +361,12 @@ function MainTabs() {
           backgroundColor: theme.background.val,
           borderBottomWidth: 0.5,
           borderBottomColor: theme.borderColor.val,
-        },
+      },
         headerTitleStyle: {
           fontSize: 17,
           fontWeight: '600',
           color: theme.color.val,
-        },
+      },
         tabBarActiveTintColor: theme.blue10.val,
         tabBarInactiveTintColor: theme.gray8.val,
         tabBarStyle: {
@@ -375,9 +376,9 @@ function MainTabs() {
           paddingBottom: 35,
           height: 95,
           marginBottom: 10,
-        },
+      },
         ...commonHeaderOptions,
-      }}
+    }}
     >
       <Tab.Screen 
         name="Home" 
@@ -388,18 +389,18 @@ function MainTabs() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="Home" focused={focused} color={color} />
           ),
-        }}
+      }}
       />
       <Tab.Screen 
         name="Journal" 
         component={JournalIntegratedScreen}
         options={{
           tabBarLabel: '저널',
-          headerTitle: '커피 저널',
+          headerTitle: 'CupNote',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="Journal" focused={focused} color={color} />
           ),
-        }}
+      }}
       />
       <Tab.Screen 
         name="AddRecord" 
@@ -410,7 +411,7 @@ function MainTabs() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="AddRecord" focused={focused} color={color} />
           ),
-        }}
+      }}
       />
       {isAdmin && (
         <Tab.Screen 
@@ -422,7 +423,7 @@ function MainTabs() {
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon name="Admin" focused={focused} color={color} />
             ),
-          }}
+        }}
         />
       )}
       <Tab.Screen 
@@ -434,7 +435,7 @@ function MainTabs() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="History" focused={focused} color={color} />
           ),
-        }}
+      }}
       />
       <Tab.Screen 
         name="Settings" 
@@ -445,7 +446,7 @@ function MainTabs() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="Profile" focused={focused} color={color} />
           ),
-        }}
+      }}
       />
     </Tab.Navigator>
   );
@@ -463,36 +464,36 @@ function AdminStack() {
           backgroundColor: theme.background.val,
           borderBottomWidth: 0.5,
           borderBottomColor: theme.borderColor.val,
-        },
+      },
         headerTitleStyle: {
           fontSize: 17,
           fontWeight: '600',
           color: theme.color.val,
-        },
+      },
         headerTintColor: theme.blue10.val,
         ...commonHeaderOptions,
-      }}
+    }}
     >
       <Stack.Screen 
         name="AdminDashboard" 
         component={AdminDashboardScreen}
         options={{
           title: '관리자 대시보드',
-        }}
+      }}
       />
       <Stack.Screen 
         name="AdminCoffeeEdit" 
         component={AdminCoffeeEditScreen}
         options={{
           title: '커피 편집',
-        }}
+      }}
       />
       <Stack.Screen 
         name="AdminFeedback" 
         component={AdminFeedbackScreen}
         options={{
           title: '피드백 관리',
-        }}
+      }}
       />
     </Stack.Navigator>
   );
@@ -504,19 +505,19 @@ function AuthStack() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-      }}
+    }}
     >
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen 
         name="ProfileSetup" 
-        component={(props: any) => (
+        component={(props: Record<string, unknown>) => (
           <ProfileSetupScreen 
             {...props}
             onComplete={() => {
               // Navigate to main app after profile setup is complete
               props.navigation.replace('Main');
-            }} 
+          }} 
           />
         )} 
       />
@@ -528,7 +529,7 @@ function AuthStack() {
 export default function AppNavigator() {
   const { isAuthenticated, user, currentUser, loadStoredUser } = useUserStore();
   const isInitialized = true; // For now, assume it's initialized
-  const navigationRef = useRef<any>(null);
+  const navigationRef = useRef<unknown>(null);
   const routeNameRef = useRef<string | undefined>(undefined);
   const [navigationReady, setNavigationReady] = React.useState(false);
   
@@ -536,37 +537,37 @@ export default function AppNavigator() {
   useEffect(() => {
     if (loadStoredUser) {
       loadStoredUser();
-    }
-  }, [loadStoredUser]);
+  }
+}, [loadStoredUser]);
   
 
   useEffect(() => {
     // Ensure navigation is fully ready
     const timer = setTimeout(() => {
       setNavigationReady(true);
-    }, 500);
+  }, 500);
     
     return () => clearTimeout(timer);
-  }, []);
+}, []);
 
-  const getCurrentRoute = (state: any): any => {
+  const getCurrentRoute = (state: Record<string, unknown>): unknown => {
     if (!state) return null;
     const route = state.routes?.[state.index];
     if (route?.state) {
       return getCurrentRoute(route.state);
-    }
+  }
     return route;
-  };
+};
 
   const onReady = () => {
     try {
       const state = navigationRef.current?.getRootState();
       const currentRoute = getCurrentRoute(state);
       routeNameRef.current = currentRoute?.name;
-    } catch (error) {
-      console.warn('Navigation ready error:', error);
-    }
-  };
+  } catch (error) {
+      Logger.warn('Navigation ready error:', 'general', { component: 'AppNavigator', error: error });
+  }
+};
 
   const onStateChange = async () => {
     try {
@@ -582,14 +583,14 @@ export default function AppNavigator() {
       // AsyncStorage에 마지막 방문 화면 저장 (선택사항)
       if (currentRouteName) {
         await AsyncStorage.setItem('lastVisitedScreen', currentRouteName);
-      }
     }
+  }
 
       routeNameRef.current = currentRouteName;
-    } catch (error) {
-      console.warn('Navigation state change error:', error);
-    }
-  };
+  } catch (error) {
+      Logger.warn('Navigation state change error:', 'general', { component: 'AppNavigator', error: error });
+  }
+};
 
   // Check for first time launch
   const [isFirstLaunch, setIsFirstLaunch] = React.useState<boolean | null>(null);
@@ -599,13 +600,13 @@ export default function AppNavigator() {
       if (value === null) {
         AsyncStorage.setItem('hasLaunched', 'true');
         setIsFirstLaunch(true);
-      } else {
+    } else {
         setIsFirstLaunch(false);
-      }
-    });
-  }, []);
+    }
+  });
+}, []);
 
-  console.log('AppNavigator state:', { isInitialized, isAuthenticated, isFirstLaunch });
+  Logger.debug('AppNavigator state:', 'general', { component: 'AppNavigator', data: { isInitialized, isAuthenticated, isFirstLaunch } });
   
   if (!isInitialized || isFirstLaunch === null) {
     return (
@@ -613,7 +614,7 @@ export default function AppNavigator() {
         <Text fontSize="$5" color="$color">Loading CupNote...</Text>
       </View>
     );
-  }
+}
 
   return (
     <RealmProvider>
@@ -624,7 +625,7 @@ export default function AppNavigator() {
             onReady={() => {
               onReady();
               setNavigationReady(true);
-            }}
+          }}
             onStateChange={onStateChange}
           >
             <Stack.Navigator 
@@ -632,7 +633,7 @@ export default function AppNavigator() {
                 headerShown: false,
                 gestureEnabled: navigationReady,
                 animation: navigationReady ? 'default' : 'none',
-              }}
+            }}
             >
               {isFirstLaunch ? (
                 <>

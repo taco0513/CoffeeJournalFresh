@@ -33,7 +33,7 @@ const levelOptions: LevelOption[] = [
       '친절한 가이드 메시지',
       '기본 감각 평가',
     ],
-  },
+},
   {
     level: 'intermediate',
     icon: '🌿',
@@ -44,7 +44,7 @@ const levelOptions: LevelOption[] = [
       '상세한 감각 평가',
       '이전 기록과 비교',
     ],
-  },
+},
   {
     level: 'expert',
     icon: '🌳',
@@ -55,7 +55,7 @@ const levelOptions: LevelOption[] = [
       '고급 비교 기능',
       '전문 용어 사용 (Phase 2에서 더 많은 기능)',
     ],
-  },
+},
 ];
 
 export const UserLevelSelector: React.FC<UserLevelSelectorProps> = ({
@@ -114,27 +114,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemGray6,
-  },
+},
   header: {
     alignItems: 'center',
     paddingVertical: HIGConstants.SPACING_XL,
     paddingHorizontal: HIGConstants.SPACING_LG,
-  },
+},
   title: {
     fontSize: 28,
     fontWeight: '700',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   subtitle: {
     fontSize: 16,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
-  },
+},
   optionsContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     gap: HIGConstants.SPACING_MD,
-  },
+},
   levelCard: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.cornerRadiusMedium,
@@ -146,48 +146,48 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
+},
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   icon: {
     fontSize: 36,
     marginRight: HIGConstants.SPACING_MD,
-  },
+},
   cardTitleContainer: {
     flex: 1,
-  },
+},
   cardTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   cardDescription: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
-  },
+},
   featuresContainer: {
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   featureRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   featureBullet: {
     fontSize: 14,
     color: HIGColors.systemBlue,
     marginRight: HIGConstants.SPACING_SM,
-  },
+},
   featureText: {
     flex: 1,
     fontSize: 14,
     color: HIGColors.label,
     lineHeight: 20,
-  },
+},
   selectButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -196,21 +196,21 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusSmall,
     paddingVertical: HIGConstants.SPACING_MD,
     marginTop: HIGConstants.SPACING_SM,
-  },
+},
   selectButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.white,
     marginRight: HIGConstants.SPACING_XS,
-  },
+},
   selectButtonArrow: {
     fontSize: 16,
     color: HIGColors.white,
-  },
+},
   footerText: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     marginTop: HIGConstants.SPACING_XL,
-  },
+},
 });

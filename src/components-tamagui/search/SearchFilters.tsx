@@ -64,14 +64,14 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
     setLocalFilters(filters);
     setMinScoreText(filters.minScore?.toString() || '');
     setMaxScoreText(filters.maxScore?.toString() || '');
-  }, [filters, isOpen]);
+}, [filters, isOpen]);
 
-  const updateFilter = (key: keyof FilterOptions, value: any) => {
+  const updateFilter = (key: keyof FilterOptions, value: unknown) => {
     setLocalFilters(prev => ({
       ...prev,
       [key]: value,
-    }));
-  };
+  }));
+};
 
   const toggleFlavorNote = (flavorNote: string) => {
     const currentFlavors = localFilters.flavorNotes || [];
@@ -79,34 +79,34 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
     
     if (isSelected) {
       updateFilter('flavorNotes', currentFlavors.filter(f => f !== flavorNote));
-    } else {
+  } else {
       updateFilter('flavorNotes', [...currentFlavors, flavorNote]);
-    }
-  };
+  }
+};
 
   const handleMinScoreChange = (text: string) => {
     setMinScoreText(text);
     const score = parseFloat(text);
     updateFilter('minScore', isNaN(score) ? undefined : score);
-  };
+};
 
   const handleMaxScoreChange = (text: string) => {
     setMaxScoreText(text);
     const score = parseFloat(text);
     updateFilter('maxScore', isNaN(score) ? undefined : score);
-  };
+};
 
   const resetFilters = () => {
     const emptyFilters: FilterOptions = {};
     setLocalFilters(emptyFilters);
     setMinScoreText('');
     setMaxScoreText('');
-  };
+};
 
   const applyFilters = () => {
     onApplyFilters(localFilters);
     onClose();
-  };
+};
 
   const renderRoasterySection = () => (
     <FilterSection>
@@ -125,7 +125,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               </FilterChipText>
             </FilterChip>
           );
-        })}
+      })}
       </FilterChipContainer>
     </FilterSection>
   );
@@ -147,7 +147,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               </FilterChipText>
             </FilterChip>
           );
-        })}
+      })}
       </FilterChipContainer>
     </FilterSection>
   );
@@ -190,7 +190,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               </FilterChipText>
             </FilterChip>
           );
-        })}
+      })}
       </FilterChipContainer>
     </FilterSection>
   );

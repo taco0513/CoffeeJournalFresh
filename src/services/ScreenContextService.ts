@@ -2,12 +2,13 @@ import { Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DeviceInfo from 'react-native-device-info';
 
+import { Logger } from './LoggingService';
 export interface ScreenContext {
   screenName: string;
   routeName: string;
-  routeParams?: any;
+  routeParams?: unknown;
   timestamp: string;
-  navigationState?: any;
+  navigationState?: unknown;
   userLocation?: string;
   deviceInfo: {
     platform: string;
@@ -19,17 +20,17 @@ export interface ScreenContext {
     screenDimensions: {
       width: number;
       height: number;
-    };
   };
+};
 }
 
 class ScreenContextService {
   private static currentContext: ScreenContext | null = null;
-  private static navigationRef: any = null;
+  private static navigationRef: unknown = null;
 
-  static setNavigationRef(ref: any) {
+  static setNavigationRef(ref: unknown) {
     this.navigationRef = ref;
-  }
+}
 
   static async getCurrentContext(): Promise<ScreenContext | null> {
     try {
@@ -45,12 +46,12 @@ class ScreenContextService {
           const currentRoute = this.getCurrentRoute(navigationState);
           screenName = currentRoute?.name || 'Unknown';
           routeParams = currentRoute?.params || {};
-        } catch (navError) {
-          console.warn('Navigation context not available, using fallback:', navError);
-        }
-      } else {
-        console.warn('Navigation ref not set, using device info only');
+      } catch (navError) {
+          Logger.warn('Navigation context not available, using fallback:', 'service', { component: 'ScreenContextService', data: navError });
       }
+    } else {
+        Logger.warn('Navigation ref not set, using device info only', 'service', { component: 'ScreenContextService' });
+    }
       
       const context: ScreenContext = {
         screenName,
@@ -59,25 +60,25 @@ class ScreenContextService {
         timestamp: new Date().toISOString(),
         navigationState,
         deviceInfo,
-      };
+    };
 
       this.currentContext = context;
       return context;
-    } catch (error) {
-      console.error('Error getting current context:', error);
+  } catch (error) {
+      Logger.error('Error getting current context:', 'service', { component: 'ScreenContextService', error: error });
       return null;
-    }
   }
+}
 
-  private static getCurrentRoute(navigationState: any): any {
+  private static getCurrentRoute(navigationState: unknown): unknown {
     if (!navigationState) return null;
     
     const route = navigationState.routes?.[navigationState.index];
     if (route?.state) {
       return this.getCurrentRoute(route.state);
-    }
-    return route;
   }
+    return route;
+}
 
   private static async getDeviceInfo() {
     const { width, height } = require('react-native').Dimensions.get('window');
@@ -92,28 +93,28 @@ class ScreenContextService {
       screenDimensions: {
         width,
         height,
-      },
-    };
-  }
+    },
+  };
+}
 
-  static updateContext(screenName: string, params?: any) {
+  static updateContext(screenName: string, params?: Record<string, unknown>) {
     if (this.currentContext) {
       this.currentContext.screenName = screenName;
       this.currentContext.routeParams = params;
       this.currentContext.timestamp = new Date().toISOString();
-    }
   }
+}
 
   static getLastKnownContext(): ScreenContext | null {
     return this.currentContext;
-  }
+}
 
   static getContextSummary(context?: ScreenContext | null): string {
     const targetContext = context || this.currentContext;
     
     if (!targetContext) {
       return '스크린 정보를 가져올 수 없습니다';
-    }
+  }
 
     const { screenName, routeParams, deviceInfo, timestamp } = targetContext;
     
@@ -126,10 +127,10 @@ class ScreenContextService {
 
     if (routeParams && Object.keys(routeParams).length > 0) {
       summary.push(`🔗 화면 파라미터: ${JSON.stringify(routeParams)}`);
-    }
+  }
 
     return summary.join('\n');
-  }
+}
 }
 
 // Hook for components to easily get screen context
@@ -148,18 +149,18 @@ export const useScreenContext = () => {
         timestamp: new Date().toISOString(),
         navigationState: navigation.getState(),
         deviceInfo,
-      };
-    } catch (error) {
-      console.error('Error getting screen context:', error);
+    };
+  } catch (error) {
+      Logger.error('Error getting screen context:', 'service', { component: 'ScreenContextService', error: error });
       return null;
-    }
-  };
+  }
+};
 
   return {
     getCurrentScreenContext,
     screenName: route.name,
     routeParams: route.params,
-  };
+};
 };
 
 export default ScreenContextService;

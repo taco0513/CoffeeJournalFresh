@@ -45,11 +45,11 @@ export const BarChart: React.FC<BarChartProps> = ({
         duration: animationDuration,
         delay: index * 100, // Stagger animation
         useNativeDriver: false,
-      })
+    })
     );
     
     Animated.parallel(animations).start();
-  }, [data, animatedValues, animationDuration]);
+}, [data, animatedValues, animationDuration]);
   
   return (
     <View style={styles.container}>
@@ -59,7 +59,7 @@ export const BarChart: React.FC<BarChartProps> = ({
             inputRange: [0, chartMaxValue],
             outputRange: [0, height - 20], // Leave space for values
             extrapolate: 'clamp',
-          });
+        });
           
           const barColor = item.color || HIGColors.systemBlue;
           const leftPosition = index * (barWidth + spacing);
@@ -73,7 +73,7 @@ export const BarChart: React.FC<BarChartProps> = ({
                   left: leftPosition,
                   width: barWidth,
                   height,
-                }
+              }
               ]}
             >
               {/* Value text at top */}
@@ -96,7 +96,7 @@ export const BarChart: React.FC<BarChartProps> = ({
                       height: animatedHeight,
                       backgroundColor: barColor,
                       width: barWidth,
-                    }
+                  }
                   ]}
                 />
               </View>
@@ -111,7 +111,7 @@ export const BarChart: React.FC<BarChartProps> = ({
               )}
             </View>
           );
-        })}
+      })}
       </View>
     </View>
   );
@@ -121,48 +121,48 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     paddingVertical: 10,
-  },
+},
   chart: {
     position: 'relative',
-  },
+},
   barContainer: {
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'flex-end',
-  },
+},
   valueContainer: {
     position: 'absolute',
     top: 0,
     width: '100%',
     alignItems: 'center',
     zIndex: 1,
-  },
+},
   valueText: {
     fontSize: 12,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   barWrapper: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingTop: 20,
     paddingBottom: 25,
-  },
+},
   bar: {
     borderRadius: 4,
     minHeight: 2, // Minimum height for visibility
-  },
+},
   labelContainer: {
     position: 'absolute',
     bottom: 0,
     width: '100%',
     alignItems: 'center',
-  },
+},
   labelText: {
     fontSize: 11,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     lineHeight: 12,
-  },
+},
 });

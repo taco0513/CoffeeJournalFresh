@@ -52,11 +52,11 @@ const SimpleSensorySelector: React.FC<SimpleSensorySelectorProps> = ({
     if (existingIndex >= 0) {
       // Remove if already selected
       newSelections.splice(existingIndex, 1);
-    } else {
+  } else {
       // Check max selections limit
       if (newSelections.length >= maxSelections) {
         return; // Don't add if at max limit
-      }
+    }
 
       // Add new selection with default intensity based on expression
       newSelections.push({
@@ -66,11 +66,11 @@ const SimpleSensorySelector: React.FC<SimpleSensorySelectorProps> = ({
         english: expression.english,
         emoji: expression.emoji,
         intensity: expression.intensity + 2, // Convert 1-3 to 3-5 scale
-      });
-    }
+    });
+  }
 
     onSensoryChange(newSelections);
-  }, [selectedSensories, onSensoryChange, maxSelections]);
+}, [selectedSensories, onSensoryChange, maxSelections]);
 
   const isExpressionSelected = useCallback((
     categoryId: string,
@@ -79,7 +79,7 @@ const SimpleSensorySelector: React.FC<SimpleSensorySelectorProps> = ({
     return selectedSensories.some(
       item => item.categoryId === categoryId && item.expressionId === expressionId
     );
-  }, [selectedSensories]);
+}, [selectedSensories]);
 
   const updateIntensity = useCallback((
     categoryId: string,
@@ -89,11 +89,11 @@ const SimpleSensorySelector: React.FC<SimpleSensorySelectorProps> = ({
     const newSelections = selectedSensories.map(item => {
       if (item.categoryId === categoryId && item.expressionId === expressionId) {
         return { ...item, intensity: newIntensity };
-      }
+    }
       return item;
-    });
+  });
     onSensoryChange(newSelections);
-  }, [selectedSensories, onSensoryChange]);
+}, [selectedSensories, onSensoryChange]);
 
   const renderCategoryTab = (category: typeof koreanSensoryData[keyof typeof koreanSensoryData]) => {
     const isActive = activeCategory === category.id;
@@ -133,7 +133,7 @@ const SimpleSensorySelector: React.FC<SimpleSensorySelectorProps> = ({
         )}
       </TouchableOpacity>
     );
-  };
+};
 
   const renderExpressionChip = (categoryId: string, expression: SensoryExpression) => {
     const isSelected = isExpressionSelected(categoryId, expression.id);
@@ -151,12 +151,12 @@ const SimpleSensorySelector: React.FC<SimpleSensorySelectorProps> = ({
               backgroundColor: `${category.color}20`,
               borderColor: category.color,
               borderWidth: 2,
-            },
+          },
             !isSelected && {
               backgroundColor: '#F8F9FA',
               borderColor: '#E9ECEF',
               borderWidth: 1,
-            }
+          }
           ]}
           onPress={() => handleExpressionSelect(categoryId, expression)}
           activeOpacity={0.8}
@@ -184,7 +184,7 @@ const SimpleSensorySelector: React.FC<SimpleSensorySelectorProps> = ({
                   styles.intensityButton,
                   selectedItem.intensity === intensity && {
                     backgroundColor: category.color,
-                  }
+                }
                 ]}
                 onPress={() => updateIntensity(categoryId, expression.id, intensity)}
               >
@@ -200,7 +200,7 @@ const SimpleSensorySelector: React.FC<SimpleSensorySelectorProps> = ({
         )}
       </View>
     );
-  };
+};
 
   const currentCategory = koreanSensoryData[activeCategory];
   const expressions = getSensoryExpressionsByCategory(activeCategory, beginnerMode);
@@ -276,7 +276,7 @@ const SimpleSensorySelector: React.FC<SimpleSensorySelectorProps> = ({
                     </Text>
                   </View>
                 );
-              })}
+            })}
             </View>
           </ScrollView>
         </View>
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
+},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -297,26 +297,26 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E9ECEF',
-  },
+},
   title: {
     fontSize: 20,
     fontWeight: '700',
     color: '#2C3E50',
-  },
+},
   selectionCount: {
     fontSize: 14,
     color: '#6C757D',
     fontWeight: '500',
-  },
+},
 
   // Category tabs
   categoryTabsContainer: {
     maxHeight: 60,
-  },
+},
   categoryTabsContent: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-  },
+},
   categoryTab: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -327,15 +327,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     minWidth: 80,
     justifyContent: 'center',
-  },
+},
   categoryTabEmoji: {
     fontSize: 14,
     marginRight: 4,
-  },
+},
   categoryTabText: {
     fontSize: 14,
     fontWeight: '500',
-  },
+},
   categoryBadge: {
     marginLeft: 6,
     minWidth: 18,
@@ -343,43 +343,43 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   categoryBadgeText: {
     fontSize: 11,
     fontWeight: '600',
-  },
+},
 
   // Category info
   categoryInfo: {
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E9ECEF',
-  },
+},
   categoryInfoTitle: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 4,
-  },
+},
   categoryInfoDesc: {
     fontSize: 14,
     color: '#6C757D',
     lineHeight: 20,
-  },
+},
 
   // Expressions
   expressionsContainer: {
     flex: 1,
-  },
+},
   expressionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     padding: 16,
     paddingBottom: 8,
-  },
+},
   expressionChipContainer: {
     marginRight: 8,
     marginBottom: 8,
-  },
+},
   expressionChip: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -387,26 +387,26 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 16,
     minHeight: 36,
-  },
+},
   expressionEmoji: {
     fontSize: 14,
     marginRight: 6,
-  },
+},
   expressionText: {
     fontSize: 14,
     fontWeight: '500',
-  },
+},
   beginnerIndicator: {
     fontSize: 12,
     marginLeft: 4,
-  },
+},
 
   // Intensity selector
   intensitySelector: {
     flexDirection: 'row',
     marginTop: 4,
     justifyContent: 'center',
-  },
+},
   intensityButton: {
     width: 24,
     height: 24,
@@ -417,12 +417,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F9FA',
     borderWidth: 1,
     borderColor: '#E9ECEF',
-  },
+},
   intensityText: {
     fontSize: 12,
     fontWeight: '600',
     color: '#495057',
-  },
+},
 
   // Selected summary
   selectedSummary: {
@@ -430,16 +430,16 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E9ECEF',
     padding: 12,
-  },
+},
   selectedSummaryTitle: {
     fontSize: 14,
     fontWeight: '600',
     color: '#495057',
     marginBottom: 8,
-  },
+},
   selectedItems: {
     flexDirection: 'row',
-  },
+},
   selectedItem: {
     alignItems: 'center',
     marginRight: 8,
@@ -448,20 +448,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: '#FFFFFF',
     minWidth: 60,
-  },
+},
   selectedItemEmoji: {
     fontSize: 12,
     marginBottom: 2,
-  },
+},
   selectedItemText: {
     fontSize: 10,
     textAlign: 'center',
     marginBottom: 2,
-  },
+},
   selectedItemIntensity: {
     fontSize: 10,
     fontWeight: '600',
-  },
+},
 
   noExpressionsText: {
     textAlign: 'center',
@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: 40,
     fontStyle: 'italic',
-  },
+},
 });
 
 export default SimpleSensorySelector;

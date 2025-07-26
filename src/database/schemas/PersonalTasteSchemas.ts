@@ -34,7 +34,7 @@ export const UserTasteProfileSchema: Realm.ObjectSchema = {
     
     // Sync status
     isSynced: { type: 'bool', default: false },
-  }
+}
 };
 
 export const FlavorLearningProgressSchema: Realm.ObjectSchema = {
@@ -64,7 +64,7 @@ export const FlavorLearningProgressSchema: Realm.ObjectSchema = {
     
     // Sync status
     isSynced: { type: 'bool', default: false },
-  }
+}
 };
 
 export const UserAchievementSchema: Realm.ObjectSchema = {
@@ -83,7 +83,7 @@ export const UserAchievementSchema: Realm.ObjectSchema = {
     
     // Sync status
     isSynced: { type: 'bool', default: false },
-  }
+}
 };
 
 export const DailyTasteStatSchema: Realm.ObjectSchema = {
@@ -103,7 +103,7 @@ export const DailyTasteStatSchema: Realm.ObjectSchema = {
     
     // Sync status
     isSynced: { type: 'bool', default: false },
-  }
+}
 };
 
 export const AchievementDefinitionSchema: Realm.ObjectSchema = {
@@ -124,7 +124,7 @@ export const AchievementDefinitionSchema: Realm.ObjectSchema = {
     
     isActive: { type: 'bool', default: true },
     createdAt: { type: 'date', default: new Date() },
-  }
+}
 };
 
 // Update existing TastingRecord schema
@@ -140,24 +140,24 @@ export const TastingRecordSchemaUpdate = {
 export const parseFlavorPreferences = (jsonString: string): Record<string, number> => {
   try {
     return JSON.parse(jsonString);
-  } catch {
+} catch {
     return {};
-  }
+}
 };
 
 export const stringifyFlavorPreferences = (preferences: Record<string, number>): string => {
   return JSON.stringify(preferences);
 };
 
-export const parseAchievementData = (jsonString: string): any => {
+export const parseAchievementData = (jsonString: string): unknown => {
   try {
     return JSON.parse(jsonString);
-  } catch {
+} catch {
     return {};
-  }
+}
 };
 
-export const stringifyAchievementData = (data: any): string => {
+export const stringifyAchievementData = (data: unknown): string => {
   return JSON.stringify(data);
 };
 

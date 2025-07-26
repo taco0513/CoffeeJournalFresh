@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef} from 'react';
 import { SafeAreaView, RefreshControl, Dimensions } from 'react-native';
 import { ScrollView } from 'tamagui';
 import {
@@ -33,7 +33,8 @@ import { FlavorRadarChart } from '../../components/personalTaste/FlavorRadarChar
 import { GrowthTimeline } from '../../components/personalTaste/GrowthTimeline';
 import { FlavorMasteryMap } from '../../components/personalTaste/FlavorMasteryMap';
 import { PersonalStatsGrid } from '../../components/personalTaste/PersonalStatsGrid';
-import { PersonalTasteViewMode } from '../../types/personalTaste';
+import { Logger } from '../../services/LoggingService';
+import { PersonalTasteViewMode} from '../../types/personalTaste';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -63,7 +64,7 @@ const BackButton = styled(Button, {
   pressStyle: {
     opacity: 0.7,
     scale: 0.95,
-  },
+},
 });
 
 const NavigationTitle = styled(H1, {
@@ -93,15 +94,15 @@ const Tab = styled(Button, {
     active: {
       true: {
         backgroundColor: '$cupBlue',
-      },
+    },
       false: {
         backgroundColor: '$gray2',
-      },
     },
-  } as const,
+  },
+} as const,
   pressStyle: {
     scale: 0.98,
-  },
+},
   animation: 'quick',
 });
 
@@ -115,12 +116,12 @@ const TabText = styled(Text, {
       true: {
         color: 'white',
         fontWeight: '600',
-      },
+    },
       false: {
         color: '$color',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 const LoadingContainer = styled(YStack, {
@@ -179,7 +180,7 @@ const EmptyStateButton = styled(Button, {
   pressStyle: {
     backgroundColor: '$cupBlueDark',
     scale: 0.95,
-  },
+},
 });
 
 const Content = styled(YStack, {
@@ -202,10 +203,10 @@ const SectionCard = styled(Card, {
     opacity: 0,
     y: 30,
     scale: 0.95,
-  },
+},
   pressStyle: {
     scale: 0.98,
-  },
+},
 });
 
 const SectionTitle = styled(H2, {
@@ -268,7 +269,7 @@ const ActionButton = styled(Button, {
   pressStyle: {
     scale: 0.95,
     backgroundColor: '$gray5',
-  },
+},
 });
 
 const ActionButtonContent = styled(YStack, {
@@ -351,18 +352,18 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
     insights,
     loading: tasteLoading,
     refresh: refreshTaste 
-  } = usePersonalTaste();
+} = usePersonalTaste();
   
   const { 
     achievements, 
     stats: achievementStats,
     loading: achievementsLoading 
-  } = useAchievements();
+} = useAchievements();
   
   const { 
     flavorMastery,
     loading: masteryLoading 
-  } = useFlavorMastery();
+} = useFlavorMastery();
 
   const loading = tasteLoading || achievementsLoading || masteryLoading;
 
@@ -370,26 +371,28 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
     setRefreshing(true);
     await refreshTaste();
     setRefreshing(false);
-  };
+};
 
   const handleViewModeChange = (mode: PersonalTasteViewMode) => {
     setViewMode(mode);
     scrollViewRef.current?.scrollTo({ y: 0, animated: true });
-  };
+};
 
   const handleFlavorCategorySelect = (category: string) => {
-    // TODO: FlavorCategoryDetail screen needs to be implemented
-    // navigation.navigate('FlavorCategoryDetail', { category });
-  };
+    navigation.navigate('FlavorCategoryDetail', { category });
+};
 
   const handleViewAchievements = () => {
     navigation.navigate('AchievementGallery');
-  };
+};
 
   const handleViewRecommendations = () => {
-    // TODO: Add recommendations screen or redirect to appropriate screen
-    console.log('Recommendations feature not yet implemented');
-  };
+    // Navigate to search screen with recommended filters
+    navigation.navigate('Search', { 
+      filterByTaste: true,
+      message: '당신의 취향에 맞는 커피를 찾아보세요' 
+  });
+};
 
   const renderViewModeTab = (mode: PersonalTasteViewMode, label: string) => (
     <Tab
@@ -436,7 +439,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
         </SafeAreaView>
       </Container>
     );
-  }
+}
 
   if (!tastePattern) {
     return (
@@ -463,7 +466,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
         </SafeAreaView>
       </Container>
     );
-  }
+}
 
   return (
     <Container>
@@ -490,7 +493,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
+        }
         >
           <Content>
             <AnimatePresence key={viewMode}>
@@ -509,7 +512,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
                         targetValue: 100,
                         percentage: (growthMetrics?.weeklyProgress || 0) / 100,
                         lastUpdated: new Date(),
-                      }}
+                    }}
                       tasteType={tastePattern.tasteProfile}
                       onLevelTap={() => handleViewModeChange(PersonalTasteViewMode.PROGRESS)}
                     />
@@ -614,7 +617,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
                       nutty: 0,
                       chocolate: 0,
                       spices: 0
-                    }} />
+                  }} />
                   </ChartContainer>
 
                   {/* Flavor Mastery Map */}

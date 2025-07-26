@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import RealmService from '../services/realm/RealmService';
 import { AchievementSystem } from '../services/AchievementSystem';
 import { UserAction, Achievement } from '../types/achievements';
+import { Logger } from '../services/LoggingService';
 import { 
   FlavorPath, 
   SyncStatus, 
@@ -68,7 +69,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     balance: 3,
     mouthfeel: 'Clean',
     personalComment: '',
-  },
+},
   selectedFlavors: [],
   selectedSensoryExpressions: [],
   matchScoreTotal: null,
@@ -78,22 +79,22 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     lastSyncTime: null,
     pendingUploads: 0,
     error: null,
-  },
+},
 
   updateField: (field, value) => {
     set((state) => ({
       currentTasting: {
         ...state.currentTasting,
         [field]: value,
-      },
-    }));
-  },
+    },
+  }));
+},
 
   setSelectedFlavors: (flavors) => {
     set(() => ({
       selectedFlavors: flavors,
-    }));
-  },
+  }));
+},
 
   setSelectedSensoryExpressions: (expressions) => {
     // Use category tags to allow same Korean text in different categories
@@ -103,15 +104,15 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       const uniqueKey = `${expr.korean}_${expr.categoryId}`;
       if (seenExpressions.has(uniqueKey)) {
         return false;
-      }
+    }
       seenExpressions.add(uniqueKey);
       return true;
-    });
+  });
     
     set(() => ({
       selectedSensoryExpressions: uniqueExpressions,
-    }));
-  },
+  }));
+},
 
   saveTasting: async (): Promise<void> => {
     const state = get();
@@ -126,7 +127,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       bitterness: currentTasting.bitterness || 3,
       balance: currentTasting.balance || 3,
       mouthfeel: currentTasting.mouthfeel || 'Clean',
-    };
+  };
 
     try {
       const savedTasting = RealmService.getInstance().saveTasting({
@@ -139,7 +140,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
           altitude: currentTasting.altitude,
           process: currentTasting.process,
           temperature: currentTasting.temperature || 'hot',
-        },
+      },
         roasterNotes: currentTasting.roasterNotes,
         selectedFlavors: selectedFlavors,
         selectedSensoryExpressions: selectedSensoryExpressions,
@@ -148,24 +149,24 @@ export const useTastingStore = create<TastingState>((set, get) => ({
           total: state.matchScoreTotal || 0,
           flavorScore: 0,
           sensoryScore: 0,
-        },
+      },
         personalComment: currentTasting.personalComment,
         mode: currentTasting.mode as 'cafe' | 'home_cafe' | undefined,
         homeCafeData: currentTasting.homeCafeData,
         // labModeData: currentTasting.labModeData, // LabModeData not yet implemented in RealmService
-      });
+    });
 
       // 저장 후 점수 계산
       state.calculateMatchScore();
       
       // Check achievements after saving
-      if (savedTasting && (savedTasting as any).userId) {
+      if (savedTasting && (savedTasting as unknown).userId) {
         try {
           const achievementSystem = new AchievementSystem();
           const action: UserAction = {
             type: 'tasting',
             data: {
-              tastingId: (savedTasting as any).id,
+              tastingId: (savedTasting as unknown).id,
               flavors: selectedFlavors,
               sensoryExpressions: selectedSensoryExpressions,
               mode: currentTasting.mode,
@@ -173,22 +174,22 @@ export const useTastingStore = create<TastingState>((set, get) => ({
                 roastery: currentTasting.roastery,
                 coffeeName: currentTasting.coffeeName,
                 origin: currentTasting.origin,
-              },
             },
+          },
             timestamp: new Date(),
-          };
-          await achievementSystem.checkAndUpdateAchievements((savedTasting as any).userId, action);
-        } catch (achievementError) {
-          console.error('Achievement check failed:', achievementError);
+        };
+          await achievementSystem.checkAndUpdateAchievements((savedTasting as unknown).userId, action);
+      } catch (achievementError) {
+          Logger.error('Achievement check failed:', 'store', { component: 'tastingStore', error: achievementError });
           // Don't throw - achievement check failure shouldn't prevent tasting save
-        }
       }
+    }
       
       // return savedTasting; // Return type should be void
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
-  },
+  }
+},
 
   calculateMatchScore: () => {
     const {currentTasting, selectedFlavors} = get();
@@ -198,22 +199,22 @@ export const useTastingStore = create<TastingState>((set, get) => ({
     if (currentTasting.roasterNotes && selectedFlavors.length > 0) {
       // 간단한 예시 로직
       flavorScore = 70; // 실제로는 복잡한 계산
-    }
+  }
     
     const sensoryScore = 80; // 실제로는 감각 평가 기반 계산
     
     const totalScore = Math.round(flavorScore * 0.6 + sensoryScore * 0.4);
     
     set({ matchScoreTotal: totalScore });
-  },
+},
 
   updateSyncStatus: (status) =>
     set((state) => ({
       syncStatus: {
         ...state.syncStatus,
         ...status,
-      },
-    })),
+    },
+  })),
 
   // Auto-save functionality
   autoSave: async () => {
@@ -248,13 +249,13 @@ export const useTastingStore = create<TastingState>((set, get) => ({
           selectedFlavors,
           selectedSensoryExpressions,
           timestamp: new Date().toISOString(),
-        };
+      };
         await AsyncStorage.setItem('@tasting_draft', JSON.stringify(draftData));
-      }
-    } catch (error) {
-      console.error('Auto-save failed:', error);
     }
-  },
+  } catch (error) {
+      Logger.error('Auto-save failed:', 'store', { component: 'tastingStore', error: error });
+  }
+},
 
   loadDraft: async () => {
     try {
@@ -263,32 +264,32 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         const { currentTasting, selectedFlavors, selectedSensoryExpressions = [] } = JSON.parse(draftData);
         set({ currentTasting, selectedFlavors, selectedSensoryExpressions });
         return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Load draft failed:', error);
-      return false;
     }
-  },
+      return false;
+  } catch (error) {
+      Logger.error('Load draft failed:', 'store', { component: 'tastingStore', error: error });
+      return false;
+  }
+},
 
   clearDraft: async () => {
     try {
       await AsyncStorage.removeItem('@tasting_draft');
-      console.log('Draft cleared successfully');
-    } catch (error) {
-      console.error('Clear draft failed:', error);
-    }
-  },
+      Logger.debug('Draft cleared successfully', 'store', { component: 'tastingStore' });
+  } catch (error) {
+      Logger.error('Clear draft failed:', 'store', { component: 'tastingStore', error: error });
+  }
+},
 
   hasDraft: async () => {
     try {
       const draftData = await AsyncStorage.getItem('@tasting_draft');
       return !!draftData;
-    } catch (error) {
-      console.error('Check draft failed:', error);
+  } catch (error) {
+      Logger.error('Check draft failed:', 'store', { component: 'tastingStore', error: error });
       return false;
-    }
-  },
+  }
+},
 
   reset: () => {
     // Clear any existing draft when resetting
@@ -315,12 +316,12 @@ export const useTastingStore = create<TastingState>((set, get) => ({
         balance: 3,
         mouthfeel: 'Clean',
         personalComment: '',
-      },
+    },
       selectedFlavors: [],
       selectedSensoryExpressions: [],
       matchScoreTotal: null,
-    });
-  },
+  });
+},
 
   setTastingMode: (mode: TastingMode) => {
     set((state) => ({
@@ -332,45 +333,45 @@ export const useTastingStore = create<TastingState>((set, get) => ({
           homeCafeData: undefined, 
           simpleHomeCafeData: undefined, 
           labModeData: undefined 
-        } : {}),
+      } : {}),
         ...(mode === 'home_cafe' ? { 
           cafeName: '', 
           labModeData: undefined 
-        } : {}),
+      } : {}),
         ...(mode === 'lab' ? { 
           cafeName: '', 
           simpleHomeCafeData: undefined 
-        } : {}),
-      },
-    }));
-  },
+      } : {}),
+    },
+  }));
+},
 
   updateHomeCafeData: (data: Partial<HomeCafeData> | HomeCafeData) => {
     set((state) => ({
       currentTasting: {
         ...state.currentTasting,
         homeCafeData: data as HomeCafeData,
-      },
-    }));
-  },
+    },
+  }));
+},
 
   updateSimpleHomeCafeData: (data: Partial<SimpleHomeCafeData> | SimpleHomeCafeData) => {
     set((state) => ({
       currentTasting: {
         ...state.currentTasting,
         simpleHomeCafeData: data as SimpleHomeCafeData,
-      },
-    }));
-  },
+    },
+  }));
+},
 
   updateLabModeData: (data: Partial<LabModeData> | LabModeData) => {
     set((state) => ({
       currentTasting: {
         ...state.currentTasting,
         labModeData: data as LabModeData,
-      },
-    }));
-  },
+    },
+  }));
+},
 
 
   checkAchievements: async (userId: string) => {
@@ -391,7 +392,7 @@ export const useTastingStore = create<TastingState>((set, get) => ({
             variety: currentTasting.variety,
             process: currentTasting.process,
             temperature: currentTasting.temperature || 'hot',
-          },
+        },
           flavorNotes: selectedFlavors,
           matchScore: matchScoreTotal || 0,
           sensoryAttributes: {
@@ -400,11 +401,11 @@ export const useTastingStore = create<TastingState>((set, get) => ({
             sweetness: currentTasting.sweetness || 3,
             finish: currentTasting.finish || 3,
             mouthfeel: currentTasting.mouthfeel || 'Clean',
-          },
-          timestamp: new Date(),
         },
+          timestamp: new Date(),
+      },
         timestamp: new Date(),
-      };
+    };
 
       // Check for achievements
       const realmService = RealmService.getInstance();
@@ -417,9 +418,9 @@ export const useTastingStore = create<TastingState>((set, get) => ({
       );
 
       return newAchievements;
-    } catch (error) {
-      console.error('Error checking achievements:', error);
+  } catch (error) {
+      Logger.error('Error checking achievements:', 'store', { component: 'tastingStore', error: error });
       return [];
-    }
-  },
+  }
+},
 }));

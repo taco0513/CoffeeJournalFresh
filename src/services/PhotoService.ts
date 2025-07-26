@@ -28,9 +28,9 @@ class PhotoService {
   static getInstance(): PhotoService {
     if (!PhotoService.instance) {
       PhotoService.instance = new PhotoService();
-    }
-    return PhotoService.instance;
   }
+    return PhotoService.instance;
+}
   
   /**
    * Show action sheet to choose photo source
@@ -47,8 +47,8 @@ class PhotoService {
         ],
         { cancelable: true }
       );
-    });
-  }
+  });
+}
   
   /**
    * Open camera to take photo
@@ -65,31 +65,31 @@ class PhotoService {
             buttonNeutral: '나중에',
             buttonNegative: '취소',
             buttonPositive: '확인',
-          }
+        }
         );
         
         if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
           Logger.warn('Camera permission denied', 'photo', {
             function: 'requestCameraPermission'
-          });
+        });
           return null;
-        }
       }
+    }
       
-      const imageOptions: any = {
+      const imageOptions: unknown = {
         mediaType: options.mediaType || ('photo' as MediaType),
         quality: options.quality || 0.8,
         maxWidth: options.maxWidth || 1024,
         maxHeight: options.maxHeight || 1024,
         includeBase64: options.includeBase64 || false,
-      };
+    };
       
       return new Promise((resolve) => {
         launchCamera(imageOptions, (response: ImagePickerResponse) => {
           if (response.didCancel || response.errorMessage) {
             resolve(null);
             return;
-          }
+        }
           
           const asset = response.assets?.[0];
           if (asset) {
@@ -100,40 +100,40 @@ class PhotoService {
               fileSize: asset.fileSize!,
               fileName: asset.fileName!,
               type: asset.type!,
-            });
-          } else {
+          });
+        } else {
             resolve(null);
-          }
-        });
+        }
       });
-    } catch (error) {
+    });
+  } catch (error) {
       logError(error instanceof Error ? error : new Error(String(error)), {
         function: 'openCamera',
         options
-      }, 'photo');
+    }, 'photo');
       return null;
-    }
   }
+}
   
   /**
    * Open photo library to select photo
    */
   private async openLibrary(options: PhotoOptions = {}): Promise<PhotoResult | null> {
     try {
-      const imageOptions: any = {
+      const imageOptions: unknown = {
         mediaType: options.mediaType || ('photo' as MediaType),
         quality: options.quality || 0.8,
         maxWidth: options.maxWidth || 1024,
         maxHeight: options.maxHeight || 1024,
         includeBase64: options.includeBase64 || false,
-      };
+    };
       
       return new Promise((resolve) => {
         launchImageLibrary(imageOptions, (response: ImagePickerResponse) => {
           if (response.didCancel || response.errorMessage) {
             resolve(null);
             return;
-          }
+        }
           
           const asset = response.assets?.[0];
           if (asset) {
@@ -144,20 +144,20 @@ class PhotoService {
               fileSize: asset.fileSize!,
               fileName: asset.fileName!,
               type: asset.type!,
-            });
-          } else {
+          });
+        } else {
             resolve(null);
-          }
-        });
+        }
       });
-    } catch (error) {
+    });
+  } catch (error) {
       logError(error instanceof Error ? error : new Error(String(error)), {
         function: 'openLibrary',
         options
-      }, 'photo');
+    }, 'photo');
       return null;
-    }
   }
+}
   
   /**
    * Save photo to local storage
@@ -170,7 +170,7 @@ class PhotoService {
       // Create photos directory if it doesn't exist
       if (!(await RNFS.exists(photosDir))) {
         await RNFS.mkdir(photosDir);
-      }
+    }
       
       // Generate unique filename
       const timestamp = Date.now();
@@ -182,15 +182,15 @@ class PhotoService {
       await RNFS.copyFile(photoResult.uri, localPath);
       
       return localPath;
-    } catch (error) {
+  } catch (error) {
       logError(error instanceof Error ? error : new Error(String(error)), {
         function: 'savePhoto',
         sourceUri: photoResult.uri,
         tastingId
-      }, 'photo');
+    }, 'photo');
       return null;
-    }
   }
+}
   
   /**
    * Delete photo from local storage
@@ -200,16 +200,16 @@ class PhotoService {
       if (await RNFS.exists(photoPath)) {
         await RNFS.unlink(photoPath);
         return true;
-      }
+    }
       return false;
-    } catch (error) {
+  } catch (error) {
       logError(error instanceof Error ? error : new Error(String(error)), {
         function: 'deletePhoto',
         photoPath
-      }, 'photo');
+    }, 'photo');
       return false;
-    }
   }
+}
   
   /**
    * Get photo URI for display
@@ -217,9 +217,9 @@ class PhotoService {
   getPhotoUri(photoPath: string): string {
     if (photoPath.startsWith('file://')) {
       return photoPath;
-    }
-    return `file://${photoPath}`;
   }
+    return `file://${photoPath}`;
+}
   
   /**
    * Create thumbnail from photo
@@ -229,15 +229,15 @@ class PhotoService {
       // For now, just return the original photo
       // In a real implementation, you'd resize the image
       return photoPath;
-    } catch (error) {
+  } catch (error) {
       logError(error instanceof Error ? error : new Error(String(error)), {
         function: 'createThumbnail',
         photoPath,
         tastingId
-      }, 'photo');
+    }, 'photo');
       return null;
-    }
   }
+}
   
   /**
    * Clean up old photos
@@ -249,7 +249,7 @@ class PhotoService {
       
       if (!(await RNFS.exists(photosDir))) {
         return;
-      }
+    }
       
       const files = await RNFS.readDir(photosDir);
       const cutoffDate = Date.now() - (daysOld * 24 * 60 * 60 * 1000);
@@ -258,14 +258,14 @@ class PhotoService {
         const fileDate = new Date(file.mtime || file.ctime || 0).getTime();
         if (fileDate < cutoffDate) {
           await RNFS.unlink(file.path);
-        }
       }
-    } catch (error) {
+    }
+  } catch (error) {
       logError(error instanceof Error ? error : new Error(String(error)), {
         function: 'cleanupPhotos'
-      }, 'photo');
-    }
+    }, 'photo');
   }
+}
 }
 
 export default PhotoService.getInstance();

@@ -148,9 +148,9 @@ export const SettingRow = styled(XStack, {
     isLast: {
       true: {
         borderBottomWidth: 0,
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 export const SettingIcon = styled(Text, {
@@ -193,33 +193,33 @@ export const ActionButton = styled(Button, {
         backgroundColor: '$blue9',
         color: '$white',
         borderColor: '$blue9',
-      },
+    },
       secondary: {
         backgroundColor: '$gray4',
         color: '$color',
         borderColor: '$gray6',
-      },
+    },
       success: {
         backgroundColor: '$green9',
         color: '$white',
         borderColor: '$green9',
-      },
+    },
       warning: {
         backgroundColor: '$orange9',
         color: '$white',
         borderColor: '$orange9',
-      },
+    },
       danger: {
         backgroundColor: '$red9',
         color: '$white',
         borderColor: '$red9',
-      },
     },
-  } as const,
+  },
+} as const,
   
   defaultVariants: {
     variant: 'primary',
-  },
+},
 });
 
 export const ActionButtonContent = styled(XStack, {
@@ -247,8 +247,8 @@ export const ActionButtonText = styled(Text, {
       success: { color: '$white' },
       warning: { color: '$white' },
       danger: { color: '$white' },
-    },
-  } as const,
+  },
+} as const,
 });
 
 // User Info Components
@@ -313,15 +313,15 @@ export const UserBadge = styled(View, {
     type: {
       developer: {
         backgroundColor: '$purple4',
-      },
+    },
       beta: {
         backgroundColor: '$orange4',
-      },
+    },
       admin: {
         backgroundColor: '$red4',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 export const UserBadgeText = styled(Text, {
@@ -334,8 +334,8 @@ export const UserBadgeText = styled(Text, {
       developer: { color: '$purple11' },
       beta: { color: '$orange11' },
       admin: { color: '$red11' },
-    },
-  } as const,
+  },
+} as const,
 });
 
 // Disabled State Components
@@ -436,9 +436,9 @@ export const ScenarioButton = styled(Button, {
       true: {
         backgroundColor: '$blue9',
         borderColor: '$blue9',
-      },
     },
-  } as const,
+  },
+} as const,
 });
 
 export const ScenarioButtonText = styled(Text, {
@@ -450,6 +450,6 @@ export const ScenarioButtonText = styled(Text, {
     selected: {
       true: { color: '$white' },
       false: { color: '$blue11' },
-    },
-  } as const,
+  },
+} as const,
 });

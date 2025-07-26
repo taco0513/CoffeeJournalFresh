@@ -12,9 +12,10 @@ import {
   Platform,
 } from 'react-native';
 import { HIGColors, HIGConstants } from '../../styles/common';
+import { Logger } from '../../services/LoggingService';
 import { supabase } from '../../services/supabase/client';
 
-export const AdminCoffeeEditScreen = ({ navigation, route }: any) => {
+export const AdminCoffeeEditScreen = ({ navigation, route }: unknown) => {
   const { coffee } = route.params;
   
   const [editedCoffee, setEditedCoffee] = useState({
@@ -26,14 +27,14 @@ export const AdminCoffeeEditScreen = ({ navigation, route }: any) => {
     process: coffee.process || '',
     altitude: coffee.altitude || '',
     harvest_year: coffee.harvest_year?.toString() || '',
-  });
+});
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
     if (!editedCoffee.roastery || !editedCoffee.coffee_name) {
       Alert.alert('오류', '로스터리와 커피 이름은 필수입니다.');
       return;
-    }
+  }
 
     setSaving(true);
     try {
@@ -41,7 +42,7 @@ export const AdminCoffeeEditScreen = ({ navigation, route }: any) => {
         ...editedCoffee,
         harvest_year: editedCoffee.harvest_year ? parseInt(editedCoffee.harvest_year) : null,
         verified_by_moderator: true, // Auto-approve after edit
-      };
+    };
 
       const { error } = await supabase
         .from('coffee_catalog')
@@ -53,17 +54,17 @@ export const AdminCoffeeEditScreen = ({ navigation, route }: any) => {
       Alert.alert('저장 완료', '커피 정보가 수정되고 승인되었습니다.', [
         { text: '확인', onPress: () => navigation.goBack() },
       ]);
-    } catch (error) {
-      console.error('Error saving coffee:', error);
+  } catch (error) {
+      Logger.error('Error saving coffee:', 'screen', { component: 'AdminCoffeeEditScreen', error: error });
       Alert.alert('오류', '저장 중 오류가 발생했습니다.');
-    } finally {
+  } finally {
       setSaving(false);
-    }
-  };
+  }
+};
 
   const handleInputChange = (field: string, value: string) => {
     setEditedCoffee(prev => ({ ...prev, [field]: value }));
-  };
+};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -187,13 +188,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   keyboardView: {
     flex: 1,
-  },
+},
   scrollView: {
     flex: 1,
-  },
+},
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -201,42 +202,42 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_LG,
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.gray4,
-  },
+},
   backButton: {
     minWidth: HIGConstants.MIN_TOUCH_TARGET,
-  },
+},
   backButtonText: {
     fontSize: 17,
     color: HIGColors.blue,
-  },
+},
   title: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   saveButton: {
     minWidth: HIGConstants.MIN_TOUCH_TARGET,
-  },
+},
   saveButtonText: {
     fontSize: 17,
     fontWeight: '600',
     color: HIGColors.blue,
-  },
+},
   disabledText: {
     opacity: 0.5,
-  },
+},
   form: {
     padding: HIGConstants.SPACING_LG,
-  },
+},
   inputGroup: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   label: {
     fontSize: 13,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   input: {
     minHeight: HIGConstants.MIN_TOUCH_TARGET,
     borderWidth: 1,
@@ -247,22 +248,22 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: HIGColors.label,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   originalInfo: {
     marginTop: HIGConstants.SPACING_XL,
     padding: HIGConstants.SPACING_MD,
     backgroundColor: HIGColors.gray6,
     borderRadius: HIGConstants.BORDER_RADIUS,
-  },
+},
   originalTitle: {
     fontSize: 15,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   originalText: {
     fontSize: 13,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
 });

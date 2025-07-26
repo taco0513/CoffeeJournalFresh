@@ -6,7 +6,7 @@ import { ScreenshotService } from '../../services/ScreenshotService';
 interface ScreenshotWrapperProps {
   children: React.ReactNode;
   screenName?: string;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
 export interface ScreenshotWrapperRef {
@@ -26,10 +26,10 @@ export const ScreenshotWrapper = forwardRef<ScreenshotWrapperRef, ScreenshotWrap
         
         if (path) {
           ScreenshotService.showSaveSuccess(path);
-        }
+      }
         
         return path;
-      },
+    },
       captureMultiple: async (count = 5) => {
         const paths = await ScreenshotService.captureMultiple(
           viewShotRef, 
@@ -40,11 +40,11 @@ export const ScreenshotWrapper = forwardRef<ScreenshotWrapperRef, ScreenshotWrap
         
         if (paths.length > 0) {
           ScreenshotService.showMultipleSaveSuccess(paths);
-        }
+      }
         
         return paths;
-      }
-    }));
+    }
+  }));
 
     return (
       <ViewShot
@@ -53,19 +53,19 @@ export const ScreenshotWrapper = forwardRef<ScreenshotWrapperRef, ScreenshotWrap
           fileName: `${screenName}-screenshot`,
           format: 'png',
           quality: 0.9,
-        }}
+      }}
         style={[styles.container, style]}
       >
         {children}
       </ViewShot>
     );
-  }
+}
 );
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
+},
 });
 
 ScreenshotWrapper.displayName = 'ScreenshotWrapper';

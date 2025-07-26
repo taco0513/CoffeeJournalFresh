@@ -120,7 +120,7 @@ interface DeveloperSettingSectionsProps {
   
   // Feature toggles
   mockDataEnabled: boolean;
-  toggleMockData: () => void;
+  toggleMockData: (value: boolean) => void;
   showDeveloperToasts: boolean;
   setDeveloperToasts: (value: boolean) => void;
   
@@ -190,21 +190,21 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
           title: '디버그 설정', 
           icon: CategoryIcons.debug,
           count: [enableDebugMode, showPerformanceInfo, enableVerboseLogging].filter(Boolean).length
-        })}
+      })}
         <SettingCard>
           {renderSettingRow({
             title: '디버그 모드',
             description: '개발자 도구 및 추가 로깅 활성화',
             value: enableDebugMode,
             onValueChange: setDebugMode,
-          })}
+        })}
           
           {renderSettingRow({
             title: '성능 정보 표시',
             description: '화면별 렌더링 시간 및 메모리 사용량',
             value: showPerformanceInfo,
             onValueChange: setPerformanceInfo,
-          })}
+        })}
           
           {renderSettingRow({
             title: '상세 로깅',
@@ -212,7 +212,7 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
             value: enableVerboseLogging,
             onValueChange: setVerboseLogging,
             isLast: true,
-          })}
+        })}
         </SettingCard>
       </Section>
 
@@ -222,14 +222,14 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
           title: '기능 토글', 
           icon: CategoryIcons.feature,
           count: [mockDataEnabled, showDeveloperToasts].filter(Boolean).length
-        })}
+      })}
         <SettingCard>
           {renderSettingRow({
             title: '목 데이터 활성화',
             description: '테스트용 가짜 데이터 표시',
             value: mockDataEnabled,
             onValueChange: toggleMockData,
-          })}
+        })}
           
           {renderSettingRow({
             title: '개발자 토스트',
@@ -237,7 +237,7 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
             value: showDeveloperToasts,
             onValueChange: setDeveloperToasts,
             isLast: true,
-          })}
+        })}
         </SettingCard>
       </Section>
 
@@ -247,7 +247,7 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
           title: '인증 설정', 
           icon: CategoryIcons.user,
           count: [bypassLogin].filter(Boolean).length
-        })}
+      })}
         <SettingCard>
           {renderSettingRow({
             title: '로그인 건너뛰기',
@@ -255,7 +255,7 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
             value: bypassLogin,
             onValueChange: setBypassLogin,
             isLast: true,
-          })}
+        })}
         </SettingCard>
       </Section>
 
@@ -265,14 +265,14 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
           title: '베타 피드백', 
           icon: CategoryIcons.beta,
           count: [enableShakeToFeedback, isBetaUser].filter(Boolean).length
-        })}
+      })}
         <SettingCard>
           {renderSettingRow({
             title: '흔들어서 피드백 보내기',
             description: '기기를 흔들어 피드백 모달 열기',
             value: enableShakeToFeedback,
             onValueChange: toggleShakeToFeedback,
-          })}
+        })}
           
           {renderSettingRow({
             title: '베타 테스터 모드',
@@ -280,12 +280,12 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
             value: isBetaUser,
             onValueChange: setBetaStatus,
             isLast: true,
-          })}
+        })}
           
           {renderActionButton({
             title: '피드백 모달 열기',
             onPress: showFeedback,
-          })}
+        })}
         </SettingCard>
       </Section>
 
@@ -298,9 +298,9 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
             onPress: () => {
               setTestUser();
               Alert.alert('완료', '테스트 사용자로 로그인했습니다.');
-            },
+          },
             variant: 'success',
-          })}
+        })}
         </SettingCard>
       </Section>
 
@@ -311,22 +311,22 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
           {renderActionButton({
             title: '시장 설정 테스터',
             onPress: onNavigateToMarketTester,
-          })}
+        })}
           
           {renderActionButton({
             title: '성능 대시보드',
             onPress: onNavigateToPerformanceDashboard,
-          })}
+        })}
           
           {renderActionButton({
             title: '국제화 검증',
             onPress: onNavigateToI18nValidation,
-          })}
+        })}
           
           {renderActionButton({
             title: '교차 시장 테스팅',
             onPress: onNavigateToTesting,
-          })}
+        })}
         </SettingCard>
       </Section>
 
@@ -338,7 +338,7 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
             title: 'Firecrawl 마켓 인텔리전스',
             onPress: onNavigateToFirecrawlDemo,
             icon: '🔥',
-          })}
+        })}
         </SettingCard>
       </Section>
 
@@ -350,19 +350,19 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
             title: '로그 내보내기',
             onPress: exportLogs,
             variant: 'secondary',
-          })}
+        })}
           
           {renderActionButton({
             title: '데이터 초기화',
             onPress: clearData,
             variant: 'warning',
-          })}
+        })}
           
           {renderActionButton({
             title: '앱 리셋',
             onPress: resetApp,
             variant: 'danger',
-          })}
+        })}
         </SettingCard>
       </Section>
     </>

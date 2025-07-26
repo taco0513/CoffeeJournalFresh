@@ -15,26 +15,26 @@ export const useSensoryState = (initialData?: Partial<SensoryData>) => {
   const [sensoryData, setSensoryData] = useState<SensoryData>({
     ...DEFAULT_SENSORY_DATA,
     ...initialData,
-  });
+});
 
   const updateValue = useCallback((key: keyof SensoryData, value: number | MouthfeelType) => {
     setSensoryData(prev => ({
       ...prev,
       [key]: value,
-    }));
-  }, []);
+  }));
+}, []);
 
   const updateNumericValue = useCallback((key: keyof Omit<SensoryData, 'mouthfeel'>) => {
     return (value: number) => updateValue(key, value);
-  }, [updateValue]);
+}, [updateValue]);
 
   const setMouthfeel = useCallback((value: MouthfeelType) => {
     updateValue('mouthfeel', value);
-  }, [updateValue]);
+}, [updateValue]);
 
   const resetToDefaults = useCallback(() => {
     setSensoryData(DEFAULT_SENSORY_DATA);
-  }, []);
+}, []);
 
   return {
     sensoryData,
@@ -42,5 +42,5 @@ export const useSensoryState = (initialData?: Partial<SensoryData>) => {
     updateNumericValue,
     setMouthfeel,
     resetToDefaults,
-  };
+};
 };

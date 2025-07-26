@@ -21,7 +21,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 1,
     color: '#FF6B6B',
     children: ['berry', 'dried-fruit', 'other-fruit', 'citrus-fruit']
-  },
+},
   'sour-fermented': {
     id: 'sour-fermented',
     name: 'Sour/Fermented',
@@ -29,7 +29,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 1,
     color: '#4ECDC4',
     children: ['sour', 'alcohol-fermented']
-  },
+},
   'green-vegetative': {
     id: 'green-vegetative',
     name: 'Green/Vegetative',
@@ -37,7 +37,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 1,
     color: '#95E1D3',
     children: ['olive-oil', 'raw', 'green-vegetative-sub', 'beany']
-  },
+},
   'other': {
     id: 'other',
     name: 'Other',
@@ -45,7 +45,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 1,
     color: '#C7CEEA',
     children: ['papery-musty', 'chemical', 'rubber', 'petroleum', 'medicinal', 'skunky', 'meaty-brothy']
-  },
+},
   'roasted': {
     id: 'roasted',
     name: 'Roasted',
@@ -53,7 +53,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 1,
     color: '#8B4513',
     children: ['pipe-tobacco', 'tobacco', 'burnt', 'cereal']
-  },
+},
   'spices': {
     id: 'spices',
     name: 'Spices',
@@ -61,7 +61,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 1,
     color: '#FFA07A',
     children: ['pungent', 'pepper', 'brown-spice', 'anise', 'nutmeg', 'cinnamon', 'clove']
-  },
+},
   'nutty-cocoa': {
     id: 'nutty-cocoa',
     name: 'Nutty/Cocoa',
@@ -69,7 +69,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 1,
     color: '#D2691E',
     children: ['nutty', 'cocoa']
-  },
+},
   'sweet': {
     id: 'sweet',
     name: 'Sweet',
@@ -77,7 +77,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 1,
     color: '#FFB6C1',
     children: ['brown-sugar', 'vanilla', 'vanillin', 'overall-sweet', 'sweet-aromatics']
-  },
+},
   'floral': {
     id: 'floral',
     name: 'Floral',
@@ -85,7 +85,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 1,
     color: '#DDA0DD',
     children: ['black-tea', 'floral-sub']
-  },
+},
 
   // Level 2 - Subcategories
   // Fruity subcategories
@@ -96,7 +96,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'fruity',
     children: ['blackberry', 'raspberry', 'blueberry', 'strawberry']
-  },
+},
   'dried-fruit': {
     id: 'dried-fruit',
     name: 'Dried Fruit',
@@ -104,7 +104,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'fruity',
     children: ['raisin', 'prune']
-  },
+},
   'other-fruit': {
     id: 'other-fruit',
     name: 'Other Fruit',
@@ -112,7 +112,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'fruity',
     children: ['coconut', 'cherry', 'pomegranate', 'pineapple', 'grape', 'apple', 'peach', 'pear']
-  },
+},
   'citrus-fruit': {
     id: 'citrus-fruit',
     name: 'Citrus Fruit',
@@ -120,7 +120,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'fruity',
     children: ['grapefruit', 'orange', 'lemon', 'lime']
-  },
+},
 
   // Sour/Fermented subcategories
   'sour': {
@@ -130,7 +130,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'sour-fermented',
     children: ['sour-aromatics', 'acetic-acid', 'butyric-acid', 'isovaleric-acid', 'citric-acid', 'malic-acid']
-  },
+},
   'alcohol-fermented': {
     id: 'alcohol-fermented',
     name: 'Alcohol/Fermented',
@@ -138,7 +138,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'sour-fermented',
     children: ['winey', 'whiskey', 'fermented', 'overripe']
-  },
+},
 
   // Green/Vegetative subcategories
   'olive-oil': {
@@ -147,14 +147,14 @@ export const flavorWheel: Record<string, FlavorNode> = {
     nameKo: '올리브 오일',
     level: 2,
     parent: 'green-vegetative'
-  },
+},
   'raw': {
     id: 'raw',
     name: 'Raw',
     nameKo: '날것',
     level: 2,
     parent: 'green-vegetative'
-  },
+},
   'green-vegetative-sub': {
     id: 'green-vegetative-sub',
     name: 'Green/Vegetative',
@@ -162,14 +162,14 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'green-vegetative',
     children: ['under-ripe', 'peapod', 'fresh', 'dark-green', 'vegetative', 'hay-like', 'herb-like']
-  },
+},
   'beany': {
     id: 'beany',
     name: 'Beany',
     nameKo: '콩',
     level: 2,
     parent: 'green-vegetative'
-  },
+},
 
   // Nutty/Cocoa subcategories
   'nutty': {
@@ -179,7 +179,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'nutty-cocoa',
     children: ['peanuts', 'hazelnut', 'almond']
-  },
+},
   'cocoa': {
     id: 'cocoa',
     name: 'Cocoa',
@@ -187,7 +187,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'nutty-cocoa',
     children: ['chocolate', 'dark-chocolate']
-  },
+},
 
   // Sweet subcategories
   'brown-sugar': {
@@ -197,35 +197,35 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'sweet',
     children: ['molasses', 'maple-syrup', 'caramelized', 'honey']
-  },
+},
   'vanilla': {
     id: 'vanilla',
     name: 'Vanilla',
     nameKo: '바닐라',
     level: 2,
     parent: 'sweet'
-  },
+},
   'vanillin': {
     id: 'vanillin',
     name: 'Vanillin',
     nameKo: '바닐린',
     level: 2,
     parent: 'sweet'
-  },
+},
   'overall-sweet': {
     id: 'overall-sweet',
     name: 'Overall Sweet',
     nameKo: '전반적 단맛',
     level: 2,
     parent: 'sweet'
-  },
+},
   'sweet-aromatics': {
     id: 'sweet-aromatics',
     name: 'Sweet Aromatics',
     nameKo: '달콤한 향',
     level: 2,
     parent: 'sweet'
-  },
+},
 
   // Floral subcategories
   'black-tea': {
@@ -234,7 +234,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     nameKo: '홍차',
     level: 2,
     parent: 'floral'
-  },
+},
   'floral-sub': {
     id: 'floral-sub',
     name: 'Floral',
@@ -242,7 +242,7 @@ export const flavorWheel: Record<string, FlavorNode> = {
     level: 2,
     parent: 'floral',
     children: ['chamomile', 'rose', 'jasmine']
-  },
+},
 
   // Level 3 - Specific flavors
   // Berry specifics
@@ -252,28 +252,28 @@ export const flavorWheel: Record<string, FlavorNode> = {
     nameKo: '블랙베리',
     level: 3,
     parent: 'berry'
-  },
+},
   'raspberry': {
     id: 'raspberry',
     name: 'Raspberry',
     nameKo: '라즈베리',
     level: 3,
     parent: 'berry'
-  },
+},
   'blueberry': {
     id: 'blueberry',
     name: 'Blueberry',
     nameKo: '블루베리',
     level: 3,
     parent: 'berry'
-  },
+},
   'strawberry': {
     id: 'strawberry',
     name: 'Strawberry',
     nameKo: '딸기',
     level: 3,
     parent: 'berry'
-  },
+},
 
   // Citrus specifics
   'grapefruit': {
@@ -282,28 +282,28 @@ export const flavorWheel: Record<string, FlavorNode> = {
     nameKo: '자몽',
     level: 3,
     parent: 'citrus-fruit'
-  },
+},
   'orange': {
     id: 'orange',
     name: 'Orange',
     nameKo: '오렌지',
     level: 3,
     parent: 'citrus-fruit'
-  },
+},
   'lemon': {
     id: 'lemon',
     name: 'Lemon',
     nameKo: '레몬',
     level: 3,
     parent: 'citrus-fruit'
-  },
+},
   'lime': {
     id: 'lime',
     name: 'Lime',
     nameKo: '라임',
     level: 3,
     parent: 'citrus-fruit'
-  },
+},
 
   // Chocolate specifics
   'chocolate': {
@@ -312,14 +312,14 @@ export const flavorWheel: Record<string, FlavorNode> = {
     nameKo: '초콜릿',
     level: 3,
     parent: 'cocoa'
-  },
+},
   'dark-chocolate': {
     id: 'dark-chocolate',
     name: 'Dark Chocolate',
     nameKo: '다크 초콜릿',
     level: 3,
     parent: 'cocoa'
-  },
+},
 
   // Floral specifics
   'chamomile': {
@@ -328,21 +328,21 @@ export const flavorWheel: Record<string, FlavorNode> = {
     nameKo: '카모마일',
     level: 3,
     parent: 'floral-sub'
-  },
+},
   'rose': {
     id: 'rose',
     name: 'Rose',
     nameKo: '장미',
     level: 3,
     parent: 'floral-sub'
-  },
+},
   'jasmine': {
     id: 'jasmine',
     name: 'Jasmine',
     nameKo: '자스민',
     level: 3,
     parent: 'floral-sub'
-  }
+}
 };
 
 // Helper functions
@@ -366,7 +366,7 @@ export function getFlavorPath(flavorId: string): FlavorNode[] {
   while (current) {
     path.unshift(current);
     current = current.parent ? flavorWheel[current.parent] : undefined;
-  }
+}
   
   return path;
 }

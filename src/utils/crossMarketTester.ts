@@ -23,6 +23,7 @@ import {
   getApiEndpoint,
 } from '../config/deploymentConfig';
 import { i18nValidationSuite } from './i18nValidationSuite';
+import { Logger } from '../services/LoggingService';
 import { performanceMonitor } from '../services/PerformanceMonitor';
 
 /**
@@ -44,7 +45,7 @@ export interface MarketTestResult {
   language: 'ko' | 'en';
   success: boolean;
   message: string;
-  data?: any;
+  data?: unknown;
   error?: string;
   executionTime: number;
 }
@@ -57,15 +58,15 @@ export interface ComparisonResult {
 
 export interface ExpectedDifference {
   field: string;
-  koreanValue: any;
-  usValue: any;
+  koreanValue: unknown;
+  usValue: unknown;
   reason: string;
 }
 
 export interface UnexpectedDifference {
   field: string;
-  koreanValue: any;
-  usValue: any;
+  koreanValue: unknown;
+  usValue: unknown;
   severity: 'low' | 'medium' | 'high';
 }
 
@@ -89,9 +90,9 @@ class CrossMarketTester {
   static getInstance(): CrossMarketTester {
     if (!CrossMarketTester.instance) {
       CrossMarketTester.instance = new CrossMarketTester();
-    }
-    return CrossMarketTester.instance;
   }
+    return CrossMarketTester.instance;
+}
 
   /**
    * Run comprehensive cross-market test suite
@@ -100,7 +101,7 @@ class CrossMarketTester {
     const startTime = performance.now();
     this.results = [];
 
-    console.log('🌍 Starting Cross-Market Test Suite...');
+    Logger.debug('🌍 Starting Cross-Market Test Suite...', 'util', { component: 'crossMarketTester' });
 
     // Store original state
     const originalLanguage = getCurrentLanguage();
@@ -122,7 +123,7 @@ class CrossMarketTester {
       const summary = this.generateSummary(executionTime);
       const recommendations = this.generateRecommendations();
 
-      console.log(`✅ Cross-Market Test Suite completed in ${executionTime}ms`);
+      Logger.debug(`✅ Cross-Market Test Suite completed in ${executionTime}ms`, 'util', { component: 'crossMarketTester' });
 
       return {
         totalTests: this.results.length,
@@ -133,12 +134,12 @@ class CrossMarketTester {
         executionTime,
         summary,
         recommendations,
-      };
-    } finally {
+    };
+  } finally {
       // Restore original language
       await changeLanguage(originalLanguage);
-    }
   }
+}
 
   /**
    * Test language and localization across markets
@@ -165,7 +166,7 @@ class CrossMarketTester {
       
       for (const key of testKeys) {
         translations[key] = i18n.t(key);
-      }
+    }
       
       const hasTranslations = testKeys.every(key => 
         translations[key] && translations[key] !== key
@@ -178,9 +179,9 @@ class CrossMarketTester {
         message: `Language: ${currentLang}, Translations: ${hasTranslations ? 'Available' : 'Missing'}`,
         data: { currentLang, marketConfig, translations, testKeys },
         executionTime: 0 // Will be set by executeMarketTest
-      };
-    });
-  }
+    };
+  });
+}
 
   /**
    * Test market data consistency
@@ -218,19 +219,19 @@ class CrossMarketTester {
             origins: origins.length,
             flavorProfiles: flavorProfiles.length,
             brewMethods: brewMethods.length
-          },
+        },
           samples: {
             roasters: roasters.slice(0, 3),
             origins: origins.slice(0, 3),
             flavorProfiles: flavorProfiles.slice(0, 3)
-          },
+        },
           hasCorrectRoasters,
           hasCorrectOrigins
-        },
+      },
         executionTime: 0 // Will be set by executeMarketTest
-      };
-    });
-  }
+    };
+  });
+}
 
   /**
    * Test feature availability across markets
@@ -244,13 +245,13 @@ class CrossMarketTester {
         labMode: isFeatureEnabled('labMode'),
         marketIntelligence: isFeatureEnabled('marketIntelligence'),
         achievements: isFeatureEnabled('achievements'),
-      };
+    };
       
       const deploymentFeatures = {
         performanceDashboard: isFeatureFlagEnabled('performanceDashboard'),
         betaTestingDashboard: isFeatureFlagEnabled('betaTestingDashboard'),
         crashReporting: isFeatureFlagEnabled('crashReporting'),
-      };
+    };
       
       // Korean market should have Lab Mode, US Beta should not
       const isKorean = market === 'korean';
@@ -272,12 +273,12 @@ class CrossMarketTester {
             labModeCorrect,
             betaDashboardCorrect,
             isKorean
-          }
-        },
+        }
+      },
         executionTime: 0 // Will be set by executeMarketTest
-      };
-    });
-  }
+    };
+  });
+}
 
   /**
    * Test data formatting across markets
@@ -312,11 +313,11 @@ class CrossMarketTester {
           correctCurrency,
           hasDateFormat,
           isKorean
-        },
+      },
         executionTime: 0 // Will be set by executeMarketTest
-      };
-    });
-  }
+    };
+  });
+}
 
   /**
    * Test critical user flows
@@ -363,11 +364,11 @@ class CrossMarketTester {
           hasCorrectExpressions,
           canSaveData,
           isKorean
-        },
+      },
         executionTime: 0 // Will be set by executeMarketTest
-      };
-    });
-  }
+    };
+  });
+}
 
   /**
    * Test performance across markets
@@ -406,11 +407,11 @@ class CrossMarketTester {
           dataSize: roasters.length + origins.length + flavorProfiles.length,
           performanceGood,
           thresholds: { dataLoad: 100, langSwitch: 200 }
-        },
+      },
         executionTime: 0 // Will be set by executeMarketTest
-      };
-    });
-  }
+    };
+  });
+}
 
   /**
    * Test deployment configuration
@@ -446,11 +447,11 @@ class CrossMarketTester {
           version,
           apiEndpoint: apiEndpoint?.substring(0, 50) + '...',
           marketConfigExists: !!deploymentConfig.marketConfig[market]
-        },
+      },
         executionTime: 0 // Will be set by executeMarketTest
-      };
-    });
-  }
+    };
+  });
+}
 
   /**
    * Test beta testing functionality
@@ -486,11 +487,11 @@ class CrossMarketTester {
           betaDashboard,
           crashReporting,
           betaFeaturesCorrect
-        },
+      },
         executionTime: 0 // Will be set by executeMarketTest
-      };
-    });
-  }
+    };
+  });
+}
 
   /**
    * Run a cross-market test comparing Korean and US configurations
@@ -499,7 +500,7 @@ class CrossMarketTester {
     testName: string,
     testFunction: (market: 'korean' | 'us_beta') => Promise<MarketTestResult>
   ): Promise<void> {
-    console.log(`🧪 Running ${testName}...`);
+    Logger.debug(`🧪 Running ${testName}...`, 'util', { component: 'crossMarketTester' });
     
     try {
       // Test Korean market
@@ -524,11 +525,11 @@ class CrossMarketTester {
         comparison,
         overallStatus,
         recommendations
-      });
+    });
       
-      console.log(`✅ ${testName}: ${overallStatus}`);
-    } catch (error) {
-      console.error(`❌ ${testName} failed:`, error);
+      Logger.debug(`✅ ${testName}: ${overallStatus}`, 'util', { component: 'crossMarketTester' });
+  } catch (error) {
+      Logger.error(`❌ ${testName} failed:`, 'util', { component: 'crossMarketTester', error: error });
       
       // Add failed test result
       this.results.push({
@@ -540,7 +541,7 @@ class CrossMarketTester {
           message: 'Test execution failed',
           error: error instanceof Error ? error.message : 'Unknown error',
           executionTime: 0
-        },
+      },
         usResult: {
           market: 'us_beta',  
           language: 'en',
@@ -548,17 +549,17 @@ class CrossMarketTester {
           message: 'Test execution failed',
           error: error instanceof Error ? error.message : 'Unknown error',
           executionTime: 0
-        },
+      },
         comparison: {
           expectedDifferences: [],
           unexpectedDifferences: [],
           consistencyScore: 0
-        },
+      },
         overallStatus: 'fail',
         recommendations: [`Fix test execution error: ${error instanceof Error ? error.message : 'Unknown error'}`]
-      });
-    }
+    });
   }
+}
 
   /**
    * Execute test for a specific market
@@ -576,8 +577,8 @@ class CrossMarketTester {
       return {
         ...result,
         executionTime: Math.round(endTime - startTime)
-      };
-    } catch (error) {
+    };
+  } catch (error) {
       const endTime = performance.now();
       
       return {
@@ -587,9 +588,9 @@ class CrossMarketTester {
         message: 'Market test failed',
         error: error instanceof Error ? error.message : 'Unknown error',
         executionTime: Math.round(endTime - startTime)
-      };
-    }
+    };
   }
+}
 
   /**
    * Compare results between markets
@@ -604,14 +605,14 @@ class CrossMarketTester {
       koreanValue: koreanResult.market,
       usValue: usResult.market,
       reason: 'Different target markets'
-    });
+  });
     
     expectedDifferences.push({
       field: 'language',
       koreanValue: koreanResult.language,
       usValue: usResult.language,
       reason: 'Different primary languages'
-    });
+  });
     
     // Check for unexpected differences
     if (koreanResult.success !== usResult.success) {
@@ -621,8 +622,8 @@ class CrossMarketTester {
         koreanValue: koreanResult.success,
         usValue: usResult.success,
         severity
-      });
-    }
+    });
+  }
     
     // Calculate consistency score
     const totalChecks = 5; // success, execution time, data presence, etc.
@@ -649,8 +650,8 @@ class CrossMarketTester {
       expectedDifferences,
       unexpectedDifferences,
       consistencyScore
-    };
-  }
+  };
+}
 
   /**
    * Determine overall test status
@@ -663,26 +664,26 @@ class CrossMarketTester {
     // If both markets fail, overall fails
     if (!koreanResult.success && !usResult.success) {
       return 'fail';
-    }
+  }
     
     // If one market fails unexpectedly, it's a failure
     if (comparison.unexpectedDifferences.some(d => d.severity === 'high')) {
       return 'fail';
-    }
+  }
     
     // If consistency score is low, it's a warning
     if (comparison.consistencyScore < 70) {
       return 'warning';
-    }
+  }
     
     // If both markets succeed, it's a pass
     if (koreanResult.success && usResult.success) {
       return 'pass';
-    }
+  }
     
     // Mixed results with medium severity issues
     return 'warning';
-  }
+}
 
   /**
    * Generate recommendations for a specific test
@@ -698,33 +699,33 @@ class CrossMarketTester {
     // Failed tests
     if (!koreanResult.success) {
       recommendations.push(`Fix Korean market issues: ${koreanResult.message}`);
-    }
+  }
     if (!usResult.success) {
       recommendations.push(`Fix US market issues: ${usResult.message}`);
-    }
+  }
     
     // Performance issues
     if (koreanResult.executionTime > 200) {
       recommendations.push(`Optimize Korean market performance (${koreanResult.executionTime}ms)`);
-    }
+  }
     if (usResult.executionTime > 200) {
       recommendations.push(`Optimize US market performance (${usResult.executionTime}ms)`);
-    }
+  }
     
     // Consistency issues
     if (comparison.consistencyScore < 70) {
       recommendations.push(`Improve cross-market consistency (${comparison.consistencyScore}% consistent)`);
-    }
+  }
     
     // High severity unexpected differences
     comparison.unexpectedDifferences
       .filter(d => d.severity === 'high')
       .forEach(d => {
         recommendations.push(`Critical difference in ${d.field}: Korean=${d.koreanValue}, US=${d.usValue}`);
-      });
+    });
     
     return recommendations;
-  }
+}
 
   /**
    * Set market context for testing
@@ -740,7 +741,7 @@ class CrossMarketTester {
     
     // Small delay to allow context to update
     await new Promise(resolve => setTimeout(resolve, 100));
-  }
+}
 
   /**
    * Generate overall summary
@@ -754,7 +755,7 @@ class CrossMarketTester {
     const passRate = Math.round((passed / total) * 100);
     
     return `Cross-Market Testing Complete: ${passed}/${total} tests passed (${passRate}%), ${warnings} warnings, ${failed} failures in ${executionTime}ms`;
-  }
+}
 
   /**
    * Generate overall recommendations
@@ -773,8 +774,8 @@ class CrossMarketTester {
       );
       if (criticalFailures.length > 0) {
         recommendations.push(`⚠️ ${criticalFailures.length} failures are in core functionality`);
-      }
     }
+  }
     
     if (warnings.length > 0) {
       recommendations.push(`⚠️ Review ${warnings.length} cross-market warnings for optimization`);
@@ -785,21 +786,21 @@ class CrossMarketTester {
       );
       if (performanceIssues.length > 0) {
         recommendations.push(`🏃 ${performanceIssues.length} performance optimizations needed`);
-      }
     }
+  }
     
     // Consistency recommendations
     const lowConsistency = this.results.filter(r => r.comparison.consistencyScore < 70);
     if (lowConsistency.length > 0) {
       recommendations.push(`🔄 Improve consistency for ${lowConsistency.length} tests`);
-    }
+  }
     
     if (failures.length === 0 && warnings.length === 0) {
       recommendations.push(`🎉 All cross-market tests passed! App is ready for dual-market deployment`);
-    }
+  }
     
     return recommendations;
-  }
+}
 }
 
 export const crossMarketTester = CrossMarketTester.getInstance();

@@ -32,18 +32,18 @@ const SensoryScreen = () => {
     if (currentTasting.mode === 'home_cafe' || currentTasting.mode === 'lab') {
       setShowOnboarding(false);
       return;
-    }
+  }
     
     checkShouldShowOnboarding().then(shouldShow => {
       setShowOnboarding(shouldShow);
-    });
-  }, [currentTasting.mode]);
+  });
+}, [currentTasting.mode]);
 
 
   const handleComplete = useCallback(async () => {
     // Navigate to personal comment screen
     navigation.navigate('PersonalComment' as never);
-  }, [navigation]);
+}, [navigation]);
 
   // Convert EnhancedSensoryEvaluation format to TastingStore format
   const handleExpressionChange = useCallback((expressions: Array<{
@@ -54,8 +54,8 @@ const SensoryScreen = () => {
       english: string;
       emoji: string;
       intensity?: number;
-    };
-  }>) => {
+  };
+}>) => {
     const converted: SelectedSensoryExpression[] = expressions.map(item => ({
       categoryId: item.categoryId,
       expressionId: item.expression.id,
@@ -64,9 +64,9 @@ const SensoryScreen = () => {
       emoji: item.expression.emoji,
       intensity: 3, // Default intensity since we removed user selection
       selected: true,
-    }));
+  }));
     setSelectedSensoryExpressions(converted);
-  }, [setSelectedSensoryExpressions]);
+}, [setSelectedSensoryExpressions]);
 
 
   return (
@@ -114,10 +114,10 @@ const SensoryScreen = () => {
                       const category = expr.categoryId;
                       if (!acc[category]) {
                         acc[category] = [];
-                      }
+                    }
                       acc[category].push(expr.korean);
                       return acc;
-                    }, {} as Record<string, string[]>);
+                  }, {} as Record<string, string[]>);
                     
                     // Format the display with category names
                     const categoryNames: Record<string, string> = {
@@ -127,7 +127,7 @@ const SensoryScreen = () => {
                       body: '바디',
                       aftertaste: '애프터',
                       balance: '밸런스'
-                    };
+                  };
                     
                     const categoryOrder = ['acidity', 'sweetness', 'bitterness', 'body', 'aftertaste', 'balance'];
                     
@@ -150,8 +150,8 @@ const SensoryScreen = () => {
                           <Text style={styles.categoryExpressions}>{expressions}</Text>
                         </View>
                       );
-                    });
-                  })()}
+                  });
+                })()}
                 </View>
               ) : (
                 <Text style={styles.selectedPreviewPlaceholder}>
@@ -170,8 +170,8 @@ const SensoryScreen = () => {
                   emoji: item.emoji || '',
                   intensity: item.intensity || 2,
                   beginner: true,
-                } as any,
-              }))}
+              },
+            }))}
               onExpressionChange={handleExpressionChange}
               beginnerMode={true}
             />
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
+},
   navigationBar: {
     height: 44,
     flexDirection: 'row',
@@ -215,55 +215,55 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 0.5,
     borderBottomColor: HIGColors.systemGray4,
-  },
+},
   backButton: {
     fontSize: HIGConstants.FONT_SIZE_H2,
     color: HIGColors.systemBlue,
-  },
+},
   navigationTitle: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   skipButton: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.systemBlue,
-  },
+},
   progressBar: {
     height: 3,
     backgroundColor: HIGColors.systemGray5,
     overflow: 'hidden',
-  },
+},
   progressFill: {
     height: '100%',
     width: '67%', // 4/6 = 67% (Sensory is 4th step)
     backgroundColor: HIGColors.systemBlue,
-  },
+},
   scrollView: {
     flex: 1,
-  },
+},
   scrollContent: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingBottom: HIGConstants.SPACING_XL,
-  },
+},
   bottomContainer: {
     padding: HIGConstants.SPACING_LG,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 0.5,
     borderTopColor: HIGColors.systemGray4,
-  },
+},
   nextButton: {
     height: 48,
     backgroundColor: HIGColors.systemBlue,
     borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   nextButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: '#FFFFFF',
-  },
+},
   selectedPreviewContainer: {
     backgroundColor: '#FAFAFA',
     padding: HIGConstants.SPACING_MD,
@@ -273,12 +273,12 @@ const styles = StyleSheet.create({
     minHeight: 80, // 최소 높이 증가
     maxHeight: 180, // 최대 높이 확대
     justifyContent: 'center',
-  },
+},
   selectedPreviewContent: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start',
-  },
+},
   categoryGroup: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -287,46 +287,46 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: HIGColors.systemGray4,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   categoryGroupLast: {
     borderRightWidth: 0,
     paddingRight: 0,
     marginRight: 0,
-  },
+},
   categoryLabel: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     color: HIGColors.secondaryLabel,
     marginRight: HIGConstants.SPACING_SM,
-  },
+},
   categoryExpressions: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     fontWeight: '500',
-  },
+},
   selectedPreviewPlaceholder: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.tertiaryLabel,
     textAlign: 'center',
     fontStyle: 'italic',
-  },
+},
   guideMessageContainer: {
     paddingHorizontal: HIGConstants.SPACING_LG,
     paddingVertical: HIGConstants.SPACING_SM,
     backgroundColor: '#E3F2FD',
-  },
+},
   guideMessage: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.systemBlue,
     textAlign: 'center',
     fontWeight: '500',
-  },
+},
   guideSubMessage: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     textAlign: 'center',
     marginTop: 4,
-  },
+},
 });
 
 export default SensoryScreen;

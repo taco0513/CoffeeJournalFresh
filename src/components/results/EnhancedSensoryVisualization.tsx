@@ -36,7 +36,7 @@ export const EnhancedSensoryVisualization: React.FC<EnhancedSensoryVisualization
     finish: '여운',
     bitterness: '쓴맛',
     balance: '균형감',
-  };
+};
 
   // Prepare data for radar chart
   const radarData = [
@@ -54,7 +54,7 @@ export const EnhancedSensoryVisualization: React.FC<EnhancedSensoryVisualization
     value: item.value,
     maxValue: 5,
     color: getColorForValue(item.value),
-  }));
+}));
 
   // Add comparison data if provided
   const comparisonBarData = comparison ? [
@@ -71,7 +71,7 @@ export const EnhancedSensoryVisualization: React.FC<EnhancedSensoryVisualization
     if (value >= 3) return HIGColors.systemBlue;
     if (value >= 2) return HIGColors.systemOrange;
     return HIGColors.systemRed;
-  }
+}
 
   const centerContent = (
     <View style={styles.centerContent}>
@@ -119,7 +119,7 @@ export const EnhancedSensoryVisualization: React.FC<EnhancedSensoryVisualization
                         <View style={[styles.miniBar, { 
                           height: (item.value / 5) * 40,
                           backgroundColor: item.color 
-                        }]} />
+                      }]} />
                         <Text style={styles.barLegend}>내 점수</Text>
                       </View>
                       
@@ -129,7 +129,7 @@ export const EnhancedSensoryVisualization: React.FC<EnhancedSensoryVisualization
                         <View style={[styles.miniBar, { 
                           height: (comparisonBarData[index].value / 5) * 40,
                           backgroundColor: comparisonBarData[index].color 
-                        }]} />
+                      }]} />
                         <Text style={styles.barLegend}>평균</Text>
                       </View>
                     </View>
@@ -165,96 +165,96 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     paddingVertical: HIGConstants.SPACING_LG,
-  },
+},
   title: {
     fontSize: 18,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   chartContainer: {
     alignItems: 'center',
-  },
+},
   centerContent: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
+},
   averageText: {
     fontSize: 16,
     fontWeight: '700',
     color: HIGColors.systemBlue,
-  },
+},
   mouthfeelContainer: {
     marginTop: HIGConstants.SPACING_MD,
     alignItems: 'center',
-  },
+},
   mouthfeelLabel: {
     fontSize: 14,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_XS,
-  },
+},
   mouthfeelChip: {
     backgroundColor: HIGColors.systemBlue + '20',
     paddingHorizontal: HIGConstants.SPACING_MD,
     paddingVertical: HIGConstants.SPACING_XS,
     borderRadius: HIGConstants.BORDER_RADIUS_SM,
-  },
+},
   mouthfeelText: {
     fontSize: 14,
     fontWeight: '500',
     color: HIGColors.systemBlue,
-  },
+},
   barContainer: {
     width: '100%',
     alignItems: 'center',
-  },
+},
   comparisonTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
     textAlign: 'center',
-  },
+},
   dualBarContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-  },
+},
   dualBarItem: {
     width: '30%',
     alignItems: 'center',
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   barLabel: {
     fontSize: 12,
     fontWeight: '500',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_XS,
     textAlign: 'center',
-  },
+},
   barPair: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-around',
     width: '100%',
-  },
+},
   barColumn: {
     alignItems: 'center',
     flex: 1,
-  },
+},
   barValue: {
     fontSize: 11,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: 2,
-  },
+},
   miniBar: {
     width: 16,
     borderRadius: 2,
     marginBottom: 4,
-  },
+},
   barLegend: {
     fontSize: 9,
     color: HIGColors.tertiaryLabel,
-  },
+},
 });

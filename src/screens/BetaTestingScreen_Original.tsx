@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { betaTestingService, BetaUser, DeploymentStatus } from '../services/BetaTestingService';
 import { getCurrentMarketConfig, isBetaMarket } from '../config/marketConfig';
 import { HIGConstants } from '../styles/common';
+import { Logger } from '../services/LoggingService';
 import { HIGColors } from '../constants/HIG';
 
 /**
@@ -39,7 +40,7 @@ const BetaTestingScreen: React.FC = () => {
 
   useEffect(() => {
     loadBetaData();
-  }, []);
+}, []);
 
   /**
    * Load beta testing data
@@ -56,12 +57,12 @@ const BetaTestingScreen: React.FC = () => {
       const deployment = await betaTestingService.getDeploymentStatus();
       setDeploymentStatus(deployment);
       
-    } catch (error) {
-      console.error('Failed to load beta data:', error);
-    } finally {
+  } catch (error) {
+      Logger.error('Failed to load beta data:', 'screen', { component: 'BetaTestingScreen_Original', error: error });
+  } finally {
       setIsLoading(false);
-    }
-  };
+  }
+};
 
   /**
    * Refresh data
@@ -70,7 +71,7 @@ const BetaTestingScreen: React.FC = () => {
     setRefreshing(true);
     await loadBetaData();
     setRefreshing(false);
-  };
+};
 
   /**
    * Quick feedback submission
@@ -88,22 +89,22 @@ const BetaTestingScreen: React.FC = () => {
               await betaTestingService.submitQuickFeedback(rating, comment);
               Alert.alert(t('success'), t('feedbackSubmitted'));
               await loadBetaData(); // Refresh to update feedback count
-            } catch (error) {
+          } catch (error) {
               Alert.alert(t('error'), t('feedbackError'));
-            }
-          },
+          }
         },
+      },
       ],
       'plain-text'
     );
-  };
+};
 
   /**
    * Report bug
    */
   const handleBugReport = (): void => {
     setShowFeedbackModal(true);
-  };
+};
 
   if (isLoading) {
     return (
@@ -115,7 +116,7 @@ const BetaTestingScreen: React.FC = () => {
         </View>
       </View>
     );
-  }
+}
 
   return (
     <View style={styles.container}>
@@ -164,7 +165,7 @@ const BetaTestingScreen: React.FC = () => {
         style={styles.content}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
+      }
       >
         {selectedTab === 'status' && (
           <StatusTab user={currentUser} isBeta={isBeta} marketConfig={marketConfig} />
@@ -198,10 +199,10 @@ const BetaTestingScreen: React.FC = () => {
             Alert.alert(t('success'), t('bugReported'));
             setShowFeedbackModal(false);
             await loadBetaData();
-          } catch (error) {
+        } catch (error) {
             Alert.alert(t('error'), t('bugReportError'));
-          }
-        }}
+        }
+      }}
       />
     </View>
   );
@@ -213,7 +214,7 @@ const BetaTestingScreen: React.FC = () => {
 const StatusTab: React.FC<{
   user: BetaUser | null;
   isBeta: boolean;
-  marketConfig: any;
+  marketConfig: unknown;
 }> = ({ user, isBeta, marketConfig }) => {
   const { t } = useTranslation();
 
@@ -223,7 +224,7 @@ const StatusTab: React.FC<{
         <Text style={styles.noDataText}>{t('noUserData')}</Text>
       </View>
     );
-  }
+}
 
   return (
     <View style={styles.tabContent}>
@@ -363,7 +364,7 @@ const FeedbackTab: React.FC<{
 const DeploymentTab: React.FC<{
   deploymentStatus: DeploymentStatus | null;
   isBeta: boolean;
-  marketConfig: any;
+  marketConfig: unknown;
 }> = ({ deploymentStatus, isBeta, marketConfig }) => {
   const { t } = useTranslation();
 
@@ -373,7 +374,7 @@ const DeploymentTab: React.FC<{
         <Text style={styles.noDataText}>{t('noDeploymentData')}</Text>
       </View>
     );
-  }
+}
 
   const currentMarket = isBeta ? 'us_beta' : 'korean';
   const marketRollout = deploymentStatus.marketRollout[currentMarket];
@@ -476,13 +477,13 @@ const FeedbackModal: React.FC<{
     if (!title.trim() || !description.trim()) {
       Alert.alert(t('error'), t('fillRequiredFields'));
       return;
-    }
+  }
 
     onSubmit({ title, description, severity });
     setTitle('');
     setDescription('');
     setSeverity('medium');
-  };
+};
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
@@ -549,44 +550,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
   loadingText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
-  },
+},
   header: {
     padding: HIGConstants.SPACING_LG,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.separator,
-  },
+},
   headerTitle: {
     fontSize: HIGConstants.FONT_SIZE_TITLE,
     fontWeight: '700',
     color: HIGColors.label,
-  },
+},
   headerSubtitle: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     marginTop: 4,
-  },
+},
   tabContainer: {
     flexDirection: 'row',
     backgroundColor: HIGColors.systemGray6,
     margin: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: 2,
-  },
+},
   tab: {
     flex: 1,
     paddingVertical: HIGConstants.SPACING_SM,
     alignItems: 'center',
     borderRadius: HIGConstants.cornerRadiusMedium - 2,
-  },
+},
   activeTab: {
     backgroundColor: HIGColors.white,
     shadowColor: HIGColors.black,
@@ -594,22 +595,22 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
-  },
+},
   tabText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '500',
     color: HIGColors.secondaryLabel,
-  },
+},
   activeTabText: {
     color: HIGColors.label,
     fontWeight: '600',
-  },
+},
   content: {
     flex: 1,
-  },
+},
   tabContent: {
     padding: HIGConstants.SPACING_MD,
-  },
+},
   card: {
     backgroundColor: HIGColors.white,
     borderRadius: HIGConstants.cornerRadiusMedium,
@@ -620,19 +621,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
-  },
+},
   cardTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_MD,
-  },
+},
   cardDescription: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     marginBottom: HIGConstants.SPACING_MD,
     lineHeight: 20,
-  },
+},
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -640,50 +641,50 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.systemGray5,
-  },
+},
   infoLabel: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     flex: 1,
-  },
+},
   infoValue: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     fontWeight: '500',
     flex: 1,
     textAlign: 'right',
-  },
+},
   betaText: {
     color: HIGColors.systemBlue,
     fontWeight: '600',
-  },
+},
   errorText: {
     color: HIGColors.systemRed,
     fontWeight: '600',
-  },
+},
   noDataText: {
     textAlign: 'center',
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.secondaryLabel,
     marginTop: HIGConstants.SPACING_XL,
-  },
+},
   ratingContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: HIGConstants.SPACING_MD,
-  },
+},
   ratingButton: {
     alignItems: 'center',
     padding: HIGConstants.SPACING_SM,
-  },
+},
   ratingText: {
     fontSize: 24,
-  },
+},
   ratingLabel: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     marginTop: 4,
-  },
+},
   actionButton: {
     backgroundColor: HIGColors.systemBlue,
     paddingVertical: HIGConstants.SPACING_MD,
@@ -691,12 +692,12 @@ const styles = StyleSheet.create({
     borderRadius: HIGConstants.cornerRadiusMedium,
     alignItems: 'center',
     marginTop: HIGConstants.SPACING_MD,
-  },
+},
   actionButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.white,
-  },
+},
   status_pending: { color: HIGColors.systemOrange },
   status_rolling_out: { color: HIGColors.systemBlue },
   status_complete: { color: HIGColors.systemGreen },
@@ -709,37 +710,37 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_MD,
     borderRadius: HIGConstants.cornerRadiusSmall,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   issueHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 4,
-  },
+},
   issueSeverity: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     fontWeight: '600',
     textTransform: 'uppercase',
-  },
+},
   issueType: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
     textTransform: 'uppercase',
-  },
+},
   issueDescription: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     marginBottom: 4,
-  },
+},
   issueStatus: {
     fontSize: HIGConstants.FONT_SIZE_CAPTION,
     color: HIGColors.secondaryLabel,
-  },
+},
   
   // Modal styles
   modalContainer: {
     flex: 1,
     backgroundColor: HIGColors.systemBackground,
-  },
+},
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -747,34 +748,34 @@ const styles = StyleSheet.create({
     padding: HIGConstants.SPACING_LG,
     borderBottomWidth: 1,
     borderBottomColor: HIGColors.separator,
-  },
+},
   modalCloseText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.systemRed,
-  },
+},
   modalTitle: {
     fontSize: HIGConstants.FONT_SIZE_H3,
     fontWeight: '600',
     color: HIGColors.label,
-  },
+},
   modalSubmitText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.systemBlue,
     fontWeight: '600',
-  },
+},
   modalContent: {
     flex: 1,
     padding: HIGConstants.SPACING_LG,
-  },
+},
   inputGroup: {
     marginBottom: HIGConstants.SPACING_LG,
-  },
+},
   inputLabel: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '600',
     color: HIGColors.label,
     marginBottom: HIGConstants.SPACING_SM,
-  },
+},
   textInput: {
     borderWidth: 1,
     borderColor: HIGColors.separator,
@@ -783,22 +784,22 @@ const styles = StyleSheet.create({
     fontSize: HIGConstants.FONT_SIZE_BODY,
     color: HIGColors.label,
     backgroundColor: HIGColors.white,
-  },
+},
   textArea: {
     height: 120,
-  },
+},
   severityContainer: {
     flexDirection: 'row',
     backgroundColor: HIGColors.systemGray5,
     borderRadius: HIGConstants.cornerRadiusMedium,
     padding: 2,
-  },
+},
   severityButton: {
     flex: 1,
     paddingVertical: HIGConstants.SPACING_SM,
     alignItems: 'center',
     borderRadius: HIGConstants.cornerRadiusMedium - 2,
-  },
+},
   severityButtonActive: {
     backgroundColor: HIGColors.white,
     shadowColor: HIGColors.black,
@@ -806,16 +807,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
-  },
+},
   severityButtonText: {
     fontSize: HIGConstants.FONT_SIZE_BODY,
     fontWeight: '500',
     color: HIGColors.secondaryLabel,
-  },
+},
   severityButtonTextActive: {
     color: HIGColors.label,
     fontWeight: '600',
-  },
+},
 });
 
 export default BetaTestingScreen;
