@@ -73,9 +73,8 @@ const SelectedPreviewContainer = styled(Card, {
   padding: '$md',
   marginVertical: '$md',
   borderRadius: '$3',
-  minHeight: 100,
-  maxHeight: 200,
-  justifyContent: 'center',
+  height: 240,
+  justifyContent: 'flex-start',
   shadowColor: '$shadowColor',
   shadowOffset: { width: 0, height: 1 },
   shadowOpacity: 0.05,
@@ -128,22 +127,7 @@ const PreviewPlaceholder = styled(Text, {
 
 // BottomContainer는 SafeArea를 고려해서 동적으로 처리
 
-const NextButton = styled(Button, {
-  height: 48,
-  backgroundColor: '$primary',
-  borderRadius: '$3',
-  
-  pressStyle: {
-    backgroundColor: '$primaryHover',
-    scale: 0.98,
-},
-})
-
-const NextButtonText = styled(Text, {
-  fontSize: 16,
-  fontWeight: '600',
-  color: 'white',
-})
+// NextButton removed - using FloatingButton instead
 
 const SensoryScreenTamagui = () => {
   const navigation = useNavigation();
@@ -219,7 +203,7 @@ const SensoryScreenTamagui = () => {
           
           {/* Progress Bar */}
           <ProgressBar>
-            <ProgressFill width="67%" />
+            <ProgressFill width="57%" />
           </ProgressBar>
 
           {/* Guide Message */}

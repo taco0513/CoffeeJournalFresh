@@ -8,6 +8,9 @@ export type { ChipProps, ChipSize, ChipVariant } from './buttons/Chip';
 export { FloatingButton } from './buttons/FloatingButton';
 export type { FloatingButtonProps } from './buttons/FloatingButton';
 
+export { ToggleButton } from './buttons/ToggleButton';
+export type { ToggleButtonProps } from './buttons/ToggleButton';
+
 // Card Components
 export { InsightCard } from './cards/InsightCard';
 export type { InsightCardProps } from './cards/InsightCard';

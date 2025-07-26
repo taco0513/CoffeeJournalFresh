@@ -2,6 +2,7 @@
 // Basic statistics section component
 
 import React from 'react';
+import { YStack } from 'tamagui';
 import {
   Section,
   StatsGrid,
@@ -47,6 +48,14 @@ export const StatsScreenBasicStats: React.FC<StatsScreenBasicStatsProps> = ({
           <StatNumber>{stats.totalTastings}</StatNumber>
           <StatLabel>나의 커피 기록</StatLabel>
         </StatCard>
+        
+        {/* Vertical Separator */}
+        <YStack 
+          width={1} 
+          backgroundColor="$gray5" 
+          marginVertical="$sm"
+        />
+        
         <StatCard>
           <StatNumber>{topRoasters.length}</StatNumber>
           <StatLabel>발견한 로스터리</StatLabel>

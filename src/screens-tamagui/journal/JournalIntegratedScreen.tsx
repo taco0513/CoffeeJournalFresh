@@ -5,7 +5,6 @@ import {
   XStack,
   Text,
   styled,
-  AnimatePresence,
   Button,
 } from 'tamagui';
 import SimpleProfileHistoryScreen from '../analytics/SimpleProfileHistoryScreen';
@@ -106,7 +105,6 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
         key={`journal-tab-${tab}`}
         active={isActive}
         onPress={() => setActiveTab(tab)}
-        animation="quick"
         pressStyle={{
           scale: 0.98,
       }}
@@ -147,37 +145,17 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
             <TabIndicator
               width={width / 2 - 24} // Half screen width minus padding
               left={activeTab === 'history' ? 24 : width / 2}
-              animation="quick"
-              enterStyle={{
-                opacity: 0,
-                x: -10,
-            }}
-              exitStyle={{
-                opacity: 0,
-                x: 10,
-            }}
             />
           </TabContainer>
 
           {/* Content with Animation */}
           <ContentContainer>
-            <AnimatePresence>
               <YStack
                 key={`content-${activeTab}`}
                 flex={1}
-                animation="lazy"
-                enterStyle={{
-                  opacity: 0,
-                  x: activeTab === 'history' ? -20 : 20,
-              }}
-                exitStyle={{
-                  opacity: 0,
-                  x: activeTab === 'history' ? 20 : -20,
-              }}
               >
                 {renderContent()}
               </YStack>
-            </AnimatePresence>
           </ContentContainer>
         </YStack>
       </YStack>

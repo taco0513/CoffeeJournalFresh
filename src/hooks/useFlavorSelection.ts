@@ -9,7 +9,6 @@ export const useFlavorSelection = (
   selectedPaths: FlavorPath[],
   updateField: (field: string, value: unknown) => void
 ) => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [expandedSubCategories, setExpandedSubCategories] = useState<Set<string>>(new Set());
 
@@ -115,8 +114,6 @@ export const useFlavorSelection = (
 }, []);
 
   return {
-    searchQuery,
-    setSearchQuery,
     expandedCategories,
     expandedSubCategories,
     handleSelectSubcategory,

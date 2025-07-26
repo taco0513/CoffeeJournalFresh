@@ -29,7 +29,7 @@ export const PersonalTasteDashboard = withErrorBoundary(PersonalTasteDashboardRa
 
 // Import raw tasting flow screens
 import CoffeeInfoScreenRaw from './tasting/CoffeeInfoScreen';
-import SensoryScreenRaw from './tasting/SensoryScreen';
+import SensoryExpressionScreenRaw from './tasting/SensoryExpressionScreen';
 import PersonalCommentScreenRaw from './tasting/PersonalCommentScreen';
 import ResultScreenRaw from './tasting/ResultScreen';
 import HomeCafeScreenRaw from './tasting/HomeCafeScreen';
@@ -39,7 +39,7 @@ import UnifiedFlavorScreenRaw from './tasting/flavor/UnifiedFlavorScreen';
 // Tasting Flow Screens (Phase 1 & 2) - With Error Boundaries
 // =============================================
 export const CoffeeInfoScreen = withErrorBoundary(CoffeeInfoScreenRaw, 'CoffeeInfoScreen');
-export const SensoryScreen = withErrorBoundary(SensoryScreenRaw, 'SensoryScreen');
+export const SensoryExpressionScreen = withErrorBoundary(SensoryExpressionScreenRaw, 'SensoryExpressionScreen');
 export const PersonalCommentScreen = withErrorBoundary(PersonalCommentScreenRaw, 'PersonalCommentScreen');
 export const ResultScreen = withErrorBoundary(ResultScreenRaw, 'ResultScreen');
 export const HomeCafeScreen = withErrorBoundary(HomeCafeScreenRaw, 'HomeCafeScreen');
@@ -54,7 +54,7 @@ export { default as EnhancedHomeCafeScreen } from './enhanced/EnhancedHomeCafeSc
 export { default as LabModeScreen } from './enhanced/LabModeScreen';
 export { default as OptimizedUnifiedFlavorScreen } from './enhanced/OptimizedUnifiedFlavorScreen';
 export { default as ExperimentalDataScreen } from './enhanced/ExperimentalDataScreen';
-export { default as SensoryEvaluationScreen } from './enhanced/SensoryEvaluationScreen';
+export { default as SensorySliderScreen } from './enhanced/SensorySliderScreen';
 export { default as RoasterNotesScreen } from './enhanced/RoasterNotesScreen';
 
 // Import raw analytics screens  

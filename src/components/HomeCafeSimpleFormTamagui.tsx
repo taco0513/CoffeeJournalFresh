@@ -15,7 +15,6 @@ import {
   Input,
   styled,
   Stack,
-  AnimatePresence,
 } from 'tamagui';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTastingStore } from '../stores/tastingStore';
@@ -39,14 +38,14 @@ const Section = styled(Card, {
 })
 
 const SectionTitle = styled(H2, {
-  fontSize: 18,
+  fontSize: '$4', // 18px → 20px
   fontWeight: '600',
   marginBottom: '$sm',
   color: '$color',
 })
 
 const SectionDescription = styled(Text, {
-  fontSize: 14,
+  fontSize: '$2', // 14px
   color: '$gray11',
   marginBottom: '$md',
 })
@@ -296,10 +295,10 @@ export const HomeCafeSimpleFormTamagui = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
         <FormContainer>
           {/* Dripper Selection */}
-          <Section elevate size="$4" animation="lazy">
+          <Section elevate size="$4">
             <SectionTitle>드리퍼 선택</SectionTitle>
             <SectionDescription>사용할 드리퍼를 선택해주세요</SectionDescription>
             
@@ -310,9 +309,8 @@ export const HomeCafeSimpleFormTamagui = () => {
                   selected={formData.dripper === dripper.value}
                   onPress={() => updateField('dripper', dripper.value)}
                   pressStyle={{ scale: 0.95 }}
-                  animation="quick"
                 >
-                  <Text fontSize={14} fontWeight={formData.dripper === dripper.value ? '600' : '400'}>
+                  <Text fontSize="$2" fontWeight={formData.dripper === dripper.value ? '600' : '400'}>
                     {dripper.label}
                   </Text>
                 </DripperButton>
@@ -321,7 +319,7 @@ export const HomeCafeSimpleFormTamagui = () => {
           </Section>
 
           {/* Preset Recipes */}
-          <Section elevate size="$4" animation="lazy">
+          <Section elevate size="$4">
             <SectionTitle>빠른 레시피</SectionTitle>
             <SectionDescription>자주 사용하는 레시피를 선택하세요</SectionDescription>
             
@@ -331,10 +329,9 @@ export const HomeCafeSimpleFormTamagui = () => {
                   <PresetButton
                     onPress={saveMyCoffeeRecipe}
                     pressStyle={{ scale: 0.95 }}
-                    animation="quick"
-                  >
-                    <Text fontSize={14} fontWeight="600">+ 나의 커피</Text>
-                    <Text fontSize={12} color="$gray11" marginTop={4}>현재 설정 저장</Text>
+                    >
+                    <Text fontSize="$2" fontWeight="600">+ 나의 커피</Text>
+                    <Text fontSize="$1" color="$gray11" marginTop={4}>현재 설정 저장</Text>
                   </PresetButton>
                 )}
                 
@@ -364,17 +361,16 @@ export const HomeCafeSimpleFormTamagui = () => {
                         saveRecipe(updatedFormData);
                     }}
                       pressStyle={{ scale: 0.95 }}
-                      animation="quick"
-                    >
+                        >
                       <Text 
-                        fontSize={14} 
+                        fontSize="$2" 
                         fontWeight={isSelected ? '600' : '500'}
                         color={isSelected ? '$blue11' : '$color'}
                       >
                         {preset.name === '나의 커피' ? ' ' : ''}{preset.name}
                       </Text>
                       <Text 
-                        fontSize={12} 
+                        fontSize="$1" 
                         color={isSelected ? '$blue10' : '$gray11'} 
                         marginTop={4}
                       >
@@ -391,8 +387,8 @@ export const HomeCafeSimpleFormTamagui = () => {
           <YStack space="$md" paddingHorizontal="$md">
             {/* Coffee Amount */}
             <Card padding="$md" backgroundColor="$background" borderWidth={1} borderColor="$borderColor">
-              <H3 fontSize={16} marginBottom="$sm">원두량</H3>
-              <Text fontSize={12} color="$gray11" marginBottom="$md">그램 단위로 입력해주세요</Text>
+              <H3 fontSize="$3" marginBottom="$sm">원두량</H3>
+              <Text fontSize="$1" color="$gray11" marginBottom="$md">그램 단위로 입력해주세요</Text>
               <XStack alignItems="center" space="$md">
                 <NumberInput
                   value={formData.recipe.coffeeAmount.toString()}
@@ -400,32 +396,32 @@ export const HomeCafeSimpleFormTamagui = () => {
                   placeholder="15"
                   keyboardType="numeric"
                 />
-                <Text fontSize={16} fontWeight="500">g</Text>
+                <Text fontSize="$3" fontWeight="500">g</Text>
               </XStack>
             </Card>
 
             {/* Water Amount (Auto-calculated) */}
-            <ResultCard elevate animation="lazy">
+            <ResultCard elevate>
               <XStack alignItems="center" justifyContent="space-between" width="100%">
                 <YStack>
-                  <Text fontSize={14} color="$gray11">물량</Text>
-                  <Text fontSize={10} color="$blue11"> 자동 계산됨</Text>
+                  <Text fontSize="$2" color="$gray11">물량</Text>
+                  <Text fontSize="10" color="$blue11"> 자동 계산됨</Text>
                 </YStack>
                 <XStack alignItems="baseline" space="$xs">
-                  <Text fontSize={32} fontWeight="700" color="$blue11">
+                  <Text fontSize="$8" fontWeight="700" color="$blue11">
                     {formData.recipe.waterAmount}
                   </Text>
-                  <Text fontSize={18} fontWeight="500" color="$blue10">ml</Text>
+                  <Text fontSize="$4" fontWeight="500" color="$blue10">ml</Text>
                 </XStack>
               </XStack>
-              <Text fontSize={12} color="$gray11" marginTop="$sm">
+              <Text fontSize="$1" color="$gray11" marginTop="$sm">
                 현재 비율: 1:{(formData.recipe.waterAmount / formData.recipe.coffeeAmount).toFixed(1)}
               </Text>
             </ResultCard>
           </YStack>
 
           {/* Timer */}
-          <Section elevate size="$4" animation="lazy" marginTop="$md">
+          <Section elevate size="$4" marginTop="$md">
             <SectionTitle>추출 타이머</SectionTitle>
             <SectionDescription>추출 시간을 기록해보세요</SectionDescription>
             
@@ -437,12 +433,11 @@ export const HomeCafeSimpleFormTamagui = () => {
                   setLapTimes([]);
               }}
                 pressStyle={{ scale: 0.95 }}
-                animation="quick"
               >
-                <Text fontSize={24} marginRight="$md"></Text>
+                <Text fontSize="$6" marginRight="$md"></Text>
                 <YStack>
-                  <Text fontSize={16} fontWeight="600">타이머 시작</Text>
-                  <Text fontSize={14} color="$gray11">
+                  <Text fontSize="$3" fontWeight="600">타이머 시작</Text>
+                  <Text fontSize="$2" color="$gray11">
                     {formatTime(formData.recipe.brewTime || 0)}
                   </Text>
                 </YStack>
@@ -450,8 +445,8 @@ export const HomeCafeSimpleFormTamagui = () => {
             ) : (
               <YStack space="$md">
                 <XStack justifyContent="center" alignItems="center">
-                  <Text fontSize={24} marginRight="$md"></Text>
-                  <Text fontSize={32} fontWeight="700" color="$blue11">
+                  <Text fontSize="$6" marginRight="$md"></Text>
+                  <Text fontSize="$8" fontWeight="700" color="$blue11">
                     {formatTime(elapsedTime)}
                   </Text>
                 </XStack>
@@ -460,8 +455,8 @@ export const HomeCafeSimpleFormTamagui = () => {
                   <YStack space="$xs">
                     {lapTimes.map((lap, index) => (
                       <LapTimeRow key={index}>
-                        <Text fontSize={14}>{lap.label}</Text>
-                        <Text fontSize={14} fontWeight="500" color="$blue11">
+                        <Text fontSize="$2">{lap.label}</Text>
+                        <Text fontSize="$2" fontWeight="500" color="$blue11">
                           {formatTime(lap.time)}
                         </Text>
                       </LapTimeRow>
@@ -480,7 +475,7 @@ export const HomeCafeSimpleFormTamagui = () => {
                         setLapTimes([...lapTimes, { time: elapsedTime, label }]);
                     }}
                     >
-                      <Text fontSize={14} fontWeight="500">추출타임</Text>
+                      <Text fontSize="$2" fontWeight="500">추출타임</Text>
                     </ControlButton>
                   )}
                   <ControlButton
@@ -500,7 +495,7 @@ export const HomeCafeSimpleFormTamagui = () => {
                       saveRecipe(updatedFormData);
                   }}
                   >
-                    <Text fontSize={14} fontWeight="600" color="white">
+                    <Text fontSize="$2" fontWeight="600" color="white">
                       {isTimerRunning ? '정지' : '완료'}
                     </Text>
                   </ControlButton>
@@ -516,28 +511,23 @@ export const HomeCafeSimpleFormTamagui = () => {
             onPress={() => setShowAdvanced(!showAdvanced)}
             marginHorizontal="$md"
             marginTop="$md"
-            animation="quick"
           >
-            <Text fontSize={14} fontWeight="500" color="$gray11">
+            <Text fontSize="$2" fontWeight="500" color="$gray11">
               상세 설정 {showAdvanced ? '−' : '+'}
             </Text>
           </Button>
 
-          <AnimatePresence>
             {showAdvanced && (
               <Section
                 elevate
                 size="$4"
-                animation="lazy"
-                enterStyle={{ opacity: 0, y: -10 }}
-                exitStyle={{ opacity: 0, y: -10 }}
               >
                 <SectionTitle>상세 설정</SectionTitle>
                 <SectionDescription>물 온도와 추가 메모를 입력하세요</SectionDescription>
                 
                 <YStack space="$md">
                   <YStack>
-                    <Text fontSize={14} marginBottom="$sm">물 온도</Text>
+                    <Text fontSize="$2" marginBottom="$sm">물 온도</Text>
                     <XStack alignItems="center" space="$md">
                       <NumberInput
                         value={(formData.waterTemp || 93).toString()}
@@ -545,12 +535,12 @@ export const HomeCafeSimpleFormTamagui = () => {
                         placeholder="93"
                         keyboardType="numeric"
                       />
-                      <Text fontSize={16} fontWeight="500">°C</Text>
+                      <Text fontSize="$3" fontWeight="500">°C</Text>
                     </XStack>
                   </YStack>
                   
                   <YStack>
-                    <Text fontSize={14} marginBottom="$sm">그라인딩 메모</Text>
+                    <Text fontSize="$2" marginBottom="$sm">그라인딩 메모</Text>
                     <Input
                       value={formData.grindNote || ''}
                       onChangeText={(text: string) => updateField('grindNote', text)}
@@ -569,10 +559,9 @@ export const HomeCafeSimpleFormTamagui = () => {
                 </YStack>
               </Section>
             )}
-          </AnimatePresence>
 
           {/* Extraction Notes */}
-          <Section elevate size="$4" animation="lazy" marginTop="$md" marginBottom="$xl">
+          <Section elevate size="$4" marginTop="$md" marginBottom="$xl">
             <SectionTitle>추출 노트</SectionTitle>
             <SectionDescription>오늘의 추출에 대한 메모를 남겨보세요 (선택사항)</SectionDescription>
             

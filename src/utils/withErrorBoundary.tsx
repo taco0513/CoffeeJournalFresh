@@ -9,13 +9,17 @@ export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   screenName: string
 ) {
-  return React.forwardRef<any, P>((props, ref) => {
+  const WrappedComponent = React.forwardRef<any, P>((props, ref) => {
     return (
       <NavigationErrorBoundary screenName={screenName}>
         <Component {...props} ref={ref} />
       </NavigationErrorBoundary>
     );
-});
+  });
+  
+  WrappedComponent.displayName = `withErrorBoundary(${screenName})`;
+  
+  return WrappedComponent;
 }
 
 /**

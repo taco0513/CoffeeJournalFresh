@@ -124,7 +124,12 @@ Based on Material Design and data-heavy interface best practices:
 
 **Primary Scale** (Main Content):
 - **Body Text**: $3 (16px) - WCAG minimum for main content
-- **Headings**: $4-$8 (20px-36px) - Clear hierarchy
+- **Headings**: $3-$7 (16px-36px) - Clear hierarchy
+  - H1: $7 (36px)
+  - H2: $6 (32px)
+  - H3: $5 (28px)
+  - H4: $4 (20px)
+  - H5: $3 (16px)
 - **Subtitles**: $4 (20px) - Secondary headings
 
 **Secondary Scale** (Metadata & Labels):
@@ -376,6 +381,7 @@ bridgeDebugger.printRecentCalls()  # Debug bridge errors
   - Home Cafe Mode: 장비 정보, 레시피 데이터, 추출 변수 기록
   - Lab Mode: 큐핑 프로토콜, 정밀 측정, 비교 테이스팅
   - 프리미엄 monetization 기회 (홈카페족 20만+ 시장 확장)
+  - **Note**: 모든 모드에서 로스터 노트는 개인 노트 다음 단계로 포함
 - **Phase 2**: Smart Insights 고도화 + AI 코칭 시스템 도입, Photo OCR 기능
 - **Phase 3**: 소셜/커뮤니티 기능, 고급 성장 트래킹
 - **Phase 4**: 추가 국제화 확장 (일본, 호주, EU), 전문가 도구

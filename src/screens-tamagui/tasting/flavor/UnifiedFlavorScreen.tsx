@@ -7,13 +7,9 @@ import {
   Text,
   ScrollView,
   Button,
-  Input,
-  Card,
   Progress,
-  AnimatePresence,
   styled,
   useTheme,
-  H2,
   H3,
   Paragraph,
 } from 'tamagui';
@@ -41,51 +37,9 @@ const Container = styled(YStack, {
 });
 
 
-const SearchContainer = styled(YStack, {
-  name: 'SearchContainer',
-  paddingHorizontal: '$lg',
-  paddingVertical: '$sm',
-  backgroundColor: '$backgroundHover',
-});
 
-const SearchBar = styled(XStack, {
-  name: 'SearchBar',
-  backgroundColor: '$background',
-  borderRadius: '$4',
-  paddingHorizontal: '$md',
-  paddingVertical: '$sm',
-  alignItems: 'center',
-  borderWidth: 1,
-  borderColor: '$borderColor',
-});
+// NextButton removed - using FloatingButton component instead
 
-const NextButton = styled(Button, {
-  name: 'NextButton',
-  backgroundColor: '$cupBlue',
-  borderRadius: '$3',
-  paddingVertical: '$md',
-  animation: 'quick',
-  pressStyle: {
-    scale: 0.98,
-    backgroundColor: '$cupBlueDark',
-},
-  disabledStyle: {
-    backgroundColor: '$gray5',
-    opacity: 0.6,
-},
-});
-
-const NoResultsContainer = styled(YStack, {
-  name: 'NoResultsContainer',
-  alignItems: 'center',
-  justifyContent: 'center',
-  paddingVertical: '$xxl',
-  animation: 'lazy',
-  enterStyle: {
-    opacity: 0,
-    y: 20,
-},
-});
 
 export default function UnifiedFlavorScreen() {
   const navigation = useNavigation();
@@ -95,8 +49,6 @@ export default function UnifiedFlavorScreen() {
   const selectedPaths = currentTasting.selectedFlavors || [];
 
   const {
-    searchQuery,
-    setSearchQuery,
     expandedCategories,
     expandedSubCategories,
     handleSelectSubcategory,
@@ -113,7 +65,7 @@ export default function UnifiedFlavorScreen() {
       navigation.navigate('ExperimentalData' as never);
   } else {
       // For both cafe and home_cafe modes, go to sensory evaluation
-      navigation.navigate('SensoryEvaluation' as never);
+      navigation.navigate('Sensory' as never);
   }
 };
 
@@ -123,7 +75,7 @@ export default function UnifiedFlavorScreen() {
       navigation.navigate('ExperimentalData' as never);
     } else {
       // For both cafe and home_cafe modes, go to sensory evaluation
-      navigation.navigate('SensoryEvaluation' as never);
+      navigation.navigate('Sensory' as never);
     }
   };
 
@@ -145,20 +97,6 @@ export default function UnifiedFlavorScreen() {
   // Calculate progress based on mode
   const progressValue = currentTasting.mode === 'lab' ? 25 : 43;
 
-  // Check if any categories have matching items when searching
-  const hasResults = !searchQuery || flavorData.some(item => {
-    const categoryData = flavorData.find(d => d.category === item.category);
-    if (!categoryData) return false;
-    
-    return categoryData.subcategories.some(sub =>
-      sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sub.koreanName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sub.flavors.some(f =>
-        f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
-});
 
   return (
     <Container>
@@ -190,36 +128,6 @@ export default function UnifiedFlavorScreen() {
         </Paragraph>
       </YStack>
 
-      {/* Search Bar */}
-      <SearchContainer>
-        <SearchBar>
-          <Text fontSize="$4" marginRight="$sm">검색</Text>
-          <Input
-            flex={1}
-            unstyled
-            placeholder="향미 검색..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholderTextColor="$gray10"
-            fontSize="$3"
-            color="$color"
-          />
-          <AnimatePresence>
-            {searchQuery !== '' && (
-              <Button
-                unstyled
-                onPress={() => setSearchQuery('')}
-                animation="quick"
-                enterStyle={{ opacity: 0, scale: 0.8 }}
-                exitStyle={{ opacity: 0, scale: 0.8 }}
-                pressStyle={{ scale: 0.9 }}
-              >
-                <Text fontSize="$4" color="$gray11">X</Text>
-              </Button>
-            )}
-          </AnimatePresence>
-        </SearchBar>
-      </SearchContainer>
 
       {/* Sticky Header - Selected Flavors */}
       <SelectedFlavorsHeader
@@ -234,67 +142,28 @@ export default function UnifiedFlavorScreen() {
       <ScrollView 
         flex={1}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }} // Extra padding to clear floating button
+        contentContainerStyle={{ paddingBottom: 120 }}
       >
-        <AnimatePresence>
-          {!hasResults ? (
-            <NoResultsContainer key="no-results">
-              <Text fontSize={48} marginBottom="$md"></Text>
-              <H3 fontSize="$5" fontWeight="600" color="$color" marginBottom="$sm">
-                "{searchQuery}" 검색 결과가 없습니다
-              </H3>
-              <Paragraph fontSize="$3" color="$gray11">
-                다른 키워드로 검색해보세요
-              </Paragraph>
-            </NoResultsContainer>
-          ) : (
-            <YStack>
-              {flavorData.map((item, index) => {
-                // Check if category has search results
-                const hasSearchResults = !searchQuery || item.subcategories.some(sub =>
-                  sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  sub.koreanName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  sub.flavors.some(f =>
-                    f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
-                  )
-                );
-
-                if (!hasSearchResults) return null;
-
-                return (
-                  <YStack
-                    key={`category-${item.category}-${index}`}
-                    animation="lazy"
-                    enterStyle={{
-                      opacity: 0,
-                      y: 20,
-                  }}
-                    style={{
-                      animationDelay: `${index * 50}ms`,
-                  }}
-                  >
-                    <CategoryAccordion
-                      category={item.category}
-                      expanded={searchQuery ? true : expandedCategories.includes(item.category)}
-                      onToggle={() => {
-                        if (!searchQuery) {
-                          toggleCategory(item.category);
-                      }
-                    }}
-                      onSelectFlavor={handleSelectFlavor}
-                      onSelectSubcategory={handleSelectSubcategory}
-                      selectedPaths={selectedPaths}
-                      searchQuery={searchQuery}
-                      expandedSubCategories={expandedSubCategories}
-                      onToggleSubcategory={toggleSubcategory}
-                    />
-                  </YStack>
-                );
-            }).filter(Boolean)}
+        <YStack>
+          {flavorData.map((item, index) => (
+            <YStack
+              key={`category-${item.category}-${index}`}
+            >
+              <CategoryAccordion
+                category={item.category}
+                expanded={expandedCategories.includes(item.category)}
+                onToggle={() => {
+                  toggleCategory(item.category);
+                }}
+                onSelectFlavor={handleSelectFlavor}
+                onSelectSubcategory={handleSelectSubcategory}
+                selectedPaths={selectedPaths}
+                expandedSubCategories={expandedSubCategories}
+                onToggleSubcategory={toggleSubcategory}
+              />
             </YStack>
-          )}
-        </AnimatePresence>
+          ))}
+        </YStack>
       </ScrollView>
 
       {/* Bottom Button */}

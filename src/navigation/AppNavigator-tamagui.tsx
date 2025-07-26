@@ -20,14 +20,14 @@ import {
   
   // Tasting Flow
   CoffeeInfoScreen,
-  SensoryScreen,
+  SensoryExpressionScreen,
   PersonalCommentScreen,
   ResultScreen,
   HomeCafeScreen,
   UnifiedFlavorScreen,
   RoasterNotesScreen,
   ExperimentalDataScreen,
-  SensoryEvaluationScreen,
+  SensorySliderScreen,
   
   // Enhanced Features
   EnhancedHomeCafeScreen,
@@ -89,8 +89,30 @@ import { Logger } from '../services/LoggingService';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+// 글로벌 헤더 스타일 토큰화
+const globalHeaderStyle = {
+  backgroundColor: '#FFFFFF',
+  borderBottomWidth: 0,
+  shadowColor: '#000',
+  shadowOffset: {
+    width: 0,
+    height: 1,
+  },
+  shadowOpacity: 0.05,
+  shadowRadius: 4,
+  elevation: 3,
+};
+
+const globalHeaderTitleStyle = {
+  fontSize: 18,
+  fontWeight: '700',
+  color: '#000',
+};
+
 // 공통 헤더 옵션 - StatusBadge 제거
 const commonHeaderOptions = {
+  headerStyle: globalHeaderStyle,
+  headerTitleStyle: globalHeaderTitleStyle,
   // headerRight removed - status now shown in DummyDataInput floating button
 };
 
@@ -100,15 +122,6 @@ function TastingFlow() {
     <Stack.Navigator
       screenOptions={{
         headerShown: true,
-        headerStyle: {
-          backgroundColor: '#FFFFFF',
-          borderBottomWidth: 0.5,
-          borderBottomColor: '#E0E0E0',
-        },
-        headerTitleStyle: {
-          fontSize: 17,
-          fontWeight: '600',
-        },
         headerTintColor: '#007AFF',
         presentation: 'card',
         ...commonHeaderOptions,
@@ -118,12 +131,7 @@ function TastingFlow() {
         name="ModeSelection" 
         component={ModeSelectionScreen} 
         options={{
-          title: '모드 선택',
-          headerRight: () => (
-            <View style={{ marginRight: 16 }}>
-              <LanguageSwitch compact />
-            </View>
-          ),
+          title: 'CupNote',
         }}
       />
       <Stack.Screen 
@@ -167,7 +175,7 @@ function TastingFlow() {
       />
       <Stack.Screen 
         name="Sensory" 
-        component={SensoryScreen} 
+        component={SensoryExpressionScreen} 
         options={({navigation}) => ({
           title: '감각 평가',
           headerRight: () => (
@@ -190,9 +198,9 @@ function TastingFlow() {
         options={{title: '실험 데이터'}}
       />
       <Stack.Screen 
-        name="SensoryEvaluation" 
-        component={SensoryEvaluationScreen} 
-        options={{title: '감각 평가'}}
+        name="SensorySlider" 
+        component={SensorySliderScreen} 
+        options={{title: '감각 평가 (슬라이더)'}}
       />
       <Stack.Screen 
         name="PersonalComment" 
@@ -229,15 +237,6 @@ function AchievementStack() {
       initialRouteName="AchievementMain"
       screenOptions={{
         headerShown: true,
-        headerStyle: {
-          backgroundColor: '#FFFFFF',
-          borderBottomWidth: 0.5,
-          borderBottomColor: '#E0E0E0',
-      },
-        headerTitleStyle: {
-          fontSize: 17,
-          fontWeight: '600',
-      },
         headerTintColor: '#007AFF',
         ...commonHeaderOptions,
     }}
@@ -246,7 +245,7 @@ function AchievementStack() {
         name="AchievementMain" 
         component={AchievementGalleryScreen}
         options={{
-          title: '내 성취',
+          title: 'CupNote',
       }}
       />
       <Stack.Screen 
@@ -281,15 +280,6 @@ function ProfileStack() {
     <Stack.Navigator
       screenOptions={{
         headerShown: true,
-        headerStyle: {
-          backgroundColor: '#FFFFFF',
-          borderBottomWidth: 0.5,
-          borderBottomColor: '#E0E0E0',
-      },
-        headerTitleStyle: {
-          fontSize: 17,
-          fontWeight: '600',
-      },
         headerTintColor: '#007AFF',
         ...commonHeaderOptions,
     }}
@@ -298,7 +288,7 @@ function ProfileStack() {
         name="SettingsMain" 
         component={ProfileScreen}
         options={{
-          title: '세팅',
+          title: 'CupNote',
       }}
       />
       <Stack.Screen 
@@ -460,23 +450,6 @@ function MainTabs() {
           height: 0,
       },
         headerShown: true,
-        headerStyle: {
-          backgroundColor: '#FFFFFF',
-          borderBottomWidth: 0,
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-          shadowOpacity: 0.05,
-          shadowRadius: 4,
-          elevation: 3,
-      },
-        headerTitleStyle: {
-          fontSize: 18,
-          fontWeight: '700',
-          color: '#000',
-      },
         ...commonHeaderOptions,
     })}
     >
@@ -540,15 +513,6 @@ function AdminStack() {
     <Stack.Navigator
       screenOptions={{
         headerShown: true,
-        headerStyle: {
-          backgroundColor: '#FFFFFF',
-          borderBottomWidth: 0.5,
-          borderBottomColor: '#E0E0E0',
-      },
-        headerTitleStyle: {
-          fontSize: 17,
-          fontWeight: '600',
-      },
         headerTintColor: '#007AFF',
         ...commonHeaderOptions,
     }}

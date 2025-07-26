@@ -303,6 +303,16 @@ const config = createTamagui({
       fontSize: '$5', // 28px
       fontWeight: '600',
     },
+    H4: {
+      fontFamily: '$heading',
+      fontSize: '$4', // 20px
+      fontWeight: '600',
+    },
+    H5: {
+      fontFamily: '$heading',
+      fontSize: '$3', // 16px
+      fontWeight: '600',
+    },
     Paragraph: {
       fontFamily: '$body',
       fontSize: '$3', // 16px

@@ -23,31 +23,31 @@ const ProgressFill = styled(XStack, {
 
 const TitleSection = styled(YStack, {
   paddingHorizontal: '$lg',
-  paddingVertical: '$lg',
+  paddingTop: '$md',
+  paddingBottom: '$sm',
   backgroundColor: '$background',
-  marginBottom: '$sm',
 })
 
 const Title = styled(H1, {
-  fontSize: 24,
-  fontWeight: '700',
+  fontSize: 20,
+  fontWeight: '600',
   color: '$color',
-  marginBottom: 4,
+  marginBottom: 2,
 })
 
 const Subtitle = styled(Text, {
-  fontSize: 16,
+  fontSize: 14,
   color: '$gray11',
-  lineHeight: 22,
+  lineHeight: 18,
 })
 
 // BottomContainer는 SafeArea를 고려해서 동적으로 처리
 
 const NextButton = styled(Button, {
   backgroundColor: '$primary',
-  height: 48,
+  height: '$buttonHeight', // 48px
   borderRadius: '$3',
-  fontSize: 17,
+  fontSize: '$5', // 20px (적절한 버튼 텍스트 크기)
   fontWeight: '600',
   color: 'white',
   
@@ -55,7 +55,7 @@ const NextButton = styled(Button, {
     disabled: {
       true: {
         backgroundColor: '$gray8',
-        opacity: 0.6,
+        opacity: '$opacityDisabled', // 0.6
     },
   },
 } as const,
@@ -99,7 +99,7 @@ const HomeCafeScreenTamagui = () => {
     <YStack flex={1} backgroundColor="$background">
       {/* Progress Bar */}
       <ProgressBar>
-        <ProgressFill width="25%" animation="lazy" />
+        <ProgressFill width="43%" />
       </ProgressBar>
 
       {/* Content */}

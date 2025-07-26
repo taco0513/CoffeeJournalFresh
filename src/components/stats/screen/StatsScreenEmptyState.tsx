@@ -3,7 +3,8 @@
 
 import React from 'react';
 import { View, YStack, AnimatePresence } from 'tamagui';
-import { InsightCard } from '../InsightCard';
+import { InsightCard } from '../../../components-tamagui/cards/InsightCard';
+import { InsightSeparator } from '../../../components-tamagui/shared/InsightStyles';
 import {
   EmptyContainer,
   EmptyText,
@@ -35,26 +36,26 @@ export const StatsScreenEmptyState: React.FC<StatsScreenEmptyStateProps> = ({
         <InsightPreviewText>
           기록이 쌓이면 이런 인사이트를 볼 수 있어요!
         </InsightPreviewText>
-        <AnimatePresence>
+        <YStack>
           {insights.map((insight, index) => {
             // Generate ultra-unique key for empty state insights
             const uniqueKey = `empty-state-insight-${index}-${insight.title || 'no-title'}-${insight.icon || 'no-icon'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
             
             return (
-              <View
-                key={uniqueKey}
-                animation="lazy"
-                enterStyle={{
-                  opacity: 0,
-                  y: 30,
-              }}
-                animateOnly={['opacity', 'transform']}
-              >
-                <InsightCard insight={insight} />
-              </View>
+              <React.Fragment key={uniqueKey}>
+                <InsightCard 
+                  icon={insight.icon || ''}
+                  title={insight.title || ''}
+                  value={insight.description || insight.value || ''}
+                  isLast={index === insights.length - 1}
+                />
+                {index < insights.length - 1 && (
+                  <InsightSeparator />
+                )}
+              </React.Fragment>
             );
         })}
-        </AnimatePresence>
+        </YStack>
       </Section>
     </YStack>
   );

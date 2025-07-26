@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Keyboard, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   View,
@@ -17,7 +17,6 @@ import {
   SizableText,
   styled,
   useTheme,
-  AnimatePresence,
   GetProps,
 } from 'tamagui';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -30,52 +29,6 @@ const Container = styled(View, {
   backgroundColor: '$background',
 });
 
-const NavigationBar = styled(XStack, {
-  name: 'RoasterNotesNavigation',
-  height: 44,
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingHorizontal: '$lg',
-  backgroundColor: '$background',
-  borderBottomWidth: 0.5,
-  borderBottomColor: '$borderColor',
-});
-
-const BackButton = styled(Button, {
-  name: 'BackButton',
-  backgroundColor: 'transparent',
-  borderWidth: 0,
-  paddingHorizontal: '$sm',
-  pressStyle: {
-    opacity: 0.7,
-    scale: 0.95,
-},
-});
-
-const NavigationTitle = styled(H3, {
-  name: 'NavigationTitle',
-  fontSize: '$6',
-  fontWeight: '600',
-  color: '$color',
-});
-
-const SkipButton = styled(Button, {
-  name: 'SkipButton',
-  backgroundColor: 'transparent',
-  borderWidth: 0,
-  paddingHorizontal: '$sm',
-  pressStyle: {
-    opacity: 0.7,
-    scale: 0.95,
-},
-});
-
-const SkipText = styled(Text, {
-  name: 'SkipText',
-  fontSize: '$4',
-  color: '$cupBlue',
-});
-
 const ProgressContainer = styled(View, {
   name: 'ProgressContainer',
   height: 3,
@@ -86,9 +39,8 @@ const ProgressContainer = styled(View, {
 const ProgressFill = styled(View, {
   name: 'ProgressFill',
   height: '100%',
-  width: '83%',
+  width: '86%',
   backgroundColor: '$cupBlue',
-  animation: 'lazy',
 });
 
 const ContentScrollView = styled(ScrollView, {
@@ -138,12 +90,6 @@ const OCRNoticeCard = styled(Card, {
   padding: '$md',
   marginBottom: '$lg',
   alignItems: 'center',
-  animation: 'bouncy',
-  enterStyle: {
-    opacity: 0,
-    y: -20,
-    scale: 0.9,
-},
   pressStyle: {
     scale: 0.98,
 },
@@ -174,11 +120,9 @@ const StyledTextArea = styled(TextArea, {
   minHeight: 200,
   backgroundColor: '$background',
   lineHeight: '$6',
-  animation: 'quick',
   focusStyle: {
     borderColor: '$cupBlue',
     backgroundColor: '$backgroundFocus',
-    scale: 1.02,
 },
   variants: {
     hasContent: {
@@ -199,26 +143,25 @@ const BottomContainer = styled(YStack, {
 
 const NextButton = styled(Button, {
   name: 'NextButton',
-  backgroundColor: '$cupBlue',
-  color: 'white',
+  backgroundColor: '$primary',
+  height: '$buttonHeight', // 48px
   borderRadius: '$3',
-  paddingVertical: '$md',
-  fontSize: '$4',
+  fontSize: '$5', // 20px (적절한 버튼 텍스트 크기)
   fontWeight: '600',
-  animation: 'bouncy',
+  color: 'white',
   variants: {
     hasContent: {
       true: {
-        backgroundColor: '$cupBlue',
+        backgroundColor: '$primary',
     },
       false: {
-        backgroundColor: '$gray6',
-        color: '$gray11',
+        backgroundColor: '$gray8',
+        opacity: '$opacityDisabled', // 0.6
     },
   },
 } as const,
   pressStyle: {
-    backgroundColor: '$cupBlueDark',
+    backgroundColor: '$primaryHover',
     scale: 0.98,
 },
 });
@@ -267,6 +210,21 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
   }
 }, [scannedRoasterNotes]);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: '로스터 노트',
+      headerRight: () => (
+        <Button
+          unstyled
+          onPress={handleSkip}
+          pressStyle={{ opacity: 0.7 }}
+        >
+          <Text fontSize="$3" color="$cupBlue">건너뛰기</Text>
+        </Button>
+      ),
+    });
+  }, [navigation, handleSkip]);
+
   const handleNext = () => {
     updateField('roasterNotes', notes);
     navigation.navigate('Result' as never);
@@ -285,40 +243,17 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
 
   return (
     <Container>
-      <SafeAreaView style={{ flex: 1 }}>
-        <KeyboardDismissWrapper onPress={Keyboard.dismiss}>
-          <View flex={1}>
-            {/* Navigation Bar */}
-            <NavigationBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
-              <BackButton unstyled onPress={() => navigation.goBack()}>
-                <Text color="$cupBlue" fontSize="$6">←</Text>
-              </BackButton>
-              <NavigationTitle>로스터 노트</NavigationTitle>
-              <SkipButton unstyled onPress={handleSkip}>
-                <SkipText>건너뛰기</SkipText>
-              </SkipButton>
-            </NavigationBar>
-            
-            {/* Progress Bar */}
-            <ProgressContainer>
-              <ProgressFill 
-                animation="lazy"
-                animateOnly={['width']}
-              />
-            </ProgressContainer>
+      <KeyboardDismissWrapper onPress={Keyboard.dismiss}>
+        <View flex={1}>
+          {/* Progress Bar */}
+          <ProgressContainer>
+            <ProgressFill />
+          </ProgressContainer>
 
             {/* Main Content */}
             <ContentScrollView>
-              <AnimatePresence>
                 {/* Header Section */}
-                <HeaderSection
-                  animation="lazy"
-                  enterStyle={{
-                    opacity: 0,
-                    y: -30,
-                }}
-                  animateOnly={['opacity', 'transform']}
-                >
+                <HeaderSection>
                   <MainTitle>로스터의 컵 노트</MainTitle>
                   <Subtitle>
                     로스터의 설명을 적어두면 나중에 비교해볼 수 있어요
@@ -328,10 +263,7 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
 
                 {/* OCR Notice */}
                 {scannedRoasterNotes && (
-                  <OCRNoticeCard
-                    animation="bouncy"
-                    animateOnly={['opacity', 'transform']}
-                  >
+                  <OCRNoticeCard>
                     <OCRNoticeText>
                       📷 OCR로 인식된 노트가 자동 입력되었습니다
                     </OCRNoticeText>
@@ -339,14 +271,7 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
                 )}
 
                 {/* Text Input */}
-                <InputSection
-                  animation="lazy"
-                  enterStyle={{
-                    opacity: 0,
-                    y: 30,
-                }}
-                  animateOnly={['opacity', 'transform']}
-                >
+                <InputSection>
                   <StyledTextArea
                     placeholder={placeholderText}
                     placeholderTextColor="$gray10"
@@ -357,7 +282,6 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
                     textAlignVertical="top"
                   />
                 </InputSection>
-              </AnimatePresence>
             </ContentScrollView>
 
             {/* Bottom Button */}
@@ -365,15 +289,12 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
               <NextButton 
                 hasContent={hasContent}
                 onPress={handleNext}
-                animation="bouncy"
-                animateOnly={['backgroundColor', 'transform']}
               >
                 다음
               </NextButton>
             </BottomContainer>
           </View>
         </KeyboardDismissWrapper>
-      </SafeAreaView>
     </Container>
   );
 };

@@ -54,25 +54,35 @@ const Section = styled(YStack, {
   gap: '$md',
 })
 
-const SectionTitle = styled(H3, {
-  fontSize: 20,
-  fontWeight: '600',
-  color: '$color',
-  marginBottom: '$xs',
+const SectionTitle = styled(Text, {
+  fontSize: 15,
+  color: '$primary',
+  textAlign: 'center',
+  fontWeight: '500',
 })
 
 const SectionDescription = styled(Text, {
-  fontSize: 15,
+  fontSize: 14,
   color: '$gray11',
-  lineHeight: 20,
+  textAlign: 'center',
+  marginTop: 4,
+})
+
+const ToastContainer = styled(YStack, {
+  paddingHorizontal: '$lg',
+  paddingVertical: '$sm',
+  backgroundColor: '$cupBlueLight',
+  borderBottomWidth: 0.5,
+  borderBottomColor: '$gray5',
 })
 
 const InputContainer = styled(Card, {
   backgroundColor: '$gray2',
   borderRadius: '$3',
-  borderWidth: 1,
+  borderWidth: 0.5,
   borderColor: '$borderColor',
-  padding: '$md',
+  padding: '$xs',
+  height: 200,
   shadowColor: '$shadowColor',
   shadowOffset: { width: 0, height: 1 },
   shadowOpacity: 0.05,
@@ -81,11 +91,10 @@ const InputContainer = styled(Card, {
 })
 
 const StyledTextArea = styled(TextArea, {
-  fontSize: '$4', // 18px
+  fontSize: '$3', // 16px
   color: '$color',
-  lineHeight: 22,
-  minHeight: 88,
-  maxHeight: 88,
+  lineHeight: 20,
+  flex: 1,
   backgroundColor: 'transparent',
   borderWidth: 0,
   focusStyle: {
@@ -104,12 +113,12 @@ const SelectionsTitle = styled(Text, {
   fontSize: 16,
   fontWeight: '600',
   color: '$color',
-  marginBottom: '$md',
+  marginBottom: '$sm',
 })
 
 const SelectionRow = styled(XStack, {
   alignItems: 'flex-start',
-  marginBottom: '$md',
+  marginBottom: '$sm',
   gap: '$md',
 })
 
@@ -129,7 +138,7 @@ const SelectionTags = styled(XStack, {
 
 const SelectionTag = styled(Button, {
   backgroundColor: '$cupBlueLight',
-  paddingHorizontal: 12,
+  paddingHorizontal: 16,
   paddingVertical: 6,
   borderRadius: 16,
   borderWidth: 1,
@@ -169,22 +178,7 @@ const SelectionText = styled(Text, {
 
 // BottomContainer는 SafeArea를 고려해서 동적으로 처리
 
-const NextButton = styled(Button, {
-  height: 48,
-  backgroundColor: '$primary',
-  borderRadius: '$3',
-  
-  pressStyle: {
-    backgroundColor: '$primaryHover',
-    scale: 0.98,
-},
-})
-
-const NextButtonText = styled(Text, {
-  fontSize: 16,
-  fontWeight: '600',
-  color: 'white',
-})
+// NextButton removed - using FloatingButton component instead
 
 const PersonalCommentScreenTamagui = () => {
   const navigation = useNavigation();
@@ -324,10 +318,12 @@ const PersonalCommentScreenTamagui = () => {
   }
 };
 
-  const hasSelections = userSelections.flavors.length > 0 || 
+  const hasSelections = userSelections && (
+    userSelections.flavors.length > 0 || 
     Object.keys(userSelections.sensoryByCategory).length > 0 ||
     Object.values(userSelections.ratings).some(score => score >= 4) ||
-    userSelections.mouthfeel;
+    userSelections.mouthfeel
+  );
 
   return (
     <Container>
@@ -335,8 +331,41 @@ const PersonalCommentScreenTamagui = () => {
 
           {/* Progress Bar */}
           <ProgressBar>
-            <ProgressFill width="83%" animation="lazy" />
+            <ProgressFill width="71%" />
           </ProgressBar>
+
+          <ToastContainer>
+            <SectionTitle>나만의 노트</SectionTitle>
+            <SectionDescription>
+              맛, 향, 전반적인 느낌을 자유롭게 표현해보세요
+            </SectionDescription>
+          </ToastContainer>
+
+          <ContentContainer>
+            <Section>
+              <InputContainer>
+                <StyledTextArea
+                  ref={textInputRef}
+                  value={personalComment}
+                  onChangeText={setPersonalComment}
+                  placeholder="예: 풍부한 과일향과 초콜릿의 조화가 인상적이었고, 뒷맛까지 깔끔하게 이어지는 균형 잡힌 커피"
+                  placeholderTextColor="$gray10"
+                  maxLength={200}
+                  multiline
+                />
+                <CharacterCount>
+                  {personalComment.length}/200
+                </CharacterCount>
+              </InputContainer>
+            </Section>
+          </ContentContainer>
+
+          {/* Sticky Selections Title */}
+          {hasSelections ? (
+            <ContentContainer>
+              <SelectionsTitle>오늘 선택한 표현들</SelectionsTitle>
+            </ContentContainer>
+          ) : null}
 
           <KeyboardAvoidingView 
             style={{ flex: 1 }}
@@ -350,33 +379,11 @@ const PersonalCommentScreenTamagui = () => {
                 paddingBottom: 120 // Extra padding to clear floating button
               }}
             >
-              <ContentContainer>
-                <Section>
-                  <SectionTitle>나만의 노트</SectionTitle>
-                  <SectionDescription>
-                    맛, 향, 전반적인 느낌을 자유롭게 표현해보세요
-                  </SectionDescription>
-                  
-                  <InputContainer animation="quick">
-                    <StyledTextArea
-                      ref={textInputRef}
-                      value={personalComment}
-                      onChangeText={setPersonalComment}
-                      placeholder="예: 풍부한 과일향과 초콜릿의 조화가 인상적이었고, 뒷맛까지 깔끔하게 이어지는 균형 잡힌 커피"
-                      placeholderTextColor="$gray10"
-                      maxLength={200}
-                      numberOfLines={4}
-                    />
-                    <CharacterCount>
-                      {personalComment.length}/200
-                    </CharacterCount>
-                  </InputContainer>
-                </Section>
 
-                {/* User Selections Summary */}
-                {hasSelections && (
-                  <Section animation="lazy">
-                    <SelectionsTitle>오늘 선택한 표현들</SelectionsTitle>
+              {/* User Selections Summary */}
+              {hasSelections ? (
+                <ContentContainer>
+                  <Section>
                     
                     {/* Flavors */}
                     {userSelections.flavors.length > 0 && (
@@ -391,7 +398,6 @@ const PersonalCommentScreenTamagui = () => {
                                 selected={isAlreadyInComment}
                                 onPress={() => addTextToComment(flavor)}
                                 disabled={isAlreadyInComment}
-                                animation="quick"
                               >
                                 <SelectionText selected={isAlreadyInComment}>
                                   {flavor}
@@ -416,7 +422,6 @@ const PersonalCommentScreenTamagui = () => {
                                 selected={isAlreadyInComment}
                                 onPress={() => addTextToComment(expr)}
                                 disabled={isAlreadyInComment}
-                                animation="quick"
                               >
                                 <SelectionText selected={isAlreadyInComment}>
                                   {expr}
@@ -444,7 +449,6 @@ const PersonalCommentScreenTamagui = () => {
                                   selected={isAlreadyInComment}
                                   onPress={() => addTextToComment(ratingText)}
                                   disabled={isAlreadyInComment}
-                                  animation="quick"
                                 >
                                   <SelectionText selected={isAlreadyInComment}>
                                     {ratingText}
@@ -465,7 +469,6 @@ const PersonalCommentScreenTamagui = () => {
                             selected={personalComment.includes(userSelections.mouthfeel)}
                             onPress={() => addTextToComment(userSelections.mouthfeel)}
                             disabled={personalComment.includes(userSelections.mouthfeel)}
-                            animation="quick"
                           >
                             <SelectionText selected={personalComment.includes(userSelections.mouthfeel)}>
                               {userSelections.mouthfeel}
@@ -475,8 +478,8 @@ const PersonalCommentScreenTamagui = () => {
                       </SelectionRow>
                     )}
                   </Section>
-                )}
-              </ContentContainer>
+                </ContentContainer>
+              ) : null}
             </ScrollView>
 
             {/* Floating Bottom Button */}

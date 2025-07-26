@@ -336,7 +336,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
   });
     
     // Navigate to Korean sensory evaluation screen
-    navigation.navigate('SensoryEvaluation' as never);
+    navigation.navigate('SensorySlider' as never);
 }, [sensoryData, updateField, navigation]);
 
   const handleTabChange = (tab: 'basic' | 'lab') => {
@@ -469,7 +469,7 @@ const ExperimentalDataScreen: React.FC<ExperimentalDataScreenProps> = () => {
             <Text color="$cupBlue" fontSize="$6">←</Text>
           </BackButton>
           <NavigationTitle>실험 데이터</NavigationTitle>
-          <SkipButton unstyled onPress={() => navigation.navigate('SensoryEvaluation' as never)}>
+          <SkipButton unstyled onPress={() => navigation.navigate('SensorySlider' as never)}>
             <SkipText>건너뛰기</SkipText>
           </SkipButton>
         </NavigationBar>

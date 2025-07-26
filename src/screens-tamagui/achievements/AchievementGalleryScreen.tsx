@@ -434,13 +434,6 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
             return (
               <View
                 key={uniqueKey}
-                animation="lazy"
-                enterStyle={{
-                  opacity: 0,
-                  y: 30 + (index * 10), // Staggered entrance
-                  scale: 0.9,
-              }}
-                animateOnly={['opacity', 'transform']}
               >
                 <AchievementCard
                   achievement={achievement}

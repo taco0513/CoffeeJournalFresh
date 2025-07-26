@@ -2,26 +2,14 @@ import React from 'react';
 import { Card, XStack, YStack, Text, styled } from 'tamagui';
 
 // Styled components
-const StyledCard = styled(Card, {
+const StyledCard = styled(YStack, {
   name: 'InsightCard',
-  backgroundColor: '$backgroundHover',
-  borderRadius: '$4',
-  padding: '$lg',
-  marginBottom: '$md',
-  borderWidth: 1,
-  borderColor: '$borderColor',
-  elevate: true,
-  animation: 'lazy',
-  
-  enterStyle: {
-    opacity: 0,
-    y: 10,
-},
-  
-  pressStyle: {
-    scale: 0.99,
-    backgroundColor: '$backgroundPress',
-},
+  backgroundColor: 'transparent',
+  paddingHorizontal: '$xxs',
+  paddingVertical: '$sm',
+  marginBottom: 0,
+  minHeight: 80,
+  justifyContent: 'center',
   
   // WCAG 2.4.7 Focus Visible - Enhanced accessibility
   focusStyle: {
@@ -90,6 +78,7 @@ export interface InsightCardProps {
   value: string;
   trend?: 'up' | 'down' | 'stable';
   detail?: string;
+  isLast?: boolean;
 }
 
 // Main component
@@ -99,6 +88,7 @@ export const InsightCard: React.FC<InsightCardProps> = ({
   value,
   trend,
   detail,
+  isLast = false,
 }) => {
   const renderTrendIcon = () => {
     if (!trend) return null;
@@ -118,17 +108,16 @@ export const InsightCard: React.FC<InsightCardProps> = ({
 
   return (
     <StyledCard>
-      <XStack alignItems="flex-start">
-        <IconText>{icon}</IconText>
-        <YStack flex={1}>
-          <TitleText>{title}</TitleText>
+      <YStack alignItems="center" justifyContent="center" flex={1}>
+        <YStack alignItems="center" justifyContent="center" gap="$xxs">
+          <TitleText textAlign="center">{title}</TitleText>
           <XStack alignItems="center" gap="$xs">
-            <ValueText>{value}</ValueText>
+            <ValueText textAlign="center">{value}</ValueText>
             {renderTrendIcon()}
           </XStack>
-          {detail && <DetailText>{detail}</DetailText>}
+          {detail && <DetailText textAlign="center" marginTop="$xxs">{detail}</DetailText>}
         </YStack>
-      </XStack>
+      </YStack>
     </StyledCard>
   );
 };

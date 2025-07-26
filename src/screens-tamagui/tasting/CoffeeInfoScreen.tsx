@@ -28,6 +28,7 @@ import { BetaFeedbackPrompt } from '../../components/beta/BetaFeedbackPrompt';
 import { Logger } from '../../services/LoggingService';
 import { DummyDataInput } from '../../components/dev/DummyDataInput';
 import { FloatingButton } from '../../components-tamagui/buttons/FloatingButton';
+import { ToggleButton } from '../../components-tamagui/buttons/ToggleButton';
 
 // Styled Components
 const Container = styled(YStack, {
@@ -36,7 +37,7 @@ const Container = styled(YStack, {
 });
 
 const ProgressBar = styled(XStack, {
-  height: '$progressBarHeight',
+  height: 3,
   backgroundColor: '$gray5',
   width: '100%',
 });
@@ -92,25 +93,7 @@ const StyledInput = styled(Input, {
   marginBottom: '$md',
 });
 
-const ToggleButton = styled(Button, {
-  backgroundColor: '$gray2',
-  borderWidth: 1,
-  borderColor: '$borderColor',
-  borderRadius: '$3',
-  padding: '$sm',
-  marginRight: '$sm',
-  marginBottom: '$sm',
-  
-  variants: {
-    selected: {
-      true: {
-        backgroundColor: '$blue2',
-        borderColor: '$primary',
-        borderWidth: '$borderWidthThick', // 2px
-    },
-  },
-} as const,
-});
+// ToggleButton is now imported as a global component
 
 const DetailsToggle = styled(Button, {
   backgroundColor: '$gray2',
@@ -205,7 +188,8 @@ const CoffeeInfoScreenTamagui = () => {
     } else if (currentTasting.mode === 'lab') {
       navigation.navigate('LabMode' as never);
     } else {
-      navigation.navigate('RoasterNotes' as never);
+      // Cafe mode: go to UnifiedFlavor for flavor selection
+      navigation.navigate('UnifiedFlavor' as never);
     }
   };
 
@@ -236,7 +220,7 @@ const CoffeeInfoScreenTamagui = () => {
 
           {/* Progress Bar */}
           <ProgressBar>
-            <ProgressFill width="$progressStep1" />
+            <ProgressFill width="29%" />
           </ProgressBar>
 
           {/* Content */}
@@ -307,15 +291,8 @@ const CoffeeInfoScreenTamagui = () => {
                         onPress={() => updateField('roastLevel', 
                           currentTasting.roastLevel === level ? '' : level
                         )}
-                        pressStyle={{ scale: 0.95 }}
                       >
-                        <Text 
-                          fontSize="$3" // 16px
-                          fontWeight={currentTasting.roastLevel === level ? '600' : '400'}
-                          color={currentTasting.roastLevel === level ? '$blue11' : '$color'}
-                        >
-                          {level}
-                        </Text>
+                        {level}
                       </ToggleButton>
                     ))}
                   </XStack>
@@ -330,36 +307,16 @@ const CoffeeInfoScreenTamagui = () => {
                       onPress={() => updateField('temperature', 
                         currentTasting.temperature === 'hot' ? undefined : 'hot'
                       )}
-                      pressStyle={{ scale: 0.95 }}
                     >
-                      <XStack alignItems="center" space="$xs">
-                        <Text fontSize="$4"></Text>
-                        <Text 
-                          fontSize="$3"
-                          fontWeight={currentTasting.temperature === 'hot' ? '600' : '400'}
-                          color={currentTasting.temperature === 'hot' ? '$blue11' : '$color'}
-                        >
-                          Hot
-                        </Text>
-                      </XStack>
+                      Hot
                     </ToggleButton>
                     <ToggleButton
                       selected={currentTasting.temperature === 'cold'}
                       onPress={() => updateField('temperature', 
                         currentTasting.temperature === 'cold' ? undefined : 'cold'
                       )}
-                      pressStyle={{ scale: 0.95 }}
                     >
-                      <XStack alignItems="center" space="$xs">
-                        <Text fontSize="$4"></Text>
-                        <Text 
-                          fontSize="$3"
-                          fontWeight={currentTasting.temperature === 'cold' ? '600' : '400'}
-                          color={currentTasting.temperature === 'cold' ? '$blue11' : '$color'}
-                        >
-                          Ice
-                        </Text>
-                      </XStack>
+                      Ice
                     </ToggleButton>
                   </XStack>
                 </YStack>
@@ -447,15 +404,8 @@ const CoffeeInfoScreenTamagui = () => {
                               onPress={() => updateField('process', 
                                 currentTasting.process === process ? '' : process
                               )}
-                              pressStyle={{ scale: 0.95 }}
-                                  >
-                              <Text 
-                                fontSize="$3" // 16px
-                                fontWeight={currentTasting.process === process ? '600' : '400'}
-                                color={currentTasting.process === process ? '$blue11' : '$color'}
-                              >
-                                {process}
-                              </Text>
+                            >
+                              {process}
                             </ToggleButton>
                           ))}
                         </XStack>

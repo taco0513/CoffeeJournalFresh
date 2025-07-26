@@ -29,7 +29,6 @@ import {
   Spinner,
   styled,
   useTheme,
-  AnimatePresence,
   GetProps,
 } from 'tamagui';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -680,27 +679,14 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
           </NavigationBar>
         )}
 
-        <AnimatePresence>
           {/* Header */}
           <HeaderSection
-            animation="lazy"
-            enterStyle={{
-              opacity: 0,
-              y: -20,
-          }}
-            animateOnly={['opacity', 'transform']}
           >
             <HeaderTitle>총 {allTastings.length}개의 기록</HeaderTitle>
           </HeaderSection>
           
           {/* Search Container */}
           <SearchContainer
-            animation="lazy"
-            enterStyle={{
-              opacity: 0,
-              y: -10,
-          }}
-            animateOnly={['opacity', 'transform']}
           >
             <SearchBar>
               <SearchIcon>검색</SearchIcon>
@@ -720,12 +706,6 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
           
           {/* Sort Container */}
           <SortContainer
-            animation="lazy"
-            enterStyle={{
-              opacity: 0,
-              y: -10,
-          }}
-            animateOnly={['opacity', 'transform']}
           >
             <SortButton
               active={sortBy === 'date'}
@@ -752,7 +732,6 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
               <AdvancedSearchText>고급 검색 →</AdvancedSearchText>
             </AdvancedSearchButton>
           </SortContainer>
-        </AnimatePresence>
         
         {/* Content */}
         <ContentScrollView contentContainerStyle={{ paddingBottom: 20 }}>

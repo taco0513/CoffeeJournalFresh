@@ -11,6 +11,8 @@ import {
   Card,
   H1,
   H3,
+  H4,
+  H5,
 } from 'tamagui';
 
 // Container Components
@@ -90,9 +92,8 @@ export const EmptyContainer = styled(YStack, {
   gap: '$md',
 });
 
-export const EmptyText = styled(Text, {
+export const EmptyText = styled(H4, {
   name: 'StatsEmptyText',
-  fontSize: '$6',
   fontWeight: '600',
   color: '$color',
   textAlign: 'center',
@@ -135,12 +136,12 @@ export const Section = styled(YStack, {
   paddingVertical: '$md',
 });
 
-export const SectionTitle = styled(H3, {
+export const SectionTitle = styled(H4, {
   name: 'StatsSectionTitle',
-  fontSize: '$5',
   fontWeight: '600',
   color: '$color',
   marginBottom: '$md',
+  textAlign: 'center',
 });
 
 // Stats Grid Components
@@ -150,20 +151,27 @@ export const StatsGrid = styled(XStack, {
   flexWrap: 'wrap',
 });
 
-export const StatCard = styled(Card, {
+export const StatCard = styled(YStack, {
   name: 'StatsStatCard',
   flex: 1,
   minWidth: '45%',
-  backgroundColor: '$background',
-  borderColor: '$borderColor',
-  borderWidth: 0.5,
-  borderRadius: '$4',
-  padding: '$lg',
+  backgroundColor: 'transparent',
+  padding: '$sm',
+  paddingVertical: '$md',
   alignItems: 'center',
-  shadowColor: '$shadowColor',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
+  minHeight: '$statCardSmall',
+  
+  // WCAG 2.4.7 Focus Visible - Enhanced accessibility
+  focusStyle: {
+    borderWidth: 3,
+    borderColor: '$focusRing',
+    shadowColor: '$focusRing',
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    outlineColor: '$focusRing',
+    outlineWidth: 2,
+    outlineOffset: 2,
+  },
 });
 
 export const StatNumber = styled(Text, {
@@ -187,19 +195,26 @@ export const ModeStatsContainer = styled(XStack, {
   gap: '$sm',
 });
 
-export const ModeStatCard = styled(Card, {
+export const ModeStatCard = styled(YStack, {
   name: 'StatsModeStatCard',
   flex: 1,
-  backgroundColor: '$background',
-  borderColor: '$borderColor',
-  borderWidth: 0.5,
-  borderRadius: '$4',
-  padding: '$md',
+  backgroundColor: 'transparent',
+  padding: '$sm',
+  paddingVertical: '$md',
   alignItems: 'center',
-  shadowColor: '$shadowColor',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
+  minHeight: '$statCardSmall',
+  
+  // WCAG 2.4.7 Focus Visible - Enhanced accessibility
+  focusStyle: {
+    borderWidth: 3,
+    borderColor: '$focusRing',
+    shadowColor: '$focusRing',
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    outlineColor: '$focusRing',
+    outlineWidth: 2,
+    outlineOffset: 2,
+  },
 });
 
 export const ModeIcon = styled(Text, {
@@ -265,17 +280,12 @@ export const TopItemsContainer = styled(YStack, {
   gap: '$sm',
 });
 
-export const TopItemCard = styled(Card, {
+export const TopItemCard = styled(YStack, {
   name: 'StatsTopItemCard',
-  backgroundColor: '$background',
-  borderColor: '$borderColor',
-  borderWidth: 0.5,
-  borderRadius: '$3',
+  backgroundColor: 'transparent',
   padding: '$md',
-  shadowColor: '$shadowColor',
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.1,
-  shadowRadius: 2,
+  paddingVertical: '$sm',
+  minHeight: 60,
 });
 
 export const TopItemHeader = styled(XStack, {

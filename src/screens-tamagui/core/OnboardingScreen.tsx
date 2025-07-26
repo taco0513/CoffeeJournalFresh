@@ -11,7 +11,6 @@ import {
   Paragraph,
   styled,
   useTheme,
-  AnimatePresence,
   GetProps,
 } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
@@ -271,35 +270,25 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = () => {
               key={index}
               backgroundColor={slide.backgroundColor}
             >
-              <AnimatePresence key={`slide-${index}-${currentIndex}`}>
                 {Math.abs(currentIndex - index) <= 1 && (
                   <SlideContent
-                    animation="bouncy"
-                    animateOnly={['opacity', 'transform']}
                   >
                     <SlideEmoji
-                      animation="bouncy"
-                      animateOnly={['transform']}
                     >
                       {slide.emoji}
                     </SlideEmoji>
                     
                     <SlideTitle
-                      animation="lazy"
-                      animateOnly={['opacity', 'transform']}
                     >
                       {slide.title}
                     </SlideTitle>
                     
                     <SlideDescription
-                      animation="lazy"
-                      animateOnly={['opacity', 'transform']}
                     >
                       {slide.description}
                     </SlideDescription>
                   </SlideContent>
                 )}
-              </AnimatePresence>
             </Slide>
           ))}
         </ScrollView>
@@ -321,8 +310,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = () => {
           {/* Next Button */}
           <NextButton
             onPress={handleNext}
-            animation="bouncy"
-            animateOnly={['opacity', 'transform']}
           >
             <NextButtonText>
               {currentIndex === slides.length - 1 ? '시작하기' : '다음'}

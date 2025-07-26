@@ -7,7 +7,6 @@ import {
   Label,
   styled,
   ScrollView,
-  AnimatePresence,
   Card,
 } from 'tamagui';
 import { Platform } from 'react-native';
@@ -216,20 +215,8 @@ const AutocompleteInputTamagui: React.FC<AutocompleteInputProps> = ({
         style={inputStyle}
       />
 
-      <AnimatePresence>
         {showSuggestions && suggestionsToShow.length > 0 && (
           <SuggestionsContainer
-            animation="quick"
-            enterStyle={{
-              opacity: 0,
-              scale: 0.95,
-              y: -10,
-          }}
-            exitStyle={{
-              opacity: 0,
-              scale: 0.95,
-              y: -10,
-          }}
           >
             <ScrollView
               showsVerticalScrollIndicator={false}
@@ -254,7 +241,6 @@ const AutocompleteInputTamagui: React.FC<AutocompleteInputProps> = ({
             </ScrollView>
           </SuggestionsContainer>
         )}
-      </AnimatePresence>
     </Container>
   );
 };

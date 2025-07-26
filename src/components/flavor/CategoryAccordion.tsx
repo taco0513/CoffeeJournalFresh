@@ -24,7 +24,6 @@ interface CategoryAccordionProps {
   onSelectSubcategory?: (level1: string, level2: string) => void;
   selectedPaths?: FlavorPath[];
   selectedFlavors?: FlavorPath[];
-  searchQuery?: string;
   expandedSubCategories?: Set<string>;
   onToggleSubcategory?: (subcategoryKey: string) => void;
   onSubCategoryToggle?: (subcategoryKey: string) => void;
@@ -41,7 +40,6 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
   onSelectSubcategory,
   selectedPaths = [],
   selectedFlavors = [],
-  searchQuery = '',
   expandedSubCategories = new Set(),
   onToggleSubcategory,
   onSubCategoryToggle,
@@ -51,17 +49,7 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
 
   if (!categoryData) return null;
 
-  // Filter subcategories and flavors based on search
-  const filteredSubCategories = searchQuery
-    ? categoryData.subcategories.filter(sub =>
-        sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        sub.koreanName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        sub.flavors.some(f =>
-          f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      )
-    : categoryData.subcategories;
+  const filteredSubCategories = categoryData.subcategories;
 
   const isFlavorSelected = (level1: string, level2: string, level3: string) => {
     return selectedPaths.some(
@@ -187,12 +175,7 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
             const subsWithoutFlavors: unknown[] = [];
             
             expandedSubs.forEach(sub => {
-              const filteredFlavors = sub.flavors.filter(f =>
-                searchQuery
-                  ? f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    f.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
-                  : true
-              );
+              const filteredFlavors = sub.flavors;
               
               if (filteredFlavors.length > 0) {
                 subsWithFlavors.push({ sub, filteredFlavors });

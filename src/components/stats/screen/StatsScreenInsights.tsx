@@ -2,8 +2,9 @@
 // Insights section component
 
 import React from 'react';
-import { View, AnimatePresence } from 'tamagui';
-import { InsightCard } from '../InsightCard';
+import { View, AnimatePresence, YStack, XStack } from 'tamagui';
+import { InsightCard } from '../../../components-tamagui/cards/InsightCard';
+import { InsightSeparator } from '../../../components-tamagui/shared/InsightStyles';
 import {
   Section,
   SectionTitle,
@@ -21,34 +22,27 @@ export const StatsScreenInsights: React.FC<StatsScreenInsightsProps> = ({
 }
 
   return (
-    <Section
-      animation="lazy"
-      enterStyle={{
-        opacity: 0,
-        y: 30,
-    }}
-      animateOnly={['opacity', 'transform']}
-    >
-      <SectionTitle> 30일 인사이트</SectionTitle>
-      <AnimatePresence>
+    <Section>
+      <SectionTitle>30일 인사이트</SectionTitle>
+      <YStack>
         {insights.map((insight, index) => {
           const uniqueKey = `data-state-insight-${index}-${insight.title || 'no-title'}-${insight.icon || 'no-icon'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
           
           return (
-            <View
-              key={uniqueKey}
-              animation="lazy"
-              enterStyle={{
-                opacity: 0,
-                y: 30,
-            }}
-              animateOnly={['opacity', 'transform']}
-            >
-              <InsightCard insight={insight} />
-            </View>
+            <React.Fragment key={uniqueKey}>
+              <InsightCard 
+                icon={insight.icon || ''}
+                title={insight.title || ''}
+                value={insight.description || insight.value || ''}
+                isLast={index === insights.length - 1}
+              />
+              {index < insights.length - 1 && (
+                <InsightSeparator />
+              )}
+            </React.Fragment>
           );
       })}
-      </AnimatePresence>
+      </YStack>
     </Section>
   );
 };

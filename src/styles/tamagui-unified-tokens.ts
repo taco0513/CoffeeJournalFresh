@@ -191,19 +191,73 @@ export const componentGuidelines = {
 },
   
   Button: {
+    // Size guidelines - Mobile-optimized with generous widths
+    sm: {
+      height: 40,      // Small buttons (minimum safe size)
+      minWidth: 176,   // Generous width for better visual balance
+      paddingHorizontal: '$lg',
+    },
+    md: {
+      height: 44,      // Standard button (WCAG AA compliant)
+      minWidth: 200,   // Comfortable minimum width
+      paddingHorizontal: '$xl',
+    },
+    lg: {
+      height: 48,      // Primary action buttons
+      minWidth: 240,   // Spacious primary actions
+      paddingHorizontal: '$xxl',
+    },
+    xl: {
+      height: 56,      // Floating/CTA buttons
+      minWidth: 280,   // Large action buttons
+      paddingHorizontal: '$xxl',
+    },
+    xxl: {
+      height: 64,      // Extra large touch targets
+      minWidth: 320,   // Maximum comfortable size
+      paddingHorizontal: '$xxxl',
+    },
+    
+    // Color variants
     primary: {
       backgroundColor: '$cupBlue',
       pressStyle: { backgroundColor: '$cupBlueDark' },
-  },
+    },
     danger: {
       backgroundColor: '$red9',
       pressStyle: { backgroundColor: '$red10' },
-  },
+    },
     success: {
       backgroundColor: '$green9',
       pressStyle: { backgroundColor: '$green10' },
+    },
+    
+    // ToggleButton - Global style for toggle/selection buttons
+    toggle: {
+      backgroundColor: '$gray2',
+      borderWidth: 1,
+      borderColor: '$borderColor',
+      borderRadius: '$3',
+      padding: '$sm',
+      marginRight: '$sm',
+      marginBottom: '$sm',
+      minWidth: 88,  // Balanced minimum width (88px)
+      height: 36,    // Comfortable button height (36px)
+      
+      // Selected state
+      selectedStyle: {
+        backgroundColor: '$blue2',
+        borderColor: '$primary',
+        borderWidth: 2, // Thick border for selection
+      },
+      
+      // Press interaction
+      pressStyle: {
+        scale: 0.95,
+        backgroundColor: '$gray3',
+      },
+    },
   },
-},
   
   Text: {
     title: {
@@ -310,12 +364,21 @@ export const unifiedTokens = {
     navBarHeight: 44,         // iOS standard
     tabBarHeight: 49,         // iOS standard
     
-    // Buttons
+    // Buttons - Mobile-optimized sizes
     buttonHeight: {
-      sm: 32,
-      md: 40,
-      lg: 48,
-      xl: 56,
+      sm: 40,   // Small buttons (minimum recommended)
+      md: 44,   // Standard buttons (WCAG compliant)
+      lg: 48,   // Primary actions
+      xl: 56,   // Floating/CTA buttons
+      xxl: 64,  // Large touch targets
+    },
+    
+    // Button minimum sizes (WCAG 2.1 Level AA + Mobile Best Practices)
+    buttonMinimum: {
+      width: 176,   // Generous minimum button width (4x touch target)
+      height: 40,   // Minimum button height
+      touchTarget: 44, // Minimum touch target (44x44px)
+      recommended: 48,  // Recommended minimum for primary actions
     },
     
     // Touch Targets

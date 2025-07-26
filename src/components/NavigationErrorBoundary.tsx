@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { HIGColors, HIGConstants } from '../styles/common';
 import { Logger } from '../services/LoggingService';
-import performanceMonitor from '../services/PerformanceMonitor';
+import { performanceMonitor } from '../services/PerformanceMonitor';
 import { useNavigation } from '@react-navigation/native';
 
 interface Props {

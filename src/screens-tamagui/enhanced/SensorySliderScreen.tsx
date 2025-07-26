@@ -120,31 +120,17 @@ const GuideSubtitle = styled(SizableText, {
 
 const PreviewSection = styled(YStack, {
   name: 'PreviewSection',
-  maxHeight: 180,
-  paddingBottom: '$md',
+  flex: 1, // Take all available space
 });
 
 const PreviewCard = styled(Card, {
   name: 'PreviewCard',
   backgroundColor: '$background',
-  marginHorizontal: '$lg',
-  marginTop: '$md',
-  padding: '$lg',
+  margin: '$xs',
+  padding: '$sm',
   borderRadius: '$4',
-  flex: 1,
   borderWidth: 1,
   borderColor: '$borderColor',
-  minHeight: 120,
-  maxHeight: 180,
-  animation: 'lazy',
-  enterStyle: {
-    opacity: 0,
-    scale: 0.95,
-    y: 20,
-},
-  pressStyle: {
-    scale: 0.98,
-},
 });
 
 const PreviewScrollView = styled(ScrollView, {
@@ -231,8 +217,7 @@ const EmptyStateText = styled(SizableText, {
 
 const SensorySection = styled(YStack, {
   name: 'SensorySection',
-  flex: 1,
-  minHeight: 350,
+  height: 150,
   backgroundColor: '$background',
   borderTopWidth: 1,
   borderTopColor: '$gray4',
@@ -242,7 +227,8 @@ const SensorySection = styled(YStack, {
 
 const BottomContainer = styled(YStack, {
   name: 'BottomContainer',
-  padding: '$lg',
+  paddingHorizontal: '$lg',
+  paddingVertical: '$sm', // Reduced padding to give more space to preview
   backgroundColor: '$background',
   borderTopWidth: 0.5,
   borderTopColor: '$borderColor',
@@ -397,57 +383,33 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
 
   return (
     <Container>
-      <SafeAreaView style={{ flex: 1 }}>
-        {/* Navigation Bar */}
-        <NavigationBar style={{ paddingTop: insets.top + 8, height: 44 + insets.top + 8 }}>
-          <BackButton unstyled onPress={() => navigation.goBack()}>
-            <Text color="$cupBlue" fontSize="$6">←</Text>
-          </BackButton>
-          <NavigationTitle>감각 평가</NavigationTitle>
-          <SkipButton unstyled onPress={() => navigation.navigate('PersonalComment' as never)}>
-            <SkipText>건너뛰기</SkipText>
-          </SkipButton>
-        </NavigationBar>
-        
-        {/* Progress Bar */}
-        <ProgressContainer>
-          <ProgressFill 
-            animation="lazy"
-            animateOnly={['width']}
-          />
-        </ProgressContainer>
+      {/* Progress Bar */}
+      <ProgressContainer>
+        <ProgressFill 
+          animation="lazy"
+          animateOnly={['width']}
+        />
+      </ProgressContainer>
 
-        {/* Guide Message */}
-        <GuideSection>
-          <GuideTitle>맛의 언어로 표현해보세요</GuideTitle>
-          <GuideSubtitle>이 커피에서 느껴지는 감각을 선택해주세요</GuideSubtitle>
-        </GuideSection>
+      {/* Guide Message */}
+      <GuideSection>
+        <GuideTitle>맛의 언어로 표현해보세요</GuideTitle>
+        <GuideSubtitle>이 커피에서 느껴지는 감각을 선택해주세요</GuideSubtitle>
+      </GuideSection>
 
-        {/* Preview Section - Takes remaining space */}
-        <PreviewSection>
-          <PreviewCard
-            animation="lazy"
-            animateOnly={['opacity', 'transform']}
-          >
-            <PreviewScrollView contentContainerStyle={{ paddingVertical: '$md', flexGrow: 1 }}>
-              <AnimatePresence>
-                <View
-                  animation="lazy"
-                  enterStyle={{
-                    opacity: 0,
-                    y: 10,
-                }}
-                  animateOnly={['opacity', 'transform']}
-                >
-                  {renderPreviewContent()}
-                </View>
-              </AnimatePresence>
+      {/* Main Content - 60% Preview, 40% Sensory */}
+      <YStack flex={1}>
+        {/* Preview Section - 60% */}
+        <YStack flex={0.6}>
+          <PreviewCard flex={1}>
+            <PreviewScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              {renderPreviewContent()}
             </PreviewScrollView>
           </PreviewCard>
-        </PreviewSection>
+        </YStack>
 
-        {/* Fixed Sensory Evaluation Section */}
-        <SensorySection>
+        {/* Sensory Evaluation Section - 40% */}
+        <YStack flex={0.4} backgroundColor="$background" borderTopWidth={1} borderTopColor="$gray4" paddingTop="$sm" paddingHorizontal="$sm">
           <CompactSensoryEvaluation 
             selectedExpressions={(selectedSensoryExpressions || []).map(item => ({
               categoryId: item.categoryId,
@@ -463,44 +425,33 @@ const SensoryEvaluationScreen: React.FC<SensoryEvaluationScreenProps> = () => {
             onExpressionChange={handleExpressionChange}
             beginnerMode={true}
           />
-        </SensorySection>
+        </YStack>
+      </YStack>
 
-        {/* Bottom Button */}
-        <BottomContainer>
-          <NextButton 
-            onPress={handleComplete}
-            animation="bouncy"
-            animateOnly={['backgroundColor', 'transform']}
-          >
-            다음 단계
-          </NextButton>
-        </BottomContainer>
-
-        {/* Onboarding Overlay */}
-        {showOnboarding && (
-          <OnboardingOverlay>
-            <AnimatePresence>
-              <View
-                animation="bouncy"
-                enterStyle={{
-                  opacity: 0,
-                  scale: 0.9,
-              }}
-                exitStyle={{
-                  opacity: 0,
-                  scale: 0.9,
-              }}
-                animateOnly={['opacity', 'transform']}
-              >
-                <SensoryOnboarding 
-                  visible={showOnboarding}
-                  onComplete={() => setShowOnboarding(false)}
-                />
-              </View>
-            </AnimatePresence>
-          </OnboardingOverlay>
-        )}
-      </SafeAreaView>
+      {/* Onboarding Overlay */}
+      {showOnboarding && (
+        <OnboardingOverlay>
+          <AnimatePresence>
+            <View
+              animation="bouncy"
+              enterStyle={{
+                opacity: 0,
+                scale: 0.9,
+            }}
+              exitStyle={{
+                opacity: 0,
+                scale: 0.9,
+            }}
+              animateOnly={['opacity', 'transform']}
+            >
+              <SensoryOnboarding 
+                visible={showOnboarding}
+                onComplete={() => setShowOnboarding(false)}
+              />
+            </View>
+          </AnimatePresence>
+        </OnboardingOverlay>
+      )}
     </Container>
   );
 };

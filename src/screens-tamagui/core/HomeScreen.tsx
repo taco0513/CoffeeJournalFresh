@@ -10,8 +10,10 @@ import {
   H1,
   H2,
   H3,
+  H4,
   Paragraph,
   Spinner,
+  Separator,
   styled,
   useTheme,
   getTokens,
@@ -24,6 +26,7 @@ import { ITastingRecord } from '../../services/realm/schemas';
 import { useCoffeeNotifications } from '../../hooks/useCoffeeNotifications';
 import { CoffeeDiscoveryAlert } from '../../components/CoffeeDiscoveryAlert';
 import { InsightCard } from '../../components-tamagui';
+import { InsightSeparator } from '../../components-tamagui/shared/InsightStyles';
 import { Logger } from '../../services/LoggingService';
 import useScreenPerformance from '../../hooks/useScreenPerformance';
 import { DummyDataService } from '../../services/DummyDataService';
@@ -49,22 +52,14 @@ const NavigationBar = styled(XStack, {
   borderBottomColor: '$borderColor',
 });
 
-const StatCard = styled(Card, {
+const StatCard = styled(YStack, {
   name: 'StatCard',
   flex: 1,
-  backgroundColor: '$backgroundHover',
+  backgroundColor: 'transparent',
   padding: '$sm',
   paddingVertical: '$md',
   alignItems: 'center',
   minHeight: '$statCardSmall',
-  borderRadius: '$3',
-  pressStyle: {
-    scale: 0.98,
-    backgroundColor: '$backgroundPress',
-},
-  elevate: true,
-  bordered: true,
-  borderColor: '$borderColor',
   
   // WCAG 2.4.7 Focus Visible - Enhanced accessibility
   focusStyle: {
@@ -82,8 +77,9 @@ const StatCard = styled(Card, {
 const InsightSection = styled(YStack, {
   name: 'InsightSection',
   marginBottom: '$sm',
-  marginTop: '$sm',
+  marginTop: '$xl',
 });
+
 
 
 const SkeletonBox = styled(YStack, {
@@ -150,12 +146,10 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
   );
 
   const SkeletonInsight = () => (
-    <Card
-      backgroundColor="$gray3"
-      borderColor="$gray4"
+    <XStack
+      backgroundColor="transparent"
       padding="$lg"
       marginBottom="$md"
-      borderRadius="$4"
       flexDirection="row"
     >
       <SkeletonBox width={32} height={32} borderRadius={16} marginRight="$lg" />
@@ -163,7 +157,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
         <SkeletonBox width="80%" height={16} marginBottom="$xs" />
         <SkeletonBox width="60%" height={14} />
       </YStack>
-    </Card>
+    </XStack>
   );
 
   // Initialize Realm on component mount
@@ -570,7 +564,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
         <NavigationBar>
           <XStack alignItems="center" gap="$xs">
             <H2 fontWeight="700" color="$color">CupNote</H2>
-            <Card
+            <YStack
               backgroundColor="$cupBlue"
               paddingHorizontal="$xs"
               paddingVertical="$xxs"
@@ -582,7 +576,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
               <Text fontSize="$2" fontWeight="700" color="white" letterSpacing="$wide">
                 BETA
               </Text>
-            </Card>
+            </YStack>
           </XStack>
         </NavigationBar>
       )}
@@ -596,9 +590,9 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
         <YStack flex={1} paddingHorizontal="$lg">
           {/* Welcome Section */}
           <YStack paddingTop="$xxl" paddingBottom="$xxl" alignItems="center">
-            <H1 fontSize="$8" fontWeight="600" color="$color">
+            <H3 fontWeight="600" color="$color" textAlign="center">
               안녕하세요, {currentUser?.username || 'User'}님!
-            </H1>
+            </H3>
           </YStack>
 
           {/* Skeleton loading state */}
@@ -623,31 +617,28 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
                 </InsightSection>
 
                 {/* Action button skeleton */}
-                <Card
-                  backgroundColor="$gray3"
-                  borderColor="$gray4"
+                <YStack
+                  backgroundColor="transparent"
                   padding="$xl"
                   marginBottom="$lg"
                   alignItems="center"
-                  borderRadius="$4"
                 >
                   <SkeletonBox width="70%" height={18} marginBottom="$xs" opacity={0.3} />
                   <SkeletonBox width="50%" height={14} opacity={0.2} />
-                </Card>
+                </YStack>
               </YStack>
             )}
 
           {/* Error state */}
           {error && !isLoading && (
-            <Card
+            <YStack
               backgroundColor="$red2"
-              borderColor="$red5"
               padding="$lg"
               marginVertical="$lg"
               alignItems="center"
               borderRadius="$4"
             >
-              <Text fontSize="$iconLarge" marginBottom="$md"></Text>
+              <Text fontSize="$iconLarge" marginBottom="$md">⚠️</Text>
               <Paragraph color="$red11" textAlign="center" marginBottom="$lg">
                 {error}
               </Paragraph>
@@ -659,7 +650,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
               >
                 다시 시도
               </Button>
-            </Card>
+            </YStack>
           )}
 
           {/* Main content when loaded */}
@@ -668,26 +659,24 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
 
                 {/* Admin button */}
                 {isAdmin && (
-                  <Card
+                  <YStack
                     backgroundColor="$orange2"
-                    borderColor="$orange5"
                     padding="$md"
                     marginBottom="$sm"
                     alignItems="center"
                     borderRadius="$3"
                     pressStyle={{ scale: 0.98 }}
-                          onPress={() => navigation.navigate('AdminDashboard' as never)}
-                    elevate
+                    onPress={() => navigation.navigate('AdminDashboard' as never)}
                   >
                     <Text fontWeight="700" color="$color" letterSpacing="$normal">
                       관리자 대시보드
                     </Text>
-                  </Card>
+                  </YStack>
                 )}
 
 
                 {/* Stats Overview - 3 cards */}
-                <XStack justifyContent="space-between" marginBottom="$md" gap="$sm">
+                <XStack justifyContent="space-between" marginBottom="$md">
                   <StatCard
                     minHeight={responsiveStyles.statCardHeight}
                     onPress={handleQuickStats}
@@ -709,6 +698,13 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
                     </Text>
                   </StatCard>
                   
+                  {/* Vertical Separator */}
+                  <YStack 
+                    width={1} 
+                    backgroundColor="$gray5" 
+                    marginVertical="$sm"
+                  />
+                  
                   <StatCard
                     minHeight={responsiveStyles.statCardHeight}
                     onPress={handleQuickStats}
@@ -729,6 +725,13 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
                       발견한 로스터리
                     </Text>
                   </StatCard>
+                  
+                  {/* Vertical Separator */}
+                  <YStack 
+                    width={1} 
+                    backgroundColor="$gray5" 
+                    marginVertical="$sm"
+                  />
                   
                   <StatCard
                     minHeight={responsiveStyles.statCardHeight}
@@ -755,12 +758,19 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
                 {/* Insights Section */}
                 {insights.length > 0 && (
                   <InsightSection>
-                    <XStack alignItems="center" marginBottom="$sm">
-                      <Text fontSize="$iconMedium" marginRight="$sm"></Text>
-                      <H3 fontWeight="600" color="$color">이번 주 인사이트</H3>
+                    <XStack alignItems="center" justifyContent="center" marginBottom="$sm">
+                      <H4 fontWeight="600" color="$color">이번 주 인사이트</H4>
                     </XStack>
                     {insights.map((insight, index) => (
-                      <InsightCard key={`insight-${index}-${insight.title.slice(0, 10)}`} {...insight} />
+                      <React.Fragment key={`insight-${index}-${insight.title.slice(0, 10)}`}>
+                        <InsightCard 
+                          {...insight} 
+                          isLast={index === insights.length - 1}
+                        />
+                        {index < insights.length - 1 && (
+                          <InsightSeparator />
+                        )}
+                      </React.Fragment>
                     ))}
                   </InsightSection>
                 )}

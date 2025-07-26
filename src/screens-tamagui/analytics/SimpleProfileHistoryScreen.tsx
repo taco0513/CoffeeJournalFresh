@@ -131,18 +131,6 @@ const SimpleProfileHistoryScreen: React.FC = () => {
   if (loading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: theme.background.val }}>
-        <XStack 
-          height={44} 
-          alignItems="center" 
-          justifyContent="space-between" 
-          paddingHorizontal="$md" 
-          backgroundColor="$background" 
-          borderBottomWidth={0.5} 
-          borderBottomColor="$borderColor"
-        >
-          <Text fontSize="$5" fontWeight="600" color="$color">테이스팅 기록</Text>
-        </XStack>
-        
         <YStack flex={1} justifyContent="center" alignItems="center" gap="$md">
           <Spinner size="large" color="$blue10" />
           <Text fontSize="$4" color="$gray10">기록을 불러오는 중...</Text>
@@ -153,23 +141,6 @@ const SimpleProfileHistoryScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.background.val }}>
-      {/* Navigation Bar */}
-      <XStack 
-        height={44} 
-        alignItems="center" 
-        justifyContent="space-between" 
-        paddingHorizontal="$md" 
-        backgroundColor="$background" 
-        borderBottomWidth={0.5} 
-        borderBottomColor="$borderColor"
-      >
-        <Text fontSize="$5" fontWeight="600" color="$color">테이스팅 기록</Text>
-      </XStack>
-
-      {/* Header */}
-      <YStack padding="$md" paddingBottom="$xs" backgroundColor="$background">
-        <Text fontSize="$3" color="$gray10">총 {allTastings.length}개의 기록</Text>
-      </YStack>
       
       {/* Content */}
       <ScrollView 

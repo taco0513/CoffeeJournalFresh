@@ -26,7 +26,6 @@ import {
   Spinner,
   styled,
   useTheme,
-  AnimatePresence,
   GetProps,
 } from 'tamagui';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -667,27 +666,14 @@ const ProfileHistoryScreen: React.FC = () => {
           <View width={80} />
         </ProfileNavigationBar>
 
-        <AnimatePresence>
           {/* Header */}
           <ProfileHeaderSection
-            animation="lazy"
-            enterStyle={{
-              opacity: 0,
-              y: -20,
-          }}
-            animateOnly={['opacity', 'transform']}
           >
             <ProfileHeaderTitle>총 {allTastings.length}개의 기록</ProfileHeaderTitle>
           </ProfileHeaderSection>
           
           {/* Search Container */}
           <ProfileSearchContainer
-            animation="lazy"
-            enterStyle={{
-              opacity: 0,
-              y: -10,
-          }}
-            animateOnly={['opacity', 'transform']}
           >
             <ProfileSearchBar>
               <ProfileSearchIcon>검색</ProfileSearchIcon>
@@ -707,12 +693,6 @@ const ProfileHistoryScreen: React.FC = () => {
           
           {/* Sort Container */}
           <ProfileSortContainer
-            animation="lazy"
-            enterStyle={{
-              opacity: 0,
-              y: -10,
-          }}
-            animateOnly={['opacity', 'transform']}
           >
             <ProfileSortButton
               active={sortBy === 'date'}
@@ -739,7 +719,6 @@ const ProfileHistoryScreen: React.FC = () => {
               <ProfileAdvancedSearchText>고급 검색 →</ProfileAdvancedSearchText>
             </ProfileAdvancedSearchButton>
           </ProfileSortContainer>
-        </AnimatePresence>
         
         {/* Content */}
         <ProfileContentScrollView contentContainerStyle={{ paddingBottom: 20 }}>

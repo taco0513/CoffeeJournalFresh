@@ -14,7 +14,6 @@ import {
   H2,
   H3,
   Paragraph,
-  AnimatePresence,
   styled,
   useTheme,
   Spinner,
@@ -57,11 +56,6 @@ const HeaderSection = styled(YStack, {
   padding: '$xl',
   backgroundColor: '$background',
   marginBottom: '$sm',
-  animation: 'lazy',
-  enterStyle: {
-    opacity: 0,
-    y: -20,
-},
 });
 
 const Section = styled(Card, {
@@ -72,11 +66,6 @@ const Section = styled(Card, {
   marginHorizontal: '$lg',
   borderRadius: '$4',
   elevate: true,
-  animation: 'lazy',
-  enterStyle: {
-    opacity: 0,
-    scale: 0.95,
-},
 });
 
 const SectionHeader = styled(XStack, {
@@ -90,12 +79,26 @@ const SectionHeader = styled(XStack, {
 const ActionButton = styled(Button, {
   name: 'ActionButton',
   flex: 1,
-  minHeight: 44,
+  backgroundColor: '$primary',
+  height: '$buttonHeight', // 48px
   borderRadius: '$3',
-  animation: 'quick',
+  fontSize: '$5', // 20px (적절한 버튼 텍스트 크기)
+  fontWeight: '600',
+  color: 'white',
   pressStyle: {
     scale: 0.98,
 },
+  
+  variants: {
+    secondary: {
+      true: {
+        backgroundColor: '$background',
+        borderWidth: 1,
+        borderColor: '$primary',
+        color: '$primary',
+    },
+  },
+} as const,
 });
 
 const ComparisonItem = styled(YStack, {
@@ -277,11 +280,10 @@ export default function ResultScreen({ navigation, hideNavBar = false }: ResultS
     <Container>
       {/* Progress Bar - Full */}
       <Progress value={100} backgroundColor="$gray4" height={3}>
-        <Progress.Indicator backgroundColor="$cupBlue" animation="lazy" />
+        <Progress.Indicator backgroundColor="$cupBlue" />
       </Progress>
 
-      <ScrollView flex={1} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }} // Extra padding to clear floating button>
-        <AnimatePresence>
+      <ScrollView flex={1} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
           <HeaderSection>
             <H1 fontSize="$8" fontWeight="700" color="$color" marginBottom="$md">
               테이스팅 완료!
@@ -549,7 +551,6 @@ export default function ResultScreen({ navigation, hideNavBar = false }: ResultS
               </YStack>
             )}
           </Section>
-        </AnimatePresence>
       </ScrollView>
 
       {/* Bottom Buttons */}
@@ -563,24 +564,17 @@ export default function ResultScreen({ navigation, hideNavBar = false }: ResultS
       >
         <XStack gap="$sm" width="100%">
           <ActionButton
-            backgroundColor="$cupBlue"
             onPress={handleNewTasting}
             flex={1}
           >
-            <Text color="white" fontSize="$3" fontWeight="600">
-              New Tasting
-            </Text>
+            New Tasting
           </ActionButton>
           <ActionButton
-            backgroundColor="$background"
-            borderWidth={1}
-            borderColor="$cupBlue"
+            secondary
             onPress={handleGoHome}
             flex={1}
           >
-            <Text color="$cupBlue" fontSize="$3" fontWeight="600">
-              Home
-            </Text>
+            Home
           </ActionButton>
         </XStack>
       </YStack>

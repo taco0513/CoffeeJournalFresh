@@ -209,6 +209,29 @@ const SignOutText = styled(Text, {
   fontFamily: '$body',
 })
 
+// StatCard styled like HomeScreen
+const StatCard = styled(YStack, {
+  name: 'StatCard',
+  flex: 1,
+  backgroundColor: 'transparent',
+  padding: '$sm',
+  paddingVertical: '$md',
+  alignItems: 'center',
+  minHeight: '$statCardSmall',
+  
+  // WCAG 2.4.7 Focus Visible - Enhanced accessibility
+  focusStyle: {
+    borderWidth: 3,
+    borderColor: '$focusRing',
+    shadowColor: '$focusRing',
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    outlineColor: '$focusRing',
+    outlineWidth: 2,
+    outlineOffset: 2,
+},
+})
+
 const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true }) => {
   Logger.debug(' ProfileScreen: Component rendering...', 'screen', { component: 'ProfileScreen' });
   
@@ -427,6 +450,81 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
               <Username>{currentUser?.username || 'User'}</Username>
               <Email>{currentUser?.email || 'user@example.com'}</Email>
             </ProfileHeader>
+
+            {/* Stats Section */}
+            <YStack paddingHorizontal="$lg" marginBottom="$lg">
+              <XStack justifyContent="space-between" marginBottom="$md">
+                <StatCard>
+                  <Text 
+                    fontSize="$6" 
+                    fontWeight="600" 
+                    color="$cupBlue"
+                    marginBottom="$xxs"
+                  >
+                    {stats.joinedDaysAgo}
+                  </Text>
+                  <Text 
+                    fontSize="$3" 
+                    color="$color"
+                    textAlign="center"
+                  >
+                    가입 일수
+                  </Text>
+                </StatCard>
+                
+                {/* Vertical Separator */}
+                <YStack 
+                  width={1} 
+                  backgroundColor="$gray5" 
+                  marginVertical="$sm"
+                />
+                
+                <StatCard>
+                  <Text 
+                    fontSize="$6" 
+                    fontWeight="600" 
+                    color="$cupBlue"
+                    marginBottom="$xxs"
+                  >
+                    {stats.achievementCount}
+                  </Text>
+                  <Text 
+                    fontSize="$3" 
+                    color="$color"
+                    textAlign="center"
+                  >
+                    달성 업적
+                  </Text>
+                </StatCard>
+                
+                {/* Vertical Separator */}
+                <YStack 
+                  width={1} 
+                  backgroundColor="$gray5" 
+                  marginVertical="$sm"
+                />
+                
+                <StatCard>
+                  <Text 
+                    fontSize="$6" 
+                    fontWeight="600" 
+                    color="$cupBlue"
+                    marginBottom="$xxs"
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {stats.favoriteRoaster}
+                  </Text>
+                  <Text 
+                    fontSize="$3" 
+                    color="$color"
+                    textAlign="center"
+                  >
+                    최애 로스터리
+                  </Text>
+                </StatCard>
+              </XStack>
+            </YStack>
 
             {/* Menu Items */}
             <MenuContainer>
