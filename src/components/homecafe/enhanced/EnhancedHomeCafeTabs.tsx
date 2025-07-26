@@ -21,10 +21,10 @@ interface EnhancedHomeCafeTabsProps {
 }
 
 const SECTIONS: TabSection[] = [
-  { key: 'dripper', label: '드리퍼', icon: '⏳' },
-  { key: 'recipe', label: '레시피', icon: '📊' },
-  { key: 'guides', label: '가이드', icon: '📖' },
-  { key: 'timer', label: '타이머', icon: '⏰' },
+  { key: 'dripper', label: '드리퍼', icon: '' },
+  { key: 'recipe', label: '레시피', icon: '' },
+  { key: 'guides', label: '가이드', icon: '' },
+  { key: 'timer', label: '타이머', icon: '' },
 ];
 
 export const EnhancedHomeCafeTabs: React.FC<EnhancedHomeCafeTabsProps> = ({

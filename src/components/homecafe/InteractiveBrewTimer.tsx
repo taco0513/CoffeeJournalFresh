@@ -119,7 +119,7 @@ export const InteractiveBrewTimer: React.FC<InteractiveBrewTimerProps> = ({
     onTimerComplete?.(lapTimes);
     
     Alert.alert(
-      '추출 완료! ☕',
+      '추출 완료! ',
       `총 추출 시간: ${formatTime(currentTime)}`,
       [{ text: '확인', style: 'default' }]
     );
@@ -192,7 +192,7 @@ export const InteractiveBrewTimer: React.FC<InteractiveBrewTimerProps> = ({
           {currentStep.waterAmount && (
             <View style={styles.waterAmountContainer}>
               <Text style={styles.waterAmountText}>
-                💧 {currentStep.waterAmount}g 붓기
+                 {currentStep.waterAmount}g 붓기
               </Text>
             </View>
           )}

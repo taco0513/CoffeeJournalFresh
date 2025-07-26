@@ -59,7 +59,7 @@ export const EnhancedHomeCafeRecipeSection: React.FC<EnhancedHomeCafeRecipeSecti
     >
       <SectionHeader>
         <SectionTitle>레시피 설정</SectionTitle>
-        <SectionIcon>📊</SectionIcon>
+        <SectionIcon></SectionIcon>
       </SectionHeader>
       
       {useAdvancedMode && (

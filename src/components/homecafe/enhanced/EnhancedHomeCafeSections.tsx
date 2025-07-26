@@ -52,7 +52,7 @@ export const EnhancedHomeCafeSections: React.FC<EnhancedHomeCafeSectionsProps> =
         >
           <SectionHeader>
             <SectionTitle>드리퍼 선택</SectionTitle>
-            <SectionIcon>⏳</SectionIcon>
+            <SectionIcon></SectionIcon>
           </SectionHeader>
           {/* @ts-ignore - Component prop mismatch */}
           <EnhancedDripperSelector
@@ -81,7 +81,7 @@ export const EnhancedHomeCafeSections: React.FC<EnhancedHomeCafeSectionsProps> =
           >
             <SectionHeader>
               <SectionTitle>분쇄도 가이드</SectionTitle>
-              <SectionIcon>☕</SectionIcon>
+              <SectionIcon></SectionIcon>
             </SectionHeader>
             {/* @ts-ignore - Component prop mismatch */}
             <GrindSizeGuide 
@@ -96,7 +96,7 @@ export const EnhancedHomeCafeSections: React.FC<EnhancedHomeCafeSectionsProps> =
           >
             <SectionHeader>
               <SectionTitle>푸어링 패턴</SectionTitle>
-              <SectionIcon>💧</SectionIcon>
+              <SectionIcon></SectionIcon>
             </SectionHeader>
             {/* @ts-ignore - Component prop mismatch */}
             <PourPatternGuide 
@@ -114,7 +114,7 @@ export const EnhancedHomeCafeSections: React.FC<EnhancedHomeCafeSectionsProps> =
         >
           <SectionHeader>
             <SectionTitle>추출 타이머</SectionTitle>
-            <SectionIcon>⏰</SectionIcon>
+            <SectionIcon></SectionIcon>
           </SectionHeader>
           {/* @ts-ignore - Component prop mismatch */}
           <InteractiveBrewTimer

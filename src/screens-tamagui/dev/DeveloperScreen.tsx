@@ -9,7 +9,7 @@ import { useUserStore } from '../../stores/useUserStore';
 import { useFeedbackStore } from '../../stores/useFeedbackStore';
 import RealmService from '../../services/realm/RealmService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SimpleMockDataService } from '../../services/SimpleMockDataService';
+import { DummyDataCardService } from '../../services/DummyDataCardService';
 import { AccessControlService } from '../../services/AccessControlService';
 import { useFirecrawlDemo } from '../../services/FirecrawlDemo';
 
@@ -31,7 +31,7 @@ import {
 import { UserInfoSection } from '../../components-tamagui/dev/UserInfoSection';
 import { DeveloperSettingSections } from '../../components-tamagui/dev/DeveloperSettingSections';
 import { Logger } from '../../services/LoggingService';
-// MockDataConfigSection 제거됨 - SimpleMockDataService 사용
+// MockDataConfigSection 제거됨 - DummyDataCardService 사용
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -62,7 +62,7 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
   const [isLoading, setIsLoading] = React.useState(false);
   const [userRole, setUserRole] = React.useState('');
   const [canAccessMockData, setCanAccessMockData] = React.useState(false);
-  // selectedScenario 제거됨 - SimpleMockDataService는 시나리오 불필요
+  // selectedScenario 제거됨 - DummyDataCardService는 시나리오 불필요
   const [showPerformanceInfo, setShowPerformanceInfo] = React.useState(false);
   const [enableVerboseLogging, setEnableVerboseLogging] = React.useState(false);
   const [showDeveloperToasts, setShowDeveloperToasts] = React.useState(false);
@@ -70,7 +70,7 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
   // 단순한 데이터 개수 확인
   const checkDataCount = async () => {
     try {
-      const count = await SimpleMockDataService.getDataCount();
+      const count = await DummyDataCardService.getDataCount();
       setDataCount(count);
       return count;
     } catch (error) {
@@ -106,12 +106,12 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
 
     setIsLoading(true);
     try {
-      Logger.debug('Creating simple mock record...', 'screen', { component: 'DeveloperScreen' });
-      const success = await SimpleMockDataService.createOneSimpleRecord();
+      Logger.debug('Creating simple mock records...', 'screen', { component: 'DeveloperScreen' });
+      const successCount = await DummyDataCardService.createSimpleRecords();
       
-      if (success) {
+      if (successCount > 0) {
         await checkDataCount();
-        Alert.alert('완료', '1개의 테스트 데이터가 생성되었습니다.');
+        Alert.alert('완료', `${successCount}개의 테스트 데이터가 생성되었습니다.`);
         DeviceEventEmitter.emit('refreshData');
       } else {
         Alert.alert('오류', '테스트 데이터 생성에 실패했습니다.');
@@ -148,7 +148,7 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
           onPress: async () => {
             setIsLoading(true);
             try {
-              const success = await SimpleMockDataService.clearAllData();
+              const success = await DummyDataCardService.clearAllData();
               if (success) {
                 await checkDataCount();
                 Alert.alert('완료', '모든 데이터가 삭제되었습니다.');
@@ -275,7 +275,7 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
         {/* Developer Warning */}
         <WarningCard>
           <XStack alignItems="center">
-            <WarningIcon>⚠️</WarningIcon>
+            <WarningIcon></WarningIcon>
             <WarningText>
               개발자 전용 도구입니다. 프로덕션 환경에서는 비활성화하세요.
             </WarningText>
@@ -301,7 +301,7 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
             borderRadius="$4"
           >
             <Text fontSize="$4" fontWeight="700" color="$blue11" marginBottom="$md">
-              📊 데이터 상태
+               데이터 상태
             </Text>
             <Text fontSize="$3" color="$blue11" marginBottom="$sm">
               현재 기록 수: {dataCount}개
@@ -337,7 +337,7 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
                 onPress={createMockData}
                 disabled={isLoading}
               >
-                📝 1개 생성
+                 3개 생성
               </Text>
               
               <Text 
@@ -366,7 +366,7 @@ const DeveloperScreen: React.FC<DeveloperScreenProps> = ({ hideNavBar = true }) 
               onPress={checkDataCount}
               disabled={isLoading}
             >
-              🔄 새로고침
+               새로고침
             </Text>
           </Card>
         </ScrollView>

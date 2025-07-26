@@ -3,13 +3,7 @@ import { Platform, Dimensions } from 'react-native';
 import { View, Text, Button, styled, useTheme } from 'tamagui';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  HomeIcon,
-  JournalIcon,
-  CoffeeAddIcon,
-  AwardsIcon,
-  ProfileIcon,
-} from './icons/TabIcons';
+// Icon imports removed - using text labels instead
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -79,24 +73,27 @@ const CenterButtonInner = styled(View, {
   justifyContent: 'center',
 });
 
-// Icon component with minimal design
+// Text label component instead of icons
 const TabIcon = ({ name, focused, color }: { name: string; focused: boolean; color: string }) => {
-  const iconSize = 24;
+  const labelMap: { [key: string]: string } = {
+    Home: '홈',
+    Journal: '기록',
+    AddCoffee: '+',
+    Achievements: '성과',
+    Profile: '프로필',
+  };
   
-  switch (name) {
-    case 'Home':
-      return <HomeIcon size={iconSize} color={color} focused={focused} />;
-    case 'Journal':
-      return <JournalIcon size={iconSize} color={color} focused={focused} />;
-    case 'AddCoffee':
-      return <CoffeeAddIcon size={28} color={color} />;
-    case 'Achievements':
-      return <AwardsIcon size={iconSize} color={color} focused={focused} />;
-    case 'Profile':
-      return <ProfileIcon size={iconSize} color={color} focused={focused} />;
-    default:
-      return null;
-}
+  return (
+    <Text 
+      style={{
+        fontSize: name === 'AddCoffee' ? 28 : 20,
+        color,
+        fontWeight: focused ? '600' : '400',
+      }}
+    >
+      {labelMap[name] || name}
+    </Text>
+  );
 };
 
 export const CustomTabBar: React.FC<BottomTabBarProps> = ({

@@ -43,11 +43,11 @@ export const TastingDetailCoffeeInfo: React.FC<TastingDetailCoffeeInfoProps> = (
   const getModeDisplayText = (mode?: string) => {
     switch (mode) {
       case 'cafe':
-        return '☕ 카페';
+        return ' 카페';
       case 'home_cafe':
-        return '🏠 홈카페';
+        return ' 홈카페';
       case 'lab':
-        return '🧪 랩 모드';
+        return ' 랩 모드';
       default:
         return mode;
   }

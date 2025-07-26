@@ -105,7 +105,7 @@ const NumberInput = styled(Input, {
   borderRadius: '$2',
   paddingHorizontal: '$md',
   height: 44,
-  fontSize: 16,
+  fontSize: '$4',
   textAlign: 'center',
 })
 
@@ -272,10 +272,10 @@ export const HomeCafeSimpleFormTamagui = () => {
 };
 
   const drippers: { label: string; value: SimpleDripper }[] = [
-    { label: '🔻 V60', value: 'V60' },
-    { label: '〰️ 칼리타', value: 'KalitaWave' },
-    { label: '⏳ 케멕스', value: 'Chemex' },
-    { label: '☕ 기타', value: 'Other' },
+    { label: 'V60', value: 'V60' },
+    { label: '칼리타', value: 'KalitaWave' },
+    { label: '케멕스', value: 'Chemex' },
+    { label: '기타', value: 'Other' },
   ];
 
   const presetRecipes = myCoffeeRecipe 
@@ -371,7 +371,7 @@ export const HomeCafeSimpleFormTamagui = () => {
                         fontWeight={isSelected ? '600' : '500'}
                         color={isSelected ? '$blue11' : '$color'}
                       >
-                        {preset.name === '나의 커피' ? '☕ ' : ''}{preset.name}
+                        {preset.name === '나의 커피' ? ' ' : ''}{preset.name}
                       </Text>
                       <Text 
                         fontSize={12} 
@@ -409,7 +409,7 @@ export const HomeCafeSimpleFormTamagui = () => {
               <XStack alignItems="center" justifyContent="space-between" width="100%">
                 <YStack>
                   <Text fontSize={14} color="$gray11">물량</Text>
-                  <Text fontSize={10} color="$blue11">✨ 자동 계산됨</Text>
+                  <Text fontSize={10} color="$blue11"> 자동 계산됨</Text>
                 </YStack>
                 <XStack alignItems="baseline" space="$xs">
                   <Text fontSize={32} fontWeight="700" color="$blue11">
@@ -439,7 +439,7 @@ export const HomeCafeSimpleFormTamagui = () => {
                 pressStyle={{ scale: 0.95 }}
                 animation="quick"
               >
-                <Text fontSize={24} marginRight="$md">⏱️</Text>
+                <Text fontSize={24} marginRight="$md"></Text>
                 <YStack>
                   <Text fontSize={16} fontWeight="600">타이머 시작</Text>
                   <Text fontSize={14} color="$gray11">
@@ -450,7 +450,7 @@ export const HomeCafeSimpleFormTamagui = () => {
             ) : (
               <YStack space="$md">
                 <XStack justifyContent="center" alignItems="center">
-                  <Text fontSize={24} marginRight="$md">⏱️</Text>
+                  <Text fontSize={24} marginRight="$md"></Text>
                   <Text fontSize={32} fontWeight="700" color="$blue11">
                     {formatTime(elapsedTime)}
                   </Text>
@@ -561,6 +561,7 @@ export const HomeCafeSimpleFormTamagui = () => {
                       borderRadius="$2"
                       paddingHorizontal="$md"
                       height={80}
+                      fontSize="$4"
                       multiline
                       textAlignVertical="top"
                     />
@@ -585,6 +586,7 @@ export const HomeCafeSimpleFormTamagui = () => {
               borderRadius="$2"
               paddingHorizontal="$md"
               height={100}
+              fontSize="$4"
               multiline
               textAlignVertical="top"
             />

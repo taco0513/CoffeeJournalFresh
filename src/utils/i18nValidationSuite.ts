@@ -70,7 +70,7 @@ class I18nValidationSuite {
     const startTime = performance.now();
     this.results = [];
 
-    Logger.debug('🔍 Starting I18n Validation Suite...', 'util', { component: 'i18nValidationSuite' });
+    Logger.debug('Starting I18n Validation Suite...', 'util', { component: 'i18nValidationSuite' });
 
     // Core i18n functionality tests
     await this.runCoreTests();
@@ -90,7 +90,7 @@ class I18nValidationSuite {
     const summary = this.generateSummary(totalTime);
     const recommendations = this.generateRecommendations();
 
-    Logger.debug('✅ I18n Validation Suite completed in ${totalTime}ms', 'util', { component: 'i18nValidationSuite' });
+    Logger.debug(`I18n Validation Suite completed in ${totalTime}ms`, 'util', { component: 'i18nValidationSuite' });
 
     return {
       totalTests: this.results.length,
@@ -471,7 +471,7 @@ class I18nValidationSuite {
         executionTime: Math.round(endTime - startTime)
     });
       
-      Logger.debug('✅ ${testName}: ${result.message}', 'util', { component: 'i18nValidationSuite' });
+      Logger.debug(`${testName}: ${result.message}`, 'util', { component: 'i18nValidationSuite' });
   } catch (error) {
       const endTime = performance.now();
       
@@ -484,7 +484,7 @@ class I18nValidationSuite {
         executionTime: Math.round(endTime - startTime)
     });
       
-      Logger.error('❌ ${testName}: ${(error as Error).message}', 'util', { component: 'i18nValidationSuite' });
+      Logger.error(`${testName}: ${(error as Error).message}`, 'util', { component: 'i18nValidationSuite' });
       
       // Report critical failures to performance monitor
       if (performanceMonitor) {
@@ -516,30 +516,30 @@ class I18nValidationSuite {
     const warnings = this.results.filter(r => r.status === 'warning');
     
     if (failures.length > 0) {
-      recommendations.push(`🚨 Fix ${failures.length} critical failures before deployment`);
+      recommendations.push(` Fix ${failures.length} critical failures before deployment`);
       
       const criticalFailures = failures.filter(f => f.category === 'core' || f.category === 'market');
       if (criticalFailures.length > 0) {
-        recommendations.push(`⚠️ ${criticalFailures.length} failures are in core/market functionality`);
+        recommendations.push(` ${criticalFailures.length} failures are in core/market functionality`);
     }
   }
     
     if (warnings.length > 0) {
-      recommendations.push(`⚠️ Review ${warnings.length} warnings for optimization opportunities`);
+      recommendations.push(` Review ${warnings.length} warnings for optimization opportunities`);
       
       const performanceWarnings = warnings.filter(w => w.category === 'performance');
       if (performanceWarnings.length > 0) {
-        recommendations.push(`🏃 ${performanceWarnings.length} performance optimizations available`);
+        recommendations.push(` ${performanceWarnings.length} performance optimizations available`);
     }
   }
     
     const avgExecutionTime = this.results.reduce((sum, r) => sum + (r.executionTime || 0), 0) / this.results.length;
     if (avgExecutionTime > 100) {
-      recommendations.push(`🐌 Average test execution time is ${Math.round(avgExecutionTime)}ms (optimize for <50ms)`);
+      recommendations.push(` Average test execution time is ${Math.round(avgExecutionTime)}ms (optimize for <50ms)`);
   }
     
     if (failures.length === 0 && warnings.length === 0) {
-      recommendations.push(`🎉 All tests passed! Dual-market i18n system is ready for deployment`);
+      recommendations.push(` All tests passed! Dual-market i18n system is ready for deployment`);
   }
     
     return recommendations;

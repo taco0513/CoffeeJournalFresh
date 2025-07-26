@@ -57,12 +57,12 @@ export const HomeCafeSimpleForm = () => {
       const savedRecipe = await AsyncStorage.getItem(HOMECAFE_RECIPE_KEY);
       if (savedRecipe) {
         const parsedRecipe = JSON.parse(savedRecipe);
-        Logger.debug('🔄 HomeCafe: Loaded saved recipe:', 'component', { component: 'HomeCafeSimpleForm', data: parsedRecipe });
+        Logger.debug('HomeCafe: Loaded saved recipe:', 'component', { component: 'HomeCafeSimpleForm', data: parsedRecipe });
         setFormData(parsedRecipe);
         updateSimpleHomeCafeData(parsedRecipe);
     }
   } catch (error) {
-      Logger.error('❌ HomeCafe: Failed to load saved recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
+      Logger.error('HomeCafe: Failed to load saved recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
   }
 };
 
@@ -70,9 +70,9 @@ export const HomeCafeSimpleForm = () => {
   const saveRecipe = async (recipeData: SimpleHomeCafeData) => {
     try {
       await AsyncStorage.setItem(HOMECAFE_RECIPE_KEY, JSON.stringify(recipeData));
-      Logger.debug('💾 HomeCafe: Recipe auto-saved:', 'component', { component: 'HomeCafeSimpleForm', data: recipeData });
+      Logger.debug('HomeCafe: Recipe auto-saved:', 'component', { component: 'HomeCafeSimpleForm', data: recipeData });
   } catch (error) {
-      Logger.error('❌ HomeCafe: Failed to save recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
+      Logger.error('HomeCafe: Failed to save recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
   }
 };
 
@@ -81,9 +81,9 @@ export const HomeCafeSimpleForm = () => {
     try {
       await AsyncStorage.setItem(MY_COFFEE_RECIPE_KEY, JSON.stringify(formData));
       setMyCoffeeRecipe(formData);
-      Logger.debug('☕ HomeCafe: My Coffee recipe saved:', 'component', { component: 'HomeCafeSimpleForm', data: formData });
+      Logger.debug('HomeCafe: My Coffee recipe saved:', 'component', { component: 'HomeCafeSimpleForm', data: formData });
   } catch (error) {
-      Logger.error('❌ HomeCafe: Failed to save My Coffee recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
+      Logger.error('HomeCafe: Failed to save My Coffee recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
   }
 };
 
@@ -94,10 +94,10 @@ export const HomeCafeSimpleForm = () => {
       if (savedMyCoffee) {
         const parsedMyCoffee = JSON.parse(savedMyCoffee);
         setMyCoffeeRecipe(parsedMyCoffee);
-        Logger.debug('☕ HomeCafe: My Coffee recipe loaded:', 'component', { component: 'HomeCafeSimpleForm', data: parsedMyCoffee });
+        Logger.debug('HomeCafe: My Coffee recipe loaded:', 'component', { component: 'HomeCafeSimpleForm', data: parsedMyCoffee });
     }
   } catch (error) {
-      Logger.error('❌ HomeCafe: Failed to load My Coffee recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
+      Logger.error('HomeCafe: Failed to load My Coffee recipe:', 'component', { component: 'HomeCafeSimpleForm', error: error });
   }
 };
 
@@ -108,7 +108,7 @@ export const HomeCafeSimpleForm = () => {
       updateSimpleHomeCafeData(myCoffeeRecipe);
       saveRecipe(myCoffeeRecipe); // 마지막 사용 레시피로도 저장
       setSelectedPreset('나의 커피');
-      Logger.debug('☕ HomeCafe: My Coffee recipe applied:', 'component', { component: 'HomeCafeSimpleForm', data: myCoffeeRecipe });
+      Logger.debug('HomeCafe: My Coffee recipe applied:', 'component', { component: 'HomeCafeSimpleForm', data: myCoffeeRecipe });
   }
 };
 
@@ -161,7 +161,7 @@ export const HomeCafeSimpleForm = () => {
     updateSimpleHomeCafeData(updatedFormData);
     // 자동 저장
     saveRecipe(updatedFormData);
-    Logger.debug('📝 HomeCafe: Updated ${field}:', 'component', { component: 'HomeCafeSimpleForm', data: value });
+    Logger.debug('HomeCafe: Updated ${field}:', 'component', { component: 'HomeCafeSimpleForm', data: value });
 };
 
   const handleCoffeeAmountChange = (coffeeAmount: number) => {
@@ -178,7 +178,7 @@ export const HomeCafeSimpleForm = () => {
     updateSimpleHomeCafeData(updatedFormData);
     // 자동 저장
     saveRecipe(updatedFormData);
-    Logger.debug('📝 HomeCafe: Updated coffee amount and auto-calculated water:', 'component', { component: 'HomeCafeSimpleForm', data: { coffeeAmount, waterAmount } });
+    Logger.debug('HomeCafe: Updated coffee amount and auto-calculated water:', 'component', { component: 'HomeCafeSimpleForm', data: { coffeeAmount, waterAmount } });
 };
 
   const handleRatioChange = (ratio: number) => {
@@ -195,7 +195,7 @@ export const HomeCafeSimpleForm = () => {
     updateSimpleHomeCafeData(updatedFormData);
     // 자동 저장
     saveRecipe(updatedFormData);
-    Logger.debug('📝 HomeCafe: Updated ratio and auto-calculated water:', 'component', { component: 'HomeCafeSimpleForm', data: { ratio, waterAmount } });
+    Logger.debug('HomeCafe: Updated ratio and auto-calculated water:', 'component', { component: 'HomeCafeSimpleForm', data: { ratio, waterAmount } });
 };
 
   const handleTimerStart = () => {
@@ -246,10 +246,10 @@ export const HomeCafeSimpleForm = () => {
 }
 
   const drippers = [
-    { label: '🔻 V60', value: 'V60' },
-    { label: '〰️ 칼리타', value: 'KalitaWave' },
-    { label: '⏳ 케멕스', value: 'Chemex' },
-    { label: '☕ 기타', value: 'Other' },
+    { label: 'V60', value: 'V60' },
+    { label: '칼리타', value: 'KalitaWave' },
+    { label: '케멕스', value: 'Chemex' },
+    { label: '기타', value: 'Other' },
   ];
 
   const basePresetRecipes = [
@@ -358,7 +358,7 @@ export const HomeCafeSimpleForm = () => {
                       isSelected && styles.presetNameSelected,
                       isMyCoffeePreset && styles.myCoffeeName
                     ]}>
-                      {isMyCoffeePreset ? '☕ ' + preset.name : preset.name}
+                      {isMyCoffeePreset ? ' ' + preset.name : preset.name}
                     </Text>
                     <Text style={[
                       styles.presetDetails,
@@ -408,7 +408,7 @@ export const HomeCafeSimpleForm = () => {
           {/* 물량 표시 (자동계산) */}
           <ResultCard 
             title="물량"
-            badge="✨ 자동 계산됨"
+            badge=" 자동 계산됨"
             style={styles.recipeCard}
           >
             <View style={styles.resultDisplay}>
@@ -432,7 +432,7 @@ export const HomeCafeSimpleForm = () => {
               style={styles.timerButton}
               onPress={handleTimerStart}
             >
-              <Text style={styles.timerIcon}>⏱️</Text>
+              <Text style={styles.timerIcon}></Text>
               <View>
                 <Text style={styles.timerTitle}>타이머 시작</Text>
                 <Text style={styles.timerTime}>
@@ -443,7 +443,7 @@ export const HomeCafeSimpleForm = () => {
           ) : (
             <View>
               <View style={styles.timerDisplay}>
-                <Text style={styles.timerIcon}>⏱️</Text>
+                <Text style={styles.timerIcon}></Text>
                 <Text style={styles.runningTime}>
                   {formatTime(elapsedTime)}
                 </Text>

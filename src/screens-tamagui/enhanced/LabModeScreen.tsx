@@ -313,7 +313,7 @@ const LabModeScreen: React.FC<LabModeScreenProps> = () => {
               animation="lazy"
               animateOnly={['opacity', 'transform']}
             >
-              <Title>🧪 전문가 수준 분석</Title>
+              <Title> 전문가 수준 분석</Title>
               <Subtitle>
                 모든 추출 변수를 상세히 기록하고 분석해보세요
               </Subtitle>
@@ -361,7 +361,7 @@ const LabModeScreen: React.FC<LabModeScreenProps> = () => {
                 animation="bouncy"
                 animateOnly={['opacity', 'transform']}
               >
-                <ValidationIcon>⚠️</ValidationIcon>
+                <ValidationIcon></ValidationIcon>
                 <ValidationText>
                   필수 항목을 모두 입력해주세요
                 </ValidationText>

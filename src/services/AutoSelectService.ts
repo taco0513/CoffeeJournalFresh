@@ -3,7 +3,7 @@ import { DummyDataService } from './DummyDataService';
 import { Logger } from './LoggingService';
 /**
  * AutoSelectService - Provides auto-selection functions for UI components
- * Used by FloatingDummyDataButton to automatically select options in dropdowns,
+ * Used by DummyDataInput to automatically select options in dropdowns,
  * radio buttons, checkboxes, and other form elements
  */
 export class AutoSelectService {
@@ -11,28 +11,28 @@ export class AutoSelectService {
   // Auto-select dropdown/picker options
   static async selectDropdownOption(elementId: string, options: string[], preferredIndex?: number): Promise<string> {
     const selected = await DummyDataService.autoSelectDropdown(options, preferredIndex);
-    Logger.debug(`🎯 Auto-selected dropdown ${elementId}:`, 'service', { component: 'AutoSelectService', data: selected });
+    Logger.debug(` Auto-selected dropdown ${elementId}:`, 'service', { component: 'AutoSelectService', data: selected });
     return selected;
 }
 
   // Auto-select radio button options
   static async selectRadioOption(groupName: string, options: string[], preferred?: string): Promise<string> {
     const selected = await DummyDataService.autoSelectRadioButton(options, preferred);
-    Logger.debug(`🎯 Auto-selected radio ${groupName}:`, 'service', { component: 'AutoSelectService', data: selected });
+    Logger.debug(` Auto-selected radio ${groupName}:`, 'service', { component: 'AutoSelectService', data: selected });
     return selected;
 }
 
   // Auto-select multiple checkbox options
   static async selectCheckboxOptions(groupName: string, options: string[], min = 1, max?: number): Promise<string[]> {
     const selected = await DummyDataService.autoSelectCheckboxes(options, min, max);
-    Logger.debug(`🎯 Auto-selected checkboxes ${groupName}:`, 'service', { component: 'AutoSelectService', data: selected });
+    Logger.debug(` Auto-selected checkboxes ${groupName}:`, 'service', { component: 'AutoSelectService', data: selected });
     return selected;
 }
 
   // Auto-set slider value
   static async setSliderValue(sliderId: string, min: number, max: number, preferred?: number): Promise<number> {
     const value = await DummyDataService.autoFillSlider(min, max, preferred);
-    Logger.debug(`🎯 Auto-set slider ${sliderId}:`, 'service', { component: 'AutoSelectService', data: value });
+    Logger.debug(` Auto-set slider ${sliderId}:`, 'service', { component: 'AutoSelectService', data: value });
     return value;
 }
 
@@ -41,12 +41,17 @@ export class AutoSelectService {
   // CoffeeInfo Screen auto-selections
   static async autoCoffeeInfoSelections() {
     const selections = {
+      cafeName: await this.selectDropdownOption('cafeName', ['블루보틀', '커피리브레', '테라로사', '앤트러사이트', '프릳츠']),
+      roastery: await this.selectDropdownOption('roastery', ['블루보틀', '커피리브레', '테라로사', '앤트러사이트', '프릳츠']),
+      coffeeName: await this.selectDropdownOption('coffeeName', ['에티오피아 예가체프', '콜롬비아 수프리모', '케냐 AA', '과테말라 안티구아']),
       roastLevel: await this.selectDropdownOption('roastLevel', ['Light', 'Medium Light', 'Medium', 'Medium Dark', 'Dark']),
       temperature: await this.selectRadioOption('temperature', ['hot', 'cold'], 'hot'),
       processingMethod: await this.selectDropdownOption('process', ['Washed', 'Natural', 'Honey', 'Anaerobic']),
+      origin: await this.selectDropdownOption('origin', ['에티오피아', '콜롬비아', '케냐', '과테말라', '브라질']),
+      variety: await this.selectDropdownOption('variety', ['아라비카', '게이샤', '부르봉', '티피카']),
   };
     
-    Logger.debug('☕ Auto-filled CoffeeInfo selections:', 'service', { component: 'AutoSelectService', data: selections });
+    Logger.debug(' Auto-filled CoffeeInfo selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
 }
 
@@ -60,7 +65,7 @@ export class AutoSelectService {
       grindSetting: await this.setSliderValue('grindSetting', 15, 30, 20),
   };
     
-    Logger.debug('🏠 Auto-filled HomeCafe selections:', 'service', { component: 'AutoSelectService', data: selections });
+    Logger.debug(' Auto-filled HomeCafe selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
 }
 
@@ -105,7 +110,7 @@ export class AutoSelectService {
       );
   }
     
-    Logger.debug('🇰🇷 Auto-selected Korean expressions:', 'service', { component: 'AutoSelectService', data: selections });
+    Logger.debug(' Auto-selected Korean expressions:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
 }
 
@@ -119,7 +124,7 @@ export class AutoSelectService {
       dateRange: await this.selectRadioOption('date_range', ['전체 기간', '최근 1주일', '최근 1개월', '최근 3개월'], '최근 1개월'),
   };
     
-    Logger.debug('🔍 Auto-filled Search selections:', 'service', { component: 'AutoSelectService', data: selections });
+    Logger.debug('Auto-filled Search selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
 }
 
@@ -133,7 +138,7 @@ export class AutoSelectService {
       notifications: await this.selectCheckboxOptions('notifications', ['새 커피 알림', '성취 알림', '주간 리포트', '추천 알림'], 0, 3),
   };
     
-    Logger.debug('👤 Auto-filled Profile selections:', 'service', { component: 'AutoSelectService', data: selections });
+    Logger.debug(' Auto-filled Profile selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
 }
 
@@ -146,7 +151,7 @@ export class AutoSelectService {
       assignee: await this.selectDropdownOption('assignee', ['개발팀', '디자인팀', '운영팀', '미할당']),
   };
     
-    Logger.debug('⚙️ Auto-filled Admin selections:', 'service', { component: 'AutoSelectService', data: selections });
+    Logger.debug('Auto-filled Admin selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
 }
 
@@ -160,7 +165,7 @@ export class AutoSelectService {
       logLevel: await this.selectDropdownOption('log_level', ['debug', 'info', 'warn', 'error'], 1), // info
   };
     
-    Logger.debug('🛠️ Auto-filled Developer selections:', 'service', { component: 'AutoSelectService', data: selections });
+    Logger.debug('Auto-filled Developer selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
 }
 
@@ -183,7 +188,7 @@ export class AutoSelectService {
       skipToEnd: Math.random() > 0.7, // 30% chance to skip to end
   };
     
-    Logger.debug('👋 Auto-filled Onboarding selections:', 'service', { component: 'AutoSelectService', data: selections });
+    Logger.debug('Auto-filled Onboarding selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
 }
 
@@ -207,7 +212,7 @@ export class AutoSelectService {
       chartType: await this.selectDropdownOption('chart_type', ['막대그래프', '선그래프', '원그래프'], 0),
   };
     
-    Logger.debug('📊 Auto-filled Stats selections:', 'service', { component: 'AutoSelectService', data: selections });
+    Logger.debug('Auto-filled Stats selections:', 'service', { component: 'AutoSelectService', data: selections });
     return selections;
 }
 
@@ -216,6 +221,7 @@ export class AutoSelectService {
     try {
       switch (screenName) {
         case 'CoffeeInfo':
+        case 'CoffeeInfoScreen':
           return await this.autoCoffeeInfoSelections();
         case 'HomeCafe':
           return await this.autoHomeCafeSelections();
@@ -246,7 +252,7 @@ export class AutoSelectService {
           return null;
     }
   } catch (error) {
-      Logger.error(`❌ Error auto-selecting for ${screenName}:`, 'service', { component: 'AutoSelectService', error: error });
+      Logger.error(`Error auto-selecting for ${screenName}:`, 'service', { component: 'AutoSelectService', error: error });
       return null;
   }
 }

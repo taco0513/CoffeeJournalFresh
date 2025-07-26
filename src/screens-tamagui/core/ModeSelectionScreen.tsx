@@ -78,7 +78,7 @@ const ModeSelectionScreen = () => {
       title: t('cafeMode'),
       subtitle: t('cafeModeDesc'),
       description: t('cafeModeDesc'),
-      icon: '☕',
+      icon: '',
       color: '$cupBlue',
       popular: true,
   },
@@ -87,7 +87,7 @@ const ModeSelectionScreen = () => {
       title: t('homeCafeMode'),
       subtitle: t('homeCafeModeDesc'),
       description: t('homeCafeModeDesc'),
-      icon: '🏠',
+      icon: '',
       color: '$green9',
       popular: false,
       badge: t('comingSoon'),
@@ -97,7 +97,7 @@ const ModeSelectionScreen = () => {
       title: t('labMode'),
       subtitle: t('labModeDesc'),
       description: t('labModeDesc'),
-      icon: '🧪',
+      icon: '',
       color: '$purple9',
       popular: false,
       badge: t('beta'),
@@ -207,7 +207,7 @@ const ModeSelectionScreen = () => {
             textAlign="center" 
             lineHeight="$lg"
           >
-            {t('modeChangeInfo', { defaultValue: '💡 모드는 테이스팅 중에도 언제든 변경 가능합니다' })}
+            {t('modeChangeInfo', { defaultValue: '모드는 테이스팅 중에도 언제든 변경 가능합니다' })}
           </Text>
         </YStack>
       </ScrollView>

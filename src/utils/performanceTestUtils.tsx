@@ -40,7 +40,7 @@ class PerformanceTestManager {
    */
   startRenderMeasurement(screenName: string) {
     this.startTime = performance.now();
-    Logger.debug(`🏁 Starting render measurement for ${screenName}`, 'util', { component: 'performanceTestUtils' });
+    Logger.debug(`Starting render measurement for ${screenName}`, 'util', { component: 'performanceTestUtils' });
 }
 
   /**
@@ -69,7 +69,7 @@ class PerformanceTestManager {
     // Store metrics
     await this.storeMetrics(screenName, metrics);
     
-    Logger.debug(`✅ ${screenName} Performance:`, {
+    Logger.debug(`${screenName} Performance:`, {
       renderTime: `${renderTime.toFixed(2)}ms`,
       interactionTime: `${interactionTime.toFixed(2)}ms`,
       type: isTamagui ? 'Tamagui' : 'Legacy',
@@ -170,9 +170,9 @@ class PerformanceTestManager {
     comparisons.forEach(comp => {
       report += `### ${comp.screenName}\n`;
       report += `- **Render Time**: ${comp.legacy?.renderTime.toFixed(2)}ms → ${comp.tamagui?.renderTime.toFixed(2)}ms `;
-      report += `(${comp.improvement.renderTime > 0 ? '🟢' : '🔴'} ${Math.abs(comp.improvement.renderTime).toFixed(1)}%)\n`;
+      report += `(${comp.improvement.renderTime > 0 ? '' : ''} ${Math.abs(comp.improvement.renderTime).toFixed(1)}%)\n`;
       report += `- **Interaction Time**: ${comp.legacy?.interactionTime.toFixed(2)}ms → ${comp.tamagui?.interactionTime.toFixed(2)}ms `;
-      report += `(${comp.improvement.interactionTime > 0 ? '🟢' : '🔴'} ${Math.abs(comp.improvement.interactionTime).toFixed(1)}%)\n\n`;
+      report += `(${comp.improvement.interactionTime > 0 ? '' : ''} ${Math.abs(comp.improvement.interactionTime).toFixed(1)}%)\n\n`;
 
       totalRenderImprovement += comp.improvement.renderTime;
       totalInteractionImprovement += comp.improvement.interactionTime;
@@ -244,12 +244,12 @@ export function usePerformanceMeasurement(screenName: string, isTamagui: boolean
  * Utility to run automated performance tests
  */
 export async function runAutomatedPerformanceTests(screens: string[]) {
-  Logger.debug('🚀 Starting automated performance tests...', 'util', { component: 'performanceTestUtils' });
+  Logger.debug('Starting automated performance tests...', 'util', { component: 'performanceTestUtils' });
   
   const results: PerformanceComparison[] = [];
   
   for (const screen of screens) {
-    Logger.debug('Testing ${screen}...', 'util', { component: 'performanceTestUtils' });
+    Logger.debug(`Testing ${screen}...`, 'util', { component: 'performanceTestUtils' });
     // Navigation to each screen would happen here in a real test
     // For now, we'll simulate with mock data
     
@@ -262,7 +262,7 @@ export async function runAutomatedPerformanceTests(screens: string[]) {
 }
   
   const report = await performanceTest.generateReport();
-  Logger.debug('\n📊 Performance Report:\n', 'util', { component: 'performanceTestUtils', data: report });
+  Logger.debug('Performance Report:\n', 'util', { component: 'performanceTestUtils', data: report });
   
   return results;
 }

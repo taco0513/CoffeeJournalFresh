@@ -169,7 +169,7 @@ const StyledTextArea = styled(TextArea, {
   borderColor: '$borderColor',
   borderRadius: '$4',
   padding: '$md',
-  fontSize: '$5',
+  fontSize: '$4',
   color: '$color',
   minHeight: 200,
   backgroundColor: '$background',
@@ -323,7 +323,7 @@ const RoasterNotesScreen: React.FC<RoasterNotesScreenProps> = () => {
                   <Subtitle>
                     로스터의 설명을 적어두면 나중에 비교해볼 수 있어요
                   </Subtitle>
-                  <TipText>💡 커피 봉투나 카페 메뉴판의 설명을 참고하세요</TipText>
+                  <TipText> 커피 봉투나 카페 메뉴판의 설명을 참고하세요</TipText>
                 </HeaderSection>
 
                 {/* OCR Notice */}

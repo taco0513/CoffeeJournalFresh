@@ -717,9 +717,8 @@ export function MainTabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          // Icon logic here
-        },
+        tabBarShowIcon: false,
+        // Icons removed - using text labels instead
       })}
     >
       <Tab.Screen name="Journal" component={JournalScreen} />

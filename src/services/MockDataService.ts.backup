@@ -516,12 +516,12 @@ export class MockDataService {
    */
   static async createMockData(options: MockDataOptions): Promise<number> {
     try {
-      Logger.info('🎯 Starting mock data creation', 'service', { data: { options } });
+      Logger.info(' Starting mock data creation', 'service', { data: { options } });
       
       // Step 1: Generate mock records
-      Logger.debug('📝 Step 1: Generating mock records...', 'service');
+      Logger.debug(' Step 1: Generating mock records...', 'service');
       const mockRecords = this.generateTastingRecords(options);
-      Logger.info(`📝 Generated ${mockRecords.length} mock records`, 'service', { data: { count: mockRecords.length } });
+      Logger.info(` Generated ${mockRecords.length} mock records`, 'service', { data: { count: mockRecords.length } });
       
       // Step 2: Get realm service
       Logger.debug('🔧 Step 2: Getting RealmService instance...', 'service');
@@ -540,12 +540,12 @@ export class MockDataService {
       let successCount = 0;
       
       // Step 4: Save records one by one
-      Logger.debug(`💾 Step 4: Saving ${mockRecords.length} records...`, 'service');
+      Logger.debug(` Step 4: Saving ${mockRecords.length} records...`, 'service');
       
       for (let i = 0; i < mockRecords.length; i++) {
         const record = mockRecords[i];
         try {
-          Logger.debug(`💾 Saving record ${i + 1}/${mockRecords.length}`, 'service', { 
+          Logger.debug(` Saving record ${i + 1}/${mockRecords.length}`, 'service', { 
             data: { 
               recordIndex: i, 
               coffeeName: record.coffeeInfo?.coffeeName,
@@ -590,7 +590,7 @@ export class MockDataService {
       }
     }
 
-      Logger.info(`🎉 Mock data creation completed: ${successCount}/${mockRecords.length} records saved`, 'service', { data: { successCount, total: mockRecords.length } });
+      Logger.info(` Mock data creation completed: ${successCount}/${mockRecords.length} records saved`, 'service', { data: { successCount, total: mockRecords.length } });
 
       return successCount;
   } catch (error) {

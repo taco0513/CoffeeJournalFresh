@@ -13,15 +13,15 @@ export const CATEGORY_COLORS: Record<string, string> = {
   'Other': '#9E9E9E',
 };
 
-// Category emojis
+// Category emojis - removed for beta version
 export const CATEGORY_EMOJIS: Record<string, string> = {
-  'Fruity': '🍓',
-  'Sour/Fermented': '🍋',
-  'Green/Vegetative': '🌿',
-  'Roasted': '🔥',
-  'Spices': '🌶️',
-  'Nutty/Cocoa': '🥜',
-  'Sweet': '🍯',
-  'Floral': '🌸',
-  'Other': '📦',
+  'Fruity': '',
+  'Sour/Fermented': '',
+  'Green/Vegetative': '',
+  'Roasted': '',
+  'Spices': '',
+  'Nutty/Cocoa': '',
+  'Sweet': '',
+  'Floral': '',
+  'Other': '',
 };

@@ -280,7 +280,7 @@ export default function ResultScreen({ navigation, hideNavBar = false }: ResultS
         <Progress.Indicator backgroundColor="$cupBlue" animation="lazy" />
       </Progress>
 
-      <ScrollView flex={1} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+      <ScrollView flex={1} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }} // Extra padding to clear floating button>
         <AnimatePresence>
           <HeaderSection>
             <H1 fontSize="$8" fontWeight="700" color="$color" marginBottom="$md">
@@ -324,7 +324,7 @@ export default function ResultScreen({ navigation, hideNavBar = false }: ResultS
               </Text>
             ) : (
               <Text fontSize="$3" color="$color" marginBottom="$sm">
-                추출 방식: 🏠 홈카페
+                추출 방식:  홈카페
               </Text>
             )}
             <Text fontSize="$3" color="$color" marginBottom="$sm">
@@ -339,7 +339,7 @@ export default function ResultScreen({ navigation, hideNavBar = false }: ResultS
           {currentTasting.mode === 'home_cafe' && currentTasting.homeCafeData && (
             <Section>
               <SectionHeader>
-                <H3 fontSize="$5" fontWeight="600" color="$color">🏠 홈카페 정보</H3>
+                <H3 fontSize="$5" fontWeight="600" color="$color"> 홈카페 정보</H3>
               </SectionHeader>
               <Text fontSize="$3" color="$color" marginBottom="$sm">
                 추출 도구: {currentTasting.homeCafeData.equipment.dripper === 'V60' ? 'V60' :
@@ -536,10 +536,10 @@ export default function ResultScreen({ navigation, hideNavBar = false }: ResultS
               >
                 <Text fontSize="$3" color="$gray11" textAlign="center">
                   {comparison && comparison.totalTastings === 1 
-                    ? '🎉 이 커피의 첫 번째 테이스터입니다!'
+                    ? '이 커피의 첫 번째 테이스터입니다!'
                     : comparison === null
-                    ? '🔍 아직 다른 사람의 기록이 없습니다'
-                    : '📊 비교 데이터를 불러올 수 없습니다'}
+                    ? '아직 다른 사람의 기록이 없습니다'
+                    : '비교 데이터를 불러올 수 없습니다'}
                 </Text>
                 {(comparison === null || (comparison && comparison.totalTastings === 0)) && (
                   <Text fontSize="$2" color="$gray10" textAlign="center" marginTop="$sm" lineHeight={18}>

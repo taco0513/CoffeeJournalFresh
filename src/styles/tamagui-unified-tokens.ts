@@ -249,9 +249,9 @@ export const animationPresets = {
 // Consolidated theme tokens for reference - WCAG AA compliant
 export const unifiedTokens = {
   // Brand Colors - WCAG AA compliant (4.5:1+ contrast ratio)
-  cupBlue: '#1565C0',        // Improved: 4.77:1 contrast ratio ✅
-  cupBlueLight: '#E3F2FD',   // Light variant: 12.6:1 ✅
-  cupBlueDark: '#0D47A1',    // Dark variant: 8.59:1 ✅
+  cupBlue: '#1565C0',        // Improved: 4.77:1 contrast ratio 
+  cupBlueLight: '#E3F2FD',   // Light variant: 12.6:1 
+  cupBlueDark: '#0D47A1',    // Dark variant: 8.59:1 
   cupBrown: '#8B4513',
   cupBrownDark: '#6B3410',
   
@@ -263,12 +263,12 @@ export const unifiedTokens = {
   balance: '#00BCD4',
   
   // Status Colors - WCAG AA compliant
-  success: '#2E7D32',        // Improved: 5.49:1 contrast ratio ✅
-  warning: '#EF6C00',        // Improved: 4.52:1 contrast ratio ✅  
-  error: '#C62828',          // Improved: 7.00:1 contrast ratio ✅
+  success: '#2E7D32',        // Improved: 5.49:1 contrast ratio 
+  warning: '#EF6C00',        // Improved: 4.52:1 contrast ratio   
+  error: '#C62828',          // Improved: 7.00:1 contrast ratio 
   
   // Focus indicator for accessibility
-  focusRing: '#0D47A1',      // High contrast focus indicator ✅
+  focusRing: '#0D47A1',      // High contrast focus indicator 
   
   // Spacing Scale - Consistent with research-backed spacing
   spacing: {
@@ -284,14 +284,14 @@ export const unifiedTokens = {
   
   // Font Sizes - Research-backed typography scale
   fontSize: {
-    1: 11,  // Micro - Status badges, metadata only ✅
-    2: 13,  // Caption - Secondary info, helper text ✅  
-    3: 16,  // Body - Primary content, main labels (baseline) ✅
-    4: 18,  // Subtitle - Section headers, important labels ✅
-    5: 22,  // Heading - Page headings, stat values ✅
-    6: 26,  // Title - Screen titles ✅
-    7: 30,  // Display - Hero text ✅
-    8: 34,  // Hero - Large display text ✅
+    1: 11,  // Micro - Status badges, metadata only 
+    2: 13,  // Caption - Secondary info, helper text   
+    3: 16,  // Body - Primary content, main labels (baseline) 
+    4: 18,  // Subtitle - Section headers, important labels 
+    5: 22,  // Heading - Page headings, stat values 
+    6: 26,  // Title - Screen titles 
+    7: 30,  // Display - Hero text 
+    8: 34,  // Hero - Large display text 
 },
   
   // Border Radius

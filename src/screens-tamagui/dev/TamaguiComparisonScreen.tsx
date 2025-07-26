@@ -39,7 +39,7 @@ const CurrentImplementation = () => {
         </Text>
         <View style={styles.cardDetails}>
           <Text style={[styles.detailText, selected && styles.detailTextSelected]}>
-            ☕ 15g
+             15g
           </Text>
           <Text style={[styles.detailText, selected && styles.detailTextSelected]}>
             💧 250ml
@@ -88,7 +88,7 @@ const TamaguiImplementation = () => {
           </TText>
           <XStack space="$3" marginTop="$2">
             <TText fontSize={12} color={selected ? '$blue10' : '$gray11'}>
-              ☕ 15g
+               15g
             </TText>
             <TText fontSize={12} color={selected ? '$blue10' : '$gray11'}>
               💧 250ml
@@ -140,8 +140,8 @@ const PerformanceMetrics = () => {
         <XStack justifyContent="space-between">
           <TText fontSize={14}>TypeScript</TText>
           <XStack space="$4">
-            <TText fontSize={12} color="$red10">RN: ❌</TText>
-            <TText fontSize={12} color="$green10">Tamagui: ✅</TText>
+            <TText fontSize={12} color="$red10">RN: </TText>
+            <TText fontSize={12} color="$green10">Tamagui: </TText>
           </XStack>
         </XStack>
       </YStack>

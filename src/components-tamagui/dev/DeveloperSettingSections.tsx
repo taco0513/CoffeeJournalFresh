@@ -22,14 +22,14 @@ import { XStack } from 'tamagui';
 
 // Category Icons
 const CategoryIcons = {
-  user: '👤',
-  debug: '🔍',
-  test: '⚙️',
-  feature: '✨',
+  user: '',
+  debug: '',
+  test: '',
+  feature: '',
   beta: 'β',
-  login: '🔑',
-  data: '📊',
-  firecrawl: '🔥',
+  login: '',
+  data: '',
+  firecrawl: '',
 } as const;
 
 // Types
@@ -337,7 +337,7 @@ export const DeveloperSettingSections: React.FC<DeveloperSettingSectionsProps> =
           {renderActionButton({
             title: 'Firecrawl 마켓 인텔리전스',
             onPress: onNavigateToFirecrawlDemo,
-            icon: '🔥',
+            icon: '',
         })}
         </SettingCard>
       </Section>

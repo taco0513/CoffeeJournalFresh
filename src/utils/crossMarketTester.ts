@@ -101,7 +101,7 @@ class CrossMarketTester {
     const startTime = performance.now();
     this.results = [];
 
-    Logger.debug('🌍 Starting Cross-Market Test Suite...', 'util', { component: 'crossMarketTester' });
+    Logger.debug(' Starting Cross-Market Test Suite...', 'util', { component: 'crossMarketTester' });
 
     // Store original state
     const originalLanguage = getCurrentLanguage();
@@ -123,7 +123,7 @@ class CrossMarketTester {
       const summary = this.generateSummary(executionTime);
       const recommendations = this.generateRecommendations();
 
-      Logger.debug(`✅ Cross-Market Test Suite completed in ${executionTime}ms`, 'util', { component: 'crossMarketTester' });
+      Logger.debug(`Cross-Market Test Suite completed in ${executionTime}ms`, 'util', { component: 'crossMarketTester' });
 
       return {
         totalTests: this.results.length,
@@ -500,7 +500,7 @@ class CrossMarketTester {
     testName: string,
     testFunction: (market: 'korean' | 'us_beta') => Promise<MarketTestResult>
   ): Promise<void> {
-    Logger.debug(`🧪 Running ${testName}...`, 'util', { component: 'crossMarketTester' });
+    Logger.debug('Running ' + testName + '...', 'util', { component: 'crossMarketTester' });
     
     try {
       // Test Korean market
@@ -527,9 +527,9 @@ class CrossMarketTester {
         recommendations
     });
       
-      Logger.debug(`✅ ${testName}: ${overallStatus}`, 'util', { component: 'crossMarketTester' });
+      Logger.debug(`${testName}: ${overallStatus}`, 'util', { component: 'crossMarketTester' });
   } catch (error) {
-      Logger.error(`❌ ${testName} failed:`, 'util', { component: 'crossMarketTester', error: error });
+      Logger.error(`${testName} failed:`, 'util', { component: 'crossMarketTester', error: error });
       
       // Add failed test result
       this.results.push({
@@ -766,37 +766,37 @@ class CrossMarketTester {
     const warnings = this.results.filter(r => r.overallStatus === 'warning');
     
     if (failures.length > 0) {
-      recommendations.push(`🚨 Fix ${failures.length} critical cross-market failures before deployment`);
+      recommendations.push(` Fix ${failures.length} critical cross-market failures before deployment`);
       
       // Specific failure categories
       const criticalFailures = failures.filter(f => 
         f.testName.includes('Language') || f.testName.includes('Feature')
       );
       if (criticalFailures.length > 0) {
-        recommendations.push(`⚠️ ${criticalFailures.length} failures are in core functionality`);
+        recommendations.push(` ${criticalFailures.length} failures are in core functionality`);
     }
   }
     
     if (warnings.length > 0) {
-      recommendations.push(`⚠️ Review ${warnings.length} cross-market warnings for optimization`);
+      recommendations.push(` Review ${warnings.length} cross-market warnings for optimization`);
       
       // Performance warnings
       const performanceIssues = this.results.filter(r => 
         r.koreanResult.executionTime > 200 || r.usResult.executionTime > 200
       );
       if (performanceIssues.length > 0) {
-        recommendations.push(`🏃 ${performanceIssues.length} performance optimizations needed`);
+        recommendations.push(` ${performanceIssues.length} performance optimizations needed`);
     }
   }
     
     // Consistency recommendations
     const lowConsistency = this.results.filter(r => r.comparison.consistencyScore < 70);
     if (lowConsistency.length > 0) {
-      recommendations.push(`🔄 Improve consistency for ${lowConsistency.length} tests`);
+      recommendations.push('Improve consistency for ' + lowConsistency.length + ' tests');
   }
     
     if (failures.length === 0 && warnings.length === 0) {
-      recommendations.push(`🎉 All cross-market tests passed! App is ready for dual-market deployment`);
+      recommendations.push(` All cross-market tests passed! App is ready for dual-market deployment`);
   }
     
     return recommendations;

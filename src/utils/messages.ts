@@ -8,7 +8,7 @@ export function getEncouragementMessage(score: number): string {
 } else if (score < 75) {
     return "좋은 시도예요! 점점 더 섬세하게 느끼고 계시네요!";
 } else if (score < 90) {
-    return "훌륭해요! 🎉 감각이 정말 좋으세요!";
+    return "훌륭해요!  감각이 정말 좋으세요!";
 } else {
     return "로스터와 비슷하게 느끼셨네요! 감각이 정말 좋으세요!";
 }

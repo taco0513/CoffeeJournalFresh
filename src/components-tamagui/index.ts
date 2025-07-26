@@ -5,6 +5,9 @@ export type { NavigationButtonProps, NavigationButtonVariant } from './buttons/N
 export { Chip } from './buttons/Chip';
 export type { ChipProps, ChipSize, ChipVariant } from './buttons/Chip';
 
+export { FloatingButton } from './buttons/FloatingButton';
+export type { FloatingButtonProps } from './buttons/FloatingButton';
+
 // Card Components
 export { InsightCard } from './cards/InsightCard';
 export type { InsightCardProps } from './cards/InsightCard';

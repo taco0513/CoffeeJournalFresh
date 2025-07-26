@@ -5,6 +5,7 @@ import { YStack, XStack, H1, Text, Button, Card, styled } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
 import { useTastingStore } from '../../stores/tastingStore';
 import { HomeCafeSimpleFormTamagui } from '../../components/HomeCafeSimpleFormTamagui';
+import { FloatingButton } from '../../components-tamagui/buttons/FloatingButton';
 
 // Styled components
 
@@ -104,40 +105,19 @@ const HomeCafeScreenTamagui = () => {
       {/* Content */}
       <YStack flex={1}>
         <TitleSection>
-          <Title>🏠 간단 홈카페 기록</Title>
+          <Title> 간단 홈카페 기록</Title>
           <Subtitle>5개 필드로 빠르게 기록해보세요</Subtitle>
         </TitleSection>
 
         <HomeCafeSimpleFormTamagui />
       </YStack>
 
-      {/* Bottom Button */}
-      <XStack
-        padding="$lg"
-        paddingBottom={Math.max(insets.bottom, IOSLayout.safeAreaBottom) + IOSSpacing.md}
-        backgroundColor="$background"
-        borderTopWidth={1}
-        borderTopColor="$gray4"
-      >
-        <NextButton
-          flex={1}
-          disabled={!isValid}
-          onPress={handleNext}
-          pressStyle={{ scale: 0.98 }}
-          animation="quick"
-          height={48}
-          justifyContent="center"
-        >
-          <Text
-            color="white"
-            fontSize="$4"
-            fontWeight="600"
-            textAlign="center"
-          >
-            다음 단계
-          </Text>
-        </NextButton>
-      </XStack>
+      {/* Floating Bottom Button */}
+      <FloatingButton
+        title="다음 단계"
+        isValid={isValid}
+        onPress={handleNext}
+      />
     </YStack>
   );
 };

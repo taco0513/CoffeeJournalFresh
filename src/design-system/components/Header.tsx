@@ -56,11 +56,7 @@ export const Header: React.FC<HeaderProps> = ({
               style={styles.actionButton}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
-              {leftAction.icon ? (
-                <Text style={styles.actionIcon}>{leftAction.icon}</Text>
-              ) : (
-                <Text style={styles.actionText}>{leftAction.text}</Text>
-              )}
+              <Text style={styles.actionText}>{leftAction.text || leftAction.icon || ''}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -80,11 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
               style={styles.actionButton}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
-              {rightAction.icon ? (
-                <Text style={styles.actionIcon}>{rightAction.icon}</Text>
-              ) : (
-                <Text style={styles.actionText}>{rightAction.text}</Text>
-              )}
+              <Text style={styles.actionText}>{rightAction.text || rightAction.icon || ''}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -144,10 +136,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 },
 
-  actionIcon: {
-    fontSize: Typography.fontSize['2xl'],
-    color: Colors.primary[500],
-},
 
   actionText: {
     fontSize: Typography.fontSize.base,
@@ -181,7 +169,7 @@ export const HeaderPresets = {
   tastingFlow: (title: string, onBack: () => void, onSkip: () => void, progress: number) => (
     <Header
       title={title}
-      leftAction={{ icon: '←', onPress: onBack }}
+      leftAction={{ text: '뒤로', onPress: onBack }}
       rightAction={{ text: '건너뛰기', onPress: onSkip }}
       progressPercent={progress}
     />
@@ -191,7 +179,7 @@ export const HeaderPresets = {
   basic: (title: string, onBack?: () => void) => (
     <Header
       title={title}
-      leftAction={onBack ? { icon: '←', onPress: onBack } : undefined}
+      leftAction={onBack ? { text: '뒤로', onPress: onBack } : undefined}
     />
   ),
 
@@ -199,7 +187,7 @@ export const HeaderPresets = {
   withAction: (title: string, onBack: () => void, actionText: string, onAction: () => void) => (
     <Header
       title={title}
-      leftAction={{ icon: '←', onPress: onBack }}
+      leftAction={{ text: '뒤로', onPress: onBack }}
       rightAction={{ text: actionText, onPress: onAction }}
     />
   ),

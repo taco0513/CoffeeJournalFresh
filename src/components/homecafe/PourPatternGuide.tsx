@@ -63,7 +63,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
         '원두 베드가 평평하게 유지되도록 하세요'
       ],
       visualization: '●',
-      icon: '🎯',
+      icon: '',
       compatibleDrippers: ['V60', 'KalitaWave', 'Origami', 'Chemex']
   },
     {
@@ -84,8 +84,8 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
         '나선의 크기를 점진적으로 늘려가세요',
         '필터 가장자리는 피해주세요'
       ],
-      visualization: '🌀',
-      icon: '🌪️',
+      visualization: '○',
+      icon: '',
       compatibleDrippers: ['V60', 'Origami', 'Chemex']
   },
     {
@@ -107,7 +107,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
         '각 단계의 물량을 미리 계산해두세요'
       ],
       visualization: '●●●',
-      icon: '⚡',
+      icon: '',
       compatibleDrippers: ['V60', 'KalitaWave', 'Origami', 'Chemex']
   },
     {
@@ -129,7 +129,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
         '속도 조절이 가장 중요합니다'
       ],
       visualization: '━━━',
-      icon: '🌊',
+      icon: '',
       compatibleDrippers: ['KalitaWave', 'Chemex']
   },
     {
@@ -151,7 +151,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
         '많은 연습이 필요한 고급 기법입니다'
       ],
       visualization: '①②③④',
-      icon: '🎭',
+      icon: '',
       compatibleDrippers: ['V60', 'Origami']
   }
   ];
@@ -222,7 +222,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
 
       {/* Quick Tips */}
       <View style={styles.tipsSection}>
-        <Text style={styles.tipsTitle}>💡 붓기 기법 기본 원칙</Text>
+        <Text style={styles.tipsTitle}> 붓기 기법 기본 원칙</Text>
         <View style={styles.tipsList}>
           <Text style={styles.tipItem}>• 일정한 속도로 붓기</Text>
           <Text style={styles.tipItem}>• 필터 가장자리 피하기</Text>
@@ -244,7 +244,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
               style={styles.closeButton}
               onPress={() => setShowGuide(false)}
             >
-              <Text style={styles.closeButtonText}>✕</Text>
+              <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
             <Text style={styles.modalTitle}>
               {selectedPatternDetail?.korean}
@@ -333,7 +333,7 @@ export const PourPatternGuide: React.FC<PourPatternGuideProps> = ({
                 <Text style={styles.sectionHeader}>프로 팁</Text>
                 {selectedPatternDetail.tips.map((tip, index) => (
                   <View key={index} style={styles.tipItem}>
-                    <Text style={styles.tipBullet}>💡</Text>
+                    <Text style={styles.tipBullet}>•</Text>
                     <Text style={styles.tipText}>{tip}</Text>
                   </View>
                 ))}

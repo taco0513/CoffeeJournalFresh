@@ -191,7 +191,7 @@ const SignInScreen = () => {
         <Container>
           {/* Logo/Title Section */}
           <HeaderSection>
-            <Text fontSize="$10" marginBottom="$sm">☕</Text>
+            <Text fontSize="$10" marginBottom="$sm"></Text>
             <H1 color="$color" marginBottom="$xs" fontWeight="700">
               CupNote
             </H1>
@@ -320,21 +320,21 @@ const SignInScreen = () => {
             <YStack marginTop="$md" paddingTop="$md" borderTopWidth={1} borderTopColor="$borderColor">
               <SocialButton
                 onPress={async () => {
-                  Logger.debug('🔧 Developer login button pressed', 'screen', { component: 'SignInScreen' });
+                  Logger.debug('Developer login button pressed', 'screen', { component: 'SignInScreen' });
                   setLoading(true);
                   try {
-                    Logger.debug('🔧 Calling setTestUser...', 'screen', { component: 'SignInScreen' });
+                    Logger.debug('Calling setTestUser...', 'screen', { component: 'SignInScreen' });
                     await setTestUser();
-                    Logger.debug('🔧 setTestUser completed successfully', 'screen', { component: 'SignInScreen' });
+                    Logger.debug('setTestUser completed successfully', 'screen', { component: 'SignInScreen' });
                     
                     // 상태 업데이트 후 즉시 네비게이션
-                    Logger.debug('🔧 Navigating to Main...', 'screen', { component: 'SignInScreen' });
+                    Logger.debug('Navigating to Main...', 'screen', { component: 'SignInScreen' });
                     navigation.reset({
                       index: 0,
                       routes: [{ name: 'Main' as never }],
                   });
                     
-                    Logger.debug('🔧 Navigation completed', 'screen', { component: 'SignInScreen' });
+                    Logger.debug('Navigation completed', 'screen', { component: 'SignInScreen' });
                 } catch (error) {
                     Logger.error('🔧 Developer login error:', 'screen', { component: 'SignInScreen', error: error });
                     Alert.alert('오류', `개발자 로그인에 실패했습니다.\n\n${error}`);

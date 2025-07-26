@@ -56,7 +56,7 @@ const KOREAN_MARKET_CONFIG: MarketConfig = {
   dateFormat: 'YYYY.MM.DD',
   timeFormat: '24h',
   marketName: '한국 시장',
-  flagEmoji: '🇰🇷',
+  flagEmoji: '',
   isBeta: false,
   
   features: {
@@ -130,7 +130,7 @@ const US_BETA_MARKET_CONFIG: MarketConfig = {
   dateFormat: 'MM/DD/YYYY',
   timeFormat: '12h',
   marketName: 'US Beta Market',
-  flagEmoji: '🇺🇸',
+  flagEmoji: '',
   isBeta: true,
   
   features: {

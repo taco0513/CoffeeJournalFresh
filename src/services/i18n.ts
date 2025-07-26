@@ -32,7 +32,7 @@ const resources = {
       thisWeek: 'This Week',
       avgScore: 'Avg Score',
       bestScore: 'Best Score',
-      startNewTasting: '☕ Start New Tasting',
+      startNewTasting: 'Start New Tasting',
       recentRecords: 'Recent Records',
       seeAll: 'See All',
       noTastingsYet: 'Start your first tasting!',
@@ -127,7 +127,7 @@ const resources = {
       thisWeek: '이번 주',
       avgScore: '평균 점수',
       bestScore: '최고 점수',
-      startNewTasting: '☕ 새 테이스팅 시작',
+      startNewTasting: '새 테이스팅 시작',
       recentRecords: '최근 기록',
       seeAll: '전체 보기',
       noTastingsYet: '첫 테이스팅을 시작해보세요!',
@@ -331,7 +331,7 @@ export const getMarketConfig = () => {
     currency: isKorean ? 'KRW' : 'USD',
     dateFormat: isKorean ? 'YYYY.MM.DD' : 'MM/DD/YYYY',
     marketName: isKorean ? 'Korean Market' : 'US Beta Market',
-    flagEmoji: isKorean ? '🇰🇷' : '🇺🇸',
+    flagEmoji: isKorean ? 'KR' : 'US',
     supportedRoasters: isKorean 
       ? ['Coffee Libre', 'Anthracite', 'Terarosa', 'Momos Coffee']
       : ['Blue Bottle', 'Stumptown', 'Counter Culture', 'Intelligentsia'],

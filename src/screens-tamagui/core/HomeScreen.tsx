@@ -26,6 +26,9 @@ import { CoffeeDiscoveryAlert } from '../../components/CoffeeDiscoveryAlert';
 import { InsightCard } from '../../components-tamagui';
 import { Logger } from '../../services/LoggingService';
 import useScreenPerformance from '../../hooks/useScreenPerformance';
+import { DummyDataService } from '../../services/DummyDataService';
+import { useTastingStore } from '../../stores/tastingStore';
+import { DummyDataInput } from '../../components/dev/DummyDataInput';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -127,7 +130,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
 }, []);
   
   // Debug modal state
-  Logger.debug('🏠 HomeScreen: Modal state', { 
+  Logger.debug('HomeScreen: Modal state', { 
     showApprovalAlert, 
     isReady, 
     willShowModal: isReady && showApprovalAlert 
@@ -165,12 +168,12 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
 
   // Initialize Realm on component mount
   useEffect(() => {
-    Logger.debug('🏠 HomeScreen: useEffect for initialization', 'screen', { component: 'HomeScreen' });
+    Logger.debug('HomeScreen: useEffect for initialization', 'screen', { component: 'HomeScreen' });
     const initializeAndLoad = async () => {
       try {
-        Logger.debug('🏠 HomeScreen: Checking Realm initialization status', 'screen', { component: 'HomeScreen' });
+        Logger.debug('HomeScreen: Checking Realm initialization status', 'screen', { component: 'HomeScreen' });
         if (!realmService.isInitialized) {
-          Logger.debug('🏠 HomeScreen: Initializing Realm...', 'screen', { component: 'HomeScreen' });
+          Logger.debug('HomeScreen: Initializing Realm...', 'screen', { component: 'HomeScreen' });
           // Add timeout to prevent hanging
           const initPromise = realmService.initialize();
           const timeoutPromise = new Promise((_, reject) => 
@@ -178,7 +181,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
           );
           
           await Promise.race([initPromise, timeoutPromise]);
-          Logger.debug('🏠 HomeScreen: Realm initialized successfully', 'screen', { component: 'HomeScreen' });
+          Logger.debug('HomeScreen: Realm initialized successfully', 'screen', { component: 'HomeScreen' });
       }
         loadDashboardData();
     } catch (error) {
@@ -201,7 +204,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
   // Listen for refresh data events (e.g., when mock data is created/deleted)
   useEffect(() => {
     const refreshListener = DeviceEventEmitter.addListener('refreshData', () => {
-      Logger.debug('📡 Received refreshData event', 'screen', { component: 'HomeScreen' });
+      Logger.debug('Received refreshData event', 'screen', { component: 'HomeScreen' });
       if (realmService.isInitialized) {
         loadDashboardData();
       }
@@ -240,55 +243,16 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
       // Load data normally - no more developer mode restriction
       const allTastings = realm.objects<ITastingRecord>('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
       
-      Logger.debug('🏠 HomeScreen data load:', 'screen', { 
-        component: 'HomeScreen',
-        totalRecords: allTastings.length,
-        recentRecords: Array.from(allTastings).slice(0, 3).map(r => ({
-          id: r.id,
-          coffeeName: r.coffeeName,
-          roastery: r.roastery,
-          createdAt: r.createdAt
-        }))
-      });
-      
-      // 통계 계산
-      const total = allTastings.length;
-      const thisWeek = getThisWeekTastings(allTastings);
-      const avgScore = total > 0 ? allTastings.reduce((sum, t) => sum + (t.matchScoreTotal || 0), 0) / total : 0;
-      const bestScore = total > 0 ? Math.max(...allTastings.map(t => t.matchScoreTotal || 0)) : 0;
-      
-      // 이번 달 새로운 커피 수 계산
-      const newCoffees = getNewCoffeesThisMonth(allTastings);
-      
-      // 총 로스터리 수 계산
-      const uniqueRoasteries = new Set();
-      allTastings.forEach(tasting => {
-        if (tasting.roastery) {
-          uniqueRoasteries.add(tasting.roastery);
+      // 개발자 모드 + 데이터 없음 + 첫 실행 시 자동으로 더미데이터 생성
+      if (isDeveloperMode && allTastings.length === 0) {
+        await createInitialDummyData();
+        // 데이터 생성 후 다시 로드
+        const updatedTastings = realm.objects<ITastingRecord>('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
+        await calculateStatsAndInsights(updatedTastings);
+        return;
       }
-    });
       
-      // 총 카페 수 계산
-      const uniqueCafes = new Set();
-      allTastings.forEach(tasting => {
-        if (tasting.cafeName) {
-          uniqueCafes.add(tasting.cafeName);
-      }
-    });
-      
-      setStats({
-        totalTastings: total,
-        totalRoasteries: uniqueRoasteries.size,
-        totalCafes: uniqueCafes.size,
-        thisWeekTastings: thisWeek,
-        avgScore: Math.round(avgScore),
-        bestScore,
-        newCoffeesThisMonth: newCoffees,
-    });
-      
-      // Load insights
-      const insightsData = await generateInsights();
-      setInsights(insightsData);
+      await calculateStatsAndInsights(allTastings);
   } catch (error) {
       Logger.error('Error loading dashboard data:', 'screen', { component: 'HomeScreen', error: error });
       setError('데이터를 불러오는 중 오류가 발생했습니다.');
@@ -337,17 +301,17 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
         // 데이터가 없을 때 기본 인사이트 표시
         return [
           {
-            icon: '📈',
+            icon: '',
             title: '산미에 대한 선호도가 15% 증가했어요.',
             value: '더 밝은 로스팅의 커피를 시도해보세요!',
         },
           {
-            icon: '🎯',
+            icon: '',
             title: '플로럴 향미 식별 정확도가 87%에 달했어요.',
             value: '전문가 수준에 근접합니다!',
         },
           {
-            icon: '☕',
+            icon: '',
             title: '새로운 로스터리 3곳을 발견했어요.',
             value: '다양성이 취향 발달에 도움이 됩니다.',
         },
@@ -378,7 +342,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
 
       if (topFlavor) {
         insights.push({
-          icon: '🍓',
+          icon: '',
           title: `${topFlavor} 향미를 가장 많이 느꼈어요.`,
           value: '비슷한 향미의 커피를 더 탐색해보세요!',
       });
@@ -397,7 +361,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
           : '더 다양한 커피를 시도해보세요!';
         
         insights.push({
-          icon: avgScore >= 85 ? '🌟' : avgScore >= 70 ? '📈' : '🎯',
+          icon: avgScore >= 85 ? '' : avgScore >= 70 ? '' : '',
           title: `이번 주 평균 점수는 ${Math.round(avgScore)}점이에요.`,
           value: scoreMessage,
       });
@@ -413,7 +377,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
 
       if (uniqueRoasteries.size > 0) {
         insights.push({
-          icon: '☕',
+          icon: '',
           title: `새로운 로스터리 ${uniqueRoasteries.size}곳을 발견했어요.`,
           value: '다양성이 취향 발달에 도움이 됩니다.',
       });
@@ -423,19 +387,19 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
       while (insights.length < 3) {
         if (!insights.find(i => i.title.includes('향미'))) {
           insights.push({
-            icon: '🍓',
+            icon: '',
             title: '더 많은 기록으로 향미 패턴을 분석해보세요.',
             value: '5개 이상 기록하면 개인화된 인사이트를 제공합니다.',
         });
       } else if (!insights.find(i => i.title.includes('점수'))) {
           insights.push({
-            icon: '📈',
+            icon: '',
             title: '꾸준한 기록으로 실력을 향상시켜보세요.',
             value: '정기적인 테이스팅이 전문성을 높입니다.',
         });
       } else {
           insights.push({
-            icon: '🌟',
+            icon: '',
             title: '커피 여행을 계속해보세요!',
             value: '새로운 경험이 기다리고 있습니다.',
         });
@@ -447,17 +411,17 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
       // 에러 시 기본 인사이트 반환
       return [
         {
-          icon: '📈',
+          icon: '',
           title: '산미에 대한 선호도가 15% 증가했어요.',
           value: '더 밝은 로스팅의 커피를 시도해보세요!',
       },
         {
-          icon: '🎯',
+          icon: '',
           title: '플로럴 향미 식별 정확도가 87%에 달했어요.',
           value: '전문가 수준에 근접합니다!',
       },
         {
-          icon: '☕',
+          icon: '',
           title: '새로운 로스터리 3곳을 발견했어요.',
           value: '다양성이 취향 발달에 도움이 됩니다.',
       },
@@ -474,6 +438,108 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
   const handleQuickStats = () => {
     navigation.navigate('Journal' as never, { initialTab: 'stats' } as never);
 };
+
+  // 개발자 모드 첫 실행 시 더미데이터 자동 생성
+  const createInitialDummyData = async () => {
+    try {
+      Logger.debug('Creating initial dummy data for developer mode', 'screen', { component: 'HomeScreen' });
+      
+      const store = useTastingStore.getState();
+      const realm = realmService.getRealm();
+      
+      // 5개의 더미 테이스팅 기록 생성
+      for (let i = 0; i < 5; i++) {
+        // 새로운 테이스팅 세션 시작
+        store.startNewTasting();
+        
+        // 모드 설정 (카페/홈카페 랜덤)
+        const mode = Math.random() > 0.5 ? 'cafe' : 'home_cafe';
+        store.updateField('mode', mode);
+        
+        // 더미데이터 생성
+        await DummyDataService.generateCompleteTastingRecord();
+        
+        // 날짜를 랜덤하게 설정 (최근 2주 내)
+        const randomDaysAgo = Math.floor(Math.random() * 14);
+        const createdDate = new Date();
+        createdDate.setDate(createdDate.getDate() - randomDaysAgo);
+        store.updateField('createdAt', createdDate);
+        
+        // 저장
+        const record = store.createTastingRecord();
+        realm.write(() => {
+          realm.create('TastingRecord', record);
+        });
+        
+        Logger.debug(`Created dummy tasting record ${i + 1}/5`, 'screen', { 
+          component: 'HomeScreen',
+          coffeeName: record.coffeeName,
+          roastery: record.roastery,
+          mode: record.mode
+        });
+      }
+      
+      // 데이터 새로고침 이벤트 발생
+      DeviceEventEmitter.emit('refreshData');
+      
+      Logger.debug('Initial dummy data creation completed', 'screen', { component: 'HomeScreen' });
+    } catch (error) {
+      Logger.error('Error creating initial dummy data:', 'screen', { component: 'HomeScreen', error: error });
+    }
+  };
+
+  // 통계 및 인사이트 계산 함수
+  const calculateStatsAndInsights = async (allTastings: any) => {
+    Logger.debug('HomeScreen data load:', 'screen', { 
+      component: 'HomeScreen',
+      totalRecords: allTastings.length,
+      recentRecords: Array.from(allTastings).slice(0, 3).map((r: ITastingRecord) => ({
+        id: r.id,
+        coffeeName: r.coffeeName,
+        roastery: r.roastery,
+        createdAt: r.createdAt
+      }))
+    });
+    
+    // 통계 계산
+    const total = allTastings.length;
+    const thisWeek = getThisWeekTastings(allTastings);
+    const avgScore = total > 0 ? allTastings.reduce((sum: number, t: ITastingRecord) => sum + (t.matchScoreTotal || 0), 0) / total : 0;
+    const bestScore = total > 0 ? Math.max(...allTastings.map((t: ITastingRecord) => t.matchScoreTotal || 0)) : 0;
+    
+    // 이번 달 새로운 커피 수 계산
+    const newCoffees = getNewCoffeesThisMonth(allTastings);
+    
+    // 총 로스터리 수 계산
+    const uniqueRoasteries = new Set();
+    allTastings.forEach((tasting: ITastingRecord) => {
+      if (tasting.roastery) {
+        uniqueRoasteries.add(tasting.roastery);
+      }
+    });
+    
+    // 총 카페 수 계산
+    const uniqueCafes = new Set();
+    allTastings.forEach((tasting: ITastingRecord) => {
+      if (tasting.cafeName) {
+        uniqueCafes.add(tasting.cafeName);
+      }
+    });
+    
+    setStats({
+      totalTastings: total,
+      totalRoasteries: uniqueRoasteries.size,
+      totalCafes: uniqueCafes.size,
+      thisWeekTastings: thisWeek,
+      avgScore: Math.round(avgScore),
+      bestScore,
+      newCoffeesThisMonth: newCoffees,
+    });
+    
+    // Load insights
+    const insightsData = await generateInsights();
+    setInsights(insightsData);
+  };
 
 
   // Responsive dimensions
@@ -581,7 +647,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
               alignItems="center"
               borderRadius="$4"
             >
-              <Text fontSize="$iconLarge" marginBottom="$md">⚠️</Text>
+              <Text fontSize="$iconLarge" marginBottom="$md"></Text>
               <Paragraph color="$red11" textAlign="center" marginBottom="$lg">
                 {error}
               </Paragraph>
@@ -690,7 +756,7 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
                 {insights.length > 0 && (
                   <InsightSection>
                     <XStack alignItems="center" marginBottom="$sm">
-                      <Text fontSize="$iconMedium" marginRight="$sm">💡</Text>
+                      <Text fontSize="$iconMedium" marginRight="$sm"></Text>
                       <H3 fontWeight="600" color="$color">이번 주 인사이트</H3>
                     </XStack>
                     {insights.map((insight, index) => (
@@ -703,6 +769,9 @@ export default function HomeScreen({ navigation, hideNavBar = true }: HomeScreen
             )}
         </YStack>
       </ScrollView>
+      
+      {/* Status & Developer Tools */}
+      <DummyDataInput />
     </YStack>
   );
 }

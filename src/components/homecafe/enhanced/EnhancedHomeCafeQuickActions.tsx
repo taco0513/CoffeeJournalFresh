@@ -63,34 +63,34 @@ export const EnhancedHomeCafeQuickActions: React.FC<EnhancedHomeCafeQuickActions
     <QuickActionsCard>
       <SectionHeader>
         <SectionTitle>빠른 액션</SectionTitle>
-        <SectionIcon>⚡</SectionIcon>
+        <SectionIcon>Quick</SectionIcon>
       </SectionHeader>
       
       <QuickActionsGrid>
         <QuickActionButton onPress={onStartTimer} unstyled>
           <QuickActionContent>
-            <QuickActionIcon>⏰</QuickActionIcon>
+            <QuickActionIcon>Timer</QuickActionIcon>
             <QuickActionText>타이머 시작</QuickActionText>
           </QuickActionContent>
         </QuickActionButton>
         
         <QuickActionButton onPress={onShowGuides} unstyled>
           <QuickActionContent>
-            <QuickActionIcon>📖</QuickActionIcon>
+            <QuickActionIcon>Guide</QuickActionIcon>
             <QuickActionText>추출 가이드</QuickActionText>
           </QuickActionContent>
         </QuickActionButton>
         
         <QuickActionButton onPress={handleApplyDefaultTemplate} unstyled>
           <QuickActionContent>
-            <QuickActionIcon>🎯</QuickActionIcon>
+            <QuickActionIcon>Recipe</QuickActionIcon>
             <QuickActionText>추천 레시피</QuickActionText>
           </QuickActionContent>
         </QuickActionButton>
         
         <QuickActionButton onPress={onToggleAdvancedMode} unstyled>
           <QuickActionContent>
-            <QuickActionIcon>{useAdvancedMode ? '🔧' : '⚙️'}</QuickActionIcon>
+            <QuickActionIcon>{useAdvancedMode ? 'Advanced' : 'Simple'}</QuickActionIcon>
             <QuickActionText>
               {useAdvancedMode ? '고급 모드' : '간단 모드'}
             </QuickActionText>

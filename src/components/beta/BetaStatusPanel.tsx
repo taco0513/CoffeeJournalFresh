@@ -38,7 +38,7 @@ export const BetaStatusPanel: React.FC<BetaStatusPanelProps> = ({
         {renderStatusItem('User ID', currentUser?.id || 'Not Available')}
         {renderStatusItem('Email', currentUser?.email || 'Not Available')}
         {renderStatusItem('Join Date', currentUser?.joinedAt ? new Date(currentUser.joinedAt).toLocaleDateString() : 'N/A')}
-        {renderStatusItem('Status', currentUser?.isActive ? '🟢 Active' : '🔴 Inactive')}
+        {renderStatusItem('Status', currentUser?.isActive ? ' Active' : ' Inactive')}
         {renderStatusItem('Feedback Count', currentUser?.feedbackCount || 0)}
       </View>
     </View>
@@ -50,7 +50,7 @@ export const BetaStatusPanel: React.FC<BetaStatusPanelProps> = ({
       <View style={styles.statusGrid}>
         {renderStatusItem('Market', `${marketConfig.flagEmoji} ${marketConfig.market}`)}
         {renderStatusItem('Language', marketConfig.language.toUpperCase())}
-        {renderStatusItem('Beta Mode', isBeta ? '✅ Enabled' : '❌ Disabled')}
+        {renderStatusItem('Beta Mode', isBeta ? ' Enabled' : ' Disabled')}
         {renderStatusItem('Version', marketConfig.version || 'N/A')}
       </View>
     </View>
@@ -63,7 +63,7 @@ export const BetaStatusPanel: React.FC<BetaStatusPanelProps> = ({
         {renderStatusItem('Environment', deploymentStatus?.environment || 'Unknown')}
         {renderStatusItem('Build', deploymentStatus?.buildNumber || 'N/A')}
         {renderStatusItem('Deploy Time', deploymentStatus?.deployedAt ? new Date(deploymentStatus.deployedAt).toLocaleString() : 'N/A')}
-        {renderStatusItem('Health', deploymentStatus?.isHealthy ? '🟢 Healthy' : '🔴 Issues', deploymentStatus?.isHealthy ? HIGColors.green : HIGColors.red)}
+        {renderStatusItem('Health', deploymentStatus?.isHealthy ? ' Healthy' : ' Issues', deploymentStatus?.isHealthy ? HIGColors.green : HIGColors.red)}
         {renderStatusItem('Features', deploymentStatus?.enabledFeatures?.length || 0)}
       </View>
     </View>

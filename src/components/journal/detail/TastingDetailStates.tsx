@@ -35,7 +35,7 @@ export const TastingDetailErrorState: React.FC<TastingDetailErrorStateProps> = (
 }) => {
   return (
     <ErrorContainer>
-      <Text fontSize="$6" color="$red9">⚠️</Text>
+      <Text fontSize="$6" color="$red9"></Text>
       <Text fontSize="$5" fontWeight="600" color="$color" textAlign="center">
         오류가 발생했습니다
       </Text>

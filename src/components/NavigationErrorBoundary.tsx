@@ -77,7 +77,7 @@ class NavigationErrorBoundaryBase extends Component<Props & { navigation: any },
       return (
         <SafeAreaView style={styles.container}>
           <View style={styles.errorContainer}>
-            <Text style={styles.emoji}>☕️</Text>
+            <Text style={styles.emoji}>️</Text>
             <Text style={styles.title}>앗, 문제가 발생했습니다</Text>
             <Text style={styles.subtitle}>
               {this.props.screenName} 화면에서 오류가 발생했습니다

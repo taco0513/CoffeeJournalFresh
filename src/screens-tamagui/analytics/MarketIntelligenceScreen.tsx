@@ -467,7 +467,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
     }}
       animateOnly={['opacity', 'transform']}
     >
-      <HeaderTitle>☕ CupNote 시장 분석</HeaderTitle>
+      <HeaderTitle> CupNote 시장 분석</HeaderTitle>
       <HeaderSubtitle>실시간 커피 업계 동향</HeaderSubtitle>
       
       {/* Market Toggle */}
@@ -478,7 +478,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
           onPress={() => setActiveTab('korea')}
         >
           <TabText active={activeTab === 'korea'}>
-            🇰🇷 한국 시장
+             한국 시장
           </TabText>
         </Tab>
         <Tab
@@ -487,7 +487,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
           onPress={() => setActiveTab('us')}
         >
           <TabText active={activeTab === 'us'}>
-            🇺🇸 미국 시장
+             미국 시장
           </TabText>
         </Tab>
       </TabContainer>
@@ -506,7 +506,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
       }}
         animateOnly={['opacity', 'transform']}
       >
-        <SectionTitle>📊 시장 트렌드</SectionTitle>
+        <SectionTitle> 시장 트렌드</SectionTitle>
         
         <TrendsContainer>
           <TrendCard>
@@ -594,7 +594,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
     }}
       animateOnly={['opacity', 'transform']}
     >
-      <SectionTitle>🎯 경쟁사 분석</SectionTitle>
+      <SectionTitle> 경쟁사 분석</SectionTitle>
       
       <AnimatePresence>
         {competitors.map((competitor, index) => (
@@ -611,7 +611,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
             <CompetitorHeader>
               <CompetitorName>{competitor.appName}</CompetitorName>
               <RatingContainer>
-                <RatingText>⭐ {competitor.userRating}</RatingText>
+                <RatingText>평점 {competitor.userRating}</RatingText>
                 {competitor.downloadCount && (
                   <DownloadText>{competitor.downloadCount} 다운로드</DownloadText>
                 )}
@@ -649,7 +649,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
           );
       }}
       >
-        <PrimaryButtonText>🔄 실시간 업데이트</PrimaryButtonText>
+        <PrimaryButtonText> 실시간 업데이트</PrimaryButtonText>
       </PrimaryButton>
       
       <SecondaryButton
@@ -658,7 +658,7 @@ const MarketIntelligenceScreen: React.FC<MarketIntelligenceScreenProps> = ({ nav
           navigation.navigate('DeveloperScreen');
       }}
       >
-        <SecondaryButtonText>⚙️ 개발자 도구</SecondaryButtonText>
+        <SecondaryButtonText>개발자 도구</SecondaryButtonText>
       </SecondaryButton>
     </ActionSection>
   );

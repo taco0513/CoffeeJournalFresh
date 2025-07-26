@@ -90,7 +90,7 @@ export const RecipeTemplateSelector: React.FC<RecipeTemplateSelectorProps> = ({
           >
             {recipe.championship && (
               <View style={styles.championBadge}>
-                <Text style={styles.championText}>🏆 {recipe.championship}</Text>
+                <Text style={styles.championText}> {recipe.championship}</Text>
               </View>
             )}
             
@@ -168,7 +168,7 @@ export const RecipeTemplateSelector: React.FC<RecipeTemplateSelectorProps> = ({
                 {selectedRecipe.championship && (
                   <View style={styles.championshipBadge}>
                     <Text style={styles.championshipText}>
-                      🏆 {selectedRecipe.championship} {selectedRecipe.year}
+                       {selectedRecipe.championship} {selectedRecipe.year}
                     </Text>
                   </View>
                 )}
@@ -245,7 +245,7 @@ export const RecipeTemplateSelector: React.FC<RecipeTemplateSelectorProps> = ({
                 <Text style={styles.sectionHeader}>프로 팁</Text>
                 {selectedRecipe.notes.map((note, index) => (
                   <View key={index} style={styles.noteItem}>
-                    <Text style={styles.bullet}>💡</Text>
+                    <Text style={styles.bullet}></Text>
                     <Text style={styles.noteText}>{note}</Text>
                   </View>
                 ))}

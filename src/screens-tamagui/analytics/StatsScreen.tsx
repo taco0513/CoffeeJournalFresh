@@ -78,21 +78,21 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) 
           id: 'example-1',
           title: '취향 발견',
           description: '5번의 테이스팅으로 선호하는 맛 프로필을 파악할 수 있어요',
-          icon: '🎯',
+          icon: '',
           type: 'discovery'
       },
         {
           id: 'example-2',
           title: '로스터리 탐험',
           description: '3곳 이상의 로스터리를 방문하여 다양한 스타일을 경험해보세요',
-          icon: '🗺️',
+          icon: '',
           type: 'exploration'
       },
         {
           id: 'example-3',
           title: '성장 추적',
           description: '매주 꾸준한 기록으로 커피 취향의 변화를 관찰할 수 있어요',
-          icon: '📈',
+          icon: '',
           type: 'growth'
       }
       ];
@@ -106,7 +106,7 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) 
         id: 'achievement-10',
         title: '커피 애호가',
         description: `${stats.totalTastings}번의 테이스팅을 기록했습니다!`,
-        icon: '🏆',
+        icon: '',
         type: 'achievement'
     });
   }
@@ -116,7 +116,7 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) 
         id: 'diversity',
         title: '다양한 경험',
         description: `${topRoasters.length}곳의 로스터리를 경험했네요`,
-        icon: '🌍',
+        icon: '',
         type: 'diversity'
     });
   }

@@ -100,7 +100,7 @@ export const FlavorNotesVisualization: React.FC<FlavorNotesVisualizationProps> =
       {/* Flavor Notes Section */}
       {flavorPaths.length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🍃 향미 프로필</Text>
+          <Text style={styles.sectionTitle}> 향미 프로필</Text>
           
           {showHierarchy ? (
             <View style={styles.hierarchyContainer}>

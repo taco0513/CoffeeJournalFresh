@@ -70,11 +70,11 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
 
   const getMasteryEmoji = (level: number | string): string => {
     const emojiMap: Record<string, string> = {
-      novice: '🌱',
-      apprentice: '🌿',
-      proficient: '🌳',
-      expert: '🏆',
-      master: '👑',
+      novice: '',
+      apprentice: '',
+      proficient: '',
+      expert: '',
+      master: '',
   };
     
     // Convert numeric level to string representation
@@ -87,23 +87,23 @@ export const FlavorMasteryMap: React.FC<FlavorMasteryMapProps> = ({
       else levelKey = 'novice';
   }
     
-    return emojiMap[levelKey] || '🌱';
+    return emojiMap[levelKey] || '';
 };
 
   const getCategoryEmoji = (categoryName: string): string => {
     const emojiMap: Record<string, string> = {
-      fruity: '🍓',
-      floral: '🌸',
-      sweet: '🍯',
-      nutty: '🥜',
-      chocolate: '🍫',
-      spices: '🌶️',
-      roasted: '☕',
-      vegetal: '🌿',
-      sour: '🍋',
-      other: '✨',
+      fruity: '',
+      floral: '',
+      sweet: '',
+      nutty: '',
+      chocolate: '',
+      spices: '',
+      roasted: '',
+      vegetal: '',
+      sour: '',
+      other: '',
   };
-    return emojiMap[categoryName.toLowerCase()] || '☕';
+    return emojiMap[categoryName.toLowerCase()] || '';
 };
 
   const renderGridLayout = () => {

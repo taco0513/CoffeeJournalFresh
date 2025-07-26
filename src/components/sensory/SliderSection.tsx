@@ -7,15 +7,15 @@ import { SliderSectionProps } from '../../types/sensory';
 // Visual metaphors for each sensory attribute
 const getTasteIcon = (title: string, intensity: number): string => {
   const iconMap: Record<string, string[]> = {
-    '바디감': ['💧', '💧', '☕', '🪨', '⚫'],
-    '산미': ['🍃', '🍋', '🍋', '🍊', '🔥'],
-    '단맛': ['❄️', '🍯', '🍯', '🍫', '🧁'],
-    '쓴맛': ['🌱', '☕', '☕', '🍫', '⚫'],
+    '바디감': ['', '', '', '', ''],
+    '산미': ['', '', '', '', ''],
+    '단맛': ['', '', '', '', ''],
+    '쓴맛': ['', '', '', '', ''],
     '여운': ['〰️', '〰️', '〰️', '〰️〰️', '〰️〰️〰️'],
-    '밸런스': ['⚖️', '⚖️', '⚖️', '✨', '🌟'],
+    '밸런스': ['', '', '', '', ''],
 };
   
-  return iconMap[title]?.[intensity - 1] || '☕';
+  return iconMap[title]?.[intensity - 1] || '';
 };
 
 const getSegmentLabels = (title: string): string[] => {
@@ -88,7 +88,7 @@ export const SliderSection = memo<SliderSectionProps>(({
       {showSuggestion && (
         <TouchableOpacity style={styles.suggestionContainer} onPress={handleUseSuggestion}>
           <View style={styles.suggestionContent}>
-            <Text style={styles.suggestionIcon}>💡</Text>
+            <Text style={styles.suggestionIcon}></Text>
             <Text style={styles.suggestionText}>{suggestion.text}</Text>
             <Text style={styles.suggestionAction}>탭하여 적용</Text>
           </View>

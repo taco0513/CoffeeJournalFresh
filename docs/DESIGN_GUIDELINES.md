@@ -1,6 +1,6 @@
 # Coffee Journal Fresh - Design Guidelines (MVP Beta)
 
-## 🎨 Design Philosophy for MVP Beta
+## Design Philosophy for MVP Beta
 
 ### Core Principles
 - **Professional & Clean**: Minimize visual clutter for a premium coffee app experience
@@ -8,21 +8,21 @@
 - **Consistent Experience**: Standardized visual elements across all screens
 - **Accessibility First**: Clear, readable interface for all users
 
-## 📱 Icon & Emoji Usage Guidelines
+## Icon & Emoji Usage Guidelines
 
-### ✅ ALLOWED Icons/Emojis
+### CURRENT STATUS: ALL ICONS REMOVED (2025-07-26)
 
-#### Navigation & Core Features (Essential Only)
-- **Tab Icons**: 🏠 (Home), 📖 (Journal), 👤 (Profile) 
-- **Core Actions**: ☕ (Coffee/Tasting related only)
-- **Status Indicators**: ✅ ❌ ⚠️ (System feedback only)
+#### Navigation & Core Features
+- **Tab Bar**: Text labels only (홈, 기록, +, 프로필, 설정)
+- **Headers**: Text-based navigation ("뒤로" instead of arrow icons)
+- **Status Indicators**: Text or Unicode symbols (↑↓ for trends)
 
-#### Functional Context Only
-- **Achievement Badges**: When earned, not decorative
-- **Coffee Ratings**: Star ratings (⭐) for user scores
-- **Loading States**: Minimal system feedback
+#### Functional Context
+- **Achievement Badges**: No icons, text-only labels
+- **Coffee Ratings**: Numeric ratings only
+- **Loading States**: Native spinners without decorative icons
 
-### ❌ PROHIBITED Icons/Emojis
+### PROHIBITED Icons/Emojis
 
 #### Decorative Usage
 - Random emojis in buttons, headers, or labels
@@ -36,7 +36,7 @@
 - Icon-heavy developer/admin interfaces
 - Excessive visual hierarchy markers
 
-### 🎯 Specific Rules
+### Specific Rules
 
 #### Replace With Text
 - **Statistics Cards**: Remove emoji icons, use clean typography
@@ -50,7 +50,7 @@
 - **No emoji in production error messages**
 - **No decorative emoji in data displays**
 
-## 🔧 Implementation Guidelines
+## Implementation Guidelines
 
 ### Button Design
 ```
@@ -76,7 +76,7 @@
 ✅ Debug Settings (3 active)
 ```
 
-## 📊 Before/After Examples
+## Before/After Examples
 
 ### Statistics Section
 **Before**: 🏆 가장 많이 마신 로스터리, ☕ 가장 많이 마신 커피, 🏠 자주 방문한 카페
@@ -84,13 +84,17 @@
 
 ### Home Screen
 **Before**: Multiple emoji icons in stats cards
-**After**: Clean numerical display with minimal icons
+**After**: Clean numerical display with no icons
 
 ### Developer Interface
 **Before**: Icon-heavy category system with emoji bullets
 **After**: Professional text-based organization
 
-## ✨ Typography Focus
+### Tab Bar Navigation
+**Before**: 🏠 📝 ➕ 🏆 ⚙️ icons
+**After**: 홈, 기록, +, 프로필, 설정 text labels
+
+## Typography Focus
 
 ### Hierarchy Through Typography
 - **Font weights**: 400 (regular), 500 (medium), 600 (semibold), 700 (bold)
@@ -104,18 +108,20 @@
 - Consistent card layouts
 - Professional data presentation
 
-## 🎯 MVP Beta Goals
+## MVP Beta Goals
 
 1. **Professional Appearance**: Suitable for coffee industry professionals
 2. **User Focus**: Highlight user's coffee journey and data
 3. **Clean Interface**: Remove visual distractions
 4. **Scalable Design**: Consistent patterns for future features
 
-## 📝 Implementation Checklist
+## Implementation Checklist
 
-- [ ] Remove decorative emojis from statistics displays
-- [ ] Clean up developer/admin interface icons
-- [ ] Standardize button text without emoji decoration
+- [x] Remove decorative emojis from statistics displays
+- [x] Clean up developer/admin interface icons
+- [x] Standardize button text without emoji decoration
+- [x] Remove all tab bar icons and use text labels
+- [x] Replace header icons with text navigation
 - [ ] Focus on typography hierarchy
 - [ ] Ensure consistent spacing and alignment
 - [ ] Test accessibility with screen readers
@@ -123,5 +129,6 @@
 
 ---
 
-*Last Updated: 2025-07-21*
-*Version: MVP Beta v1.0*
+*Last Updated: 2025-07-26*
+*Version: MVP Beta v1.1*
+*Major Change: Complete removal of all icons and emojis*

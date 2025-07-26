@@ -6,10 +6,10 @@ import { Text, View, useTheme } from 'tamagui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUserStore } from '../stores/useUserStore';
 import StatusBadge from '../components/StatusBadge';
-import { TabBarIcon } from '../components/TabBarIcon';
+// TabBarIcon import removed - not using icons
 import ScreenContextService from '../services/ScreenContextService';
 
-// 🎉 All screens from Tamagui! Complete migration achieved!
+// All screens from Tamagui! Complete migration achieved!
 import {
   // Core App Screens
   HomeScreen,
@@ -386,9 +386,7 @@ function MainTabs() {
         options={{
           tabBarLabel: '홈',
           headerTitle: 'CupNote',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="Home" focused={focused} color={color} />
-          ),
+          // Icon removed
       }}
       />
       <Tab.Screen 
@@ -397,9 +395,7 @@ function MainTabs() {
         options={{
           tabBarLabel: '저널',
           headerTitle: 'CupNote',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="Journal" focused={focused} color={color} />
-          ),
+          // Icon removed
       }}
       />
       <Tab.Screen 
@@ -408,9 +404,7 @@ function MainTabs() {
         options={{
           tabBarLabel: '기록하기',
           headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="AddRecord" focused={focused} color={color} />
-          ),
+          // Icon removed
       }}
       />
       {isAdmin && (
@@ -420,9 +414,7 @@ function MainTabs() {
           options={{
             tabBarLabel: '관리자',
             headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon name="Admin" focused={focused} color={color} />
-            ),
+            // Icon removed
         }}
         />
       )}
@@ -432,9 +424,7 @@ function MainTabs() {
         options={{
           tabBarLabel: '프로필',
           headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="History" focused={focused} color={color} />
-          ),
+          // Icon removed
       }}
       />
       <Tab.Screen 
@@ -443,9 +433,7 @@ function MainTabs() {
         options={{
           tabBarLabel: '세팅',
           headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="Profile" focused={focused} color={color} />
-          ),
+          // Icon removed
       }}
       />
     </Tab.Navigator>

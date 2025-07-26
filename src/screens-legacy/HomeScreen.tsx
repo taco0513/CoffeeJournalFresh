@@ -218,17 +218,17 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
         // 데이터가 없을 때 기본 인사이트 표시
         return [
           {
-            icon: '📈',
+            icon: 'TREND',
             title: '산미에 대한 선호도가 15% 증가했어요.',
             value: '더 밝은 로스팅의 커피를 시도해보세요!',
         },
           {
-            icon: '🎯',
+            icon: 'TARGET',
             title: '플로럴 향미 식별 정확도가 87%에 달했어요.',
             value: '전문가 수준에 근접합니다!',
         },
           {
-            icon: '☕',
+            icon: 'COFFEE',
             title: '새로운 로스터리 3곳을 발견했어요.',
             value: '다양성이 취향 발달에 도움이 됩니다.',
         },
@@ -259,7 +259,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
 
       if (topFlavor) {
         insights.push({
-          icon: '🍓',
+          icon: 'FRUIT',
           title: `${topFlavor} 향미를 가장 많이 느꼈어요.`,
           value: '비슷한 향미의 커피를 더 탐색해보세요!',
       });
@@ -278,7 +278,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
           : '더 다양한 커피를 시도해보세요!';
         
         insights.push({
-          icon: avgScore >= 85 ? '🌟' : avgScore >= 70 ? '📈' : '🎯',
+          icon: avgScore >= 85 ? 'STAR' : avgScore >= 70 ? 'TREND' : 'TARGET',
           title: `이번 주 평균 점수는 ${Math.round(avgScore)}점이에요.`,
           value: scoreMessage,
       });
@@ -294,7 +294,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
 
       if (uniqueRoasteries.size > 0) {
         insights.push({
-          icon: '☕',
+          icon: 'COFFEE',
           title: `새로운 로스터리 ${uniqueRoasteries.size}곳을 발견했어요.`,
           value: '다양성이 취향 발달에 도움이 됩니다.',
       });
@@ -304,19 +304,19 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       while (insights.length < 3) {
         if (!insights.find(i => i.title.includes('향미'))) {
           insights.push({
-            icon: '🍓',
+            icon: 'FRUIT',
             title: '더 많은 기록으로 향미 패턴을 분석해보세요.',
             value: '5개 이상 기록하면 개인화된 인사이트를 제공합니다.',
         });
       } else if (!insights.find(i => i.title.includes('점수'))) {
           insights.push({
-            icon: '📈',
+            icon: 'TREND',
             title: '꾸준한 기록으로 실력을 향상시켜보세요.',
             value: '정기적인 테이스팅이 전문성을 높입니다.',
         });
       } else {
           insights.push({
-            icon: '🌟',
+            icon: 'STAR',
             title: '커피 여행을 계속해보세요!',
             value: '새로운 경험이 기다리고 있습니다.',
         });
@@ -328,17 +328,17 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       // 에러 시 기본 인사이트 반환
       return [
         {
-          icon: '📈',
+          icon: '',
           title: '산미에 대한 선호도가 15% 증가했어요.',
           value: '더 밝은 로스팅의 커피를 시도해보세요!',
       },
         {
-          icon: '🎯',
+          icon: 'Target',
           title: '플로럴 향미 식별 정확도가 87%에 달했어요.',
           value: '전문가 수준에 근접합니다!',
       },
         {
-          icon: '☕',
+          icon: 'COFFEE',
           title: '새로운 로스터리 3곳을 발견했어요.',
           value: '다양성이 취향 발달에 도움이 됩니다.',
       },
@@ -431,7 +431,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
           {/* 에러 상태 */}
           {error && !isLoading && (
             <View style={styles.errorContainer}>
-              <Text style={styles.errorIcon}>⚠️</Text>
+              <Text style={styles.errorIcon}>ERROR</Text>
               <Text style={styles.errorText}>{error}</Text>
               <TouchableOpacity 
                 style={styles.retryButton} 
@@ -506,7 +506,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
           {insights.length > 0 && (
             <View style={styles.insightsSection}>
               <View style={styles.insightHeader}>
-                <Text style={styles.insightIcon}>💡</Text>
+                <Text style={styles.insightIcon}>INSIGHT</Text>
                 <Text style={styles.insightTitle}>이번 주 인사이트</Text>
               </View>
               {insights.map((insight, index) => (

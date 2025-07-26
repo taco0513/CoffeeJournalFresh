@@ -53,12 +53,12 @@ export const FlavorRadarChart: React.FC<FlavorRadarChartProps> = ({
   style,
 }) => {
   const categories = [
-    { key: 'fruity', label: 'Fruity', emoji: '🍓', color: '#FF6B6B' },
-    { key: 'floral', label: 'Floral', emoji: '🌸', color: '#C06CC6' },
-    { key: 'sweet', label: 'Sweet', emoji: '🍯', color: '#FFA94D' },
-    { key: 'nutty', label: 'Nutty', emoji: '🥜', color: '#8B6F47' },
-    { key: 'chocolate', label: 'Chocolate', emoji: '🍫', color: '#6F4E37' },
-    { key: 'spices', label: 'Spices', emoji: '🌶️', color: '#FF4757' },
+    { key: 'fruity', label: 'Fruity', emoji: '', color: '#FF6B6B' },
+    { key: 'floral', label: 'Floral', emoji: '', color: '#C06CC6' },
+    { key: 'sweet', label: 'Sweet', emoji: '', color: '#FFA94D' },
+    { key: 'nutty', label: 'Nutty', emoji: '', color: '#8B6F47' },
+    { key: 'chocolate', label: 'Chocolate', emoji: '', color: '#6F4E37' },
+    { key: 'spices', label: 'Spices', emoji: '', color: '#FF4757' },
   ];
 
 

@@ -110,12 +110,12 @@ export const GrindSizeGuide: React.FC<GrindSizeGuideProps> = ({
         <Text style={styles.adjustmentTitle}>추출 시간 조절</Text>
         <View style={styles.adjustmentGrid}>
           <View style={styles.adjustmentCard}>
-            <Text style={styles.adjustmentIcon}>⚡</Text>
+            <Text style={styles.adjustmentIcon}></Text>
             <Text style={styles.adjustmentLabel}>너무 빠름</Text>
             <Text style={styles.adjustmentTip}>{grindGuide.adjustment.tooFast}</Text>
           </View>
           <View style={styles.adjustmentCard}>
-            <Text style={styles.adjustmentIcon}>🐌</Text>
+            <Text style={styles.adjustmentIcon}></Text>
             <Text style={styles.adjustmentLabel}>너무 느림</Text>
             <Text style={styles.adjustmentTip}>{grindGuide.adjustment.tooSlow}</Text>
           </View>
@@ -185,7 +185,7 @@ export const GrindSizeGuide: React.FC<GrindSizeGuideProps> = ({
               <Text style={styles.sectionHeader}>추출 문제 해결</Text>
               
               <View style={styles.troubleCard}>
-                <Text style={styles.troubleTitle}>🏃‍♂️ 추출이 너무 빨라요</Text>
+                <Text style={styles.troubleTitle}>‍♂️ 추출이 너무 빨라요</Text>
                 <Text style={styles.troubleSymptom}>증상: 2분 30초 이내 완료</Text>
                 <Text style={styles.troubleSolution}>해결: 분쇄도를 더 곱게 (1-2단계)</Text>
                 <Text style={styles.troubleReason}>이유: 물이 너무 빨리 통과해서 추출 부족</Text>
@@ -210,25 +210,25 @@ export const GrindSizeGuide: React.FC<GrindSizeGuideProps> = ({
             <View style={styles.tipsSection}>
               <Text style={styles.sectionHeader}>프로 팁</Text>
               <View style={styles.tipItem}>
-                <Text style={styles.tipIcon}>💡</Text>
+                <Text style={styles.tipIcon}></Text>
                 <Text style={styles.tipText}>
                   분쇄도는 원두와 로스팅에 따라 달라져요. 같은 설정이라도 원두가 바뀌면 조정이 필요합니다.
                 </Text>
               </View>
               <View style={styles.tipItem}>
-                <Text style={styles.tipIcon}>🎯</Text>
+                <Text style={styles.tipIcon}></Text>
                 <Text style={styles.tipText}>
                   목표 추출시간: V60 2:30-4:00, Kalita Wave 3:00-5:00, Chemex 4:00-6:00
                 </Text>
               </View>
               <View style={styles.tipItem}>
-                <Text style={styles.tipIcon}>⚖️</Text>
+                <Text style={styles.tipIcon}></Text>
                 <Text style={styles.tipText}>
                   일관성이 가장 중요해요. 같은 설정으로 여러 번 시도해보세요.
                 </Text>
               </View>
               <View style={styles.tipItem}>
-                <Text style={styles.tipIcon}>📝</Text>
+                <Text style={styles.tipIcon}></Text>
                 <Text style={styles.tipText}>
                   매번 기록하세요. 좋은 컵과 아쉬운 컵 모두 다음번에 도움이 됩니다.
                 </Text>

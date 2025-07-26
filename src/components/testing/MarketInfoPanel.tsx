@@ -27,7 +27,7 @@ export const MarketInfoPanel: React.FC<MarketInfoPanelProps> = ({
               <Text style={styles.infoKey}>{key}:</Text>
               <Text style={styles.infoValue}>
                 {typeof value === 'boolean' 
-                  ? (value ? '✅' : '❌')
+                  ? (value ? '' : '')
                   : Array.isArray(value)
                   ? `[${value.length} items]`
                   : String(value)
@@ -48,7 +48,7 @@ export const MarketInfoPanel: React.FC<MarketInfoPanelProps> = ({
       
       <View style={styles.marketBadge}>
         <Text style={styles.marketBadgeText}>
-          {marketInfo.isBeta ? '🇺🇸 US Beta Market' : '🇰🇷 Korean Market'}
+          {marketInfo.isBeta ? ' US Beta Market' : ' Korean Market'}
         </Text>
       </View>
 

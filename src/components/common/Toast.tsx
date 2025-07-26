@@ -67,13 +67,13 @@ const Toast: React.FC<ToastProps> = ({
   const getIconForType = () => {
     switch (type) {
       case 'success':
-        return '✓';
+        return 'Success';
       case 'error':
-        return '✕';
+        return 'Error';
       case 'info':
-        return 'i';
+        return 'Info';
       default:
-        return '✓';
+        return 'Success';
   }
 };
 

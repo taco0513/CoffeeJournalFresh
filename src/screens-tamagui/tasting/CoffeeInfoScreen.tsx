@@ -26,7 +26,8 @@ import { searchRoasters, searchCoffees } from '../../services/supabase/coffeeSea
 import { AddCoffeeModal } from '../../components/AddCoffeeModal';
 import { BetaFeedbackPrompt } from '../../components/beta/BetaFeedbackPrompt';
 import { Logger } from '../../services/LoggingService';
-import { FloatingDummyDataButton } from '../../components/dev/FloatingDummyDataButton';
+import { DummyDataInput } from '../../components/dev/DummyDataInput';
+import { FloatingButton } from '../../components-tamagui/buttons/FloatingButton';
 
 // Styled Components
 const Container = styled(YStack, {
@@ -87,7 +88,7 @@ const StyledInput = styled(Input, {
   borderRadius: '$3',
   paddingHorizontal: '$md',
   height: '$inputHeight', // 44px
-  fontSize: '$3', // 16px
+  fontSize: '$4', // 18px
   marginBottom: '$md',
 });
 
@@ -243,11 +244,11 @@ const CoffeeInfoScreenTamagui = () => {
             flex={1} 
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
-              paddingBottom: '$lg' // Reasonable padding for bottom button
+              paddingBottom: 120 // Extra padding to clear floating button (56px button + 32px margin + 32px extra)
             }}
           >
             <TitleSection>
-              <Title>☕ 어떤 커피인가요?</Title>
+              <Title> 어떤 커피인가요?</Title>
               <Subtitle>기본 정보를 입력해주세요</Subtitle>
             </TitleSection>
 
@@ -269,7 +270,7 @@ const CoffeeInfoScreenTamagui = () => {
                       borderRadius: '$3',
                       paddingHorizontal: '$md',
                       height: '$inputHeight',
-                      fontSize: '$3',
+                      fontSize: '$4',
                   }}
                   />
                 </YStack>
@@ -290,7 +291,7 @@ const CoffeeInfoScreenTamagui = () => {
                       borderRadius: '$3',
                       paddingHorizontal: '$md',
                       height: '$inputHeight',
-                      fontSize: '$3',
+                      fontSize: '$4',
                   }}
                   />
                 </YStack>
@@ -332,7 +333,7 @@ const CoffeeInfoScreenTamagui = () => {
                       pressStyle={{ scale: 0.95 }}
                     >
                       <XStack alignItems="center" space="$xs">
-                        <Text fontSize="$4">☕</Text>
+                        <Text fontSize="$4"></Text>
                         <Text 
                           fontSize="$3"
                           fontWeight={currentTasting.temperature === 'hot' ? '600' : '400'}
@@ -350,7 +351,7 @@ const CoffeeInfoScreenTamagui = () => {
                       pressStyle={{ scale: 0.95 }}
                     >
                       <XStack alignItems="center" space="$xs">
-                        <Text fontSize="$4">🧊</Text>
+                        <Text fontSize="$4"></Text>
                         <Text 
                           fontSize="$3"
                           fontWeight={currentTasting.temperature === 'cold' ? '600' : '400'}
@@ -409,7 +410,7 @@ const CoffeeInfoScreenTamagui = () => {
                             borderRadius: '$3',
                             paddingHorizontal: '$md',
                             height: '$inputHeight',
-                            fontSize: '$3',
+                            fontSize: '$4',
                         }}
                         />
                       </YStack>
@@ -430,7 +431,7 @@ const CoffeeInfoScreenTamagui = () => {
                             borderRadius: '$3',
                             paddingHorizontal: '$md',
                             height: '$inputHeight',
-                            fontSize: '$3',
+                            fontSize: '$4',
                         }}
                         />
                       </YStack>
@@ -465,36 +466,12 @@ const CoffeeInfoScreenTamagui = () => {
             </FormCard>
           </ScrollView>
 
-          {/* Bottom Button */}
-          <XStack
-            padding="$lg"
-            paddingBottom={Math.max(insets.bottom, IOSLayout.safeAreaBottom) + IOSSpacing.md}
-            backgroundColor="$background"
-            borderTopWidth="$borderWidthThin"
-            borderTopColor="$gray4"
-          >
-            <Button
-              backgroundColor={isValid ? '$cupBlue' : '$gray8'}
-              paddingVertical="$md"
-              borderRadius="$3"
-              alignItems="center"
-              justifyContent="center"
-              flex={1}
-              height="$buttonHeight" // 48px
-              onPress={handleNext}
-              disabled={!isValid}
-              pressStyle={{ scale: '$scalePress' }}
-            >
-              <Text
-                color="white"
-                fontSize="$5"
-                fontWeight="600"
-                textAlign="center"
-              >
-                다음
-              </Text>
-            </Button>
-          </XStack>
+          {/* Floating Bottom Button */}
+          <FloatingButton
+            title="다음"
+            isValid={isValid}
+            onPress={handleNext}
+          />
         </YStack>
 
         {/* Modals and Dev Tools */}
@@ -508,7 +485,7 @@ const CoffeeInfoScreenTamagui = () => {
         }}
         />
         <BetaFeedbackPrompt screenName="CoffeeInfoScreen" />
-        {isDeveloperMode && <FloatingDummyDataButton />}
+        <DummyDataInput />
       </KeyboardAvoidingView>
     </Container>
   );

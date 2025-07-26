@@ -96,7 +96,7 @@ const PhotoPicker: React.FC<PhotoPickerProps> = ({
         onPress={handlePhotoSelect}
         disabled={disabled || isSelecting}
       >
-        <Text style={styles.selectIcon}>📷</Text>
+        <Text style={styles.selectIcon}></Text>
         <Text style={styles.selectText}>
           {isSelecting ? '선택 중...' : '사진 추가'}
         </Text>

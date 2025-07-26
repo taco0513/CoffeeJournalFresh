@@ -65,14 +65,14 @@ export const PersonalStatsGrid: React.FC<PersonalStatsGridProps> = ({
     {
       key: 'currentLevel' as keyof PersonalStatsData,
       title: '현재 레벨',
-      icon: '🏆',
+      icon: '',
       color: HIGColors.orange,
       subtitle: `다음까지 ${Math.round(stats.nextLevelProgress)}%`,
   },
     {
       key: 'quizAccuracy' as keyof PersonalStatsData,
       title: '퀴즈 정확도',
-      icon: '🎯',
+      icon: '',
       color: HIGColors.green,
       subtitle: '평균 점수',
       format: (val: unknown) => `${Math.round(val)}%`,
@@ -87,7 +87,7 @@ export const PersonalStatsGrid: React.FC<PersonalStatsGridProps> = ({
     {
       key: 'uniqueCoffees' as keyof PersonalStatsData,
       title: '이번달 신규',
-      icon: '🌟',
+      icon: '',
       color: HIGColors.blue,
       subtitle: '새로 시도한 커피',
   },

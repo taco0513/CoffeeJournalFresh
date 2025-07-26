@@ -13,9 +13,9 @@ export const clearDraftStorage = async (): Promise<void> => {
     // Also clear any other potential draft keys
     await AsyncStorage.removeItem('@current_form_data');
     
-    Logger.debug('✅ All draft storage cleared successfully', 'util', { component: 'clearDraftStorage' });
+    Logger.debug('All draft storage cleared successfully', 'util', { component: 'clearDraftStorage' });
 } catch (error) {
-    Logger.error('❌ Failed to clear draft storage:', 'util', { component: 'clearDraftStorage', error: error });
+    Logger.error('Failed to clear draft storage:', 'util', { component: 'clearDraftStorage', error: error });
 }
 };
 
@@ -27,11 +27,11 @@ export const inspectDraftStorage = async (): Promise<void> => {
     const draftData = await AsyncStorage.getItem('@tasting_draft');
     const formData = await AsyncStorage.getItem('@current_form_data');
     
-    Logger.debug('🔍 Draft Storage Inspection:', 'util', { component: 'clearDraftStorage' });
+    Logger.debug('Draft Storage Inspection:', 'util', { component: 'clearDraftStorage' });
     Logger.debug('- @tasting_draft:', 'util', { component: 'clearDraftStorage', data: draftData ? JSON.parse(draftData) : 'No data' });
     Logger.debug('- @current_form_data:', 'util', { component: 'clearDraftStorage', data: formData ? JSON.parse(formData) : 'No data' });
 } catch (error) {
-    Logger.error('❌ Failed to inspect draft storage:', 'util', { component: 'clearDraftStorage', error: error });
+    Logger.error('Failed to inspect draft storage:', 'util', { component: 'clearDraftStorage', error: error });
 }
 };
 

@@ -172,7 +172,7 @@ const LanguageSwitch: React.FC<LanguageSwitchProps> = ({
             fontWeight="500" 
             color={currentLanguage === 'ko' ? '$color' : '$gray11'}
           >
-            🇰🇷 한국어
+            한국어
           </Text>
         </LanguageButton>
         
@@ -185,7 +185,7 @@ const LanguageSwitch: React.FC<LanguageSwitchProps> = ({
             fontWeight="500" 
             color={currentLanguage === 'en' ? '$color' : '$gray11'}
           >
-            🇺🇸 English
+            English
           </Text>
         </LanguageButton>
       </SwitchContainer>
@@ -193,7 +193,7 @@ const LanguageSwitch: React.FC<LanguageSwitchProps> = ({
       {/* Market indicator */}
       <MarketIndicator>
         <Text fontSize="$2" color="$gray11" fontWeight="500">
-          {isKoreanMarket() ? '🇰🇷 Korean Market' : '🇺🇸 US Beta Market'}
+          {isKoreanMarket() ? 'Korean Market' : 'US Beta Market'}
         </Text>
       </MarketIndicator>
     </YStack>

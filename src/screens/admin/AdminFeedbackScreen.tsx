@@ -139,7 +139,7 @@ export default function AdminFeedbackScreen({ navigation }: unknown) {
         </Text>
         {item.rating && (
           <View style={styles.rating}>
-            {'⭐'.repeat(item.rating)}
+            {''.repeat(item.rating)}
           </View>
         )}
       </View>
@@ -273,7 +273,7 @@ export default function AdminFeedbackScreen({ navigation }: unknown) {
                   {selectedFeedback.rating && (
                     <View style={styles.detailSection}>
                       <Text style={styles.detailLabel}>평점</Text>
-                      <Text style={styles.detailValue}>{'⭐'.repeat(selectedFeedback.rating)}</Text>
+                      <Text style={styles.detailValue}>{''.repeat(selectedFeedback.rating)}</Text>
                     </View>
                   )}
 

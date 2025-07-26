@@ -59,10 +59,10 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
   }
 
     const badgeEmojis: Record<string, string> = {
-      'early-adopter': '🌟',
-      'flavor-hunter': '🎯',
-      'accuracy-master': '🏆',
-      'community-builder': '👥',
+      'early-adopter': '',
+      'flavor-hunter': '',
+      'accuracy-master': '',
+      'community-builder': '',
       'verified': '✓',
   };
 
@@ -70,7 +70,7 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
       <View style={styles.badgesContainer}>
         {profile.badges.slice(0, 3).map((badge: string) => (
           <Text key={badge} style={styles.badge}>
-            {badgeEmojis[badge] || '🏅'}
+            {badgeEmojis[badge] || ''}
           </Text>
         ))}
       </View>
@@ -87,7 +87,7 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
             {profile.displayName || profile.username}
           </Text>
           {profile.isVerified && (
-            <Text style={styles.verifiedBadge}>✓</Text>
+            <Text style={styles.verifiedBadge}>VERIFIED</Text>
           )}
         </View>
         

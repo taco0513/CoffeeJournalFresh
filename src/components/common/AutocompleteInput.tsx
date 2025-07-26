@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
 },
   input: {
-    fontSize: 16,
+    fontSize: 18, // Updated to match $4 token (18px)
     color: '$color',
     // Let parent component handle all styling via style prop
 },
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
 },
   suggestionText: {
-    fontSize: FONT_SIZE.MEDIUM,
+    fontSize: FONT_SIZE.LARGE, // 18px to match input field
     color: Colors.TEXT_TERTIARY,
 },
   suggestionTextSelected: {

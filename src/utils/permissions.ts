@@ -133,7 +133,7 @@ export const handleCameraPermission = async (): Promise<boolean> => {
   // console.log('[Permissions] Vision Camera is disabled - using react-native-permissions only');
   if (checkResult.status === 'granted' || checkResult.status === 'limited') {
     // Already granted or limited (iOS), no need to ask
-    // console.log('[Permissions] ✅ Permission already granted or limited, returning true');
+    // console.log('[Permissions]  Permission already granted or limited, returning true');
     return true;
 }
   
@@ -189,7 +189,7 @@ export const handleCameraPermission = async (): Promise<boolean> => {
     );
 }
   
-  // console.log('[Permissions] ❌ Permission not granted, returning false');
+  // console.log('[Permissions]  Permission not granted, returning false');
   // console.log('[Permissions] Final checkResult:', JSON.stringify(checkResult));
   // console.log('[Permissions] ========== End handleCameraPermission ==========');
   return false;

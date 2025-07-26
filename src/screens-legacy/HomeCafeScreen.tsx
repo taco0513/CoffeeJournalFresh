@@ -49,7 +49,7 @@ const HomeCafeScreen = () => {
       {/* Content */}
       <View style={styles.content}>
         <View style={styles.titleSection}>
-          <Text style={styles.title}>🏠 간단 홈카페 기록</Text>
+          <Text style={styles.title}>간단 홈카페 기록</Text>
           <Text style={styles.subtitle}>
             5개 필드로 빠르게 기록해보세요
           </Text>

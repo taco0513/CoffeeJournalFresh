@@ -31,13 +31,13 @@ interface AchievementGalleryScreenProps {
 }
 
 const FILTER_OPTIONS: { key: FilterType; label: string; icon: string }[] = [
-  { key: 'all', label: '전체', icon: '🎯' },
-  { key: 'unlocked', label: '달성완료', icon: '✅' },
-  { key: 'locked', label: '진행중', icon: '🔒' },
-  { key: AchievementType.FIRST_STEPS, label: '첫 걸음', icon: '👶' },
-  { key: AchievementType.CONSISTENCY, label: '일관성', icon: '📅' },
-  { key: AchievementType.VOCABULARY, label: '어휘력', icon: '📚' },
-  { key: AchievementType.HIDDEN, label: '숨겨진', icon: '🕵️' },
+  { key: 'all', label: '전체', icon: '' },
+  { key: 'unlocked', label: '달성완료', icon: '' },
+  { key: 'locked', label: '진행중', icon: '' },
+  { key: AchievementType.FIRST_STEPS, label: '첫 걸음', icon: '' },
+  { key: AchievementType.CONSISTENCY, label: '일관성', icon: '' },
+  { key: AchievementType.VOCABULARY, label: '어휘력', icon: '' },
+  { key: AchievementType.HIDDEN, label: '숨겨진', icon: '' },
 ];
 
 // Styled Components
@@ -368,7 +368,7 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
 
       {nextAchievement && (
         <NextAchievementCard key={`next-achievement-${nextAchievement.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`}>
-          <NextAchievementName>🎯 다음 목표</NextAchievementName>
+          <NextAchievementName> 다음 목표</NextAchievementName>
           <AchievementCard 
             achievement={nextAchievement}
             compact
@@ -410,7 +410,7 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
     if (filteredAchievements.length === 0) {
       return (
         <EmptyStateContainer>
-          <EmptyStateIcon>🎯</EmptyStateIcon>
+          <EmptyStateIcon></EmptyStateIcon>
           <StatNumber>업적이 없습니다</StatNumber>
           <EmptyStateText>
             {selectedFilter === 'unlocked' 
@@ -490,7 +490,7 @@ const AchievementGalleryScreen: React.FC<AchievementGalleryScreenProps> = ({ hid
         )}
         
         <ErrorContainer>
-          <ErrorIcon>⚠️</ErrorIcon>
+          <ErrorIcon></ErrorIcon>
           <ErrorTitle>업적을 불러올 수 없습니다</ErrorTitle>
           <ErrorText>{error}</ErrorText>
           <RetryButton onPress={handleRefresh}>

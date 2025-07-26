@@ -111,7 +111,7 @@ export class FirecrawlCoffeeService {
 }
 
   /**
-   * 🇰🇷 Korean Market Intelligence
+   *  Korean Market Intelligence
    */
   async getKoreanRoasterProfiles(): Promise<RoasterProfile[]> {
     const profiles: RoasterProfile[] = [];
@@ -135,7 +135,7 @@ export class FirecrawlCoffeeService {
 }
 
   /**
-   * 🇺🇸 US Market Intelligence
+   *  US Market Intelligence
    */
   async getUSRoasterProfiles(): Promise<RoasterProfile[]> {
     const profiles: RoasterProfile[] = [];
@@ -158,7 +158,7 @@ export class FirecrawlCoffeeService {
 }
 
   /**
-   * 📊 Market Trends Analysis
+   *  Market Trends Analysis
    */
   async getMarketTrends(region: 'korea' | 'us'): Promise<MarketTrends> {
     const cacheKey = `trends_${region}`;
@@ -180,7 +180,7 @@ export class FirecrawlCoffeeService {
 }
 
   /**
-   * 🔍 Competitive Analysis
+   *  Competitive Analysis
    */
   async getCoffeeAppCompetitors(): Promise<CompetitorAnalysis[]> {
     try {
@@ -198,7 +198,7 @@ export class FirecrawlCoffeeService {
 }
 
   /**
-   * ☕ Real-time Coffee Product Data
+   *  Real-time Coffee Product Data
    */
   async getCoffeeProducts(roasterId: string): Promise<CoffeeProduct[]> {
     const cacheKey = `products_${roasterId}`;
@@ -221,7 +221,7 @@ export class FirecrawlCoffeeService {
 }
 
   /**
-   * 🎯 Content Aggregation for App
+   *  Content Aggregation for App
    */
   async getEducationalContent(): Promise<{
     brewingGuides: unknown[];

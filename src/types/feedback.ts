@@ -48,10 +48,10 @@ export interface BetaUser {
 
 // Category labels in Korean
 export const FEEDBACK_CATEGORY_LABELS: Record<FeedbackCategory, { ko: string; en: string; icon: string }> = {
-  bug: { ko: '버그 신고', en: 'Bug Report', icon: '🐛' },
-  improvement: { ko: '개선 제안', en: 'Improvement', icon: '💡' },
-  idea: { ko: '새로운 아이디어', en: 'New Idea', icon: '✨' },
-  praise: { ko: '칭찬하기', en: 'Praise', icon: '👏' }
+  bug: { ko: '버그 신고', en: 'Bug Report', icon: '' },
+  improvement: { ko: '개선 제안', en: 'Improvement', icon: '' },
+  idea: { ko: '새로운 아이디어', en: 'New Idea', icon: '' },
+  praise: { ko: '칭찬하기', en: 'Praise', icon: '' }
 };
 
 export const FEEDBACK_STATUS_LABELS = {

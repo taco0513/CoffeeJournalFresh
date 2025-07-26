@@ -63,11 +63,11 @@ export const QuickFeedbackPanel: React.FC<QuickFeedbackPanelProps> = ({
       <Text style={styles.subtitle}>How is your beta testing experience?</Text>
       
       <View style={styles.ratingGrid}>
-        {renderRatingButton(5, '🤩', 'Excellent')}
-        {renderRatingButton(4, '😊', 'Good')}
-        {renderRatingButton(3, '😐', 'Okay')}
-        {renderRatingButton(2, '😞', 'Poor')}
-        {renderRatingButton(1, '😤', 'Terrible')}
+        {renderRatingButton(5, '★★★★★', 'Excellent')}
+        {renderRatingButton(4, '★★★★', 'Good')}
+        {renderRatingButton(3, '★★★', 'Okay')}
+        {renderRatingButton(2, '★★', 'Poor')}
+        {renderRatingButton(1, '★', 'Terrible')}
       </View>
     </View>
   );

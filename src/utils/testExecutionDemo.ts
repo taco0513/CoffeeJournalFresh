@@ -41,8 +41,8 @@ export class TestExecutionDemo {
   async runFullTestSuite(): Promise<TestExecutionResult> {
     const startTime = performance.now();
     
-    Logger.debug('🚀 Starting Full Test Suite...', 'util', { component: 'testExecutionDemo' });
-    Logger.debug('📊 Current Market Status:', {
+    Logger.debug('Starting Full Test Suite...', 'util', { component: 'testExecutionDemo' });
+    Logger.debug('Current Market Status:', {
       language: getCurrentLanguage(),
       market: getCurrentMarketConfig().market,
       isBeta: isBetaMarket(),
@@ -51,11 +51,11 @@ export class TestExecutionDemo {
 
     try {
       // Run i18n validation first
-      Logger.debug('🔤 Running I18n Validation Suite...', 'util', { component: 'testExecutionDemo' });
+      Logger.debug(' Running I18n Validation Suite...', 'util', { component: 'testExecutionDemo' });
       const i18nResults = await i18nValidationSuite.runFullValidation();
       
       // Run cross-market testing
-      Logger.debug('🌍 Running Cross-Market Test Suite...', 'util', { component: 'testExecutionDemo' });
+      Logger.debug(' Running Cross-Market Test Suite...', 'util', { component: 'testExecutionDemo' });
       const crossMarketResults = await crossMarketTester.runFullTestSuite();
       
       const endTime = performance.now();
@@ -80,12 +80,12 @@ export class TestExecutionDemo {
       // Add deployment readiness assessment
       const isReadyForDeployment = failedTests === 0 && warningTests < 3;
       if (isReadyForDeployment) {
-        recommendations.unshift('🎉 App is ready for dual-market deployment!');
+        recommendations.unshift(' App is ready for dual-market deployment!');
     } else {
-        recommendations.unshift(`⚠️ Address ${failedTests} failures and ${warningTests} warnings before deployment`);
+        recommendations.unshift(` Address ${failedTests} failures and ${warningTests} warnings before deployment`);
     }
       
-      Logger.debug('✅ Full Test Suite completed:', 'util', { component: 'testExecutionDemo', data: summary });
+      Logger.debug('Full Test Suite completed:', 'util', { component: 'testExecutionDemo', data: summary });
       
       // Report to performance monitor (for future implementation)
       // if (performanceMonitor) {
@@ -108,7 +108,7 @@ export class TestExecutionDemo {
         ]
     };
   } catch (error) {
-      Logger.error('❌ Full Test Suite failed:', 'util', { component: 'testExecutionDemo', error: error });
+      Logger.error('Full Test Suite failed:', 'util', { component: 'testExecutionDemo', error: error });
       
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
@@ -133,7 +133,7 @@ export class TestExecutionDemo {
   async runI18nValidationOnly(): Promise<TestExecutionResult> {
     const startTime = performance.now();
     
-    Logger.debug('🔤 Starting I18n Validation Only...', 'util', { component: 'testExecutionDemo' });
+    Logger.debug(' Starting I18n Validation Only...', 'util', { component: 'testExecutionDemo' });
     
     try {
       const results = await i18nValidationSuite.runFullValidation();
@@ -141,7 +141,7 @@ export class TestExecutionDemo {
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
       
-      Logger.debug('✅ I18n Validation completed:', 'util', { component: 'testExecutionDemo', data: results.summary });
+      Logger.debug('I18n Validation completed:', 'util', { component: 'testExecutionDemo', data: results.summary });
       
       return {
         testType: 'i18n-only',
@@ -155,7 +155,7 @@ export class TestExecutionDemo {
         detailedResults: [{ type: 'i18n', results }]
     };
   } catch (error) {
-      Logger.error('❌ I18n Validation failed:', 'util', { component: 'testExecutionDemo', error: error });
+      Logger.error('I18n Validation failed:', 'util', { component: 'testExecutionDemo', error: error });
       
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
@@ -179,7 +179,7 @@ export class TestExecutionDemo {
   async runCrossMarketTestsOnly(): Promise<TestExecutionResult> {
     const startTime = performance.now();
     
-    Logger.debug('🌍 Starting Cross-Market Tests Only...', 'util', { component: 'testExecutionDemo' });
+    Logger.debug(' Starting Cross-Market Tests Only...', 'util', { component: 'testExecutionDemo' });
     
     try {
       const results = await crossMarketTester.runFullTestSuite();
@@ -187,7 +187,7 @@ export class TestExecutionDemo {
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
       
-      Logger.debug('✅ Cross-Market Tests completed:', 'util', { component: 'testExecutionDemo', data: results.summary });
+      Logger.debug('Cross-Market Tests completed:', 'util', { component: 'testExecutionDemo', data: results.summary });
       
       return {
         testType: 'cross-market-only',
@@ -201,7 +201,7 @@ export class TestExecutionDemo {
         detailedResults: [{ type: 'cross-market', results }]
     };
   } catch (error) {
-      Logger.error('❌ Cross-Market Tests failed:', 'util', { component: 'testExecutionDemo', error: error });
+      Logger.error('Cross-Market Tests failed:', 'util', { component: 'testExecutionDemo', error: error });
       
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
@@ -225,7 +225,7 @@ export class TestExecutionDemo {
   async runPerformanceTestsOnly(): Promise<TestExecutionResult> {
     const startTime = performance.now();
     
-    Logger.debug('⚡ Starting Performance Tests Only...', 'util', { component: 'testExecutionDemo' });
+    Logger.debug('Starting Performance Tests Only...', 'util', { component: 'testExecutionDemo' });
     
     try {
       // Test language switching performance
@@ -255,10 +255,10 @@ export class TestExecutionDemo {
     });
       
       if (recommendations.length === 0) {
-        recommendations.push('🚀 All performance tests passed! App performance is optimal.');
+        recommendations.push('All performance tests passed! App performance is optimal.');
     }
       
-      Logger.debug('✅ Performance Tests completed:', 'util', { component: 'testExecutionDemo', data: summary });
+      Logger.debug('Performance Tests completed:', 'util', { component: 'testExecutionDemo', data: summary });
       
       return {
         testType: 'performance-only',
@@ -272,7 +272,7 @@ export class TestExecutionDemo {
         detailedResults: [{ type: 'performance', results: allResults }]
     };
   } catch (error) {
-      Logger.error('❌ Performance Tests failed:', 'util', { component: 'testExecutionDemo', error: error });
+      Logger.error('Performance Tests failed:', 'util', { component: 'testExecutionDemo', error: error });
       
       const endTime = performance.now();
       const executionTime = Math.round(endTime - startTime);
@@ -412,7 +412,7 @@ Deployment Readiness Report
 ==========================
 
 Overall Score: ${Math.round(score)}/100
-Status: ${ready ? '✅ READY FOR DEPLOYMENT' : '❌ NOT READY FOR DEPLOYMENT'}
+Status: ${ready ? ' READY FOR DEPLOYMENT' : ' NOT READY FOR DEPLOYMENT'}
 
 Test Results:
 - Total Tests: ${testResults.totalTests}
@@ -449,7 +449,7 @@ ${ready ?
    * Show interactive test results
    */
   async showTestResults(results: TestExecutionResult): Promise<void> {
-    const statusEmoji = results.failedTests === 0 ? '✅' : '❌';
+    const statusEmoji = results.failedTests === 0 ? '' : '';
     const deploymentStatus = results.failedTests === 0 && results.warningTests < 3 ? 
       'Ready for deployment' : 'Requires fixes';
     

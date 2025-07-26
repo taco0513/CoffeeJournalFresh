@@ -23,6 +23,7 @@ import { useTastingStore } from '../../../stores/tastingStore';
 import { useFlavorSelection } from '../../../hooks/useFlavorSelection';
 import { CategoryAccordion } from '../../../components/flavor/CategoryAccordion';
 import { SelectedFlavorsHeader } from '../../../components/flavor/SelectedFlavorsHeader';
+import { FloatingButton } from '../../../components-tamagui/buttons/FloatingButton';
 import { transformFlavorData } from '../../../components/flavor/utils/flavorDataTransform';
 
 // Enable LayoutAnimation on Android
@@ -192,7 +193,7 @@ export default function UnifiedFlavorScreen() {
       {/* Search Bar */}
       <SearchContainer>
         <SearchBar>
-          <Text fontSize="$4" marginRight="$sm">🔍</Text>
+          <Text fontSize="$4" marginRight="$sm">검색</Text>
           <Input
             flex={1}
             unstyled
@@ -213,7 +214,7 @@ export default function UnifiedFlavorScreen() {
                 exitStyle={{ opacity: 0, scale: 0.8 }}
                 pressStyle={{ scale: 0.9 }}
               >
-                <Text fontSize="$4" color="$gray11">✕</Text>
+                <Text fontSize="$4" color="$gray11">X</Text>
               </Button>
             )}
           </AnimatePresence>
@@ -233,12 +234,12 @@ export default function UnifiedFlavorScreen() {
       <ScrollView 
         flex={1}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 120 }} // Extra padding to clear floating button
       >
         <AnimatePresence>
           {!hasResults ? (
             <NoResultsContainer key="no-results">
-              <Text fontSize={48} marginBottom="$md">🔍</Text>
+              <Text fontSize={48} marginBottom="$md"></Text>
               <H3 fontSize="$5" fontWeight="600" color="$color" marginBottom="$sm">
                 "{searchQuery}" 검색 결과가 없습니다
               </H3>
@@ -297,29 +298,12 @@ export default function UnifiedFlavorScreen() {
       </ScrollView>
 
       {/* Bottom Button */}
-      <YStack
-        position="absolute"
-        bottom={0}
-        left={0}
-        right={0}
-        backgroundColor="$background"
-        paddingHorizontal="$lg"
-        paddingVertical="$md"
-        paddingBottom={Math.max(insets.bottom, IOSLayout.safeAreaBottom) + IOSSpacing.md}
-        borderTopWidth={1}
-        borderTopColor="$borderColor"
-        elevation={4}
-      >
-        <NextButton
-          onPress={handleNext}
-          disabled={selectedPaths.length === 0}
-          width="100%"
-        >
-          <Text color="white" fontSize="$4" fontWeight="600">
-            {selectedPaths.length > 0 ? `${selectedPaths.length}개 선택 완료` : '향미를 선택해주세요'}
-          </Text>
-        </NextButton>
-      </YStack>
+      {/* Floating Bottom Button */}
+      <FloatingButton
+        title={selectedPaths.length > 0 ? `${selectedPaths.length}개 선택 완료` : '향미를 선택해주세요'}
+        isValid={selectedPaths.length > 0}
+        onPress={handleNext}
+      />
     </Container>
   );
 }

@@ -69,7 +69,7 @@ export const BetaFeedbackPrompt: React.FC<BetaFeedbackPromptProps> = ({
     >
       <View style={styles.prompt}>
         <View style={styles.header}>
-          <Text style={styles.title}>💬 Beta Feedback</Text>
+          <Text style={styles.title}>Beta Feedback</Text>
           <TouchableOpacity onPress={handleDismiss} style={styles.closeButton}>
             <Text style={styles.closeText}>×</Text>
           </TouchableOpacity>

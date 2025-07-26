@@ -30,7 +30,7 @@ export const AchievementSummaryCard: React.FC<AchievementSummaryCardProps> = ({
       <View style={styles.header}>
         <View style={styles.titleRow}>
           <View style={styles.iconContainer}>
-            <Text style={styles.icon}>🏆</Text>
+            <Text style={styles.icon}></Text>
           </View>
           <View style={styles.titleInfo}>
             <Text style={styles.title}>나의 업적</Text>

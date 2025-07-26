@@ -276,27 +276,27 @@ class ErrorContextService {
   generateSmartDescription(context: ErrorContext): string {
     let description = `자동 수집된 컨텍스트:\n\n`;
     
-    description += `📱 현재 화면: ${context.currentScreen}\n`;
-    description += `⏱️ 화면 체류 시간: ${Math.round(context.screenTimeSpent / 1000)}초\n`;
-    description += `🔄 최근 이동 경로: ${context.navigationPath.slice(-5).join(' → ')}\n`;
+    description += ` 현재 화면: ${context.currentScreen}\n`;
+    description += `화면 체류 시간: ${Math.round(context.screenTimeSpent / 1000)}초\n`;
+    description += ` 최근 이동 경로: ${context.navigationPath.slice(-5).join(' → ')}\n`;
     
     if (context.recentActions.length > 0) {
-      description += `👆 최근 액션: ${context.recentActions.slice(-3).join(', ')}\n`;
+      description += ` 최근 액션: ${context.recentActions.slice(-3).join(', ')}\n`;
   }
     
     if (context.errorMessage) {
-      description += `❌ 오류 메시지: ${context.errorMessage}\n`;
+      description += ` 오류 메시지: ${context.errorMessage}\n`;
   }
     
     const recentErrors = context.consoleLogs.filter(log => log.level === 'error').slice(-3);
     if (recentErrors.length > 0) {
-      description += `\n🚨 최근 오류 로그:\n`;
+      description += `\n 최근 오류 로그:\n`;
       recentErrors.forEach(log => {
         description += `${log.timestamp.toLocaleTimeString()}: ${log.message}\n`;
     });
   }
     
-    description += `\n📊 디바이스 정보:\n`;
+    description += `\n 디바이스 정보:\n`;
     description += `- ${context.platform} ${context.osVersion}\n`;
     description += `- ${context.deviceModel}\n`;
     description += `- 앱 버전: ${context.appVersion} (${context.buildNumber})\n`;

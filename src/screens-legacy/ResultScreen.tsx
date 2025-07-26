@@ -178,7 +178,7 @@ export default function ResultScreen({navigation}: unknown) {
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <Text style={[styles.headerIcon, {fontSize: 48, color: Colors.SUCCESS_GREEN}]}>✅</Text>
+          <Text style={[styles.headerIcon, {fontSize: 48, color: Colors.SUCCESS_GREEN}]}></Text>
           <Text style={styles.title}>테이스팅 완료!</Text>
           <Text style={styles.score}>{matchScoreTotal || 0}% 일치</Text>
           <Text style={styles.encouragement}>
@@ -193,7 +193,7 @@ export default function ResultScreen({navigation}: unknown) {
         {currentTasting.mode === 'cafe' ? (
           <Text style={styles.info}>카페: {currentTasting.cafeName || '-'}</Text>
         ) : (
-          <Text style={styles.info}>추출 방식: 🏠 홈카페</Text>
+          <Text style={styles.info}>추출 방식: 홈카페</Text>
         )}
         <Text style={styles.info}>로스터리: {currentTasting.roastery || '-'}</Text>
         <Text style={styles.info}>커피: {currentTasting.coffeeName || '-'}</Text>
@@ -203,7 +203,7 @@ export default function ResultScreen({navigation}: unknown) {
       {currentTasting.mode === 'home_cafe' && currentTasting.homeCafeData && (
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>🏠 홈카페 정보</Text>
+            <Text style={styles.sectionTitle}>홈카페 정보</Text>
           </View>
           <Text style={styles.info}>
             추출 도구: {currentTasting.homeCafeData.equipment.dripper === 'V60' ? 'V60' :
@@ -353,10 +353,10 @@ export default function ResultScreen({navigation}: unknown) {
           <View style={styles.emptyComparisonContainer}>
             <Text style={styles.emptyComparisonText}>
               {comparison && comparison.totalTastings === 1 
-                ? '🎉 이 커피의 첫 번째 테이스터입니다!'
+                ? ' 이 커피의 첫 번째 테이스터입니다!'
                 : comparison === null
-                ? '🔍 아직 다른 사람의 기록이 없습니다'
-                : '📊 비교 데이터를 불러올 수 없습니다'}
+                ? ' 아직 다른 사람의 기록이 없습니다'
+                : '비교 데이터를 불러올 수 없습니다'}
             </Text>
             {(comparison === null || (comparison && comparison.totalTastings === 0)) && (
               <Text style={styles.emptyComparisonSubtext}>

@@ -154,7 +154,7 @@ const FlavorCategoryDetailScreen: React.FC = () => {
                     pressStyle={{ scale: 0.97 }}
                   >
                     <XStack alignItems="center" space="$3">
-                      <Text fontSize="$5">☕</Text>
+                      <Text fontSize="$5"></Text>
                       <YStack flex={1}>
                         <Text fontSize="$4" fontWeight="500" color="$textPrimary">
                           {tasting.coffeeName || '커피 이름 없음'}
@@ -192,7 +192,7 @@ const FlavorCategoryDetailScreen: React.FC = () => {
           >
             <YStack space="$3">
               <Text fontSize="$5" fontWeight="600" color="$textPrimary">
-                💡 인사이트
+                 인사이트
               </Text>
               <Text fontSize="$4" color="$textSecondary" lineHeight="$5">
                 {category} 향미를 좋아하시는군요! 이런 향미는 주로 특정 원산지나 

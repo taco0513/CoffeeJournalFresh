@@ -82,7 +82,7 @@ export const useAchievements = (): UseAchievementsReturn => {
 
     try {
       setError(null);
-      Logger.debug('🔄 Starting achievements refresh for user:', 'hook', { component: 'useAchievements', data: currentUser.id });
+      Logger.debug(' Starting achievements refresh for user:', 'hook', { component: 'useAchievements', data: currentUser.id });
       
       // Load user achievements with improved error handling
       const userAchievements = await achievementSystem.getUserAchievements(currentUser.id);
@@ -97,25 +97,25 @@ export const useAchievements = (): UseAchievementsReturn => {
                        typeof achievement.id === 'string';
         
         if (!isValid) {
-          Logger.warn('⚠️ Invalid achievement filtered out:', 'hook', { component: 'useAchievements', data: achievement });
+          Logger.warn(' Invalid achievement filtered out:', 'hook', { component: 'useAchievements', data: achievement });
       }
         return isValid;
     });
       
-      Logger.debug('✅ Valid achievements after filtering:', 'hook', { component: 'useAchievements', data: validAchievements.length });
+      Logger.debug('Valid achievements after filtering:', 'hook', { component: 'useAchievements', data: validAchievements.length });
       
       // Additional safety check: ensure all IDs are truly unique
       const idSet = new Set<string>();
       const finalAchievements = validAchievements.filter((achievement) => {
         if (idSet.has(achievement.id)) {
-          Logger.warn('🔄 Duplicate ID detected and filtered:', 'hook', { component: 'useAchievements', data: achievement.id });
+          Logger.warn(' Duplicate ID detected and filtered:', 'hook', { component: 'useAchievements', data: achievement.id });
           return false;
       }
         idSet.add(achievement.id);
         return true;
     });
       
-      Logger.debug('🎯 Final achievements count:', 'hook', { component: 'useAchievements', data: finalAchievements.length });
+      Logger.debug(' Final achievements count:', 'hook', { component: 'useAchievements', data: finalAchievements.length });
       
       // Calculate stats using final achievements - create new unique objects to prevent React key conflicts
       const safeAchievements = finalAchievements.map((achievement, index) => ({
@@ -143,11 +143,11 @@ export const useAchievements = (): UseAchievementsReturn => {
         completionPercentage,
     };
 
-      Logger.debug('📊 Calculated stats:', 'hook', { component: 'useAchievements', data: statsData });
+      Logger.debug('Calculated stats:', 'hook', { component: 'useAchievements', data: statsData });
 
       // Use React.startTransition for non-urgent updates with micro delay to prevent key conflicts
       React.startTransition(() => {
-        Logger.debug('🔄 Updating state with achievements:', 'hook', { component: 'useAchievements', data: finalAchievements.length });
+        Logger.debug(' Updating state with achievements:', 'hook', { component: 'useAchievements', data: finalAchievements.length });
         
         // Add micro delay to prevent React from getting confused during rapid updates
         setTimeout(() => {
@@ -157,9 +157,9 @@ export const useAchievements = (): UseAchievementsReturn => {
       }, 0);
     });
       
-      Logger.debug('✅ Achievements refresh completed successfully', 'hook', { component: 'useAchievements' });
+      Logger.debug('Achievements refresh completed successfully', 'hook', { component: 'useAchievements' });
   } catch (err) {
-      Logger.error('❌ Failed to refresh achievements:', 'hook', { component: 'useAchievements', error: err });
+      Logger.error('Failed to refresh achievements:', 'hook', { component: 'useAchievements', error: err });
       setError(err instanceof Error ? err.message : 'Failed to refresh achievements');
   }
 }, [currentUser?.id, achievementSystem]);

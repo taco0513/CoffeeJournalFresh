@@ -7,18 +7,17 @@ const IconContainer = styled(View, {
   name: 'IconContainer',
   alignItems: 'center',
   justifyContent: 'center',
-  width: 32,
-  height: 32,
-  borderRadius: 0,
+  width: 40,
+  height: 40,
+  borderRadius: 20, // Circular design
   backgroundColor: 'transparent',
   scale: 1.0,
   animation: 'quick',
   variants: {
     focused: {
       true: {
-        borderRadius: 8,
-        backgroundColor: '$blue3',
-        scale: 1.05,
+        backgroundColor: '$cupBlue',
+        scale: 1.0,
     },
   },
 } as const,
@@ -26,37 +25,39 @@ const IconContainer = styled(View, {
 
 const IconText = styled(Text, {
   name: 'IconText',
-  fontSize: 18,
+  fontSize: 14,
   textAlign: 'center',
-  fontWeight: '400',
+  fontWeight: '500',
+  color: '$gray11',
   animation: 'quick',
   variants: {
     focused: {
       true: {
-        fontSize: 20,
+        fontSize: 14,
         fontWeight: '600',
+        color: 'white',
     },
   },
 } as const,
 });
 
-// Simple text-based icons for lightweight MVP
+// Simple text labels instead of icons
 const iconMap = {
   // Navigation screen names (exact match with route names)
-  Home: '🏠',
-  Journal: '📝',
-  AddRecord: '➕',
-  UserProfile: '🏆',
-  Settings: '⚙️',
-  Admin: '👤',
-  History: '📋',
-  Profile: '👤',
+  Home: '홈',
+  Journal: '기록',
+  AddRecord: '+',
+  UserProfile: '프로필',
+  Settings: '설정',
+  Admin: '관리',
+  History: '기록',
+  Profile: '프로필',
   // Legacy support for lowercase route names
-  home: '🏠',
-  journal: '📝',
-  addCoffee: '➕',
-  achievements: '🏆',
-  profile: '👤',
+  home: '홈',
+  journal: '기록',
+  addCoffee: '+',
+  achievements: '성과',
+  profile: '프로필',
 };
 
 interface TabBarIconProps {

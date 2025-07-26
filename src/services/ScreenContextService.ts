@@ -119,8 +119,8 @@ class ScreenContextService {
     const { screenName, routeParams, deviceInfo, timestamp } = targetContext;
     
     const summary = [
-      `📱 현재 화면: ${screenName}`,
-      `⏰ 시간: ${new Date(timestamp).toLocaleString('ko-KR')}`,
+      ` 현재 화면: ${screenName}`,
+      ` 시간: ${new Date(timestamp).toLocaleString('ko-KR')}`,
       `📲 기기: ${deviceInfo.model} (${deviceInfo.platform} ${deviceInfo.osVersion})`,
       `📐 화면 크기: ${deviceInfo.screenDimensions.width}x${deviceInfo.screenDimensions.height}`,
     ];

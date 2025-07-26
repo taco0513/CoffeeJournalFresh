@@ -257,7 +257,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
         </Text>
         <View style={styles.headerGuide}>
           <Text style={styles.headerGuideText}>
-            💡 각 카테고리별로 최대 3개까지 다중 선택 가능합니다
+             각 카테고리별로 최대 3개까지 다중 선택 가능합니다
           </Text>
         </View>
       </View>

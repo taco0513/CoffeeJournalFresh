@@ -34,7 +34,7 @@ const CompactSensoryEvaluation: React.FC<CompactSensoryEvaluationProps> = ({
   onExpressionChange,
   beginnerMode = true,
 }) => {
-  Logger.debug('🚀 CompactSensoryEvaluation rendered with selectedExpressions:', 'component', { component: 'CompactSensoryEvaluation', data: selectedExpressions?.length || 0 });
+  Logger.debug('CompactSensoryEvaluation rendered with selectedExpressions:', 'component', { component: 'CompactSensoryEvaluation', data: selectedExpressions?.length || 0 });
   const [activeCategory, setActiveCategory] = useState('acidity');
 
   // Ensure selectedExpressions is always an array

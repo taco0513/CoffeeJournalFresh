@@ -73,13 +73,13 @@ export const TastingSearchCard: React.FC<TastingSearchCardProps> = ({
           
           {tasting.temperature && (
             <DetailItem>
-              ☕ {tasting.temperature === 'hot' ? '뜨거운' : tasting.temperature === 'cold' ? '차가운' : '아이스'}
+               {tasting.temperature === 'hot' ? '뜨거운' : tasting.temperature === 'cold' ? '차가운' : '아이스'}
             </DetailItem>
           )}
           
           {tasting.origin && (
             <DetailItem>
-              🌍 {tasting.origin}
+               {tasting.origin}
             </DetailItem>
           )}
           

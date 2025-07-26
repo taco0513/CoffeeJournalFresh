@@ -44,22 +44,23 @@ export const TasteProfileCard: React.FC<TasteProfileCardProps> = ({
 };
 
   const getProfileEmoji = (tasteType: string): string => {
+    // Emojis removed for beta version
     const emojiMap: Record<string, string> = {
-      'Fruity Explorer': '🍓',
-      'Chocolate Lover': '🍫',
-      'Floral Enthusiast': '🌸',
-      'Nutty Adventurer': '🥜',
-      'Balanced Seeker': '⚖️',
-      'Bold Pioneer': '💪',
-      'Sweet Tooth': '🍯',
-      'Acid Lover': '🍋',
-      'Complex Connoisseur': '🎭',
-      'explorer': '🍓',
-      'traditionalist': '🍫',
-      'balanced': '⚖️',
-      'adventurous': '💪',
+      'Fruity Explorer': '',
+      'Chocolate Lover': '',
+      'Floral Enthusiast': '',
+      'Nutty Adventurer': '',
+      'Balanced Seeker': '',
+      'Bold Pioneer': '',
+      'Sweet Tooth': '',
+      'Acid Lover': '',
+      'Complex Connoisseur': '',
+      'explorer': '',
+      'traditionalist': '',
+      'balanced': '',
+      'adventurous': '',
   };
-    return emojiMap[tasteType] || '☕';
+    return emojiMap[tasteType] || '';
 };
 
   const getProgressColor = (percentage: number): string => {

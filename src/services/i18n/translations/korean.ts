@@ -28,7 +28,7 @@ export const koreanTranslations = {
   thisWeek: '이번 주',
   avgScore: '평균 점수',
   bestScore: '최고 점수',
-  startNewTasting: '☕ 새 테이스팅 시작',
+  startNewTasting: '새 테이스팅 시작',
   recentRecords: '최근 기록',
   seeAll: '전체 보기',
   noTastingsYet: '첫 테이스팅을 시작해보세요!',
@@ -44,7 +44,7 @@ export const koreanTranslations = {
   labModeDesc: '전문가 수준 분석',
   howRecordCoffee: '어떤 방식으로\n커피를 기록하시나요?',
   canChangeAnytime: '언제든지 변경할 수 있습니다',
-  modeChangeInfo: '💡 모드는 테이스팅 중에도 언제든 변경 가능합니다',
+  modeChangeInfo: '모드는 테이스팅 중에도 언제든 변경 가능합니다',
   
   // Coffee Info
   coffeeInfo: '커피 정보',

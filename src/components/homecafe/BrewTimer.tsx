@@ -154,7 +154,7 @@ export const BrewTimer: React.FC<BrewTimerProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerIcon}>⏱️</Text>
+        <Text style={styles.headerIcon}></Text>
         <Text style={styles.headerTitle}>추출타임</Text>
       </View>
 

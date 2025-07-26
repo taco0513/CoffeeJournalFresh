@@ -13,11 +13,11 @@ import { IOSColors, IOSLayout, IOSTypography, IOSSpacing, IOSShadows } from '../
 // Simple text-based icons for MVP
 const getTabIcon = (name: string, focused: boolean) => {
   const icons: { [key: string]: { default: string; focused: string } } = {
-    Home: { default: '⌂', focused: '🏠' },
-    Journal: { default: '☰', focused: '📖' },
+    Home: { default: 'Home', focused: 'Home' },
+    Journal: { default: 'Journal', focused: 'Journal' },
     AddCoffee: { default: '+', focused: '+' },
-    Achievements: { default: '☆', focused: '★' },
-    Profile: { default: '○', focused: '●' },
+    Achievements: { default: 'Awards', focused: 'Awards' },
+    Profile: { default: 'Profile', focused: 'Profile' },
 };
   
   return icons[name]?.[focused ? 'focused' : 'default'] || '?';
@@ -64,7 +64,7 @@ export const SimpleTabBar: React.FC<BottomTabBarProps> = ({
                 style={styles.floatingButton}
                 activeOpacity={0.8}
               >
-                <Text style={styles.floatingButtonText}>☕</Text>
+                <Text style={styles.floatingButtonText}>+</Text>
                 <Text style={styles.plusIcon}>+</Text>
               </TouchableOpacity>
             </View>

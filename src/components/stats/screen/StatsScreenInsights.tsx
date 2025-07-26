@@ -29,7 +29,7 @@ export const StatsScreenInsights: React.FC<StatsScreenInsightsProps> = ({
     }}
       animateOnly={['opacity', 'transform']}
     >
-      <SectionTitle>✨ 30일 인사이트</SectionTitle>
+      <SectionTitle> 30일 인사이트</SectionTitle>
       <AnimatePresence>
         {insights.map((insight, index) => {
           const uniqueKey = `data-state-insight-${index}-${insight.title || 'no-title'}-${insight.icon || 'no-icon'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;

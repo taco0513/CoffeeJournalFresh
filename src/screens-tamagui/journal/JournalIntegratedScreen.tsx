@@ -11,6 +11,8 @@ import {
 import SimpleProfileHistoryScreen from '../analytics/SimpleProfileHistoryScreen';
 import StatsScreen from '../analytics/StatsScreen';
 import { useScreenPerformance } from '../../hooks/useScreenPerformance';
+import { DummyDataInput } from '../../components/dev/DummyDataInput';
+import { useDevStore } from '../../stores/useDevStore';
 
 const { width } = Dimensions.get('window');
 
@@ -94,6 +96,7 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
   // Performance measurement
   useScreenPerformance('JournalIntegratedScreen');
   
+  const { isDeveloperMode } = useDevStore();
   const [activeTab, setActiveTab] = useState<TabType>(route?.params?.initialTab || 'history');
 
   const renderTabButton = (tab: TabType, label: string) => {
@@ -178,6 +181,9 @@ export default function JournalIntegratedScreenTamagui({ route }: JournalIntegra
           </ContentContainer>
         </YStack>
       </YStack>
+      
+      {/* Status & Developer Tools */}
+      <DummyDataInput />
     </Container>
   );
 }

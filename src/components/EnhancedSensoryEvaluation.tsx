@@ -256,7 +256,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
                     {expression.korean}
                   </Text>
                   {beginnerMode && expression.beginner && (
-                    <Text style={styles.beginnerStar}>⭐</Text>
+                    <Text style={styles.beginnerStar}></Text>
                   )}
                 </TouchableOpacity>
               );
@@ -338,7 +338,7 @@ const EnhancedSensoryEvaluation: React.FC<EnhancedSensoryEvaluationProps> = ({
               맛의 특성을 표현하는 단어들을 선택해보세요
             </Text>
             <Text style={styles.expressionsSubtitle}>
-              {beginnerMode && '⭐ 표시는 초보자에게 추천하는 표현입니다'}
+              {beginnerMode && ' 표시는 초보자에게 추천하는 표현입니다'}
             </Text>
             
             {sensoryAttributes.map(renderExpressionCategory)}

@@ -82,7 +82,7 @@ export const FirstTimeUserFeedback: React.FC = () => {
           style={[styles.modal, { opacity: fadeAnim }]}
         >
           <View style={styles.header}>
-            <Text style={styles.emoji}>👋</Text>
+            <Text style={styles.emoji}></Text>
             <Text style={styles.title}>Welcome to CupNote Beta!</Text>
           </View>
           
@@ -92,9 +92,9 @@ export const FirstTimeUserFeedback: React.FC = () => {
           </Text>
           
           <View style={styles.features}>
-            <Text style={styles.featureText}>✨ What do you love?</Text>
-            <Text style={styles.featureText}>🤔 What's confusing?</Text>
-            <Text style={styles.featureText}>💡 What's missing?</Text>
+            <Text style={styles.featureText}> What do you love?</Text>
+            <Text style={styles.featureText}>What's confusing?</Text>
+            <Text style={styles.featureText}> What's missing?</Text>
           </View>
           
           <View style={styles.actions}>

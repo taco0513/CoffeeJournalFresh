@@ -210,7 +210,7 @@ const SignOutText = styled(Text, {
 })
 
 const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true }) => {
-  Logger.debug('🔄 ProfileScreen: Component rendering...', 'screen', { component: 'ProfileScreen' });
+  Logger.debug(' ProfileScreen: Component rendering...', 'screen', { component: 'ProfileScreen' });
   
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { currentUser, signOut } = useUserStore();
@@ -225,7 +225,7 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
   const realmService = RealmService.getInstance();
 
   useEffect(() => {
-    Logger.debug('🔄 ProfileScreen: useEffect triggered', 'screen', { component: 'ProfileScreen' });
+    Logger.debug(' ProfileScreen: useEffect triggered', 'screen', { component: 'ProfileScreen' });
     const timeoutId = setTimeout(() => {
       loadUserStats();
   }, 100); // 작은 지연으로 렌더링 블로킹 방지
@@ -235,23 +235,23 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
 
   const loadUserStats = async () => {
     try {
-      Logger.debug('🔄 ProfileScreen: Loading user stats...', 'screen', { component: 'ProfileScreen' });
+      Logger.debug(' ProfileScreen: Loading user stats...', 'screen', { component: 'ProfileScreen' });
       
       if (!realmService.isInitialized) {
-        Logger.debug('⚠️ ProfileScreen: Realm not initialized, skipping stats load', 'screen', { component: 'ProfileScreen' });
+        Logger.debug('ProfileScreen: Realm not initialized, skipping stats load', 'screen', { component: 'ProfileScreen' });
         setIsLoading(false);
         return;
     }
       
       const realm = realmService.getRealm();
       if (!realm) {
-        Logger.debug('⚠️ ProfileScreen: No realm instance available', 'screen', { component: 'ProfileScreen' });
+        Logger.debug('ProfileScreen: No realm instance available', 'screen', { component: 'ProfileScreen' });
         setIsLoading(false);
         return;
     }
       
       const tastings = Array.from(realm.objects('TastingRecord').filtered('isDeleted = false'));
-      Logger.debug(`📊 ProfileScreen: Found ${tastings.length} tastings`, 'screen', { component: 'ProfileScreen' });
+      Logger.debug(`ProfileScreen: Found ${tastings.length} tastings`, 'screen', { component: 'ProfileScreen' });
       
       if (tastings.length === 0) {
         setStats({
@@ -293,11 +293,11 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
         favoriteRoaster,
     };
       
-      Logger.debug('✅ ProfileScreen: Stats loaded:', 'screen', { component: 'ProfileScreen', data: newStats });
+      Logger.debug('ProfileScreen: Stats loaded:', 'screen', { component: 'ProfileScreen', data: newStats });
       setStats(newStats);
       
   } catch (error) {
-      Logger.error('❌ ProfileScreen: Error loading stats:', 'screen', { component: 'ProfileScreen', error: error });
+      Logger.error('ProfileScreen: Error loading stats:', 'screen', { component: 'ProfileScreen', error: error });
       // Set default stats on error
       setStats({
         joinedDaysAgo: 0,
@@ -322,10 +322,10 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
             try {
               Logger.debug('🔐 ProfileScreen: Signing out...', 'screen', { component: 'ProfileScreen' });
               await signOut();
-              Logger.debug('✅ ProfileScreen: Sign out completed', 'screen', { component: 'ProfileScreen' });
+              Logger.debug('ProfileScreen: Sign out completed', 'screen', { component: 'ProfileScreen' });
               // Reset은 상위 네비게이터에서 처리하도록 변경
           } catch (error) {
-              Logger.error('❌ ProfileScreen: Sign out error:', 'screen', { component: 'ProfileScreen', error: error });
+              Logger.error('ProfileScreen: Sign out error:', 'screen', { component: 'ProfileScreen', error: error });
           }
         }
       },
@@ -337,22 +337,22 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
     {
       title: '설정',
       subtitle: '앱 설정 및 환경설정',
-      icon: '⚙️',
+      icon: '',
       onPress: () => {
-        Alert.alert('설정', '설정 화면은 추후 구현 예정입니다.');
+        Alert.alert('설정', '설정 화면은 추후 구임 예정입니다.');
     }
   },
     isDeveloperMode ? {
       title: '개발자 모드',
       subtitle: '디버깅 및 개발 도구',
-      icon: '🔧',
+      icon: '',
       onPress: () => {
         navigation.navigate('Developer' as never);
     }
   } : {
       title: '개발자 모드 활성화',
       subtitle: '개발자 도구 사용하기',
-      icon: '🔓',
+      icon: '',
       onPress: () => {
         Alert.alert(
           '개발자 모드 활성화',
@@ -373,14 +373,14 @@ const ProfileScreenTamagui: React.FC<ProfileScreenProps> = ({ hideNavBar = true 
     {
       title: '도움말',
       subtitle: '앱 사용법 및 FAQ',
-      icon: '❓',
+      icon: '',
       onPress: () => {
         Alert.alert('도움말', '도움말 화면은 추후 구현 예정입니다.');
     }
   },
   ];
 
-  Logger.debug('🔄 ProfileScreen: About to render, isLoading:', 'screen', { component: 'ProfileScreen', data: isLoading });
+  Logger.debug(' ProfileScreen: About to render, isLoading:', 'screen', { component: 'ProfileScreen', data: isLoading });
   
   if (isLoading) {
     return (

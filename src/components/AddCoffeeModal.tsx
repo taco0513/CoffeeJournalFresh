@@ -219,7 +219,7 @@ export const AddCoffeeModal: React.FC<AddCoffeeModalProps> = ({
 
             <View style={styles.notice}>
               <Text style={styles.noticeText}>
-                💡 추가된 커피는 관리자 검수 후 승인됩니다.
+                 추가된 커피는 관리자 검수 후 승인됩니다.
               </Text>
             </View>
           </ScrollView>

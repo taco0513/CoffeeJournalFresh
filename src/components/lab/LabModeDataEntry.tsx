@@ -140,7 +140,7 @@ export const LabModeDataEntry: React.FC<LabModeDataEntryProps> = ({
             </View>
             
             <Text style={styles.measurementHint}>
-              💡 이상적인 범위: TDS 1.2-1.5%, 추출수율 18-22%
+               이상적인 범위: TDS 1.2-1.5%, 추출수율 18-22%
             </Text>
           </View>
         )}

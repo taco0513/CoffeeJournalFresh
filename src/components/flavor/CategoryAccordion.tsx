@@ -125,7 +125,7 @@ export const CategoryAccordion: React.FC<CategoryAccordionProps> = React.memo(({
         <View style={styles.categoryExpandedContent}>
           <View style={styles.categoryGuide}>
             <Text style={styles.categoryGuideText}>
-              💡 하위 카테고리를 탭하여 세부 향미를 선택하세요
+               하위 카테고리를 탭하여 세부 향미를 선택하세요
             </Text>
           </View>
           

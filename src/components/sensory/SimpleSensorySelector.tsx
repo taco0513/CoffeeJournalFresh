@@ -170,7 +170,7 @@ const SimpleSensorySelector: React.FC<SimpleSensorySelectorProps> = ({
             {expression.korean}
           </Text>
           {beginnerMode && expression.beginner && !isSelected && (
-            <Text style={styles.beginnerIndicator}>⭐</Text>
+            <Text style={styles.beginnerIndicator}>*</Text>
           )}
         </TouchableOpacity>
 

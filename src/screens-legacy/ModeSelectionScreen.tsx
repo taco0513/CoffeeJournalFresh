@@ -29,7 +29,7 @@ const ModeSelectionScreen = () => {
       title: t('cafeMode'),
       subtitle: t('cafeModeDesc'),
       description: t('cafeModeDesc'),
-      icon: '☕',
+      icon: 'Cafe',
       color: HIGColors.systemBlue,
       popular: true,
   },
@@ -38,7 +38,7 @@ const ModeSelectionScreen = () => {
       title: t('homeCafeMode'),
       subtitle: t('homeCafeModeDesc'),
       description: t('homeCafeModeDesc'),
-      icon: '🏠',
+      icon: 'Home',
       color: HIGColors.systemGreen,
       popular: false,
       badge: t('comingSoon'),
@@ -48,7 +48,7 @@ const ModeSelectionScreen = () => {
       title: t('labMode'),
       subtitle: t('labModeDesc'),
       description: t('labModeDesc'),
-      icon: '🧪',
+      icon: 'Lab',
       color: HIGColors.systemPurple,
       popular: false,
       badge: t('beta'),
@@ -116,7 +116,7 @@ const ModeSelectionScreen = () => {
         {/* Bottom Info */}
         <View style={styles.bottomInfo}>
           <Text style={styles.infoText}>
-            {t('modeChangeInfo', { defaultValue: '💡 모드는 테이스팅 중에도 언제든 변경 가능합니다' })}
+            {t('modeChangeInfo', { defaultValue: '모드는 테이스팅 중에도 언제든 변경 가능합니다' })}
           </Text>
         </View>
       </View>

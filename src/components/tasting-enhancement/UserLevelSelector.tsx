@@ -25,7 +25,7 @@ interface LevelOption {
 const levelOptions: LevelOption[] = [
   {
     level: 'beginner',
-    icon: '🌱',
+    icon: '',
     title: '이제 막 시작했어요',
     description: '커피 테이스팅이 처음이신가요?',
     features: [
@@ -36,7 +36,7 @@ const levelOptions: LevelOption[] = [
 },
   {
     level: 'intermediate',
-    icon: '🌿',
+    icon: 'Intermediate',
     title: '어느 정도 익숙해요',
     description: '여러 번 테이스팅해보셨나요?',
     features: [
@@ -47,7 +47,7 @@ const levelOptions: LevelOption[] = [
 },
   {
     level: 'expert',
-    icon: '🌳',
+    icon: 'Expert',
     title: '전문가예요 (Phase 2)',
     description: 'Lab Mode 기능들이 Phase 2에서 제공됩니다',
     features: [

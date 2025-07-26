@@ -46,15 +46,15 @@ const SyncStatus: React.FC<SyncStatusProps> = ({ onPress, style }) => {
 
   const getStatusIcon = () => {
     if (syncStatus.isSyncing) {
-      return '🔄';
+      return 'Syncing';
   }
     if (!syncStatus.isOnline) {
-      return '📵';
+      return 'Offline';
   }
     if (syncStatus.error) {
-      return '❌';
+      return 'Error';
   }
-    return '✅';
+    return 'Synced';
 };
 
   const getStatusText = () => {

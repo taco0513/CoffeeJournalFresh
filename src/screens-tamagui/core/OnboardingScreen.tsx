@@ -33,19 +33,19 @@ const slides: OnboardingSlide[] = [
   {
     title: '커피 취향 발견',
     description: '개인의 고유한 커피 취향을 발견하고\n데이터 기반 인사이트로 성장해보세요',
-    emoji: '☕',
+    emoji: '',
     backgroundColor: '$cream',
 },
   {
     title: '향미 분석 시스템',
     description: 'SCA 플레이버 휠 기반의\n전문적인 향미 분석을 경험하세요',
-    emoji: '🎯',
+    emoji: '',
     backgroundColor: '$green2',
 },
   {
     title: '커뮤니티와 함께',
     description: '베타 테스터로서 앱을 함께 만들어가요\n흔들어서 피드백을 보내주세요!',
-    emoji: '🚀',
+    emoji: '',
     backgroundColor: '$blue2',
 },
 ];

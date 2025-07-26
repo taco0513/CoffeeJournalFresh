@@ -38,9 +38,9 @@ export const BetaTabNavigation: React.FC<BetaTabNavigationProps> = ({
   const theme = useTheme();
   
   const tabs: Array<{ key: BetaTestingTab; label: string; icon: string }> = [
-    { key: 'status', label: 'Status', icon: '📊' },
-    { key: 'feedback', label: 'Feedback', icon: '💬' },
-    { key: 'deployment', label: 'Deployment', icon: '🚀' },
+    { key: 'status', label: 'Status', icon: '' },
+    { key: 'feedback', label: 'Feedback', icon: '' },
+    { key: 'deployment', label: 'Deployment', icon: '' },
   ];
 
   const renderTab = (tab: { key: BetaTestingTab; label: string; icon: string }) => {

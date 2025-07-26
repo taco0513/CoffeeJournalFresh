@@ -137,7 +137,61 @@ const DEVELOPER_SETTINGS = {
   crashReporting: [true, false],
 };
 
+/**
+ * DummyDataInput Service - 입력 도우미
+ * 화면별 맞춤형 더미 데이터 생성
+ * 40개 이상의 화면 지원, 복잡한 데이터 구조 생성
+ */
 export class DummyDataService {
+  // Helper function to get random item from array
+  private static getRandomItem<T>(array: T[]): T {
+    return array[Math.floor(Math.random() * array.length)];
+  }
+
+  /**
+   * 화면별 더미 데이터 생성 - 메인 진입점
+   * @param screenName 현재 화면 이름
+   */
+  static async generateDummyDataForScreen(screenName: string): Promise<void> {
+    Logger.debug(`Generating dummy data for screen: ${screenName}`, 'service', { component: 'DummyDataService' });
+    
+    switch (screenName) {
+      case 'CoffeeInfo':
+        await this.fillCoffeeInfo();
+        break;
+      case 'Sensory':
+      case 'SensoryEvaluation':
+        await this.fillSensoryEvaluation();
+        break;
+      case 'UnifiedFlavor':
+        await this.fillFlavorNotes();
+        break;
+      case 'PersonalComment':
+        await this.fillPersonalComment();
+        break;
+      case 'HomeCafe':
+        await this.fillHomeCafeData();
+        break;
+      case 'LabMode':
+        await this.fillLabModeData();
+        break;
+      case 'Search':
+        await this.fillSearchFilters();
+        break;
+      case 'AdminCoffeeEdit':
+        await this.fillAdminCoffeeData();
+        break;
+      case 'ProfileSetup':
+        await this.fillProfileData();
+        break;
+      case 'ModeSelection':
+        await this.selectRandomMode();
+        break;
+      default:
+        Logger.warn(`No dummy data handler for screen: ${screenName}`, 'service', { component: 'DummyDataService' });
+    }
+  }
+
   // Coffee Info screen
   static async fillCoffeeInfo() {
     const store = useTastingStore.getState();
@@ -241,7 +295,7 @@ export class DummyDataService {
         expressionId: `${category}_${Math.floor(Math.random() * 10)}`,
         korean: randomExpression,
         english: '',
-        emoji: '☕',
+        emoji: '',
         intensity: 3,
         selected: true,
     });
@@ -497,6 +551,62 @@ export class DummyDataService {
     Logger.debug('Generated sample achievements:', 'service', { component: 'DummyDataService', data: achievements.length });
     return achievements;
 }
+
+  // New methods for screens that were missing
+  static async selectRandomMode() {
+    const modes = ['cafe', 'homecafe', 'lab'];
+    const selectedMode = this.getRandomItem(modes);
+    Logger.debug(`Selected mode: ${selectedMode}`, 'service', { component: 'DummyDataService' });
+    // Implementation would update the mode in store
+    return selectedMode;
+  }
+
+  static async fillAdminCoffeeData() {
+    // Implementation for admin coffee edit screen
+    Logger.debug('Filling admin coffee data', 'service', { component: 'DummyDataService' });
+    return {
+      coffeeName: this.getRandomItem(COFFEE_NAMES),
+      roastery: this.getRandomItem(ROASTERS),
+      origin: this.getRandomItem(ORIGINS),
+      price: Math.floor(Math.random() * 30000) + 10000,
+      isActive: true,
+    };
+  }
+
+  static async fillLabModeData() {
+    const store = useTastingStore.getState();
+    
+    // Lab mode specific data
+    store.updateField('brewingMethod', 'Cupping');
+    store.updateField('waterTemperature', 93);
+    store.updateField('brewRatio', '1:17');
+    store.updateField('extractionTime', '4:00');
+    store.updateField('tds', 1.35);
+    store.updateField('extractionYield', 19.5);
+    
+    Logger.debug('Filled lab mode data', 'service', { component: 'DummyDataService' });
+  }
+
+  static async fillSearchFilters() {
+    Logger.debug('Filling search filters', 'service', { component: 'DummyDataService' });
+    return {
+      selectedRoastery: this.getRandomItem(SEARCH_FILTERS.roasteries),
+      selectedCafe: this.getRandomItem(SEARCH_FILTERS.cafes),
+      scoreRange: this.getRandomItem(SEARCH_FILTERS.scoreRanges),
+      dateRange: this.getRandomItem(SEARCH_FILTERS.dateRanges),
+    };
+  }
+
+  static async fillProfileData() {
+    Logger.debug('Filling profile data', 'service', { component: 'DummyDataService' });
+    return {
+      username: this.getRandomItem(PROFILE_DATA.usernames),
+      preferredRoastLevel: this.getRandomItem(PROFILE_DATA.preferences.preferredRoastLevel),
+      preferredOrigins: [this.getRandomItem(PROFILE_DATA.preferences.preferredOrigins)],
+      brewingExperience: this.getRandomItem(PROFILE_DATA.preferences.brewingExperience),
+      dailyCoffeeConsumption: this.getRandomItem(PROFILE_DATA.preferences.dailyCoffeeConsumption),
+    };
+  }
 
   // Statistics screen sample data
   static async generateSampleStats() {

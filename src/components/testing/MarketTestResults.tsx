@@ -87,7 +87,7 @@ export const MarketTestResults: React.FC<MarketTestResultsProps> = ({
           styles.resultStatus,
           result.success ? styles.successText : styles.failureText,
         ]}>
-          {result.success ? '✅ PASS' : '❌ FAIL'}
+          {result.success ? ' PASS' : ' FAIL'}
         </Text>
       </View>
       

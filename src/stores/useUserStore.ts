@@ -228,7 +228,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
 
   setTestUser: async () => {
-    Logger.debug('🔧 setTestUser called', 'store', { component: 'useUserStore' });
+    Logger.debug('setTestUser called', 'store', { component: 'useUserStore' });
     // 개발자 테스트용 로그인 바이패스
     const testUser: UserProfile = {
       id: '00000000-0000-4000-8000-000000000001',
@@ -262,26 +262,26 @@ export const useUserStore = create<UserStore>((set, get) => ({
       updatedAt: new Date(),
   };
 
-    Logger.debug('🔧 Test user created:', 'store', { component: 'useUserStore', data: testUser.username });
+    Logger.debug('Test user created:', 'store', { component: 'useUserStore', data: testUser.username });
     
     // Store in AsyncStorage for persistence
     try {
-      Logger.debug('🔧 Storing test user in AsyncStorage...', 'store', { component: 'useUserStore' });
+      Logger.debug('Storing test user in AsyncStorage...', 'store', { component: 'useUserStore' });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(testUser));
-      Logger.debug('🔧 Test user stored successfully', 'store', { component: 'useUserStore' });
+      Logger.debug('Test user stored successfully', 'store', { component: 'useUserStore' });
   } catch (error) {
       Logger.error('🔧 Failed to store test user:', 'store', { component: 'useUserStore', error: error });
       throw error; // Re-throw to catch in SignInScreen
   }
     
-    Logger.debug('🔧 Setting state...', 'store', { component: 'useUserStore' });
+    Logger.debug('Setting state...', 'store', { component: 'useUserStore' });
     set({
       currentUser: testUser,
       user: testUser, // Alias for compatibility
       isAuthenticated: true, // 개발자 모드에서는 인증된 상태
       isLoading: false,
   });
-    Logger.debug('🔧 State set successfully - isAuthenticated: true', 'store', { component: 'useUserStore' });
+    Logger.debug('State set successfully - isAuthenticated: true', 'store', { component: 'useUserStore' });
 },
 
 

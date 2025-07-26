@@ -321,7 +321,7 @@ const FeedbackTab: React.FC<{
               style={styles.ratingButton}
               onPress={() => onQuickFeedback(rating as 1 | 2 | 3 | 4 | 5)}
             >
-              <Text style={styles.ratingText}>⭐</Text>
+              <Text style={styles.ratingText}></Text>
               <Text style={styles.ratingLabel}>{rating}</Text>
             </TouchableOpacity>
           ))}

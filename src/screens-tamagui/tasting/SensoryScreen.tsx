@@ -19,6 +19,7 @@ import {
 import CompactSensoryEvaluation from '../../components/sensory/CompactSensoryEvaluation';
 import { checkShouldShowOnboarding } from '../../components/sensory/SensoryOnboarding';
 import { SelectedSensoryExpression } from '../../types/sensory';
+import { FloatingButton } from '../../components-tamagui/buttons/FloatingButton';
 
 // Styled Components
 const Container = styled(YStack, {
@@ -232,7 +233,7 @@ const SensoryScreenTamagui = () => {
             bounces={true}
             contentContainerStyle={{ 
               flexGrow: 1,
-              paddingBottom: 24 // Reasonable padding for bottom button
+              paddingBottom: 120 // Extra padding to clear floating button
             }}
           >
             <ContentContainer>
@@ -279,21 +280,11 @@ const SensoryScreenTamagui = () => {
             </ContentContainer>
           </ScrollView>
 
-          {/* Bottom Button */}
-          <XStack
-            padding="$lg"
-            paddingBottom={Math.max(insets.bottom, IOSLayout.safeAreaBottom) + IOSSpacing.md}
-            backgroundColor="$background"
-            borderTopWidth={0.5}
-            borderTopColor="$borderColor"
-          >
-            <NextButton
-              flex={1}
-              onPress={handleComplete}
-            >
-              <NextButtonText>평가 완료</NextButtonText>
-            </NextButton>
-          </XStack>
+          {/* Floating Bottom Button */}
+          <FloatingButton
+            title="평가 완료"
+            onPress={handleComplete}
+          />
         </YStack>
 
       {/* Onboarding Modal */}

@@ -68,7 +68,7 @@ const CrossMarketTestingScreen: React.FC = () => {
     setSelectedTest(null);
     
     try {
-      Logger.debug('🌍 Starting Cross-Market Test Suite...', 'component', { component: 'CrossMarketTestingScreen' });
+      Logger.debug(' Starting Cross-Market Test Suite...', 'component', { component: 'CrossMarketTestingScreen' });
       
       const results = await crossMarketTester.runFullTestSuite();
       setTestSuite(results);
@@ -80,7 +80,7 @@ const CrossMarketTestingScreen: React.FC = () => {
         [{ text: 'OK' }]
       );
       
-      Logger.debug('✅ Cross-Market Test Suite completed', 'component', { component: 'CrossMarketTestingScreen' });
+      Logger.debug('Cross-Market Test Suite completed', 'component', { component: 'CrossMarketTestingScreen' });
   } catch (error) {
       Logger.error('Cross-market testing failed:', 'component', { component: 'CrossMarketTestingScreen', error: error });
       
@@ -137,7 +137,7 @@ const CrossMarketTestingScreen: React.FC = () => {
     setIsRunning(true);
     
     try {
-      Logger.debug('🔍 Running combined validation...', 'component', { component: 'CrossMarketTestingScreen' });
+      Logger.debug('Running combined validation...', 'component', { component: 'CrossMarketTestingScreen' });
       
       // Run i18n validation first
       const i18nResults = await i18nValidationSuite.runFullValidation();
@@ -193,9 +193,9 @@ const CrossMarketTestingScreen: React.FC = () => {
    */
   const getStatusIcon = (status: 'pass' | 'fail' | 'warning') => {
     switch (status) {
-      case 'pass': return '✅';
-      case 'fail': return '❌';
-      case 'warning': return '⚠️';
+      case 'pass': return '';
+      case 'fail': return '';
+      case 'warning': return '';
       default: return '❓';
   }
 };
@@ -393,9 +393,9 @@ const CrossMarketTestingScreen: React.FC = () => {
               {showComparison && (
                 <View style={styles.comparisonContainer}>
                   <View style={styles.marketResult}>
-                    <Text style={styles.marketTitle}>🇰🇷 Korean Market</Text>
+                    <Text style={styles.marketTitle}> Korean Market</Text>
                     <Text style={styles.marketStatus}>
-                      {result.koreanResult.success ? '✅' : '❌'} {result.koreanResult.message}
+                      {result.koreanResult.success ? '' : ''} {result.koreanResult.message}
                     </Text>
                     <Text style={styles.marketTime}>
                       {result.koreanResult.executionTime}ms
@@ -403,9 +403,9 @@ const CrossMarketTestingScreen: React.FC = () => {
                   </View>
                   
                   <View style={styles.marketResult}>
-                    <Text style={styles.marketTitle}>🇺🇸 US Beta Market</Text>
+                    <Text style={styles.marketTitle}> US Beta Market</Text>
                     <Text style={styles.marketStatus}>
-                      {result.usResult.success ? '✅' : '❌'} {result.usResult.message}
+                      {result.usResult.success ? '' : ''} {result.usResult.message}
                     </Text>
                     <Text style={styles.marketTime}>
                       {result.usResult.executionTime}ms

@@ -12,7 +12,7 @@ export function useScreenPerformance(screenName: string, enabled: boolean = __DE
   
   useEffect(() => {
     if (enabled) {
-      Logger.debug(`📊 Performance measurement enabled for ${screenName}`, 'hook', { component: 'useScreenPerformance' });
+      Logger.debug(`Performance measurement enabled for ${screenName}`, 'hook', { component: 'useScreenPerformance' });
   }
 }, [screenName, enabled]);
 }

@@ -1,5 +1,5 @@
 // Original React Native Screens - Legacy Export
-// ⚠️ IMPORTANT: Core screens have been migrated to Tamagui
+//  IMPORTANT: Core screens have been migrated to Tamagui
 // Use screens from ../screens-tamagui/ for all main app flows
 
 // Re-export Tamagui screens for backward compatibility

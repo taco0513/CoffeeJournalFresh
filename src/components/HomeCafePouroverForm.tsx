@@ -156,7 +156,7 @@ export const HomeCafePouroverForm: React.FC<HomeCafePouroverFormProps> = ({ onNe
             onPress={() => setShowTimer(!showTimer)}
           >
             <Text style={styles.timerToggleIcon}>
-              {showTimer ? '⏱️' : '⏱️'}
+              {showTimer ? '' : ''}
             </Text>
             <Text style={styles.timerToggleText}>
               {showTimer ? '타이머 숨기기' : '추출 타이머 사용'}

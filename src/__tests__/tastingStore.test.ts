@@ -75,7 +75,7 @@ describe('Sensory Expression Deduplication Logic', () => {
         expressionId: 'expr2',
         korean: '달콤한',
         english: 'Sweet',
-        emoji: '🍯',
+        emoji: '',
         intensity: 3,
         selected: true,
     },

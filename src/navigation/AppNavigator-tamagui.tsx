@@ -6,12 +6,12 @@ import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUserStore } from '../stores/useUserStore';
 import { IOSColors, IOSLayout, IOSTypography, IOSShadows } from '../styles/ios-hig-2024';
-import StatusBadge from '../components/StatusBadge';
-import { TabBarIcon } from '../components/TabBarIcon';
+// StatusBadge removed - status now shown in DummyDataInput floating button
+// TabBarIcon import removed - not used
 import ScreenContextService from '../services/ScreenContextService';
 import LanguageSwitch from '../components/LanguageSwitch';
 
-// 🎉 All screens from Tamagui! Complete migration achieved!
+// All screens from Tamagui! Complete migration achieved!
 import {
   // Core App Screens
   HomeScreen,
@@ -89,12 +89,9 @@ import { Logger } from '../services/LoggingService';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// 공통 헤더 옵션
+// 공통 헤더 옵션 - StatusBadge 제거
 const commonHeaderOptions = {
-  headerRight: () => <StatusBadge />,
-  headerRightContainerStyle: {
-    paddingRight: 16,
-},
+  // headerRight removed - status now shown in DummyDataInput floating button
 };
 
 // 테이스팅 플로우 스택 네비게이터
@@ -416,9 +413,31 @@ function MainTabs() {
     <Tab.Navigator
       detachInactiveScreens={true}
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, focused }) => {
-          return <TabBarIcon name={route.name as "Home" | "Journal" | "AddRecord" | "UserProfile" | "Settings" | "Admin"} focused={focused} color={color} />;
-      },
+        tabBarShowIcon: true,
+        tabBarIcon: ({ focused, color }) => (
+          <View style={{
+            width: 44,
+            height: 44,
+            borderRadius: 22,
+            backgroundColor: focused ? '#007AFF' : 'transparent',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 2,
+          }}>
+            <Text style={{
+              fontSize: 13,
+              fontWeight: '600',
+              color: focused ? 'white' : '#8E8E93',
+            }}>
+              {route.name === 'Home' ? '홈' : 
+               route.name === 'Journal' ? '저널' : 
+               route.name === 'AddRecord' ? '기록' : 
+               route.name === 'Admin' ? '관리' :
+               route.name === 'UserProfile' ? '프로필' : 
+               route.name === 'Settings' ? '세팅' : ''}
+            </Text>
+          </View>
+        ),
         tabBarActiveTintColor: '#007AFF',
         tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
@@ -437,9 +456,8 @@ function MainTabs() {
           elevation: 5,
       },
         tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '600',
-          marginTop: 2,
+          fontSize: 0, // Hide text labels since text is now inside the icon
+          height: 0,
       },
         headerShown: true,
         headerStyle: {
@@ -466,7 +484,7 @@ function MainTabs() {
         name="Home" 
         component={HomeScreen}
         options={{
-          tabBarLabel: '홈',
+          tabBarLabel: '',
           headerTitle: 'CupNote',
       }}
       />
@@ -474,7 +492,7 @@ function MainTabs() {
         name="Journal" 
         component={JournalIntegratedScreen}
         options={{
-          tabBarLabel: '저널',
+          tabBarLabel: '',
           headerTitle: 'CupNote',
       }}
       />
@@ -482,7 +500,7 @@ function MainTabs() {
         name="AddRecord" 
         component={TastingFlow}
         options={{
-          tabBarLabel: '기록',
+          tabBarLabel: '',
           headerShown: false,
       }}
       />
@@ -491,7 +509,7 @@ function MainTabs() {
           name="Admin" 
           component={AdminStack}
           options={{
-            tabBarLabel: '관리자',
+            tabBarLabel: '',
             headerShown: false,
         }}
         />
@@ -500,7 +518,7 @@ function MainTabs() {
         name="UserProfile" 
         component={AchievementStack}
         options={{
-          tabBarLabel: '프로필',
+          tabBarLabel: '',
           headerShown: false,
       }}
       />
@@ -508,7 +526,7 @@ function MainTabs() {
         name="Settings" 
         component={ProfileStack}
         options={{
-          tabBarLabel: '세팅',
+          tabBarLabel: '',
           headerShown: false,
       }}
       />
@@ -587,7 +605,7 @@ export default function AppNavigator() {
   const navigationRef = useRef<unknown>(null);
   const routeNameRef = useRef<string | undefined>(undefined);
   
-  Logger.debug('🔧 AppNavigator render - isAuthenticated:', 'general', { component: 'AppNavigator-tamagui', data: isAuthenticated });
+  Logger.debug('AppNavigator render - isAuthenticated:', 'general', { component: 'AppNavigator-tamagui', data: isAuthenticated });
 
   useEffect(() => {
     // 네비게이션 상태 변경 추적

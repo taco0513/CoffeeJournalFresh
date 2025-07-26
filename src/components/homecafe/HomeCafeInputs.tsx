@@ -56,7 +56,7 @@ export const HomeCafeInputs: React.FC<HomeCafeInputsProps> = ({
 
   const renderDripperSelector = () => (
     <View style={styles.section}>
-      {renderSectionHeader('드리퍼 선택', '☕')}
+      {renderSectionHeader('드리퍼 선택', '')}
       <View style={styles.optionGrid}>
         {Object.entries(dripperConfigs).map(([key, config]) => (
           <TouchableOpacity
@@ -182,7 +182,7 @@ export const HomeCafeInputs: React.FC<HomeCafeInputsProps> = ({
 
   const renderPourTechniqueSelector = () => (
     <View style={styles.section}>
-      {renderSectionHeader('추출 기법', '💧')}
+      {renderSectionHeader('추출 기법', '')}
       <View style={styles.techniqueGrid}>
         {pourTechniques.map((technique) => (
           <TouchableOpacity
@@ -218,7 +218,7 @@ export const HomeCafeInputs: React.FC<HomeCafeInputsProps> = ({
       
       {/* Recipe Section */}
       <View style={styles.section}>
-        {renderSectionHeader('레시피', '📝')}
+        {renderSectionHeader('레시피', '')}
         
         {renderNumberInput(
           '원두량',
@@ -292,7 +292,7 @@ export const HomeCafeInputs: React.FC<HomeCafeInputsProps> = ({
       
       {/* Experiment Notes */}
       <View style={styles.section}>
-        {renderSectionHeader('실험 노트', '🔬')}
+        {renderSectionHeader('실험 노트', '')}
         
         {renderTextInput(
           '분쇄도 조정',

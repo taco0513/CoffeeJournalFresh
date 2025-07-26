@@ -388,7 +388,7 @@ export class AchievementSystem {
       const seenAchievementTypes = new Set<string>();
       const timestamp = Date.now();
       
-      Logger.debug(`🔍 Processing ${userAchievements.length} achievements for user ${userId}`, 'service', { component: 'AchievementSystem' });
+      Logger.debug(`Processing ${userAchievements.length} achievements for user ${userId}`, 'service', { component: 'AchievementSystem' });
       
       // First pass: collect unique achievement types to prevent duplicates at source
       const achievementTypeMap = new Map<string, any>();
@@ -400,7 +400,7 @@ export class AchievementSystem {
         
         // Skip if basic validation fails
         if (!achievementType || !achievementId) {
-          Logger.warn('⚠️ Skipping achievement with missing type or ID:', 'service', { component: 'AchievementSystem', data: { achievementType, achievementId } });
+          Logger.warn('Skipping achievement with missing type or ID:', 'service', { component: 'AchievementSystem', data: { achievementType, achievementId } });
           continue;
       }
         
@@ -416,7 +416,7 @@ export class AchievementSystem {
       }
     }
       
-      Logger.debug(`🔍 Deduplicated to ${achievementTypeMap.size} unique achievement types`, 'service', { component: 'AchievementSystem' });
+      Logger.debug(`Deduplicated to ${achievementTypeMap.size} unique achievement types`, 'service', { component: 'AchievementSystem' });
       
       // Second pass: create achievement objects from deduplicated map
       let processedIndex = 0;
@@ -425,7 +425,7 @@ export class AchievementSystem {
         
         // Skip if definition doesn't exist
         if (!definition) {
-          Logger.warn('⚠️ No definition found for achievement type:', 'service', { component: 'AchievementSystem', data: achievementType });
+          Logger.warn('No definition found for achievement type:', 'service', { component: 'AchievementSystem', data: achievementType });
           continue;
       }
         
@@ -451,13 +451,13 @@ export class AchievementSystem {
         achievements.push(achievement);
         processedIndex++;
         
-        Logger.debug(`✅ Created achievement: ${uniqueId} (${achievementType})`, 'service', { component: 'AchievementSystem' });
+        Logger.debug(`Created achievement: ${uniqueId} (${achievementType})`, 'service', { component: 'AchievementSystem' });
     }
       
-      Logger.debug(`🎯 Final result: ${achievements.length} achievements created`, 'service', { component: 'AchievementSystem' });
+      Logger.debug('Final result: ' + achievements.length + ' achievements created', 'service', { component: 'AchievementSystem' });
       return achievements;
   } catch (error) {
-      Logger.error('❌ Error in getUserAchievements:', 'service', { component: 'AchievementSystem', error: error });
+      Logger.error('Error in getUserAchievements:', 'service', { component: 'AchievementSystem', error: error });
       Logger.error('Error getting user achievements', 'achievement', { error: error as Error, userId });
       return [];
   }

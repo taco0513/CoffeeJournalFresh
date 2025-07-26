@@ -51,7 +51,7 @@ export const StatsScreenTopItems: React.FC<StatsScreenTopItemsProps> = ({
         }}
           animateOnly={['opacity', 'transform']}
         >
-          <SectionTitle>🏆 자주 마신 로스터리</SectionTitle>
+          <SectionTitle> 자주 마신 로스터리</SectionTitle>
           <TopItemsContainer>
             <AnimatePresence>
               {topRoasters.map((roaster, index) => {

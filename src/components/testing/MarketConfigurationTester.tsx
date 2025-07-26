@@ -213,7 +213,7 @@ const MarketConfigurationTester: React.FC = () => {
           <View style={styles.scenarioHeader}>
             <Text style={styles.scenarioName}>{scenario.name}</Text>
             <Text style={styles.scenarioMarket}>
-              {scenario.market === 'korean' ? '🇰🇷' : '🇺🇸'} {scenario.language.toUpperCase()}
+              {scenario.market === 'korean' ? '' : ''} {scenario.language.toUpperCase()}
             </Text>
           </View>
           <Text style={styles.scenarioDescription}>{scenario.description}</Text>

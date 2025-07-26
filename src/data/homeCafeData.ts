@@ -7,70 +7,70 @@ export const dripperConfigs = {
     korean: '브이60',
     sizes: ['01 (1-2잔)', '02 (1-4잔)', '03 (3-6잔)'],
     defaultRatio: '1:15',
-    icon: '⏳'
+    icon: ''
 },
   KalitaWave: { 
     name: 'Kalita Wave', 
     korean: '칼리타 웨이브',
     sizes: ['155 (1-2잔)', '185 (2-4잔)'],
     defaultRatio: '1:16',
-    icon: '〰️'
+    icon: ''
 },
   Origami: { 
     name: 'Origami', 
     korean: '오리가미',
     sizes: ['S (1-2잔)', 'M (1-4잔)'],
     defaultRatio: '1:15',
-    icon: '🗾'
+    icon: ''
 },
   Chemex: { 
     name: 'Chemex', 
     korean: '케멕스',
     sizes: ['3컵', '6컵', '8컵', '10컵'],
     defaultRatio: '1:17',
-    icon: '⏳'
+    icon: ''
 },
   FellowStagg: { 
     name: 'Fellow Stagg', 
     korean: '펠로우 스태그',
     sizes: ['XF (1-2잔)', 'X (2-4잔)'],
     defaultRatio: '1:16',
-    icon: '🌊'
+    icon: ''
 },
   April: { 
     name: 'April', 
     korean: '에이프릴',
     sizes: ['Plastic (1-2잔)', 'Ceramic (2-4잔)'],
     defaultRatio: '1:15',
-    icon: '🌸'
+    icon: ''
 },
   Orea: { 
     name: 'Orea', 
     korean: '오레아',
     sizes: ['V3 (1-3잔)', 'Barrel (2-5잔)'],
     defaultRatio: '1:16',
-    icon: '💎'
+    icon: ''
 },
   FlowerDripper: { 
     name: 'Flower Dripper', 
     korean: '플라워 드리퍼',
     sizes: ['1-2잔', '2-4잔'],
     defaultRatio: '1:15',
-    icon: '🌺'
+    icon: ''
 },
   BlueBottle: { 
     name: 'Blue Bottle', 
     korean: '블루보틀',
     sizes: ['1-2잔', '2-4잔'],
     defaultRatio: '1:16',
-    icon: '🫐'
+    icon: ''
 },
   TimemoreCrystalEye: { 
     name: 'Timemore Crystal Eye', 
     korean: '타임모어 크리스탈아이',
     sizes: ['PC-1 (1-2잔)', 'PC-2 (2-4잔)'],
     defaultRatio: '1:15',
-    icon: '💠'
+    icon: ''
 }
 };
 

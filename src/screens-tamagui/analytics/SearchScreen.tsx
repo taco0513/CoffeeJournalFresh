@@ -201,7 +201,7 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
   const renderSearchBar = () => (
     <SearchContainer>
       <SearchBar focused={isSearchFocused}>
-        <SearchIcon>🔍</SearchIcon>
+        <SearchIcon>검색</SearchIcon>
         <SearchInput
           placeholder="커피명, 로스터리, 향미노트 검색..."
           value={searchQuery}
@@ -211,7 +211,7 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
         />
         {searchQuery.length > 0 && (
           <ClearButton onPress={clearSearch}>
-            <ClearIcon>✕</ClearIcon>
+            <ClearIcon>X</ClearIcon>
           </ClearButton>
         )}
       </SearchBar>
@@ -220,7 +220,7 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
         hasFilters={activeFilterCount > 0}
         onPress={() => setShowFilters(true)}
       >
-        <FilterIcon>⚙️</FilterIcon>
+        <FilterIcon>필터</FilterIcon>
         {activeFilterCount > 0 && (
           <FilterBadge>
             <FilterBadgeText>{activeFilterCount}</FilterBadgeText>
@@ -246,7 +246,7 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
 
   const renderEmptyState = () => (
     <EmptyContainer>
-      <EmptyIcon>🔍</EmptyIcon>
+      <EmptyIcon>검색</EmptyIcon>
       <EmptyText>
         {searchQuery || activeFilterCount > 0 
           ? '검색 결과가 없습니다' 

@@ -15,11 +15,11 @@ export class FirecrawlDemo {
   private baseUrl = 'https://api.firecrawl.dev/v0';
   
   /**
-   * 🔥 Demo 1: Korean Coffee Roaster Data Collection
+   * Demo 1: Korean Coffee Roaster Data Collection
    * Scrapes major Korean specialty coffee roasters
    */
   async demonstrateKoreanRoasterScraping() {
-    Logger.debug('🇰🇷 Firecrawl Demo: Korean Coffee Market Intelligence', 'service', { component: 'FirecrawlDemo' });
+    Logger.debug('Firecrawl Demo: Korean Coffee Market Intelligence', 'service', { component: 'FirecrawlDemo' });
     
     const koreanCoffeeSites = [
       'https://coffeelibrary.co.kr',
@@ -31,7 +31,7 @@ export class FirecrawlDemo {
     
     for (const site of koreanCoffeeSites) {
       try {
-        Logger.debug(`📡 Scraping: ${site}`, 'service', { component: 'FirecrawlDemo' });
+        Logger.debug('Scraping: ' + site, 'service', { component: 'FirecrawlDemo' });
         
         // This would be the actual Firecrawl API call
         const scrapedData = await this.simulateFirecrawlScrape(site, {
@@ -52,10 +52,10 @@ export class FirecrawlDemo {
           success: true
       });
         
-        Logger.debug(`✅ Successfully scraped ${site}`, 'service', { component: 'FirecrawlDemo' });
+        Logger.debug('Successfully scraped ' + site, 'service', { component: 'FirecrawlDemo' });
         
     } catch (error) {
-        Logger.error(`❌ Failed to scrape ${site}:`, 'service', { component: 'FirecrawlDemo', error: (error as Error).message || error });
+        Logger.error('Failed to scrape ' + site + ':', 'service', { component: 'FirecrawlDemo', error: (error as Error).message || error });
         results.push({
           url: site,
           error: (error as Error).message,
@@ -69,11 +69,11 @@ export class FirecrawlDemo {
 }
 
   /**
-   * 🔥 Demo 2: US Coffee Market Analysis  
+   * Demo 2: US Coffee Market Analysis  
    * Analyzes US specialty coffee trends
    */
   async demonstrateUSMarketAnalysis() {
-    Logger.debug('🇺🇸 Firecrawl Demo: US Coffee Market Analysis', 'service', { component: 'FirecrawlDemo' });
+    Logger.debug('Firecrawl Demo: US Coffee Market Analysis', 'service', { component: 'FirecrawlDemo' });
     
     const usCoffeeSites = [
       'https://bluebottlecoffee.com',
@@ -90,7 +90,7 @@ export class FirecrawlDemo {
 
     for (const site of usCoffeeSites) {
       try {
-        Logger.debug(`🔍 Analyzing: ${site}`, 'service', { component: 'FirecrawlDemo' });
+        Logger.debug('Analyzing: ' + site, 'service', { component: 'FirecrawlDemo' });
         
         const analysis = await this.simulateFirecrawlAnalysis(site, {
           extract_products: true,
@@ -105,10 +105,10 @@ export class FirecrawlDemo {
         (marketData.priceRanges as PriceRange[]).push(...analysis.price_data);
         (marketData.newProducts as CoffeeProduct[]).push(...analysis.products);
         
-        Logger.debug(`📊 Analyzed ${site} - Found ${analysis.products?.length || 0} products`, 'service', { component: 'FirecrawlDemo' });
+        Logger.debug('Analyzed ' + site + ' - Found ' + (analysis.products?.length || 0) + ' products', 'service', { component: 'FirecrawlDemo' });
         
     } catch (error) {
-        Logger.error(`❌ Analysis failed for ${site}:`, 'service', { component: 'FirecrawlDemo', error: error });
+        Logger.error('Analysis failed for ' + site + ':', 'service', { component: 'FirecrawlDemo', error: error });
     }
   }
 
@@ -121,11 +121,11 @@ export class FirecrawlDemo {
 }
 
   /**
-   * 🔥 Demo 3: Coffee Education Content Aggregation
+   * Demo 3: Coffee Education Content Aggregation
    * Builds knowledge base for CupNote users
    */
   async demonstrateEducationalContentAggregation() {
-    Logger.debug('📚 Firecrawl Demo: Coffee Education Content', 'service', { component: 'FirecrawlDemo' });
+    Logger.debug('Firecrawl Demo: Coffee Education Content', 'service', { component: 'FirecrawlDemo' });
     
     const educationalSources = [
       'https://sca.coffee', // Specialty Coffee Association
@@ -143,7 +143,7 @@ export class FirecrawlDemo {
 
     for (const source of educationalSources) {
       try {
-        Logger.debug(`📖 Crawling educational content from: ${source}`, 'service', { component: 'FirecrawlDemo' });
+        Logger.debug('Crawling educational content from: ' + source, 'service', { component: 'FirecrawlDemo' });
         
         const content = await this.simulateContentCrawl(source, {
           content_types: ['articles', 'guides', 'news'],
@@ -163,10 +163,10 @@ export class FirecrawlDemo {
         }
       });
         
-        Logger.debug(`📑 Processed ${content.articles?.length || 0} articles from ${source}`, 'service', { component: 'FirecrawlDemo' });
+        Logger.debug('Processed ' + (content.articles?.length || 0) + ' articles from ' + source, 'service', { component: 'FirecrawlDemo' });
         
     } catch (error) {
-        Logger.error(`❌ Content crawl failed for ${source}:`, 'service', { component: 'FirecrawlDemo', error: error });
+        Logger.error('Content crawl failed for ' + source + ':', 'service', { component: 'FirecrawlDemo', error: error });
     }
   }
 
@@ -180,11 +180,11 @@ export class FirecrawlDemo {
 }
 
   /**
-   * 🔥 Demo 4: Competitive App Analysis
+   * Demo 4: Competitive App Analysis
    * Monitors coffee app competitors
    */
   async demonstrateCompetitorAnalysis() {
-    Logger.debug('🎯 Firecrawl Demo: Coffee App Competitive Analysis', 'service', { component: 'FirecrawlDemo' });
+    Logger.debug('Firecrawl Demo: Coffee App Competitive Analysis', 'service', { component: 'FirecrawlDemo' });
     
     const appStoreUrls = [
       'https://apps.apple.com/search?term=coffee%20journal',
@@ -196,7 +196,7 @@ export class FirecrawlDemo {
 
     for (const url of appStoreUrls) {
       try {
-        Logger.debug(`🔍 Analyzing app store data: ${url}`, 'service', { component: 'FirecrawlDemo' });
+        Logger.debug('Analyzing app store data: ' + url, 'service', { component: 'FirecrawlDemo' });
         
         const appData = await this.simulateAppStoreAnalysis(url, {
           extract_app_details: true,
@@ -213,10 +213,10 @@ export class FirecrawlDemo {
           analysisDate: new Date()
       });
         
-        Logger.debug(`📱 Found ${appData.apps?.length || 0} coffee apps`, 'service', { component: 'FirecrawlDemo' });
+        Logger.debug('Found ' + (appData.apps?.length || 0) + ' coffee apps', 'service', { component: 'FirecrawlDemo' });
         
     } catch (error) {
-        Logger.error(`❌ App store analysis failed for ${url}:`, 'service', { component: 'FirecrawlDemo', error: error });
+        Logger.error('App store analysis failed for ' + url + ':', 'service', { component: 'FirecrawlDemo', error: error });
     }
   }
 
@@ -229,11 +229,11 @@ export class FirecrawlDemo {
 }
 
   /**
-   * 🔥 Demo 5: Real-time Coffee Price Monitoring  
+   * Demo 5: Real-time Coffee Price Monitoring  
    * Tracks coffee pricing across markets
    */
   async demonstratePriceMonitoring() {
-    Logger.debug('💰 Firecrawl Demo: Coffee Price Monitoring', 'service', { component: 'FirecrawlDemo' });
+    Logger.debug('Firecrawl Demo: Coffee Price Monitoring', 'service', { component: 'FirecrawlDemo' });
     
     const priceMonitoringSites = [
       'https://sweetmarias.com/coffee-list',
@@ -249,7 +249,7 @@ export class FirecrawlDemo {
 
     for (const site of priceMonitoringSites) {
       try {
-        Logger.debug(`💸 Monitoring prices at: ${site}`, 'service', { component: 'FirecrawlDemo' });
+        Logger.debug('Monitoring prices at: ' + site, 'service', { component: 'FirecrawlDemo' });
         
         const prices = await this.simulatePriceExtraction(site, {
           extract_product_prices: true,
@@ -262,10 +262,10 @@ export class FirecrawlDemo {
         const region = site.includes('.kr') ? 'korea' : 'us';
         priceData[region].prices.push(...prices.products);
         
-        Logger.debug(`💰 Extracted ${prices.products?.length || 0} prices from ${site}`, 'service', { component: 'FirecrawlDemo' });
+        Logger.debug('Extracted ' + (prices.products?.length || 0) + ' prices from ' + site, 'service', { component: 'FirecrawlDemo' });
         
     } catch (error) {
-        Logger.error(`❌ Price monitoring failed for ${site}:`, 'service', { component: 'FirecrawlDemo', error: error });
+        Logger.error('Price monitoring failed for ' + site + ':', 'service', { component: 'FirecrawlDemo', error: error });
     }
   }
 
@@ -289,7 +289,7 @@ export class FirecrawlDemo {
       location: url.includes('.kr') ? 'Seoul, Korea' : 'USA',
       specialty_coffees: ['Single Origin', 'Light Roast', 'Ethiopian'],
       contact_info: { website: url },
-      about_description: `Premium specialty coffee roaster focused on quality and sustainability.`,
+      about_description: 'Premium specialty coffee roaster focused on quality and sustainability.',
       scraped_at: new Date(),
       source_url: url
   };
@@ -326,14 +326,14 @@ export class FirecrawlDemo {
           content: 'Step-by-step brewing guide...',
           author: 'Coffee Expert',
           publishDate: new Date(),
-          url: `${url}/pour-over-guide`
+          url: url + '/pour-over-guide'
       },
         {
           title: 'Latest Coffee Industry News',
           category: 'news', 
           content: 'Recent developments in specialty coffee...',
           publishDate: new Date(),
-          url: `${url}/coffee-news`
+          url: url + '/coffee-news'
       }
       ]
   };
@@ -383,7 +383,7 @@ export class FirecrawlDemo {
           currency,
           weight: '340g',
           roastDate: new Date(),
-          url: `${url}/ethiopian-coffee`
+          url: url + '/ethiopian-coffee'
       },
         {
           name: 'Colombian Supremo',
@@ -391,7 +391,7 @@ export class FirecrawlDemo {
           currency,
           weight: '340g',
           roastDate: new Date(),
-          url: `${url}/colombian-coffee`
+          url: url + '/colombian-coffee'
       }
       ]
   };
@@ -448,30 +448,30 @@ export const firecrawlDemo = new FirecrawlDemo();
  */
 export const useFirecrawlDemo = () => {
   const runAllDemos = async () => {
-    Logger.debug('🚀 Starting CupNote Firecrawl Demo Suite...\n', 'service', { component: 'FirecrawlDemo' });
+    Logger.debug('Starting CupNote Firecrawl Demo Suite...', 'service', { component: 'FirecrawlDemo' });
     
     try {
       // Demo 1: Korean Market
       const koreanData = await firecrawlDemo.demonstrateKoreanRoasterScraping();
-      Logger.debug('🇰🇷 Korean Demo Results:', 'service', { component: 'FirecrawlDemo', data: koreanData });
+      Logger.debug('Korean Demo Results:', 'service', { component: 'FirecrawlDemo', data: koreanData });
       
       // Demo 2: US Market  
       const usData = await firecrawlDemo.demonstrateUSMarketAnalysis();
-      Logger.debug('🇺🇸 US Demo Results:', 'service', { component: 'FirecrawlDemo', data: usData });
+      Logger.debug('US Demo Results:', 'service', { component: 'FirecrawlDemo', data: usData });
       
       // Demo 3: Educational Content
       const educationalData = await firecrawlDemo.demonstrateEducationalContentAggregation();
-      Logger.debug('📚 Educational Demo Results:', 'service', { component: 'FirecrawlDemo', data: educationalData });
+      Logger.debug('Educational Demo Results:', 'service', { component: 'FirecrawlDemo', data: educationalData });
       
       // Demo 4: Competitor Analysis
       const competitorData = await firecrawlDemo.demonstrateCompetitorAnalysis();
-      Logger.debug('🎯 Competitor Demo Results:', 'service', { component: 'FirecrawlDemo', data: competitorData });
+      Logger.debug('Competitor Demo Results:', 'service', { component: 'FirecrawlDemo', data: competitorData });
       
       // Demo 5: Price Monitoring
       const priceData = await firecrawlDemo.demonstratePriceMonitoring();
-      Logger.debug('💰 Price Demo Results:', 'service', { component: 'FirecrawlDemo', data: priceData });
+      Logger.debug('Price Demo Results:', 'service', { component: 'FirecrawlDemo', data: priceData });
       
-      Logger.debug('\n✅ All Firecrawl demos completed successfully!', 'service', { component: 'FirecrawlDemo' });
+      Logger.debug('All Firecrawl demos completed successfully!', 'service', { component: 'FirecrawlDemo' });
       
       return {
         korean: koreanData,
@@ -482,7 +482,7 @@ export const useFirecrawlDemo = () => {
     };
       
   } catch (error) {
-      Logger.error('❌ Demo suite failed:', 'service', { component: 'FirecrawlDemo', error: error });
+      Logger.error('Demo suite failed:', 'service', { component: 'FirecrawlDemo', error: error });
       throw error;
   }
 };

@@ -39,7 +39,7 @@ const SimpleProfileHistoryScreen: React.FC = () => {
       const realm = realmService.getRealm();
       const allTastings = realm.objects<ITastingRecord>('TastingRecord').filtered('isDeleted = false').sorted('createdAt', true);
       
-      Logger.debug('📊 SimpleProfileHistoryScreen data load:', {
+      Logger.debug('SimpleProfileHistoryScreen data load:', {
         component: 'SimpleProfileHistoryScreen',
         totalRecords: allTastings.length,
         recentRecords: Array.from(allTastings).slice(0, 3).map(r => ({
@@ -187,7 +187,7 @@ const SimpleProfileHistoryScreen: React.FC = () => {
           </YStack>
         ) : (
           <YStack alignItems="center" paddingTop="$xxl" gap="$md">
-            <Text fontSize={48}>☕️</Text>
+            <Text fontSize={48}>️</Text>
             <Text fontSize="$5" color="$gray10" textAlign="center">
               아직 기록이 없습니다
             </Text>

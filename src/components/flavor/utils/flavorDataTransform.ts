@@ -40,7 +40,7 @@ export const transformFlavorData = (): CategoryData[] => {
     
     result.push({
       category,
-      emoji: CATEGORY_EMOJIS[category] || '☕',
+      emoji: CATEGORY_EMOJIS[category] || '',
       koreanName: koreanName as string,
       subcategories: subcategoryData,
   });

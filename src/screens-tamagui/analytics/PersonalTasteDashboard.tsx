@@ -454,7 +454,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
           </NavigationBar>
           
           <EmptyStateContainer>
-            <EmptyStateIcon>☕</EmptyStateIcon>
+            <EmptyStateIcon></EmptyStateIcon>
             <EmptyStateTitle>아직 데이터가 없어요</EmptyStateTitle>
             <EmptyStateText>
               몇 번의 테이스팅 후에 개인 취향 분석을 볼 수 있어요
@@ -534,7 +534,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
                         ))}
                         {insights.areasToExplore.slice(0, 2).map((area: string, index: number) => (
                           <InsightItem key={`area-${index}`}>
-                            <InsightIcon>🎯</InsightIcon>
+                            <InsightIcon></InsightIcon>
                             <InsightText>{area}</InsightText>
                           </InsightItem>
                         ))}
@@ -564,7 +564,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
                         unstyled
                       >
                         <ActionButtonContent>
-                          <ActionButtonIcon>📊</ActionButtonIcon>
+                          <ActionButtonIcon></ActionButtonIcon>
                           <ActionButtonText>취향 분석</ActionButtonText>
                         </ActionButtonContent>
                       </ActionButton>
@@ -574,7 +574,7 @@ const PersonalTasteDashboard: React.FC<PersonalTasteDashboardProps> = () => {
                         unstyled
                       >
                         <ActionButtonContent>
-                          <ActionButtonIcon>☕</ActionButtonIcon>
+                          <ActionButtonIcon></ActionButtonIcon>
                           <ActionButtonText>추천 커피</ActionButtonText>
                         </ActionButtonContent>
                       </ActionButton>

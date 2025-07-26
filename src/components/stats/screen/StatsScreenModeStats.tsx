@@ -43,7 +43,7 @@ export const StatsScreenModeStats: React.FC<StatsScreenModeStatsProps> = ({
     }}
       animateOnly={['opacity', 'transform']}
     >
-      <SectionTitle>☕ 테이스팅 장소</SectionTitle>
+      <SectionTitle> 테이스팅 장소</SectionTitle>
       <ModeStatsContainer>
         <ModeStatCard>
           <ModeIcon>🏪</ModeIcon>
@@ -51,7 +51,7 @@ export const StatsScreenModeStats: React.FC<StatsScreenModeStatsProps> = ({
           <ModeLabel>카페에서</ModeLabel>
         </ModeStatCard>
         <ModeStatCard>
-          <ModeIcon>🏠</ModeIcon>
+          <ModeIcon></ModeIcon>
           <ModeNumber>{stats.homeCafeCount || 0}</ModeNumber>
           <ModeLabel>홈카페에서</ModeLabel>
         </ModeStatCard>

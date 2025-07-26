@@ -262,7 +262,7 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
               <View style={styles.content}>
                 {/* Header */}
                 <View style={styles.header}>
-                  <Text style={styles.headerText}>🎉 업적 달성!</Text>
+                  <Text style={styles.headerText}> 업적 달성!</Text>
                 </View>
 
                 {/* Achievement Info */}

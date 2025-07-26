@@ -483,7 +483,7 @@ const MarketConfigurationTester: React.FC = () => {
           {Object.entries(currentMarketInfo.features || {}).map(([feature, enabled]) => (
             <View key={feature} style={[styles.featureChip, enabled ? styles.featureEnabled : styles.featureDisabled]}>
               <Text style={[styles.featureText, enabled ? styles.featureEnabledText : styles.featureDisabledText]}>
-                {feature}: {enabled ? '✅' : '❌'}
+                {feature}: {enabled ? '' : ''}
               </Text>
             </View>
           ))}
@@ -563,7 +563,7 @@ const MarketConfigurationTester: React.FC = () => {
               <View style={styles.resultHeader}>
                 <Text style={styles.resultScenario}>{result.scenario}</Text>
                 <Text style={styles.resultStatus}>
-                  {result.success ? '✅' : '❌'}
+                  {result.success ? '' : ''}
                 </Text>
               </View>
               <Text style={styles.resultMessage}>{result.message}</Text>

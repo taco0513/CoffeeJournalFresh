@@ -30,7 +30,7 @@ export const QuickMenuItems: React.FC<QuickMenuItemsProps> = ({ userLevel = 'beg
       {
         title: '커피 지식',
         subtitle: '커피 용어와 기초 지식',
-        icon: '📚',
+        icon: '',
         onPress: () => {
           Alert.alert('준비 중', '커피 지식 기능은 곧 업데이트됩니다.');
       },
@@ -42,7 +42,7 @@ export const QuickMenuItems: React.FC<QuickMenuItemsProps> = ({ userLevel = 'beg
       {
         title: '향미 라이브러리',
         subtitle: '내가 저장한 향미 관리',
-        icon: '🎨',
+        icon: '',
         onPress: () => {
           navigation.navigate('FlavorLibrary' as never);
       },
@@ -51,7 +51,7 @@ export const QuickMenuItems: React.FC<QuickMenuItemsProps> = ({ userLevel = 'beg
       {
         title: '테이스팅 가이드',
         subtitle: '단계별 테이스팅 방법',
-        icon: '🎯',
+        icon: '',
         onPress: () => {
           Alert.alert('준비 중', '테이스팅 가이드는 곧 업데이트됩니다.');
       },
@@ -63,7 +63,7 @@ export const QuickMenuItems: React.FC<QuickMenuItemsProps> = ({ userLevel = 'beg
       {
         title: '블라인드 테이스팅',
         subtitle: '편견 없는 객관적 평가 (Phase 2)',
-        icon: '🎭',
+        icon: '',
         onPress: () => {
           Alert.alert('준비 중', '블라인드 테이스팅은 Phase 2에서 구현 예정입니다.');
       },
@@ -72,7 +72,7 @@ export const QuickMenuItems: React.FC<QuickMenuItemsProps> = ({ userLevel = 'beg
       {
         title: '추출 실험실',
         subtitle: '추출 변수와 맛의 상관관계 (Phase 2)',
-        icon: '⚗️',
+        icon: '',
         onPress: () => {
           Alert.alert('준비 중', '추출 실험실은 Phase 2에서 구현 예정입니다.');
       },
@@ -128,14 +128,14 @@ export const QuickMenuItems: React.FC<QuickMenuItemsProps> = ({ userLevel = 'beg
             styles.menuArrow,
             !item.available && styles.disabledText
           ]}>
-            {item.available ? '›' : '🔒'}
+            {item.available ? '›' : 'X'}
           </Text>
         </TouchableOpacity>
       ))}
       
       {userLevel === 'beginner' && (
         <View style={styles.levelUpHint}>
-          <Text style={styles.levelUpIcon}>💡</Text>
+          <Text style={styles.levelUpIcon}></Text>
           <Text style={styles.levelUpText}>
             더 많은 기능을 사용하려면 설정에서 경험 레벨을 변경하세요
           </Text>

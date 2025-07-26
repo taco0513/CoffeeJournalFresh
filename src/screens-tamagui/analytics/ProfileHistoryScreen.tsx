@@ -386,7 +386,7 @@ const ProfileHistoryScreen: React.FC = () => {
     const managedLoadData = async () => {
       if (!isActive) return;
       
-      Logger.debug('🔄 ProfileHistoryScreen: Loading data...', 'screen', { component: 'ProfileHistoryScreen' });
+      Logger.debug(' ProfileHistoryScreen: Loading data...', 'screen', { component: 'ProfileHistoryScreen' });
       await DataLoadingService.loadOnce(
         'profile-history-screen-data',
         () => loadData(),
@@ -398,7 +398,7 @@ const ProfileHistoryScreen: React.FC = () => {
 
     // Listen for mock data creation events
     const subscription = DeviceEventEmitter.addListener('mockDataCreated', () => {
-      Logger.debug('🔄 ProfileHistoryScreen: Mock data created event received', 'screen', { component: 'ProfileHistoryScreen' });
+      Logger.debug(' ProfileHistoryScreen: Mock data created event received', 'screen', { component: 'ProfileHistoryScreen' });
       if (isActive) managedLoadData();
   });
 
@@ -412,7 +412,7 @@ const ProfileHistoryScreen: React.FC = () => {
   useFocusEffect(
     React.useCallback(() => {
       if (!loading) {
-        Logger.debug('🔄 ProfileHistoryScreen: Focus triggered refresh', 'screen', { component: 'ProfileHistoryScreen' });
+        Logger.debug(' ProfileHistoryScreen: Focus triggered refresh', 'screen', { component: 'ProfileHistoryScreen' });
         loadData();
     }
   }, [loading])
@@ -425,7 +425,7 @@ const ProfileHistoryScreen: React.FC = () => {
       const realmService = RealmService.getInstance();
       
       if (!realmService.isInitialized) {
-        Logger.debug('⚠️ Realm not initialized in ProfileHistoryScreen, attempting to initialize...', 'screen', { component: 'ProfileHistoryScreen' });
+        Logger.debug('Realm not initialized in ProfileHistoryScreen, attempting to initialize...', 'screen', { component: 'ProfileHistoryScreen' });
         try {
           await realmService.initialize();
       } catch (initError) {
@@ -436,7 +436,7 @@ const ProfileHistoryScreen: React.FC = () => {
       const tastings = await realmService.getTastingRecords({ isDeleted: false });
       const tastingsArray = Array.from(tastings);
       
-      Logger.debug('📊 ProfileHistoryScreen data loaded:', {
+      Logger.debug('ProfileHistoryScreen data loaded:', {
         isInitialized: realmService.isInitialized,
         recordsCount: tastingsArray.length,
         firstRecord: tastingsArray[0]?.coffeeName,
@@ -454,14 +454,14 @@ const ProfileHistoryScreen: React.FC = () => {
   // Filter and group tastings
   const groupedTastings = useMemo(() => {
     try {
-      Logger.debug('🔄 Processing ProfileHistory groupedTastings - input count:', 'screen', { component: 'ProfileHistoryScreen', data: allTastings.length });
+      Logger.debug(' Processing ProfileHistory groupedTastings - input count:', 'screen', { component: 'ProfileHistoryScreen', data: allTastings.length });
       
       let results = allTastings.filter(tasting => {
         try {
           const isValid = tasting && tasting.id && tasting.coffeeName;
           return isValid;
       } catch (error) {
-          Logger.debug('❌ Error during validation:', 'screen', { component: 'ProfileHistoryScreen', error: error, tasting });
+          Logger.debug(' Error during validation:', 'screen', { component: 'ProfileHistoryScreen', error: error, tasting });
           return false;
       }
     });
@@ -475,7 +475,7 @@ const ProfileHistoryScreen: React.FC = () => {
         if (!tasting || !tasting.id) continue;
         
         if (seenIds.has(tasting.id)) {
-          Logger.debug('🔄 Duplicate tasting found, removing:', 'screen', { component: 'ProfileHistoryScreen', data: tasting.id, coffeeName: tasting.coffeeName });
+          Logger.debug(' Duplicate tasting found, removing:', 'screen', { component: 'ProfileHistoryScreen', data: tasting.id, coffeeName: tasting.coffeeName });
           continue;
       }
         
@@ -499,7 +499,7 @@ const ProfileHistoryScreen: React.FC = () => {
               _uniqueIndex: index
           };
         } catch (error) {
-            Logger.error('❌ Error converting tasting to plain object:', 'screen', { component: 'ProfileHistoryScreen', error: error, tasting });
+            Logger.error('Error converting tasting to plain object:', 'screen', { component: 'ProfileHistoryScreen', error: error, tasting });
             return {
               ...tasting,
               _uniqueIndex: index
@@ -690,7 +690,7 @@ const ProfileHistoryScreen: React.FC = () => {
             animateOnly={['opacity', 'transform']}
           >
             <ProfileSearchBar>
-              <ProfileSearchIcon>🔍</ProfileSearchIcon>
+              <ProfileSearchIcon>검색</ProfileSearchIcon>
               <ProfileSearchInput
                 placeholder="커피명, 로스터리, 카페로 검색..."
                 value={searchQuery}
@@ -699,7 +699,7 @@ const ProfileHistoryScreen: React.FC = () => {
               />
               {searchQuery !== '' && (
                 <ProfileClearButton unstyled onPress={() => setSearchQuery('')}>
-                  <ProfileClearIcon>✕</ProfileClearIcon>
+                  <ProfileClearIcon>X</ProfileClearIcon>
                 </ProfileClearButton>
               )}
             </ProfileSearchBar>
@@ -753,7 +753,7 @@ const ProfileHistoryScreen: React.FC = () => {
             </YStack>
           ) : (
             <ProfileEmptyContainer>
-              <ProfileEmptyIcon>☕️</ProfileEmptyIcon>
+              <ProfileEmptyIcon>비어있음</ProfileEmptyIcon>
               <ProfileEmptyText>
                 {searchQuery ? '검색 결과가 없습니다' : '아직 기록이 없습니다'}
               </ProfileEmptyText>

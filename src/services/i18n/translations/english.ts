@@ -28,7 +28,7 @@ export const englishTranslations = {
   thisWeek: 'This Week',
   avgScore: 'Avg Score',
   bestScore: 'Best Score',
-  startNewTasting: '☕ Start New Tasting',
+  startNewTasting: 'Start New Tasting',
   recentRecords: 'Recent Records',
   seeAll: 'See All',
   noTastingsYet: 'Start your first tasting!',
@@ -44,7 +44,7 @@ export const englishTranslations = {
   labModeDesc: 'Professional analysis',
   howRecordCoffee: 'How would you like to\nrecord your coffee?',
   canChangeAnytime: 'You can change this anytime',
-  modeChangeInfo: '💡 Mode can be changed anytime during tasting',
+  modeChangeInfo: 'Mode can be changed anytime during tasting',
   
   // Coffee Info
   coffeeInfo: 'Coffee Info',

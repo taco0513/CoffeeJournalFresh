@@ -62,7 +62,7 @@ export const RecipePresets: React.FC<RecipePresetsProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerIcon}>🎯</Text>
+        <Text style={styles.headerIcon}></Text>
         <Text style={styles.headerTitle}>추천 레시피</Text>
       </View>
       

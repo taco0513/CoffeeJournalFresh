@@ -216,7 +216,7 @@ const I18nValidationScreen: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>I18n System Validation</Text>
         <Text style={styles.headerSubtitle}>
-          {t('language')}: {getCurrentLanguage().toUpperCase()} | Market: {isKoreanMarket() ? '🇰🇷 Korean' : '🇺🇸 US Beta'}
+          {t('language')}: {getCurrentLanguage().toUpperCase()} | Market: {isKoreanMarket() ? ' Korean' : ' US Beta'}
         </Text>
       </View>
 
@@ -307,7 +307,7 @@ const I18nValidationScreen: React.FC = () => {
               <View style={styles.resultHeader}>
                 <Text style={styles.resultTest}>{result.test}</Text>
                 <Text style={[styles.resultStatus, styles[result.status === 'pass' ? 'statusPass' : result.status === 'warning' ? 'statusWarning' : 'statusFail']]}>
-                  {result.status === 'pass' ? '✅' : result.status === 'warning' ? '⚠️' : '❌'}
+                  {result.status === 'pass' ? '' : result.status === 'warning' ? '' : ''}
                 </Text>
               </View>
               <Text style={styles.resultMessage}>{result.message}</Text>

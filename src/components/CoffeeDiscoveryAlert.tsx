@@ -69,18 +69,18 @@ export const CoffeeDiscoveryAlert: React.FC<CoffeeDiscoveryAlertProps> = memo(({
   const getMessage = useCallback(() => {
     if (type === 'discovered') {
       return {
-        title: '🎉 새로운 커피 발견!',
+        title: '새로운 커피 발견!',
         subtitle: `${roasteryName}의 "${coffeeName}"`,
         message: '축하합니다! 새로운 커피를 발견하셨네요.\n관리자 검수 후 모든 사용자가 이용할 수 있게 됩니다.',
-        badge: '🏆 커피 탐험가',
+        badge: '커피 탐험가',
         gradientColors: ['#FFD700', '#FFA500'],
     };
   } else {
       return {
-        title: '✅ 커피가 등록되었습니다!',
+        title: '커피가 등록되었습니다!',
         subtitle: `${roasteryName}의 "${coffeeName}"`,
         message: '관리자가 검수를 완료했습니다.\n이제 모든 사용자가 이 커피를 검색할 수 있어요!',
-        badge: `🏆 커피 발견자 Lv.${badgeLevel}`,
+        badge: `커피 발견자 Lv.${badgeLevel}`,
         gradientColors: ['#4ECDC4', '#44A08D'],
     };
   }

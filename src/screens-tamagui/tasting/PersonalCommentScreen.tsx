@@ -16,6 +16,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useTastingStore } from '../../stores/tastingStore';
 import { flavorWheelKorean } from '../../data/flavorWheelKorean';
+import { FloatingButton } from '../../components-tamagui/buttons/FloatingButton';
 
 // Styled Components
 const Container = styled(YStack, {
@@ -80,7 +81,7 @@ const InputContainer = styled(Card, {
 })
 
 const StyledTextArea = styled(TextArea, {
-  fontSize: 16,
+  fontSize: '$4', // 18px
   color: '$color',
   lineHeight: 22,
   minHeight: 88,
@@ -344,7 +345,10 @@ const PersonalCommentScreenTamagui = () => {
             <ScrollView 
               showsVerticalScrollIndicator={false}
               bounces={true}
-              contentContainerStyle={{ flexGrow: 1 }}
+              contentContainerStyle={{ 
+                flexGrow: 1,
+                paddingBottom: 120 // Extra padding to clear floating button
+              }}
             >
               <ContentContainer>
                 <Section>
@@ -475,22 +479,11 @@ const PersonalCommentScreenTamagui = () => {
               </ContentContainer>
             </ScrollView>
 
-            {/* Bottom Button */}
-            <XStack
-              padding="$lg"
-              paddingBottom={Math.max(insets.bottom, IOSLayout.safeAreaBottom) + IOSSpacing.md}
-              backgroundColor="$background"
-              borderTopWidth={0.5}
-              borderTopColor="$borderColor"
-            >
-              <NextButton
-                flex={1}
-                onPress={handleNext}
-                animation="quick"
-              >
-                <NextButtonText>완료</NextButtonText>
-              </NextButton>
-            </XStack>
+            {/* Floating Bottom Button */}
+            <FloatingButton
+              title="완료"
+              onPress={handleNext}
+            />
           </KeyboardAvoidingView>
         </YStack>
     </Container>

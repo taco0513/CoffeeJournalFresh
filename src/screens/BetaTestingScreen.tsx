@@ -184,7 +184,7 @@ const BetaTestingScreen: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Beta Testing Dashboard</Text>
         <Text style={styles.headerSubtitle}>
-          {isBeta ? '🇺🇸 US Beta Environment' : '🇰🇷 Korean Production'}
+          {isBeta ? ' US Beta Environment' : ' Korean Production'}
         </Text>
       </View>
 

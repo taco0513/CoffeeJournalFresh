@@ -16,7 +16,6 @@ export interface DripperSpec {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   characteristics: string[];
   recommendedTechniques: string[];
-  icon: string;
 }
 
 export interface DripperSize {
@@ -110,7 +109,6 @@ export class HomeCafeEnhancedService {
           'Technique-sensitive'
         ],
         recommendedTechniques: ['pulse', 'spiral', 'center'],
-        icon: '⏳',
         sizes: [
           {
             size: '01',
@@ -153,7 +151,6 @@ export class HomeCafeEnhancedService {
           'More forgiving'
         ],
         recommendedTechniques: ['pulse', 'continuous'],
-        icon: '〰️',
         sizes: [
           {
             size: '155',
@@ -188,7 +185,6 @@ export class HomeCafeEnhancedService {
           'Bright acidity'
         ],
         recommendedTechniques: ['pulse', 'spiral'],
-        icon: '⏳',
         sizes: [
           {
             size: '3-cup',
@@ -223,7 +219,6 @@ export class HomeCafeEnhancedService {
           'Flexible brewing'
         ],
         recommendedTechniques: ['spiral', 'pulse', 'center'],
-        icon: '🗾',
         sizes: [
           {
             size: 'S',

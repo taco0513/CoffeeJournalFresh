@@ -255,7 +255,7 @@ export class TastingService {
     const realm = this.baseService.getRealm();
     let query = realm.objects<ITastingRecord>('TastingRecord');
     
-    RealmLogger.debug('🔍 TastingService.getTastingRecords called', {
+    RealmLogger.debug('TastingService.getTastingRecords called', {
       filter,
       totalRecords: query.length
     });
@@ -296,7 +296,7 @@ export class TastingService {
       
       if (filterClauses.length > 0) {
         const filterString = filterClauses.join(' AND ');
-        RealmLogger.debug('🔍 Applying filter', {
+        RealmLogger.debug('Applying filter', {
           filterString,
           filterValues
         });
@@ -307,7 +307,7 @@ export class TastingService {
     const sortedQuery = query.sorted('createdAt', true);
     const result = this.baseService.paginateResults(sortedQuery, filter?.limit, filter?.offset);
     
-    RealmLogger.debug('🔍 TastingService.getTastingRecords result', {
+    RealmLogger.debug('TastingService.getTastingRecords result', {
       resultType: Array.isArray(result) ? 'Array' : 'Realm.Results',
       count: Array.isArray(result) ? result.length : result.length,
       isRealmResults: !Array.isArray(result),

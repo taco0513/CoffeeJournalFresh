@@ -43,9 +43,9 @@ class BridgeDebugger {
       try {
         this.originalBridge = (global as { __fbBatchedBridge?: NativeBridge }).__fbBatchedBridge!;
         this.interceptBridgeCalls();
-        debugLog('🔍 Bridge debugger initialized');
+        debugLog(' Bridge debugger initialized');
     } catch (error) {
-        debugWarn('⚠️ Bridge debugger initialization failed, continuing without debugging:', (error as Error).message);
+        debugWarn(' Bridge debugger initialization failed, continuing without debugging:', (error as Error).message);
     }
   }
 }
@@ -70,7 +70,7 @@ class BridgeDebugger {
       if (methodName.includes('onRequestCategoryPreferencing') || 
           moduleName.includes('TastingFlow') ||
           methodName.includes('CategoryPreferencing')) {
-        debugWarn('🚨 Blocked potentially problematic bridge call:', {
+        debugWarn(' Blocked potentially problematic bridge call:', {
           moduleName,
           methodName,
           reason: 'Method likely does not exist in native binary'
@@ -93,7 +93,7 @@ class BridgeDebugger {
           onSucc
         );
     } catch (error) {
-        debugError('🚨 Bridge call failed:', {
+        debugError(' Bridge call failed:', {
           moduleID,
           methodID,
           params,
@@ -106,7 +106,7 @@ class BridgeDebugger {
         if (onFail && typeof onFail === 'function') {
           onFail(error);
       } else {
-          debugWarn('🔄 Bridge call failed but no error handler provided, continuing...');
+          debugWarn('Bridge call failed but no error handler provided, continuing...');
       }
     }
   };
@@ -129,7 +129,7 @@ class BridgeDebugger {
 
     // Log potentially problematic calls
     if (this.hasProblematicParams(params)) {
-      debugWarn('⚠️ Potentially problematic bridge call:', {
+      debugWarn(' Potentially problematic bridge call:', {
         module: this.getModuleName(moduleID),
         method: this.getMethodName(moduleID, methodID),
         params: this.analyzeParams(params)
@@ -224,7 +224,7 @@ class BridgeDebugger {
   printRecentCalls(count = 10) {
     const recent = this.getRecentCalls(count);
     if (DEBUG_ENABLED) {
-      console.group(LOG_PREFIX + ' 🔍 Recent Bridge Calls');
+      console.group(LOG_PREFIX + '  Recent Bridge Calls');
       recent.forEach((call, index) => {
         Logger.debug(`${index + 1}. ${this.getModuleName(call.moduleId)}.${this.getMethodName(call.moduleId, call.methodId)}`, 'util', { component: 'bridgeDebugger', data: call.params });
     });
@@ -240,6 +240,6 @@ if (DEBUG_ENABLED) {
   try {
     bridgeDebugger.init();
 } catch (error) {
-    debugWarn('⚠️ Bridge debugger failed to initialize, continuing without debugging:', (error as Error).message);
+    debugWarn(' Bridge debugger failed to initialize, continuing without debugging:', (error as Error).message);
 }
 }

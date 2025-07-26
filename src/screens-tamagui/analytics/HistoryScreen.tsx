@@ -397,7 +397,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
     const managedLoadData = async () => {
       if (!isActive) return;
       
-      Logger.debug('🔄 HistoryScreen: Loading data...', 'screen', { component: 'HistoryScreen' });
+      Logger.debug(' HistoryScreen: Loading data...', 'screen', { component: 'HistoryScreen' });
       await DataLoadingService.loadOnce(
         'history-screen-data',
         () => loadData(),
@@ -409,7 +409,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
 
     // Listen for mock data creation events
     const subscription = DeviceEventEmitter.addListener('mockDataCreated', () => {
-      Logger.debug('🔄 HistoryScreen: Mock data created event received', 'screen', { component: 'HistoryScreen' });
+      Logger.debug(' HistoryScreen: Mock data created event received', 'screen', { component: 'HistoryScreen' });
       if (isActive) managedLoadData();
   });
 
@@ -423,7 +423,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
   useFocusEffect(
     React.useCallback(() => {
       if (!loading) {
-        Logger.debug('🔄 HistoryScreen: Focus triggered refresh', 'screen', { component: 'HistoryScreen' });
+        Logger.debug(' HistoryScreen: Focus triggered refresh', 'screen', { component: 'HistoryScreen' });
         loadData();
     }
   }, [loading])
@@ -436,7 +436,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
       const realmService = RealmService.getInstance();
       
       if (!realmService.isInitialized) {
-        Logger.debug('⚠️ Realm not initialized in HistoryScreen, attempting to initialize...', 'screen', { component: 'HistoryScreen' });
+        Logger.debug('Realm not initialized in HistoryScreen, attempting to initialize...', 'screen', { component: 'HistoryScreen' });
         try {
           await realmService.initialize();
       } catch (initError) {
@@ -447,7 +447,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
       const tastings = await realmService.getTastingRecords({ isDeleted: false });
       const tastingsArray = Array.from(tastings);
       
-      Logger.debug('📊 HistoryScreen data loaded:', {
+      Logger.debug('HistoryScreen data loaded:', {
         isInitialized: realmService.isInitialized,
         recordsCount: tastingsArray.length,
         firstRecord: tastingsArray[0]?.coffeeName,
@@ -465,14 +465,14 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
   // Filter and group tastings
   const groupedTastings = useMemo(() => {
     try {
-      Logger.debug('🔄 Processing groupedTastings - input count:', 'screen', { component: 'HistoryScreen', data: allTastings.length });
+      Logger.debug(' Processing groupedTastings - input count:', 'screen', { component: 'HistoryScreen', data: allTastings.length });
       
       let results = allTastings.filter(tasting => {
         try {
           const isValid = tasting && tasting.id && tasting.coffeeName;
           return isValid;
       } catch (error) {
-          Logger.debug('❌ Error during validation:', 'screen', { component: 'HistoryScreen', error: error, tasting });
+          Logger.debug(' Error during validation:', 'screen', { component: 'HistoryScreen', error: error, tasting });
           return false;
       }
     });
@@ -482,7 +482,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
       results = results
         .filter(tasting => {
           if (seenIds.has(tasting.id)) {
-            Logger.debug('🔄 Duplicate tasting found, removing:', 'screen', { component: 'HistoryScreen', data: tasting.id, coffeeName: tasting.coffeeName });
+            Logger.debug(' Duplicate tasting found, removing:', 'screen', { component: 'HistoryScreen', data: tasting.id, coffeeName: tasting.coffeeName });
             return false;
         }
           seenIds.add(tasting.id);
@@ -503,7 +503,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
               _uniqueIndex: index
           };
         } catch (error) {
-            Logger.error('❌ Error converting tasting to plain object:', 'screen', { component: 'HistoryScreen', error: error, tasting });
+            Logger.error('Error converting tasting to plain object:', 'screen', { component: 'HistoryScreen', error: error, tasting });
             return {
               ...tasting,
               _uniqueIndex: index
@@ -703,7 +703,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
             animateOnly={['opacity', 'transform']}
           >
             <SearchBar>
-              <SearchIcon>🔍</SearchIcon>
+              <SearchIcon>검색</SearchIcon>
               <SearchInput
                 placeholder="커피명, 로스터리, 카페로 검색..."
                 value={searchQuery}
@@ -712,7 +712,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
               />
               {searchQuery !== '' && (
                 <ClearButton unstyled onPress={() => setSearchQuery('')}>
-                  <ClearIcon>✕</ClearIcon>
+                  <ClearIcon>X</ClearIcon>
                 </ClearButton>
               )}
             </SearchBar>
@@ -769,7 +769,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ hideNavBar = true, screen
             </YStack>
           ) : (
             <EmptyContainer>
-              <EmptyIcon>☕️</EmptyIcon>
+              <EmptyIcon>비어있음</EmptyIcon>
               <EmptyText>
                 {searchQuery ? '검색 결과가 없습니다' : '아직 기록이 없습니다'}
               </EmptyText>

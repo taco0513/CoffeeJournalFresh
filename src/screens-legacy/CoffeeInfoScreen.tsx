@@ -22,7 +22,7 @@ import { HIGConstants, HIGColors } from '../styles/common';
 import { searchRoasters, searchCoffees } from '../services/supabase/coffeeSearch';
 import { AddCoffeeModal } from '../components/AddCoffeeModal';
 import { BetaFeedbackPrompt } from '../components/beta/BetaFeedbackPrompt';
-import { FloatingDummyDataButton } from '../components/dev/FloatingDummyDataButton';
+import { DummyDataInput } from '../components/dev/DummyDataInput';
 
 const CoffeeInfoScreen = () => {
   const navigation = useNavigation();
@@ -117,7 +117,7 @@ const CoffeeInfoScreen = () => {
         delayMs={10000} // 10 seconds after entering screen
       />
       
-      <FloatingDummyDataButton />
+      <DummyDataInput />
       
       {/* Navigation Bar */}
       <View style={styles.navigationBar}>
@@ -344,7 +344,7 @@ const CoffeeInfoScreen = () => {
                             styles.roastButtonText,
                             currentTasting.roastLevel === level && styles.roastButtonTextActive,
                           ]}>
-                            {level === 'Light' ? '☕ Light' : 
+                            {level === 'Light' ? 'Light' : 
                              level === 'Medium' ? '🟤 Medium' : 
                              '⚫ Dark'}
                           </Text>
@@ -369,7 +369,7 @@ const CoffeeInfoScreen = () => {
                       styles.tempButtonText,
                       currentTasting.temperature === 'hot' && styles.tempButtonTextActive,
                     ]}>
-                      ☕ Hot
+                      Hot
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
