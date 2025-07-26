@@ -589,19 +589,24 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
                 기록이 쌓이면 이런 인사이트를 볼 수 있어요!
               </InsightPreviewText>
               <AnimatePresence>
-                {insights.map((insight, index) => (
-                  <View
-                    key={`empty-state-insight-${index}-${insight.title}-${Math.random().toString(36).substr(2, 9)}`}
-                    animation="lazy"
-                    enterStyle={{
-                      opacity: 0,
-                      y: 30 + (index * 10),
-                    }}
-                    animateOnly={['opacity', 'transform']}
-                  >
-                    <InsightCard {...insight} />
-                  </View>
-                ))}
+                {insights.map((insight, index) => {
+                  // Generate ultra-unique key for empty state insights
+                  const uniqueKey = `empty-state-insight-${index}-${insight.title || 'no-title'}-${insight.icon || 'no-icon'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                  
+                  return (
+                    <View
+                      key={uniqueKey}
+                      animation="lazy"
+                      enterStyle={{
+                        opacity: 0,
+                        y: 30 + (index * 10),
+                      }}
+                      animateOnly={['opacity', 'transform']}
+                    >
+                      <InsightCard {...insight} />
+                    </View>
+                  );
+                })}
               </AnimatePresence>
             </Section>
 
@@ -714,8 +719,12 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
               >
                 <SectionTitle>가장 많이 마신 로스터리</SectionTitle>
                 <RankingCard>
-                  {topRoasters.map((roaster, index) => (
-                    <RankingItem key={roaster.name} isLast={index === topRoasters.length - 1}>
+                  {topRoasters.map((roaster, index) => {
+                    // Generate ultra-unique key for top roasters to prevent React key duplication
+                    const uniqueKey = `top-roaster-${index}-${roaster.name || 'no-name'}-${roaster.count || 0}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    
+                    return (
+                      <RankingItem key={uniqueKey} isLast={index === topRoasters.length - 1}>
                       <RankingLeft>
                         <RankNumber>{index + 1}</RankNumber>
                         <RankingInfo>
@@ -723,9 +732,10 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
                           <RankScore>평균 {roaster.avgScore}%</RankScore>
                         </RankingInfo>
                       </RankingLeft>
-                      <RankCount>{roaster.count}회</RankCount>
-                    </RankingItem>
-                  ))}
+                        <RankCount>{roaster.count}회</RankCount>
+                      </RankingItem>
+                    );
+                  })}
                 </RankingCard>
               </Section>
             )}
@@ -742,17 +752,22 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
               >
                 <SectionTitle>자주 방문한 카페</SectionTitle>
                 <RankingCard>
-                  {topCafes.map((cafe, index) => (
-                    <RankingItem key={cafe.name} isLast={index === topCafes.length - 1}>
-                      <RankingLeft>
-                        <RankNumber>{index + 1}</RankNumber>
-                        <RankingInfo>
-                          <RankName>{cafe.name}</RankName>
-                        </RankingInfo>
-                      </RankingLeft>
-                      <RankCount>{cafe.count}회</RankCount>
-                    </RankingItem>
-                  ))}
+                  {topCafes.map((cafe, index) => {
+                    // Generate ultra-unique key for top cafes to prevent React key duplication
+                    const uniqueKey = `top-cafe-${index}-${cafe.name || 'no-name'}-${cafe.count || 0}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    
+                    return (
+                      <RankingItem key={uniqueKey} isLast={index === topCafes.length - 1}>
+                        <RankingLeft>
+                          <RankNumber>{index + 1}</RankNumber>
+                          <RankingInfo>
+                            <RankName>{cafe.name}</RankName>
+                          </RankingInfo>
+                        </RankingLeft>
+                        <RankCount>{cafe.count}회</RankCount>
+                      </RankingItem>
+                    );
+                  })}
                 </RankingCard>
               </Section>
             )}
@@ -767,19 +782,24 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ hideNavBar = false }) => {
               animateOnly={['opacity', 'transform']}
             >
               <SectionTitle>30일 인사이트</SectionTitle>
-              {insights.map((insight, index) => (
-                <View
-                  key={`data-state-insight-${index}-${insight.title}-${Math.random().toString(36).substr(2, 9)}`}
-                  animation="lazy"
-                  enterStyle={{
-                    opacity: 0,
-                    y: 20 + (index * 10),
-                  }}
-                  animateOnly={['opacity', 'transform']}
-                >
-                  <InsightCard {...insight} />
-                </View>
-              ))}
+              {insights.map((insight, index) => {
+                // Generate ultra-unique key for data state insights
+                const uniqueKey = `data-state-insight-${index}-${insight.title || 'no-title'}-${insight.icon || 'no-icon'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                
+                return (
+                  <View
+                    key={uniqueKey}
+                    animation="lazy"
+                    enterStyle={{
+                      opacity: 0,
+                      y: 20 + (index * 10),
+                    }}
+                    animateOnly={['opacity', 'transform']}
+                  >
+                    <InsightCard {...insight} />
+                  </View>
+                );
+              })}
             </Section>
 
             <BottomSpacer />
